@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.layout.LayoutDirector;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
@@ -38,11 +40,19 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_SIZE;
 
-	private Dimension containerSize;
+	private Dimension containerSize = new Dimension();
 
 	private double scale = 72;
 
 	private List<SubPlot> subplots = Collections.<SubPlot> emptyList();
+
+	private Dimension2D vpPhySize = new DoubleDimension2D(4.0, 3.0);
+
+	private Dimension2D phySize;
+
+	public PlotImpl() {
+		cacheable = true;
+	}
 
 	public LayoutDirector getLayoutDirector() {
 		return director;
@@ -66,6 +76,7 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	public void setContainerSize(Dimension size) {
 		this.containerSize = size;
+		invalidate();
 	}
 
 	public double getScale() {
@@ -83,35 +94,30 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	}
 
 	public Dimension2D getPhySize() {
-		// TODO Auto-generated method stub
-		return null;
+		return phySize;
 	}
 
-	public void setPhySize(Dimension2D physize) {
-		// TODO Auto-generated method stub
+	public void setPhySize(Dimension2D phySize) {
+		this.phySize = phySize;
 
 	}
 
 	public Dimension2D getViewportPhySize() {
-		// TODO Auto-generated method stub
-		return null;
+		return vpPhySize;
 	}
 
 	public void setViewportPhySize(Dimension2D physize) {
-		// TODO Auto-generated method stub
-
+		vpPhySize = physize;
 	}
 
-	@Override
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, 0, containerSize.getWidth(),
-				containerSize.getHeight());
+		return new Rectangle2D.Double(0, 0, (int) (phySize.getWidth() * scale),
+				(int) (phySize.getHeight() * scale));
 	}
 
-	@Override
 	public Rectangle2D getBoundsP() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Rectangle2D.Double(0, 0, phySize.getWidth(), phySize
+				.getHeight());
 	}
 
 	public SubPlot getSubPlot(int n) {
@@ -143,12 +149,14 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	}
 
 	public void draw(Graphics2D g, boolean drawCacheable) {
-		// TODO Auto-generated method stub
-
+		g.setColor(Color.BLACK);
+		g.drawLine(0, 0, containerSize.width, containerSize.height);
+		g.drawLine(0, containerSize.height, containerSize.width, 0);
 	}
 
 	public Plot deepCopy(Map<Element, Element> orig2copyMap) {
 		// TODO Auto-generated method stub
+		orig2copyMap.put(this, this);
 		return this;
 	}
 

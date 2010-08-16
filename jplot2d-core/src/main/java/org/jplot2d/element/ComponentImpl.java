@@ -29,9 +29,7 @@ public abstract class ComponentImpl implements Component {
 
 	protected volatile Boolean _visible;
 
-	protected volatile CacheMode bufferMode;
-
-	protected volatile Boolean _selected;
+	protected volatile boolean cacheable;
 
 	protected volatile Boolean _selectable;
 
@@ -74,20 +72,12 @@ public abstract class ComponentImpl implements Component {
 		_visible = visible;
 	}
 
-	public CacheMode getCacheMode() {
-		return bufferMode;
+	public boolean isCacheable() {
+		return cacheable;
 	}
 
-	public void setCacheMode(CacheMode bufferMode) {
-		this.bufferMode = bufferMode;
-	}
-
-	public Boolean getSelected() {
-		return _selected;
-	}
-
-	public void setSelected(Boolean selected) {
-		_selected = selected;
+	public void setCacheable(boolean cacheMode) {
+		this.cacheable = cacheMode;
 	}
 
 	public Boolean getSelectable() {
@@ -175,6 +165,12 @@ public abstract class ComponentImpl implements Component {
 
 	public abstract Rectangle2D getBoundsP();
 
+	/**
+	 * Returns the bounds in absolute device coordinate. The top container's x,y
+	 * is always 0.
+	 * 
+	 * @return a Rectangle2D object.
+	 */
 	public abstract Rectangle2D getBounds();
 
 	/**
@@ -224,9 +220,7 @@ public abstract class ComponentImpl implements Component {
 		if (src.getVisible() != null) {
 			dest.setVisible(src.getVisible());
 		}
-		if (src.getCacheMode() != null) {
-			dest.setCacheMode(src.getCacheMode());
-		}
+		dest.setCacheable(src.isCacheable());
 		if (src.getSelectable() != null) {
 			dest.setSelectable(src.getSelectable());
 		}
@@ -259,7 +253,7 @@ public abstract class ComponentImpl implements Component {
 
 	public static void copy(Component src, Component dest) {
 		dest.setVisible(src.getVisible());
-		dest.setCacheMode(src.getCacheMode());
+		dest.setCacheable(src.isCacheable());
 		dest.setSelectable(src.getSelectable());
 		dest.setMovable(src.getMovable());
 		dest.setColor(src.getColor());

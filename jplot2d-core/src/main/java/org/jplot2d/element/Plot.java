@@ -24,9 +24,12 @@ import java.util.Map;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Redraw;
 import org.jplot2d.layout.LayoutDirector;
 
 /**
+ * A Plot contains titles and subplots.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -46,6 +49,11 @@ public interface Plot extends Container {
 
 	public Dimension getContainerSize();
 
+	/**
+	 * Sets the container size.
+	 * 
+	 * @param size
+	 */
 	public void setContainerSize(Dimension size);
 
 	public Dimension2D getTargetPhySize();
@@ -54,10 +62,16 @@ public interface Plot extends Container {
 
 	public Dimension2D getPhySize();
 
+	@Redraw
 	public void setPhySize(Dimension2D physize);
 
 	public Dimension2D getViewportPhySize();
 
+	/**
+	 * Sets the viewport physical size for all its subplot
+	 * 
+	 * @param physize
+	 */
 	public void setViewportPhySize(Dimension2D physize);
 
 	/**

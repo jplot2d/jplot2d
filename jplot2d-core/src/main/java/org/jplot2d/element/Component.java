@@ -33,21 +33,6 @@ import java.awt.geom.Rectangle2D;
  */
 public interface Component extends Element {
 
-	public static enum CacheMode {
-		/**
-		 * Use the cache of its parent
-		 */
-		PARENT,
-		/**
-		 * The component itself has a cache
-		 */
-		SELF,
-		/**
-		 * Not cache for this component
-		 */
-		NOCACHE
-	}
-
 	public static enum HAlign {
 		LEFT, CENTER, RIGHT
 	}
@@ -90,34 +75,19 @@ public interface Component extends Element {
 	public void setVisible(Boolean b);
 
 	/**
-	 * Returns the cache mode of this component.
+	 * Returns <code>true</code> if this component has its own rendering cache.
 	 * 
 	 * @return the cache mode of this component
 	 */
-	public CacheMode getCacheMode();
+	public boolean isCacheable();
 
 	/**
-	 * Sets the cache mode of this component.
+	 * Sets if this component has its own rendering cache.
 	 * 
 	 * @param mode
 	 *            the cache mode
 	 */
-	public void setCacheMode(CacheMode mode);
-
-	/**
-	 * Returns true if the object's selected property is set.
-	 * 
-	 * @return true if selected, false if not.
-	 */
-	public Boolean getSelected();
-
-	/**
-	 * Sets the selected property.
-	 * 
-	 * @param selected
-	 *            true if selected, false if not.
-	 */
-	public void setSelected(Boolean selected);
+	public void setCacheable(boolean mode);
 
 	/**
 	 * Returns <code>true</code> if the component is selectable by mouse. Only
@@ -267,7 +237,6 @@ public interface Component extends Element {
 	 * @param p
 	 *            the point defining the origin of the new location, given in
 	 *            the coordinate space of this component's parent
-	 * @see #getLocation
 	 */
 	public void setLocationP(Point2D p);
 
@@ -317,9 +286,6 @@ public interface Component extends Element {
 	 * Mark this component has a valid layout.
 	 * 
 	 * @see #invalidate
-	 * @see #doLayout()
-	 * @see LayoutManager
-	 * @see Container#validate
 	 */
 	public void validate();
 
@@ -329,15 +295,19 @@ public interface Component extends Element {
 	 * needs to execute quickly.
 	 * 
 	 * @see #validate
-	 * @see #doLayout
-	 * @see LayoutManager
-	 * @since JDK1.0
 	 */
 	public void invalidate();
 
 	/**
+	 * If cacheableChildren is true, Draw this component and all its children.
+	 * Otherwise, draw this component and all its children whom cacheable is
+	 * PARENT.
+	 * 
 	 * @param g
+	 *            to the Graphics2D drawing
+	 * @param allChildren
+	 *            if draw this component's cacheable children
 	 */
-	void draw(Graphics2D g, boolean drawCacheable);
+	void draw(Graphics2D g, boolean allChildren);
 
 }
