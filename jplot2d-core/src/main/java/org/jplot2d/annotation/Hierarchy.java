@@ -24,6 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * An annotation to mark a hierarchy operation type.
+ * 
  * @author Jingjing Li
  * 
  */

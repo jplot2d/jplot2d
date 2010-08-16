@@ -19,6 +19,8 @@
 package org.jplot2d.annotation;
 
 /**
+ * Defines hierarchy operation types.
+ * 
  * @author Jingjing Li
  * 
  */
