@@ -20,7 +20,6 @@ package org.jplot2d.env;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +28,13 @@ import java.util.Set;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
 
 /**
- * The environment is not thread-safe, and can only be used within a single
- * thread, such as servlet.
+ * This environment extends plot environment to add ability to render a plot.
+ * This class is not thread-safe, and can only be used within a single thread,
+ * such as servlet.
  * 
  * @author Jingjing Li
  * 
@@ -43,9 +42,9 @@ import org.jplot2d.renderer.Renderer;
 public class RenderEnvironment extends PlotEnvironment {
 
 	/**
-	 * Redraw-require cacheable components
+	 * Redraw-required self cache components
 	 */
-	protected final Set<Component> rrccs = new HashSet<Component>();
+	protected final Set<Component> rrSccs = new HashSet<Component>();
 
 	private List<Renderer<?>> rendererList = Collections
 			.synchronizedList(new ArrayList<Renderer<?>>());
@@ -77,65 +76,29 @@ public class RenderEnvironment extends PlotEnvironment {
 
 	@Override
 	void requireRedraw(Element impl) {
-		if (impl instanceof Component) {
-			switch (((Component) impl).getCacheMode()) {
-			case PARENT:
-				requireRedraw(impl.getParent());
-				break;
-			case SELF:
-				rrccs.add((Component) impl);
-				break;
-			case NOCACHE: // do nothing
-			}
+		if (impl instanceof Component && ((Component) impl).isCacheable()) {
+			rrSccs.add((Component) impl);
 		} else {
 			requireRedraw(impl.getParent());
 		}
 	}
 
 	@Override
-	protected void commit() throws WarningException {
+	protected void renderOnCommit(Plot plot, Map<Component, Component> compMap) {
 
-		/*
-		 * Layout on plot proxy to ensure layout can set redraw-require
-		 * properties.
-		 */
-		LayoutDirector ld = plot.getLayoutDirector();
-		WarningException ex = null;
-		try {
-			ld.layout(plot);
-		} catch (WarningException e) {
-			ex = e;
+		// unmodified components
+		List<Component> umsccs = new ArrayList<Component>();
+		for (Component comp : compMap.keySet()) {
+			if (!rrSccs.contains(comp)) {
+				umsccs.add(comp);
+			}
 		}
-
-		makeUndoMemento();
-		Plot plotRenderSafeCopy = getPlotRenderSafeCopy();
-
-		Map<Component, Boolean> ccms = new HashMap<Component, Boolean>();
-		for (Component comp : cacheableComponents) {
-			ccms.put(comp, rrccs.contains(comp));
-		}
-		rrccs.clear();
+		rrSccs.clear();
 
 		for (Renderer<?> r : getRenderers()) {
-			r.render(plotRenderSafeCopy, ccms);
+			r.render(plot, compMap, umsccs);
 		}
 
-		if (ex != null) {
-			throw ex;
-		}
 	}
 
-	@Override
-	protected void commitUndoRedo() {
-		Plot plotRenderSafeCopy = getPlotRenderSafeCopy();
-		Map<Component, Boolean> ccms = new HashMap<Component, Boolean>();
-		for (Component comp : cacheableComponents) {
-			ccms.put(comp, Boolean.TRUE);
-		}
-		rrccs.clear();
-
-		for (Renderer<?> r : getRenderers()) {
-			r.render(plotRenderSafeCopy, ccms);
-		}
-	}
 }

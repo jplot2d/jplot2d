@@ -56,7 +56,8 @@ public abstract class Environment {
 	private int batchDepth;
 
 	/**
-	 * impl to proxy map. The iteration order is insertion-order.
+	 * A impl to proxy map that contains all element in this environment. The
+	 * iteration order is insertion-order.
 	 */
 	protected final Map<Element, Element> proxyMap = new LinkedHashMap<Element, Element>();
 
@@ -133,7 +134,7 @@ public abstract class Environment {
 	void elementPropertyChanged(Element impl) {
 		//
 	}
-	
+
 	/**
 	 * Create a dummy environment.
 	 * 
@@ -149,7 +150,7 @@ public abstract class Environment {
 	 *            the short description about the batch
 	 * @return a batch token
 	 */
-	public BatchToken beginBatch(String msg) {
+	final public BatchToken beginBatch(String msg) {
 
 		beginCommand(msg);
 
@@ -163,13 +164,19 @@ public abstract class Environment {
 	 *            the token gotten from beginBatch
 	 * @throws WarningException
 	 */
-	public void endBatch(BatchToken token) throws WarningException {
+	final public void endBatch(BatchToken token) throws WarningException {
+		begin();
 
 		if (!verifyBatchToken(token)) {
-			throw new Error("Batch token not match. " + token);
+			throw new IllegalArgumentException("Batch token not match. "
+					+ token);
 		}
 
-		endCommand();
+		try {
+			endCommand();
+		} finally {
+			end();
+		}
 	}
 
 	boolean verifyBatchToken(BatchToken token) {
@@ -181,30 +188,35 @@ public abstract class Environment {
 	 * 
 	 * @param msg
 	 */
-	void beginCommand(String msg) {
+	final void beginCommand(String msg) {
+		begin();
+
 		++batchSND[batchDepth];
 		batchDepth++;
 		batchSND[batchDepth] = 0;
 
-		Log.book.fine("[>] " + Integer.toHexString(hashCode())
+		Log.env.fine("[>] " + Integer.toHexString(hashCode())
 				+ getBatchString() + " :" + msg);
 	}
 
 	/**
-	 * A light weight version of beginBatch, without verifying the batch token.
+	 * A light weight version of beginBatch, without verifying a batch token.
 	 * 
 	 * @throws WarningException
+	 *             if warning message is sent out.
 	 */
-	void endCommand() throws WarningException {
-		Log.book.fine("[<] " + Integer.toHexString(hashCode())
+	final void endCommand() {
+		Log.env.fine("[<] " + Integer.toHexString(hashCode())
 				+ getBatchString());
 
-		if (batchDepth == 1) {
-			commit();
-		} else {
-
+		try {
+			if (batchDepth == 1) {
+				commit();
+			}
+		} finally {
+			batchDepth--;
+			end();
 		}
-		batchDepth--;
 	}
 
 	private String getBatchString() {
@@ -218,6 +230,14 @@ public abstract class Environment {
 		return result + ")";
 	}
 
+	void begin() {
+
+	}
+
+	void end() {
+
+	}
+
 	/**
 	 * Commit all pending processes in a batch. The isBatch() should remain
 	 * <code>true</code> while this method is called. This method can be called
@@ -229,6 +249,9 @@ public abstract class Environment {
 
 	/**
 	 * Called when a redraw-require property is changed.
+	 * 
+	 * @param impl
+	 *            the impl object whoes property is changed.
 	 */
 	abstract void requireRedraw(Element impl);
 

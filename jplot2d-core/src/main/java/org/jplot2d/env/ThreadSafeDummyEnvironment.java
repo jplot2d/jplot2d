@@ -33,50 +33,14 @@ public class ThreadSafeDummyEnvironment extends DummyEnvironment {
 		return new ThreadSafeDummyEnvironment();
 	}
 
-	/**
-	 * Begin a batch command sequence. This will block the auto re-layout and
-	 * auto redraw temporarily.
-	 * 
-	 * @param msg
-	 * @return
-	 */
-	public BatchToken beginBatch(String msg) {
+	@Override
+	void begin() {
 		lock.lock();
-		try {
-			return super.beginBatch(msg);
-		} finally {
-			lock.unlock();
-		}
 	}
 
-	public void endBatch(BatchToken token) throws WarningException {
-		lock.lock();
-		try {
-			super.endBatch(token);
-		} finally {
-			lock.unlock();
-		}
-	}
-
-	/**
-	 * Begin a batch command sequence. This will lock the whole environment to
-	 * prevent other thread from modifying.
-	 * 
-	 * @param msg
-	 * @return
-	 * @throws InterruptedException
-	 */
-	void beginCommand(String msg) {
-		lock.lock();
-		super.beginCommand(msg);
-	}
-
-	void endCommand() throws WarningException {
-		try {
-			super.endCommand();
-		} finally {
-			lock.unlock();
-		}
+	@Override
+	void end() {
+		lock.unlock();
 	}
 
 }
