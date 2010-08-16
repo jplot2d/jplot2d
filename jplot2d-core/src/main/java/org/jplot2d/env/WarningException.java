@@ -9,7 +9,7 @@ package org.jplot2d.env;
  * 
  * @author Jingjing Li
  */
-public class WarningException extends Exception {
+public class WarningException extends RuntimeException {
 
     private static final long serialVersionUID = -8856559325014058901L;
 

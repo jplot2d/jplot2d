@@ -28,6 +28,9 @@ import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 
 /**
+ * This InvocationHandler intercept calls on proxy objects, and wrap the calls
+ * with environment lock.
+ * 
  * @author Jingjing Li
  * 
  * @param <T>
@@ -45,7 +48,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	/**
 	 * Guarded by Env Global LOCK
 	 */
-	private Environment environment;
+	private volatile Environment environment;
 
 	/**
 	 * @param impl
@@ -117,10 +120,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			return null;
 		}
 
-		WarningException ex = null;
-		synchronized (Environment.getGlobalLock()) {
-			environment.beginCommand(method.getName());
-		}
+		environment.begin();
 		try {
 
 			/* element */
@@ -148,7 +148,14 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			if (iinfo.isPropReadMethod(method)) {
 				return invokeGetter(method);
 			}
+		} finally {
+			environment.end();
+		}
 
+		WarningException ex = null;
+
+		environment.beginCommand(method.getName());
+		try {
 			boolean setterValueChanged = false;
 			try {
 				if (iinfo.isPropWriteMethod(method)) {
@@ -162,7 +169,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 					invokeOther(method, args);
 				}
 			} catch (WarningException e) {
-				ex = MultiException.addEx(ex, (WarningException) e.getCause());
+				ex = (WarningException) e.getCause();
 			}
 
 			if (iinfo.isRedrawMethod(method)) {
@@ -184,7 +191,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	private Component invokeGetCompMethod(Method method, Object[] args)
-			throws WarningException {
+			throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
 			environment.beginCommand(method.getName());
 		}
@@ -192,32 +199,23 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			Component compImpl = (Component) method.invoke(impl, args);
 			return environment.getProxy(compImpl);
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		} finally {
 			environment.endCommand();
 		}
-
 	}
 
 	/**
-	 * Called when addXxxx
+	 * Called when adding a child component. The child component is the 1st
+	 * argument of the calling method.
 	 * 
-	 * @param proxy
 	 * @param method
-	 * @param object
-	 *            the component to added
-	 * @throws WarningException
+	 * @param args
+	 *            the arguments
+	 * @throws Throwable
 	 */
 	private void invokeAddCompMethod(Method method, Object[] args)
-			throws WarningException {
+			throws Throwable {
 		ElementEx cproxy = (ElementEx) args[0];
 		Component cimpl = (Component) cproxy.getImpl();
 
@@ -236,17 +234,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof WarningException) {
-				throw (WarningException) e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		} finally {
 			environment.componentAdded(cimpl, cenv.proxyMap);
 
@@ -260,10 +248,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * @param method
 	 * @param object
 	 *            the component to added
-	 * @throws WarningException
+	 * @throws Throwable
 	 */
 	private void invokeRemoveCompMethod(Method method, Object[] args)
-			throws WarningException {
+			throws Throwable {
 		ElementEx cproxy = (ElementEx) args[0];
 		Component cimpl = (Component) cproxy.getImpl();
 
@@ -284,17 +272,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof WarningException) {
-				throw (WarningException) e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		} finally {
 			Map<Element, Element> removedProxyMap = environment
 					.componentRemoved(cimpl);
@@ -310,17 +288,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		try {
 			return method.invoke(impl);
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof WarningException) {
-				throw e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		}
 	}
 
@@ -352,17 +320,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			method.invoke(impl, arg);
 			return true;
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof WarningException) {
-				throw (WarningException) e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		} finally {
 			if (impl instanceof Component
 					&& method.getName().equals("setZOrder")) {
@@ -371,21 +329,12 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	protected Object invokeOther(Method method, Object... args) {
+	protected Object invokeOther(Method method, Object... args)
+			throws Throwable {
 		try {
 			return method.invoke(impl, args);
 		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof WarningException) {
-				return (WarningException) e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			} else {
-				throw new RuntimeException(e.getCause());
-			}
-		} catch (IllegalArgumentException e) {
-			throw new Error(e);
-		} catch (IllegalAccessException e) {
-			throw new Error(e);
+			throw e.getCause();
 		}
 	}
 

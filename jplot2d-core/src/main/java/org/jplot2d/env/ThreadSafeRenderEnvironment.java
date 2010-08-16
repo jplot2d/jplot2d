@@ -37,56 +37,13 @@ public class ThreadSafeRenderEnvironment extends RenderEnvironment {
 		return new ThreadSafeDummyEnvironment();
 	}
 
-	/**
-	 * Begin a batch command sequence. This will block the auto re-layout and
-	 * auto redraw temporarily.
-	 * 
-	 * @param msg
-	 * @return
-	 */
-	public BatchToken beginBatch(String msg) {
+	@Override
+	void begin() {
 		lock.lock();
-		try {
-			return super.beginBatch(msg);
-		} finally {
-			lock.unlock();
-		}
 	}
 
-	public void endBatch(BatchToken token) throws WarningException {
-		lock.lock();
-		try {
-			super.endBatch(token);
-		} finally {
-			lock.unlock();
-		}
-	}
-
-	/**
-	 * Begin a batch command sequence. This will lock the whole environment to
-	 * prevent other thread from modifying.
-	 * 
-	 * @param msg
-	 * @return
-	 * @throws InterruptedException
-	 */
-	void beginCommand(String msg) {
-		lock.lock();
-		super.beginCommand(msg);
-	}
-
-	void endCommand() throws WarningException {
-		super.endCommand();
-		lock.unlock();
-	}
-
-	protected void beginUndoRedo(String msg) {
-		lock.lock();
-		super.beginUndoRedo(msg);
-	}
-
-	protected void endUndoRedo() {
-		super.endUndoRedo();
+	@Override
+	void end() throws WarningException {
 		lock.unlock();
 	}
 
