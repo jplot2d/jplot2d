@@ -21,6 +21,7 @@
  */
 package org.jplot2d.layout;
 
+import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.util.Collections;
 import java.util.HashMap;
@@ -481,12 +482,17 @@ public class GridLayoutDirector implements LayoutDirector {
 		/* layout */
 		switch (plot.getSizeMode()) {
 		case FIT_CONTAINER_SIZE:
+			Dimension size = plot.getContainerSize();
+			double scale = plot.getScale();
+			plot.setPhySize(new DoubleDimension2D(size.getWidth() / scale, size
+					.getHeight()
+					/ scale));
 		case FIT_CONTAINER_WITH_TARGET_SIZE:
 		case FIXED_SIZE:
-			//PlotGridLayoutStrategyC2P.getInstance().doLayout(this, _cflags);
+			// PlotGridLayoutStrategyC2P.getInstance().doLayout(this, _cflags);
 			break;
 		case FIT_CONTENTS:
-			//PlotGridLayoutStrategyP2C.getInstance().doLayout(this, _cflags);
+			// PlotGridLayoutStrategyP2C.getInstance().doLayout(this, _cflags);
 			break;
 		}
 
