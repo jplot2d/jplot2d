@@ -19,6 +19,7 @@
 package org.jplot2d.renderer;
 
 import java.awt.Dimension;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -42,22 +43,21 @@ import org.jplot2d.element.Plot;
  * @param <T>
  *            the render result class type
  */
-public abstract class AsyncRenderer<T> extends Renderer<T> {
+public class AsyncRenderer<T> extends Renderer<T> {
 
 	private class RenderCallable implements Callable<T> {
 
 		private Dimension size;
 
-		private Map<Component, Boolean> ccms;
+		private AssemblyInfo<T> ainfo;
 
-		private RenderCallable(Dimension size, Map<Component, Boolean> ccms) {
+		private RenderCallable(Dimension size, AssemblyInfo<T> ainfo) {
 			this.size = size;
-			this.ccms = ccms;
+			this.ainfo = ainfo;
 		}
 
 		public T call() throws Exception {
-			AssemblyInfo<T> ainfo = runCompRender(ccms);
-			return assambleResult(ainfo, size);
+			return assembler.assembleResult(size, ainfo);
 		}
 
 	}
@@ -97,7 +97,7 @@ public abstract class AsyncRenderer<T> extends Renderer<T> {
 				logger.log(Level.FINE, "", e);
 			}
 			if (result != null) {
-				renderingComplete(fsn, result);
+				fireRenderingFinished(fsn, result);
 			}
 
 			synchronized (renderLock) {
@@ -157,10 +157,16 @@ public abstract class AsyncRenderer<T> extends Renderer<T> {
 
 	private final Queue<RenderTask> renderTaskQueue = new LinkedList<RenderTask>();
 
+	public AsyncRenderer(Assembler<T> assembler) {
+		super(assembler);
+	}
+
 	@Override
-	public final void render(Plot plot, Map<Component, Boolean> ccms) {
+	public final void render(Plot plot, Map<Component, Component> compMap,
+			Collection<Component> unmodifiedComps) {
 		Dimension size = plot.getBounds().getBounds().getSize();
-		Callable<T> callable = new RenderCallable(size, ccms);
+		AssemblyInfo<T> ainfo = runCompRender(compMap, unmodifiedComps);
+		Callable<T> callable = new RenderCallable(size, ainfo);
 		RenderTask task = new RenderTask(fsn++, callable);
 
 		synchronized (renderLock) {
@@ -200,14 +206,6 @@ public abstract class AsyncRenderer<T> extends Renderer<T> {
 		synchronized (renderLock) {
 			cancelPolicy = policy;
 		}
-	}
-
-	/**
-	 * @param fsn
-	 * @param t
-	 */
-	protected void renderingComplete(long fsn, T t) {
-
 	}
 
 }
