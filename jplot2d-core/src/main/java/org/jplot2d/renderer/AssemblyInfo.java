@@ -27,23 +27,26 @@ import java.util.concurrent.Future;
 import org.jplot2d.element.Component;
 
 /**
+ * This class maintains a map to associate a component to its bounds and
+ * rendered result.
+ * 
  * @author Jingjing Li
  * 
  */
 public class AssemblyInfo<T> {
 
-	private static class ValueItem<T> {
+	private static class InfoItem<T> {
 
 		private Rectangle bounds;
 		private Future<T> future;
 
-		private ValueItem(Rectangle bounds, Future<T> future) {
+		private InfoItem(Rectangle bounds, Future<T> future) {
 			this.bounds = bounds;
 			this.future = future;
 		}
 	}
 
-	private Map<Component, ValueItem<T>> map = new LinkedHashMap<Component, ValueItem<T>>();
+	private Map<Component, InfoItem<T>> map = new LinkedHashMap<Component, InfoItem<T>>();
 
 	public AssemblyInfo() {
 
@@ -84,7 +87,7 @@ public class AssemblyInfo<T> {
 	 * @param future
 	 */
 	public void put(Component comp, Rectangle bounds, Future<T> future) {
-		map.put(comp, new ValueItem<T>(bounds, future));
+		map.put(comp, new InfoItem<T>(bounds, future));
 	}
 
 }

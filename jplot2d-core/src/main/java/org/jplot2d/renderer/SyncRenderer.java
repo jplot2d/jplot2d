@@ -19,6 +19,7 @@
 package org.jplot2d.renderer;
 
 import java.awt.Dimension;
+import java.util.Collection;
 import java.util.Map;
 
 import org.jplot2d.element.Component;
@@ -28,19 +29,21 @@ import org.jplot2d.element.Plot;
  * @author Jingjing Li
  * 
  */
-public abstract class SyncRenderer<T> extends Renderer<T> {
+public class SyncRenderer<T> extends Renderer<T> {
 
-	private T result;
+	private int fsn;
 
-	@Override
-	public final void render(Plot plot, Map<Component, Boolean> ccms) {
-		AssemblyInfo<T> ainfo = runCompRender(ccms);
-		Dimension size = plot.getBounds().getBounds().getSize();
-		result = assambleResult(ainfo, size);
+	public SyncRenderer(Assembler<T> assembler) {
+		super(assembler);
 	}
 
-	public T getResult() {
-		return result;
+	@Override
+	public final void render(Plot plot, Map<Component, Component> compMap,
+			Collection<Component> unmodifiedComps) {
+		AssemblyInfo<T> ainfo = runCompRender(compMap, unmodifiedComps);
+		Dimension size = plot.getBounds().getBounds().getSize();
+		T result = assembler.assembleResult(size, ainfo);
+		fireRenderingFinished(fsn++, result);
 	}
 
 }
