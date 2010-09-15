@@ -43,7 +43,7 @@ public class ThreadSafeRenderEnvironment extends RenderEnvironment {
 	}
 
 	@Override
-	void end() throws WarningException {
+	void end() {
 		lock.unlock();
 	}
 

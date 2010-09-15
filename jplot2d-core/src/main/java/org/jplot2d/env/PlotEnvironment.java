@@ -150,9 +150,8 @@ public abstract class PlotEnvironment extends Environment {
 	 * dummy environment.
 	 * 
 	 * @param plot
-	 * @throws WarningException
 	 */
-	public void setPlot(Plot plot) throws WarningException {
+	public void setPlot(Plot plot) {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
@@ -207,19 +206,15 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	@Override
-	protected void commit() throws WarningException {
+	protected void commit() {
 
 		/*
 		 * Layout on plot proxy to ensure layout can set redraw-require
 		 * properties.
 		 */
 		LayoutDirector ld = plot.getLayoutDirector();
-		WarningException ex = null;
-		try {
-			ld.layout(plot);
-		} catch (WarningException e) {
-			ex = e;
-		}
+
+		ld.layout(plot);
 
 		Map<Element, Element> copyMap = makeUndoMemento();
 
@@ -229,19 +224,13 @@ public abstract class PlotEnvironment extends Environment {
 		}
 		renderOnCommit(plot, compMap);
 
-		if (ex != null) {
-			throw ex;
-		}
 	}
 
 	public int getHistoryCapacity() {
 		beginCommand("getHistoryCapacity");
 		int capacity = changeHistory.getCapacity();
-		try {
-			endCommand();
-		} catch (WarningException e) {
-			// should not happen
-		}
+		endCommand();
+
 		return capacity;
 	}
 
@@ -253,11 +242,8 @@ public abstract class PlotEnvironment extends Environment {
 	public boolean canUndo() {
 		beginCommand("canUndo");
 		boolean b = changeHistory.canUndo();
-		try {
-			endCommand();
-		} catch (WarningException e) {
-			// should not happen
-		}
+		endCommand();
+
 		return b;
 	}
 
@@ -269,11 +255,8 @@ public abstract class PlotEnvironment extends Environment {
 	public boolean canRedo() {
 		beginCommand("canRedo");
 		boolean b = changeHistory.canRedo();
-		try {
-			endCommand();
-		} catch (WarningException e) {
-			// should not happen
-		}
+		endCommand();
+
 		return b;
 	}
 

@@ -152,24 +152,18 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			environment.end();
 		}
 
-		WarningException ex = null;
-
 		environment.beginCommand(method.getName());
 		try {
 			boolean setterValueChanged = false;
-			try {
-				if (iinfo.isPropWriteMethod(method)) {
-					/* property setter method */
-					setterValueChanged = invokeSetter(method, args[0]);
-					if (!setterValueChanged) {
-						return null;
-					}
-				} else {
-					/* other method */
-					invokeOther(method, args);
+			if (iinfo.isPropWriteMethod(method)) {
+				/* property setter method */
+				setterValueChanged = invokeSetter(method, args[0]);
+				if (!setterValueChanged) {
+					return null;
 				}
-			} catch (WarningException e) {
-				ex = (WarningException) e.getCause();
+			} else {
+				/* other method */
+				invokeOther(method, args);
 			}
 
 			if (iinfo.isRedrawMethod(method)) {
@@ -183,9 +177,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			environment.endCommand();
 		}
 
-		if (ex != null) {
-			throw ex;
-		}
 		return null;
 
 	}

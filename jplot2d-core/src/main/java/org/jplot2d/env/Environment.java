@@ -162,9 +162,8 @@ public abstract class Environment {
 	 * 
 	 * @param token
 	 *            the token gotten from beginBatch
-	 * @throws WarningException
 	 */
-	final public void endBatch(BatchToken token) throws WarningException {
+	final public void endBatch(BatchToken token) {
 		begin();
 
 		if (!verifyBatchToken(token)) {
@@ -230,10 +229,16 @@ public abstract class Environment {
 		return result + ")";
 	}
 
+	/**
+	 * The begin of a block wrapper, to synchronize calling.
+	 */
 	void begin() {
 
 	}
 
+	/**
+	 * The end of a block wrapper, to synchronize calling.
+	 */
 	void end() {
 
 	}
@@ -245,7 +250,7 @@ public abstract class Environment {
 	 * 
 	 * @throws WarningException
 	 */
-	protected abstract void commit() throws WarningException;
+	protected abstract void commit();
 
 	/**
 	 * Called when a redraw-require property is changed.

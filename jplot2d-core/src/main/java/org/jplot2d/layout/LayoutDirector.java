@@ -20,7 +20,6 @@ package org.jplot2d.layout;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.SubPlot;
-import org.jplot2d.env.WarningException;
 
 /**
  * The interface for jplot2d to layout subplots and other components. The way to
@@ -60,6 +59,6 @@ public interface LayoutDirector {
 	 * Layout the plot.
 	 * 
 	 */
-	public void layout(Plot plot) throws WarningException;
+	public void layout(Plot plot);
 
 }
