@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import java.awt.geom.Dimension2D;
+
 
 /**
  * @author Jingjing Li
@@ -25,6 +27,13 @@ package org.jplot2d.element;
  */
 public interface SubPlot extends Container {
 
+	/**
+	 * Sets the physical size of this subplot.
+	 * 
+	 * @param size
+	 */
+	public void setPhySize(Dimension2D size);
+	
 	public void addLayer(Layer layer);
 
 }

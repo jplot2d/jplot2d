@@ -19,12 +19,17 @@
 package org.jplot2d.element;
 
 /**
+ * Defines a viewport of a layer. All layer's viewport in a subplot has the same
+ * physical bounds. A viewport has an associated data model and a pair of x,y
+ * transform.
+ * 
  * @author Jingjing Li
- *
+ * 
  */
 public interface ViewPort {
 
 	public void setDataModel(DataModel dataModel);
-	
+
 	public void setViewportTransform(ViewportTransform vxf);
+
 }

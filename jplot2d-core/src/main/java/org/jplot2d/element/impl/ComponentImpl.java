@@ -16,12 +16,15 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import org.jplot2d.element.Component;
+import org.jplot2d.element.Container;
 
 public abstract class ComponentImpl implements Component {
 

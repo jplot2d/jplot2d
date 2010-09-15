@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import java.util.Map;
+
 /**
  * @author Jingjing Li
  * 
@@ -30,5 +32,12 @@ public interface Container extends Component {
 	 * @return
 	 */
 	public PhysicalTransform getPhysicalTransform();
+
+	/**
+	 * @param orig2copyMap
+	 *            original element to copy map
+	 * @return
+	 */
+	public Container deepCopy(Map<Element, Element> orig2copyMap);
 
 }

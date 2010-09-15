@@ -104,11 +104,6 @@ public interface Plot extends Container {
 	@Hierarchy(HierarchyOp.REMOVE)
 	void removeSubPlot(SubPlot spimpl);
 
-	/**
-	 * @param orig2copyMap
-	 *            original element to copy map
-	 * @return
-	 */
 	public Plot deepCopy(Map<Element, Element> orig2copyMap);
 
 }
