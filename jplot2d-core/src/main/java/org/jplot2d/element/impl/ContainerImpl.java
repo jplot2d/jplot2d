@@ -16,7 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.Container;
+import org.jplot2d.element.PhysicalTransform;
 
 public abstract class ContainerImpl extends ComponentImpl implements Container {
 

@@ -16,17 +16,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.element.Element;
+import org.jplot2d.element.Plot;
+import org.jplot2d.element.PlotSizeMode;
+import org.jplot2d.element.SubPlot;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -44,9 +48,11 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	private double scale = 72;
 
-	private List<SubPlot> subplots = Collections.<SubPlot> emptyList();
+	private Dimension2D targetPhySize = new DoubleDimension2D(4.0, 3.0);
 
-	private Dimension2D vpPhySize = new DoubleDimension2D(4.0, 3.0);
+	private final List<SubPlotImpl> subplots = new ArrayList<SubPlotImpl>();
+
+	private Dimension2D viewportPhySize = new DoubleDimension2D(4.0, 3.0);
 
 	private Dimension2D phySize;
 
@@ -84,13 +90,11 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	}
 
 	public Dimension2D getTargetPhySize() {
-		// TODO Auto-generated method stub
-		return null;
+		return targetPhySize;
 	}
 
 	public void setTargetPhySize(Dimension2D physize) {
-		// TODO Auto-generated method stub
-
+		targetPhySize = physize;
 	}
 
 	public Dimension2D getPhySize() {
@@ -103,11 +107,11 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	}
 
 	public Dimension2D getViewportPhySize() {
-		return vpPhySize;
+		return viewportPhySize;
 	}
 
 	public void setViewportPhySize(Dimension2D physize) {
-		vpPhySize = physize;
+		viewportPhySize = physize;
 	}
 
 	public Rectangle2D getBounds() {
@@ -120,9 +124,8 @@ public class PlotImpl extends ContainerImpl implements Plot {
 				.getHeight());
 	}
 
-	public SubPlot getSubPlot(int n) {
-		// TODO Auto-generated method stub
-		return null;
+	public SubPlot getSubPlot(int i) {
+		return subplots.get(i);
 	}
 
 	public void addSubPlot(SubPlot subplot, Object constraint) {
@@ -154,9 +157,24 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		g.drawLine(0, containerSize.height, containerSize.width, 0);
 	}
 
-	public Plot deepCopy(Map<Element, Element> orig2copyMap) {
-		// TODO Auto-generated method stub
-		orig2copyMap.put(this, this);
+	public PlotImpl deepCopy(Map<Element, Element> orig2copyMap) {
+		PlotImpl result = new PlotImpl();
+
+		// copy all fields
+		super.copy(this, result);
+		result.director = director;
+		result.sizeMode = sizeMode;
+		result.containerSize = (Dimension) containerSize.clone();
+		result.targetPhySize = (Dimension2D) targetPhySize.clone();
+		result.phySize = (Dimension2D) phySize.clone();
+		result.scale = scale;
+
+		// copy subplots
+		for (SubPlotImpl sp : subplots) {
+			result.subplots.add(sp.deepCopy(orig2copyMap));
+		}
+
+		orig2copyMap.put(this, result);
 		return this;
 	}
 

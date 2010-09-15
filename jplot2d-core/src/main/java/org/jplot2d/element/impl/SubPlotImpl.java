@@ -16,10 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
+
+import org.jplot2d.element.Element;
+import org.jplot2d.element.Layer;
+import org.jplot2d.element.SubPlot;
 
 /**
  * @author Jingjing Li
@@ -27,13 +33,16 @@ import java.awt.geom.Rectangle2D;
  */
 public class SubPlotImpl extends ContainerImpl implements SubPlot {
 
-	@Override
+	public void setPhySize(Dimension2D size) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public Rectangle2D getBounds() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public Rectangle2D getBoundsP() {
 		// TODO Auto-generated method stub
 		return null;
@@ -52,6 +61,11 @@ public class SubPlotImpl extends ContainerImpl implements SubPlot {
 	public void draw(Graphics2D g, boolean drawCacheable) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public SubPlotImpl deepCopy(Map<Element, Element> orig2copyMap) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
