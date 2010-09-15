@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
 
 /**
@@ -35,10 +36,10 @@ public class JPlot2DFrame extends JFrame {
 
 	private static Logger logger = Logger.getLogger("org.jplot2d.swing");
 
-	public JPlot2DFrame(RenderEnvironment env) {
+	public JPlot2DFrame(Plot plot) {
 		super();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		getContentPane().add(new JPlot2DComponent(env));
+		getContentPane().add(new JPlot2DComponent(plot));
 
 	}
 

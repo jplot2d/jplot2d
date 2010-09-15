@@ -30,7 +30,6 @@ import java.util.SortedMap;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.SubPlot;
-import org.jplot2d.env.WarningException;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
@@ -373,8 +372,7 @@ public class GridLayoutDirector implements LayoutDirector {
 		constraints.put(subplot, constraint);
 	}
 
-	public void layout(Plot plot) throws WarningException {
-		WarningException ex = null;
+	public void layout(Plot plot) {
 
 		calcPendingAxesMetrics();
 		while (true) {
@@ -390,11 +388,7 @@ public class GridLayoutDirector implements LayoutDirector {
 			 * Auto range axes may register some axis that ticks need be
 			 * re-calculated
 			 */
-			try {
-				calcPendingLockGroupAutoRange();
-			} catch (WarningException e) {
-				ex = e;
-			}
+			calcPendingLockGroupAutoRange();
 
 			/*
 			 * Calculating axes tick may register some axis that metrics need be
@@ -407,10 +401,6 @@ public class GridLayoutDirector implements LayoutDirector {
 			if (plot.isValid()) {
 				break;
 			}
-		}
-
-		if (ex != null) {
-			throw ex;
 		}
 
 	}
@@ -426,7 +416,7 @@ public class GridLayoutDirector implements LayoutDirector {
 	/**
 	 * 
 	 */
-	private void calcPendingLockGroupAutoRange() throws WarningException {
+	private void calcPendingLockGroupAutoRange() {
 		// TODO Auto-generated method stub
 
 	}

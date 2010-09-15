@@ -41,7 +41,7 @@ public class DummyEnvironment extends Environment {
 	}
 
 	@Override
-	protected void commit() throws WarningException {
+	protected void commit() {
 		// do nothng
 	}
 

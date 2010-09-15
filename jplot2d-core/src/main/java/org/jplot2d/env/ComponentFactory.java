@@ -25,9 +25,9 @@ import java.util.Map;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.PlotImpl;
 import org.jplot2d.element.SubPlot;
-import org.jplot2d.element.SubPlotImpl;
+import org.jplot2d.element.impl.PlotImpl;
+import org.jplot2d.element.impl.SubPlotImpl;
 import org.jplot2d.layout.GridLayoutDirector;
 
 /**

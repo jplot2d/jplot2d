@@ -26,10 +26,17 @@ import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
+import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.renderer.ImageAsyncRenderer;
+import org.jplot2d.renderer.AsyncRenderer;
+import org.jplot2d.renderer.ImageAssembler;
+import org.jplot2d.renderer.RenderingFinishedEvent;
+import org.jplot2d.renderer.RenderingFinishedListener;
 
 /**
+ * A JComponent display a plot in its center. The plot is rendered in async
+ * renderer.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -39,36 +46,46 @@ public class JPlot2DComponent extends JComponent {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.swing");
 
+	private final Plot plot;
+
 	private final RenderEnvironment env;
 
-	private final ImageAsyncRenderer r;
+	private final AsyncRenderer<BufferedImage> r;
 
 	private volatile BufferedImage image;
 
-	public JPlot2DComponent(RenderEnvironment env) {
-		this.env = env;
+	public JPlot2DComponent(Plot plot) {
+		setBackground(Color.GRAY);
+
+		this.plot = plot;
+		env = new RenderEnvironment();
+		env.setPlot(plot);
+
 		setDoubleBuffered(false);
 		setBackground(Color.GRAY);
 		setOpaque(true);
 
-		r = new ImageAsyncRenderer(BufferedImage.TYPE_INT_RGB,
-				getPlotBackground()) {
+		r = new AsyncRenderer<BufferedImage>(new ImageAssembler(
+				BufferedImage.TYPE_INT_RGB, getPlotBackground()));
+
+		r.addPlotPaintListener(new RenderingFinishedListener() {
 			private long ifsn;
 
-			@Override
-			protected void renderingComplete(long fsn, BufferedImage image) {
+			public void renderingFinished(RenderingFinishedEvent event) {
+				long fsn = event.getFsn();
 				if (fsn < ifsn) {
 					logger
 							.info("[R] Rendering finished in wrong order, drop F."
 									+ fsn + " Current frame is " + ifsn);
 					return;
 				}
-
 				ifsn = fsn;
+
+				image = (BufferedImage) event.getResult();
 				repaint();
 			}
 
-		};
+		});
 		env.addRenderer(r);
 	}
 
@@ -81,7 +98,7 @@ public class JPlot2DComponent extends JComponent {
 
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
-		env.getPlot().setContainerSize(new Dimension(width, height));
+		plot.setContainerSize(new Dimension(width, height));
 	}
 
 	public void paintComponent(Graphics g) {
