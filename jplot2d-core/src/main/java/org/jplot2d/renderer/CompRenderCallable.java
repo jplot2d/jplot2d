@@ -26,7 +26,7 @@ import org.jplot2d.element.Component;
 
 public class CompRenderCallable<T> implements Callable<T> {
 
-	private Component comp;
+	private Component[] comps;
 
 	private Graphics2D g;
 
@@ -34,16 +34,25 @@ public class CompRenderCallable<T> implements Callable<T> {
 
 	private Rectangle bounds;
 
-	public CompRenderCallable(Component comp, Graphics2D g, T result,
+	/**
+	 * @param comps
+	 *            the components in z-order
+	 * @param g
+	 * @param result
+	 * @param bounds
+	 */
+	public CompRenderCallable(Component[] comps, Graphics2D g, T result,
 			Rectangle bounds) {
-		this.comp = comp;
+		this.comps = comps;
 		this.g = g;
 		this.result = result;
 		this.bounds = bounds;
 	}
 
 	public T call() throws Exception {
-		comp.draw(g, false);
+		for (Component comp : comps) {
+			comp.draw(g);
+		}
 		g.dispose();
 		return result;
 	}

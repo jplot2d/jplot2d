@@ -162,10 +162,14 @@ public class AsyncRenderer<T> extends Renderer<T> {
 	}
 
 	@Override
-	public final void render(Plot plot, Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps) {
+	public final void render(Plot plot,
+			Map<Component, Component> cacheableCompMap,
+			Collection<Component> unmodifiedCacheableComps,
+			Map<Component, Component[]> subcompsMap) {
+		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
+				unmodifiedCacheableComps, subcompsMap);
+
 		Dimension size = plot.getBounds().getBounds().getSize();
-		AssemblyInfo<T> ainfo = runCompRender(compMap, unmodifiedComps);
 		Callable<T> callable = new RenderCallable(size, ainfo);
 		RenderTask task = new RenderTask(fsn++, callable);
 

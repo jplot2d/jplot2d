@@ -51,14 +51,13 @@ public class ImageAssembler extends Assembler<BufferedImage> {
 	}
 
 	public CompRenderCallable<BufferedImage> createCompRenderCallable(
-			Component comp) {
-		Rectangle bounds = comp.getBounds().getBounds();
+			Rectangle bounds, Component[] comps) {
 		BufferedImage image = new BufferedImage(bounds.width, bounds.height,
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = image.createGraphics();
 		g.translate(-bounds.x, -bounds.y);
 
-		return new CompRenderCallable<BufferedImage>(comp, g, image, bounds);
+		return new CompRenderCallable<BufferedImage>(comps, g, image, bounds);
 	}
 
 	public BufferedImage assembleResult(Dimension size,
