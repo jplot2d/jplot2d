@@ -19,6 +19,7 @@
 package org.jplot2d.renderer;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import org.jplot2d.element.Component;
 
@@ -40,7 +41,7 @@ public abstract class Assembler<T> {
 	 * @return a CompRenderCallable
 	 */
 	public abstract CompRenderCallable<T> createCompRenderCallable(
-			Component comp);
+			Rectangle bounds, Component[] comps);
 
 	/**
 	 * Assemble the rendered component given in AssemblyInfo into a result.

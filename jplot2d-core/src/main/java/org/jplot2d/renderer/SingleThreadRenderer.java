@@ -18,13 +18,7 @@
  */
 package org.jplot2d.renderer;
 
-import java.awt.Dimension;
-import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.Executor;
-
-import org.jplot2d.element.Component;
-import org.jplot2d.element.Plot;
 
 /**
  * This renderer execute component rendering and assembling in a single thread,
@@ -33,7 +27,7 @@ import org.jplot2d.element.Plot;
  * @author Jingjing Li
  * 
  */
-public class SingleThreadRenderer<T> extends Renderer<T> {
+public class SingleThreadRenderer<T> extends SyncRenderer<T> {
 
 	private static Executor callerRunsExecutor = new Executor() {
 
@@ -43,18 +37,8 @@ public class SingleThreadRenderer<T> extends Renderer<T> {
 
 	};
 
-	private int fsn;
-
 	public SingleThreadRenderer(Assembler<T> assembler) {
 		super(assembler, callerRunsExecutor);
 	}
 
-	@Override
-	public final void render(Plot plot, Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps) {
-		AssemblyInfo<T> ainfo = runCompRender(compMap, unmodifiedComps);
-		Dimension size = plot.getBounds().getBounds().getSize();
-		T result = assembler.assembleResult(size, ainfo);
-		fireRenderingFinished(fsn++, result);
-	}
 }

@@ -97,14 +97,18 @@ public abstract class Renderer<T> {
 	 * 
 	 * @param plot
 	 *            the plot impl
-	 * @param compMap
+	 * @param cacheableCompMap
 	 *            A map contains all cacheable components to their safe copy.
 	 *            The iteration order is z-order.
-	 * @param unmodifiedComps
+	 * @param unmodifiedCacheableComps
 	 *            unmodified cacheable components
+	 * @param subcompOrderMap
+	 *            the key is cacheable component, the value is safe-copy of all
+	 *            its sub-component in z-order.
 	 */
-	public abstract void render(Plot plot, Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps);
+	public abstract void render(Plot plot, Map<Component, Component> cacheableCompMap,
+			Collection<Component> unmodifiedCacheableComps,
+			Map<Component, Component[]> subcompsMap);
 
 	/**
 	 * Execute component renderer on every modified cacheable component. This
@@ -115,9 +119,14 @@ public abstract class Renderer<T> {
 	 *            components' thread safe copy.
 	 * @param unmodifiedComps
 	 *            unmodified cacheable components
+	 * @param subcompOrderMap
+	 *            the key is cacheable component, the value is the safe copies
+	 *            of all its sub-components.
+	 * @return
 	 */
 	protected AssemblyInfo<T> runCompRender(Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps) {
+			Collection<Component> unmodifiedComps,
+			Map<Component, Component[]> subcompOrderMap) {
 		AssemblyInfo<T> ainfo = new AssemblyInfo<T>();
 
 		for (Map.Entry<Component, Component> me : compMap.entrySet()) {
@@ -133,9 +142,10 @@ public abstract class Renderer<T> {
 						compCachedFutureMap.getFuture(comp));
 			} else {
 				// create a new Component Render task
+				Rectangle bounds = ccopy.getBounds().getBounds();
+				Component[] sublist = subcompOrderMap.get(comp);
 				CompRenderCallable<T> compRenderCallable = assembler
-						.createCompRenderCallable(ccopy);
-				Rectangle bounds = compRenderCallable.getBounds();
+						.createCompRenderCallable(bounds, sublist);
 				FutureTask<T> crtask = new FutureTask<T>(compRenderCallable);
 
 				crExecutor.execute(crtask);

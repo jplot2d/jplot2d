@@ -21,6 +21,7 @@ package org.jplot2d.renderer;
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Plot;
@@ -37,10 +38,18 @@ public class SyncRenderer<T> extends Renderer<T> {
 		super(assembler);
 	}
 
+	SyncRenderer(Assembler<T> assembler, Executor executor) {
+		super(assembler, executor);
+	}
+
 	@Override
-	public final void render(Plot plot, Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps) {
-		AssemblyInfo<T> ainfo = runCompRender(compMap, unmodifiedComps);
+	public final void render(Plot plot,
+			Map<Component, Component> cacheableCompMap,
+			Collection<Component> unmodifiedCacheableComps,
+			Map<Component, Component[]> subcompsMap) {
+		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
+				unmodifiedCacheableComps, subcompsMap);
+
 		Dimension size = plot.getBounds().getBounds().getSize();
 		T result = assembler.assembleResult(size, ainfo);
 		fireRenderingFinished(fsn++, result);
