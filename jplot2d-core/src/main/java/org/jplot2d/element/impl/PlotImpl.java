@@ -151,7 +151,7 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		}
 	}
 
-	public void draw(Graphics2D g, boolean drawCacheable) {
+	public void draw(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		g.drawLine(0, 0, containerSize.width, containerSize.height);
 		g.drawLine(0, containerSize.height, containerSize.width, 0);
@@ -160,26 +160,30 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	public PlotImpl deepCopy(Map<Element, Element> orig2copyMap) {
 		PlotImpl result = new PlotImpl();
 
-		// copy all fields
-		super.copy(this, result);
-		result.director = director;
-		result.sizeMode = sizeMode;
-		result.containerSize = (Dimension) containerSize.clone();
-		result.targetPhySize = (Dimension2D) targetPhySize.clone();
-		result.phySize = (Dimension2D) phySize.clone();
-		result.scale = scale;
+		result.copyFrom(this);
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
 
 		// copy subplots
 		for (SubPlotImpl sp : subplots) {
-			result.subplots.add(sp.deepCopy(orig2copyMap));
+			SubPlotImpl csp = sp.deepCopy(orig2copyMap);
+			csp.setParent(result);
+			result.subplots.add(csp);
 		}
 
-		orig2copyMap.put(this, result);
 		return this;
 	}
 
-	public Element[] getElements() {
-		return subplots.toArray(new Element[subplots.size()]);
+	void copyFrom(PlotImpl src) {
+		super.copyFrom(src);
+
+		director = src.director;
+		sizeMode = src.sizeMode;
+		containerSize = (Dimension) src.containerSize.clone();
+		targetPhySize = (Dimension2D) src.targetPhySize.clone();
+		phySize = (Dimension2D) src.phySize.clone();
+		scale = src.scale;
 	}
 
 }

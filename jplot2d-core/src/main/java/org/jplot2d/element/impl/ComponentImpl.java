@@ -20,37 +20,40 @@ package org.jplot2d.element.impl;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Container;
+import org.jplot2d.element.Element;
 
-public abstract class ComponentImpl implements Component {
+public class ComponentImpl implements Component {
 
 	protected Container parent;
 
-	protected volatile Boolean _visible;
+	protected Boolean visible;
 
-	protected volatile boolean cacheable;
+	protected boolean cacheable;
 
-	protected volatile Boolean _selectable;
+	protected Boolean selectable;
 
-	protected volatile Boolean _movable;
+	protected Boolean movable;
 
 	protected int zOrder;
 
-	protected volatile Color _color = null;
+	protected Color color = null;
 
-	protected volatile String _fontName;
+	protected String fontName;
 
-	protected volatile int _fontStyle = -1;
+	protected int fontStyle = -1;
 
-	protected volatile float _fontSize = Float.NaN;
+	protected float fontSize = Float.NaN;
 
-	protected volatile Point2D _locP;
+	protected Point2D physicalLocation;
 
-	protected volatile Point2D _loc;
+	protected Point2D deviceLocation;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be layed out.
@@ -66,13 +69,17 @@ public abstract class ComponentImpl implements Component {
 	public Container getParent() {
 		return parent;
 	}
+	
+	public void setParent(Container parent) {
+		this.parent = parent;
+	}
 
 	public Boolean getVisible() {
-		return _visible;
+		return visible;
 	}
 
 	public void setVisible(Boolean visible) {
-		_visible = visible;
+		this.visible = visible;
 	}
 
 	public boolean isCacheable() {
@@ -84,19 +91,19 @@ public abstract class ComponentImpl implements Component {
 	}
 
 	public Boolean getSelectable() {
-		return _selectable;
+		return selectable;
 	}
 
 	public void setSelectable(Boolean selectable) {
-		_selectable = selectable;
+		this.selectable = selectable;
 	}
 
 	public Boolean getMovable() {
-		return _movable;
+		return movable;
 	}
 
 	public void setMovable(Boolean movable) {
-		_movable = movable;
+		this.movable = movable;
 	}
 
 	public int getZOrder() {
@@ -108,65 +115,67 @@ public abstract class ComponentImpl implements Component {
 	}
 
 	public Color getColor() {
-		return _color;
+		return color;
 	}
 
 	public void setColor(Color color) {
-		_color = color;
+		this.color = color;
 	}
 
 	public Font getFont() {
-		return new Font(_fontName, _fontStyle, (int) _fontSize)
-				.deriveFont(_fontSize);
+		return new Font(fontName, fontStyle, (int) fontSize)
+				.deriveFont(fontSize);
 	}
 
 	public void setFont(Font font) {
-		_fontName = font.getName();
-		_fontStyle = font.getStyle();
-		_fontSize = font.getSize2D();
+		fontName = font.getName();
+		fontStyle = font.getStyle();
+		fontSize = font.getSize2D();
 	}
 
 	public String getFontName() {
-		return _fontName;
+		return fontName;
 	}
 
 	public void setFontName(String name) {
-		_fontName = name;
+		fontName = name;
 	}
 
 	public int getFontStyle() {
-		return _fontStyle;
+		return fontStyle;
 	}
 
 	public void setFontStyle(int style) {
-		_fontStyle = style;
+		fontStyle = style;
 	}
 
 	public float getFontSize() {
-		return _fontSize;
+		return fontSize;
 	}
 
 	public void setFontSize(float size) {
-		_fontSize = size;
+		fontSize = size;
 	}
 
 	public Point2D getLocationP() {
-		return _locP;
+		return physicalLocation;
 	}
 
 	public void setLocationP(Point2D p) {
-		_locP = (p == null) ? null : (Point2D) p.clone();
+		physicalLocation = (p == null) ? null : (Point2D) p.clone();
 	}
 
 	public Point2D getLocation() {
-		return _loc;
+		return deviceLocation;
 	}
 
 	public void setLocation(Point2D point) {
-		_loc = point;
+		deviceLocation = point;
 	}
 
-	public abstract Rectangle2D getBoundsP();
+	public Rectangle2D getBoundsP() {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Returns the bounds in absolute device coordinate. The top container's x,y
@@ -174,7 +183,9 @@ public abstract class ComponentImpl implements Component {
 	 * 
 	 * @return a Rectangle2D object.
 	 */
-	public abstract Rectangle2D getBounds();
+	public Rectangle2D getBounds() {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Determines whether this component is valid. A component is valid when it
@@ -215,50 +226,33 @@ public abstract class ComponentImpl implements Component {
 		}
 	}
 
-	/**
-	 * Replaces the properties in specified destination by the information in
-	 * specified source.
-	 */
-	public static void adapt(Component src, Component dest) {
-		if (src.getVisible() != null) {
-			dest.setVisible(src.getVisible());
-		}
-		dest.setCacheable(src.isCacheable());
-		if (src.getSelectable() != null) {
-			dest.setSelectable(src.getSelectable());
-		}
-		if (src.getMovable() != null) {
-			dest.setMovable(src.getMovable());
-		}
-		if (src.getColor() != null) {
-			dest.setColor(src.getColor());
-		}
-		if (src.getFontName() != null && isValidFontStyle(src.getFontStyle())
-				&& src.getFontSize() > 0) {
-			dest.setFont(src.getFont());
-		} else {
-			if (src.getFontName() != null) {
-				dest.setFontName(src.getFontName());
-			}
-			if (isValidFontStyle(src.getFontStyle())) {
-				dest.setFontStyle(src.getFontStyle());
-			}
-			if (src.getFontSize() > 0) {
-				dest.setFontSize(src.getFontSize());
-			}
-		}
-		if (src.getLocationP() != null) {
-			dest.setLocationP(src.getLocationP());
-		} else if (src.getLocation() != null) {
-			dest.setLocation(src.getLocation());
-		}
+	private static boolean isValidFontStyle(int style) {
+		return (style & ~0x03) == 0;
 	}
 
-	public static void copy(Component src, Component dest) {
+	public void draw(Graphics2D g) {
+		throw new UnsupportedOperationException();
+	}
+
+	public ComponentImpl deepCopy(Map<Element, Element> orig2copyMap) {
+		ComponentImpl result = new ComponentImpl();
+		result.copyFrom(this);
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+		return result;
+	}
+
+	void copyFrom(Component src) {
+		copy(src, this);
+	}
+
+	private static void copy(Component src, Component dest) {
 		dest.setVisible(src.getVisible());
 		dest.setCacheable(src.isCacheable());
 		dest.setSelectable(src.getSelectable());
 		dest.setMovable(src.getMovable());
+		dest.setZOrder(src.getZOrder());
 		dest.setColor(src.getColor());
 		/* copy the font instead of name,style,size */
 		if (src.getFontName() != null && isValidFontStyle(src.getFontStyle())) {
@@ -270,10 +264,6 @@ public abstract class ComponentImpl implements Component {
 		}
 		dest.setLocationP(src.getLocationP());
 		dest.setLocation(src.getLocation());
-	}
-
-	private static boolean isValidFontStyle(int style) {
-		return (style & ~0x03) == 0;
 	}
 
 }

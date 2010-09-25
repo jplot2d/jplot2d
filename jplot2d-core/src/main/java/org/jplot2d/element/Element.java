@@ -31,11 +31,4 @@ public interface Element {
 	 */
 	public Element getParent();
 
-	/**
-	 * Gets all the elements in this element.
-	 * 
-	 * @return an array of all the elements in this element.
-	 */
-	public Element[] getElements();
-
 }

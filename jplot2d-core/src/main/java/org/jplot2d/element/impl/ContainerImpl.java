@@ -18,13 +18,24 @@
  */
 package org.jplot2d.element.impl;
 
+import java.util.Map;
+
 import org.jplot2d.element.Container;
+import org.jplot2d.element.Element;
 import org.jplot2d.element.PhysicalTransform;
 
-public abstract class ContainerImpl extends ComponentImpl implements Container {
+public class ContainerImpl extends ComponentImpl implements Container {
 
 	public PhysicalTransform getPhysicalTransform() {
 		throw new UnsupportedOperationException();
 	}
 
+	public ContainerImpl deepCopy(Map<Element, Element> orig2copyMap) {
+		ContainerImpl result = new ContainerImpl();
+		result.copyFrom(this);
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+		return result;
+	}
 }
