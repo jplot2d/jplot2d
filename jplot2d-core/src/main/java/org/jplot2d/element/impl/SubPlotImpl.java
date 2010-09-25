@@ -58,7 +58,7 @@ public class SubPlotImpl extends ContainerImpl implements SubPlot {
 		return null;
 	}
 
-	public void draw(Graphics2D g, boolean drawCacheable) {
+	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 /**
  * A <em>component</em> is an object having a graphical representation that can
@@ -52,6 +53,13 @@ public interface Component extends Element {
 	public static VAlign MIDDLE = VAlign.MIDDLE;
 
 	public static VAlign BOTTOM = VAlign.BOTTOM;
+
+	/**
+	 * Gets the parent of this component.
+	 * 
+	 * @return the parent of this component
+	 */
+	public Component getParent();
 
 	/**
 	 * Determines whether this component should be visible when its parent is
@@ -299,15 +307,18 @@ public interface Component extends Element {
 	public void invalidate();
 
 	/**
-	 * If cacheableChildren is true, Draw this component and all its children.
-	 * Otherwise, draw this component and all its children whom cacheable is
-	 * PARENT.
+	 * Draw this component only. All its children is not drawn.
 	 * 
 	 * @param g
 	 *            to the Graphics2D drawing
-	 * @param allChildren
-	 *            if draw this component's cacheable children
 	 */
-	void draw(Graphics2D g, boolean allChildren);
+	void draw(Graphics2D g);
+
+	/**
+	 * @param orig2copyMap
+	 *            original element to copy map
+	 * @return
+	 */
+	public Component deepCopy(Map<Element, Element> orig2copyMap);
 
 }
