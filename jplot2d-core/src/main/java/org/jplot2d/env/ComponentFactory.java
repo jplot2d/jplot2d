@@ -19,10 +19,7 @@
 package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.SubPlot;
@@ -67,15 +64,15 @@ public class ComponentFactory {
 	/**
 	 * @return
 	 */
-	private void assignDummyEnv(Component comp, Map<Element, Element> proxyMap) {
-		Environment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+	private void assignDummyEnv(Element comp, Element proxy) {
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
 		synchronized (Environment.getGlobalLock()) {
-			((ElementEx) proxyMap.get(comp)).setEnvironment(env);
 			env.begin();
+			((ElementEx) proxy).setEnvironment(env);
 		}
-		env.componentAdded(comp, proxyMap);
+		env.registerElement(comp, proxy);
 		env.end();
 	}
 
@@ -86,9 +83,7 @@ public class ComponentFactory {
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementEx.class }, ih);
 
-		Map<Element, Element> proxyMap = new HashMap<Element, Element>();
-		proxyMap.put(impl, proxy);
-		assignDummyEnv(impl, proxyMap);
+		assignDummyEnv(impl, proxy);
 		return proxy;
 	}
 
@@ -99,9 +94,7 @@ public class ComponentFactory {
 				.getClassLoader(),
 				new Class[] { SubPlot.class, ElementEx.class }, ih);
 
-		Map<Element, Element> proxyMap = new HashMap<Element, Element>();
-		proxyMap.put(impl, proxy);
-		assignDummyEnv(impl, proxyMap);
+		assignDummyEnv(impl, proxy);
 		return proxy;
 	}
 

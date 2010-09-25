@@ -19,13 +19,7 @@
 package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Component;
@@ -41,11 +35,6 @@ import org.jplot2d.layout.LayoutDirector;
  */
 public abstract class PlotEnvironment extends Environment {
 
-	/**
-	 * Contains all cacheable components in z-order
-	 */
-	protected final List<Component> zOrderedComponents = new ArrayList<Component>();
-
 	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>();
 
 	/**
@@ -54,87 +43,6 @@ public abstract class PlotEnvironment extends Environment {
 	protected Plot plot;
 
 	protected Plot plotImpl;
-
-	private final List<JPlot2DChangeListener> plotStructureListenerList = Collections
-			.synchronizedList(new ArrayList<JPlot2DChangeListener>());
-
-	@Override
-	void componentAdded(Component impl, Map<Element, Element> addedProxyMap) {
-		super.componentAdded(impl, addedProxyMap);
-
-		if (impl.isCacheable()) {
-			zOrderedComponents.add(impl);
-			updateOrder();
-		}
-
-		fireComponentAdded(getProxy(impl));
-	}
-
-	@Override
-	void componentRemoving(Component impl) {
-		fireComponentRemoving(getProxy(impl));
-	}
-
-	/**
-	 * A component has been added to this environment
-	 * 
-	 * @param impl
-	 * @param proxy
-	 */
-	@Override
-	Map<Element, Element> componentRemoved(Component impl) {
-		Map<Element, Element> result = super.componentRemoved(impl);
-
-		for (Element e : result.keySet()) {
-			if (e instanceof Component) {
-				zOrderedComponents.remove((Component) e);
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	void elementPropertyChanged(Element impl) {
-		fireElementPropertyChanged(getProxy(impl));
-	}
-
-	/**
-	 * Called when a component z-order has been changed.
-	 */
-	@Override
-	void componentZOrderChanged(Component impl) {
-		updateOrder();
-	}
-
-	/**
-	 * update the zOrderedComponents;
-	 */
-	private void updateOrder() {
-		Component[] comps = proxyMap.keySet().toArray(
-				new Component[proxyMap.size()]);
-		Comparator<Component> zComparator = new Comparator<Component>() {
-
-			public int compare(Component o1, Component o2) {
-				return o1.getZOrder() - o2.getZOrder();
-			}
-		};
-		Arrays.sort(comps, zComparator);
-
-		zOrderedComponents.clear();
-		for (Component comp : comps) {
-			zOrderedComponents.add(comp);
-		}
-	}
-
-	/**
-	 * Called when a component's cache mode has been changed.
-	 * 
-	 * @param comp
-	 */
-	void componentCacaheModeChanged(Component comp) {
-		/* cache mode changed should not trigger a redraw */
-	}
 
 	public Plot getPlot() {
 		synchronized (getGlobalLock()) {
@@ -160,26 +68,31 @@ public abstract class PlotEnvironment extends Environment {
 				throw new IllegalArgumentException(
 						"The plot to be added has been added a PlotEnvironment");
 			}
-			((DummyEnvironment) oldEnv).proxyMap.clear();
 
-			// assign dummy env to the exist plot
+			// check this environment is ready to host plot
 			beginCommand("set plot");
 
 			if (this.plot != null) {
+				endCommand();
 				throw new IllegalArgumentException(
 						"This Environment has hosted a plot");
 			}
 
-			((ElementEx) plot).setEnvironment(this);
+			oldEnv.beginCommand("");
+
+			// update environment for all adding components
+			for (Element proxy : oldEnv.proxyMap.values()) {
+				((ElementEx) proxy).setEnvironment(this);
+			}
 		}
 
 		this.plot = plot;
 		this.plotImpl = (Plot) ((ElementEx) plot).getImpl();
-		Map<Element, Element> proxyMap = new HashMap<Element, Element>();
-		proxyMap.put(plotImpl, plot);
-		componentAdded(plotImpl, proxyMap);
+
+		componentAdded(plotImpl, oldEnv);
 
 		endCommand();
+		oldEnv.endCommand();
 	}
 
 	/**
@@ -190,18 +103,26 @@ public abstract class PlotEnvironment extends Environment {
 	 * @throws WarningException
 	 */
 	public void removePlot() {
+		Environment nenv;
 		synchronized (getGlobalLock()) {
 			beginCommand("removePlot");
-			plot = null;
-			// assign a dummy env to the removed plot
-			Environment nenv = this.createDummyEnvironment();
-			Plot plotImpl = (Plot) ((ElementEx) plot).getImpl();
-			Map<Element, Element> proxyMap = new HashMap<Element, Element>();
-			proxyMap.put(plotImpl, plot);
-			nenv.componentAdded(plotImpl, proxyMap);
-			((ElementEx) plot).setEnvironment(nenv);
 
+			// assign a dummy environment to the removed plot
+			nenv = this.componentRemoving(plot);
+			nenv.beginCommand("");
+
+			// update environment for the removing component
+			for (Element proxy : nenv.proxyMap.values()) {
+				((ElementEx) proxy).setEnvironment(nenv);
+			}
 		}
+
+		plot = null;
+		plotImpl = null;
+
+		componentRemoved(plotImpl);
+
+		nenv.endCommand();
 		endCommand();
 	}
 
@@ -218,18 +139,14 @@ public abstract class PlotEnvironment extends Environment {
 
 		Map<Element, Element> copyMap = makeUndoMemento();
 
-		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
-		for (Component comp : zOrderedComponents) {
-			compMap.put(comp, (Component) copyMap.get(comp));
-		}
-		renderOnCommit(plot, compMap);
+		renderOnCommit(plot, copyMap);
 
 	}
 
 	public int getHistoryCapacity() {
-		beginCommand("getHistoryCapacity");
+		begin();
 		int capacity = changeHistory.getCapacity();
-		endCommand();
+		end();
 
 		return capacity;
 	}
@@ -240,9 +157,9 @@ public abstract class PlotEnvironment extends Environment {
 	 * @return
 	 */
 	public boolean canUndo() {
-		beginCommand("canUndo");
+		begin();
 		boolean b = changeHistory.canUndo();
-		endCommand();
+		end();
 
 		return b;
 	}
@@ -253,9 +170,9 @@ public abstract class PlotEnvironment extends Environment {
 	 * @return
 	 */
 	public boolean canRedo() {
-		beginCommand("canRedo");
+		begin();
 		boolean b = changeHistory.canRedo();
-		endCommand();
+		end();
 
 		return b;
 	}
@@ -267,7 +184,7 @@ public abstract class PlotEnvironment extends Environment {
 	 * @return
 	 */
 	public void undo() {
-		beginUndoRedo("undo");
+		begin();
 
 		UndoMemento memento = changeHistory.undo();
 		if (memento == null) {
@@ -276,13 +193,9 @@ public abstract class PlotEnvironment extends Environment {
 
 		Map<Element, Element> copyMap = restore(memento);
 
-		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
-		for (Component comp : zOrderedComponents) {
-			compMap.put(comp, (Component) copyMap.get(comp));
-		}
-		renderOnCommit(plot, compMap);
+		renderOnCommit(plot, copyMap);
 
-		endUndoRedo();
+		end();
 	}
 
 	/**
@@ -292,7 +205,7 @@ public abstract class PlotEnvironment extends Environment {
 	 * @return
 	 */
 	public void redo() {
-		beginUndoRedo("redo");
+		begin();
 
 		UndoMemento memento = changeHistory.redo();
 		if (memento == null) {
@@ -301,13 +214,9 @@ public abstract class PlotEnvironment extends Environment {
 
 		Map<Element, Element> copyMap = restore(memento);
 
-		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
-		for (Component comp : zOrderedComponents) {
-			compMap.put(comp, (Component) copyMap.get(comp));
-		}
-		renderOnCommit(plot, compMap);
+		renderOnCommit(plot, copyMap);
 
-		endUndoRedo();
+		end();
 	}
 
 	/**
@@ -325,14 +234,8 @@ public abstract class PlotEnvironment extends Environment {
 		 */
 		Plot plotRenderSafeCopy = plotImpl.deepCopy(copyMap);
 
-		Map<Element, Element> proxyMap2 = new LinkedHashMap<Element, Element>();
-		// add components copy map in z-order
-		for (Component comp : zOrderedComponents) {
-			Element copye = copyMap.get(comp);
-			Element proxy = proxyMap.get(comp);
-			proxyMap2.put(copye, proxy);
-		}
-		// add non-component elements to proxyMap2
+		// build copy to proxy map
+		Map<Element, Element> proxyMap2 = new HashMap<Element, Element>();
 		for (Map.Entry<Element, Element> me : proxyMap.entrySet()) {
 			Element element = me.getKey();
 			Element proxy = me.getValue();
@@ -370,7 +273,7 @@ public abstract class PlotEnvironment extends Environment {
 			this.proxyMap.put(impl, proxy);
 
 			if (impl instanceof Component) {
-				zOrderedComponents.add((Component) impl);
+				cacheableComponentList.add((Component) impl);
 			}
 			eleMap.put(impl, mmte);
 		}
@@ -378,32 +281,19 @@ public abstract class PlotEnvironment extends Environment {
 		return eleMap;
 	}
 
-	protected void beginUndoRedo(String msg) {
-		begin();
-	}
-
-	protected void endUndoRedo() {
-		end();
-	}
-
-	protected void renderOnCommit(Plot plot, Map<Component, Component> compMap) {
-		// TODO Auto-generated method stub
-
-	}
+	/**
+	 * Redraw the plot in this environment.
+	 * 
+	 * @param plot
+	 *            the plot to be redrawn.
+	 * @param copyMap
+	 *            the key contains all components in the plot. The values are
+	 *            the thread safe copies of keys.
+	 */
+	protected abstract void renderOnCommit(Plot plot,
+			Map<Element, Element> copyMap);
 
 	/* --- JPlot2DChangeListener --- */
-
-	public JPlot2DChangeListener[] getPlotPropertyListeners() {
-		return plotStructureListenerList.toArray(new JPlot2DChangeListener[0]);
-	}
-
-	public void addPlotPropertyListener(JPlot2DChangeListener listener) {
-		plotStructureListenerList.add(listener);
-	}
-
-	public void removePlotPropertyListener(JPlot2DChangeListener listener) {
-		plotStructureListenerList.remove(listener);
-	}
 
 	protected void fireChangeProcessed() {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
@@ -411,45 +301,6 @@ public abstract class PlotEnvironment extends Environment {
 			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, null);
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.batchModeChanged(evt);
-			}
-		}
-	}
-
-	private void fireComponentAdded(Component engine) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
-		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { engine });
-			for (JPlot2DChangeListener lsnr : ls) {
-				lsnr.componentCreated(evt);
-			}
-		}
-	}
-
-	private void fireComponentRemoving(Component engine) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
-		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { engine });
-			for (JPlot2DChangeListener lsnr : ls) {
-				lsnr.componentRemoved(evt);
-			}
-		}
-	}
-
-	/**
-	 * Notify all registered JPlot2DChangeListener that the properties of the
-	 * given element has been changed.
-	 * 
-	 * @param element
-	 */
-	private void fireElementPropertyChanged(Element element) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
-		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { element });
-			for (JPlot2DChangeListener lsnr : ls) {
-				lsnr.enginePropertiesChanged(evt);
 			}
 		}
 	}

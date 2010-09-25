@@ -18,6 +18,10 @@
  */
 package org.jplot2d.env;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 
 /**
@@ -30,9 +34,40 @@ public class DummyEnvironment extends Environment {
 
 	}
 
-	@Override
-	public Environment createDummyEnvironment() {
-		return new DummyEnvironment();
+	/**
+	 * This method is called when component factory create a component proxy.
+	 * Every new created component has an associated environment. The
+	 * environment must be initialized by this method.
+	 * <p>
+	 * All elements created must be added to environment. The add order is show
+	 * order. That is, the latest added component will show at top.
+	 * 
+	 * @param element
+	 * @param proxy
+	 */
+	public void registerElement(Element element, Element proxy) {
+		proxyMap.put(element, proxy);
+
+		if (element instanceof Component) {
+			Component comp = (Component) element;
+			if (comp.isCacheable()) {
+				addOrder(cacheableComponentList, comp);
+				// create a subComponentMap entry
+				List<Component> subComps = new ArrayList<Component>();
+				subComps.add(comp);
+				subComponentMap.put(comp, subComps);
+			} else if (comp.getParent() == null) {
+				// create a subComponentMap entry
+				List<Component> subComps = new ArrayList<Component>();
+				subComps.add(comp);
+				subComponentMap.put(comp, subComps);
+			} else {
+				Component cc = getCacheableAncestor(comp);
+				// add to list in subComponentMap
+				List<Component> subComps = subComponentMap.get(cc);
+				addOrder(subComps, comp);
+			}
+		}
 	}
 
 	@Override
