@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Map;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
@@ -213,12 +212,15 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		Environment penv;
 		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
+			// local safe copy
 			penv = environment;
 			cenv = ((ElementEx) args[0]).getEnvironment();
 			penv.beginCommand("");
 			cenv.beginCommand("");
-			// update environment for the adding component
-			cproxy.setEnvironment(penv);
+			// update environment for all adding components
+			for (Element proxy : cenv.proxyMap.values()) {
+				((ElementEx) proxy).setEnvironment(penv);
+			}
 		}
 		try {
 			Object[] cargs = args.clone();
@@ -227,7 +229,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			environment.componentAdded(cimpl, cenv.proxyMap);
+			penv.componentAdded(cimpl, cenv);
 
 			cenv.endCommand();
 			penv.endCommand();
@@ -250,14 +252,15 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
 			penv = environment;
-			cenv = environment.createDummyEnvironment();
 			penv.beginCommand("");
+			cenv = penv.componentRemoving(cimpl);
 			cenv.beginCommand("");
 			// update environment for the removing component
-			cproxy.setEnvironment(cenv);
+			for (Element proxy : cenv.proxyMap.values()) {
+				((ElementEx) proxy).setEnvironment(cenv);
+			}
 		}
 
-		penv.componentRemoving(cimpl);
 		try {
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
@@ -265,10 +268,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			Map<Element, Element> removedProxyMap = environment
-					.componentRemoved(cimpl);
-			cenv.proxyMap.clear();
-			cenv.proxyMap.putAll(removedProxyMap);
+			penv.componentRemoved(cimpl);
 
 			cenv.endCommand();
 			penv.endCommand();

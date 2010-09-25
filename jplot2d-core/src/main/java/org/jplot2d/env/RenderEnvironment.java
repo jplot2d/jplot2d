@@ -20,7 +20,9 @@ package org.jplot2d.env;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,11 +55,6 @@ public class RenderEnvironment extends PlotEnvironment {
 
 	}
 
-	@Override
-	public Environment createDummyEnvironment() {
-		return new DummyEnvironment();
-	}
-
 	public Renderer<?>[] getRenderers() {
 		return rendererList.toArray(new Renderer[0]);
 	}
@@ -84,21 +81,45 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	@Override
-	protected void renderOnCommit(Plot plot, Map<Component, Component> compMap) {
+	protected void renderOnCommit(Plot plot, Map<Element, Element> copyMap) {
+
+		/*
+		 * when adding a cacheable component, the requireRedraw is not called on
+		 * it. So we must figure out what components are unmodified.
+		 */
+
+		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
+		for (Component comp : cacheableComponentList) {
+			compMap.put(comp, (Component) copyMap.get(comp));
+		}
 
 		// unmodified components
-		List<Component> umsccs = new ArrayList<Component>();
+		List<Component> umCachableComps = new ArrayList<Component>();
 		for (Component comp : compMap.keySet()) {
 			if (!rrSccs.contains(comp)) {
-				umsccs.add(comp);
+				umCachableComps.add(comp);
 			}
 		}
 		rrSccs.clear();
 
+		// build sub-component map
+		Map<Component, Component[]> subcompsMap = new HashMap<Component, Component[]>();
+		for (Map.Entry<Component, List<Component>> me : subComponentMap
+				.entrySet()) {
+			Component key = me.getKey();
+			List<Component> sublist = me.getValue();
+			int size = sublist.size();
+			Component[] copys = new Component[size];
+			for (int i = 0; i < size; i++) {
+				Component scopy = (Component) copyMap.get(sublist.get(i));
+				copys[i] = scopy;
+			}
+			subcompsMap.put(key, copys);
+		}
+
 		for (Renderer<?> r : getRenderers()) {
-			r.render(plot, compMap, umsccs);
+			r.render(plot, compMap, umCachableComps, subcompsMap);
 		}
 
 	}
-
 }
