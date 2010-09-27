@@ -21,15 +21,14 @@ package org.jplot2d.env;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.impl.ComponentImpl;
 import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
 
@@ -42,11 +41,6 @@ import org.jplot2d.renderer.Renderer;
  * 
  */
 public class RenderEnvironment extends PlotEnvironment {
-
-	/**
-	 * Redraw-required self cache components
-	 */
-	protected final Set<Component> rrSccs = new HashSet<Component>();
 
 	private List<Renderer<?>> rendererList = Collections
 			.synchronizedList(new ArrayList<Renderer<?>>());
@@ -72,15 +66,6 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	@Override
-	void requireRedraw(Element impl) {
-		if (impl instanceof Component && ((Component) impl).isCacheable()) {
-			rrSccs.add((Component) impl);
-		} else {
-			requireRedraw(impl.getParent());
-		}
-	}
-
-	@Override
 	protected void renderOnCommit(Plot plot, Map<Element, Element> copyMap) {
 
 		/*
@@ -88,19 +73,16 @@ public class RenderEnvironment extends PlotEnvironment {
 		 * it. So we must figure out what components are unmodified.
 		 */
 
+		List<Component> umCachableComps = new ArrayList<Component>();
 		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
 		for (Component comp : cacheableComponentList) {
 			compMap.put(comp, (Component) copyMap.get(comp));
-		}
-
-		// unmodified components
-		List<Component> umCachableComps = new ArrayList<Component>();
-		for (Component comp : compMap.keySet()) {
-			if (!rrSccs.contains(comp)) {
+			// unmodified components
+			if (!((ComponentImpl) comp).isRedrawNeeded()) {
 				umCachableComps.add(comp);
 			}
+			((ComponentImpl) comp).clearRedrawNeeded();
 		}
-		rrSccs.clear();
 
 		// build sub-component map
 		Map<Component, Component[]> subcompsMap = new HashMap<Component, Component[]>();

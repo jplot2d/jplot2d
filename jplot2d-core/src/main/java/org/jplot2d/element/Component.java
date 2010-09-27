@@ -21,6 +21,7 @@ package org.jplot2d.element;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
@@ -235,7 +236,7 @@ public interface Component extends Element {
 	 * 
 	 * @return the x,y origin of this plot component
 	 */
-	public Point2D getLocationP();
+	public Point2D getPhysicalLocation();
 
 	/**
 	 * Moves this plot component to a new location. The origin of the new
@@ -246,7 +247,7 @@ public interface Component extends Element {
 	 *            the point defining the origin of the new location, given in
 	 *            the coordinate space of this component's parent
 	 */
-	public void setLocationP(Point2D p);
+	public void setPhysicalLocation(Point2D loc);
 
 	/**
 	 * Gets the location in device coordinates.
@@ -260,13 +261,15 @@ public interface Component extends Element {
 	 */
 	public void setLocation(Point2D point);
 
+	public Dimension2D getPhysicalSize();
+
 	/**
 	 * Returns the physical bounds relative to its container. The units of
 	 * bounds is pt (1/72 inch)
 	 * 
 	 * @return the physical bounds of this component.
 	 */
-	public Rectangle2D getBoundsP();
+	public Rectangle2D getPhysicalBounds();
 
 	/**
 	 * Returns the bounds in absolute device coordinate.

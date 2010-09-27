@@ -71,11 +71,6 @@ public class DummyEnvironment extends Environment {
 	}
 
 	@Override
-	void requireRedraw(Element impl) {
-		// do nothng
-	}
-
-	@Override
 	protected void commit() {
 		// do nothng
 	}

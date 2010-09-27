@@ -32,7 +32,7 @@ public interface SubPlot extends Container {
 	 * 
 	 * @param size
 	 */
-	public void setPhySize(Dimension2D size);
+	public void setPhysicalSize(Dimension2D size);
 	
 	public void addLayer(Layer layer);
 

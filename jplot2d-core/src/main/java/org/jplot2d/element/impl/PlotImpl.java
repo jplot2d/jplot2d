@@ -54,8 +54,6 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	private Dimension2D viewportPhySize = new DoubleDimension2D(4.0, 3.0);
 
-	private Dimension2D phySize;
-
 	public PlotImpl() {
 		cacheable = true;
 	}
@@ -97,15 +95,6 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		targetPhySize = physize;
 	}
 
-	public Dimension2D getPhySize() {
-		return phySize;
-	}
-
-	public void setPhySize(Dimension2D phySize) {
-		this.phySize = phySize;
-
-	}
-
 	public Dimension2D getViewportPhySize() {
 		return viewportPhySize;
 	}
@@ -115,13 +104,8 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, 0, (int) (phySize.getWidth() * scale),
-				(int) (phySize.getHeight() * scale));
-	}
-
-	public Rectangle2D getBoundsP() {
-		return new Rectangle2D.Double(0, 0, phySize.getWidth(), phySize
-				.getHeight());
+		return new Rectangle2D.Double(0, 0, getPhysicalSize().getWidth()
+				* scale, getPhysicalSize().getHeight() * scale);
 	}
 
 	public SubPlot getSubPlot(int i) {
@@ -182,7 +166,7 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		sizeMode = src.sizeMode;
 		containerSize = (Dimension) src.containerSize.clone();
 		targetPhySize = (Dimension2D) src.targetPhySize.clone();
-		phySize = (Dimension2D) src.phySize.clone();
+		physicalSize = (Dimension2D) src.physicalSize.clone();
 		scale = src.scale;
 	}
 

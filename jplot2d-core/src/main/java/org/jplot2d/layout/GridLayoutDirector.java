@@ -23,10 +23,8 @@ package org.jplot2d.layout;
 
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.SubPlot;
@@ -47,317 +45,40 @@ import org.jplot2d.util.NumberUtils;
  */
 public class GridLayoutDirector implements LayoutDirector {
 
-	public static class CellInsets {
-
-		final Map<Integer, Double> topPadding;
-
-		final Map<Integer, Double> leftPadding;
-
-		final Map<Integer, Double> bottomPadding;
-
-		final Map<Integer, Double> rightPadding;
-
-		final double sumWidth, sumHeight;
-
-		/**
-		 * @param topPadding
-		 *            the key is row id
-		 * @param leftPadding
-		 *            the key is column id
-		 * @param bottomPadding
-		 *            the key is row id
-		 * @param rightPadding
-		 *            the key is column id
-		 */
-		public CellInsets(Map<Integer, Double> topPadding,
-				Map<Integer, Double> leftPadding,
-				Map<Integer, Double> bottomPadding,
-				Map<Integer, Double> rightPadding) {
-			this.topPadding = topPadding;
-			this.leftPadding = leftPadding;
-			this.bottomPadding = bottomPadding;
-			this.rightPadding = rightPadding;
-
-			double sumXpad = 0;
-			for (double left : leftPadding.values()) {
-				sumXpad += left;
-			}
-			for (double right : rightPadding.values()) {
-				sumXpad += right;
-			}
-			sumWidth = sumXpad;
-
-			double sumYpad = 0;
-			for (double top : topPadding.values()) {
-				sumYpad += top;
-			}
-			for (double bottom : bottomPadding.values()) {
-				sumYpad += bottom;
-			}
-			sumHeight = sumYpad;
-		}
-
-		public CellInsets() {
-			this(Collections.<Integer, Double> emptyMap(), Collections
-					.<Integer, Double> emptyMap(), Collections
-					.<Integer, Double> emptyMap(), Collections
-					.<Integer, Double> emptyMap());
-		}
-
-		public double getTop(int row) {
-			Double v = topPadding.get(row);
-			return (v == null) ? 0 : v.doubleValue();
-		}
-
-		public double getLeft(int col) {
-			Double v = leftPadding.get(col);
-			return (v == null) ? 0 : v.doubleValue();
-		}
-
-		public double getBottom(int row) {
-			Double v = bottomPadding.get(row);
-			return (v == null) ? 0 : v.doubleValue();
-		}
-
-		public double getRight(int col) {
-			Double v = rightPadding.get(col);
-			return (v == null) ? 0 : v.doubleValue();
-		}
-
-		public double getSumWidth() {
-			return sumWidth;
-		}
-
-		public double getSumHeight() {
-			return sumHeight;
-		}
-
-		public boolean approxEquals(CellInsets b) {
-			if (topPadding.size() != b.topPadding.size()
-					|| leftPadding.size() != b.leftPadding.size()
-					|| bottomPadding.size() != b.bottomPadding.size()
-					|| rightPadding.size() != b.rightPadding.size()) {
-				return false;
-			}
-			if (getSumWidth() != b.getSumWidth()
-					|| getSumHeight() != b.getSumHeight()) {
-				return false;
-			}
-			for (Integer col : leftPadding.keySet()) {
-				Double aw = leftPadding.get(col);
-				Double bw = b.leftPadding.get(col);
-				if ((bw == null) || !approximate(aw, bw)) {
-					return false;
-				}
-			}
-			for (Integer col : rightPadding.keySet()) {
-				Double aw = rightPadding.get(col);
-				Double bw = b.rightPadding.get(col);
-				if ((bw == null) || !approximate(aw, bw)) {
-					return false;
-				}
-			}
-			for (Integer row : topPadding.keySet()) {
-				Double ah = topPadding.get(row);
-				Double bh = b.topPadding.get(row);
-				if ((bh == null) || !approximate(ah, bh)) {
-					return false;
-				}
-			}
-			for (Integer row : bottomPadding.keySet()) {
-				Double ah = bottomPadding.get(row);
-				Double bh = b.bottomPadding.get(row);
-				if ((bh == null) || !approximate(ah, bh)) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-	}
-
-	static class CellGeom {
-
-		private final SortedMap<Integer, Double> colWidth, rowHeight;
-
-		private final double sumWidth, sumHeight;
-
-		public CellGeom(SortedMap<Integer, Double> colWidth,
-				SortedMap<Integer, Double> rowHeight) {
-			this.colWidth = colWidth;
-			this.rowHeight = rowHeight;
-			double sw = 0, sh = 0;
-			for (double w : colWidth.values()) {
-				sw += w;
-			}
-			for (double h : rowHeight.values()) {
-				sh += h;
-			}
-			sumWidth = sw;
-			sumHeight = sh;
-		}
-
-		public double getWidth(int col) {
-			Double v = colWidth.get(col);
-			return v.doubleValue();
-		}
-
-		public double getHeight(int row) {
-			Double v = rowHeight.get(row);
-			return v.doubleValue();
-		}
-
-		public double getSumWidthLeft(int col) {
-			double sum = 0;
-			for (SortedMap.Entry<Integer, Double> me : colWidth.entrySet()) {
-				int c = me.getKey();
-				double v = me.getValue();
-				if (c < col) {
-					sum += v;
-				}
-			}
-			return sum;
-		}
-
-		public double getSumHeightTop(int row) {
-			double sum = 0;
-			for (SortedMap.Entry<Integer, Double> me : rowHeight.entrySet()) {
-				int r = me.getKey();
-				double v = me.getValue();
-				if (r < row) {
-					sum += v;
-				}
-			}
-			return sum;
-		}
-
-		public double getSumWidth() {
-			return sumWidth;
-		}
-
-		public double getSumHeight() {
-			return sumHeight;
-		}
-
-		public int getRowNum() {
-			return rowHeight.size();
-		}
-
-		public int getColNum() {
-			return colWidth.size();
-		}
-
-		public boolean approxEquals(CellGeom b) {
-			if (getColNum() != b.getColNum() || getRowNum() != b.getRowNum()) {
-				return false;
-			}
-			if (getSumWidth() != b.getSumWidth()
-					|| getSumHeight() != b.getSumHeight()) {
-				return false;
-			}
-			for (Integer col : colWidth.keySet()) {
-				Double aw = colWidth.get(col);
-				Double bw = b.colWidth.get(col);
-				if ((bw == null) || !approximate(aw, bw)) {
-					return false;
-				}
-			}
-			for (Integer row : rowHeight.keySet()) {
-				Double ah = rowHeight.get(row);
-				Double bh = b.rowHeight.get(row);
-				if ((bh == null) || !approximate(ah, bh)) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-	}
-
-	class ChangeFlags {
-		/**
-		 * When axis added, removed, position changed, metrics changed
-		 */
-		boolean axisChanged;
-
-		boolean plotSizeChanged;
-
-		boolean subPlotConstraintsChanged;
-
-		/**
-		 * When subplot added, removed
-		 */
-		boolean gridChanged;
-
-		/**
-		 * When plotLayout.gap changed.
-		 */
-		boolean gapChanged;
-
-		/**
-		 * When plotLayout.margin changed.
-		 */
-		boolean marginChanged;
-
-		/**
-		 * When title, subtitle, legend changed
-		 */
-		boolean tslChanged;
-
-		boolean chartSizeChanged;
-
-		public void reset() {
-			axisChanged = false;
-			plotSizeChanged = false;
-			subPlotConstraintsChanged = false;
-			gridChanged = false;
-			gapChanged = false;
-			marginChanged = false;
-			tslChanged = false;
-			chartSizeChanged = false;
-		}
-
-		public boolean hasChanges() {
-			return axisChanged || plotSizeChanged || subPlotConstraintsChanged
-					|| gridChanged || gapChanged || marginChanged || tslChanged
-					|| chartSizeChanged;
-		}
-	}
-
 	/** The layout constraints */
 	private Map<SubPlot, Object> constraints = new HashMap<SubPlot, Object>();
 
 	/**
 	 * the margin around the content
 	 */
-	Insets2D _contentsMargin = new Insets2D(0.1, 0.1, 0.1, 0.1);
+	Insets2D contentsMargin = new Insets2D(0.1, 0.1, 0.1, 0.1);
 
 	/**
 	 * the margin around the chart
 	 */
-	Insets2D _margin = new Insets2D(0.1, 0.1, 0.1, 0.1);
+	Insets2D margin = new Insets2D(0.1, 0.1, 0.1, 0.1);
 
-	double _hgap = 0.1;
+	double hgap = 0.1;
 
-	double _vgap = 0.1;
+	double vgap = 0.1;
 
-	boolean _restrictedAxisBox = true;
+	boolean restrictedAxisBox = true;
 
 	/**
 	 * the physical size of every grid cell
 	 */
-	CellGeom _cellGeom;
+	GridCellGeom cellGeom;
 
-	CellInsets _cellPadding = new CellInsets();
+	GridCellInsets cellPadding = new GridCellInsets();
 
-	private final ChangeFlags _cflags = new ChangeFlags();
+	private Plot plot;
 
-	private static boolean approximate(double a, double b) {
+	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public GridLayoutDirector() {
-
+	public GridLayoutDirector(Plot plot) {
+		this.plot = plot;
 	}
 
 	public Object getConstraint(SubPlot subplot) {
@@ -430,29 +151,28 @@ public class GridLayoutDirector implements LayoutDirector {
 	}
 
 	public Insets2D getMargin() {
-		return _margin;
+		return margin;
 	}
 
 	public void setMargin(Insets2D margin) {
-		if (_margin.equals(margin)) {
+		if (margin.equals(margin)) {
 			return;
 		}
-		_margin = margin;
-		_cflags.marginChanged = true;
+		this.margin = margin;
+		plot.invalidate();
 	}
 
 	public Dimension2D getGap() {
-		return new DoubleDimension2D(_hgap, _vgap);
+		return new DoubleDimension2D(hgap, vgap);
 	}
 
 	public void setGap(Dimension2D gap) {
-		if (_hgap == gap.getWidth() && _vgap == gap.getHeight()) {
+		if (hgap == gap.getWidth() && vgap == gap.getHeight()) {
 			return;
 		}
-		_hgap = gap.getWidth();
-		_vgap = gap.getHeight();
-		_cflags.gapChanged = true;
-		Log.layout.fine("[Y] layout contents request, by PlotLayout: setGap");
+		hgap = gap.getWidth();
+		vgap = gap.getHeight();
+		plot.invalidate();
 	}
 
 	/**
@@ -474,7 +194,7 @@ public class GridLayoutDirector implements LayoutDirector {
 		case FIT_CONTAINER_SIZE:
 			Dimension size = plot.getContainerSize();
 			double scale = plot.getScale();
-			plot.setPhySize(new DoubleDimension2D(size.getWidth() / scale, size
+			plot.setPhysicalSize(new DoubleDimension2D(size.getWidth() / scale, size
 					.getHeight()
 					/ scale));
 		case FIT_CONTAINER_WITH_TARGET_SIZE:
@@ -489,7 +209,6 @@ public class GridLayoutDirector implements LayoutDirector {
 		// mark validate
 		plot.validate();
 
-		_cflags.reset();
 	}
 
 }

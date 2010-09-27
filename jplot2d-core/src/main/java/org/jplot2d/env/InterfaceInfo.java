@@ -18,7 +18,6 @@ import java.util.Map;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
-import org.jplot2d.annotation.Redraw;
 
 public class InterfaceInfo {
 
@@ -31,6 +30,10 @@ public class InterfaceInfo {
 	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
 
 	private final Collection<Method> redrawMethods = new HashSet<Method>();
+
+	private final Collection<Method> invalidateMethods = new HashSet<Method>();
+
+	private final Collection<Method> invalidateParentMethods = new HashSet<Method>();
 
 	/** listener get add remove Methods */
 	private final Collection<Method> listenerGarMethods = new HashSet<Method>();
@@ -103,10 +106,6 @@ public class InterfaceInfo {
 			if (hierAnn != null) {
 				hierachyMethodMap.put(method, hierAnn.value());
 			}
-			Redraw redrawAnn = method.getAnnotation(Redraw.class);
-			if (redrawAnn != null) {
-				redrawMethods.add(method);
-			}
 		}
 
 		EventSetDescriptor[] events = bi.getEventSetDescriptors();
@@ -148,6 +147,22 @@ public class InterfaceInfo {
 	 */
 	public boolean isRedrawMethod(Method method) {
 		return redrawMethods.contains(method);
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	public boolean isInvalidateMethod(Method method) {
+		return invalidateMethods.contains(method);
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	public boolean isInvalidateParentMethod(Method method) {
+		return invalidateParentMethods.contains(method);
 	}
 
 	public Method getPropReadMethodByWriteMethod(Method method) {

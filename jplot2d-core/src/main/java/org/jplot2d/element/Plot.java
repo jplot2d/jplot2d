@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.annotation.Redraw;
 import org.jplot2d.layout.LayoutDirector;
 
 /**
@@ -59,11 +58,6 @@ public interface Plot extends Container {
 	public Dimension2D getTargetPhySize();
 
 	public void setTargetPhySize(Dimension2D physize);
-
-	public Dimension2D getPhySize();
-
-	@Redraw
-	public void setPhySize(Dimension2D physize);
 
 	public Dimension2D getViewportPhySize();
 
