@@ -19,7 +19,6 @@
 package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
@@ -33,17 +32,7 @@ import org.jplot2d.element.SubPlot;
  */
 public class SubPlotImpl extends ContainerImpl implements SubPlot {
 
-	public void setPhySize(Dimension2D size) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Rectangle2D getBoundsP() {
 		// TODO Auto-generated method stub
 		return null;
 	}

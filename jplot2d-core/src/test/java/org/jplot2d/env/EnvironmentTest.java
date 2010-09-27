@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.element.Component;
-import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentImpl;
 import org.jplot2d.element.impl.ContainerImpl;
 import org.junit.After;
@@ -41,16 +40,8 @@ public class EnvironmentTest {
 
 	private class EnvironmentStub extends Environment {
 
-		@Override
-		void requireRedraw(Element impl) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
 		protected void commit() {
-			// TODO Auto-generated method stub
-
+			// nothing to do
 		}
 
 	};

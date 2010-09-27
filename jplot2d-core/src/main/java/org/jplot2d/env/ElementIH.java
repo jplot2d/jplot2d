@@ -51,7 +51,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	/**
 	 * @param impl
-	 * @param class1
+	 * @param clazz
 	 */
 	public ElementIH(T impl, Class<T> clazz) {
 		this.impl = impl;
@@ -165,9 +165,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				invokeOther(method, args);
 			}
 
-			if (iinfo.isRedrawMethod(method)) {
-				environment.requireRedraw(impl);
-			}
 			if (setterValueChanged) {
 				environment.elementPropertyChanged(impl);
 			}
@@ -338,7 +335,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 */
 	protected void setEnvironment(Environment env) {
 		environment = env;
-		// TODO: sub elements
 	}
 
 }

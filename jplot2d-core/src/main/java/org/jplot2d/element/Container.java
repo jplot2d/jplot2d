@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element;
 
+import java.awt.geom.Dimension2D;
 import java.util.Map;
 
 /**
@@ -26,6 +27,13 @@ import java.util.Map;
  */
 public interface Container extends Component {
 
+	/**
+	 * Sets the physical size of this container.
+	 * 
+	 * @param physicalSize
+	 */
+	public void setPhysicalSize(Dimension2D physicalSize);
+	
 	/**
 	 * Returns the PhysicalTransform of this component.
 	 * 

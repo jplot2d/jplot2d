@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.geom.Dimension2D;
 import java.util.Map;
 
 import org.jplot2d.element.Container;
@@ -28,6 +29,14 @@ public class ContainerImpl extends ComponentImpl implements Container {
 
 	public PhysicalTransform getPhysicalTransform() {
 		throw new UnsupportedOperationException();
+	}
+
+	public void setPhysicalSize(Dimension2D physicalSize) {
+		if (!physicalSize.equals(this.physicalSize)) {
+			invalidate();
+			redraw();
+		}
+		this.physicalSize = physicalSize;
 	}
 
 	public ContainerImpl deepCopy(Map<Element, Element> orig2copyMap) {

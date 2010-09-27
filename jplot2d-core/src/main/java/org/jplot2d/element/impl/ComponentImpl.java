@@ -21,17 +21,17 @@ package org.jplot2d.element.impl;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.jplot2d.element.Component;
-import org.jplot2d.element.Container;
 import org.jplot2d.element.Element;
 
 public class ComponentImpl implements Component {
 
-	protected Container parent;
+	protected ContainerImpl parent;
 
 	protected Boolean visible;
 
@@ -53,10 +53,14 @@ public class ComponentImpl implements Component {
 
 	protected Point2D physicalLocation;
 
+	protected Dimension2D physicalSize;
+
 	protected Point2D deviceLocation;
 
+	private boolean redrawNeeded;
+
 	/**
-	 * True when the object is valid. An invalid object needs to be layed out.
+	 * True when the object is valid. An invalid object needs to be laied out.
 	 * This flag is set to false when the object size is changed.
 	 * 
 	 * @serial
@@ -66,11 +70,11 @@ public class ComponentImpl implements Component {
 	 */
 	private boolean valid = false;
 
-	public Container getParent() {
+	public ContainerImpl getParent() {
 		return parent;
 	}
-	
-	public void setParent(Container parent) {
+
+	public void setParent(ContainerImpl parent) {
 		this.parent = parent;
 	}
 
@@ -80,6 +84,10 @@ public class ComponentImpl implements Component {
 
 	public void setVisible(Boolean visible) {
 		this.visible = visible;
+		if (parent != null) {
+			parent.invalidate();
+		}
+		redraw();
 	}
 
 	public boolean isCacheable() {
@@ -88,6 +96,12 @@ public class ComponentImpl implements Component {
 
 	public void setCacheable(boolean cacheMode) {
 		this.cacheable = cacheMode;
+		redraw();
+		if (cacheable) {
+			if (parent != null) {
+				parent.redraw();
+			}
+		}
 	}
 
 	public Boolean getSelectable() {
@@ -157,11 +171,11 @@ public class ComponentImpl implements Component {
 		fontSize = size;
 	}
 
-	public Point2D getLocationP() {
+	public Point2D getPhysicalLocation() {
 		return physicalLocation;
 	}
 
-	public void setLocationP(Point2D p) {
+	public void setPhysicalLocation(Point2D p) {
 		physicalLocation = (p == null) ? null : (Point2D) p.clone();
 	}
 
@@ -173,8 +187,13 @@ public class ComponentImpl implements Component {
 		deviceLocation = point;
 	}
 
-	public Rectangle2D getBoundsP() {
-		throw new UnsupportedOperationException();
+	public Dimension2D getPhysicalSize() {
+		return physicalSize;
+	}
+
+	public Rectangle2D getPhysicalBounds() {
+		return new Rectangle2D.Double(physicalLocation.getX(), physicalLocation
+				.getY(), physicalSize.getWidth(), physicalSize.getHeight());
 	}
 
 	/**
@@ -230,6 +249,25 @@ public class ComponentImpl implements Component {
 		return (style & ~0x03) == 0;
 	}
 
+	/**
+	 * Call this method to mark this method need to update.
+	 */
+	public void redraw() {
+		if (cacheable) {
+			redrawNeeded = true;
+		} else if (parent != null) {
+			parent.redraw();
+		}
+	}
+
+	public boolean isRedrawNeeded() {
+		return redrawNeeded;
+	}
+
+	public void clearRedrawNeeded() {
+		redrawNeeded = false;
+	}
+
 	public void draw(Graphics2D g) {
 		throw new UnsupportedOperationException();
 	}
@@ -262,7 +300,7 @@ public class ComponentImpl implements Component {
 			dest.setFontStyle(src.getFontStyle());
 			dest.setFontSize(src.getFontSize());
 		}
-		dest.setLocationP(src.getLocationP());
+		dest.setPhysicalLocation(src.getPhysicalLocation());
 		dest.setLocation(src.getLocation());
 	}
 

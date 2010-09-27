@@ -78,7 +78,7 @@ public class ComponentFactory {
 
 	public Plot createPlot() {
 		Plot impl = new PlotImpl();
-		impl.setLayoutDirector(new GridLayoutDirector());
+		impl.setLayoutDirector(new GridLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementEx.class }, ih);

@@ -533,12 +533,4 @@ public abstract class Environment {
 	 */
 	protected abstract void commit();
 
-	/**
-	 * Called when a redraw-require property is changed.
-	 * 
-	 * @param element
-	 *            the element object whoes property is changed.
-	 */
-	abstract void requireRedraw(Element element);
-
 }
