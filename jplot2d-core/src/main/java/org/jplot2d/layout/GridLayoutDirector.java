@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.SubPlot;
+import org.jplot2d.element.Subplot;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
@@ -46,7 +46,7 @@ import org.jplot2d.util.NumberUtils;
 public class GridLayoutDirector implements LayoutDirector {
 
 	/** The layout constraints */
-	private Map<SubPlot, Object> constraints = new HashMap<SubPlot, Object>();
+	private Map<Subplot, Object> constraints = new HashMap<Subplot, Object>();
 
 	/**
 	 * the margin around the content
@@ -81,15 +81,15 @@ public class GridLayoutDirector implements LayoutDirector {
 		this.plot = plot;
 	}
 
-	public Object getConstraint(SubPlot subplot) {
+	public Object getConstraint(Subplot subplot) {
 		return constraints.get(subplot);
 	}
 
-	public void remove(SubPlot subplot) {
+	public void remove(Subplot subplot) {
 		constraints.remove(subplot);
 	}
 
-	public void setConstraint(SubPlot subplot, Object constraint) {
+	public void setConstraint(Subplot subplot, Object constraint) {
 		constraints.put(subplot, constraint);
 	}
 
