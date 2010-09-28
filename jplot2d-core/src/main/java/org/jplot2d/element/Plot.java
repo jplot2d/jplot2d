@@ -83,20 +83,20 @@ public interface Plot extends Container {
 	 * @return the nth subplot in this plot
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public SubPlot getSubPlot(int n);
+	public Subplot getSubPlot(int n);
 
 	/**
 	 * @param spimpl
 	 * @param constraint
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	void addSubPlot(SubPlot spimpl, Object constraint);
+	void addSubPlot(Subplot spimpl, Object constraint);
 
 	/**
 	 * @param spimpl
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	void removeSubPlot(SubPlot spimpl);
+	void removeSubPlot(Subplot spimpl);
 
 	public Plot deepCopy(Map<Element, Element> orig2copyMap);
 

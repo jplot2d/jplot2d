@@ -24,35 +24,40 @@ import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.SubPlot;
+import org.jplot2d.element.Subplot;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class SubPlotImpl extends ContainerImpl implements SubPlot {
+public class SubplotImpl extends ContainerImpl implements Subplot {
 
 	public Rectangle2D getBounds() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void addLayer(Layer layer) {
+	public Rectangle2D getViewportBounds() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
-	public Element[] getElements() {
-		// return layers.toArray(new Element[layers.size()]);
-		return null;
+	public void setViewportBounds(Rectangle2D bounds) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void addLayer(Layer layer) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public SubPlotImpl deepCopy(Map<Element, Element> orig2copyMap) {
+	public SubplotImpl deepCopy(Map<Element, Element> orig2copyMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
