@@ -22,9 +22,9 @@ import java.lang.reflect.Proxy;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.SubPlot;
+import org.jplot2d.element.Subplot;
 import org.jplot2d.element.impl.PlotImpl;
-import org.jplot2d.element.impl.SubPlotImpl;
+import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.layout.GridLayoutDirector;
 
 /**
@@ -87,12 +87,12 @@ public class ComponentFactory {
 		return proxy;
 	}
 
-	public SubPlot createSubPlot() {
-		SubPlot impl = new SubPlotImpl();
-		ElementIH<SubPlot> ih = new ElementIH<SubPlot>(impl, SubPlot.class);
-		SubPlot proxy = (SubPlot) Proxy.newProxyInstance(Plot.class
+	public Subplot createSubPlot() {
+		Subplot impl = new SubplotImpl();
+		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
+		Subplot proxy = (Subplot) Proxy.newProxyInstance(Plot.class
 				.getClassLoader(),
-				new Class[] { SubPlot.class, ElementEx.class }, ih);
+				new Class[] { Subplot.class, ElementEx.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;

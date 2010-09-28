@@ -18,22 +18,27 @@
  */
 package org.jplot2d.element;
 
-import java.awt.geom.Dimension2D;
-
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface SubPlot extends Container {
+public interface Subplot extends Container {
 
 	/**
-	 * Sets the physical size of this subplot.
+	 * Returns the physical rectangle of viewport.
 	 * 
-	 * @param size
+	 * @return
 	 */
-	public void setPhysicalSize(Dimension2D size);
-	
+	public Rectangle2D getViewportBounds();
+
+	/**
+	 * Sets the physical rectangle of viewport. All layers in this subplot are
+	 * set the bounds to the rectangle
+	 */
+	public void setViewportBounds(Rectangle2D bounds);
+
 	public void addLayer(Layer layer);
 
 }

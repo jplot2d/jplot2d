@@ -30,7 +30,7 @@ import java.util.Map;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.PlotSizeMode;
-import org.jplot2d.element.SubPlot;
+import org.jplot2d.element.Subplot;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -50,7 +50,7 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	private Dimension2D targetPhySize = new DoubleDimension2D(4.0, 3.0);
 
-	private final List<SubPlotImpl> subplots = new ArrayList<SubPlotImpl>();
+	private final List<SubplotImpl> subplots = new ArrayList<SubplotImpl>();
 
 	private Dimension2D viewportPhySize = new DoubleDimension2D(4.0, 3.0);
 
@@ -108,18 +108,18 @@ public class PlotImpl extends ContainerImpl implements Plot {
 				* scale, getPhysicalSize().getHeight() * scale);
 	}
 
-	public SubPlot getSubPlot(int i) {
+	public Subplot getSubPlot(int i) {
 		return subplots.get(i);
 	}
 
-	public void addSubPlot(SubPlot subplot, Object constraint) {
+	public void addSubPlot(Subplot subplot, Object constraint) {
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
 			ld.setConstraint(subplot, constraint);
 		}
 	}
 
-	public void removeSubPlot(SubPlot subplot) {
+	public void removeSubPlot(Subplot subplot) {
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
 			ld.remove(subplot);
@@ -129,7 +129,7 @@ public class PlotImpl extends ContainerImpl implements Plot {
 	public void validate() {
 		if (!isValid()) {
 			super.validate();
-			for (SubPlot subplot : subplots) {
+			for (Subplot subplot : subplots) {
 				subplot.validate();
 			}
 		}
@@ -150,8 +150,8 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		}
 
 		// copy subplots
-		for (SubPlotImpl sp : subplots) {
-			SubPlotImpl csp = sp.deepCopy(orig2copyMap);
+		for (SubplotImpl sp : subplots) {
+			SubplotImpl csp = sp.deepCopy(orig2copyMap);
 			csp.setParent(result);
 			result.subplots.add(csp);
 		}
