@@ -26,7 +26,7 @@ import org.jplot2d.element.Element;
  * @author Jingjing Li
  * 
  */
-interface ElementEx {
+interface ElementAddition {
 
 	public Environment getEnvironment();
 

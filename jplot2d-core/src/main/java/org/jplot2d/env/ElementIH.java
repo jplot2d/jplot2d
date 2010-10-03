@@ -231,7 +231,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 */
 	private void invokeAddCompMethod(Method method, Object[] args)
 			throws Throwable {
-		ElementEx cproxy = (ElementEx) args[0];
+		ElementAddition cproxy = (ElementAddition) args[0];
 		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 		Environment penv;
@@ -239,12 +239,12 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		synchronized (Environment.getGlobalLock()) {
 			// local safe copy
 			penv = environment;
-			cenv = ((ElementEx) args[0]).getEnvironment();
+			cenv = ((ElementAddition) args[0]).getEnvironment();
 			penv.beginCommand("");
 			cenv.beginCommand("");
 			// update environment for all adding components
 			for (Element proxy : cenv.proxyMap.values()) {
-				((ElementEx) proxy).setEnvironment(penv);
+				((ElementAddition) proxy).setEnvironment(penv);
 			}
 		}
 		try {
@@ -269,7 +269,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 */
 	private void invokeRemoveCompMethod(Method method, Object[] args)
 			throws Throwable {
-		ElementEx cproxy = (ElementEx) args[0];
+		ElementAddition cproxy = (ElementAddition) args[0];
 		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 		Environment penv;
@@ -281,7 +281,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cenv.beginCommand("");
 			// update environment for the removing component
 			for (Element proxy : cenv.proxyMap.values()) {
-				((ElementEx) proxy).setEnvironment(cenv);
+				((ElementAddition) proxy).setEnvironment(cenv);
 			}
 		}
 

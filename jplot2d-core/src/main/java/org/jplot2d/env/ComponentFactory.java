@@ -71,7 +71,7 @@ public class ComponentFactory {
 
 		synchronized (Environment.getGlobalLock()) {
 			env.begin();
-			((ElementEx) proxy).setEnvironment(env);
+			((ElementAddition) proxy).setEnvironment(env);
 		}
 		env.registerElement(comp, proxy);
 		env.end();
@@ -82,7 +82,7 @@ public class ComponentFactory {
 		impl.setLayoutDirector(new GridLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
-				new Class[] { Plot.class, ElementEx.class }, ih);
+				new Class[] { Plot.class, ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;
@@ -93,7 +93,7 @@ public class ComponentFactory {
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
 		Subplot proxy = (Subplot) Proxy.newProxyInstance(Plot.class
 				.getClassLoader(),
-				new Class[] { Subplot.class, ElementEx.class }, ih);
+				new Class[] { Subplot.class, ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;

@@ -65,7 +65,7 @@ public abstract class PlotEnvironment extends Environment {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
-			oldEnv = ((ElementEx) plot).getEnvironment();
+			oldEnv = ((ElementAddition) plot).getEnvironment();
 			if (!(oldEnv instanceof DummyEnvironment)) {
 				throw new IllegalArgumentException(
 						"The plot to be added has been added a PlotEnvironment");
@@ -84,12 +84,12 @@ public abstract class PlotEnvironment extends Environment {
 
 			// update environment for all adding components
 			for (Element proxy : oldEnv.proxyMap.values()) {
-				((ElementEx) proxy).setEnvironment(this);
+				((ElementAddition) proxy).setEnvironment(this);
 			}
 		}
 
 		this.plot = plot;
-		this.plotImpl = (PlotEx) ((ElementEx) plot).getImpl();
+		this.plotImpl = (PlotEx) ((ElementAddition) plot).getImpl();
 
 		componentAdded(plotImpl, oldEnv);
 
@@ -115,7 +115,7 @@ public abstract class PlotEnvironment extends Environment {
 
 			// update environment for the removing component
 			for (Element proxy : nenv.proxyMap.values()) {
-				((ElementEx) proxy).setEnvironment(nenv);
+				((ElementAddition) proxy).setEnvironment(nenv);
 			}
 		}
 
