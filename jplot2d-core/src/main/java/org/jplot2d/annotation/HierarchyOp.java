@@ -25,5 +25,5 @@ package org.jplot2d.annotation;
  * 
  */
 public enum HierarchyOp {
-	GET, ADD, REMOVE
+	GET, GETARRAY, ADD, REMOVE
 }
