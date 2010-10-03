@@ -21,7 +21,7 @@ package org.jplot2d.env;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.impl.PlotEx;
 
 /**
  * @author Jingjing Li
@@ -29,7 +29,7 @@ import org.jplot2d.element.Plot;
  */
 public class UndoMemento {
 
-	private final Plot plot;
+	private final PlotEx plot;
 
 	private final Map<Element, Element> proxyMap;
 
@@ -38,12 +38,12 @@ public class UndoMemento {
 	 * @param proxyMap
 	 *            the key is the impl, the value is proxy.
 	 */
-	UndoMemento(Plot plot, Map<Element, Element> proxyMap) {
+	UndoMemento(PlotEx plot, Map<Element, Element> proxyMap) {
 		this.plot = plot;
 		this.proxyMap = proxyMap;
 	}
 
-	public Plot getPlot() {
+	public PlotEx getPlot() {
 		return plot;
 	}
 

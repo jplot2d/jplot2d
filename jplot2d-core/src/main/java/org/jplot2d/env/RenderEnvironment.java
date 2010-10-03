@@ -25,10 +25,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
-import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
 
@@ -66,17 +65,17 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	@Override
-	protected void renderOnCommit(Plot plot, Map<Element, Element> copyMap) {
+	protected void renderOnCommit(PlotEx plot, Map<Element, Element> copyMap) {
 
 		/*
 		 * when adding a cacheable component, the requireRedraw is not called on
 		 * it. So we must figure out what components are unmodified.
 		 */
 
-		List<Component> umCachableComps = new ArrayList<Component>();
-		Map<Component, Component> compMap = new LinkedHashMap<Component, Component>();
-		for (Component comp : cacheableComponentList) {
-			compMap.put(comp, (Component) copyMap.get(comp));
+		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
+		Map<ComponentEx, ComponentEx> compMap = new LinkedHashMap<ComponentEx, ComponentEx>();
+		for (ComponentEx comp : cacheableComponentList) {
+			compMap.put(comp, (ComponentEx) copyMap.get(comp));
 			// unmodified components
 			if (!((ComponentEx) comp).isRedrawNeeded()) {
 				umCachableComps.add(comp);
@@ -85,15 +84,15 @@ public class RenderEnvironment extends PlotEnvironment {
 		}
 
 		// build sub-component map
-		Map<Component, Component[]> subcompsMap = new HashMap<Component, Component[]>();
-		for (Map.Entry<Component, List<Component>> me : subComponentMap
+		Map<ComponentEx, ComponentEx[]> subcompsMap = new HashMap<ComponentEx, ComponentEx[]>();
+		for (Map.Entry<ComponentEx, List<ComponentEx>> me : subComponentMap
 				.entrySet()) {
-			Component key = me.getKey();
-			List<Component> sublist = me.getValue();
+			ComponentEx key = me.getKey();
+			List<ComponentEx> sublist = me.getValue();
 			int size = sublist.size();
-			Component[] copys = new Component[size];
+			ComponentEx[] copys = new ComponentEx[size];
 			for (int i = 0; i < size; i++) {
-				Component scopy = (Component) copyMap.get(sublist.get(i));
+				ComponentEx scopy = (ComponentEx) copyMap.get(sublist.get(i));
 				copys[i] = scopy;
 			}
 			subcompsMap.put(key, copys);

@@ -21,8 +21,8 @@ package org.jplot2d.env;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * @author Jingjing Li
@@ -48,23 +48,23 @@ public class DummyEnvironment extends Environment {
 	public void registerElement(Element element, Element proxy) {
 		proxyMap.put(element, proxy);
 
-		if (element instanceof Component) {
-			Component comp = (Component) element;
+		if (element instanceof ComponentEx) {
+			ComponentEx comp = (ComponentEx) element;
 			if (comp.isCacheable()) {
 				addOrder(cacheableComponentList, comp);
 				// create a subComponentMap entry
-				List<Component> subComps = new ArrayList<Component>();
+				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
 				subComps.add(comp);
 				subComponentMap.put(comp, subComps);
 			} else if (comp.getParent() == null) {
 				// create a subComponentMap entry
-				List<Component> subComps = new ArrayList<Component>();
+				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
 				subComps.add(comp);
 				subComponentMap.put(comp, subComps);
 			} else {
-				Component cc = getCacheableAncestor(comp);
+				ComponentEx cc = getCacheableAncestor(comp);
 				// add to list in subComponentMap
-				List<Component> subComps = subComponentMap.get(cc);
+				List<ComponentEx> subComps = subComponentMap.get(cc);
 				addOrder(subComps, comp);
 			}
 		}

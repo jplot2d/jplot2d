@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * An environment that a plot can realization. Once a plot is put an
@@ -66,13 +67,13 @@ public abstract class Environment {
 	/**
 	 * Contains all cacheable components in z-order
 	 */
-	protected final List<Component> cacheableComponentList = new ArrayList<Component>();
+	protected final List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
 
 	/**
 	 * The key is cacheable components or uncacheable top component; the value
 	 * is key's uncacheable descendants, include the key itself, in z-order.
 	 */
-	protected final Map<Component, List<Component>> subComponentMap = new HashMap<Component, List<Component>>();
+	protected final Map<ComponentEx, List<ComponentEx>> subComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
 	private final List<JPlot2DChangeListener> plotStructureListenerList = Collections
 			.synchronizedList(new ArrayList<JPlot2DChangeListener>());
@@ -103,7 +104,7 @@ public abstract class Environment {
 	 * @param comp
 	 * @param proxy
 	 */
-	void componentAdded(Component comp, Environment env) {
+	void componentAdded(ComponentEx comp, Environment env) {
 
 		if (!comp.isCacheable() && !getCacheableAncestor(comp).isCacheable()) {
 			throw new IllegalArgumentException(
@@ -121,7 +122,7 @@ public abstract class Environment {
 
 			Component cc = getCacheableAncestor(comp);
 			// add to list in subComponentMap
-			List<Component> subComps = subComponentMap.get(cc);
+			List<ComponentEx> subComps = subComponentMap.get(cc);
 			addOrder(subComps, env.subComponentMap.get(comp));
 		}
 
@@ -139,26 +140,26 @@ public abstract class Environment {
 	 * @param elements
 	 *            elements to be removed.
 	 */
-	DummyEnvironment componentRemoving(Component comp) {
+	DummyEnvironment componentRemoving(ComponentEx comp) {
 		fireComponentRemoving((Component) getProxy(comp));
 
 		Map<Element, Element> removedProxyMap = new HashMap<Element, Element>();
-		List<Component> removedCacheableComponentList = new ArrayList<Component>();
-		Map<Component, List<Component>> removedSubComponentMap = new HashMap<Component, List<Component>>();
+		List<ComponentEx> removedCacheableComponentList = new ArrayList<ComponentEx>();
+		Map<ComponentEx, List<ComponentEx>> removedSubComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
 		// remove all cacheable descendants
-		Iterator<Component> ite = cacheableComponentList.iterator();
+		Iterator<ComponentEx> ite = cacheableComponentList.iterator();
 		while (ite.hasNext()) {
-			Component c = ite.next();
+			ComponentEx c = ite.next();
 			if (isAncestor(comp, c)) {
 				ite.remove();
 				removedCacheableComponentList.add(c);
 
-				List<Component> removedSubcomps = subComponentMap.remove(c);
+				List<ComponentEx> removedSubcomps = subComponentMap.remove(c);
 				removedSubComponentMap.put(c, removedSubcomps);
 
 				// remove the components from proxyMap
-				for (Component sc : removedSubcomps) {
+				for (ComponentEx sc : removedSubcomps) {
 					removedProxyMap.put(sc, proxyMap.remove(sc));
 				}
 			}
@@ -166,15 +167,15 @@ public abstract class Environment {
 
 		// remove all the uncacheable descendants
 		if (!comp.isCacheable()) {
-			List<Component> removedUncacheableComps = new ArrayList<Component>();
+			List<ComponentEx> removedUncacheableComps = new ArrayList<ComponentEx>();
 			// all the possible uncacheable descendants
-			Component cacheableParent = getCacheableAncestor(comp);
-			List<Component> possibleDesList = subComponentMap
+			ComponentEx cacheableParent = getCacheableAncestor(comp);
+			List<ComponentEx> possibleDesList = subComponentMap
 					.get(cacheableParent);
 
-			Iterator<Component> it = possibleDesList.iterator();
+			Iterator<ComponentEx> it = possibleDesList.iterator();
 			while (it.hasNext()) {
-				Component c = it.next();
+				ComponentEx c = it.next();
 				if (isAncestor(comp, c)) {
 					it.remove();
 					removedUncacheableComps.add(c);
@@ -222,14 +223,14 @@ public abstract class Environment {
 	/**
 	 * Called when a component z-order has been changed.
 	 */
-	void componentZOrderChanged(Component comp) {
+	void componentZOrderChanged(ComponentEx comp) {
 		if (comp.isCacheable()) {
 			// update order of cacheable Components
 			updateOrder(cacheableComponentList);
 		} else {
 			// update order within its cacheable parent
 			Component cc = getCacheableAncestor(comp);
-			List<Component> subComps = subComponentMap.get(cc);
+			List<ComponentEx> subComps = subComponentMap.get(cc);
 			updateOrder(subComps);
 		}
 	}
@@ -239,7 +240,7 @@ public abstract class Environment {
 	 * 
 	 * @param comp
 	 */
-	void componentCacheModeChanged(Component comp) {
+	void componentCacheModeChanged(ComponentEx comp) {
 		/* cache mode changed should not trigger a redraw */
 
 		if (comp.getParent() == null) {
@@ -253,16 +254,16 @@ public abstract class Environment {
 			if (comp.isCacheable()) {
 				/* component changed from uncacheable to cacheable */
 
-				List<Component> descendant = new ArrayList<Component>();
+				List<ComponentEx> descendant = new ArrayList<ComponentEx>();
 				// all the possible uncacheable descendants
 				Component cacheableParent = getCacheableAncestor(comp
 						.getParent());
-				List<Component> possibleDesList = subComponentMap
+				List<ComponentEx> possibleDesList = subComponentMap
 						.get(cacheableParent);
 
-				Iterator<Component> it = possibleDesList.iterator();
+				Iterator<ComponentEx> it = possibleDesList.iterator();
 				while (it.hasNext()) {
-					Component c = it.next();
+					ComponentEx c = it.next();
 					if (isAncestor(comp, c)) {
 						it.remove();
 						descendant.add(c);
@@ -279,9 +280,10 @@ public abstract class Environment {
 				/* component changed from cacheable to uncacheable */
 
 				cacheableComponentList.remove(comp);
-				List<Component> subcomps = subComponentMap.remove(comp);
+				List<ComponentEx> subcomps = subComponentMap.remove(comp);
 				Component newParent = getCacheableAncestor(comp);
-				List<Component> newSubcompList = subComponentMap.get(newParent);
+				List<ComponentEx> newSubcompList = subComponentMap
+						.get(newParent);
 				newSubcompList.addAll(subcomps);
 
 				updateOrder(newSubcompList);
@@ -300,11 +302,11 @@ public abstract class Environment {
 	 * @param comp
 	 * @return
 	 */
-	protected final Component getCacheableAncestor(Component comp) {
+	protected final ComponentEx getCacheableAncestor(ComponentEx comp) {
 		if (comp.isCacheable()) {
 			return comp;
 		} else {
-			Component parent = comp.getParent();
+			ComponentEx parent = comp.getParent();
 			if (parent == null) {
 				return comp;
 			} else {
@@ -316,7 +318,7 @@ public abstract class Environment {
 	/**
 	 * update the zOrderedComponents;
 	 */
-	protected final void addOrder(List<Component> list, Component comp) {
+	protected final void addOrder(List<ComponentEx> list, ComponentEx comp) {
 		list.add(comp);
 		updateOrder(list);
 	}
@@ -324,7 +326,7 @@ public abstract class Environment {
 	/**
 	 * update the zOrderedComponents;
 	 */
-	private void addOrder(int index, List<Component> list, Component comp) {
+	private void addOrder(int index, List<ComponentEx> list, ComponentEx comp) {
 		list.add(index, comp);
 		updateOrder(list);
 	}
@@ -332,7 +334,7 @@ public abstract class Environment {
 	/**
 	 * update the zOrderedComponents;
 	 */
-	private void addOrder(List<Component> list, List<Component> comps) {
+	private void addOrder(List<ComponentEx> list, List<ComponentEx> comps) {
 		list.addAll(comps);
 		updateOrder(list);
 	}
@@ -340,9 +342,9 @@ public abstract class Environment {
 	/**
 	 * update the list order;
 	 */
-	private void updateOrder(List<Component> list) {
+	private void updateOrder(List<ComponentEx> list) {
 
-		Component[] comps = list.toArray(new Component[list.size()]);
+		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
 		Comparator<Component> zComparator = new Comparator<Component>() {
 
 			public int compare(Component o1, Component o2) {
@@ -352,7 +354,7 @@ public abstract class Environment {
 		Arrays.sort(comps, zComparator);
 
 		list.clear();
-		for (Component comp : comps) {
+		for (ComponentEx comp : comps) {
 			list.add(comp);
 		}
 	}
