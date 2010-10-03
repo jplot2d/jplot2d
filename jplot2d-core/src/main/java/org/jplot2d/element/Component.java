@@ -227,18 +227,6 @@ public interface Component extends Element {
 	 */
 	public void setPhysicalLocation(Point2D loc);
 
-	/**
-	 * Gets the location in device coordinates.
-	 * 
-	 * @return location
-	 */
-	public Point2D getLocation();
-
-	/**
-	 * Sets the location in device coordinates.
-	 */
-	public void setLocation(Point2D point);
-
 	public Dimension2D getPhysicalSize();
 
 	/**

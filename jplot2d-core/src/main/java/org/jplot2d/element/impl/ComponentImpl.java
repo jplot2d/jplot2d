@@ -26,20 +26,18 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
+import org.jplot2d.util.DoubleDimension2D;
 
-public class ComponentImpl implements Component {
+public class ComponentImpl extends ElementImpl implements ComponentEx {
 
-	protected ContainerImpl parent;
-
-	protected Boolean visible;
+	protected boolean visible = true;
 
 	protected boolean cacheable;
 
-	protected Boolean selectable;
+	protected boolean selectable;
 
-	protected Boolean movable;
+	protected boolean movable;
 
 	protected int zOrder;
 
@@ -51,13 +49,9 @@ public class ComponentImpl implements Component {
 
 	protected float fontSize = Float.NaN;
 
-	protected Point2D physicalLocation;
+	protected double physicalLocX, physicalLocY;
 
-	protected Dimension2D physicalSize;
-
-	protected Point2D deviceLocation;
-
-	private boolean redrawNeeded;
+	protected double physicalWidth, physicalHeight;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
@@ -70,22 +64,20 @@ public class ComponentImpl implements Component {
 	 */
 	private boolean valid = false;
 
-	public ContainerImpl getParent() {
-		return parent;
+	private boolean redrawNeeded;
+
+	public ContainerEx getParent() {
+		return (ContainerEx) parent;
 	}
 
-	public void setParent(ContainerImpl parent) {
-		this.parent = parent;
-	}
-
-	public Boolean getVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	public void setVisible(Boolean visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
-		if (parent != null) {
-			parent.invalidate();
+		if (getParent() != null) {
+			getParent().invalidate();
 		}
 		redraw();
 	}
@@ -98,25 +90,25 @@ public class ComponentImpl implements Component {
 		this.cacheable = cacheMode;
 		redraw();
 		if (cacheable) {
-			if (parent != null) {
-				parent.redraw();
+			if (getParent() != null) {
+				getParent().redraw();
 			}
 		}
 	}
 
-	public Boolean getSelectable() {
+	public boolean isSelectable() {
 		return selectable;
 	}
 
-	public void setSelectable(Boolean selectable) {
+	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
 	}
 
-	public Boolean getMovable() {
+	public boolean isMovable() {
 		return movable;
 	}
 
-	public void setMovable(Boolean movable) {
+	public void setMovable(boolean movable) {
 		this.movable = movable;
 	}
 
@@ -172,28 +164,21 @@ public class ComponentImpl implements Component {
 	}
 
 	public Point2D getPhysicalLocation() {
-		return physicalLocation;
+		return new Point2D.Double(physicalLocX, physicalLocY);
 	}
 
 	public void setPhysicalLocation(Point2D p) {
-		physicalLocation = (p == null) ? null : (Point2D) p.clone();
-	}
-
-	public Point2D getLocation() {
-		return deviceLocation;
-	}
-
-	public void setLocation(Point2D point) {
-		deviceLocation = point;
+		physicalLocX = p.getX();
+		physicalLocY = p.getY();
 	}
 
 	public Dimension2D getPhysicalSize() {
-		return physicalSize;
+		return new DoubleDimension2D(physicalWidth, physicalHeight);
 	}
 
 	public Rectangle2D getPhysicalBounds() {
-		return new Rectangle2D.Double(physicalLocation.getX(), physicalLocation
-				.getY(), physicalSize.getWidth(), physicalSize.getHeight());
+		return new Rectangle2D.Double(physicalLocX, physicalLocY,
+				physicalWidth, physicalHeight);
 	}
 
 	/**
@@ -249,14 +234,11 @@ public class ComponentImpl implements Component {
 		return (style & ~0x03) == 0;
 	}
 
-	/**
-	 * Call this method to mark this method need to update.
-	 */
 	public void redraw() {
 		if (cacheable) {
 			redrawNeeded = true;
-		} else if (parent != null) {
-			parent.redraw();
+		} else if (getParent() != null) {
+			getParent().redraw();
 		}
 	}
 
@@ -272,7 +254,7 @@ public class ComponentImpl implements Component {
 		throw new UnsupportedOperationException();
 	}
 
-	public ComponentImpl deepCopy(Map<Element, Element> orig2copyMap) {
+	public ComponentEx deepCopy(Map<Element, Element> orig2copyMap) {
 		ComponentImpl result = new ComponentImpl();
 		result.copyFrom(this);
 		if (orig2copyMap != null) {
@@ -281,27 +263,28 @@ public class ComponentImpl implements Component {
 		return result;
 	}
 
-	void copyFrom(Component src) {
-		copy(src, this);
-	}
-
-	private static void copy(Component src, Component dest) {
-		dest.setVisible(src.getVisible());
-		dest.setCacheable(src.isCacheable());
-		dest.setSelectable(src.getSelectable());
-		dest.setMovable(src.getMovable());
-		dest.setZOrder(src.getZOrder());
-		dest.setColor(src.getColor());
+	protected void copyFrom(ComponentImpl src) {
+		parent = src.getParent();
+		setVisible(src.isVisible());
+		setCacheable(src.isCacheable());
+		setSelectable(src.isSelectable());
+		setMovable(src.isMovable());
+		setZOrder(src.getZOrder());
+		setColor(src.getColor());
 		/* copy the font instead of name,style,size */
 		if (src.getFontName() != null && isValidFontStyle(src.getFontStyle())) {
-			dest.setFont(src.getFont());
+			setFont(src.getFont());
 		} else {
-			dest.setFontName(src.getFontName());
-			dest.setFontStyle(src.getFontStyle());
-			dest.setFontSize(src.getFontSize());
+			setFontName(src.getFontName());
+			setFontStyle(src.getFontStyle());
+			setFontSize(src.getFontSize());
 		}
-		dest.setPhysicalLocation(src.getPhysicalLocation());
-		dest.setLocation(src.getLocation());
+		physicalLocX = src.physicalLocX;
+		physicalLocY = src.physicalLocY;
+		physicalWidth = src.physicalWidth;
+		physicalHeight = src.physicalHeight;
+		valid = src.valid;
+		redrawNeeded = src.redrawNeeded;
 	}
 
 }
