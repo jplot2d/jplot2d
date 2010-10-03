@@ -18,6 +18,7 @@
  */
 package org.jplot2d.env;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -104,16 +105,20 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			return impl;
 		}
 
-		/* getElement(int n) */
+		/* getComponent(int n) */
 		if (iinfo.isGetCompMethod(method)) {
 			return invokeGetCompMethod(method, args);
 		}
-		/* addElement(Object comp) */
+		/* getComponents() */
+		if (iinfo.isGetCompArrayMethod(method)) {
+			return invokeGetCompArrayMethod(method, args);
+		}
+		/* addComponent(Object comp) */
 		if (iinfo.isAddCompMethod(method)) {
 			invokeAddCompMethod(method, args);
 			return null;
 		}
-		/* removeXxxx(Object comp) */
+		/* removeComponent(Component comp) */
 		if (iinfo.isRemoveCompMethod(method)) {
 			invokeRemoveCompMethod(method, args);
 			return null;
@@ -184,7 +189,29 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 		try {
 			Component compImpl = (Component) method.invoke(impl, args);
-			return environment.getProxy(compImpl);
+			return (Component) environment.getProxy(compImpl);
+		} catch (InvocationTargetException e) {
+			throw e.getCause();
+		} finally {
+			environment.endCommand();
+		}
+	}
+
+	private Object invokeGetCompArrayMethod(Method method, Object[] args)
+			throws Throwable {
+		synchronized (Environment.getGlobalLock()) {
+			environment.beginCommand(method.getName());
+		}
+		try {
+			Object compImpls = method.invoke(impl, args);
+			int length = Array.getLength(compImpls);
+			Object result = Array.newInstance(method.getReturnType()
+					.getComponentType(), length);
+			for (int i = 0; i < length; i++) {
+				Array.set(result, i, environment.getProxy((Element) Array.get(
+						compImpls, i)));
+			}
+			return result;
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {

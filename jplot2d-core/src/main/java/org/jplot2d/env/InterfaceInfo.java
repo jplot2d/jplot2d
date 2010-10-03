@@ -186,6 +186,15 @@ public class InterfaceInfo {
 	 * @param method
 	 * @return
 	 */
+	protected boolean isGetCompArrayMethod(Method method) {
+		HierarchyOp hop = hierachyMethodMap.get(method);
+		return hop != null && hop == HierarchyOp.GETARRAY;
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
 	protected boolean isAddCompMethod(Method method) {
 		HierarchyOp hop = hierachyMethodMap.get(method);
 		return hop != null && hop == HierarchyOp.ADD;
