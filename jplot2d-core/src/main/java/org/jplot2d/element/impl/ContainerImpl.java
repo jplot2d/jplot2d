@@ -18,28 +18,45 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.jplot2d.element.Container;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.PhysicalTransform;
 
-public class ContainerImpl extends ComponentImpl implements Container {
+public class ContainerImpl extends ComponentImpl implements ContainerEx {
+
+	public Rectangle2D getBounds() {
+		AffineTransform lxf = getPhysicalTransform().getTransform();
+		Rectangle2D pbounds = getPhysicalBounds();
+		return lxf.createTransformedShape(pbounds).getBounds2D();
+	}
 
 	public PhysicalTransform getPhysicalTransform() {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setPhysicalSize(Dimension2D physicalSize) {
-		if (!physicalSize.equals(this.physicalSize)) {
-			invalidate();
-			redraw();
-		}
-		this.physicalSize = physicalSize;
+	public final void setPhysicalSize(Dimension2D physicalSize) {
+		this.setPhysicalSize(physicalSize.getWidth(), physicalSize.getHeight());
 	}
 
-	public ContainerImpl deepCopy(Map<Element, Element> orig2copyMap) {
+	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
+		if (physicalWidth <= 0 || physicalHeight <= 0) {
+			throw new IllegalArgumentException("physical size must be positive");
+		}
+
+		if (this.physicalWidth != physicalWidth
+				|| this.physicalHeight != physicalHeight) {
+			invalidate();
+			redraw();
+			this.physicalWidth = physicalWidth;
+			this.physicalHeight = physicalHeight;
+		}
+	}
+
+	public ContainerEx deepCopy(Map<Element, Element> orig2copyMap) {
 		ContainerImpl result = new ContainerImpl();
 		result.copyFrom(this);
 		if (orig2copyMap != null) {
