@@ -21,7 +21,8 @@ package org.jplot2d.env;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ContainerEx;
 import org.junit.Test;
 
 /**
@@ -41,8 +42,8 @@ public class DummyEnvironmentTest {
 		// register uncacheable component
 		{
 			DummyEnvironment denv = new DummyEnvironment();
-			Component compA = mock(Component.class);
-			Component proxyA = mock(Component.class);
+			ComponentEx compA = mock(ComponentEx.class);
+			ComponentEx proxyA = mock(ComponentEx.class);
 			denv.registerElement(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 0);
@@ -54,8 +55,8 @@ public class DummyEnvironmentTest {
 		// register cacheable component
 		{
 			DummyEnvironment denv = new DummyEnvironment();
-			Component compA = mock(Component.class);
-			Component proxyA = mock(Component.class);
+			ComponentEx compA = mock(ComponentEx.class);
+			ComponentEx proxyA = mock(ComponentEx.class);
 			when(compA.isCacheable()).thenReturn(true);
 			when(proxyA.isCacheable()).thenReturn(true);
 			denv.registerElement(compA, proxyA);
@@ -66,15 +67,15 @@ public class DummyEnvironmentTest {
 			assertEquals(denv.subComponentMap.get(compA).get(0), compA);
 		}
 
-			// register cacheable component with uncacheable child
+		// register cacheable component with uncacheable child
 		{
 			DummyEnvironment denv = new DummyEnvironment();
-			Component compA = mock(Component.class);
-			Component proxyA = mock(Component.class);
+			ContainerEx compA = mock(ContainerEx.class);
+			ContainerEx proxyA = mock(ContainerEx.class);
 			when(compA.isCacheable()).thenReturn(true);
 			when(proxyA.isCacheable()).thenReturn(true);
-			Component compAA = mock(Component.class);
-			Component proxyAA = mock(Component.class);
+			ComponentEx compAA = mock(ComponentEx.class);
+			ComponentEx proxyAA = mock(ComponentEx.class);
 			when(compAA.getParent()).thenReturn(compA);
 			when(proxyAA.getParent()).thenReturn(proxyA);
 			assertEquals(compAA.getParent(), compA);
@@ -91,12 +92,12 @@ public class DummyEnvironmentTest {
 		// register cacheable component which has a cacheable child
 		{
 			DummyEnvironment denv = new DummyEnvironment();
-			Component compA = mock(Component.class);
-			Component proxyA = mock(Component.class);
+			ContainerEx compA = mock(ContainerEx.class);
+			ContainerEx proxyA = mock(ContainerEx.class);
 			when(compA.isCacheable()).thenReturn(true);
 			when(proxyA.isCacheable()).thenReturn(true);
-			Component compAA = mock(Component.class);
-			Component proxyAA = mock(Component.class);
+			ComponentEx compAA = mock(ComponentEx.class);
+			ComponentEx proxyAA = mock(ComponentEx.class);
 			when(compAA.getParent()).thenReturn(compA);
 			when(proxyAA.getParent()).thenReturn(proxyA);
 			when(compAA.isCacheable()).thenReturn(true);
