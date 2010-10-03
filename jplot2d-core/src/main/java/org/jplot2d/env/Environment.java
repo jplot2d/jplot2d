@@ -88,13 +88,11 @@ public abstract class Environment {
 	/**
 	 * Returns the proxy wrapper of the given element.
 	 * 
-	 * @param <T>
 	 * @param impl
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	final <T extends Element> T getProxy(T impl) {
-		return (T) proxyMap.get(impl);
+	final Element getProxy(Element impl) {
+		return proxyMap.get(impl);
 	}
 
 	/**
@@ -131,7 +129,7 @@ public abstract class Environment {
 		env.cacheableComponentList.clear();
 		env.subComponentMap.clear();
 
-		fireComponentAdded(getProxy(comp));
+		fireComponentAdded((Component) getProxy(comp));
 	}
 
 	/**
@@ -142,7 +140,7 @@ public abstract class Environment {
 	 *            elements to be removed.
 	 */
 	DummyEnvironment componentRemoving(Component comp) {
-		fireComponentRemoving(getProxy(comp));
+		fireComponentRemoving((Component) getProxy(comp));
 
 		Map<Element, Element> removedProxyMap = new HashMap<Element, Element>();
 		List<Component> removedCacheableComponentList = new ArrayList<Component>();
