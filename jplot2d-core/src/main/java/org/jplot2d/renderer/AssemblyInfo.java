@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * This class maintains a map to associate a component to its bounds and
@@ -46,7 +46,7 @@ public class AssemblyInfo<T> {
 		}
 	}
 
-	private Map<Component, InfoItem<T>> map = new LinkedHashMap<Component, InfoItem<T>>();
+	private Map<ComponentEx, InfoItem<T>> map = new LinkedHashMap<ComponentEx, InfoItem<T>>();
 
 	public AssemblyInfo() {
 
@@ -58,7 +58,7 @@ public class AssemblyInfo<T> {
 	 * @param comp
 	 * @return
 	 */
-	public boolean contains(Component comp) {
+	public boolean contains(ComponentEx comp) {
 		return map.containsKey(comp);
 	}
 
@@ -67,15 +67,15 @@ public class AssemblyInfo<T> {
 	 * 
 	 * @return
 	 */
-	public Set<Component> componentSet() {
+	public Set<ComponentEx> componentSet() {
 		return map.keySet();
 	}
 
-	public Rectangle getBounds(Component comp) {
+	public Rectangle getBounds(ComponentEx comp) {
 		return map.get(comp).bounds;
 	}
 
-	public Future<T> getFuture(Component comp) {
+	public Future<T> getFuture(ComponentEx comp) {
 		return map.get(comp).future;
 	}
 
@@ -86,7 +86,7 @@ public class AssemblyInfo<T> {
 	 * @param bounds
 	 * @param future
 	 */
-	public void put(Component comp, Rectangle bounds, Future<T> future) {
+	public void put(ComponentEx comp, Rectangle bounds, Future<T> future) {
 		map.put(comp, new InfoItem<T>(bounds, future));
 	}
 

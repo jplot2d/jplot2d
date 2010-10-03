@@ -22,11 +22,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.concurrent.Callable;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.impl.ComponentEx;
 
 public class CompRenderCallable<T> implements Callable<T> {
 
-	private Component[] comps;
+	private ComponentEx[] comps;
 
 	private Graphics2D g;
 
@@ -41,7 +41,7 @@ public class CompRenderCallable<T> implements Callable<T> {
 	 * @param result
 	 * @param bounds
 	 */
-	public CompRenderCallable(Component[] comps, Graphics2D g, T result,
+	public CompRenderCallable(ComponentEx[] comps, Graphics2D g, T result,
 			Rectangle bounds) {
 		this.comps = comps;
 		this.g = g;
@@ -50,7 +50,7 @@ public class CompRenderCallable<T> implements Callable<T> {
 	}
 
 	public T call() throws Exception {
-		for (Component comp : comps) {
+		for (ComponentEx comp : comps) {
 			comp.draw(g);
 		}
 		g.dispose();
