@@ -22,10 +22,12 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.layout.LayoutDirector;
+import org.jplot2d.element.impl.AxisEx;
+import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.element.impl.SubplotEx;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -42,7 +44,7 @@ public abstract class PlotEnvironment extends Environment {
 	 */
 	protected Plot plot;
 
-	protected Plot plotImpl;
+	protected PlotEx plotImpl;
 
 	public Plot getPlot() {
 		synchronized (getGlobalLock()) {
@@ -87,7 +89,7 @@ public abstract class PlotEnvironment extends Environment {
 		}
 
 		this.plot = plot;
-		this.plotImpl = (Plot) ((ElementEx) plot).getImpl();
+		this.plotImpl = (PlotEx) ((ElementEx) plot).getImpl();
 
 		componentAdded(plotImpl, oldEnv);
 
@@ -108,7 +110,7 @@ public abstract class PlotEnvironment extends Environment {
 			beginCommand("removePlot");
 
 			// assign a dummy environment to the removed plot
-			nenv = this.componentRemoving(plot);
+			nenv = this.componentRemoving(plotImpl);
 			nenv.beginCommand("");
 
 			// update environment for the removing component
@@ -130,17 +132,74 @@ public abstract class PlotEnvironment extends Environment {
 	protected void commit() {
 
 		/*
-		 * Layout on plot proxy to ensure layout can set redraw-require
-		 * properties.
+		 * Axis a special component. Its length can be set by layout manager,
+		 * but its thick depends on its internal status, such as tick height,
+		 * labels. The auto range must be re-calculated after all axes length
+		 * are set. So we cannot use deep-first validate tree. we must layout
+		 * all subplot, then calculate auto range, then validate all axes.
 		 */
-		LayoutDirector ld = plot.getLayoutDirector();
 
-		ld.layout(plot);
+		validateAxesThickness();
+		while (true) {
+
+			/*
+			 * Laying out axes may register some axis that ticks need be
+			 * re-calculated
+			 */
+			plotImpl.validate();
+
+			/*
+			 * Auto range axes MUST be executed after they are laid out. <br>
+			 * Auto range axes may register some axis that ticks need be
+			 * re-calculated
+			 */
+			calcPendingLockGroupAutoRange();
+
+			/*
+			 * Calculating axes tick may register some axis that metrics need be
+			 * re-calculated
+			 */
+			calcPendingAxesTick();
+
+			/* axis metrics change need re-laying out the plot */
+			validateAxesThickness();
+
+			if (plotImpl.isValid()) {
+				break;
+			}
+		}
 
 		Map<Element, Element> copyMap = makeUndoMemento();
 
-		renderOnCommit(plot, copyMap);
+		renderOnCommit(plotImpl, copyMap);
 
+	}
+
+	/**
+	 * 
+	 */
+	private void calcPendingAxesTick() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * 
+	 */
+	private void calcPendingLockGroupAutoRange() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * validate all axes thickness
+	 */
+	private void validateAxesThickness() {
+		for (SubplotEx sp : plotImpl.getSubPlots()) {
+			for (AxisEx axis : sp.getAxes()) {
+				axis.validate();
+			}
+		}
 	}
 
 	public int getHistoryCapacity() {
@@ -193,7 +252,7 @@ public abstract class PlotEnvironment extends Environment {
 
 		Map<Element, Element> copyMap = restore(memento);
 
-		renderOnCommit(plot, copyMap);
+		renderOnCommit(plotImpl, copyMap);
 
 		end();
 	}
@@ -214,7 +273,7 @@ public abstract class PlotEnvironment extends Environment {
 
 		Map<Element, Element> copyMap = restore(memento);
 
-		renderOnCommit(plot, copyMap);
+		renderOnCommit(plotImpl, copyMap);
 
 		end();
 	}
@@ -232,7 +291,7 @@ public abstract class PlotEnvironment extends Environment {
 		 * only when no history and all renderer is sync renderer and the
 		 * component renderer is caller run, the deepCopy can be omitted.
 		 */
-		Plot plotRenderSafeCopy = plotImpl.deepCopy(copyMap);
+		PlotEx plotRenderSafeCopy = plotImpl.deepCopy(copyMap);
 
 		// build copy to proxy map
 		Map<Element, Element> proxyMap2 = new HashMap<Element, Element>();
@@ -260,7 +319,7 @@ public abstract class PlotEnvironment extends Environment {
 		// the value is copy of element, the key is original element
 		Map<Element, Element> copyMap = new HashMap<Element, Element>();
 		// copy implements
-		plotImpl = memento.getPlot().deepCopy(copyMap);
+		plotImpl = (PlotEx) memento.getPlot().deepCopy(copyMap);
 
 		Map<Element, Element> eleMap = new HashMap<Element, Element>();
 		this.proxyMap.clear();
@@ -272,8 +331,8 @@ public abstract class PlotEnvironment extends Environment {
 			ih.replaceImpl(impl);
 			this.proxyMap.put(impl, proxy);
 
-			if (impl instanceof Component) {
-				cacheableComponentList.add((Component) impl);
+			if (impl instanceof ComponentEx) {
+				cacheableComponentList.add((ComponentEx) impl);
 			}
 			eleMap.put(impl, mmte);
 		}
@@ -290,7 +349,7 @@ public abstract class PlotEnvironment extends Environment {
 	 *            the key contains all components in the plot. The values are
 	 *            the thread safe copies of keys.
 	 */
-	protected abstract void renderOnCommit(Plot plot,
+	protected abstract void renderOnCommit(PlotEx plot,
 			Map<Element, Element> copyMap);
 
 	/* --- JPlot2DChangeListener --- */

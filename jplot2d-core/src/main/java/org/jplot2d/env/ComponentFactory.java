@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.layout.GridLayoutDirector;
@@ -77,7 +78,7 @@ public class ComponentFactory {
 	}
 
 	public Plot createPlot() {
-		Plot impl = new PlotImpl();
+		PlotEx impl = new PlotImpl();
 		impl.setLayoutDirector(new GridLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
@@ -87,7 +88,7 @@ public class ComponentFactory {
 		return proxy;
 	}
 
-	public Subplot createSubPlot() {
+	public Subplot createSubplot() {
 		Subplot impl = new SubplotImpl();
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
 		Subplot proxy = (Subplot) Proxy.newProxyInstance(Plot.class

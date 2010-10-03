@@ -21,7 +21,7 @@ package org.jplot2d.env;
 import org.jplot2d.element.Element;
 
 /**
- * Interface that provide for called from an environment.
+ * Interface that provide methods for called from an environment.
  * 
  * @author Jingjing Li
  * 

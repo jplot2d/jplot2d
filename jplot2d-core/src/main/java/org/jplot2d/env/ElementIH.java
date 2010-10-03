@@ -26,6 +26,7 @@ import java.lang.reflect.Proxy;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * This InvocationHandler intercept calls on proxy objects, and wrap the calls
@@ -113,7 +114,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		if (iinfo.isGetCompArrayMethod(method)) {
 			return invokeGetCompArrayMethod(method, args);
 		}
-		/* addComponent(Object comp) */
+		/* addComponent(Component comp) */
 		if (iinfo.isAddCompMethod(method)) {
 			invokeAddCompMethod(method, args);
 			return null;
@@ -231,7 +232,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private void invokeAddCompMethod(Method method, Object[] args)
 			throws Throwable {
 		ElementEx cproxy = (ElementEx) args[0];
-		Component cimpl = (Component) cproxy.getImpl();
+		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 		Environment penv;
 		Environment cenv;
@@ -250,11 +251,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
+			penv.componentAdded(cimpl, cenv);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			penv.componentAdded(cimpl, cenv);
-
 			cenv.endCommand();
 			penv.endCommand();
 		}
@@ -270,7 +270,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private void invokeRemoveCompMethod(Method method, Object[] args)
 			throws Throwable {
 		ElementEx cproxy = (ElementEx) args[0];
-		Component cimpl = (Component) cproxy.getImpl();
+		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 		Environment penv;
 		Environment cenv;
@@ -289,11 +289,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
+			penv.componentRemoved(cimpl);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			penv.componentRemoved(cimpl);
-
 			cenv.endCommand();
 			penv.endCommand();
 		}
@@ -339,7 +338,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} finally {
 			if (impl instanceof Component
 					&& method.getName().equals("setZOrder")) {
-				environment.componentZOrderChanged((Component) impl);
+				environment.componentZOrderChanged((ComponentEx) impl);
 			}
 		}
 	}
