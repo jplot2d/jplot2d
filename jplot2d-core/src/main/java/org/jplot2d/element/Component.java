@@ -20,11 +20,9 @@ package org.jplot2d.element;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 
 /**
  * A <em>component</em> is an object having a graphical representation that can
@@ -35,32 +33,12 @@ import java.util.Map;
  */
 public interface Component extends Element {
 
-	public static enum HAlign {
-		LEFT, CENTER, RIGHT
-	}
-
-	public static enum VAlign {
-		TOP, MIDDLE, BOTTOM
-	}
-
-	public static HAlign LEFT = HAlign.LEFT;
-
-	public static HAlign CENTER = HAlign.CENTER;
-
-	public static HAlign RIGHT = HAlign.RIGHT;
-
-	public static VAlign TOP = VAlign.TOP;
-
-	public static VAlign MIDDLE = VAlign.MIDDLE;
-
-	public static VAlign BOTTOM = VAlign.BOTTOM;
-
 	/**
 	 * Gets the parent of this component.
 	 * 
 	 * @return the parent of this component
 	 */
-	public Component getParent();
+	public Container getParent();
 
 	/**
 	 * Determines whether this component should be visible when its parent is
@@ -70,7 +48,7 @@ public interface Component extends Element {
 	 *         otherwise
 	 * @see #setVisible
 	 */
-	public Boolean getVisible();
+	public boolean isVisible();
 
 	/**
 	 * Shows or hides this component depending on the value of parameter
@@ -81,7 +59,7 @@ public interface Component extends Element {
 	 *            this component
 	 * @see #isVisible
 	 */
-	public void setVisible(Boolean b);
+	public void setVisible(boolean b);
 
 	/**
 	 * Returns <code>true</code> if this component has its own rendering cache.
@@ -104,7 +82,7 @@ public interface Component extends Element {
 	 * 
 	 * @return <code>true</code> if selectable
 	 */
-	public Boolean getSelectable();
+	public boolean isSelectable();
 
 	/**
 	 * Set the selectable property.
@@ -112,7 +90,7 @@ public interface Component extends Element {
 	 * @param select
 	 *            if <code>true</code> object is selectable
 	 */
-	public void setSelectable(Boolean selectable);
+	public void setSelectable(boolean selectable);
 
 	/**
 	 * Returns <code>true</code> if the component is movable by mouse dragging.
@@ -120,12 +98,12 @@ public interface Component extends Element {
 	 * 
 	 * @return <code>true</code> if movable
 	 */
-	public Boolean getMovable();
+	public boolean isMovable();
 
 	/**
 	 * Set the movable property.
 	 */
-	public void setMovable(Boolean movable);
+	public void setMovable(boolean movable);
 
 	/**
 	 * Returns the z-order of this component.
@@ -277,51 +255,5 @@ public interface Component extends Element {
 	 * @return
 	 */
 	public Rectangle2D getBounds();
-
-	/**
-	 * Determines whether this component is valid. A component is valid when it
-	 * is correctly sized and positioned within its parent container and all its
-	 * children are also valid. In order to account for peers' size
-	 * requirements, components are invalidated before they are first shown on
-	 * the screen. By the time the parent container is fully realized, all its
-	 * components will be valid.
-	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code>
-	 *         otherwise
-	 * @see #validate
-	 * @see #invalidate
-	 */
-	public boolean isValid();
-
-	/**
-	 * Mark this component has a valid layout.
-	 * 
-	 * @see #invalidate
-	 */
-	public void validate();
-
-	/**
-	 * Invalidates this component. This component and all parents above it are
-	 * marked as needing to be laid out. This method can be called often, so it
-	 * needs to execute quickly.
-	 * 
-	 * @see #validate
-	 */
-	public void invalidate();
-
-	/**
-	 * Draw this component only. All its children is not drawn.
-	 * 
-	 * @param g
-	 *            to the Graphics2D drawing
-	 */
-	void draw(Graphics2D g);
-
-	/**
-	 * @param orig2copyMap
-	 *            original element to copy map
-	 * @return
-	 */
-	public Component deepCopy(Map<Element, Element> orig2copyMap);
 
 }
