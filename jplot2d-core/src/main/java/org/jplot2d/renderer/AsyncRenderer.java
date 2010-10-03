@@ -30,8 +30,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 
-import org.jplot2d.element.Component;
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.PlotEx;
 
 /**
  * This renderer assemble all cached component and render uncacheable component
@@ -162,10 +162,10 @@ public class AsyncRenderer<T> extends Renderer<T> {
 	}
 
 	@Override
-	public final void render(Plot plot,
-			Map<Component, Component> cacheableCompMap,
-			Collection<Component> unmodifiedCacheableComps,
-			Map<Component, Component[]> subcompsMap) {
+	public final void render(PlotEx plot,
+			Map<ComponentEx, ComponentEx> cacheableCompMap,
+			Collection<ComponentEx> unmodifiedCacheableComps,
+			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
 				unmodifiedCacheableComps, subcompsMap);
 

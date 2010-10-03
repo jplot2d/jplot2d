@@ -21,7 +21,7 @@ package org.jplot2d.renderer;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * Assembler is a service in rendering. It can create CompRenderCallable to a
@@ -41,7 +41,7 @@ public abstract class Assembler<T> {
 	 * @return a CompRenderCallable
 	 */
 	public abstract CompRenderCallable<T> createCompRenderCallable(
-			Rectangle bounds, Component[] comps);
+			Rectangle bounds, ComponentEx[] comps);
 
 	/**
 	 * Assemble the rendered component given in AssemblyInfo into a result.

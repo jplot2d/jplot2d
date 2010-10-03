@@ -29,8 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
-import org.jplot2d.element.Component;
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.PlotEx;
 
 /**
  * A renderer to generate a result for plot. The rendering process in 2 steps:
@@ -106,9 +106,10 @@ public abstract class Renderer<T> {
 	 *            the key is cacheable component, the value is safe-copy of all
 	 *            its sub-component in z-order.
 	 */
-	public abstract void render(Plot plot, Map<Component, Component> cacheableCompMap,
-			Collection<Component> unmodifiedCacheableComps,
-			Map<Component, Component[]> subcompsMap);
+	public abstract void render(PlotEx plot,
+			Map<ComponentEx, ComponentEx> cacheableCompMap,
+			Collection<ComponentEx> unmodifiedCacheableComps,
+			Map<ComponentEx, ComponentEx[]> subcompsMap);
 
 	/**
 	 * Execute component renderer on every modified cacheable component. This
@@ -124,14 +125,15 @@ public abstract class Renderer<T> {
 	 *            of all its sub-components.
 	 * @return
 	 */
-	protected AssemblyInfo<T> runCompRender(Map<Component, Component> compMap,
-			Collection<Component> unmodifiedComps,
-			Map<Component, Component[]> subcompOrderMap) {
+	protected AssemblyInfo<T> runCompRender(
+			Map<ComponentEx, ComponentEx> compMap,
+			Collection<ComponentEx> unmodifiedComps,
+			Map<ComponentEx, ComponentEx[]> subcompOrderMap) {
 		AssemblyInfo<T> ainfo = new AssemblyInfo<T>();
 
-		for (Map.Entry<Component, Component> me : compMap.entrySet()) {
-			Component comp = me.getKey();
-			Component ccopy = me.getValue();
+		for (Map.Entry<ComponentEx, ComponentEx> me : compMap.entrySet()) {
+			ComponentEx comp = me.getKey();
+			ComponentEx ccopy = me.getValue();
 
 			/*
 			 * the component may be set to cacheable, while stay unmodified
@@ -143,7 +145,7 @@ public abstract class Renderer<T> {
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = ccopy.getBounds().getBounds();
-				Component[] sublist = subcompOrderMap.get(comp);
+				ComponentEx[] sublist = subcompOrderMap.get(comp);
 				CompRenderCallable<T> compRenderCallable = assembler
 						.createCompRenderCallable(bounds, sublist);
 				FutureTask<T> crtask = new FutureTask<T>(compRenderCallable);

@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.impl.ComponentEx;
 
 /**
  * This assembler can produce a BufferedImage.
@@ -51,7 +51,7 @@ public class ImageAssembler extends Assembler<BufferedImage> {
 	}
 
 	public CompRenderCallable<BufferedImage> createCompRenderCallable(
-			Rectangle bounds, Component[] comps) {
+			Rectangle bounds, ComponentEx[] comps) {
 		BufferedImage image = new BufferedImage(bounds.width, bounds.height,
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = image.createGraphics();
@@ -71,7 +71,7 @@ public class ImageAssembler extends Assembler<BufferedImage> {
 			g.fillRect(0, 0, width, height);
 		}
 
-		for (Component c : ainfo.componentSet()) {
+		for (ComponentEx c : ainfo.componentSet()) {
 			Rectangle bounds = ainfo.getBounds(c);
 			Future<BufferedImage> f = ainfo.getFuture(c);
 			try {
