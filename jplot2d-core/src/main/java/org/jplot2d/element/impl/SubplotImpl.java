@@ -18,48 +18,141 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.element.Axis;
+import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.Subplot;
+import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.element.Plot;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class SubplotImpl extends ContainerImpl implements Subplot {
+public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
-	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return null;
+	private PhysicalTransform pxf;
+
+	private Dimension2D viewportPreferredSize = new DoubleDimension2D(4.0, 3.0);
+
+	private final List<Layer> layers = new ArrayList<Layer>();
+
+	private final List<Axis> axes = new ArrayList<Axis>();
+
+	private Rectangle2D viewportPhysicalBounds;
+
+	private Plot getPlot() {
+		return (Plot) getParent();
+	}
+
+	public void setPhysicalLocation(Point2D p) {
+		super.setPhysicalLocation(p);
+		double scale = getPlot().getPhysicalTransform().getScale();
+		pxf = new PhysicalTransform(physicalLocX, physicalLocY, scale);
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		double scale = getPlot().getPhysicalTransform().getScale();
+		if (pxf == null || pxf.getScale() != scale) {
+			pxf = new PhysicalTransform(physicalLocX, physicalLocY, scale);
+		}
+		return pxf;
+	}
+
+	public Dimension2D getViewportPreferredSize() {
+		return viewportPreferredSize;
+	}
+
+	public void setViewportPreferredSize(Dimension2D physize) {
+		viewportPreferredSize = physize;
 	}
 
 	public Rectangle2D getViewportBounds() {
-		// TODO Auto-generated method stub
-		return null;
+		return viewportPhysicalBounds;
 	}
 
 	public void setViewportBounds(Rectangle2D bounds) {
-		// TODO Auto-generated method stub
+		this.viewportPhysicalBounds = bounds;
+	}
 
+	public Layer getLayer(int index) {
+		return layers.get(index);
+	}
+
+	public Layer[] getLayers() {
+		return layers.toArray(new Layer[layers.size()]);
 	}
 
 	public void addLayer(Layer layer) {
-		// TODO Auto-generated method stub
+		layers.add(layer);
+		((ComponentEx) layer).setParent(this);
+	}
 
+	public void removeLayer(Layer layer) {
+		layers.remove(layer);
+	}
+
+	public Axis getAxis(int index) {
+		return axes.get(index);
+	}
+
+	public AxisEx[] getAxes() {
+		return axes.toArray(new AxisEx[axes.size()]);
+	}
+
+	public void addAxis(Axis axis) {
+		axes.add(axis);
+		((ComponentEx) axis).setParent(this);
+	}
+
+	public void removeAxis(Axis axis) {
+		axes.remove(axis);
+	}
+
+	public void validate() {
+		for (Layer layer : layers) {
+			layer.getViewport().setPhysicalBounds();
+		}
+		for (Axis axis : axes) {
+			if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
+				axis.setLength(viewportPhysicalBounds.getWidth());
+			} else {
+				axis.setLength(viewportPhysicalBounds.getHeight());
+			}
+		}
+		super.validate();
 	}
 
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
+		g.setColor(Color.BLACK);
+		Rectangle rect = this.getBounds().getBounds();
+		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
+		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
 
 	}
 
-	public SubplotImpl deepCopy(Map<Element, Element> orig2copyMap) {
-		// TODO Auto-generated method stub
-		return null;
+	public SubplotEx deepCopy(Map<Element, Element> orig2copyMap) {
+
+		SubplotImpl result = new SubplotImpl();
+		result.copyFrom(this);
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+
+		return result;
 	}
 
 }

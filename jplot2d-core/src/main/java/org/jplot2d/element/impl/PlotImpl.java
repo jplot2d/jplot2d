@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.element.Subplot;
 import org.jplot2d.layout.LayoutDirector;
@@ -38,7 +37,11 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
-public class PlotImpl extends ContainerImpl implements Plot {
+public class PlotImpl extends ContainerImpl implements PlotEx {
+
+	private double scale = 72;
+
+	private PhysicalTransform pxf = new PhysicalTransform(0.0, 0.0, scale);
 
 	private LayoutDirector director;
 
@@ -46,16 +49,16 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	private Dimension containerSize = new Dimension();
 
-	private double scale = 72;
-
 	private Dimension2D targetPhySize = new DoubleDimension2D(4.0, 3.0);
 
-	private final List<SubplotImpl> subplots = new ArrayList<SubplotImpl>();
-
-	private Dimension2D viewportPhySize = new DoubleDimension2D(4.0, 3.0);
+	private final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
 
 	public PlotImpl() {
 		cacheable = true;
+	}
+
+	public void setCacheable(boolean cacheMode) {
+		// ignore setting cacheable
 	}
 
 	public LayoutDirector getLayoutDirector() {
@@ -74,17 +77,74 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		this.sizeMode = sizeMode;
 	}
 
+	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
+		super.setPhysicalSize(physicalWidth, physicalHeight);
+		/*
+		 * Calculate scale based on container size and physical size.
+		 */
+		Dimension2D physize = getPhysicalSize();
+		double scaleX = containerSize.width / physize.getWidth();
+		double scaleY = containerSize.height / physize.getHeight();
+		this.scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+		updatePxf();
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		return pxf;
+	}
+
+	/**
+	 * set this plot a new physical transform. this will trigger a redraw
+	 * notification.
+	 */
+	private void updatePxf() {
+		pxf = new PhysicalTransform(0.0, physicalHeight, scale);
+		redraw();
+	}
+
 	public Dimension getContainerSize() {
 		return containerSize;
 	}
 
 	public void setContainerSize(Dimension size) {
 		this.containerSize = size;
-		invalidate();
-	}
 
-	public double getScale() {
-		return scale;
+		switch (getSizeMode()) {
+		case FIT_CONTAINER_WITH_TARGET_SIZE: {
+			Dimension2D tcSize = getTargetPhySize();
+
+			double scaleX = containerSize.width / tcSize.getWidth();
+			double scaleY = containerSize.height / tcSize.getHeight();
+			double scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+			double phyWidth = containerSize.width / scale;
+			double phyHeight = containerSize.height / scale;
+
+			setPhysicalSize(phyWidth, phyHeight);
+			break;
+		}
+		case FIT_CONTAINER_SIZE: {
+			double phyWidth = containerSize.width / scale;
+			double phyHeight = containerSize.height / scale;
+
+			setPhysicalSize(phyWidth, phyHeight);
+			break;
+		}
+		case FIXED_SIZE:
+		case FIT_CONTENTS: {
+			/*
+			 * Calculate scale based on container size and physical size.
+			 */
+			Dimension2D physize = getPhysicalSize();
+			double scaleX = containerSize.width / physize.getWidth();
+			double scaleY = containerSize.height / physize.getHeight();
+			this.scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+			updatePxf();
+			break;
+		}
+		}
 	}
 
 	public Dimension2D getTargetPhySize() {
@@ -93,14 +153,6 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	public void setTargetPhySize(Dimension2D physize) {
 		targetPhySize = physize;
-	}
-
-	public Dimension2D getViewportPhySize() {
-		return viewportPhySize;
-	}
-
-	public void setViewportPhySize(Dimension2D physize) {
-		viewportPhySize = physize;
 	}
 
 	public Rectangle2D getBounds() {
@@ -112,7 +164,14 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		return subplots.get(i);
 	}
 
+	public SubplotEx[] getSubPlots() {
+		return subplots.toArray(new SubplotEx[subplots.size()]);
+	}
+
 	public void addSubPlot(Subplot subplot, Object constraint) {
+		subplots.add((SubplotEx) subplot);
+		((SubplotEx) subplot).setParent(this);
+
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
 			ld.setConstraint(subplot, constraint);
@@ -128,20 +187,31 @@ public class PlotImpl extends ContainerImpl implements Plot {
 
 	public void validate() {
 		if (!isValid()) {
-			super.validate();
+			doLayout();
 			for (Subplot subplot : subplots) {
-				subplot.validate();
+				((ComponentEx) subplot).validate();
 			}
+			super.validate();
+		}
+	}
+
+	private void doLayout() {
+		LayoutDirector director = this.director;
+		if (director != null) {
+			director.layout(this);
 		}
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.BLACK);
-		g.drawLine(0, 0, containerSize.width, containerSize.height);
-		g.drawLine(0, containerSize.height, containerSize.width, 0);
+		// draw title and legend
+
+		// draw subplots
+		for (Subplot sp : subplots) {
+			((SubplotEx) sp).draw(g);
+		}
 	}
 
-	public PlotImpl deepCopy(Map<Element, Element> orig2copyMap) {
+	public PlotEx deepCopy(Map<Element, Element> orig2copyMap) {
 		PlotImpl result = new PlotImpl();
 
 		result.copyFrom(this);
@@ -150,9 +220,9 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		}
 
 		// copy subplots
-		for (SubplotImpl sp : subplots) {
-			SubplotImpl csp = sp.deepCopy(orig2copyMap);
-			csp.setParent(result);
+		for (SubplotEx sp : subplots) {
+			SubplotEx csp = ((SubplotEx) sp).deepCopy(orig2copyMap);
+			((ComponentEx) csp).setParent(result);
 			result.subplots.add(csp);
 		}
 
@@ -166,7 +236,8 @@ public class PlotImpl extends ContainerImpl implements Plot {
 		sizeMode = src.sizeMode;
 		containerSize = (Dimension) src.containerSize.clone();
 		targetPhySize = (Dimension2D) src.targetPhySize.clone();
-		physicalSize = (Dimension2D) src.physicalSize.clone();
+		physicalWidth = src.physicalWidth;
+		physicalHeight = src.physicalHeight;
 		scale = src.scale;
 	}
 

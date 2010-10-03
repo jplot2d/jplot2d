@@ -20,7 +20,6 @@ package org.jplot2d.element;
 
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
-import java.util.Map;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
@@ -41,11 +40,6 @@ public interface Plot extends Container {
 
 	public void setSizeMode(PlotSizeMode smode);
 
-	/**
-	 * @return the device to physical factor.
-	 */
-	public double getScale();
-
 	public Dimension getContainerSize();
 
 	/**
@@ -58,15 +52,6 @@ public interface Plot extends Container {
 	public Dimension2D getTargetPhySize();
 
 	public void setTargetPhySize(Dimension2D physize);
-
-	public Dimension2D getViewportPhySize();
-
-	/**
-	 * Sets the viewport physical size for all its subplot
-	 * 
-	 * @param physize
-	 */
-	public void setViewportPhySize(Dimension2D physize);
 
 	/**
 	 * @return
@@ -86,18 +71,26 @@ public interface Plot extends Container {
 	public Subplot getSubPlot(int n);
 
 	/**
-	 * @param spimpl
+	 * Gets the nth subplot in this plot.
+	 * 
+	 * @param n
+	 *            the index of the component to get.
+	 * @return the nth subplot in this plot
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Subplot[] getSubPlots();
+
+	/**
+	 * @param subplot
 	 * @param constraint
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	void addSubPlot(Subplot spimpl, Object constraint);
+	void addSubPlot(Subplot subplot, Object constraint);
 
 	/**
-	 * @param spimpl
+	 * @param subplot
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	void removeSubPlot(Subplot spimpl);
-
-	public Plot deepCopy(Map<Element, Element> orig2copyMap);
+	void removeSubPlot(Subplot subplot);
 
 }
