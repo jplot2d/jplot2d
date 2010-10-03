@@ -19,9 +19,10 @@
 package org.jplot2d.element;
 
 import java.awt.geom.Dimension2D;
-import java.util.Map;
 
 /**
+ * A container's physical size can be set, and has a physical transform.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -33,19 +34,20 @@ public interface Container extends Component {
 	 * @param physicalSize
 	 */
 	public void setPhysicalSize(Dimension2D physicalSize);
-	
+
+	/**
+	 * Sets the physical size of this container.
+	 * 
+	 * @param physicalWidth
+	 * @param physicalHeight
+	 */
+	public void setPhysicalSize(double physicalWidth, double physicalHeight);
+
 	/**
 	 * Returns the PhysicalTransform of this component.
 	 * 
 	 * @return
 	 */
 	public PhysicalTransform getPhysicalTransform();
-
-	/**
-	 * @param orig2copyMap
-	 *            original element to copy map
-	 * @return
-	 */
-	public Container deepCopy(Map<Element, Element> orig2copyMap);
 
 }
