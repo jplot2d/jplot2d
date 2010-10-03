@@ -28,7 +28,7 @@ import java.util.Map;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.impl.ComponentImpl;
+import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
 
@@ -78,10 +78,10 @@ public class RenderEnvironment extends PlotEnvironment {
 		for (Component comp : cacheableComponentList) {
 			compMap.put(comp, (Component) copyMap.get(comp));
 			// unmodified components
-			if (!((ComponentImpl) comp).isRedrawNeeded()) {
+			if (!((ComponentEx) comp).isRedrawNeeded()) {
 				umCachableComps.add(comp);
 			}
-			((ComponentImpl) comp).clearRedrawNeeded();
+			((ComponentEx) comp).clearRedrawNeeded();
 		}
 
 		// build sub-component map
