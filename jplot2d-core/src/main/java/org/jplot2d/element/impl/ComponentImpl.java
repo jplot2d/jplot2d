@@ -167,9 +167,13 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		return new Point2D.Double(physicalLocX, physicalLocY);
 	}
 
-	public void setPhysicalLocation(Point2D p) {
-		physicalLocX = p.getX();
-		physicalLocY = p.getY();
+	public final void setPhysicalLocation(Point2D p) {
+		setPhysicalLocation(p.getX(), p.getY());
+	}
+
+	public void setPhysicalLocation(double locX, double locY) {
+		physicalLocX = locX;
+		physicalLocY = locY;
 	}
 
 	public Dimension2D getPhysicalSize() {
