@@ -21,8 +21,10 @@ package org.jplot2d.env;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.element.Element;
+import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
+import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
@@ -91,9 +93,20 @@ public class ComponentFactory {
 	public Subplot createSubplot() {
 		Subplot impl = new SubplotImpl();
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
-		Subplot proxy = (Subplot) Proxy.newProxyInstance(Plot.class
-				.getClassLoader(),
-				new Class[] { Subplot.class, ElementAddition.class }, ih);
+		Subplot proxy = (Subplot) Proxy.newProxyInstance(Subplot.class
+				.getClassLoader(), new Class[] { Subplot.class,
+				ElementAddition.class }, ih);
+
+		assignDummyEnv(impl, proxy);
+		return proxy;
+	}
+
+	public Layer createLayer() {
+		Layer impl = new LayerImpl();
+		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
+		Layer proxy = (Layer) Proxy.newProxyInstance(Layer.class
+				.getClassLoader(), new Class[] { Layer.class,
+				ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;

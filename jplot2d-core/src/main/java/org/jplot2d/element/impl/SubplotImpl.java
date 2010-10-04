@@ -18,9 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -28,11 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.PhysicalTransform;
-import org.jplot2d.element.Plot;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -45,14 +40,14 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private Dimension2D viewportPreferredSize = new DoubleDimension2D(4.0, 3.0);
 
-	private final List<Layer> layers = new ArrayList<Layer>();
+	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
 	private final List<Axis> axes = new ArrayList<Axis>();
 
 	private Rectangle2D viewportPhysicalBounds;
 
-	private Plot getPlot() {
-		return (Plot) getParent();
+	public PlotEx getParent() {
+		return (PlotEx) super.getParent();
 	}
 
 	public void setPhysicalLocation(double locX, double locY) {
@@ -63,7 +58,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null) {
-			pxf = getPlot().getPhysicalTransform().translate(physicalLocX,
+			pxf = getParent().getPhysicalTransform().translate(physicalLocX,
 					physicalLocY);
 		}
 		return pxf;
@@ -94,13 +89,13 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return layers.get(index);
 	}
 
-	public Layer[] getLayers() {
-		return layers.toArray(new Layer[layers.size()]);
+	public LayerEx[] getLayers() {
+		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
 	public void addLayer(Layer layer) {
-		layers.add(layer);
-		((ComponentEx) layer).setParent(this);
+		layers.add((LayerEx) layer);
+		((LayerEx) layer).setParent(this);
 	}
 
 	public void removeLayer(Layer layer) {
@@ -124,29 +119,6 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		axes.remove(axis);
 	}
 
-	public void validate() {
-		for (Layer layer : layers) {
-			layer.getViewport().setPhysicalBounds();
-		}
-		for (Axis axis : axes) {
-			if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-				axis.setLength(viewportPhysicalBounds.getWidth());
-			} else {
-				axis.setLength(viewportPhysicalBounds.getHeight());
-			}
-		}
-		super.validate();
-	}
-
-	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-		g.setColor(Color.BLACK);
-		Rectangle rect = this.getBounds().getBounds();
-		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
-		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
-
-	}
-
 	public SubplotEx deepCopy(Map<Element, Element> orig2copyMap) {
 
 		SubplotImpl result = new SubplotImpl();
@@ -157,10 +129,19 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		result.copyFrom(this);
 
+		// copy layers
+		for (LayerEx layer : layers) {
+			LayerEx layerCopy = ((LayerEx) layer).deepCopy(orig2copyMap);
+			((LayerEx) layerCopy).setParent(result);
+			result.layers.add(layerCopy);
+		}
+
+		// TODO: copy axes
+
 		return result;
 	}
 
-	void copyFrom(SubplotImpl src) {
+	private void copyFrom(SubplotImpl src) {
 		super.copyFrom(src);
 		pxf = src.pxf;
 		viewportPreferredSize = src.viewportPreferredSize;

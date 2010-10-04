@@ -25,6 +25,8 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jplot2d.element.AxisOrientation;
+import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.util.Insets2D;
@@ -116,9 +118,23 @@ public class StackLayoutDirector implements LayoutDirector {
 		case FIT_CONTAINER_SIZE:
 		case FIT_CONTAINER_WITH_TARGET_SIZE:
 		case FIXED_SIZE:
-			plot.getSubPlot(0).setPhysicalLocation(new Point2D.Double(0, 0));
-			Log.layout.info(plot.getPhysicalSize().toString());
-			plot.getSubPlot(0).setPhysicalSize(plot.getPhysicalSize());
+			for (SubplotEx sp : plot.getSubPlots()) {
+				sp.setPhysicalLocation(new Point2D.Double(0, 0));
+				sp.setPhysicalSize(plot.getPhysicalSize());
+				sp.setViewportBounds(plot.getPhysicalBounds());
+
+				for (AxisEx axis : sp.getAxes()) {
+					if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
+						axis.setLength(sp.getViewportBounds().getWidth());
+					} else {
+						axis.setLength(sp.getViewportBounds().getHeight());
+					}
+					axis.validate();
+				}
+
+				sp.validate();
+			}
+			plot.validate();
 			break;
 		case FIT_CONTENTS:
 			// PlotGridLayoutStrategyP2C.getInstance().doLayout(this, _cflags);

@@ -214,7 +214,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	 * 
 	 * @see #invalidate
 	 */
-	public void validate() {
+	public final void validate() {
 		valid = true;
 	}
 
@@ -255,7 +255,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void draw(Graphics2D g) {
-		throw new UnsupportedOperationException();
+		// draw nothing
 	}
 
 	public ComponentEx deepCopy(Map<Element, Element> orig2copyMap) {
