@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +55,23 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return (Plot) getParent();
 	}
 
-	public void setPhysicalLocation(Point2D p) {
-		super.setPhysicalLocation(p);
-		double scale = getPlot().getPhysicalTransform().getScale();
-		pxf = new PhysicalTransform(physicalLocX, physicalLocY, scale);
+	public void setPhysicalLocation(double locX, double locY) {
+		super.setPhysicalLocation(locX, locY);
+		pxf = null;
+		redraw();
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
-		double scale = getPlot().getPhysicalTransform().getScale();
-		if (pxf == null || pxf.getScale() != scale) {
-			pxf = new PhysicalTransform(physicalLocX, physicalLocY, scale);
+		if (pxf == null) {
+			pxf = getPlot().getPhysicalTransform().translate(physicalLocX,
+					physicalLocY);
 		}
 		return pxf;
+	}
+
+	public void plotPhysicalTransformChanged() {
+		pxf = null;
+		redraw();
 	}
 
 	public Dimension2D getViewportPreferredSize() {
@@ -146,13 +150,21 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public SubplotEx deepCopy(Map<Element, Element> orig2copyMap) {
 
 		SubplotImpl result = new SubplotImpl();
-		result.copyFrom(this);
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
 
+		result.copyFrom(this);
+
 		return result;
+	}
+
+	void copyFrom(SubplotImpl src) {
+		super.copyFrom(src);
+		pxf = src.pxf;
+		viewportPreferredSize = src.viewportPreferredSize;
+		viewportPhysicalBounds = src.viewportPhysicalBounds;
 	}
 
 }

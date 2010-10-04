@@ -101,6 +101,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private void updatePxf() {
 		pxf = new PhysicalTransform(0.0, physicalHeight, scale);
 		redraw();
+
+		// notify all subplots
+		for (SubplotEx sp : subplots) {
+			sp.plotPhysicalTransformChanged();
+		}
 	}
 
 	public Dimension getContainerSize() {
@@ -160,7 +165,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 				* scale, getPhysicalSize().getHeight() * scale);
 	}
 
-	public Subplot getSubPlot(int i) {
+	public SubplotEx getSubPlot(int i) {
 		return subplots.get(i);
 	}
 
@@ -239,6 +244,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		physicalWidth = src.physicalWidth;
 		physicalHeight = src.physicalHeight;
 		scale = src.scale;
+		pxf = src.pxf;
 	}
 
 }
