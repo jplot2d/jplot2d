@@ -28,6 +28,7 @@ import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.layout.LayoutDirector;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -131,6 +132,11 @@ public abstract class PlotEnvironment extends Environment {
 	@Override
 	protected void commit() {
 
+		LayoutDirector director = plotImpl.getLayoutDirector();
+		if (director == null) {
+			return;
+		}
+
 		/*
 		 * Axis a special component. Its length can be set by layout manager,
 		 * but its thick depends on its internal status, such as tick height,
@@ -146,7 +152,7 @@ public abstract class PlotEnvironment extends Environment {
 			 * Laying out axes may register some axis that ticks need be
 			 * re-calculated
 			 */
-			plotImpl.validate();
+			director.layout();
 
 			/*
 			 * Auto range axes MUST be executed after they are laid out. <br>

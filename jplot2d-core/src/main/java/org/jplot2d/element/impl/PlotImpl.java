@@ -19,7 +19,6 @@
 package org.jplot2d.element.impl;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -190,32 +189,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public void validate() {
-		if (!isValid()) {
-			doLayout();
-			for (Subplot subplot : subplots) {
-				((ComponentEx) subplot).validate();
-			}
-			super.validate();
-		}
-	}
-
-	private void doLayout() {
-		LayoutDirector director = this.director;
-		if (director != null) {
-			director.layout();
-		}
-	}
-
-	public void draw(Graphics2D g) {
-		// draw title and legend
-
-		// draw subplots
-		for (Subplot sp : subplots) {
-			((SubplotEx) sp).draw(g);
-		}
-	}
-
 	public PlotEx deepCopy(Map<Element, Element> orig2copyMap) {
 		PlotImpl result = new PlotImpl();
 
@@ -226,9 +199,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// copy subplots
 		for (SubplotEx sp : subplots) {
-			SubplotEx csp = ((SubplotEx) sp).deepCopy(orig2copyMap);
-			((ComponentEx) csp).setParent(result);
-			result.subplots.add(csp);
+			SubplotEx spCopy = ((SubplotEx) sp).deepCopy(orig2copyMap);
+			((ComponentEx) spCopy).setParent(result);
+			result.subplots.add(spCopy);
 		}
 
 		return this;

@@ -25,7 +25,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * 
+ * Subplot contains a group of layers that stack over each other, and axes
+ * around the viewport.
  * 
  * @author Jingjing Li
  * 
