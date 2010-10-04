@@ -227,6 +227,8 @@ public interface Component extends Element {
 	 */
 	public void setPhysicalLocation(Point2D loc);
 
+	public void setPhysicalLocation(double locX, double locY);
+
 	public Dimension2D getPhysicalSize();
 
 	/**
