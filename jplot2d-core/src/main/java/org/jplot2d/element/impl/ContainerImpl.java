@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
@@ -29,9 +28,8 @@ import org.jplot2d.element.PhysicalTransform;
 public class ContainerImpl extends ComponentImpl implements ContainerEx {
 
 	public Rectangle2D getBounds() {
-		AffineTransform lxf = getPhysicalTransform().getTransform();
 		Rectangle2D pbounds = getPhysicalBounds();
-		return lxf.createTransformedShape(pbounds).getBounds2D();
+		return getPhysicalTransform().getPtoD(pbounds);
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
@@ -43,8 +41,10 @@ public class ContainerImpl extends ComponentImpl implements ContainerEx {
 	}
 
 	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
-		if (physicalWidth <= 0 || physicalHeight <= 0) {
-			throw new IllegalArgumentException("physical size must be positive");
+		if (physicalWidth < 0 || physicalHeight < 0) {
+			throw new IllegalArgumentException(
+					"physical size must be positive " + physicalWidth + "x"
+							+ physicalHeight);
 		}
 
 		if (this.physicalWidth != physicalWidth
