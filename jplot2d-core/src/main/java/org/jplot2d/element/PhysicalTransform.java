@@ -88,11 +88,11 @@ public class PhysicalTransform implements Cloneable {
 		return (((int) bits) ^ ((int) (bits >> 32)));
 	}
 
-	public double getXPtoD2(double xp) {
+	public double getXPtoD(double xp) {
 		return (xp + xoff) * scale;
 	}
 
-	public double getYPtoD2(double yp) {
+	public double getYPtoD(double yp) {
 		return (yoff - yp) * scale;
 	}
 
@@ -120,7 +120,7 @@ public class PhysicalTransform implements Cloneable {
 	}
 
 	public Point2D getPtoD(Point2D p) {
-		return new Point2D.Double(getXPtoD2(p.getX()), getYPtoD2(p.getY()));
+		return new Point2D.Double(getXPtoD(p.getX()), getYPtoD(p.getY()));
 	}
 
 	public Point2D getDtoP(Point2D d) {
@@ -128,8 +128,8 @@ public class PhysicalTransform implements Cloneable {
 	}
 
 	public Rectangle2D getPtoD(Rectangle2D p) {
-		double x = getXPtoD2(p.getX());
-		double y = getYPtoD2(p.getMaxY());
+		double x = getXPtoD(p.getX());
+		double y = getYPtoD(p.getMaxY());
 		double w = p.getWidth() * scale;
 		double h = p.getHeight() * scale;
 		return new Rectangle2D.Double(x, y, w, h);
