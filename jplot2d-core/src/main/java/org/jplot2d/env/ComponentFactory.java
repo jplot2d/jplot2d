@@ -26,7 +26,7 @@ import org.jplot2d.element.Subplot;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
-import org.jplot2d.layout.GridLayoutDirector;
+import org.jplot2d.layout.StackLayoutDirector;
 
 /**
  * A factory to produce all kind of plot components.
@@ -79,7 +79,7 @@ public class ComponentFactory {
 
 	public Plot createPlot() {
 		PlotEx impl = new PlotImpl();
-		impl.setLayoutDirector(new GridLayoutDirector(impl));
+		impl.setLayoutDirector(new StackLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementAddition.class }, ih);
