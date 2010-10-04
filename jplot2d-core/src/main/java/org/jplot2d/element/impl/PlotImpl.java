@@ -179,14 +179,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
-			ld.setConstraint(subplot, constraint);
+			ld.setConstraint((SubplotEx) subplot, constraint);
 		}
 	}
 
 	public void removeSubPlot(Subplot subplot) {
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
-			ld.remove(subplot);
+			ld.remove((SubplotEx) subplot);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private void doLayout() {
 		LayoutDirector director = this.director;
 		if (director != null) {
-			director.layout(this);
+			director.layout();
 		}
 	}
 

@@ -21,13 +21,12 @@
  */
 package org.jplot2d.layout;
 
-import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.Subplot;
+import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
@@ -46,7 +45,7 @@ import org.jplot2d.util.NumberUtils;
 public class GridLayoutDirector implements LayoutDirector {
 
 	/** The layout constraints */
-	private Map<Subplot, Object> constraints = new HashMap<Subplot, Object>();
+	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
 
 	/**
 	 * the margin around the content
@@ -71,82 +70,35 @@ public class GridLayoutDirector implements LayoutDirector {
 
 	GridCellInsets cellPadding = new GridCellInsets();
 
-	private Plot plot;
+	private PlotEx plot;
 
 	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public GridLayoutDirector(Plot plot) {
+	public GridLayoutDirector(PlotEx plot) {
 		this.plot = plot;
 	}
 
-	public Object getConstraint(Subplot subplot) {
+	public Object getConstraint(SubplotEx subplot) {
 		return constraints.get(subplot);
 	}
 
-	public void remove(Subplot subplot) {
+	public void remove(SubplotEx subplot) {
 		constraints.remove(subplot);
 	}
 
-	public void setConstraint(Subplot subplot, Object constraint) {
+	public void setConstraint(SubplotEx subplot, Object constraint) {
 		constraints.put(subplot, constraint);
 	}
 
-	public void layout(Plot plot) {
+	public void layout() {
 
-		calcPendingAxesMetrics();
-		while (true) {
-
-			/*
-			 * Laying out axes may register some axis that ticks need be
-			 * re-calculated
-			 */
-			execLayout(plot);
-
-			/*
-			 * Auto range axes MUST be executed after they are laid out. <br>
-			 * Auto range axes may register some axis that ticks need be
-			 * re-calculated
-			 */
-			calcPendingLockGroupAutoRange();
-
-			/*
-			 * Calculating axes tick may register some axis that metrics need be
-			 * re-calculated
-			 */
-			calcPendingAxesTick();
-
-			/* axis metrics change need re-laying out the plot */
-			calcPendingAxesMetrics();
-			if (plot.isValid()) {
-				break;
-			}
-		}
-
-	}
-
-	/**
-	 * 
-	 */
-	private void calcPendingAxesTick() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * 
-	 */
-	private void calcPendingLockGroupAutoRange() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * 
-	 */
-	private void calcPendingAxesMetrics() {
-		// TODO Auto-generated method stub
+		/*
+		 * Laying out axes may register some axis that ticks need be
+		 * re-calculated
+		 */
+		execLayout();
 
 	}
 
@@ -182,7 +134,7 @@ public class GridLayoutDirector implements LayoutDirector {
 	 * Design note: To execute the laying out by invokeLater() has bad
 	 * performance and is unnecessary complicated.
 	 */
-	public void execLayout(Plot plot) {
+	private void execLayout() {
 
 		if (plot.isValid()) {
 			Log.layout.fine("[Y] nothing to do.");
@@ -192,11 +144,6 @@ public class GridLayoutDirector implements LayoutDirector {
 		/* layout */
 		switch (plot.getSizeMode()) {
 		case FIT_CONTAINER_SIZE:
-			Dimension size = plot.getContainerSize();
-			double scale = plot.getScale();
-			plot.setPhysicalSize(new DoubleDimension2D(size.getWidth() / scale, size
-					.getHeight()
-					/ scale));
 		case FIT_CONTAINER_WITH_TARGET_SIZE:
 		case FIXED_SIZE:
 			// PlotGridLayoutStrategyC2P.getInstance().doLayout(this, _cflags);
@@ -205,9 +152,6 @@ public class GridLayoutDirector implements LayoutDirector {
 			// PlotGridLayoutStrategyP2C.getInstance().doLayout(this, _cflags);
 			break;
 		}
-
-		// mark validate
-		plot.validate();
 
 	}
 

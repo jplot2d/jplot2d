@@ -18,13 +18,16 @@
  */
 package org.jplot2d.layout;
 
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.SubPlot;
+import org.jplot2d.element.impl.SubplotEx;
 
 /**
  * The interface for jplot2d to layout subplots and other components. The way to
  * layout subplots can be customized, but the layers in subplot are stacked over
  * and cannot be changed.
+ * <p>
+ * The axis is a special component. Its length can be set when laid out, but its
+ * height is fixed and derived from its internal status, such as tick height and
+ * labels.
  * 
  * @author Jingjing Li
  * 
@@ -38,7 +41,7 @@ public interface LayoutDirector {
 	 *            The subplot
 	 * @return The constraint
 	 */
-	public Object getConstraint(SubPlot subplot);
+	public Object getConstraint(SubplotEx subplot);
 
 	/**
 	 * Sets the constraint for the given subplot.
@@ -46,19 +49,19 @@ public interface LayoutDirector {
 	 * @param subplot
 	 * @param constraint
 	 */
-	public void setConstraint(SubPlot subplot, Object constraint);
+	public void setConstraint(SubplotEx subplot, Object constraint);
 
 	/**
 	 * Removes the given child from this layout.
 	 * 
 	 * @param subplot
 	 */
-	public void remove(SubPlot subplot);
+	public void remove(SubplotEx subplot);
 
 	/**
 	 * Layout the plot.
 	 * 
 	 */
-	public void layout(Plot plot);
+	public void layout();
 
 }
