@@ -24,6 +24,9 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+
 /**
  * A <em>component</em> is an object having a graphical representation that can
  * be drawn on the renderer and that can interact with the user.
@@ -38,6 +41,7 @@ public interface Component extends Element {
 	 * 
 	 * @return the parent of this component
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public Container getParent();
 
 	/**
