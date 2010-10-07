@@ -16,14 +16,14 @@ import org.jplot2d.element.Element;
 public interface ComponentEx extends Component {
 
 	public ContainerEx getParent();
-	
+
 	/**
 	 * Sets the parent of this component
 	 * 
 	 * @param parent
 	 *            the new parent
 	 */
-	public void setParent(Element parent);
+	public void setParent(ContainerEx parent);
 
 	/**
 	 * Determines whether this component is valid. A component is valid when it

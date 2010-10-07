@@ -24,11 +24,4 @@ package org.jplot2d.element;
  */
 public interface Element {
 
-	/**
-	 * Gets the parent of this element.
-	 * 
-	 * @return the parent of this element
-	 */
-	public Element getParent();
-
 }

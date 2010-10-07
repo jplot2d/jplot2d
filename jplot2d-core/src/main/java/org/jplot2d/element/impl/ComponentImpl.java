@@ -29,7 +29,9 @@ import java.util.Map;
 import org.jplot2d.element.Element;
 import org.jplot2d.util.DoubleDimension2D;
 
-public class ComponentImpl extends ElementImpl implements ComponentEx {
+public class ComponentImpl implements ComponentEx {
+
+	protected ContainerEx parent;
 
 	protected boolean visible = true;
 
@@ -67,7 +69,11 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	private boolean redrawNeeded;
 
 	public ContainerEx getParent() {
-		return (ContainerEx) parent;
+		return parent;
+	}
+
+	public void setParent(ContainerEx parent) {
+		this.parent = parent;
 	}
 
 	public boolean isVisible() {
