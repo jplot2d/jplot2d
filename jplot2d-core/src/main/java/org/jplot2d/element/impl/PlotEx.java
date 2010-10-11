@@ -7,7 +7,7 @@ import org.jplot2d.element.Plot;
 
 public interface PlotEx extends Plot, ContainerEx {
 
-	public SubplotEx[] getSubPlots();
+	public SubplotEx[] getSubplots();
 
 	public PlotEx deepCopy(Map<Element, Element> orig2copyMap);
 
