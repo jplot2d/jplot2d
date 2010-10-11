@@ -68,7 +68,7 @@ public interface Plot extends Container {
 	 * @return the nth subplot in this plot
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public Subplot getSubPlot(int n);
+	public Subplot getSubplot(int n);
 
 	/**
 	 * Gets the nth subplot in this plot.
@@ -78,19 +78,19 @@ public interface Plot extends Container {
 	 * @return the nth subplot in this plot
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Subplot[] getSubPlots();
+	public Subplot[] getSubplots();
 
 	/**
 	 * @param subplot
 	 * @param constraint
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	void addSubPlot(Subplot subplot, Object constraint);
+	void addSubplot(Subplot subplot, Object constraint);
 
 	/**
 	 * @param subplot
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	void removeSubPlot(Subplot subplot);
+	void removeSubplot(Subplot subplot);
 
 }

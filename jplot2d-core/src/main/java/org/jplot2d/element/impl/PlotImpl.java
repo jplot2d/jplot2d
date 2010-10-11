@@ -164,15 +164,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 				* scale, getPhysicalSize().getHeight() * scale);
 	}
 
-	public SubplotEx getSubPlot(int i) {
+	public SubplotEx getSubplot(int i) {
 		return subplots.get(i);
 	}
 
-	public SubplotEx[] getSubPlots() {
+	public SubplotEx[] getSubplots() {
 		return subplots.toArray(new SubplotEx[subplots.size()]);
 	}
 
-	public void addSubPlot(Subplot subplot, Object constraint) {
+	public void addSubplot(Subplot subplot, Object constraint) {
 		subplots.add((SubplotEx) subplot);
 		((SubplotEx) subplot).setParent(this);
 
@@ -182,7 +182,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public void removeSubPlot(Subplot subplot) {
+	public void removeSubplot(Subplot subplot) {
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
 			ld.remove((SubplotEx) subplot);
