@@ -19,11 +19,35 @@
 package org.jplot2d.element;
 
 /**
- * A 1-d Transform between world value and normal value (range 0..1).
+ * Main axis associate with an axis transform. axis transform defines the axis
+ * value range.
  * 
  * @author Jingjing Li
  * 
  */
-public interface AxisTransform {
+public interface MainAxis extends Axis {
+
+	public AxisGroup getGroup();
+
+	/**
+	 * Sets axis group by adapting all properties
+	 * 
+	 * @throws WarningException
+	 */
+	public void setGroup(AxisGroup lockGroup);
+
+	/**
+	 * Returns all layers attaching to this axis.
+	 * 
+	 * @return
+	 */
+	public Layer[] getLayers();
+
+	/**
+	 * Returns all auxiliary axes attaching to this axis.
+	 * 
+	 * @return
+	 */
+	public AuxAxis[] getAuxAxes();
 
 }

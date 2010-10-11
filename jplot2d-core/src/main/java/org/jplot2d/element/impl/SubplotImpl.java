@@ -42,7 +42,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
-	private final List<Axis> axes = new ArrayList<Axis>();
+	private final List<AxisEx> xaxes = new ArrayList<AxisEx>();
+
+	private final List<AxisEx> yaxes = new ArrayList<AxisEx>();
 
 	private Rectangle2D viewportPhysicalBounds;
 
@@ -102,21 +104,35 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		layers.remove(layer);
 	}
 
-	public Axis getAxis(int index) {
-		return axes.get(index);
+	public AxisEx getXAxis(int index) {
+		return xaxes.get(index);
 	}
 
-	public AxisEx[] getAxes() {
-		return axes.toArray(new AxisEx[axes.size()]);
+	public AxisEx getYAxis(int index) {
+		return xaxes.get(index);
 	}
 
-	public void addAxis(Axis axis) {
-		axes.add(axis);
+	public AxisEx[] getXAxes() {
+		return xaxes.toArray(new AxisEx[xaxes.size()]);
+	}
+
+	public AxisEx[] getYAxes() {
+		return yaxes.toArray(new AxisEx[yaxes.size()]);
+	}
+
+	public void addXAxis(Axis axis) {
+		xaxes.add((AxisEx) axis);
+		((ComponentEx) axis).setParent(this);
+	}
+
+	public void addYAxis(Axis axis) {
+		yaxes.add((AxisEx) axis);
 		((ComponentEx) axis).setParent(this);
 	}
 
 	public void removeAxis(Axis axis) {
-		axes.remove(axis);
+		xaxes.remove(axis);
+		yaxes.remove(axis);
 	}
 
 	public SubplotEx deepCopy(Map<Element, Element> orig2copyMap) {
@@ -131,12 +147,22 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		// copy layers
 		for (LayerEx layer : layers) {
-			LayerEx layerCopy = ((LayerEx) layer).deepCopy(orig2copyMap);
-			((LayerEx) layerCopy).setParent(result);
+			LayerEx layerCopy = layer.deepCopy(orig2copyMap);
+			layerCopy.setParent(result);
 			result.layers.add(layerCopy);
 		}
 
-		// TODO: copy axes
+		// TODO: copy auxaxes's main
+		for (AxisEx axis : xaxes) {
+			AxisEx axisCopy = axis.deepCopy(orig2copyMap);
+			axisCopy.setParent(result);
+			result.xaxes.add(axisCopy);
+		}
+		for (AxisEx axis : yaxes) {
+			AxisEx axisCopy = axis.deepCopy(orig2copyMap);
+			axisCopy.setParent(result);
+			result.yaxes.add(axisCopy);
+		}
 
 		return result;
 	}

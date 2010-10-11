@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.jplot2d.element.DataModel;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.MathElement;
@@ -101,7 +102,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return xNormalTransform;
 	}
 
-	public void setXNormalTransform(NormalTransform ntf) {
+	void setXNormalTransform(NormalTransform ntf) {
 		this.xNormalTransform = ntf;
 	}
 
@@ -109,8 +110,33 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return yNormalTransform;
 	}
 
-	public void setYNormalTransform(NormalTransform ntf) {
+	void setYNormalTransform(NormalTransform ntf) {
 		this.yNormalTransform = ntf;
+	}
+
+	public MainAxisEx getXAxis() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public MainAxisEx getYAxis() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setXAxis(MainAxis axis) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setYAxis(MainAxis axis) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setAxes(MainAxis xaxis, MainAxis yaxis) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void draw(Graphics2D g) {

@@ -145,7 +145,7 @@ public abstract class PlotEnvironment extends Environment {
 		 * all subplot, then calculate auto range, then validate all axes.
 		 */
 
-		validateAxesThickness();
+		updateAxesThickness();
 		while (true) {
 
 			/*
@@ -168,7 +168,7 @@ public abstract class PlotEnvironment extends Environment {
 			calcPendingAxesTick();
 
 			/* axis metrics change need re-laying out the plot */
-			validateAxesThickness();
+			updateAxesThickness();
 
 			if (plotImpl.isValid()) {
 				break;
@@ -200,10 +200,13 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * validate all axes thickness
 	 */
-	private void validateAxesThickness() {
-		for (SubplotEx sp : plotImpl.getSubPlots()) {
-			for (AxisEx axis : sp.getAxes()) {
-				axis.validate();
+	private void updateAxesThickness() {
+		for (SubplotEx sp : plotImpl.getSubplots()) {
+			for (AxisEx axis : sp.getXAxes()) {
+				axis.updateThickness();
+			}
+			for (AxisEx axis : sp.getYAxes()) {
+				axis.updateThickness();
 			}
 		}
 	}

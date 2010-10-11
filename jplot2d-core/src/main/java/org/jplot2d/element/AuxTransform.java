@@ -19,10 +19,29 @@
 package org.jplot2d.element;
 
 /**
- * An enum type to define the position of the axis title relative to the axis.
+ * This interface define the transformation between axis and AuxAxis.
  * 
  * @author Jingjing Li
+ * 
  */
-public enum AxisTitleSide {
-    INWARD, OUTWARD
+public interface AuxTransform {
+
+	/**
+	 * Transform a value from Axis to AuxAxis
+	 * 
+	 * @param v
+	 *            the value on main Axis
+	 * @return the value on an AuxAxis
+	 */
+	public double transformMain2Aux(double v);
+
+	/**
+	 * Transform a value from AuxAxis to Axis.
+	 * 
+	 * @param v
+	 *            the value on aux Axis
+	 * @return the value on main axis
+	 */
+	public double transformAux2Main(double v);
+
 }

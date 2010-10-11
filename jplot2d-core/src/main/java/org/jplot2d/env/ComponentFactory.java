@@ -22,9 +22,11 @@ import java.lang.reflect.Proxy;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
+import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
 import org.jplot2d.element.impl.LayerImpl;
+import org.jplot2d.element.impl.MainAxisImpl;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
@@ -106,6 +108,17 @@ public class ComponentFactory {
 		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
 		Layer proxy = (Layer) Proxy.newProxyInstance(Layer.class
 				.getClassLoader(), new Class[] { Layer.class,
+				ElementAddition.class }, ih);
+
+		assignDummyEnv(impl, proxy);
+		return proxy;
+	}
+
+	public MainAxis createMainAxis() {
+		MainAxis impl = new MainAxisImpl();
+		ElementIH<MainAxis> ih = new ElementIH<MainAxis>(impl, MainAxis.class);
+		MainAxis proxy = (MainAxis) Proxy.newProxyInstance(MainAxis.class
+				.getClassLoader(), new Class[] { MainAxis.class,
 				ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);

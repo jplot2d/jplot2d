@@ -18,10 +18,77 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.util.Range2D;
+
 /**
  * @author Jingjing Li
- *
+ * 
  */
-public interface Axis {
+public interface Axis extends Component {
+
+	/**
+	 * Orientation is not a set-able property. It just show the orientation of
+	 * this axis after it has been add as a X/Y axis.
+	 * 
+	 * @return orientation of this axis
+	 */
+	public AxisOrientation getOrientation();
+
+	/**
+	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT
+	 * for y axis, PlotConstant.BOTTOM or PlotConstant.TOP for x axis.
+	 * 
+	 * @return the position of the axis in the plot.
+	 */
+	public AxisPosition getPosition();
+
+	/**
+	 * Set the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for
+	 * y axis, PlotConstant.BOTTOM or PlotConstant.TOP for x axis. Only can be
+	 * set when autoPosition is not True.
+	 * 
+	 * @param position
+	 *            the position of the axis in the plot.
+	 */
+	public void setPosition(AxisPosition position);
+
+	/**
+	 * Returns the range of this axis.
+	 * 
+	 * @return the range of this axis.
+	 */
+	public Range2D getRange();
+
+	/**
+	 * Set the value range of the axis.
+	 * 
+	 * @param range
+	 *            the new range of the axis
+	 */
+	public void setRange(Range2D range);
+
+	/**
+	 * Set the value range of the axis.
+	 * 
+	 * @param low
+	 *            the low value of new range of the axis
+	 * @param high
+	 *            the high value of new range of the axis
+	 */
+	public void setRange(double low, double high);
+
+	/**
+	 * Returns the tick of this axis.
+	 * 
+	 * @return the tick of this axis
+	 */
+	public AxisTick getTick();
+
+	/**
+	 * Returns the title of this axis.
+	 * 
+	 * @return the title of this axis
+	 */
+	public TextComponent getTitle();
 
 }

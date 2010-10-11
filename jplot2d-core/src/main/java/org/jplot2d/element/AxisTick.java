@@ -26,29 +26,32 @@ import java.text.Format;
  * @author Jingjing Li
  * 
  */
-public interface AxisTick {
+public interface AxisTick extends Element {
 
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
-	public Axis getAxis();
+	public Axis getParent();
 
 	public boolean isTickCalcNeeded();
-	
+
+	/**
+	 * Calculate ticks when tick calculation is needed.
+	 */
 	public void calcTicks();
-	
+
 	/**
 	 * Returns if the tick mark is shown or not
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
-	public Boolean getVisible();
+	public boolean getVisible();
 
 	/**
 	 * Sets if the tick mark is shown or not
 	 * 
 	 * @param visible
 	 */
-	public void setVisible(Boolean visible);
+	public void setVisible(boolean visible);
 
 	/**
 	 * Returns true if the tick number is allowed to be automatically reduced to
@@ -56,7 +59,7 @@ public interface AxisTick {
 	 * 
 	 * @return if the tick number is auto calculated.
 	 */
-	public Boolean getAutoAdjustNumber();
+	public boolean getAutoAdjustNumber();
 
 	/**
 	 * Set to true to allow the tick number to be automatically reduced to avoid
@@ -64,14 +67,14 @@ public interface AxisTick {
 	 * 
 	 * @param flag
 	 */
-	public void setAutoAdjustNumber(Boolean flag);
+	public void setAutoAdjustNumber(boolean flag);
 
 	/**
 	 * Returns the proposed tick number.
 	 * 
 	 * @return the number of ticks
 	 */
-	public Integer getNumber();
+	public int getNumber();
 
 	/**
 	 * Set the proposed tick number in the axis. The actual tick number may be
@@ -82,7 +85,7 @@ public interface AxisTick {
 	 * @param tickNumber
 	 *            the number of ticks.
 	 */
-	public void setNumber(Integer tickNumber);
+	public void setNumber(int tickNumber);
 
 	/**
 	 * Returns true if the tick interval is auto calculated from tick number and
@@ -91,7 +94,7 @@ public interface AxisTick {
 	 * 
 	 * @return if the tick number is auto calculated.
 	 */
-	public Boolean getAutoInterval();
+	public boolean getAutoInterval();
 
 	/**
 	 * Set to true to indicate the tick interval need to be auto calculated or
@@ -104,7 +107,7 @@ public interface AxisTick {
 	 * @param ati
 	 *            the flag
 	 */
-	public void setAutoInterval(Boolean ati);
+	public void setAutoInterval(boolean ati);
 
 	/**
 	 * Return the interval in axis units between two ticks. For LOG axis,
@@ -149,7 +152,7 @@ public interface AxisTick {
 	 * 
 	 * @return the labels of the ticks
 	 */
-	public Object getInRangeValues();
+	public Object getValues();
 
 	/**
 	 * Return an array of <code>double</code> representing the minor tick
@@ -157,7 +160,7 @@ public interface AxisTick {
 	 * 
 	 * @return the labels of the ticks
 	 */
-	public Object getInRangeMinorValues();
+	public Object getMinorValues();
 
 	/**
 	 * Returns <code>true</code> if tick values is auto calculated from
@@ -166,7 +169,7 @@ public interface AxisTick {
 	 * 
 	 * @return <code>true</code> if tick values is auto calculated.
 	 */
-	public Boolean getAutoValues();
+	public boolean isAutoValues();
 
 	/**
 	 * Set to <code>true</code> to indicate the tick values need to be auto
@@ -179,7 +182,7 @@ public interface AxisTick {
 	 * @param atv
 	 *            the flag
 	 */
-	public void setAutoValues(Boolean atv);
+	public void setAutoValues(boolean atv);
 
 	/**
 	 * Return an array of <code>double</code> representing the fixed tick
@@ -188,14 +191,6 @@ public interface AxisTick {
 	 * @return the labels of the ticks
 	 */
 	public Object getFixedValues();
-
-	/**
-	 * Return an array of <code>double</code> representing the fixed minor tick
-	 * positions set by {@link #setFixedMinorValues(Object)}
-	 * 
-	 * @return the labels of the ticks
-	 */
-	public Object getFixedMinorValues();
 
 	/**
 	 * Set an array of <code>double</code>. If the given values is null or a
@@ -208,6 +203,14 @@ public interface AxisTick {
 	 *            the values in user unit where ticks are displayed.
 	 */
 	public void setFixedValues(Object values);
+
+	/**
+	 * Return an array of <code>double</code> representing the fixed minor tick
+	 * positions set by {@link #setFixedMinorValues(Object)}
+	 * 
+	 * @return the labels of the ticks
+	 */
+	public Object getFixedMinorValues();
 
 	/**
 	 * Set an array of <code>double</code>. If the given values is null or a
@@ -226,7 +229,7 @@ public interface AxisTick {
 	 * 
 	 * @return true if the grid line is displayed
 	 */
-	public Boolean getGridLines();
+	public boolean isGridLines();
 
 	/**
 	 * Sets grid lines of grey lines in corresponding of major ticks of the
@@ -235,7 +238,14 @@ public interface AxisTick {
 	 * @param showGridLines
 	 *            if true show the grid lines.
 	 */
-	public void setGridLines(Boolean showGridLines);
+	public void setGridLines(boolean showGridLines);
+
+	/**
+	 * Returns the physical height of the major ticks of the axis
+	 * 
+	 * @return the height of the ticks
+	 */
+	public double getTickHeight();
 
 	/**
 	 * Set the physical height of the major ticks of the axis.
@@ -243,24 +253,17 @@ public interface AxisTick {
 	 * @param height
 	 *            the new height of the ticks
 	 */
-	public void setHeight(double height);
-
-	/**
-	 * Returns the physical height of the major ticks of the axis
-	 * 
-	 * @return the height of the ticks
-	 */
-	public double getHeight();
-
-	/**
-	 * Set the side position of the ticks
-	 */
-	public void setSide(AxisTickSide side);
+	public void setTickHeight(double height);
 
 	/**
 	 * Return the direction of the ticks
 	 */
 	public AxisTickSide getSide();
+
+	/**
+	 * Set the side position of the ticks
+	 */
+	public void setSide(AxisTickSide side);
 
 	/**
 	 * Returns <code>true</code> is the minor ticks number is derived from tick
@@ -269,7 +272,7 @@ public interface AxisTick {
 	 * @return <code>true</code> is the minor ticks number is derived from tick
 	 *         interval.
 	 */
-	public Boolean getAutoMinorNumber();
+	public boolean isAutoMinorNumber();
 
 	/**
 	 * When autoTickInterval is set to true:
@@ -293,7 +296,18 @@ public interface AxisTick {
 	 * 
 	 * @param flag
 	 */
-	public void setAutoMinorNumber(Boolean flag);
+	public void setAutoMinorNumber(boolean flag);
+
+	/**
+	 * Return the number of minor ticks displayed between two major ticks. When
+	 * autoMinorTicks is <code>true</code>, this method returns the actual minor
+	 * ticks number, otherwise returns the number set by
+	 * {@link #setMinorNumber(Integer)}, no matter if the actual number has been
+	 * adjusted.
+	 * 
+	 * @return the number of minor ticks displayed
+	 */
+	public int getMinorNumber();
 
 	/**
 	 * Set the number of minor ticks displayed between two major ticks, only
@@ -306,18 +320,14 @@ public interface AxisTick {
 	 * @param minors
 	 *            the number of minor ticks displayed
 	 */
-	public void setMinorNumber(Integer minors);
+	public void setMinorNumber(int minors);
 
 	/**
-	 * Return the number of minor ticks displayed between two major ticks. When
-	 * autoMinorTicks is <code>true</code>, this method returns the actual minor
-	 * ticks number, otherwise returns the number set by
-	 * {@link #setMinorNumber(Integer)}, no matter if the actual number has been
-	 * adjusted.
+	 * Return the physical height of the minor ticks of the axis.
 	 * 
-	 * @return the number of minor ticks displayed
+	 * @return the physical height of the minor ticks.
 	 */
-	public Integer getMinorNumber();
+	public double getMinorHeight();
 
 	/**
 	 * Set the physical height of the minor ticks of the axis.
@@ -327,13 +337,6 @@ public interface AxisTick {
 	 */
 	public void setMinorHeight(double height);
 
-	/**
-	 * Return the physical height of the minor ticks of the axis.
-	 * 
-	 * @return the physical height of the minor ticks.
-	 */
-	public double getMinorHeight();
-
 	/* =========================== Labels ============================= */
 
 	/**
@@ -341,14 +344,14 @@ public interface AxisTick {
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
-	public Boolean getLabelVisible();
+	public boolean isLabelVisible();
 
 	/**
 	 * Sets if the tick labels is shown or not
 	 * 
 	 * @param visible
 	 */
-	public void setLabelVisible(Boolean visible);
+	public void setLabelVisible(boolean visible);
 
 	/**
 	 * Returns <code>true</code> if labels format is auto calculated or assigned
@@ -356,7 +359,7 @@ public interface AxisTick {
 	 * 
 	 * @return <code>true</code> if labels format is auto calculated
 	 */
-	public Boolean getAutoLabelFormat();
+	public boolean isAutoLabelFormat();
 
 	/**
 	 * Sets <code>true</code> to auto calculate proper labels format. Or sets
@@ -366,7 +369,7 @@ public interface AxisTick {
 	 * @param alf
 	 *            the flag
 	 */
-	public void setAutoLabelFormat(Boolean alf);
+	public void setAutoLabelFormat(boolean alf);
 
 	/**
 	 * Returns the format of the labels of ticks.
@@ -409,19 +412,12 @@ public interface AxisTick {
 	public void setLabelFormat(String format);
 
 	/**
-	 * Return an array of String representing the labels of the ticks
-	 * 
-	 * @return the labels of the ticks
-	 */
-	public String[] getInRangeLabels();
-
-	/**
 	 * Returns the user assigned substitute labels. <code>null</code> has a
 	 * special meaning of "undecided".
 	 * 
 	 * @return the user assigned substitute labels.
 	 */
-	public String[] getFixedLabels();
+	public String[] getFixedLabelStrings();
 
 	/**
 	 * Set an array of String to substitute the labels of the fixed ticks. If
@@ -438,7 +434,7 @@ public interface AxisTick {
 	 * @param labels
 	 *            the new labels to be displayed in the ticks
 	 */
-	public void setFixedLabels(String[] labels);
+	public void setFixedLabelStrings(String[] labels);
 
 	/**
 	 * Return the color of the labels of the ticks
@@ -522,22 +518,14 @@ public interface AxisTick {
 	public void setLabelFontSize(float size);
 
 	/**
-	 * Set the position of the label of the ticks respect of the axis
-	 */
-	public void setLabelSide(AxisLabelSide side);
-
-	/**
 	 * Return the position of the label of the ticks
 	 */
 	public AxisLabelSide getLabelSide();
 
 	/**
-	 * Set the tick labels displayed after n ticks
-	 * 
-	 * @param n
-	 *            label displayed each n ticks .
+	 * Set the position of the label of the ticks respect of the axis
 	 */
-	public void setLabelInterval(Integer n);
+	public void setLabelSide(AxisLabelSide side);
 
 	/**
 	 * Get the label interval. The tick labels are displayed after that number
@@ -545,7 +533,15 @@ public interface AxisTick {
 	 * 
 	 * @return label interval
 	 */
-	public Integer getLabelInterval();
+	public int getLabelInterval();
+
+	/**
+	 * Set the tick labels displayed after n ticks
+	 * 
+	 * @param n
+	 *            label displayed each n ticks .
+	 */
+	public void setLabelInterval(int n);
 
 	/**
 	 * Get the Orientation of the labels.
@@ -563,5 +559,7 @@ public interface AxisTick {
 	 *            HORIZONTAL/VERTICAL
 	 */
 	public void setLabelOrientation(AxisOrientation orientation);
+
+	public String[] getLabelStrings();
 
 }

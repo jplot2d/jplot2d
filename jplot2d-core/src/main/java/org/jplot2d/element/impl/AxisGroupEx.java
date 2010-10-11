@@ -16,14 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.AxisGroup;
 
 /**
- * A 1-d Transform between world value and normal value (range 0..1).
- * 
  * @author Jingjing Li
  * 
  */
-public interface AxisTransform {
+public interface AxisGroupEx extends AxisGroup {
+
+	public void autoRange();
+
+	public boolean isAutoRangePending();
+
+	public void clearAutoRangePending();
 
 }
