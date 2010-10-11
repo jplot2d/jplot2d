@@ -11,7 +11,9 @@ public interface SubplotEx extends Subplot, ContainerEx {
 
 	public LayerEx[] getLayers();
 
-	public AxisEx[] getAxes();
+	public AxisEx[] getXAxes();
+
+	public AxisEx[] getYAxes();
 
 	public void plotPhysicalTransformChanged();
 

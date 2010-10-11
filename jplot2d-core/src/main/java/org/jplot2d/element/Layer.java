@@ -76,4 +76,48 @@ public interface Layer extends Component {
 	 */
 	public void addMarker(Marker marker);
 
+	/**
+	 * Returns the x axis to this layer attaching.
+	 * 
+	 * @return
+	 */
+	public MainAxis getXAxis();
+
+	/**
+	 * Returns the y axis to this layer attaching.
+	 * 
+	 * @return
+	 */
+	public MainAxis getYAxis();
+
+	/**
+	 * Attach this layer to the given X axis. When adding a layer to a subplot,
+	 * The axis must exist in the destination environment, otherwise a exception
+	 * will be thrown.
+	 * 
+	 * @param axis
+	 */
+	public void setXAxis(MainAxis axis);
+
+	/**
+	 * Attach this layer to the given Y axis. When adding a layer to a subplot,
+	 * The axis must exist in the destination environment, otherwise a exception
+	 * will be thrown.
+	 * 
+	 * @param axis
+	 */
+	public void setYAxis(MainAxis axis);
+
+	/**
+	 * Attach this layer to the given X/Y axis pair. When adding a layer to a
+	 * subplot, The X/Y axes must exist in the destination environment,
+	 * otherwise a exception will be thrown.
+	 * 
+	 * @param xaxis
+	 *            the x axis
+	 * @param yaxis
+	 *            the y axis
+	 */
+	public void setAxes(MainAxis xaxis, MainAxis yaxis);
+
 }

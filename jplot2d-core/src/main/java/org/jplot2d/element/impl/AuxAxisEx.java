@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.AuxAxis;
 
 /**
- * A 1-d Transform between world value and normal value (range 0..1).
- * 
  * @author Jingjing Li
  * 
  */
-public interface AxisTransform {
+public interface AuxAxisEx extends AuxAxis, ComponentEx {
 
 }

@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
-/*
- * $Id: PlotGridLayoutDirector.java,v 1.3 2010/02/02 10:16:49 hsclib Exp $
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.layout;
 
@@ -25,7 +22,6 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
@@ -118,17 +114,17 @@ public class StackLayoutDirector implements LayoutDirector {
 		case FIT_CONTAINER_SIZE:
 		case FIT_CONTAINER_WITH_TARGET_SIZE:
 		case FIXED_SIZE:
-			for (SubplotEx sp : plot.getSubPlots()) {
+			for (SubplotEx sp : plot.getSubplots()) {
 				sp.setPhysicalLocation(new Point2D.Double(0, 0));
 				sp.setPhysicalSize(plot.getPhysicalSize());
 				sp.setViewportBounds(plot.getPhysicalBounds());
 
-				for (AxisEx axis : sp.getAxes()) {
-					if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-						axis.setLength(sp.getViewportBounds().getWidth());
-					} else {
-						axis.setLength(sp.getViewportBounds().getHeight());
-					}
+				for (AxisEx axis : sp.getXAxes()) {
+					axis.setLength(sp.getViewportBounds().getWidth());
+					axis.validate();
+				}
+				for (AxisEx axis : sp.getYAxes()) {
+					axis.setLength(sp.getViewportBounds().getHeight());
 					axis.validate();
 				}
 

@@ -76,13 +76,22 @@ public interface Subplot extends Container {
 	public void removeLayer(Layer layer);
 
 	@Hierarchy(HierarchyOp.GET)
-	public Axis getAxis(int index);
+	public Axis getXAxis(int index);
+
+	@Hierarchy(HierarchyOp.GET)
+	public Axis getYAxis(int index);
 
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Axis[] getAxes();
+	public Axis[] getXAxes();
+
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Axis[] getYAxes();
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addAxis(Axis axis);
+	public void addXAxis(Axis axis);
+
+	@Hierarchy(HierarchyOp.ADD)
+	public void addYAxis(Axis axis);
 
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeAxis(Axis axis);

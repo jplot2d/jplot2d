@@ -16,14 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.AxisGroup;
 
 /**
- * A 1-d Transform between world value and normal value (range 0..1).
- * 
  * @author Jingjing Li
  * 
  */
-public interface AxisTransform {
+public class MainAxisImpl extends AxisImpl implements MainAxisEx {
+
+	AxisGroup group = new AxisGroupImpl();
+
+	public AxisGroup getGroup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setGroup(AxisGroup lockGroup) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public LayerEx[] getLayers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public AuxAxisEx[] getAuxAxes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
