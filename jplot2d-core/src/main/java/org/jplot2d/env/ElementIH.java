@@ -128,11 +128,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		environment.begin();
 		try {
 
-			/* element */
-			if (method.getName().equals("getParent")) {
-				return environment.getProxy(impl.getParent());
-			}
-
 			if (method.getName().equals("equals")) {
 				ElementIH<?> h = (ElementIH<?>) Proxy
 						.getInvocationHandler(args[0]);
