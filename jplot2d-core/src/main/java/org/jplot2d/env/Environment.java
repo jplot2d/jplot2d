@@ -116,13 +116,14 @@ public abstract class Environment {
 
 		/* merge uncacheable component tree */
 		if (!comp.isCacheable()) {
-			// remove the added top uncacheable component
-			subComponentMap.remove(comp);
-
 			Component cc = getCacheableAncestor(comp);
-			// add to list in subComponentMap
-			List<ComponentEx> subComps = subComponentMap.get(cc);
-			addOrder(subComps, env.subComponentMap.get(comp));
+			if (cc != comp) {
+				/*
+				 * remove the added top uncacheable component and add it to the
+				 * list of its parent
+				 */
+				addOrder(subComponentMap.get(cc), subComponentMap.remove(comp));
+			}
 		}
 
 		env.proxyMap.clear();
