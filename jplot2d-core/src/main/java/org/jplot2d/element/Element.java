@@ -18,10 +18,14 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.env.Environment;
+
 /**
  * @author Jingjing Li
  * 
  */
 public interface Element {
+
+	public Environment getEnvironment();
 
 }

@@ -63,6 +63,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	/**
 	 * This method replace the impl with the given impl, when undoing or
 	 * redoing.
+	 * <p>
+	 * <em>MUST</em> called within environment begin-end block.
 	 * 
 	 * @param impl
 	 */
@@ -94,8 +96,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 		/* ElementEx */
 		if (method.getName().equals("getEnvironment")) {
-			assert Thread.holdsLock(Environment.getGlobalLock());
-			return environment;
+			synchronized (Environment.getGlobalLock()) {
+				return environment;
+			}
 		}
 		if (method.getName().equals("setEnvironment")) {
 			assert Thread.holdsLock(Environment.getGlobalLock());
@@ -227,16 +230,21 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private void invokeAddCompMethod(Method method, Object[] args)
 			throws Throwable {
 		ElementAddition cproxy = (ElementAddition) args[0];
-		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
+		ComponentEx cimpl;
 
 		Environment penv;
 		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
 			// local safe copy
 			penv = environment;
-			cenv = ((ElementAddition) args[0]).getEnvironment();
-			penv.beginCommand("");
+			cenv = ((Element) args[0]).getEnvironment();
 			cenv.beginCommand("");
+			cimpl = (ComponentEx) cproxy.getImpl();
+			if (cimpl.getParent() != null) {
+				cenv.end();
+				throw new IllegalArgumentException("");
+			}
+			penv.beginCommand("");
 			// update environment for all adding components
 			for (Element proxy : cenv.proxyMap.values()) {
 				((ElementAddition) proxy).setEnvironment(penv);

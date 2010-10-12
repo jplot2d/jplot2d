@@ -20,14 +20,16 @@ package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
 
-import org.jplot2d.element.Element;
+import org.jplot2d.element.AxisGroup;
+import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
+import org.jplot2d.element.impl.AxisGroupImpl;
+import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.MainAxisImpl;
-import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.layout.StackLayoutDirector;
@@ -67,9 +69,11 @@ public class ComponentFactory {
 	}
 
 	/**
+	 * Assign a dummy environment for the given component/proxy pair
+	 * 
 	 * @return
 	 */
-	private void assignDummyEnv(Element comp, Element proxy) {
+	private void assignDummyEnv(ComponentEx comp, Component proxy) {
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
@@ -77,12 +81,12 @@ public class ComponentFactory {
 			env.begin();
 			((ElementAddition) proxy).setEnvironment(env);
 		}
-		env.registerElement(comp, proxy);
+		env.registerComponent(comp, proxy);
 		env.end();
 	}
 
 	public Plot createPlot() {
-		PlotEx impl = new PlotImpl();
+		PlotImpl impl = new PlotImpl();
 		impl.setLayoutDirector(new StackLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
@@ -93,7 +97,7 @@ public class ComponentFactory {
 	}
 
 	public Subplot createSubplot() {
-		Subplot impl = new SubplotImpl();
+		SubplotImpl impl = new SubplotImpl();
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
 		Subplot proxy = (Subplot) Proxy.newProxyInstance(Subplot.class
 				.getClassLoader(), new Class[] { Subplot.class,
@@ -104,7 +108,7 @@ public class ComponentFactory {
 	}
 
 	public Layer createLayer() {
-		Layer impl = new LayerImpl();
+		LayerImpl impl = new LayerImpl();
 		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
 		Layer proxy = (Layer) Proxy.newProxyInstance(Layer.class
 				.getClassLoader(), new Class[] { Layer.class,
@@ -115,13 +119,37 @@ public class ComponentFactory {
 	}
 
 	public MainAxis createMainAxis() {
-		MainAxis impl = new MainAxisImpl();
+		MainAxisImpl impl = new MainAxisImpl();
 		ElementIH<MainAxis> ih = new ElementIH<MainAxis>(impl, MainAxis.class);
 		MainAxis proxy = (MainAxis) Proxy.newProxyInstance(MainAxis.class
 				.getClassLoader(), new Class[] { MainAxis.class,
 				ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
+
+		proxy.setGroup(createAxisGroup(proxy.getEnvironment()));
+
+		return proxy;
+	}
+
+	/**
+	 * @param axis
+	 *            the axis the group will add first
+	 * @return
+	 */
+	public AxisGroup createAxisGroup(Environment env) {
+		AxisGroupImpl impl = new AxisGroupImpl();
+		ElementIH<AxisGroup> ih = new ElementIH<AxisGroup>(impl,
+				AxisGroup.class);
+		AxisGroup proxy = (AxisGroup) Proxy.newProxyInstance(AxisGroup.class
+				.getClassLoader(), new Class[] { AxisGroup.class,
+				ElementAddition.class }, ih);
+
+		env.begin();
+		((ElementAddition) proxy).setEnvironment(env);
+		env.registerElement(impl, proxy);
+		env.end();
+
 		return proxy;
 	}
 

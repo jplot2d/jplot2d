@@ -35,7 +35,7 @@ import org.jplot2d.util.TeXMathUtils;
  * @author Jingjing Li
  * 
  */
-public class AxisTickImpl implements AxisTick {
+public class AxisTickImpl extends ElementImpl implements AxisTick {
 
 	private AxisImpl axis;
 

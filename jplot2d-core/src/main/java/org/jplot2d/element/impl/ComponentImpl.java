@@ -29,7 +29,7 @@ import java.util.Map;
 import org.jplot2d.element.Element;
 import org.jplot2d.util.DoubleDimension2D;
 
-public class ComponentImpl implements ComponentEx {
+public class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	protected ContainerEx parent;
 

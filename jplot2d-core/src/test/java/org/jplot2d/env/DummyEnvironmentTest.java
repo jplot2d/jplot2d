@@ -44,7 +44,7 @@ public class DummyEnvironmentTest {
 			DummyEnvironment denv = new DummyEnvironment();
 			ComponentEx compA = mock(ComponentEx.class);
 			ComponentEx proxyA = mock(ComponentEx.class);
-			denv.registerElement(compA, proxyA);
+			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 0);
 			assertEquals(denv.subComponentMap.size(), 1);
@@ -59,7 +59,7 @@ public class DummyEnvironmentTest {
 			ComponentEx proxyA = mock(ComponentEx.class);
 			when(compA.isCacheable()).thenReturn(true);
 			when(proxyA.isCacheable()).thenReturn(true);
-			denv.registerElement(compA, proxyA);
+			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 1);
 			assertEquals(denv.subComponentMap.size(), 1);
@@ -79,8 +79,8 @@ public class DummyEnvironmentTest {
 			when(compAA.getParent()).thenReturn(compA);
 			when(proxyAA.getParent()).thenReturn(proxyA);
 			assertEquals(compAA.getParent(), compA);
-			denv.registerElement(compA, proxyA);
-			denv.registerElement(compAA, proxyAA);
+			denv.registerComponent(compA, proxyA);
+			denv.registerComponent(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
 			assertEquals(denv.cacheableComponentList.size(), 1);
 			assertEquals(denv.subComponentMap.size(), 1);
@@ -102,8 +102,8 @@ public class DummyEnvironmentTest {
 			when(proxyAA.getParent()).thenReturn(proxyA);
 			when(compAA.isCacheable()).thenReturn(true);
 			when(proxyAA.isCacheable()).thenReturn(true);
-			denv.registerElement(compA, proxyA);
-			denv.registerElement(compAA, proxyAA);
+			denv.registerComponent(compA, proxyA);
+			denv.registerComponent(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
 			assertEquals(denv.cacheableComponentList.size(), 2);
 			assertEquals(denv.subComponentMap.size(), 2);
