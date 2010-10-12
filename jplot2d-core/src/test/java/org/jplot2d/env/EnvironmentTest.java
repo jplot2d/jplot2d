@@ -170,12 +170,10 @@ public class EnvironmentTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link PlotEnvironment#componentAdded(org.jplot2d.element.Component, java.util.Map)}
-	 * . When a cacheable component added, verify the order.
+	 * When a uncacheable component added, verify the order.
 	 */
 	@Test
-	public void testComponentAdded() {
+	public void testUncacheableComponentAdded() {
 		// create a Environment
 		Environment env = new EnvironmentStub();
 
@@ -185,12 +183,27 @@ public class EnvironmentTest {
 		denv.registerComponent(compA, proxyA);
 
 		// add uncacheable component
-		try {
-			env.componentAdded(compA, denv);
-		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
-		}
-		assertEquals(env.proxyMap.size(), 0);
+		env.componentAdded(compA, denv);
+		assertEquals(env.proxyMap.size(), 1);
+		assertEquals(env.cacheableComponentList.size(), 0);
+		assertEquals(env.subComponentMap.size(), 1);
+		assertEquals(env.subComponentMap.get(compA).size(), 1);
+		assertEquals(env.subComponentMap.get(compA).get(0), compA);
+
+	}
+
+	/**
+	 * When a cacheable component added, verify the order.
+	 */
+	@Test
+	public void testCacheableComponentAdded() {
+		// create a Environment
+		Environment env = new EnvironmentStub();
+
+		DummyEnvironment denv = new DummyEnvironment();
+		ContainerEx compA = new ContainerImpl();
+		ContainerEx proxyA = compA.deepCopy(null);
+		denv.registerComponent(compA, proxyA);
 
 		// add cacheable component
 		denv = new DummyEnvironment();
