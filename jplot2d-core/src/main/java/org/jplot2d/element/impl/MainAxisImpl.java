@@ -26,16 +26,14 @@ import org.jplot2d.element.AxisGroup;
  */
 public class MainAxisImpl extends AxisImpl implements MainAxisEx {
 
-	AxisGroup group = new AxisGroupImpl();
+	private AxisGroup group;
 
 	public AxisGroup getGroup() {
-		// TODO Auto-generated method stub
-		return null;
+		return group;
 	}
 
-	public void setGroup(AxisGroup lockGroup) {
-		// TODO Auto-generated method stub
-
+	public void setGroup(AxisGroup group) {
+		this.group = group;
 	}
 
 	public LayerEx[] getLayers() {

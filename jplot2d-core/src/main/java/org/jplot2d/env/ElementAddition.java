@@ -28,15 +28,22 @@ import org.jplot2d.element.Element;
  */
 public interface ElementAddition {
 
-	public Environment getEnvironment();
-
 	/**
 	 * update the environment of this component and sub-elements
+	 * <p>
+	 * <em>MUST</em> be synchronized with Environment.getGlobalLock()
 	 * 
 	 * @param env
 	 */
 	public void setEnvironment(Environment env);
 
+	/**
+	 * Returns the impl of this proxy object
+	 * <p>
+	 * <em>MUST</em> called within environment begin-end block.
+	 * 
+	 * @return the impl
+	 */
 	public Element getImpl();
 
 }

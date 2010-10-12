@@ -182,7 +182,7 @@ public class EnvironmentTest {
 		DummyEnvironment denv = new DummyEnvironment();
 		ContainerEx compA = new ContainerImpl();
 		ContainerEx proxyA = compA.deepCopy(null);
-		denv.registerElement(compA, proxyA);
+		denv.registerComponent(compA, proxyA);
 
 		// add uncacheable component
 		try {
@@ -196,7 +196,7 @@ public class EnvironmentTest {
 		denv = new DummyEnvironment();
 		compA.setCacheable(true);
 		proxyA.setCacheable(true);
-		denv.registerElement(compA, proxyA);
+		denv.registerComponent(compA, proxyA);
 		env.componentAdded(compA, denv);
 		assertEquals(env.proxyMap.size(), 1);
 		assertEquals(env.cacheableComponentList.size(), 1);
@@ -208,7 +208,7 @@ public class EnvironmentTest {
 		DummyEnvironment denvAA = new DummyEnvironment();
 		ComponentEx compAA = new ComponentImpl();
 		ComponentEx proxyAA = compAA.deepCopy(null);
-		denvAA.registerElement(compAA, proxyAA);
+		denvAA.registerComponent(compAA, proxyAA);
 		// link parent
 		compAA.setParent(compA);
 		proxyAA.setParent(proxyA);
@@ -230,8 +230,8 @@ public class EnvironmentTest {
 		proxyB.setCacheable(true);
 		compBA.setParent(compB);
 		proxyBA.setParent(proxyB);
-		denvB.registerElement(compB, proxyB);
-		denvB.registerElement(compBA, proxyBA);
+		denvB.registerComponent(compB, proxyB);
+		denvB.registerComponent(compBA, proxyBA);
 		env.componentAdded(compB, denvB);
 		assertEquals(env.proxyMap.size(), 4);
 		assertEquals(env.cacheableComponentList.size(), 2);

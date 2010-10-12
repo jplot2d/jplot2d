@@ -96,6 +96,10 @@ public abstract class Environment {
 		return proxyMap.get(impl);
 	}
 
+	void registerElement(Element element, Element proxy) {
+		proxyMap.put(element, proxy);
+	}
+
 	/**
 	 * A component has been added to this environment, after setting the parent.
 	 * The added component either is cacheable, or has a cacheable parent.
@@ -105,11 +109,6 @@ public abstract class Environment {
 	 * @param proxy
 	 */
 	void componentAdded(ComponentEx comp, Environment env) {
-
-		if (!comp.isCacheable() && !getCacheableAncestor(comp).isCacheable()) {
-			throw new IllegalArgumentException(
-					"Uncacheable component must has a cacheable parent.");
-		}
 
 		proxyMap.putAll(env.proxyMap);
 		addOrder(cacheableComponentList, env.cacheableComponentList);

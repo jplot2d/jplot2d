@@ -66,7 +66,7 @@ public abstract class PlotEnvironment extends Environment {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
-			oldEnv = ((ElementAddition) plot).getEnvironment();
+			oldEnv = plot.getEnvironment();
 			if (!(oldEnv instanceof DummyEnvironment)) {
 				throw new IllegalArgumentException(
 						"The plot to be added has been added a PlotEnvironment");

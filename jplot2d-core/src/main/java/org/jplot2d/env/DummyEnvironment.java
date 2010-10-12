@@ -21,7 +21,7 @@ package org.jplot2d.env;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.element.Element;
+import org.jplot2d.element.Component;
 import org.jplot2d.element.impl.ComponentEx;
 
 /**
@@ -38,35 +38,29 @@ public class DummyEnvironment extends Environment {
 	 * This method is called when component factory create a component proxy.
 	 * Every new created component has an associated environment. The
 	 * environment must be initialized by this method.
-	 * <p>
-	 * All elements created must be added to environment. The add order is show
-	 * order. That is, the latest added component will show at top.
 	 * 
-	 * @param element
+	 * @param comp
 	 * @param proxy
 	 */
-	public void registerElement(Element element, Element proxy) {
-		proxyMap.put(element, proxy);
+	public void registerComponent(ComponentEx comp, Component proxy) {
+		proxyMap.put(comp, proxy);
 
-		if (element instanceof ComponentEx) {
-			ComponentEx comp = (ComponentEx) element;
-			if (comp.isCacheable()) {
-				addOrder(cacheableComponentList, comp);
-				// create a subComponentMap entry
-				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-				subComps.add(comp);
-				subComponentMap.put(comp, subComps);
-			} else if (comp.getParent() == null) {
-				// create a subComponentMap entry
-				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-				subComps.add(comp);
-				subComponentMap.put(comp, subComps);
-			} else {
-				ComponentEx cc = getCacheableAncestor(comp);
-				// add to list in subComponentMap
-				List<ComponentEx> subComps = subComponentMap.get(cc);
-				addOrder(subComps, comp);
-			}
+		if (comp.isCacheable()) {
+			addOrder(cacheableComponentList, comp);
+			// create a subComponentMap entry
+			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
+			subComps.add(comp);
+			subComponentMap.put(comp, subComps);
+		} else if (comp.getParent() == null) {
+			// create a subComponentMap entry
+			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
+			subComps.add(comp);
+			subComponentMap.put(comp, subComps);
+		} else {
+			ComponentEx cc = getCacheableAncestor(comp);
+			// add to list in subComponentMap
+			List<ComponentEx> subComps = subComponentMap.get(cc);
+			addOrder(subComps, comp);
 		}
 	}
 
