@@ -26,6 +26,7 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.layout.LayoutDirector;
@@ -106,26 +107,23 @@ public abstract class PlotEnvironment extends Environment {
 	 * @throws WarningException
 	 */
 	public void removePlot() {
-		Environment nenv;
+
 		synchronized (getGlobalLock()) {
 			beginCommand("removePlot");
 
 			// assign a dummy environment to the removed plot
-			nenv = this.componentRemoving(plotImpl);
-			nenv.beginCommand("");
+			this.componentRemoving(plotImpl);
 
+			plot = null;
+			plotImpl = null;
+
+			Environment nenv = componentRemoved(plotImpl, plotImpl);
 			// update environment for the removing component
 			for (Element proxy : nenv.proxyMap.values()) {
 				((ElementAddition) proxy).setEnvironment(nenv);
 			}
 		}
 
-		plot = null;
-		plotImpl = null;
-
-		componentRemoved(plotImpl);
-
-		nenv.endCommand();
 		endCommand();
 	}
 
@@ -175,7 +173,7 @@ public abstract class PlotEnvironment extends Environment {
 			}
 		}
 
-		Map<Element, Element> copyMap = makeUndoMemento();
+		Map<ElementEx, ElementEx> copyMap = makeUndoMemento();
 
 		renderOnCommit(plotImpl, copyMap);
 
@@ -259,7 +257,7 @@ public abstract class PlotEnvironment extends Environment {
 			throw new RuntimeException("Cannot undo");
 		}
 
-		Map<Element, Element> copyMap = restore(memento);
+		Map<ElementEx, ElementEx> copyMap = restore(memento);
 
 		renderOnCommit(plotImpl, copyMap);
 
@@ -280,7 +278,7 @@ public abstract class PlotEnvironment extends Environment {
 			throw new RuntimeException("Cannot redo");
 		}
 
-		Map<Element, Element> copyMap = restore(memento);
+		Map<ElementEx, ElementEx> copyMap = restore(memento);
 
 		renderOnCommit(plotImpl, copyMap);
 
@@ -292,10 +290,10 @@ public abstract class PlotEnvironment extends Environment {
 	 * 
 	 * @return a map, the key is impl element, the value is copy of element
 	 */
-	protected Map<Element, Element> makeUndoMemento() {
+	protected Map<ElementEx, ElementEx> makeUndoMemento() {
 
 		// the value is copy of element, the key is original element
-		Map<Element, Element> copyMap = new HashMap<Element, Element>();
+		Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 		/*
 		 * only when no history and all renderer is sync renderer and the
 		 * component renderer is caller run, the deepCopy can be omitted.
@@ -303,11 +301,11 @@ public abstract class PlotEnvironment extends Environment {
 		PlotEx plotRenderSafeCopy = plotImpl.deepCopy(copyMap);
 
 		// build copy to proxy map
-		Map<Element, Element> proxyMap2 = new HashMap<Element, Element>();
-		for (Map.Entry<Element, Element> me : proxyMap.entrySet()) {
+		Map<ElementEx, Element> proxyMap2 = new HashMap<ElementEx, Element>();
+		for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
 			Element element = me.getKey();
 			Element proxy = me.getValue();
-			Element copye = copyMap.get(element);
+			ElementEx copye = copyMap.get(element);
 			proxyMap2.put(copye, proxy);
 		}
 
@@ -322,20 +320,20 @@ public abstract class PlotEnvironment extends Environment {
 	 * @param proxyMap
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<Element, Element> restore(UndoMemento memento) {
-		Map<Element, Element> mmtProxyMap = memento.getProxyMap();
+	private Map<ElementEx, ElementEx> restore(UndoMemento memento) {
+		Map<ElementEx, Element> mmtProxyMap = memento.getProxyMap();
 
 		// the value is copy of element, the key is original element
-		Map<Element, Element> copyMap = new HashMap<Element, Element>();
+		Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 		// copy implements
 		plotImpl = (PlotEx) memento.getPlot().deepCopy(copyMap);
 
-		Map<Element, Element> eleMap = new HashMap<Element, Element>();
+		Map<ElementEx, ElementEx> eleMap = new HashMap<ElementEx, ElementEx>();
 		this.proxyMap.clear();
-		for (Map.Entry<Element, Element> me : mmtProxyMap.entrySet()) {
-			Element mmte = me.getKey();
+		for (Map.Entry<ElementEx, Element> me : mmtProxyMap.entrySet()) {
+			ElementEx mmte = me.getKey();
 			Element proxy = me.getValue();
-			Element impl = copyMap.get(mmte);
+			ElementEx impl = copyMap.get(mmte);
 			ElementIH ih = (ElementIH) Proxy.getInvocationHandler(proxy);
 			ih.replaceImpl(impl);
 			this.proxyMap.put(impl, proxy);
@@ -359,7 +357,7 @@ public abstract class PlotEnvironment extends Environment {
 	 *            the thread safe copies of keys.
 	 */
 	protected abstract void renderOnCommit(PlotEx plot,
-			Map<Element, Element> copyMap);
+			Map<ElementEx, ElementEx> copyMap);
 
 	/* --- JPlot2DChangeListener --- */
 

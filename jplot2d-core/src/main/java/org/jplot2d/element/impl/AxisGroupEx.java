@@ -24,7 +24,13 @@ import org.jplot2d.element.AxisGroup;
  * @author Jingjing Li
  * 
  */
-public interface AxisGroupEx extends AxisGroup {
+public interface AxisGroupEx extends AxisGroup, MultiParentElementEx {
+
+	public MainAxisEx[] getParents();
+
+	public void addMainAxis(MainAxisEx axis);
+
+	public void removeMainAxis(MainAxisEx axis);
 
 	public void autoRange();
 

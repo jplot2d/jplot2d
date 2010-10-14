@@ -26,10 +26,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
 
 /**
  * An environment that a plot can realization. Once a plot is put an
@@ -62,7 +64,7 @@ public abstract class Environment {
 	/**
 	 * A impl to proxy map that contains all element in this environment.
 	 */
-	protected final Map<Element, Element> proxyMap = new HashMap<Element, Element>();
+	protected final Map<ElementEx, Element> proxyMap = new HashMap<ElementEx, Element>();
 
 	/**
 	 * Contains all cacheable components in z-order
@@ -92,12 +94,41 @@ public abstract class Environment {
 	 * @param impl
 	 * @return
 	 */
-	final Element getProxy(Element impl) {
+	final Element getProxy(ElementEx impl) {
 		return proxyMap.get(impl);
 	}
 
-	void registerElement(Element element, Element proxy) {
+	void registerElement(ElementEx element, Element proxy) {
 		proxyMap.put(element, proxy);
+	}
+
+	/**
+	 * Remove the orphan element from this environment, and create a dummy
+	 * environment for it.
+	 * 
+	 * @param impl
+	 * @return
+	 */
+	Environment removeOrphan(ElementEx impl) {
+
+		Map<ElementEx, Element> removedProxyMap = new HashMap<ElementEx, Element>();
+
+		removedProxyMap.put(impl, proxyMap.remove(impl));
+
+		// remove the elements whoes parent has been removed
+		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet()
+				.iterator();
+		while (ite.hasNext()) {
+			Entry<ElementEx, Element> e = ite.next();
+			if (removedProxyMap.containsKey(e.getKey().getParent())) {
+				removedProxyMap.put(e.getKey(), e.getValue());
+				ite.remove();
+			}
+		}
+
+		DummyEnvironment result = new DummyEnvironment();
+		result.proxyMap.putAll(removedProxyMap);
+		return result;
 	}
 
 	/**
@@ -140,19 +171,30 @@ public abstract class Environment {
 	 * @param elements
 	 *            elements to be removed.
 	 */
-	DummyEnvironment componentRemoving(ComponentEx comp) {
+	void componentRemoving(ComponentEx comp) {
 		fireComponentRemoving((Component) getProxy(comp));
+	}
 
-		Map<Element, Element> removedProxyMap = new HashMap<Element, Element>();
+	/**
+	 * Called when a component has been removed from its parent
+	 * 
+	 * @param comp
+	 *            the removed component
+	 * @return A map. The key is removed component. The value is the removed
+	 *         component proxy
+	 */
+	DummyEnvironment componentRemoved(ComponentEx oldParent, ComponentEx comp) {
+
+		Map<ElementEx, Element> removedProxyMap = new HashMap<ElementEx, Element>();
 		List<ComponentEx> removedCacheableComponentList = new ArrayList<ComponentEx>();
 		Map<ComponentEx, List<ComponentEx>> removedSubComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
 		// remove all cacheable descendants
-		Iterator<ComponentEx> ite = cacheableComponentList.iterator();
-		while (ite.hasNext()) {
-			ComponentEx c = ite.next();
+		Iterator<ComponentEx> itc = cacheableComponentList.iterator();
+		while (itc.hasNext()) {
+			ComponentEx c = itc.next();
 			if (isAncestor(comp, c)) {
-				ite.remove();
+				itc.remove();
 				removedCacheableComponentList.add(c);
 
 				List<ComponentEx> removedSubcomps = subComponentMap.remove(c);
@@ -169,7 +211,7 @@ public abstract class Environment {
 		if (!comp.isCacheable()) {
 			List<ComponentEx> removedUncacheableComps = new ArrayList<ComponentEx>();
 			// all the possible uncacheable descendants
-			ComponentEx cacheableParent = getCacheableAncestor(comp);
+			ComponentEx cacheableParent = getCacheableAncestor(oldParent);
 			List<ComponentEx> possibleDesList = subComponentMap
 					.get(cacheableParent);
 
@@ -186,8 +228,19 @@ public abstract class Environment {
 			removedSubComponentMap.put(comp, removedUncacheableComps);
 
 			// remove the components from proxyMap
-			for (Component sc : removedUncacheableComps) {
+			for (ComponentEx sc : removedUncacheableComps) {
 				removedProxyMap.put(sc, proxyMap.remove(sc));
+			}
+		}
+
+		// remove the elements whoes parent has been removed
+		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet()
+				.iterator();
+		while (ite.hasNext()) {
+			Entry<ElementEx, Element> e = ite.next();
+			if (removedProxyMap.containsKey(e.getKey().getParent())) {
+				removedProxyMap.put(e.getKey(), e.getValue());
+				ite.remove();
 			}
 		}
 
@@ -196,18 +249,6 @@ public abstract class Environment {
 		result.cacheableComponentList.addAll(removedCacheableComponentList);
 		result.subComponentMap.putAll(removedSubComponentMap);
 		return result;
-	}
-
-	/**
-	 * Called when a component has been removed from this environment
-	 * 
-	 * @param comp
-	 *            the removed component
-	 * @return A map. The key is removed component. The value is the removed
-	 *         component proxy
-	 */
-	void componentRemoved(Component comp) {
-
 	}
 
 	private boolean isAncestor(Component ancestor, Component c) {
@@ -291,7 +332,7 @@ public abstract class Environment {
 		}
 	}
 
-	void elementPropertyChanged(Element comp) {
+	void elementPropertyChanged(ElementEx comp) {
 		fireElementPropertyChanged(getProxy(comp));
 	}
 

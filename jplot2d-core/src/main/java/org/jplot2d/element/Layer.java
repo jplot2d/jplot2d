@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.util.MathElement;
 
 /**
@@ -77,17 +79,19 @@ public interface Layer extends Component {
 	public void addMarker(Marker marker);
 
 	/**
-	 * Returns the x axis to this layer attaching.
+	 * Returns the X axis to this layer attaching.
 	 * 
 	 * @return
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public MainAxis getXAxis();
 
 	/**
-	 * Returns the y axis to this layer attaching.
+	 * Returns the Y axis to this layer attaching.
 	 * 
 	 * @return
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public MainAxis getYAxis();
 
 	/**
@@ -97,6 +101,7 @@ public interface Layer extends Component {
 	 * 
 	 * @param axis
 	 */
+	@Hierarchy(HierarchyOp.REF)
 	public void setXAxis(MainAxis axis);
 
 	/**
@@ -106,6 +111,7 @@ public interface Layer extends Component {
 	 * 
 	 * @param axis
 	 */
+	@Hierarchy(HierarchyOp.REF)
 	public void setYAxis(MainAxis axis);
 
 	/**
@@ -118,6 +124,7 @@ public interface Layer extends Component {
 	 * @param yaxis
 	 *            the y axis
 	 */
+	@Hierarchy(HierarchyOp.REF2)
 	public void setAxes(MainAxis xaxis, MainAxis yaxis);
 
 }

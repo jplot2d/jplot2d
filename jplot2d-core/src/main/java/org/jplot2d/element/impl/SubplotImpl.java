@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +49,40 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private Rectangle2D viewportPhysicalBounds;
 
+	public String getSelfId() {
+		if (getParent() != null) {
+			return "Subplot" + getParent().indexOf(this);
+		} else {
+			return "Subplot@" + System.identityHashCode(this);
+		}
+	}
+
 	public PlotEx getParent() {
 		return (PlotEx) super.getParent();
+	}
+
+	public Map<Element, Element> getMooringMap() {
+		Map<Element, Element> result = new HashMap<Element, Element>();
+
+		for (AxisEx axis : xaxes) {
+			if (axis instanceof MainAxisEx) {
+				MainAxisEx ma = (MainAxisEx) axis;
+				if (ma.getGroup().getAxes().length > 1) {
+					result.put(ma, ma.getGroup());
+				}
+				for (LayerEx layer : ma.getLayers()) {
+					if (layer.getParent() != this) {
+						result.put(ma, layer);
+					}
+				}
+				for (AuxAxisEx aux : ma.getAuxAxes()) {
+					if (aux.getParent() != this) {
+						result.put(ma, aux);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	public void setPhysicalLocation(double locX, double locY) {
@@ -91,6 +124,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return layers.get(index);
 	}
 
+	public int indexOf(LayerEx layer) {
+		return layers.indexOf(layer);
+	}
+
 	public LayerEx[] getLayers() {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
@@ -102,6 +139,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
+		((LayerEx) layer).setParent(null);
+		layer.setAxes(null, null);
 	}
 
 	public AxisEx getXAxis(int index) {
@@ -109,7 +148,15 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public AxisEx getYAxis(int index) {
-		return xaxes.get(index);
+		return yaxes.get(index);
+	}
+
+	public int indexOfXAxis(AxisEx axis) {
+		return xaxes.indexOf(axis);
+	}
+
+	public int indexOfYAxis(AxisEx axis) {
+		return yaxes.indexOf(axis);
 	}
 
 	public AxisEx[] getXAxes() {
@@ -131,11 +178,21 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void removeAxis(Axis axis) {
+		if (axis instanceof MainAxisEx) {
+			if (((MainAxisEx) axis).getLayers().length > 0) {
+				throw new IllegalStateException("The axis has layer attached");
+			}
+			if (((MainAxisEx) axis).getAuxAxes().length > 0) {
+				throw new IllegalStateException(
+						"The axis has aux axis attached");
+			}
+		}
 		xaxes.remove(axis);
 		yaxes.remove(axis);
+		((ComponentEx) axis).setParent(null);
 	}
 
-	public SubplotEx deepCopy(Map<Element, Element> orig2copyMap) {
+	public SubplotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 
 		SubplotImpl result = new SubplotImpl();
 

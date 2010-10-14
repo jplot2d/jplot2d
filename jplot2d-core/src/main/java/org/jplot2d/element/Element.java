@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.env.Environment;
 
 /**
@@ -25,6 +27,14 @@ import org.jplot2d.env.Environment;
  * 
  */
 public interface Element {
+
+	/**
+	 * Gets the parent of this component.
+	 * 
+	 * @return the parent of this component
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Element getParent();
 
 	public Environment getEnvironment();
 

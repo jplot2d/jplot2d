@@ -18,6 +18,9 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+
 /**
  * Main axis associate with an axis transform. axis transform defines the axis
  * value range.
@@ -27,20 +30,33 @@ package org.jplot2d.element;
  */
 public interface MainAxis extends Axis {
 
+	/**
+	 * Returns the group to that this axis belongs. A main axis must belongs to
+	 * a group, which have this axis at least.
+	 * 
+	 * @return
+	 */
+	@Hierarchy(HierarchyOp.GET)
 	public AxisGroup getGroup();
 
 	/**
-	 * Sets axis group by adapting all properties
+	 * Join an axis group. The group must exist in the same environment,
+	 * otherwise an exception will be thrown.
 	 * 
-	 * @throws WarningException
+	 * @param group
+	 *            the group to join to.
+	 * 
+	 * @return the old group to that this axis belongs
 	 */
-	public void setGroup(AxisGroup lockGroup);
+	@Hierarchy(HierarchyOp.JOIN)
+	public AxisGroup setGroup(AxisGroup group);
 
 	/**
 	 * Returns all layers attaching to this axis.
 	 * 
 	 * @return
 	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
 	public Layer[] getLayers();
 
 	/**
@@ -48,6 +64,7 @@ public interface MainAxis extends Axis {
 	 * 
 	 * @return
 	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
 	public AuxAxis[] getAuxAxes();
 
 }

@@ -18,7 +18,13 @@
  */
 package org.jplot2d.element.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jplot2d.element.AxisGroup;
+import org.jplot2d.element.Element;
 
 /**
  * @author Jingjing Li
@@ -26,24 +32,61 @@ import org.jplot2d.element.AxisGroup;
  */
 public class MainAxisImpl extends AxisImpl implements MainAxisEx {
 
-	private AxisGroup group;
+	private AxisGroupEx group;
 
-	public AxisGroup getGroup() {
+	private final List<LayerEx> layers = new ArrayList<LayerEx>();
+
+	private final List<AuxAxisEx> auxAxes = new ArrayList<AuxAxisEx>();
+
+	public MainAxisImpl() {
+		group = new AxisGroupImpl();
+		group.addMainAxis(this);
+	}
+
+	public Map<Element, Element> getMooringMap() {
+		Map<Element, Element> result = new HashMap<Element, Element>();
+
+		if (group.getAxes().length > 1) {
+			result.put(this, group);
+		}
+		for (LayerEx layer : layers) {
+			result.put(this, layer);
+		}
+		for (AuxAxisEx aux : auxAxes) {
+			result.put(this, aux);
+		}
+
+		return result;
+	}
+
+	public AxisGroupEx getGroup() {
 		return group;
 	}
 
-	public void setGroup(AxisGroup group) {
-		this.group = group;
+	public AxisGroupEx setGroup(AxisGroup group) {
+		AxisGroupEx result = this.group;
+		if (this.group != null) {
+			this.group.removeMainAxis(this);
+		}
+		this.group = (AxisGroupEx) group;
+		this.group.addMainAxis(this);
+		return result;
 	}
 
 	public LayerEx[] getLayers() {
-		// TODO Auto-generated method stub
-		return null;
+		return layers.toArray(new LayerEx[layers.size()]);
+	}
+
+	public void addLayer(LayerEx layer) {
+		layers.add(layer);
+	}
+
+	public void removeLayer(LayerEx layer) {
+		layers.remove(layer);
 	}
 
 	public AuxAxisEx[] getAuxAxes() {
-		// TODO Auto-generated method stub
-		return null;
+		return auxAxes.toArray(new AuxAxisEx[auxAxes.size()]);
 	}
 
 }

@@ -69,6 +69,9 @@ public class LayerAxisTest {
 		sp.addLayer(layer);
 		layer.setAxes(xaxis, yaxis);
 
+		assertSame(xaxis.getParent(), sp);
+		assertSame(yaxis.getParent(), sp);
+		assertSame(layer.getParent(), sp);
 		assertSame(layer.getXAxis(), xaxis);
 		assertSame(layer.getYAxis(), yaxis);
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
@@ -94,6 +97,8 @@ public class LayerAxisTest {
 
 		sp.removeLayer(layer);
 
+		assertNotSame(layer.getEnvironment(), sp.getEnvironment());
+		assertNull(layer.getParent());
 		assertNull(layer.getXAxis());
 		assertNull(layer.getYAxis());
 		assertArrayEquals(xaxis.getLayers(), new Object[0]);
@@ -108,6 +113,9 @@ public class LayerAxisTest {
 
 	}
 
+	/**
+	 * An axis can't be removed when there is layer attach to it.
+	 */
 	@Test
 	public void testRemovAxis() {
 
@@ -121,21 +129,47 @@ public class LayerAxisTest {
 		sp.addLayer(layer);
 		layer.setAxes(xaxis, yaxis);
 
+		assertSame(xaxis.getEnvironment(), sp.getEnvironment());
+		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
+		assertSame(xaxis.getParent(), sp);
+		assertSame(yaxis.getParent(), sp);
+		assertArrayEquals(sp.getXAxes(), new MainAxis[] { xaxis });
+		assertArrayEquals(sp.getYAxes(), new MainAxis[] { yaxis });
+		assertSame(layer.getXAxis(), xaxis);
+		assertSame(layer.getYAxis(), yaxis);
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+
 		try {
-			sp.removeLayer(layer);
+			sp.removeAxis(xaxis);
+			fail("IllegalStateException should be thrown");
+		} catch (IllegalStateException e) {
+
+		}
+		try {
+			sp.removeAxis(yaxis);
 			fail("IllegalStateException should be thrown");
 		} catch (IllegalStateException e) {
 
 		}
 
+		// test the status after exception is thrown
+		assertSame(xaxis.getEnvironment(), sp.getEnvironment());
+		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
+		assertSame(xaxis.getParent(), sp);
+		assertSame(yaxis.getParent(), sp);
+		assertArrayEquals(sp.getXAxes(), new MainAxis[] { xaxis });
+		assertArrayEquals(sp.getYAxes(), new MainAxis[] { yaxis });
+		assertSame(layer.getXAxis(), xaxis);
+		assertSame(layer.getYAxis(), yaxis);
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+
 		// detach axes
 		layer.setAxes(null, null);
 
-		try {
-			sp.removeLayer(layer);
-		} catch (IllegalStateException e) {
-			fail("IllegalStateException should not be thrown");
-		}
+		sp.removeAxis(xaxis);
+		sp.removeAxis(yaxis);
 
 	}
 

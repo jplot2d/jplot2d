@@ -30,7 +30,6 @@ import org.jplot2d.element.AxisLabelSide;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTickSide;
-import org.jplot2d.element.Element;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.TextComponent;
 import org.jplot2d.element.VAlign;
@@ -66,6 +65,26 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	private double _titleOffset;
 
 	private VAlign _titleVAlign;
+
+	public String getSelfId() {
+		if (getParent() != null) {
+			int xidx = getParent().indexOfXAxis(this);
+			if (xidx != -1) {
+				return "XAxis" + xidx;
+			}
+			int yidx = getParent().indexOfYAxis(this);
+			if (yidx != -1) {
+				return "YAxis" + yidx;
+			}
+			return null;
+		} else {
+			return "Axis@" + System.identityHashCode(this);
+		}
+	}
+
+	public SubplotEx getParent() {
+		return (SubplotEx) super.getParent();
+	}
 
 	public AxisOrientation getOrientation() {
 		// TODO Auto-generated method stub
@@ -307,7 +326,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	}
 
-	public AxisEx deepCopy(Map<Element, Element> orig2copyMap) {
+	public AxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisImpl result = new AxisImpl();
 		result.copyFrom(this);
 		if (orig2copyMap != null) {

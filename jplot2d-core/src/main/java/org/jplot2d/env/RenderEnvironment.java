@@ -25,8 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
@@ -65,7 +65,7 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	@Override
-	protected void renderOnCommit(PlotEx plot, Map<Element, Element> copyMap) {
+	protected void renderOnCommit(PlotEx plot, Map<ElementEx, ElementEx> copyMap) {
 
 		/*
 		 * when adding a cacheable component, the requireRedraw is not called on
