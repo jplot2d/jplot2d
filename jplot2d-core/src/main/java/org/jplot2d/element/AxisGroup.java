@@ -18,6 +18,9 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+
 /**
  * @author Jingjing Li
  * 
@@ -44,10 +47,6 @@ public interface AxisGroup extends Element {
 	 */
 	public void setAutoRange(boolean autoRange);
 
-	public boolean isZoomable();
-
-	public void setZoomable(boolean zoomable);
-
 	/**
 	 * Zoom the given range to entire axis
 	 * 
@@ -58,6 +57,12 @@ public interface AxisGroup extends Element {
 	 */
 	public void zoomRange(double start, double end);
 
+	/**
+	 * Returns all axes belongs to this group.
+	 * 
+	 * @return all axes belongs to this group
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
 	public MainAxis[] getAxes();
 
 }

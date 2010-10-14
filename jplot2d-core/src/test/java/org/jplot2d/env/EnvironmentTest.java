@@ -259,8 +259,8 @@ public class EnvironmentTest {
 	 * Test removing an uncacheable component.
 	 */
 	@Test
-	public void testUncacheableComponentRemoving() {
-		Environment cenv = env.componentRemoving(compA1);
+	public void testUncacheableComponentRemoved() {
+		Environment cenv = env.componentRemoved(compA, compA1);
 
 		assertEquals(env.proxyMap.size(), 4);
 		assertEquals(env.cacheableComponentList.size(), 3);
@@ -288,7 +288,7 @@ public class EnvironmentTest {
 	 */
 	@Test
 	public void testCacheableComponentRemoving() {
-		Environment cenv = env.componentRemoving(compA2);
+		Environment cenv = env.componentRemoved(compA, compA2);
 
 		assertEquals(env.proxyMap.size(), 4);
 		assertEquals(env.cacheableComponentList.size(), 2);

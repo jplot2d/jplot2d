@@ -13,17 +13,17 @@ import org.jplot2d.element.Element;
  * @author Jingjing Li
  * 
  */
-public interface ComponentEx extends Component {
+public interface ComponentEx extends Component, ElementEx {
 
 	public ContainerEx getParent();
 
 	/**
-	 * Sets the parent of this component
+	 * Returns a map to tell why this component cannot be removed from its
+	 * container. The key is the moored element, required by its value.
 	 * 
-	 * @param parent
-	 *            the new parent
+	 * @return a map. The key is the element required by its value.
 	 */
-	public void setParent(ContainerEx parent);
+	public Map<Element, Element> getMooringMap();
 
 	/**
 	 * Determines whether this component is valid. A component is valid when it

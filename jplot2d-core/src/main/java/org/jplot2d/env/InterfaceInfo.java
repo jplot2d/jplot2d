@@ -1,5 +1,20 @@
 /**
- * 
+ * Copyright 2010 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.env;
 
@@ -27,16 +42,10 @@ public class InterfaceInfo {
 
 	private final Collection<Method> propReadMethods = new HashSet<Method>();
 
-	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
-
-	private final Collection<Method> redrawMethods = new HashSet<Method>();
-
-	private final Collection<Method> invalidateMethods = new HashSet<Method>();
-
-	private final Collection<Method> invalidateParentMethods = new HashSet<Method>();
-
 	/** listener get add remove Methods */
 	private final Collection<Method> listenerGarMethods = new HashSet<Method>();
+
+	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
 
 	private final Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
 
@@ -64,6 +73,7 @@ public class InterfaceInfo {
 		propWriteReadMap.putAll(sii.propWriteReadMap);
 		propReadMethods.addAll(sii.propReadMethods);
 		listenerGarMethods.addAll(sii.listenerGarMethods);
+		hierachyMethodMap.putAll(sii.hierachyMethodMap);
 		properties.putAll(sii.properties);
 	}
 
@@ -141,30 +151,6 @@ public class InterfaceInfo {
 		return propWriteReadMap.containsKey(method);
 	}
 
-	/**
-	 * @param method
-	 * @return
-	 */
-	public boolean isRedrawMethod(Method method) {
-		return redrawMethods.contains(method);
-	}
-
-	/**
-	 * @param method
-	 * @return
-	 */
-	public boolean isInvalidateMethod(Method method) {
-		return invalidateMethods.contains(method);
-	}
-
-	/**
-	 * @param method
-	 * @return
-	 */
-	public boolean isInvalidateParentMethod(Method method) {
-		return invalidateParentMethods.contains(method);
-	}
-
 	public Method getPropReadMethodByWriteMethod(Method method) {
 		return propWriteReadMap.get(method);
 	}
@@ -207,6 +193,37 @@ public class InterfaceInfo {
 	protected boolean isRemoveCompMethod(Method method) {
 		HierarchyOp hop = hierachyMethodMap.get(method);
 		return hop != null && hop == HierarchyOp.REMOVE;
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	protected boolean isJoinElementMethod(Method method) {
+		HierarchyOp hop = hierachyMethodMap.get(method);
+		return hop != null && hop == HierarchyOp.JOIN;
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	protected boolean isRefElementMethod(Method method) {
+		HierarchyOp hop = hierachyMethodMap.get(method);
+		return hop != null && hop == HierarchyOp.REF;
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	protected boolean isRef2ElementMethod(Method method) {
+		HierarchyOp hop = hierachyMethodMap.get(method);
+		return hop != null && hop == HierarchyOp.REF2;
+	}
+
+	public Map<String, PropertyDescriptor> getPropertyMap() {
+		return properties;
 	}
 
 }

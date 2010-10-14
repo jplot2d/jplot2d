@@ -27,16 +27,38 @@ public class AxisGroupImpl extends ElementImpl implements AxisGroupEx {
 
 	private List<MainAxisEx> axes = new ArrayList<MainAxisEx>();
 
+	public MainAxisEx[] getParents() {
+		return getAxes();
+	}
+
+	public MainAxisEx[] getAxes() {
+		return axes.toArray(new MainAxisEx[axes.size()]);
+	}
+
+	public void addMainAxis(MainAxisEx axis) {
+		axes.add(axis);
+		if (axes.size() == 1) {
+			parent = axis;
+		} else {
+			parent = null;
+		}
+	}
+
+	public void removeMainAxis(MainAxisEx axis) {
+		axes.remove(axis);
+		if (axes.size() == 1) {
+			parent = axis;
+		} else {
+			parent = null;
+		}
+	}
+
 	public boolean isAutoRange() {
 		return autoRange;
 	}
 
 	public void setAutoRange(boolean autoRange) {
 		this.autoRange = autoRange;
-	}
-
-	public MainAxisEx[] getAxes() {
-		return axes.toArray(new MainAxisEx[axes.size()]);
 	}
 
 	public void zoomRange(double start, double end) {

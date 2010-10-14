@@ -23,10 +23,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.element.impl.MultiParentElementEx;
 
 /**
  * This InvocationHandler intercept calls on proxy objects, and wrap the calls
@@ -127,6 +130,21 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			invokeRemoveCompMethod(method, args);
 			return null;
 		}
+		/* set(Element element) with join meaning */
+		if (iinfo.isJoinElementMethod(method)) {
+			invokeJoinElementMethod(method, args);
+			return null;
+		}
+		/* set(Element element) with reference meaning */
+		if (iinfo.isRefElementMethod(method)) {
+			invokeSetRefElementMethod(method, args);
+			return null;
+		}
+		/* set(Element, Element) with reference meaning */
+		if (iinfo.isRef2ElementMethod(method)) {
+			invokeSetRef2ElementMethod(method, args);
+			return null;
+		}
 
 		environment.begin();
 		try {
@@ -170,7 +188,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 
 			if (setterValueChanged) {
-				environment.elementPropertyChanged(impl);
+				environment.elementPropertyChanged((ElementEx) impl);
 			}
 
 		} finally {
@@ -181,14 +199,14 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	}
 
-	private Component invokeGetCompMethod(Method method, Object[] args)
+	private Object invokeGetCompMethod(Method method, Object[] args)
 			throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
 			environment.beginCommand(method.getName());
 		}
 		try {
-			Component compImpl = (Component) method.invoke(impl, args);
-			return (Component) environment.getProxy(compImpl);
+			ElementEx compImpl = (ElementEx) method.invoke(impl, args);
+			return environment.getProxy(compImpl);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
@@ -207,8 +225,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			Object result = Array.newInstance(method.getReturnType()
 					.getComponentType(), length);
 			for (int i = 0; i < length; i++) {
-				Array.set(result, i, environment.getProxy((Element) Array.get(
-						compImpls, i)));
+				Array.set(result, i, environment.getProxy((ElementEx) Array
+						.get(compImpls, i)));
 			}
 			return result;
 		} catch (InvocationTargetException e) {
@@ -273,31 +291,176 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private void invokeRemoveCompMethod(Method method, Object[] args)
 			throws Throwable {
 		ElementAddition cproxy = (ElementAddition) args[0];
-		ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
+
+		Throwable throwable = null;
 
 		Environment penv;
 		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
 			penv = environment;
 			penv.beginCommand("");
-			cenv = penv.componentRemoving(cimpl);
-			cenv.beginCommand("");
-			// update environment for the removing component
-			for (Element proxy : cenv.proxyMap.values()) {
-				((ElementAddition) proxy).setEnvironment(cenv);
+			ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
+
+			// check removable
+			Map<Element, Element> mooringMap = cimpl.getMooringMap();
+			if (mooringMap.size() > 0) {
+				String msg = "The removing is not allowed, because some element is required.\n";
+				for (Map.Entry<Element, Element> me : mooringMap.entrySet()) {
+					msg += "\t" + me.getKey() + " is required by "
+							+ me.getValue() + "\n";
+				}
+				throwable = new IllegalStateException(msg);
+
+			} else {
+
+				// notify environment a component is going to be removed
+				penv.componentRemoving(cimpl);
+
+				// remove the component
+				Object[] cargs = args.clone();
+				cargs[0] = cimpl;
+				try {
+					method.invoke(impl, cargs);
+				} catch (InvocationTargetException e) {
+					throwable = e.getCause();
+				}
+			}
+
+			// finish the removing
+			if (throwable == null) {
+				cenv = penv.componentRemoved((ComponentEx) impl, cimpl);
+				// update environment for the removing component
+				for (Element proxy : cenv.proxyMap.values()) {
+					((ElementAddition) proxy).setEnvironment(cenv);
+				}
 			}
 		}
 
+		penv.endCommand();
+
+		if (throwable != null) {
+			throw throwable;
+		}
+
+	}
+
+	/**
+	 * @param proxy
+	 * @param method
+	 * @param object
+	 *            the component to added
+	 * @throws Throwable
+	 */
+	private void invokeJoinElementMethod(Method method, Object[] args)
+			throws Throwable {
+		ElementAddition cproxy = (ElementAddition) args[0];
+
+		Throwable throwable = null;
+
+		Environment penv;
+		synchronized (Environment.getGlobalLock()) {
+			penv = environment;
+			Environment denv = ((Element) args[0]).getEnvironment();
+			if (penv != denv) {
+				throw new IllegalArgumentException(
+						"Must belongd to the same environment");
+			}
+
+			penv.beginCommand("");
+			ElementEx cimpl = (ElementEx) cproxy.getImpl();
+
+			// join the new child
+			MultiParentElementEx oldChildImpl = null;
+			Object[] cargs = args.clone();
+			cargs[0] = cimpl;
+			try {
+				oldChildImpl = (MultiParentElementEx) method
+						.invoke(impl, cargs);
+			} catch (InvocationTargetException e) {
+				throwable = e.getCause();
+			}
+
+			// remove the old child if it's orphan
+			if (throwable == null) {
+				if (oldChildImpl.getParents().length == 0) {
+					Environment cenv = penv.removeOrphan(oldChildImpl);
+					// update environment for the removing component
+					for (Element proxy : cenv.proxyMap.values()) {
+						((ElementAddition) proxy).setEnvironment(cenv);
+					}
+				}
+			}
+		}
+
+		penv.endCommand();
+
+		if (throwable != null) {
+			throw throwable;
+		}
+
+	}
+
+	private void invokeSetRefElementMethod(Method method, Object[] args)
+			throws Throwable {
+		ElementAddition cproxy = (ElementAddition) args[0];
+		Element cimpl;
+
+		Environment env;
+		synchronized (Environment.getGlobalLock()) {
+			// local safe copy
+			env = environment;
+			Environment cenv = ((Element) args[0]).getEnvironment();
+			if (env != cenv) {
+				throw new IllegalArgumentException(
+						"Must belongd to the same environment");
+			}
+			env.beginCommand("");
+			cimpl = cproxy.getImpl();
+		}
 		try {
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
-			penv.componentRemoved(cimpl);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			cenv.endCommand();
-			penv.endCommand();
+			env.endCommand();
+		}
+	}
+
+	private void invokeSetRef2ElementMethod(Method method, Object[] args)
+			throws Throwable {
+		Element cimpl0, cimpl1;
+
+		Environment env;
+		synchronized (Environment.getGlobalLock()) {
+			// local safe copy
+			env = environment;
+
+			if (args[0] != null && ((Element) args[0]).getEnvironment() != env) {
+				throw new IllegalArgumentException(
+						"Must belongd to the same environment");
+			}
+			if (args[1] != null && ((Element) args[1]).getEnvironment() != env) {
+				throw new IllegalArgumentException(
+						"Must belongd to the same environment");
+			}
+
+			env.beginCommand("");
+			cimpl0 = (args[0] == null) ? null : ((ElementAddition) args[0])
+					.getImpl();
+			cimpl1 = (args[1] == null) ? null : ((ElementAddition) args[1])
+					.getImpl();
+		}
+		try {
+			Object[] cargs = args.clone();
+			cargs[0] = cimpl0;
+			cargs[1] = cimpl1;
+			method.invoke(impl, cargs);
+		} catch (InvocationTargetException e) {
+			throw e.getCause();
+		} finally {
+			env.endCommand();
 		}
 	}
 

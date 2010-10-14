@@ -40,9 +40,16 @@ public class AxisAxisGroupTest {
 	@Test
 	public void testCreateAxisWithAxisGroup() {
 		MainAxis xaxis = factory.createMainAxis();
-		assertNotNull(xaxis.getGroup());
-		assertSame(xaxis.getGroup().getEnvironment(), (xaxis).getEnvironment());
-		assertArrayEquals(xaxis.getGroup().getAxes(), new MainAxis[] { xaxis });
+		AxisGroup group = xaxis.getGroup();
+		assertNotNull(group);
+		assertSame(group.getEnvironment(), xaxis.getEnvironment());
+		assertArrayEquals(group.getAxes(), new MainAxis[] { xaxis });
+
+		// set the same group again
+		assertNotNull(group);
+		xaxis.setGroup(group);
+		assertSame(group.getEnvironment(), xaxis.getEnvironment());
+		assertArrayEquals(group.getAxes(), new MainAxis[] { xaxis });
 	}
 
 	@Test
@@ -64,40 +71,15 @@ public class AxisAxisGroupTest {
 		sp.removeAxis(xaxis);
 		sp.removeAxis(yaxis);
 
+		// the axis group should be removed together
 		assertSame(xaxis.getGroup(), xag);
 		assertSame(yaxis.getGroup(), yag);
-		assertSame(xag.getEnvironment(), xaxis.getEnvironment());
-		assertSame(yag.getEnvironment(), yaxis.getEnvironment());
+		assertNotSame(xag.getEnvironment(), sp.getEnvironment());
+		assertNotSame(yag.getEnvironment(), sp.getEnvironment());
 	}
 
 	@Test
 	public void testSetAxisGroup() {
-		Subplot sp = factory.createSubplot();
-		MainAxis xaxis = factory.createMainAxis();
-		MainAxis yaxis = factory.createMainAxis();
-		AxisGroup xag = xaxis.getGroup();
-		AxisGroup yag = yaxis.getGroup();
-
-		sp.addXAxis(xaxis);
-		sp.addYAxis(yaxis);
-		xaxis.setGroup(yaxis.getGroup());
-
-		assertSame(xaxis.getGroup(), yag);
-		assertSame(yaxis.getGroup(), yag);
-		assertArrayEquals(yag.getAxes(), new MainAxis[] { xaxis, yaxis });
-		assertSame(xag.getEnvironment(), sp.getEnvironment());
-		assertSame(yag.getEnvironment(), sp.getEnvironment());
-
-		xaxis.setGroup(factory.createAxisGroup(xaxis.getEnvironment()));
-
-		assertSame(xaxis.getGroup(), yag);
-		assertSame(yaxis.getGroup(), yag);
-		assertSame(xag.getEnvironment(), sp.getEnvironment());
-		assertSame(yag.getEnvironment(), sp.getEnvironment());
-	}
-
-	@Test
-	public void testRemoveAxisFormGroup() {
 		Subplot sp = factory.createSubplot();
 		MainAxis xaxis = factory.createMainAxis();
 		MainAxis yaxis = factory.createMainAxis();
@@ -116,9 +98,33 @@ public class AxisAxisGroupTest {
 		sp.addYAxis(yaxis);
 		xaxis.setGroup(yaxis.getGroup());
 
+		// the old x group should be removed from the environment
+		assertNull(xag.getParent());
+		assertArrayEquals(xag.getAxes(), new MainAxis[0]);
+		assertNotSame(xag.getEnvironment(), sp.getEnvironment());
+
 		assertSame(xaxis.getGroup(), yag);
 		assertSame(yaxis.getGroup(), yag);
-		assertSame(xag.getEnvironment(), sp.getEnvironment());
+		assertArrayEquals(yag.getAxes(), new MainAxis[] { yaxis, xaxis });
+		assertSame(yag.getEnvironment(), sp.getEnvironment());
+
+		// remove axis before assign a new group
+		try {
+			sp.removeAxis(xaxis);
+			fail("IllegalStateException should be thrown.");
+		} catch (IllegalStateException e) {
+
+		}
+
+		// set xaxis a new group
+		AxisGroup xnag = factory.createAxisGroup(xaxis.getEnvironment());
+		xaxis.setGroup(xnag);
+
+		assertSame(xaxis.getGroup(), xnag);
+		assertSame(yaxis.getGroup(), yag);
+		assertArrayEquals(xnag.getAxes(), new MainAxis[] { xaxis });
+		assertArrayEquals(yag.getAxes(), new MainAxis[] { yaxis });
+		assertSame(xnag.getEnvironment(), sp.getEnvironment());
 		assertSame(yag.getEnvironment(), sp.getEnvironment());
 
 	}

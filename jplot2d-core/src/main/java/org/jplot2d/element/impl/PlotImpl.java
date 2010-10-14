@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.Element;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.element.Subplot;
@@ -168,6 +167,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return subplots.get(i);
 	}
 
+	public int indexOf(SubplotEx subplot) {
+		return subplots.indexOf(subplot);
+	}
+
 	public SubplotEx[] getSubplots() {
 		return subplots.toArray(new SubplotEx[subplots.size()]);
 	}
@@ -189,7 +192,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public PlotEx deepCopy(Map<Element, Element> orig2copyMap) {
+	public PlotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		PlotImpl result = new PlotImpl();
 
 		result.copyFrom(this);

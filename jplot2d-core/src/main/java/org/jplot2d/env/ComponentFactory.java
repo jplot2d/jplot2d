@@ -26,6 +26,7 @@ import org.jplot2d.element.Layer;
 import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
+import org.jplot2d.element.impl.AxisGroupEx;
 import org.jplot2d.element.impl.AxisGroupImpl;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
@@ -119,17 +120,31 @@ public class ComponentFactory {
 	}
 
 	public MainAxis createMainAxis() {
-		MainAxisImpl impl = new MainAxisImpl();
-		ElementIH<MainAxis> ih = new ElementIH<MainAxis>(impl, MainAxis.class);
-		MainAxis proxy = (MainAxis) Proxy.newProxyInstance(MainAxis.class
+		MainAxisImpl axis = new MainAxisImpl();
+		ElementIH<MainAxis> axisIH = new ElementIH<MainAxis>(axis,
+				MainAxis.class);
+		MainAxis axisProxy = (MainAxis) Proxy.newProxyInstance(MainAxis.class
 				.getClassLoader(), new Class[] { MainAxis.class,
-				ElementAddition.class }, ih);
+				ElementAddition.class }, axisIH);
 
-		assignDummyEnv(impl, proxy);
+		AxisGroupEx group = axis.getGroup();
+		ElementIH<AxisGroup> groupIH = new ElementIH<AxisGroup>(
+				axis.getGroup(), AxisGroup.class);
+		AxisGroup groupProxy = (AxisGroup) Proxy.newProxyInstance(
+				MainAxis.class.getClassLoader(), new Class[] { AxisGroup.class,
+						ElementAddition.class }, groupIH);
 
-		proxy.setGroup(createAxisGroup(proxy.getEnvironment()));
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+				: new DummyEnvironment();
 
-		return proxy;
+		((ElementAddition) axisProxy).setEnvironment(env);
+		((ElementAddition) groupProxy).setEnvironment(env);
+		env.registerComponent(axis, axisProxy);
+		env.registerElement(group, groupProxy);
+
+		// FIXME: register axis tick
+
+		return axisProxy;
 	}
 
 	/**

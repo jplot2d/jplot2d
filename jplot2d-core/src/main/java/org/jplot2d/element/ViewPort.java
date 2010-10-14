@@ -26,10 +26,10 @@ package org.jplot2d.element;
  * @author Jingjing Li
  * 
  */
-public interface ViewPort {
-
-	public void setDataModel(DataModel dataModel);
+public interface Viewport {
 
 	public void setViewportTransform(ViewportTransform vxf);
+
+	public void setPhysicalBounds();
 
 }

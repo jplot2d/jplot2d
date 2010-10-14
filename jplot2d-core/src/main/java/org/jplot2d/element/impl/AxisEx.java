@@ -3,7 +3,6 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.Element;
 
 public interface AxisEx extends Axis, ComponentEx {
 
@@ -28,6 +27,6 @@ public interface AxisEx extends Axis, ComponentEx {
 	 */
 	public void updateThickness();
 
-	public AxisEx deepCopy(Map<Element, Element> orig2copyMap);
+	public AxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

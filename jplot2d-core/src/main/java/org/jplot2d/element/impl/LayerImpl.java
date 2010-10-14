@@ -41,8 +41,23 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private NormalTransform xNormalTransform, yNormalTransform;
 
+	private MainAxisEx xaxis, yaxis;
+
+	public String getSelfId() {
+		if (getParent() != null) {
+			return "Layer" + getParent().indexOf(this);
+		} else {
+			return "Layer@" + System.identityHashCode(this);
+		}
+	}
+
 	public SubplotEx getParent() {
 		return (SubplotEx) super.getParent();
+	}
+
+	public Map<Element, Element> getMooringMap() {
+		// never moored on axis
+		return super.getMooringMap();
 	}
 
 	public void setPhysicalLocation(double locX, double locY) {
@@ -115,28 +130,49 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public MainAxisEx getXAxis() {
-		// TODO Auto-generated method stub
-		return null;
+		return xaxis;
 	}
 
 	public MainAxisEx getYAxis() {
-		// TODO Auto-generated method stub
-		return null;
+		return yaxis;
 	}
 
 	public void setXAxis(MainAxis axis) {
-		// TODO Auto-generated method stub
-
+		if (this.xaxis != null) {
+			this.xaxis.removeLayer(this);
+		}
+		this.xaxis = (MainAxisEx) axis;
+		if (this.xaxis != null) {
+			this.xaxis.addLayer(this);
+		}
 	}
 
 	public void setYAxis(MainAxis axis) {
-		// TODO Auto-generated method stub
-
+		if (this.yaxis != null) {
+			this.yaxis.removeLayer(this);
+		}
+		this.yaxis = (MainAxisEx) axis;
+		if (this.xaxis != null) {
+			this.yaxis.addLayer(this);
+		}
 	}
 
 	public void setAxes(MainAxis xaxis, MainAxis yaxis) {
-		// TODO Auto-generated method stub
+		if (this.xaxis != null) {
+			this.xaxis.removeLayer(this);
+		}
+		this.xaxis = (MainAxisEx) xaxis;
+		if (this.xaxis != null) {
+			this.xaxis.addLayer(this);
+		}
 
+		if (this.yaxis != null) {
+			this.yaxis.removeLayer(this);
+		}
+		this.yaxis = (MainAxisEx) yaxis;
+		if (this.xaxis != null) {
+			this.yaxis.addLayer(this);
+		}
 	}
 
 	public void draw(Graphics2D g) {
@@ -153,7 +189,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		g.setClip(oldClip);
 	}
 
-	public LayerImpl deepCopy(Map<Element, Element> orig2copyMap) {
+	public LayerImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		LayerImpl result = new LayerImpl();
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);

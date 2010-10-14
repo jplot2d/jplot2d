@@ -24,14 +24,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collections;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.util.DoubleDimension2D;
 
 public class ComponentImpl extends ElementImpl implements ComponentEx {
-
-	protected ContainerEx parent;
 
 	protected boolean visible = true;
 
@@ -68,12 +67,20 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	private boolean redrawNeeded;
 
-	public ContainerEx getParent() {
-		return parent;
+	public final String getId() {
+		if (parent != null) {
+			return parent.getId() + "-" + getSelfId();
+		} else {
+			return getSelfId();
+		}
 	}
 
-	public void setParent(ContainerEx parent) {
-		this.parent = parent;
+	public ContainerEx getParent() {
+		return (ContainerEx) parent;
+	}
+
+	public Map<Element, Element> getMooringMap() {
+		return Collections.emptyMap();
 	}
 
 	public boolean isVisible() {
