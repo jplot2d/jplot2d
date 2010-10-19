@@ -164,55 +164,6 @@ public interface Component extends Element {
 	public void setFont(Font font);
 
 	/**
-	 * Returns the name of the font.
-	 * 
-	 * @return the name of the font.
-	 */
-	public String getFontName();
-
-	/**
-	 * Apply the new font with the given name
-	 * 
-	 * @param name
-	 *            the font name.
-	 */
-	public void setFontName(String name);
-
-	/**
-	 * Returns the style of the font. The style can be PLAIN, BOLD, ITALIC, or
-	 * BOLD+ITALIC.
-	 * 
-	 * @return the style of the font
-	 * @see java.awt.Font
-	 */
-	public int getFontStyle();
-
-	/**
-	 * Apply a new style to the font. The style can be PLAIN, BOLD, ITALIC, or
-	 * BOLD+ITALIC.
-	 * 
-	 * @param style
-	 *            the style to apply
-	 * @see java.awt.Font
-	 */
-	public void setFontStyle(int style);
-
-	/**
-	 * Returns the Font size.
-	 * 
-	 * @return the font size.
-	 */
-	public float getFontSize();
-
-	/**
-	 * Sets a new size of the string.
-	 * 
-	 * @param size
-	 *            the new size of the font.
-	 */
-	public void setFontSize(float size);
-
-	/**
 	 * Returns the x,y origin of this plot component in its parent's physical
 	 * coordinate.
 	 * 
