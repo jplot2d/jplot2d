@@ -180,7 +180,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		((AxisEx) axis).setOrientation(AxisOrientation.VERTICAL);
 	}
 
-	public boolean removeXAxis(Axis axis) {
+	public void removeXAxis(Axis axis) {
 		if (axis instanceof MainAxisEx) {
 			if (((MainAxisEx) axis).getLayers().length > 0) {
 				throw new IllegalStateException("The axis has layer attached");
@@ -191,10 +191,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			}
 		}
 		((ComponentEx) axis).setParent(null);
-		return xaxes.remove(axis);
+		xaxes.remove(axis);
 	}
 
-	public boolean removeYAxis(Axis axis) {
+	public void removeYAxis(Axis axis) {
 		if (axis instanceof MainAxisEx) {
 			if (((MainAxisEx) axis).getLayers().length > 0) {
 				throw new IllegalStateException("The axis has layer attached");
@@ -205,7 +205,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			}
 		}
 		((ComponentEx) axis).setParent(null);
-		return yaxes.remove(axis);
+		yaxes.remove(axis);
 	}
 
 	public SubplotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
