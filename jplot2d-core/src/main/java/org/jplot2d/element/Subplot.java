@@ -101,7 +101,7 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified X axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public boolean removeXAxis(Axis axis);
+	public void removeXAxis(Axis axis);
 
 	/**
 	 * Removes the specified Y axis from this subplot if it is present.
@@ -111,6 +111,6 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified Y axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public boolean removeYAxis(Axis axis);
+	public void removeYAxis(Axis axis);
 
 }
