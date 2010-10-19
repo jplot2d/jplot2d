@@ -76,6 +76,17 @@ public class LayerAxisTest {
 		assertSame(layer.getYAxis(), yaxis);
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+
+		// set axis again
+		layer.setAxes(xaxis, yaxis);
+
+		assertSame(xaxis.getParent(), sp);
+		assertSame(yaxis.getParent(), sp);
+		assertSame(layer.getParent(), sp);
+		assertSame(layer.getXAxis(), xaxis);
+		assertSame(layer.getYAxis(), yaxis);
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 	}
 
 	/**
@@ -141,13 +152,13 @@ public class LayerAxisTest {
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 
 		try {
-			sp.removeAxis(xaxis);
+			sp.removeXAxis(xaxis);
 			fail("IllegalStateException should be thrown");
 		} catch (IllegalStateException e) {
 
 		}
 		try {
-			sp.removeAxis(yaxis);
+			sp.removeYAxis(yaxis);
 			fail("IllegalStateException should be thrown");
 		} catch (IllegalStateException e) {
 
@@ -168,8 +179,8 @@ public class LayerAxisTest {
 		// detach axes
 		layer.setAxes(null, null);
 
-		sp.removeAxis(xaxis);
-		sp.removeAxis(yaxis);
+		sp.removeXAxis(xaxis);
+		sp.removeYAxis(yaxis);
 
 	}
 

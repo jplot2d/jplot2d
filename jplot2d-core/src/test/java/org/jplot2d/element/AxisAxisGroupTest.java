@@ -68,8 +68,8 @@ public class AxisAxisGroupTest {
 		assertSame(xag.getEnvironment(), sp.getEnvironment());
 		assertSame(yag.getEnvironment(), sp.getEnvironment());
 
-		sp.removeAxis(xaxis);
-		sp.removeAxis(yaxis);
+		sp.removeXAxis(xaxis);
+		sp.removeYAxis(yaxis);
 
 		// the axis group should be removed together
 		assertSame(xaxis.getGroup(), xag);
@@ -110,7 +110,7 @@ public class AxisAxisGroupTest {
 
 		// remove axis before assign a new group
 		try {
-			sp.removeAxis(xaxis);
+			sp.removeXAxis(xaxis);
 			fail("IllegalStateException should be thrown.");
 		} catch (IllegalStateException e) {
 

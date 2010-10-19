@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Axis;
+import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.PhysicalTransform;
@@ -169,15 +170,17 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	public void addXAxis(Axis axis) {
 		xaxes.add((AxisEx) axis);
-		((ComponentEx) axis).setParent(this);
+		((AxisEx) axis).setParent(this);
+		((AxisEx) axis).setOrientation(AxisOrientation.HORIZONTAL);
 	}
 
 	public void addYAxis(Axis axis) {
 		yaxes.add((AxisEx) axis);
-		((ComponentEx) axis).setParent(this);
+		((AxisEx) axis).setParent(this);
+		((AxisEx) axis).setOrientation(AxisOrientation.VERTICAL);
 	}
 
-	public void removeAxis(Axis axis) {
+	public boolean removeXAxis(Axis axis) {
 		if (axis instanceof MainAxisEx) {
 			if (((MainAxisEx) axis).getLayers().length > 0) {
 				throw new IllegalStateException("The axis has layer attached");
@@ -187,9 +190,22 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 						"The axis has aux axis attached");
 			}
 		}
-		xaxes.remove(axis);
-		yaxes.remove(axis);
 		((ComponentEx) axis).setParent(null);
+		return xaxes.remove(axis);
+	}
+
+	public boolean removeYAxis(Axis axis) {
+		if (axis instanceof MainAxisEx) {
+			if (((MainAxisEx) axis).getLayers().length > 0) {
+				throw new IllegalStateException("The axis has layer attached");
+			}
+			if (((MainAxisEx) axis).getAuxAxes().length > 0) {
+				throw new IllegalStateException(
+						"The axis has aux axis attached");
+			}
+		}
+		((ComponentEx) axis).setParent(null);
+		return yaxes.remove(axis);
 	}
 
 	public SubplotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
