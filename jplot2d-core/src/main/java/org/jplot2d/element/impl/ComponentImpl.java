@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.Map;
 
@@ -44,15 +45,13 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	protected Color color = null;
 
-	protected String fontName;
-
-	protected int fontStyle = -1;
-
-	protected float fontSize = Float.NaN;
+	protected Font font;
 
 	protected double physicalLocX, physicalLocY;
 
 	protected double physicalWidth, physicalHeight;
+
+	protected PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
@@ -142,38 +141,11 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public Font getFont() {
-		return new Font(fontName, fontStyle, (int) fontSize)
-				.deriveFont(fontSize);
+		return font;
 	}
 
 	public void setFont(Font font) {
-		fontName = font.getName();
-		fontStyle = font.getStyle();
-		fontSize = font.getSize2D();
-	}
-
-	public String getFontName() {
-		return fontName;
-	}
-
-	public void setFontName(String name) {
-		fontName = name;
-	}
-
-	public int getFontStyle() {
-		return fontStyle;
-	}
-
-	public void setFontStyle(int style) {
-		fontStyle = style;
-	}
-
-	public float getFontSize() {
-		return fontSize;
-	}
-
-	public void setFontSize(float size) {
-		fontSize = size;
+		this.font = font;
 	}
 
 	public Point2D getPhysicalLocation() {
@@ -247,10 +219,6 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		}
 	}
 
-	private static boolean isValidFontStyle(int style) {
-		return (style & ~0x03) == 0;
-	}
-
 	public void redraw() {
 		if (cacheable) {
 			redrawNeeded = true;
@@ -288,14 +256,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		setMovable(src.isMovable());
 		setZOrder(src.getZOrder());
 		setColor(src.getColor());
-		/* copy the font instead of name,style,size */
-		if (src.getFontName() != null && isValidFontStyle(src.getFontStyle())) {
-			setFont(src.getFont());
-		} else {
-			setFontName(src.getFontName());
-			setFontStyle(src.getFontStyle());
-			setFontSize(src.getFontSize());
-		}
+		setFont(src.getFont());
 		physicalLocX = src.physicalLocX;
 		physicalLocY = src.physicalLocY;
 		physicalWidth = src.physicalWidth;
