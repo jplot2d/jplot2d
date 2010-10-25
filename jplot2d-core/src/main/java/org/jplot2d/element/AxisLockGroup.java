@@ -25,7 +25,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
-public interface AxisGroup extends Element {
+public interface AxisLockGroup extends Element {
 
 	/**
 	 * Return the autorange status of this axis group.
@@ -63,6 +63,6 @@ public interface AxisGroup extends Element {
 	 * @return all axes belongs to this group
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public MainAxis[] getAxes();
+	public ViewportAxis[] getViewportAxes();
 
 }

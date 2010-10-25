@@ -19,29 +19,29 @@
 package org.jplot2d.element;
 
 /**
- * This interface define the transformation between axis and AuxAxis.
+ * This interface define the transformation between user value and tick value.
  * 
  * @author Jingjing Li
  * 
  */
-public interface AuxTransform {
+public interface AxisTickTransform {
 
 	/**
-	 * Transform a value from Axis to AuxAxis
+	 * Transform a user value to tick value
 	 * 
 	 * @param v
-	 *            the value on main Axis
-	 * @return the value on an AuxAxis
+	 *            the user value
+	 * @return the tick value
 	 */
-	public double transformMain2Aux(double v);
+	public double transformUser2Tick(double v);
 
 	/**
-	 * Transform a value from AuxAxis to Axis.
+	 * Transform a tick value to user value.
 	 * 
 	 * @param v
-	 *            the value on aux Axis
-	 * @return the value on main axis
+	 *            the tick value
+	 * @return the user value
 	 */
-	public double transformAux2Main(double v);
+	public double transformTick2User(double v);
 
 }
