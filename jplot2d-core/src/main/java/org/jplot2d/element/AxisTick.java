@@ -32,13 +32,6 @@ public interface AxisTick extends Element {
 
 	public Axis getParent();
 
-	public boolean isTickCalcNeeded();
-
-	/**
-	 * Calculate ticks when tick calculation is needed.
-	 */
-	public void calcTicks();
-
 	/**
 	 * Returns if the tick mark is shown or not
 	 * 

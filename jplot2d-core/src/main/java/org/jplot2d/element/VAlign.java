@@ -18,12 +18,6 @@
  */
 package org.jplot2d.element;
 
-/**
- * A 1-d Transform between world value and normal value (range 0..1).
- * 
- * @author Jingjing Li
- * 
- */
-public interface AxisTransform {
-
+public enum VAlign {
+	TOP, MIDDLE, BOTTOM
 }

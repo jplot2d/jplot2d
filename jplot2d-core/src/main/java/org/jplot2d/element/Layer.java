@@ -84,7 +84,7 @@ public interface Layer extends Component {
 	 * @return
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public MainAxis getXAxis();
+	public ViewportAxis getXViewportAxis();
 
 	/**
 	 * Returns the Y axis to this layer attaching.
@@ -92,7 +92,7 @@ public interface Layer extends Component {
 	 * @return
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public MainAxis getYAxis();
+	public ViewportAxis getYViewportAxis();
 
 	/**
 	 * Attach this layer to the given X axis. When adding a layer to a subplot,
@@ -102,7 +102,7 @@ public interface Layer extends Component {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setXAxis(MainAxis axis);
+	public void setXViewportAxis(ViewportAxis axisGroup);
 
 	/**
 	 * Attach this layer to the given Y axis. When adding a layer to a subplot,
@@ -112,7 +112,7 @@ public interface Layer extends Component {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setYAxis(MainAxis axis);
+	public void setYViewportAxis(ViewportAxis axisGroup);
 
 	/**
 	 * Attach this layer to the given X/Y axis pair. When adding a layer to a
@@ -125,6 +125,6 @@ public interface Layer extends Component {
 	 *            the y axis
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setAxes(MainAxis xaxis, MainAxis yaxis);
+	public void setViewportAxes(ViewportAxis xAxisGroup, ViewportAxis yAxisGroup);
 
 }

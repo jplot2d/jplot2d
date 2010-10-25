@@ -27,14 +27,6 @@ import org.jplot2d.util.Range2D;
 public interface Axis extends Component {
 
 	/**
-	 * Orientation is not a set-able property. It just show the orientation of
-	 * this axis after it has been add as a X/Y axis.
-	 * 
-	 * @return orientation of this axis
-	 */
-	public AxisOrientation getOrientation();
-
-	/**
 	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT
 	 * for y axis, PlotConstant.BOTTOM or PlotConstant.TOP for x axis.
 	 * 
@@ -53,27 +45,45 @@ public interface Axis extends Component {
 	public void setPosition(AxisPosition position);
 
 	/**
-	 * Returns the range of this axis.
+	 * Returns the AxisTickTransform, which defines The relationship between
+	 * user value and tick value.
 	 * 
-	 * @return the range of this axis.
+	 * @return the AxisTickTransform.
+	 */
+	public AxisTickTransform getTickTransform();
+
+	/**
+	 * Sets the AxisTickTransform, which defines The relationship between user
+	 * value and tick value. The AuxTransform <em>must</em> be efficient
+	 * immutable.
+	 * 
+	 * @param transform
+	 *            the AxisTickTransform object.
+	 */
+	public void setTickTransform(AxisTickTransform transform);
+
+	/**
+	 * Returns the tick range of this axis.
+	 * 
+	 * @return the tick range of this axis.
 	 */
 	public Range2D getRange();
 
 	/**
-	 * Set the value range of the axis.
+	 * Set the tick range of the axis.
 	 * 
 	 * @param range
-	 *            the new range of the axis
+	 *            the new tick range of the axis
 	 */
 	public void setRange(Range2D range);
 
 	/**
-	 * Set the value range of the axis.
+	 * Set the tick range of the axis.
 	 * 
 	 * @param low
-	 *            the low value of new range of the axis
+	 *            the low value of new tick range of the axis
 	 * @param high
-	 *            the high value of new range of the axis
+	 *            the high value of new tick range of the axis
 	 */
 	public void setRange(double low, double high);
 

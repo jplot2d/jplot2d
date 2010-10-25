@@ -76,22 +76,22 @@ public interface Subplot extends Container {
 	public void removeLayer(Layer layer);
 
 	@Hierarchy(HierarchyOp.GET)
-	public Axis getXAxis(int index);
+	public ViewportAxis getXViewportAxis(int index);
 
 	@Hierarchy(HierarchyOp.GET)
-	public Axis getYAxis(int index);
+	public ViewportAxis getYViewportAxis(int index);
 
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Axis[] getXAxes();
+	public ViewportAxis[] getXViewportAxes();
 
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Axis[] getYAxes();
+	public ViewportAxis[] getYViewportAxes();
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addXAxis(Axis axis);
+	public void addXViewportAxis(ViewportAxis axisGroup);
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addYAxis(Axis axis);
+	public void addYViewportAxis(ViewportAxis axisGroup);
 
 	/**
 	 * Removes the specified X axis from this subplot if it is present.
@@ -101,7 +101,7 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified X axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeXAxis(Axis axis);
+	public void removeXViewportAxis(ViewportAxis axisGroup);
 
 	/**
 	 * Removes the specified Y axis from this subplot if it is present.
@@ -111,6 +111,6 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified Y axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeYAxis(Axis axis);
+	public void removeYViewportAxis(ViewportAxis axisGroup);
 
 }
