@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jplot2d.axtrans.TransformType;
-import org.jplot2d.tick.TickAlgorithm;
+import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -38,7 +38,7 @@ import org.jplot2d.util.Range2D;
  */
 public abstract class AxisType {
 
-	private static final Map<String, AxisType> _axisTypeMap = Collections
+	private static final Map<String, AxisType> axisTypeMap = Collections
 			.synchronizedMap(new LinkedHashMap<String, AxisType>());
 
 	public static final AxisType LINEAR = new LinearAxisType();
@@ -61,7 +61,7 @@ public abstract class AxisType {
 		this.name = name;
 		transformType = att;
 		tickAlgorithm = ta;
-		_axisTypeMap.put(name, this);
+		axisTypeMap.put(name, this);
 	}
 
 	public String getName() {
@@ -104,11 +104,11 @@ public abstract class AxisType {
 	}
 
 	public static AxisType valueOf(String name) {
-		return _axisTypeMap.get(name);
+		return axisTypeMap.get(name);
 	}
 
 	public static AxisType[] values() {
-		return _axisTypeMap.values().toArray(new AxisType[0]);
+		return axisTypeMap.values().toArray(new AxisType[0]);
 	}
 
 }

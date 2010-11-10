@@ -22,7 +22,7 @@
 package org.jplot2d.axtype;
 
 import org.jplot2d.axtrans.LinearTransformType;
-import org.jplot2d.tick.RightAscensionTickAlgorithm;
+import org.jplot2d.axtick.RightAscensionTickAlgorithm;
 import org.jplot2d.util.Range2D;
 
 /**

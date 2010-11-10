@@ -16,37 +16,28 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
-package org.jplot2d.axtype;
+package org.jplot2d.axtick;
 
-import org.jplot2d.axtrans.LogarithmicTransformType;
-import org.jplot2d.axtick.LogTickAlgorithm;
-import org.jplot2d.util.Range2D;
+import static org.junit.Assert.*;
+
+import org.jplot2d.axtick.Int10expn;
+
+import org.junit.Test;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class LogAxisType extends AxisType {
+public class Int10expnTest {
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(
-			Double.MIN_VALUE, true, Double.MAX_VALUE / 2, true);
-
-	private static final Range2D DEFAULT_RANGE = new Range2D.Double(0.1, 10);
-
-	public LogAxisType() {
-		super("LOG", LogarithmicTransformType.getInstance(), LogTickAlgorithm
-				.getInstance());
-	}
-
-	public Range2D getBoundary() {
-		return POSITIVE_BOUNDARY;
-	}
-
-	public Range2D getDefaultWorldRange() {
-		return DEFAULT_RANGE;
+	@Test
+	public void testCreateFromDouble() {
+		assertEquals(new Int10expn(1.49), new Int10expn(1, 0));
+		assertEquals(new Int10expn(9.51), new Int10expn(1, 1));
+		assertEquals(new Int10expn(0.149), new Int10expn(1, -1));
+		assertEquals(new Int10expn(0.951), new Int10expn(1, 0));
+		assertEquals(new Int10expn(14.9), new Int10expn(1, 1));
+		assertEquals(new Int10expn(95.1), new Int10expn(1, 2));
 	}
 
 }
