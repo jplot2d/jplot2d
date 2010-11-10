@@ -18,19 +18,19 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.AxisGroup;
+import org.jplot2d.element.AxisLockGroup;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface AxisGroupEx extends AxisGroup, MultiParentElementEx {
+public interface AxisLockGroupEx extends AxisLockGroup, MultiParentElementEx {
 
-	public MainAxisEx[] getParents();
+	public ViewportAxisEx[] getParents();
 
-	public void addMainAxis(MainAxisEx axis);
+	public void addViewportAxis(ViewportAxisEx axisGroup);
 
-	public void removeMainAxis(MainAxisEx axis);
+	public void removeViewportAxis(ViewportAxisEx axisGroup);
 
 	public void autoRange();
 

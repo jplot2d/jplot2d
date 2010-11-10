@@ -21,21 +21,21 @@ package org.jplot2d.element.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AxisGroupImpl extends ElementImpl implements AxisGroupEx {
+public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 	private boolean autoRange = true;
 
-	private List<MainAxisEx> axes = new ArrayList<MainAxisEx>();
+	private List<ViewportAxisEx> axes = new ArrayList<ViewportAxisEx>();
 
-	public MainAxisEx[] getParents() {
-		return getAxes();
+	public ViewportAxisEx[] getParents() {
+		return getViewportAxes();
 	}
 
-	public MainAxisEx[] getAxes() {
-		return axes.toArray(new MainAxisEx[axes.size()]);
+	public ViewportAxisEx[] getViewportAxes() {
+		return axes.toArray(new ViewportAxisEx[axes.size()]);
 	}
 
-	public void addMainAxis(MainAxisEx axis) {
+	public void addViewportAxis(ViewportAxisEx axis) {
 		axes.add(axis);
 		if (axes.size() == 1) {
 			parent = axis;
@@ -44,7 +44,7 @@ public class AxisGroupImpl extends ElementImpl implements AxisGroupEx {
 		}
 	}
 
-	public void removeMainAxis(MainAxisEx axis) {
+	public void removeViewportAxis(ViewportAxisEx axis) {
 		axes.remove(axis);
 		if (axes.size() == 1) {
 			parent = axis;
