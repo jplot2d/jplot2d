@@ -37,8 +37,13 @@ public abstract class Range2D implements Cloneable {
 
         public final boolean startIncl, endIncl;
 
+        public final boolean empty;
+
+        /**
+         * Create a Range2D.Double with empty range.
+         */
         public Double() {
-            this(java.lang.Double.NaN, java.lang.Double.NaN);
+            this(java.lang.Double.NaN, false, java.lang.Double.NaN, false);
         }
 
         /**
@@ -53,19 +58,27 @@ public abstract class Range2D implements Cloneable {
             this(start, true, end, true);
         }
 
-        public Double(double start, boolean isStartIncluded, double end,
-                boolean isEndIncluded) {
-            startIncl = isStartIncluded;
-            endIncl = isEndIncluded;
-            this.start = start;
-            this.end = end;
+        public Double(double start, boolean startIncl, double end,
+                boolean endIncl) {
+            if (java.lang.Double.isNaN(start) || java.lang.Double.isNaN(end)
+                    || (start == end && !(startIncl && endIncl))) {
+                this.empty = true;
+                this.startIncl = false;
+                this.endIncl = false;
+                this.start = java.lang.Double.NaN;
+                this.end = java.lang.Double.NaN;
+            } else {
+                this.empty = false;
+                this.startIncl = startIncl;
+                this.endIncl = endIncl;
+                this.start = start;
+                this.end = end;
+            }
         }
 
         public Double(Range2D range) {
-            startIncl = range.isStartIncluded();
-            endIncl = range.isEndIncluded();
-            start = range.getStart();
-            end = range.getEnd();
+            this(range.getStart(), range.isStartIncluded(), range.getEnd(),
+                    range.isEndIncluded());
         }
 
         public double getStart() {
@@ -103,8 +116,12 @@ public abstract class Range2D implements Cloneable {
         public boolean equals(Object obj) {
             if (obj instanceof Double) {
                 Double p2d = (Double) obj;
-                return start == p2d.start && startIncl == p2d.startIncl
-                        && end == p2d.end && endIncl == p2d.endIncl;
+                if (isEmpty() && p2d.isEmpty()) {
+                    return true;
+                } else {
+                    return start == p2d.start && startIncl == p2d.startIncl
+                            && end == p2d.end && endIncl == p2d.endIncl;
+                }
             }
             return false;
         }
@@ -125,13 +142,16 @@ public abstract class Range2D implements Cloneable {
                     + end + ((endIncl) ? "]" : ")");
         }
 
-        @Override
         public Double invert() {
             return new Double(end, endIncl, start, startIncl);
         }
 
         @Override
         public Range2D intersect(Range2D range) {
+            if (range.isEmpty()) {
+                return new Double();
+            }
+
             double min, max;
             boolean minincl, maxincl;
             if (getMin() == range.getMin()) {
@@ -169,7 +189,6 @@ public abstract class Range2D implements Cloneable {
             }
         }
 
-        @Override
         public Range2D union(Range2D range) {
             if (isEmpty()) {
                 return range;
@@ -215,9 +234,8 @@ public abstract class Range2D implements Cloneable {
             }
         }
 
-        @Override
         public boolean isEmpty() {
-            return start == end && !(startIncl && endIncl);
+            return empty;
         }
 
     }
@@ -230,8 +248,15 @@ public abstract class Range2D implements Cloneable {
 
         public final long end;
 
+        public final boolean empty;
+
+        /**
+         * Create a Range2D.Long with empty range.
+         */
         public Long() {
-            this(0, 0);
+            this.start = 0;
+            this.end = 0;
+            empty = true;
         }
 
         /**
@@ -245,6 +270,7 @@ public abstract class Range2D implements Cloneable {
         public Long(long start, long end) {
             this.start = start;
             this.end = end;
+            empty = false;
         }
 
         public Long(Range2D range) {
@@ -257,30 +283,46 @@ public abstract class Range2D implements Cloneable {
                 if (end == range.getEnd() && !range.isEndIncluded()) {
                     end--;
                 }
-                this.start = start;
-                this.end = end;
+                if (start > end) {
+                    empty = true;
+                    this.start = 0;
+                    this.end = 0;
+                } else {
+                    empty = false;
+                    this.start = start;
+                    this.end = end;
+                }
             } else {
                 long start = (long) Math.floor(range.getStart());
-                long end = (long) Math.ceil(range.getStart());
+                long end = (long) Math.ceil(range.getEnd());
                 if (start == range.getStart() && !range.isStartIncluded()) {
                     start--;
                 }
                 if (end == range.getEnd() && !range.isEndIncluded()) {
                     end++;
                 }
-                this.start = start;
-                this.end = end;
+                if (start < end) {
+                    empty = true;
+                    this.start = 0;
+                    this.end = 0;
+                } else {
+                    empty = false;
+                    this.start = start;
+                    this.end = end;
+                }
             }
         }
 
-        @Override
-        public boolean isStartIncluded() {
-            return true;
+        public boolean isEmpty() {
+            return empty;
         }
 
-        @Override
+        public boolean isStartIncluded() {
+            return !empty;
+        }
+
         public boolean isEndIncluded() {
-            return true;
+            return !empty;
         }
 
         public double getStart() {
@@ -310,7 +352,12 @@ public abstract class Range2D implements Cloneable {
         public boolean equals(Object obj) {
             if (obj instanceof Long) {
                 Long p2d = (Long) obj;
-                return start == p2d.start && end == p2d.end;
+                if (isEmpty() && p2d.isEmpty()) {
+                    return true;
+                } else {
+                    return start == p2d.start && end == p2d.end
+                            && empty == p2d.empty;
+                }
             }
             return false;
         }
@@ -335,8 +382,11 @@ public abstract class Range2D implements Cloneable {
             return new Long(end, start);
         }
 
-        @Override
         public Range2D intersect(Range2D range) {
+            if (range.isEmpty()) {
+                return new Long();
+            }
+
             long min, max;
             long lmin, lmax;
             Long lrange = (range instanceof Long) ? (Long) range : new Long(
@@ -364,8 +414,14 @@ public abstract class Range2D implements Cloneable {
             }
         }
 
-        @Override
         public Range2D union(Range2D range) {
+            if (isEmpty()) {
+                return range;
+            }
+            if (range.isEmpty()) {
+                return this;
+            }
+
             long min, max;
             long lmin, lmax;
             Long lrange = (range instanceof Long) ? (Long) range : new Long(
@@ -391,11 +447,6 @@ public abstract class Range2D implements Cloneable {
             } else {
                 return new Long(max, min);
             }
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
         }
 
     }
