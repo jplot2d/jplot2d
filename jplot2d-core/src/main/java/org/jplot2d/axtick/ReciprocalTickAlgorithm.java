@@ -16,37 +16,28 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+package org.jplot2d.axtick;
+
 /**
+ * A Concrete Creator for Linear TickCalculator.
  * 
- */
-package org.jplot2d.axtype;
-
-import org.jplot2d.axtrans.LogarithmicTransformType;
-import org.jplot2d.axtick.LogTickAlgorithm;
-import org.jplot2d.util.Range2D;
-
-/**
  * @author Jingjing Li
  * 
  */
-public class LogAxisType extends AxisType {
+public class ReciprocalTickAlgorithm extends TickAlgorithm {
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(
-			Double.MIN_VALUE, true, Double.MAX_VALUE / 2, true);
+	private static ReciprocalTickAlgorithm _instance = new ReciprocalTickAlgorithm();
 
-	private static final Range2D DEFAULT_RANGE = new Range2D.Double(0.1, 10);
+	private ReciprocalTickAlgorithm() {
 
-	public LogAxisType() {
-		super("LOG", LogarithmicTransformType.getInstance(), LogTickAlgorithm
-				.getInstance());
 	}
 
-	public Range2D getBoundary() {
-		return POSITIVE_BOUNDARY;
+	public static ReciprocalTickAlgorithm getInstance() {
+		return _instance;
 	}
 
-	public Range2D getDefaultWorldRange() {
-		return DEFAULT_RANGE;
+	public ReciprocalTickCalculator createCalculator() {
+		return new ReciprocalTickCalculator();
 	}
 
 }

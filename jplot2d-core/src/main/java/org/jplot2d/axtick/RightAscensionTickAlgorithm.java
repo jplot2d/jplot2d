@@ -16,37 +16,41 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+package org.jplot2d.axtick;
+
 /**
+ * A TickCalculator to display in hh:mm:ss.xxxx format. The input unit is
+ * decimal degree.
  * 
- */
-package org.jplot2d.axtype;
-
-import org.jplot2d.axtrans.LogarithmicTransformType;
-import org.jplot2d.axtick.LogTickAlgorithm;
-import org.jplot2d.util.Range2D;
-
-/**
  * @author Jingjing Li
  * 
  */
-public class LogAxisType extends AxisType {
+public class RightAscensionTickAlgorithm extends TickAlgorithm {
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(
-			Double.MIN_VALUE, true, Double.MAX_VALUE / 2, true);
+	private static final RightAscensionTickAlgorithm _instance = new RightAscensionTickAlgorithm();
 
-	private static final Range2D DEFAULT_RANGE = new Range2D.Double(0.1, 10);
+	private static final TickUnitConverter tuc = new TickUnitConverter() {
 
-	public LogAxisType() {
-		super("LOG", LogarithmicTransformType.getInstance(), LogTickAlgorithm
-				.getInstance());
+		public double convertD2T(double v) {
+			return v / 360 * 60 * 60 * 24;
+		}
+
+		public double convertT2D(double v) {
+			return v / (60 * 60 * 24) * 360;
+		}
+
+	};
+
+	private RightAscensionTickAlgorithm() {
+
 	}
 
-	public Range2D getBoundary() {
-		return POSITIVE_BOUNDARY;
+	public static RightAscensionTickAlgorithm getInstance() {
+		return _instance;
 	}
 
-	public Range2D getDefaultWorldRange() {
-		return DEFAULT_RANGE;
+	public TickCalculator createCalculator() {
+		return new TimeHmsTickCalculator(tuc);
 	}
 
 }

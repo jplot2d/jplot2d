@@ -16,37 +16,42 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
-package org.jplot2d.axtype;
+package org.jplot2d.axtick;
 
-import org.jplot2d.axtrans.LogarithmicTransformType;
-import org.jplot2d.axtick.LogTickAlgorithm;
 import org.jplot2d.util.Range2D;
 
 /**
+ * Calculate a proper range to arrange major ticks falling on the edge.
+ * 
  * @author Jingjing Li
  * 
  */
-public class LogAxisType extends AxisType {
+public interface RangeAdvisor {
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(
-			Double.MIN_VALUE, true, Double.MAX_VALUE / 2, true);
+	public Range2D getRange();
 
-	private static final Range2D DEFAULT_RANGE = new Range2D.Double(0.1, 10);
+	public void setRange(Range2D range);
 
-	public LogAxisType() {
-		super("LOG", LogarithmicTransformType.getInstance(), LogTickAlgorithm
-				.getInstance());
-	}
+	/**
+	 * The interval will be 1,2,5 * 10^n
+	 * 
+	 * @param range
+	 *            the old range
+	 * @param tickNumber
+	 */
+	public void expandRangeByTickNumber(int tickNumber);
 
-	public Range2D getBoundary() {
-		return POSITIVE_BOUNDARY;
-	}
+	/**
+	 * 
+	 * @param range
+	 *            the old range
+	 * @param interval
+	 */
+	public void expandRangeByTickInterval(double interval);
 
-	public Range2D getDefaultWorldRange() {
-		return DEFAULT_RANGE;
-	}
+	/**
+	 * @return the tick interval.
+	 */
+	public double getInterval();
 
 }
