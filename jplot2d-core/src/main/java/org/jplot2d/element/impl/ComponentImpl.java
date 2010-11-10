@@ -24,7 +24,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.Map;
 
@@ -33,25 +32,23 @@ import org.jplot2d.util.DoubleDimension2D;
 
 public class ComponentImpl extends ElementImpl implements ComponentEx {
 
-	protected boolean visible = true;
+	private boolean visible = true;
 
-	protected boolean cacheable;
+	private boolean cacheable;
 
-	protected boolean selectable;
+	private boolean selectable;
 
-	protected boolean movable;
+	private boolean movable;
 
-	protected int zOrder;
+	private int zOrder;
 
-	protected Color color = null;
+	private Color color = null;
 
-	protected Font font;
+	private Font font;
 
-	protected double physicalLocX, physicalLocY;
+	private double physicalLocX, physicalLocY;
 
 	protected double physicalWidth, physicalHeight;
-
-	protected PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
@@ -239,7 +236,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		// draw nothing
 	}
 
-	public ComponentEx deepCopy(Map<Element, Element> orig2copyMap) {
+	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		ComponentImpl result = new ComponentImpl();
 		result.copyFrom(this);
 		if (orig2copyMap != null) {

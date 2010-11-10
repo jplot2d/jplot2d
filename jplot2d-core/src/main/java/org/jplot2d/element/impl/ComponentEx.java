@@ -78,6 +78,6 @@ public interface ComponentEx extends Component, ElementEx {
 	 *            original element to copy map
 	 * @return
 	 */
-	public ComponentEx deepCopy(Map<Element, Element> orig2copyMap);
+	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }
