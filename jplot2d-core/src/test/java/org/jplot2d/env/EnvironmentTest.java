@@ -99,9 +99,9 @@ public class EnvironmentTest {
 		compA2a.setParent(compA2);
 		compA2b.setParent(compA2);
 
-		proxyA = compA.deepCopy(null);
-		proxyA1 = compA1.deepCopy(null);
-		proxyA2 = compA2.deepCopy(null);
+		proxyA = (ContainerEx) compA.deepCopy(null);
+		proxyA1 = (ContainerEx) compA1.deepCopy(null);
+		proxyA2 = (ContainerEx) compA2.deepCopy(null);
 		proxyA1a = compA1a.deepCopy(null);
 		proxyA1b = compA1b.deepCopy(null);
 		proxyA2a = compA2a.deepCopy(null);
@@ -179,7 +179,7 @@ public class EnvironmentTest {
 
 		DummyEnvironment denv = new DummyEnvironment();
 		ContainerEx compA = new ContainerImpl();
-		ContainerEx proxyA = compA.deepCopy(null);
+		ContainerEx proxyA = (ContainerEx) compA.deepCopy(null);
 		denv.registerComponent(compA, proxyA);
 
 		// add uncacheable component
@@ -202,7 +202,7 @@ public class EnvironmentTest {
 
 		DummyEnvironment denv = new DummyEnvironment();
 		ContainerEx compA = new ContainerImpl();
-		ContainerEx proxyA = compA.deepCopy(null);
+		ContainerEx proxyA = (ContainerEx) compA.deepCopy(null);
 		denv.registerComponent(compA, proxyA);
 
 		// add cacheable component
@@ -236,7 +236,7 @@ public class EnvironmentTest {
 		// add cacheable component with uncacheable sub-component
 		DummyEnvironment denvB = new DummyEnvironment();
 		ContainerEx compB = new ContainerImpl();
-		ContainerEx proxyB = compB.deepCopy(null);
+		ContainerEx proxyB = (ContainerEx) compB.deepCopy(null);
 		ComponentEx compBA = new ComponentImpl();
 		ComponentEx proxyBA = compBA.deepCopy(null);
 		compB.setCacheable(true);

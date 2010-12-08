@@ -226,16 +226,25 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		// draw nothing
 	}
 
-	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		ComponentImpl result = new ComponentImpl();
-		result.copyFrom(this);
+	public final ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+		ComponentImpl result;
+
+		try {
+			result = this.getClass().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		result.copyFrom(this, orig2copyMap);
+
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
+
 		return result;
 	}
 
-	protected void copyFrom(ComponentImpl src) {
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		parent = src.getParent();
 		setVisible(src.isVisible());
 		setCacheable(src.isCacheable());
@@ -244,12 +253,15 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		setZOrder(src.getZOrder());
 		setColor(src.getColor());
 		setFont(src.getFont());
-		physicalLocX = src.physicalLocX;
-		physicalLocY = src.physicalLocY;
-		physicalWidth = src.physicalWidth;
-		physicalHeight = src.physicalHeight;
-		valid = src.valid;
-		redrawNeeded = src.redrawNeeded;
+		setLocation(src.getLocation());
+
+		ComponentImpl comp = (ComponentImpl) src;
+		physicalLocX = comp.physicalLocX;
+		physicalLocY = comp.physicalLocY;
+		physicalWidth = comp.physicalWidth;
+		physicalHeight = comp.physicalHeight;
+		valid = comp.valid;
+		redrawNeeded = comp.redrawNeeded;
 	}
 
 }

@@ -19,7 +19,6 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
-import java.util.Map;
 
 import org.jplot2d.element.PhysicalTransform;
 
@@ -49,12 +48,4 @@ public class ContainerImpl extends ComponentImpl implements ContainerEx {
 		}
 	}
 
-	public ContainerEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		ContainerImpl result = new ContainerImpl();
-		result.copyFrom(this);
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-		return result;
-	}
 }

@@ -70,10 +70,6 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		updatePxf();
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
-		return pxf;
-	}
-
 	/**
 	 * set this plot a new physical transform. this will trigger a redraw
 	 * notification.
@@ -84,7 +80,7 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 		// notify all subplots
 		for (SubplotEx sp : subplots) {
-			sp.plotPhysicalTransformChanged();
+			sp.parentPhysicalTransformChanged();
 		}
 	}
 
@@ -140,31 +136,22 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		targetPhySize = paperSize;
 	}
 
-	public PlotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		PlotImpl result = new PlotImpl();
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
 
-		result.copyFrom(this);
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
+		PlotImpl plot = (PlotImpl) src;
+		sizeMode = plot.sizeMode;
+		containerSize = (Dimension) plot.containerSize.clone();
+		targetPhySize = (Dimension2D) plot.targetPhySize.clone();
+		scale = plot.scale;
 
 		// copy subplots
-		for (SubplotEx sp : subplots) {
-			SubplotEx spCopy = ((SubplotEx) sp).deepCopy(orig2copyMap);
-			((ComponentEx) spCopy).setParent(result);
-			result.subplots.add(spCopy);
+		for (SubplotEx sp : plot.subplots) {
+			SubplotEx spCopy = (SubplotEx) sp.deepCopy(orig2copyMap);
+			((ComponentEx) spCopy).setParent(this);
+			subplots.add(spCopy);
 		}
 
-		return this;
-	}
-
-	void copyFrom(PlotImpl src) {
-		super.copyFrom(src);
-
-		sizeMode = src.sizeMode;
-		containerSize = (Dimension) src.containerSize.clone();
-		targetPhySize = (Dimension2D) src.targetPhySize.clone();
-		scale = src.scale;
 	}
 
 }

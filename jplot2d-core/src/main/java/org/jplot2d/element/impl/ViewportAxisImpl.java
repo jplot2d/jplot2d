@@ -197,17 +197,8 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		layers.remove(layer);
 	}
 
-	public ViewportAxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		ViewportAxisImpl result = new ViewportAxisImpl();
-		result.copyFrom(this);
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-		return result;
-	}
-
-	protected void copyFrom(AxisImpl src) {
-		super.copyFrom(src);
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
 	}
 
 }

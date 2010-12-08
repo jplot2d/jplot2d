@@ -386,17 +386,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return ss;
 	}
 
-	public AxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		AxisImpl result = new AxisImpl();
-		result.copyFrom(this);
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-		return result;
-	}
-
-	protected void copyFrom(AxisImpl src) {
-		super.copyFrom(src);
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
 	}
 
 	public void draw(Graphics2D g) {
