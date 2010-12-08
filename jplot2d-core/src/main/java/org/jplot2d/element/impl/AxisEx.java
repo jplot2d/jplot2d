@@ -14,11 +14,21 @@ public interface AxisEx extends Axis, ComponentEx {
 
 	public double getDesc();
 
-	/**
-	 * Re-calculate the thickness metrics, include asc and desc.
-	 */
-	public void calcThickness();
-
 	public AxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
+
+	/**
+	 * Called by ViewportAxis when axis transform changed.
+	 */
+	public void axisTransformChanged();
+
+	/**
+	 * Called by ViewportAxis when axis type changed.
+	 */
+	public void axisTypeChanged();
+
+	/**
+	 * Calculate ticks when tick calculation is needed.
+	 */
+	public void calcTicks();
 
 }

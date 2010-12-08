@@ -185,12 +185,12 @@ public abstract class PlotEnvironment extends Environment {
 		for (SubplotEx sp : plotImpl.getSubplots()) {
 			for (ViewportAxisEx va : sp.getXViewportAxes()) {
 				for (AxisEx axis : va.getAxes()) {
-					axis.getTick().calcTicks();
+					axis.calcTicks();
 				}
 			}
 			for (ViewportAxisEx va : sp.getYViewportAxes()) {
 				for (AxisEx axis : va.getAxes()) {
-					axis.getTick().calcTicks();
+					axis.calcTicks();
 				}
 			}
 		}
@@ -321,7 +321,8 @@ public abstract class PlotEnvironment extends Environment {
 			ElementEx mmte = me.getKey();
 			Element proxy = me.getValue();
 			ElementEx impl = copyMap.get(mmte);
-			ElementIH ih = (ElementIH) Proxy.getInvocationHandler(proxy);
+			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy
+					.getInvocationHandler(proxy);
 			ih.replaceImpl(impl);
 			this.proxyMap.put(impl, proxy);
 

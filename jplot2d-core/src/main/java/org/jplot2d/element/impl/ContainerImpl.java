@@ -19,7 +19,6 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 import org.jplot2d.element.PhysicalTransform;

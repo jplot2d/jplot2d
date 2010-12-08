@@ -18,11 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Font;
-
-import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.element.AxisTick;
-import org.jplot2d.util.MathElement;
 
 /**
  * @author Jingjing Li
@@ -31,18 +27,5 @@ import org.jplot2d.util.MathElement;
 public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public AxisEx getParent();
-
-	public void axisTypeChanged();
-
-	public void setTickAlgorithm(TickAlgorithm algorithm);
-
-	public MathElement[] getInRangeLabelModels();
-
-	public Font getActualLabelFont();
-
-	/**
-	 * Calculate ticks when tick calculation is needed.
-	 */
-	public void calcTicks();
 
 }

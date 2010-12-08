@@ -113,12 +113,25 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return (ViewportAxisEx) super.getParent();
 	}
 
+	public void calcTicks() {
+		tick.calcTicks();
+	}
+
 	public AxisTickTransform getTickTransform() {
 		return tickTransform;
 	}
 
 	public void setTickTransform(AxisTickTransform transform) {
 		this.tickTransform = transform;
+		tick.axisOrTickTransformChanged();
+	}
+
+	public void axisTransformChanged() {
+		tick.axisOrTickTransformChanged();
+	}
+
+	public void axisTypeChanged() {
+		tick.axisTypeChanged();
 	}
 
 	public Range2D getRange() {
@@ -198,7 +211,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	public void calcThickness() {
 
-		getTick().calcTicks();
+		// we don't calc ticks here. getTick().calcTicks();
 
 		if (!thicknessCalculationNeeded) {
 			return;
@@ -260,7 +273,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 
-		if (getTitle().isVisible() && getTitle().getTextModel() != MathElement.NULL) {
+		if (getTitle().isVisible()
+				&& getTitle().getTextModel() != MathElement.NULL) {
 			double titleHeight = getTitle().getPhysicalBounds().getHeight();
 			if (isTitlePositiveSide()) {
 				titleOffset = ba + baGap;
@@ -337,8 +351,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * @return the maximum normal width.
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
-		Dimension2D[] labelsSize = getLabelsPhySize(getTick()
-				.getInRangeLabelModels(), getTick().getActualLabelFont());
+		Dimension2D[] labelsSize = getLabelsPhySize(
+				tick.getInRangeLabelModels(), tick.getActualLabelFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -421,7 +435,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			drawLabels(g, labelLoc, vertalign, horzalign);
 		}
 
-		if (getTitle().isVisible() && getTitle().getTextModel() != MathElement.NULL) {
+		if (getTitle().isVisible()
+				&& getTitle().getTextModel() != MathElement.NULL) {
 			double titleLoc = p + _titleOffset;
 			VAlign valign = _titleVAlign;
 			drawTitle(g, titleLoc, valign);
@@ -440,9 +455,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX()
 					+ getParent().getLength() * pxf.getScale(), dloc.getY());
 		} else {
-			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX(), dloc
-					.getY()
-					- getParent().getLength() * pxf.getScale());
+			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX(),
+					dloc.getY() - getParent().getLength() * pxf.getScale());
 		}
 		g2.draw(s);
 	}
@@ -468,10 +482,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
-			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke)
-					.getLineWidth() / 2, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_BEVEL, 0.0f, new float[] { 2.0f, 2.0f },
-					0.0f);
+			Stroke gridLineStroke = new BasicStroke(
+					((BasicStroke) oldStroke).getLineWidth() / 2,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0.0f,
+					new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
 			Color c = getColor();
@@ -535,17 +549,16 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		PhysicalTransform pxf = getParent().getPhysicalTransform();
 
 		Object tvs = getTick().getValues();
-		MathElement[] labels = getTick().getInRangeLabelModels();
+		MathElement[] labels = tick.getInRangeLabelModels();
 
 		for (int i = 0; i < labels.length; i++) {
 			double x = Array.getDouble(tvs, i * getTick().getLabelInterval());
 			double xt = transTickToPaper(x);
 			Point2D point = (getOrientation() == AxisOrientation.HORIZONTAL) ? new Point2D.Double(
-					xt, yt)
-					: new Point2D.Double(yt, xt);
+					xt, yt) : new Point2D.Double(yt, xt);
 
-			MathLabel label = new MathLabel(labels[i], getTick()
-					.getActualLabelFont(), point);
+			MathLabel label = new MathLabel(labels[i],
+					tick.getActualLabelFont(), point);
 			label.setPhysicalTransform(pxf);
 			label.setAlign(vertalign, horzalign);
 			if (getTick().getLabelOrientation() == AxisOrientation.HORIZONTAL) {
