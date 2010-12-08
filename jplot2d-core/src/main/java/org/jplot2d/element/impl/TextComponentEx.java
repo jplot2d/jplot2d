@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.AuxAxis;
+import org.jplot2d.element.TextComponent;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface AuxAxisEx extends AuxAxis, ComponentEx {
+public interface TextComponentEx extends TextComponent, ComponentEx {
 
 }

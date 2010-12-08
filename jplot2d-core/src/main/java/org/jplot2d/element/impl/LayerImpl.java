@@ -26,12 +26,13 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.DataModel;
 import org.jplot2d.element.Element;
-import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.MathElement;
+import org.jplot2d.util.TeXMathUtils;
 
 /**
  * @author Jingjing Li
@@ -39,9 +40,9 @@ import org.jplot2d.util.MathElement;
  */
 public class LayerImpl extends ContainerImpl implements LayerEx {
 
-	private NormalTransform xNormalTransform, yNormalTransform;
+	private MathElement name;
 
-	private MainAxisEx xaxis, yaxis;
+	private ViewportAxisEx xaxis, yaxis;
 
 	public String getSelfId() {
 		if (getParent() != null) {
@@ -60,13 +61,13 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return super.getMooringMap();
 	}
 
-	public void setPhysicalLocation(double locX, double locY) {
+	public void setLocation(double locX, double locY) {
 		throw new UnsupportedOperationException(
 				"Layer's physical location fix on (0,0)");
 	}
 
-	public Dimension2D getPhysicalSize() {
-		return getParent().getPhysicalSize();
+	public Dimension2D getSize() {
+		return getParent().getSize();
 	}
 
 	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
@@ -75,7 +76,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public Rectangle2D getPhysicalBounds() {
-		Dimension2D size = getPhysicalSize();
+		Dimension2D size = getSize();
 		return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
 	}
 
@@ -83,14 +84,20 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return getParent().getPhysicalTransform();
 	}
 
-	public MathElement getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getName() {
+		return TeXMathUtils.toString(name);
 	}
 
-	public void setName(MathElement name) {
-		// TODO Auto-generated method stub
+	public void setName(String name) {
+		this.name = TeXMathUtils.parseText(name);
+	}
 
+	public MathElement getNameModel() {
+		return name;
+	}
+
+	public void setNameModel(MathElement name) {
+		this.name = name;
 	}
 
 	public DataModel getDataModel() {
@@ -113,55 +120,39 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	}
 
-	public NormalTransform getXNormalTransform() {
-		return xNormalTransform;
-	}
-
-	void setXNormalTransform(NormalTransform ntf) {
-		this.xNormalTransform = ntf;
-	}
-
-	public NormalTransform getYNormalTransform() {
-		return yNormalTransform;
-	}
-
-	void setYNormalTransform(NormalTransform ntf) {
-		this.yNormalTransform = ntf;
-	}
-
-	public MainAxisEx getXAxis() {
+	public ViewportAxisEx getXViewportAxis() {
 		return xaxis;
 	}
 
-	public MainAxisEx getYAxis() {
+	public ViewportAxisEx getYViewportAxis() {
 		return yaxis;
 	}
 
-	public void setXAxis(MainAxis axis) {
+	public void setXViewportAxis(ViewportAxis axis) {
 		if (this.xaxis != null) {
 			this.xaxis.removeLayer(this);
 		}
-		this.xaxis = (MainAxisEx) axis;
+		this.xaxis = (ViewportAxisEx) axis;
 		if (this.xaxis != null) {
 			this.xaxis.addLayer(this);
 		}
 	}
 
-	public void setYAxis(MainAxis axis) {
+	public void setYViewportAxis(ViewportAxis axis) {
 		if (this.yaxis != null) {
 			this.yaxis.removeLayer(this);
 		}
-		this.yaxis = (MainAxisEx) axis;
+		this.yaxis = (ViewportAxisEx) axis;
 		if (this.xaxis != null) {
 			this.yaxis.addLayer(this);
 		}
 	}
 
-	public void setAxes(MainAxis xaxis, MainAxis yaxis) {
+	public void setViewportAxes(ViewportAxis xaxis, ViewportAxis yaxis) {
 		if (this.xaxis != null) {
 			this.xaxis.removeLayer(this);
 		}
-		this.xaxis = (MainAxisEx) xaxis;
+		this.xaxis = (ViewportAxisEx) xaxis;
 		if (this.xaxis != null) {
 			this.xaxis.addLayer(this);
 		}
@@ -169,7 +160,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (this.yaxis != null) {
 			this.yaxis.removeLayer(this);
 		}
-		this.yaxis = (MainAxisEx) yaxis;
+		this.yaxis = (ViewportAxisEx) yaxis;
 		if (this.xaxis != null) {
 			this.yaxis.addLayer(this);
 		}
@@ -182,7 +173,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		g.setClip(clip);
 
 		g.setColor(Color.BLACK);
-		Rectangle rect = this.getBounds().getBounds();
+		Rectangle rect = getParent().getPhysicalTransform().getPtoD(
+				getPhysicalBounds()).getBounds();
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
 		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
 
@@ -202,8 +194,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private void copyFrom(LayerImpl src) {
 		super.copyFrom(src);
-		xNormalTransform = src.xNormalTransform;
-		yNormalTransform = src.yNormalTransform;
 	}
 
 }

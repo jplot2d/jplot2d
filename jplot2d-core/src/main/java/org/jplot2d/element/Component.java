@@ -169,7 +169,7 @@ public interface Component extends Element {
 	 * 
 	 * @return the x,y origin of this plot component
 	 */
-	public Point2D getPhysicalLocation();
+	public Point2D getLocation();
 
 	/**
 	 * Moves this plot component to a new location. The origin of the new
@@ -180,11 +180,11 @@ public interface Component extends Element {
 	 *            the point defining the origin of the new location, given in
 	 *            the coordinate space of this component's parent
 	 */
-	public void setPhysicalLocation(Point2D loc);
+	public void setLocation(Point2D loc);
 
-	public void setPhysicalLocation(double locX, double locY);
+	public void setLocation(double locX, double locY);
 
-	public Dimension2D getPhysicalSize();
+	public Dimension2D getSize();
 
 	/**
 	 * Returns the physical bounds relative to its container. The units of
@@ -193,12 +193,5 @@ public interface Component extends Element {
 	 * @return the physical bounds of this component.
 	 */
 	public Rectangle2D getPhysicalBounds();
-
-	/**
-	 * Returns the bounds in absolute device coordinate.
-	 * 
-	 * @return
-	 */
-	public Rectangle2D getBounds();
 
 }

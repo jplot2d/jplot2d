@@ -19,29 +19,23 @@
 package org.jplot2d.layout;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jplot2d.element.impl.AxisEx;
-import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.ViewportAxisEx;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
 
 /**
- * This LayoutDirector stack all subplots together.
+ * This LayoutDirector overlay all subplots over the top of each other.
  * 
- * all physical size is managed by this class.
- * <p>
- * plot + axis_padding = cell<br>
- * cell * gridSize + gap = contents<br>
- * contents + _contentsMargin + titles + legend + margin = chart
- * </p>
  * 
  * @author Jingjing Li
  * 
  */
-public class StackLayoutDirector implements LayoutDirector {
+public class OverlayLayoutDirector implements LayoutDirector {
 
 	/** The layout constraints */
 	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
@@ -63,14 +57,21 @@ public class StackLayoutDirector implements LayoutDirector {
 
 	GridCellInsets cellPadding = new GridCellInsets();
 
-	private PlotEx plot;
+	private SubplotEx plot;
 
 	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public StackLayoutDirector(PlotEx plot) {
+	public OverlayLayoutDirector(SubplotEx plot) {
 		this.plot = plot;
+	}
+
+	/*
+	 * OverlayLayoutDirector doesn't impose viewport constraint on its children.
+	 */
+	public Rectangle2D getViewportConstrant(SubplotEx subplot) {
+		return null;
 	}
 
 	public Object getConstraint(SubplotEx subplot) {
@@ -87,11 +88,23 @@ public class StackLayoutDirector implements LayoutDirector {
 
 	public void layout() {
 
-		/*
-		 * Laying out axes may register some axis that ticks need be
-		 * re-calculated
-		 */
-		execLayout();
+		for (SubplotEx sp : plot.getSubplots()) {
+			sp.setLocation(new Point2D.Double(0, 0));
+			sp.setPhysicalSize(plot.getSize());
+			sp.setViewportBounds(plot.getPhysicalBounds());
+
+			for (ViewportAxisEx axis : sp.getXViewportAxes()) {
+				axis.setLength(sp.getViewportBounds().getWidth());
+				axis.validate();
+			}
+			for (ViewportAxisEx axis : sp.getYViewportAxes()) {
+				axis.setLength(sp.getViewportBounds().getHeight());
+				axis.validate();
+			}
+
+			sp.validate();
+		}
+		plot.validate();
 
 	}
 
@@ -105,38 +118,6 @@ public class StackLayoutDirector implements LayoutDirector {
 		}
 		this.margin = margin;
 		plot.invalidate();
-	}
-
-	private void execLayout() {
-
-		/* layout */
-		switch (plot.getSizeMode()) {
-		case FIT_CONTAINER_SIZE:
-		case FIT_CONTAINER_WITH_TARGET_SIZE:
-		case FIXED_SIZE:
-			for (SubplotEx sp : plot.getSubplots()) {
-				sp.setPhysicalLocation(new Point2D.Double(0, 0));
-				sp.setPhysicalSize(plot.getPhysicalSize());
-				sp.setViewportBounds(plot.getPhysicalBounds());
-
-				for (AxisEx axis : sp.getXAxes()) {
-					axis.setLength(sp.getViewportBounds().getWidth());
-					axis.validate();
-				}
-				for (AxisEx axis : sp.getYAxes()) {
-					axis.setLength(sp.getViewportBounds().getHeight());
-					axis.validate();
-				}
-
-				sp.validate();
-			}
-			plot.validate();
-			break;
-		case FIT_CONTENTS:
-			// PlotGridLayoutStrategyP2C.getInstance().doLayout(this, _cflags);
-			break;
-		}
-
 	}
 
 }

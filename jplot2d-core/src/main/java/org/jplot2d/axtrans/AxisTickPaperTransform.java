@@ -44,19 +44,19 @@ public class AxisTickPaperTransform extends AbstractAxisTransform {
 		this.tickTransform = tickTransform;
 	}
 
-	public AxisTransform getMainAxisTransform() {
+	public AxisTransform getAxisTransform() {
 		return axisTransform;
 	}
 
-	public void setMainAxisTransform(AxisTransform axisTransform) {
+	public void setAxisTransform(AxisTransform axisTransform) {
 		this.axisTransform = axisTransform;
 	}
 
-	public AxisTickTransform getAuxTransformer() {
+	public AxisTickTransform getTickform() {
 		return tickTransform;
 	}
 
-	public void setAuxTransformer(AxisTickTransform transformer) {
+	public void setTickTransform(AxisTickTransform transformer) {
 		tickTransform = transformer;
 	}
 
@@ -73,7 +73,7 @@ public class AxisTickPaperTransform extends AbstractAxisTransform {
 	}
 
 	@Override
-	public AbstractAxisTransform copy() {
+	public AxisTickPaperTransform copy() {
 		return new AxisTickPaperTransform(axisTransform.copy(), tickTransform);
 	}
 

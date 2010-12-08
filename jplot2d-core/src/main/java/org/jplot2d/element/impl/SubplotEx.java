@@ -12,13 +12,17 @@ public interface SubplotEx extends Subplot, ContainerEx {
 
 	public LayerEx[] getLayers();
 
-	public int indexOfXAxis(AxisEx axis);
+	public int indexOfXViewportAxis(ViewportAxisEx axisGroup);
 
-	public int indexOfYAxis(AxisEx axis);
+	public int indexOfYViewportAxis(ViewportAxisEx axisGroup);
 
-	public AxisEx[] getXAxes();
+	public ViewportAxisEx[] getXViewportAxes();
 
-	public AxisEx[] getYAxes();
+	public ViewportAxisEx[] getYViewportAxes();
+
+	public int indexOf(SubplotEx subplot);
+
+	public SubplotEx[] getSubplots();
 
 	public void plotPhysicalTransformChanged();
 

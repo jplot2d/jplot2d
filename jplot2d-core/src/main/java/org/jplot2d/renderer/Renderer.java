@@ -19,6 +19,8 @@
 package org.jplot2d.renderer;
 
 import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -144,7 +146,7 @@ public abstract class Renderer<T> {
 						compCachedFutureMap.getFuture(comp));
 			} else {
 				// create a new Component Render task
-				Rectangle bounds = ccopy.getBounds().getBounds();
+				Rectangle bounds = getDeviceBounds(ccopy);
 				ComponentEx[] sublist = subcompOrderMap.get(comp);
 				CompRenderCallable<T> compRenderCallable = assembler
 						.createCompRenderCallable(bounds, sublist);
@@ -157,6 +159,20 @@ public abstract class Renderer<T> {
 
 		compCachedFutureMap = ainfo;
 		return ainfo;
+	}
+
+	protected Rectangle getDeviceBounds(ComponentEx comp) {
+		if (comp instanceof PlotEx) {
+			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
+			Dimension2D size = ((PlotEx) comp).getSize();
+			return new Rectangle2D.Double(0, 0, size.getWidth() * scale, size
+					.getHeight()
+					* scale).getBounds();
+		} else {
+			Rectangle2D pbounds = comp.getPhysicalBounds();
+			return comp.getParent().getPhysicalTransform().getPtoD(pbounds)
+					.getBounds();
+		}
 	}
 
 	/**

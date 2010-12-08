@@ -21,27 +21,19 @@ package org.jplot2d.element.impl;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.PlotSizeMode;
-import org.jplot2d.element.Subplot;
-import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class PlotImpl extends ContainerImpl implements PlotEx {
+public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	private double scale = 72;
-
-	private PhysicalTransform pxf = new PhysicalTransform(0.0, 0.0, scale);
-
-	private LayoutDirector director;
 
 	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_SIZE;
 
@@ -49,22 +41,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private Dimension2D targetPhySize = new DoubleDimension2D(4.0, 3.0);
 
-	private final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
-
 	public PlotImpl() {
-		cacheable = true;
+		super.setCacheable(true);
+		pxf = new PhysicalTransform(0.0, 0.0, scale);
 	}
 
 	public void setCacheable(boolean cacheMode) {
 		// ignore setting cacheable
-	}
-
-	public LayoutDirector getLayoutDirector() {
-		return director;
-	}
-
-	public void setLayoutDirector(LayoutDirector director) {
-		this.director = director;
 	}
 
 	public PlotSizeMode getSizeMode() {
@@ -80,7 +63,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		/*
 		 * Calculate scale based on container size and physical size.
 		 */
-		Dimension2D physize = getPhysicalSize();
+		Dimension2D physize = getSize();
 		double scaleX = containerSize.width / physize.getWidth();
 		double scaleY = containerSize.height / physize.getHeight();
 		this.scale = (scaleX < scaleY) ? scaleX : scaleY;
@@ -97,7 +80,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * notification.
 	 */
 	private void updatePxf() {
-		pxf = new PhysicalTransform(0.0, physicalHeight, scale);
+		pxf = new PhysicalTransform(0.0, getSize().getHeight(), scale);
 		redraw();
 
 		// notify all subplots
@@ -115,7 +98,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		switch (getSizeMode()) {
 		case FIT_CONTAINER_WITH_TARGET_SIZE: {
-			Dimension2D tcSize = getTargetPhySize();
+			Dimension2D tcSize = getTargetPaperSize();
 
 			double scaleX = containerSize.width / tcSize.getWidth();
 			double scaleY = containerSize.height / tcSize.getHeight();
@@ -139,7 +122,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			/*
 			 * Calculate scale based on container size and physical size.
 			 */
-			Dimension2D physize = getPhysicalSize();
+			Dimension2D physize = getSize();
 			double scaleX = containerSize.width / physize.getWidth();
 			double scaleY = containerSize.height / physize.getHeight();
 			this.scale = (scaleX < scaleY) ? scaleX : scaleY;
@@ -150,46 +133,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public Dimension2D getTargetPhySize() {
+	public Dimension2D getTargetPaperSize() {
 		return targetPhySize;
 	}
 
-	public void setTargetPhySize(Dimension2D physize) {
-		targetPhySize = physize;
-	}
-
-	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, 0, getPhysicalSize().getWidth()
-				* scale, getPhysicalSize().getHeight() * scale);
-	}
-
-	public SubplotEx getSubplot(int i) {
-		return subplots.get(i);
-	}
-
-	public int indexOf(SubplotEx subplot) {
-		return subplots.indexOf(subplot);
-	}
-
-	public SubplotEx[] getSubplots() {
-		return subplots.toArray(new SubplotEx[subplots.size()]);
-	}
-
-	public void addSubplot(Subplot subplot, Object constraint) {
-		subplots.add((SubplotEx) subplot);
-		((SubplotEx) subplot).setParent(this);
-
-		LayoutDirector ld = getLayoutDirector();
-		if (ld != null) {
-			ld.setConstraint((SubplotEx) subplot, constraint);
-		}
-	}
-
-	public void removeSubplot(Subplot subplot) {
-		LayoutDirector ld = getLayoutDirector();
-		if (ld != null) {
-			ld.remove((SubplotEx) subplot);
-		}
+	public void setTargetPaperSize(Dimension2D paperSize) {
+		targetPhySize = paperSize;
 	}
 
 	public PlotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
@@ -213,14 +162,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	void copyFrom(PlotImpl src) {
 		super.copyFrom(src);
 
-		director = src.director;
 		sizeMode = src.sizeMode;
 		containerSize = (Dimension) src.containerSize.clone();
 		targetPhySize = (Dimension2D) src.targetPhySize.clone();
-		physicalWidth = src.physicalWidth;
-		physicalHeight = src.physicalHeight;
 		scale = src.scale;
-		pxf = src.pxf;
 	}
 
 }

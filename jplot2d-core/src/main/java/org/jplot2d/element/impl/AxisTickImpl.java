@@ -442,6 +442,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx {
 	public void axisTypeChanged() {
 		_axisTypeChanged = true;
 	}
+	
+	//public void trfChanged()
 
 	public void setTickAlgorithm(TickAlgorithm algorithm) {
 		if (tickAlgorithm != algorithm) {

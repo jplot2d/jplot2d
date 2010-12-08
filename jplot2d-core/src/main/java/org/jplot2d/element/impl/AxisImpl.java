@@ -260,7 +260,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 
-		if (getTitle().isVisible() && getTitle().getModel() != MathElement.NULL) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != MathElement.NULL) {
 			double titleHeight = getTitle().getPhysicalBounds().getHeight();
 			if (isTitlePositiveSide()) {
 				titleOffset = ba + baGap;
@@ -409,9 +409,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		double p;
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			p = getPhysicalLocation().getY();
+			p = getLocation().getY();
 		} else {
-			p = getPhysicalLocation().getX();
+			p = getLocation().getX();
 		}
 
 		if (getTick().isLabelVisible()) {
@@ -421,7 +421,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			drawLabels(g, labelLoc, vertalign, horzalign);
 		}
 
-		if (getTitle().isVisible() && getTitle().getModel() != MathElement.NULL) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != MathElement.NULL) {
 			double titleLoc = p + _titleOffset;
 			VAlign valign = _titleVAlign;
 			drawTitle(g, titleLoc, valign);
@@ -434,7 +434,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private void drawAxisLine(Graphics2D g2) {
 		PhysicalTransform pxf = getParent().getPhysicalTransform();
-		Point2D dloc = pxf.getPtoD(getPhysicalLocation());
+		Point2D dloc = pxf.getPtoD(getLocation());
 		Shape s;
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
 			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX()
@@ -497,7 +497,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		if (getTick().getVisible()) {
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
-				double yp = getPhysicalLocation().getY();
+				double yp = getLocation().getY();
 				for (int i = 0; i < tvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(tvs, i));
 					drawXTic(g, xp, yp, getTick().getTickHeight());
@@ -507,7 +507,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					drawXTic(g, xp, yp, getTick().getMinorHeight());
 				}
 			} else {
-				double xp = getPhysicalLocation().getX();
+				double xp = getLocation().getX();
 				for (int i = 0; i < tvslen; i++) {
 					double yp = transTickToPaper(Array.getDouble(tvs, i));
 					drawYTic(g, xp, yp, getTick().getTickHeight());
@@ -564,15 +564,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		TextComponentEx title = getTitle();
 
-		xt = getPhysicalLocation().getX() + getParent().getLength() * 0.5;
+		xt = getLocation().getX() + getParent().getLength() * 0.5;
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			xt = getPhysicalLocation().getX() + getParent().getLength() * 0.5;
+			xt = getLocation().getX() + getParent().getLength() * 0.5;
 			yt = vloc;
 		} else {
-			yt = getPhysicalLocation().getY() + getParent().getLength() * 0.5;
+			yt = getLocation().getY() + getParent().getLength() * 0.5;
 			xt = vloc;
 		}
-		title.setPhysicalLocation(new Point2D.Double(xt, yt));
+		title.setLocation(new Point2D.Double(xt, yt));
 		title.setHAlign(HAlign.CENTER);
 		title.setVAlign(vertalign);
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
@@ -651,7 +651,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		/* avoid overlapping on the other Y axes */
 		for (AxisEx axis : this.getOrthoAxes()) {
-			if (Math.abs(axis.getPhysicalLocation().getX() - xp) < DEFAULT_AXISLINE_WIDTH) {
+			if (Math.abs(axis.getLocation().getX() - xp) < DEFAULT_AXISLINE_WIDTH) {
 				return;
 			}
 		}
@@ -681,7 +681,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		/* avoid overlapping on the other X axes */
 		for (AxisEx axis : getOrthoAxes()) {
-			if (Math.abs(axis.getPhysicalLocation().getY() - yp) < DEFAULT_AXISLINE_WIDTH) {
+			if (Math.abs(axis.getLocation().getY() - yp) < DEFAULT_AXISLINE_WIDTH) {
 				return;
 			}
 		}

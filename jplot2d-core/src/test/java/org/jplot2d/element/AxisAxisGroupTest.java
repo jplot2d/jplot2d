@@ -24,7 +24,7 @@ import org.jplot2d.env.ComponentFactory;
 import org.junit.Test;
 
 /**
- * Those test cases test the relationship between MainAxis and AxisGroup.
+ * Those test cases test the relationship between ViewportAxis and AxisGroup.
  * 
  * @author Jingjing Li
  * 
@@ -38,42 +38,42 @@ public class AxisAxisGroupTest {
 	 * Create axis will auto create an axis group.
 	 */
 	@Test
-	public void testCreateAxisWithAxisGroup() {
-		MainAxis xaxis = factory.createMainAxis();
-		AxisGroup group = xaxis.getGroup();
+	public void testCreateAxisWithAxisLockGroup() {
+		ViewportAxis xaxis = factory.createViewportAxis();
+		AxisLockGroup group = xaxis.getLockGroup();
 		assertNotNull(group);
 		assertSame(group.getEnvironment(), xaxis.getEnvironment());
-		assertArrayEquals(group.getAxes(), new MainAxis[] { xaxis });
+		assertArrayEquals(group.getViewportAxes(), new ViewportAxis[] { xaxis });
 
 		// set the same group again
 		assertNotNull(group);
-		xaxis.setGroup(group);
+		xaxis.setLockGroup(group);
 		assertSame(group.getEnvironment(), xaxis.getEnvironment());
-		assertArrayEquals(group.getAxes(), new MainAxis[] { xaxis });
+		assertArrayEquals(group.getViewportAxes(), new ViewportAxis[] { xaxis });
 	}
 
 	@Test
 	public void testAddAndRemoveAxis() {
 		Subplot sp = factory.createSubplot();
-		MainAxis xaxis = factory.createMainAxis();
-		MainAxis yaxis = factory.createMainAxis();
-		AxisGroup xag = xaxis.getGroup();
-		AxisGroup yag = yaxis.getGroup();
+		ViewportAxis xaxis = factory.createViewportAxis();
+		ViewportAxis yaxis = factory.createViewportAxis();
+		AxisLockGroup xag = xaxis.getLockGroup();
+		AxisLockGroup yag = yaxis.getLockGroup();
 
-		sp.addXAxis(xaxis);
-		sp.addYAxis(yaxis);
+		sp.addXViewportAxis(xaxis);
+		sp.addYViewportAxis(yaxis);
 
-		assertSame(xaxis.getGroup(), xag);
-		assertSame(yaxis.getGroup(), yag);
+		assertSame(xaxis.getLockGroup(), xag);
+		assertSame(yaxis.getLockGroup(), yag);
 		assertSame(xag.getEnvironment(), sp.getEnvironment());
 		assertSame(yag.getEnvironment(), sp.getEnvironment());
 
-		sp.removeXAxis(xaxis);
-		sp.removeYAxis(yaxis);
+		sp.removeXViewportAxis(xaxis);
+		sp.removeYViewportAxis(yaxis);
 
 		// the axis group should be removed together
-		assertSame(xaxis.getGroup(), xag);
-		assertSame(yaxis.getGroup(), yag);
+		assertSame(xaxis.getLockGroup(), xag);
+		assertSame(yaxis.getLockGroup(), yag);
 		assertNotSame(xag.getEnvironment(), sp.getEnvironment());
 		assertNotSame(yag.getEnvironment(), sp.getEnvironment());
 	}
@@ -81,49 +81,49 @@ public class AxisAxisGroupTest {
 	@Test
 	public void testSetAxisGroup() {
 		Subplot sp = factory.createSubplot();
-		MainAxis xaxis = factory.createMainAxis();
-		MainAxis yaxis = factory.createMainAxis();
-		AxisGroup xag = xaxis.getGroup();
-		AxisGroup yag = yaxis.getGroup();
+		ViewportAxis xaxis = factory.createViewportAxis();
+		ViewportAxis yaxis = factory.createViewportAxis();
+		AxisLockGroup xag = xaxis.getLockGroup();
+		AxisLockGroup yag = yaxis.getLockGroup();
 
 		// set before adding into the same environment
 		try {
-			yaxis.setGroup(xaxis.getGroup());
+			yaxis.setLockGroup(xaxis.getLockGroup());
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 			// The axis and group not in the save environment
 		}
 
-		sp.addXAxis(xaxis);
-		sp.addYAxis(yaxis);
-		xaxis.setGroup(yaxis.getGroup());
+		sp.addXViewportAxis(xaxis);
+		sp.addYViewportAxis(yaxis);
+		xaxis.setLockGroup(yaxis.getLockGroup());
 
 		// the old x group should be removed from the environment
 		assertNull(xag.getParent());
-		assertArrayEquals(xag.getAxes(), new MainAxis[0]);
+		assertArrayEquals(xag.getViewportAxes(), new ViewportAxis[0]);
 		assertNotSame(xag.getEnvironment(), sp.getEnvironment());
 
-		assertSame(xaxis.getGroup(), yag);
-		assertSame(yaxis.getGroup(), yag);
-		assertArrayEquals(yag.getAxes(), new MainAxis[] { yaxis, xaxis });
+		assertSame(xaxis.getLockGroup(), yag);
+		assertSame(yaxis.getLockGroup(), yag);
+		assertArrayEquals(yag.getViewportAxes(), new ViewportAxis[] { yaxis, xaxis });
 		assertSame(yag.getEnvironment(), sp.getEnvironment());
 
 		// remove axis before assign a new group
 		try {
-			sp.removeXAxis(xaxis);
+			sp.removeXViewportAxis(xaxis);
 			fail("IllegalStateException should be thrown.");
 		} catch (IllegalStateException e) {
 
 		}
 
 		// set xaxis a new group
-		AxisGroup xnag = factory.createAxisGroup(xaxis.getEnvironment());
-		xaxis.setGroup(xnag);
+		AxisLockGroup xnag = factory.createAxisLockGroup(xaxis.getEnvironment());
+		xaxis.setLockGroup(xnag);
 
-		assertSame(xaxis.getGroup(), xnag);
-		assertSame(yaxis.getGroup(), yag);
-		assertArrayEquals(xnag.getAxes(), new MainAxis[] { xaxis });
-		assertArrayEquals(yag.getAxes(), new MainAxis[] { yaxis });
+		assertSame(xaxis.getLockGroup(), xnag);
+		assertSame(yaxis.getLockGroup(), yag);
+		assertArrayEquals(xnag.getViewportAxes(), new ViewportAxis[] { xaxis });
+		assertArrayEquals(yag.getViewportAxes(), new ViewportAxis[] { yaxis });
 		assertSame(xnag.getEnvironment(), sp.getEnvironment());
 		assertSame(yag.getEnvironment(), sp.getEnvironment());
 

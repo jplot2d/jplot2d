@@ -16,18 +16,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
 
-import org.jplot2d.axtrans.AxisTransform;
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface ViewportTransform {
+public interface MultiParentElementEx extends ElementEx {
 
-	public void setXAxisTransform(AxisTransform xaxf);
+	/**
+	 * Gets the only parent of this component. If this element has multiple
+	 * parents, this methods returns <code>null</code>.
+	 * 
+	 * @return the only parent of this component
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public ElementEx getParent();
 
-	public void setYAxisTransform(AxisTransform yaxf);
+	/**
+	 * Returns all parents of this element.
+	 * 
+	 * @return all parents of this element
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public ElementEx[] getParents();
 
 }

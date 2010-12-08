@@ -145,36 +145,26 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		this.font = font;
 	}
 
-	public Point2D getPhysicalLocation() {
+	public Point2D getLocation() {
 		return new Point2D.Double(physicalLocX, physicalLocY);
 	}
 
-	public final void setPhysicalLocation(Point2D p) {
-		setPhysicalLocation(p.getX(), p.getY());
+	public final void setLocation(Point2D p) {
+		setLocation(p.getX(), p.getY());
 	}
 
-	public void setPhysicalLocation(double locX, double locY) {
+	public void setLocation(double locX, double locY) {
 		physicalLocX = locX;
 		physicalLocY = locY;
 	}
 
-	public Dimension2D getPhysicalSize() {
+	public Dimension2D getSize() {
 		return new DoubleDimension2D(physicalWidth, physicalHeight);
 	}
 
 	public Rectangle2D getPhysicalBounds() {
 		return new Rectangle2D.Double(physicalLocX, physicalLocY,
 				physicalWidth, physicalHeight);
-	}
-
-	/**
-	 * Returns the bounds in absolute device coordinate. The top container's x,y
-	 * is always 0.
-	 * 
-	 * @return a Rectangle2D object.
-	 */
-	public Rectangle2D getBounds() {
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -196,7 +186,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	 * 
 	 * @see #invalidate
 	 */
-	public final void validate() {
+	public void validate() {
 		valid = true;
 	}
 

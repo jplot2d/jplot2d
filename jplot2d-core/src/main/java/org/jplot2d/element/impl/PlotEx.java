@@ -4,11 +4,7 @@ import java.util.Map;
 
 import org.jplot2d.element.Plot;
 
-public interface PlotEx extends Plot, ContainerEx {
-
-	public int indexOf(SubplotEx subplot);
-
-	public SubplotEx[] getSubplots();
+public interface PlotEx extends Plot, SubplotEx {
 
 	public PlotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 

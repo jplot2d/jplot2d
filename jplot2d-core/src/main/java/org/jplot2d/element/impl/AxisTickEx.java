@@ -16,18 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
 
-import org.jplot2d.axtrans.AxisTransform;
+import java.awt.Font;
+
+import org.jplot2d.axtick.TickAlgorithm;
+import org.jplot2d.element.AxisTick;
+import org.jplot2d.util.MathElement;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface ViewportTransform {
+public interface AxisTickEx extends AxisTick, ElementEx {
 
-	public void setXAxisTransform(AxisTransform xaxf);
+	public AxisEx getParent();
 
-	public void setYAxisTransform(AxisTransform yaxf);
+	public void axisTypeChanged();
+
+	public void setTickAlgorithm(TickAlgorithm algorithm);
+
+	public MathElement[] getInRangeLabelModels();
+
+	public Font getActualLabelFont();
+
+	/**
+	 * Calculate ticks when tick calculation is needed.
+	 */
+	public void calcTicks();
 
 }
