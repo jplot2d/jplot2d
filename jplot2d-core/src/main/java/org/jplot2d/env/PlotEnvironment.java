@@ -285,7 +285,7 @@ public abstract class PlotEnvironment extends Environment {
 		 * only when no history and all renderer is sync renderer and the
 		 * component renderer is caller run, the deepCopy can be omitted.
 		 */
-		PlotEx plotRenderSafeCopy = plotImpl.deepCopy(copyMap);
+		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.deepCopy(copyMap);
 
 		// build copy to proxy map
 		Map<ElementEx, Element> proxyMap2 = new HashMap<ElementEx, Element>();

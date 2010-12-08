@@ -61,25 +61,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return super.getMooringMap();
 	}
 
-	public void setLocation(double locX, double locY) {
-		throw new UnsupportedOperationException(
-				"Layer's physical location fix on (0,0)");
-	}
-
-	public Dimension2D getSize() {
-		return getParent().getSize();
-	}
-
-	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
-		throw new UnsupportedOperationException(
-				"Layer's physical size is exactly its subplot's physical size");
-	}
-
-	public Rectangle2D getPhysicalBounds() {
-		Dimension2D size = getSize();
-		return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
-	}
-
 	public PhysicalTransform getPhysicalTransform() {
 		return getParent().getPhysicalTransform();
 	}
@@ -173,27 +154,16 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		g.setClip(clip);
 
 		g.setColor(Color.BLACK);
-		Rectangle rect = getParent().getPhysicalTransform().getPtoD(
-				getPhysicalBounds()).getBounds();
+		Rectangle rect = getParent().getPhysicalTransform()
+				.getPtoD(getPhysicalBounds()).getBounds();
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
 		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
 
 		g.setClip(oldClip);
 	}
 
-	public LayerImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		LayerImpl result = new LayerImpl();
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-
-		result.copyFrom(this);
-
-		return result;
-	}
-
-	private void copyFrom(LayerImpl src) {
-		super.copyFrom(src);
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
 	}
 
 }

@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.util.Map;
-
 import org.jplot2d.axtrans.AxisTransform;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.element.ViewportAxis;
@@ -32,8 +30,6 @@ import org.jplot2d.element.AxisOrientation;
 public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 
 	public SubplotEx getParent();
-
-	public ViewportAxisEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 	public void setOrientation(AxisOrientation orientation);
 

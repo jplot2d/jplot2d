@@ -61,8 +61,16 @@ public interface ComponentEx extends Component, ElementEx {
 	 */
 	public void redraw();
 
+	/**
+	 * Returns <code>true</code> when this component need redraw.
+	 * 
+	 * @return the redraw status
+	 */
 	public boolean isRedrawNeeded();
 
+	/**
+	 * Clear the redraw needed flag.
+	 */
 	public void clearRedrawNeeded();
 
 	/**
@@ -79,5 +87,7 @@ public interface ComponentEx extends Component, ElementEx {
 	 * @return
 	 */
 	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
+
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap);
 
 }

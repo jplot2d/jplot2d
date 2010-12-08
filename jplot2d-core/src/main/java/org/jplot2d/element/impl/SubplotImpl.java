@@ -53,9 +53,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
-	private final List<ViewportAxisEx> xAxisGroup = new ArrayList<ViewportAxisEx>();
+	private final List<ViewportAxisEx> xViewportAxis = new ArrayList<ViewportAxisEx>();
 
-	private final List<ViewportAxisEx> yAxisGroup = new ArrayList<ViewportAxisEx>();
+	private final List<ViewportAxisEx> yViewportAxis = new ArrayList<ViewportAxisEx>();
 
 	private Rectangle2D viewportPhysicalBounds;
 
@@ -76,7 +76,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public Map<Element, Element> getMooringMap() {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
-		for (ViewportAxisEx ag : xAxisGroup) {
+		for (ViewportAxisEx ag : xViewportAxis) {
 			if (ag.getLockGroup().getViewportAxes().length > 1) {
 				result.put(ag, ag.getLockGroup());
 			}
@@ -103,9 +103,14 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return pxf;
 	}
 
-	public void plotPhysicalTransformChanged() {
+	public void parentPhysicalTransformChanged() {
 		pxf = null;
 		redraw();
+
+		// notify all subplots
+		for (SubplotEx sp : subplots) {
+			sp.parentPhysicalTransformChanged();
+		}
 	}
 
 	public boolean isAutoMarginTop() {
@@ -243,37 +248,37 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public ViewportAxisEx getXViewportAxis(int index) {
-		return xAxisGroup.get(index);
+		return xViewportAxis.get(index);
 	}
 
 	public ViewportAxisEx getYViewportAxis(int index) {
-		return yAxisGroup.get(index);
+		return yViewportAxis.get(index);
 	}
 
 	public int indexOfXViewportAxis(ViewportAxisEx axisGroup) {
-		return xAxisGroup.indexOf(axisGroup);
+		return xViewportAxis.indexOf(axisGroup);
 	}
 
 	public int indexOfYViewportAxis(ViewportAxisEx axisGroup) {
-		return yAxisGroup.indexOf(axisGroup);
+		return yViewportAxis.indexOf(axisGroup);
 	}
 
 	public ViewportAxisEx[] getXViewportAxes() {
-		return xAxisGroup.toArray(new ViewportAxisEx[xAxisGroup.size()]);
+		return xViewportAxis.toArray(new ViewportAxisEx[xViewportAxis.size()]);
 	}
 
 	public ViewportAxisEx[] getYViewportAxes() {
-		return yAxisGroup.toArray(new ViewportAxisEx[yAxisGroup.size()]);
+		return yViewportAxis.toArray(new ViewportAxisEx[yViewportAxis.size()]);
 	}
 
 	public void addXViewportAxis(ViewportAxis axisGroup) {
-		xAxisGroup.add((ViewportAxisEx) axisGroup);
+		xViewportAxis.add((ViewportAxisEx) axisGroup);
 		((ViewportAxisEx) axisGroup).setParent(this);
 		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.HORIZONTAL);
 	}
 
 	public void addYViewportAxis(ViewportAxis axisGroup) {
-		yAxisGroup.add((ViewportAxisEx) axisGroup);
+		yViewportAxis.add((ViewportAxisEx) axisGroup);
 		((ViewportAxisEx) axisGroup).setParent(this);
 		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.VERTICAL);
 	}
@@ -284,7 +289,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 
 		((ViewportAxisEx) axisGroup).setParent(null);
-		xAxisGroup.remove(axisGroup);
+		xViewportAxis.remove(axisGroup);
 	}
 
 	public void removeYViewportAxis(ViewportAxis axisGroup) {
@@ -293,7 +298,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 
 		((ViewportAxisEx) axisGroup).setParent(null);
-		yAxisGroup.remove(axisGroup);
+		yViewportAxis.remove(axisGroup);
 	}
 
 	public SubplotEx getSubplot(int i) {
@@ -325,43 +330,34 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
-	public SubplotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
 
-		SubplotImpl result = new SubplotImpl();
-
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-
-		result.copyFrom(this);
+		SubplotImpl sp = (SubplotImpl) src;
+		layoutDirector = sp.layoutDirector;
+		pxf = sp.pxf;
+		viewportPreferredSize = sp.viewportPreferredSize;
+		viewportPhysicalBounds = sp.viewportPhysicalBounds;
 
 		// copy layers
-		for (LayerEx layer : layers) {
-			LayerEx layerCopy = layer.deepCopy(orig2copyMap);
-			layerCopy.setParent(result);
-			result.layers.add(layerCopy);
+		for (LayerEx layer : sp.layers) {
+			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
+			layerCopy.setParent(this);
+			layers.add(layerCopy);
 		}
 
-		for (ViewportAxisEx axisGroup : xAxisGroup) {
-			ViewportAxisEx axisGroupCopy = axisGroup.deepCopy(orig2copyMap);
-			axisGroupCopy.setParent(result);
-			result.xAxisGroup.add(axisGroupCopy);
+		// copy axes
+		for (ViewportAxisEx va : sp.xViewportAxis) {
+			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
+			vaCopy.setParent(this);
+			xViewportAxis.add(vaCopy);
 		}
-		for (ViewportAxisEx axisGroup : yAxisGroup) {
-			ViewportAxisEx axisGroupCopy = axisGroup.deepCopy(orig2copyMap);
-			axisGroupCopy.setParent(result);
-			result.yAxisGroup.add(axisGroupCopy);
+		for (ViewportAxisEx va : sp.yViewportAxis) {
+			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
+			vaCopy.setParent(this);
+			yViewportAxis.add(vaCopy);
 		}
 
-		return result;
-	}
-
-	private void copyFrom(SubplotImpl src) {
-		super.copyFrom(src);
-		layoutDirector = src.layoutDirector;
-		pxf = src.pxf;
-		viewportPreferredSize = src.viewportPreferredSize;
-		viewportPhysicalBounds = src.viewportPhysicalBounds;
 	}
 
 }

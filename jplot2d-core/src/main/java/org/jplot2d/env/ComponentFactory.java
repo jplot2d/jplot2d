@@ -39,6 +39,7 @@ import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.ViewportAxisImpl;
 import org.jplot2d.layout.OverlayLayoutDirector;
+import org.jplot2d.layout.SimpleLayoutDirector;
 
 /**
  * A factory to produce all kind of plot components.
@@ -93,7 +94,7 @@ public class ComponentFactory {
 
 	public Plot createPlot() {
 		PlotImpl impl = new PlotImpl();
-		impl.setLayoutDirector(new OverlayLayoutDirector(impl));
+		impl.setLayoutDirector(new SimpleLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementAddition.class }, ih);
@@ -105,9 +106,9 @@ public class ComponentFactory {
 	public Subplot createSubplot() {
 		SubplotImpl impl = new SubplotImpl();
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
-		Subplot proxy = (Subplot) Proxy.newProxyInstance(Subplot.class
-				.getClassLoader(), new Class[] { Subplot.class,
-				ElementAddition.class }, ih);
+		Subplot proxy = (Subplot) Proxy.newProxyInstance(
+				Subplot.class.getClassLoader(), new Class[] { Subplot.class,
+						ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;
@@ -116,9 +117,9 @@ public class ComponentFactory {
 	public Layer createLayer() {
 		LayerImpl impl = new LayerImpl();
 		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
-		Layer proxy = (Layer) Proxy.newProxyInstance(Layer.class
-				.getClassLoader(), new Class[] { Layer.class,
-				ElementAddition.class }, ih);
+		Layer proxy = (Layer) Proxy.newProxyInstance(
+				Layer.class.getClassLoader(), new Class[] { Layer.class,
+						ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;
@@ -185,16 +186,16 @@ public class ComponentFactory {
 	public Axis createAxis() {
 		AxisImpl axis = new AxisImpl();
 		ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
-		Axis axisProxy = (Axis) Proxy.newProxyInstance(Axis.class
-				.getClassLoader(), new Class[] { Axis.class,
-				ElementAddition.class }, axisIH);
+		Axis axisProxy = (Axis) Proxy.newProxyInstance(
+				Axis.class.getClassLoader(), new Class[] { Axis.class,
+						ElementAddition.class }, axisIH);
 
 		AxisTickEx tick = axis.getTick();
 		ElementIH<AxisTick> tickIH = new ElementIH<AxisTick>(tick,
 				AxisTick.class);
-		AxisTick tickProxy = (AxisTick) Proxy.newProxyInstance(AxisTick.class
-				.getClassLoader(), new Class[] { AxisTick.class,
-				ElementAddition.class }, tickIH);
+		AxisTick tickProxy = (AxisTick) Proxy.newProxyInstance(
+				AxisTick.class.getClassLoader(), new Class[] { AxisTick.class,
+						ElementAddition.class }, tickIH);
 
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
