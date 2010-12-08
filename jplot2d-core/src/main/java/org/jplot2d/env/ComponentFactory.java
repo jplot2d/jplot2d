@@ -20,20 +20,25 @@ package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
 
-import org.jplot2d.element.AxisGroup;
+import org.jplot2d.element.Axis;
+import org.jplot2d.element.AxisPosition;
+import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.ViewportAxis;
+import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.MainAxis;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
-import org.jplot2d.element.impl.AxisGroupEx;
-import org.jplot2d.element.impl.AxisGroupImpl;
+import org.jplot2d.element.impl.AxisImpl;
+import org.jplot2d.element.impl.AxisLockGroupEx;
+import org.jplot2d.element.impl.AxisLockGroupImpl;
+import org.jplot2d.element.impl.AxisTickEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
-import org.jplot2d.element.impl.MainAxisImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
-import org.jplot2d.layout.StackLayoutDirector;
+import org.jplot2d.element.impl.ViewportAxisImpl;
+import org.jplot2d.layout.OverlayLayoutDirector;
 
 /**
  * A factory to produce all kind of plot components.
@@ -88,7 +93,7 @@ public class ComponentFactory {
 
 	public Plot createPlot() {
 		PlotImpl impl = new PlotImpl();
-		impl.setLayoutDirector(new StackLayoutDirector(impl));
+		impl.setLayoutDirector(new OverlayLayoutDirector(impl));
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementAddition.class }, ih);
@@ -119,30 +124,85 @@ public class ComponentFactory {
 		return proxy;
 	}
 
-	public MainAxis createMainAxis() {
-		MainAxisImpl axis = new MainAxisImpl();
-		ElementIH<MainAxis> axisIH = new ElementIH<MainAxis>(axis,
-				MainAxis.class);
-		MainAxis axisProxy = (MainAxis) Proxy.newProxyInstance(MainAxis.class
-				.getClassLoader(), new Class[] { MainAxis.class,
+	/**
+	 * Create a ViewportAxis, which contains an Axes. The position of the axis
+	 * is {@link AxisPosition#NEGATIVE_SIDE}
+	 * 
+	 * @return
+	 */
+	public ViewportAxis createViewportAxis() {
+		return createViewportAxis(1);
+	}
+
+	/**
+	 * Create a ViewportAxis, which contains n Axes. The position of the 1st
+	 * axis is {@link AxisPosition#NEGATIVE_SIDE}, the position of 2nd axis is
+	 * {@link AxisPosition#POSITIVE_SIDE}
+	 * 
+	 * @return
+	 */
+	public ViewportAxis createViewportAxis(int n) {
+		ViewportAxisImpl va = new ViewportAxisImpl();
+		ElementIH<ViewportAxis> axisIH = new ElementIH<ViewportAxis>(va,
+				ViewportAxis.class);
+		ViewportAxis vaProxy = (ViewportAxis) Proxy.newProxyInstance(
+				ViewportAxis.class.getClassLoader(), new Class[] {
+						ViewportAxis.class, ElementAddition.class }, axisIH);
+
+		AxisLockGroupEx group = va.getLockGroup();
+		ElementIH<AxisLockGroup> groupIH = new ElementIH<AxisLockGroup>(group,
+				AxisLockGroup.class);
+		AxisLockGroup groupProxy = (AxisLockGroup) Proxy.newProxyInstance(
+				AxisLockGroup.class.getClassLoader(), new Class[] {
+						AxisLockGroup.class, ElementAddition.class }, groupIH);
+
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+				: new DummyEnvironment();
+
+		((ElementAddition) vaProxy).setEnvironment(env);
+		((ElementAddition) groupProxy).setEnvironment(env);
+		env.registerComponent(va, vaProxy);
+		env.registerElement(group, groupProxy);
+
+		// add axis
+		for (int i = 0; i < n; i++) {
+			Axis axis = createAxis();
+			if (i % 2 == 1) {
+				axis.setPosition(AxisPosition.POSITIVE_SIDE);
+			}
+			vaProxy.addAxis(axis);
+		}
+
+		return vaProxy;
+	}
+
+	/**
+	 * Create an Axis. The default position is
+	 * {@link AxisPosition#NEGATIVE_SIDE}
+	 * 
+	 * @return
+	 */
+	public Axis createAxis() {
+		AxisImpl axis = new AxisImpl();
+		ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
+		Axis axisProxy = (Axis) Proxy.newProxyInstance(Axis.class
+				.getClassLoader(), new Class[] { Axis.class,
 				ElementAddition.class }, axisIH);
 
-		AxisGroupEx group = axis.getGroup();
-		ElementIH<AxisGroup> groupIH = new ElementIH<AxisGroup>(
-				axis.getGroup(), AxisGroup.class);
-		AxisGroup groupProxy = (AxisGroup) Proxy.newProxyInstance(
-				MainAxis.class.getClassLoader(), new Class[] { AxisGroup.class,
-						ElementAddition.class }, groupIH);
+		AxisTickEx tick = axis.getTick();
+		ElementIH<AxisTick> tickIH = new ElementIH<AxisTick>(tick,
+				AxisTick.class);
+		AxisTick tickProxy = (AxisTick) Proxy.newProxyInstance(AxisTick.class
+				.getClassLoader(), new Class[] { AxisTick.class,
+				ElementAddition.class }, tickIH);
 
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
 		((ElementAddition) axisProxy).setEnvironment(env);
-		((ElementAddition) groupProxy).setEnvironment(env);
+		((ElementAddition) tickProxy).setEnvironment(env);
 		env.registerComponent(axis, axisProxy);
-		env.registerElement(group, groupProxy);
-
-		// FIXME: register axis tick
+		env.registerElement(tick, tickProxy);
 
 		return axisProxy;
 	}
@@ -152,13 +212,13 @@ public class ComponentFactory {
 	 *            the axis the group will add first
 	 * @return
 	 */
-	public AxisGroup createAxisGroup(Environment env) {
-		AxisGroupImpl impl = new AxisGroupImpl();
-		ElementIH<AxisGroup> ih = new ElementIH<AxisGroup>(impl,
-				AxisGroup.class);
-		AxisGroup proxy = (AxisGroup) Proxy.newProxyInstance(AxisGroup.class
-				.getClassLoader(), new Class[] { AxisGroup.class,
-				ElementAddition.class }, ih);
+	public AxisLockGroup createAxisLockGroup(Environment env) {
+		AxisLockGroupImpl impl = new AxisLockGroupImpl();
+		ElementIH<AxisLockGroup> ih = new ElementIH<AxisLockGroup>(impl,
+				AxisLockGroup.class);
+		AxisLockGroup proxy = (AxisLockGroup) Proxy.newProxyInstance(
+				AxisLockGroup.class.getClassLoader(), new Class[] {
+						AxisLockGroup.class, ElementAddition.class }, ih);
 
 		env.begin();
 		((ElementAddition) proxy).setEnvironment(env);

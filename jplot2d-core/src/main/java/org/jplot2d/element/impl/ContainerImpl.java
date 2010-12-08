@@ -26,11 +26,6 @@ import org.jplot2d.element.PhysicalTransform;
 
 public class ContainerImpl extends ComponentImpl implements ContainerEx {
 
-	public Rectangle2D getBounds() {
-		Rectangle2D pbounds = getPhysicalBounds();
-		return getPhysicalTransform().getPtoD(pbounds);
-	}
-
 	public PhysicalTransform getPhysicalTransform() {
 		throw new UnsupportedOperationException();
 	}

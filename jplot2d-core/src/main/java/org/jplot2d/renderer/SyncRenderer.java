@@ -50,7 +50,7 @@ public class SyncRenderer<T> extends Renderer<T> {
 		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
 				unmodifiedCacheableComps, subcompsMap);
 
-		Dimension size = plot.getBounds().getBounds().getSize();
+		Dimension size = getDeviceBounds(plot).getSize();
 		T result = assembler.assembleResult(size, ainfo);
 		fireRenderingFinished(fsn++, result);
 	}

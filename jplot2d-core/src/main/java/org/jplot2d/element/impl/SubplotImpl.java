@@ -25,11 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.Axis;
+import org.jplot2d.element.Subplot;
+import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -38,17 +40,26 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
-	private PhysicalTransform pxf;
+	protected PhysicalTransform pxf;
+
+	private boolean autoMarginTop = true, autoMarginLeft = true,
+			autoMarginBottom = true, autoMarginRight = true;
+
+	private double marginTop, marginLeft, marginBottom, marginRight;
+
+	private LayoutDirector layoutDirector;
 
 	private Dimension2D viewportPreferredSize = new DoubleDimension2D(4.0, 3.0);
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
-	private final List<AxisEx> xaxes = new ArrayList<AxisEx>();
+	private final List<ViewportAxisEx> xAxisGroup = new ArrayList<ViewportAxisEx>();
 
-	private final List<AxisEx> yaxes = new ArrayList<AxisEx>();
+	private final List<ViewportAxisEx> yAxisGroup = new ArrayList<ViewportAxisEx>();
 
 	private Rectangle2D viewportPhysicalBounds;
+
+	protected final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
 
 	public String getSelfId() {
 		if (getParent() != null) {
@@ -65,37 +76,29 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public Map<Element, Element> getMooringMap() {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
-		for (AxisEx axis : xaxes) {
-			if (axis instanceof MainAxisEx) {
-				MainAxisEx ma = (MainAxisEx) axis;
-				if (ma.getGroup().getAxes().length > 1) {
-					result.put(ma, ma.getGroup());
-				}
-				for (LayerEx layer : ma.getLayers()) {
-					if (layer.getParent() != this) {
-						result.put(ma, layer);
-					}
-				}
-				for (AuxAxisEx aux : ma.getAuxAxes()) {
-					if (aux.getParent() != this) {
-						result.put(ma, aux);
-					}
+		for (ViewportAxisEx ag : xAxisGroup) {
+			if (ag.getLockGroup().getViewportAxes().length > 1) {
+				result.put(ag, ag.getLockGroup());
+			}
+			for (LayerEx layer : ag.getLayers()) {
+				if (layer.getParent() != this) {
+					result.put(ag, layer);
 				}
 			}
 		}
 		return result;
 	}
 
-	public void setPhysicalLocation(double locX, double locY) {
-		super.setPhysicalLocation(locX, locY);
+	public void setLocation(double locX, double locY) {
+		super.setLocation(locX, locY);
 		pxf = null;
 		redraw();
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null) {
-			pxf = getParent().getPhysicalTransform().translate(physicalLocX,
-					physicalLocY);
+			pxf = getParent().getPhysicalTransform().translate(
+					getLocation().getX(), getLocation().getY());
 		}
 		return pxf;
 	}
@@ -103,6 +106,101 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public void plotPhysicalTransformChanged() {
 		pxf = null;
 		redraw();
+	}
+
+	public boolean isAutoMarginTop() {
+		return autoMarginTop;
+	}
+
+	public boolean isAutoMarginLeft() {
+		return autoMarginLeft;
+	}
+
+	public boolean isAutoMarginBottom() {
+		return autoMarginBottom;
+	}
+
+	public boolean isAutoMarginRight() {
+		return autoMarginRight;
+	}
+
+	public void setAutoMarginTop(boolean auto) {
+		autoMarginTop = auto;
+	}
+
+	public void setAutoMarginLeft(boolean auto) {
+		autoMarginLeft = auto;
+	}
+
+	public void setAutoMarginBottom(boolean auto) {
+		autoMarginBottom = auto;
+	}
+
+	public void setAutoMarginRight(boolean auto) {
+		autoMarginRight = auto;
+	}
+
+	public double getMarginTop() {
+		return marginTop;
+	}
+
+	public double getMarginLeft() {
+		return marginLeft;
+	}
+
+	public double getMarginBottom() {
+		return marginBottom;
+	}
+
+	public double getMarginRight() {
+		return marginRight;
+	}
+
+	public void setMarginTop(double marginTop) {
+		this.marginTop = marginTop;
+	}
+
+	public void setMarginLeft(double marginLeft) {
+		this.marginLeft = marginLeft;
+	}
+
+	public void setMarginBottom(double marginBottom) {
+		this.marginBottom = marginBottom;
+	}
+
+	public void setMarginRight(double marginRight) {
+		this.marginRight = marginRight;
+	}
+
+	public LayoutDirector getLayoutDirector() {
+		return layoutDirector;
+	}
+
+	public void setLayoutDirector(LayoutDirector director) {
+		this.layoutDirector = director;
+	}
+
+	public Object getConstraint(Subplot subplot) {
+		return layoutDirector.getConstraint((SubplotEx) subplot);
+	}
+
+	public void setConstraint(Subplot subplot, Object constraint) {
+		layoutDirector.setConstraint((SubplotEx) subplot, constraint);
+	}
+
+	public void validate() {
+		if (isValid())
+			return;
+		super.validate();
+		layout();
+		for (SubplotEx subplot : subplots) {
+			subplot.validate();
+		}
+	}
+
+	private void layout() {
+		if (layoutDirector != null)
+			layoutDirector.layout();
 	}
 
 	public Dimension2D getViewportPreferredSize() {
@@ -141,71 +239,90 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
 		((LayerEx) layer).setParent(null);
-		layer.setAxes(null, null);
+		layer.setViewportAxes(null, null);
 	}
 
-	public AxisEx getXAxis(int index) {
-		return xaxes.get(index);
+	public ViewportAxisEx getXViewportAxis(int index) {
+		return xAxisGroup.get(index);
 	}
 
-	public AxisEx getYAxis(int index) {
-		return yaxes.get(index);
+	public ViewportAxisEx getYViewportAxis(int index) {
+		return yAxisGroup.get(index);
 	}
 
-	public int indexOfXAxis(AxisEx axis) {
-		return xaxes.indexOf(axis);
+	public int indexOfXViewportAxis(ViewportAxisEx axisGroup) {
+		return xAxisGroup.indexOf(axisGroup);
 	}
 
-	public int indexOfYAxis(AxisEx axis) {
-		return yaxes.indexOf(axis);
+	public int indexOfYViewportAxis(ViewportAxisEx axisGroup) {
+		return yAxisGroup.indexOf(axisGroup);
 	}
 
-	public AxisEx[] getXAxes() {
-		return xaxes.toArray(new AxisEx[xaxes.size()]);
+	public ViewportAxisEx[] getXViewportAxes() {
+		return xAxisGroup.toArray(new ViewportAxisEx[xAxisGroup.size()]);
 	}
 
-	public AxisEx[] getYAxes() {
-		return yaxes.toArray(new AxisEx[yaxes.size()]);
+	public ViewportAxisEx[] getYViewportAxes() {
+		return yAxisGroup.toArray(new ViewportAxisEx[yAxisGroup.size()]);
 	}
 
-	public void addXAxis(Axis axis) {
-		xaxes.add((AxisEx) axis);
-		((AxisEx) axis).setParent(this);
-		((AxisEx) axis).setOrientation(AxisOrientation.HORIZONTAL);
+	public void addXViewportAxis(ViewportAxis axisGroup) {
+		xAxisGroup.add((ViewportAxisEx) axisGroup);
+		((ViewportAxisEx) axisGroup).setParent(this);
+		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.HORIZONTAL);
 	}
 
-	public void addYAxis(Axis axis) {
-		yaxes.add((AxisEx) axis);
-		((AxisEx) axis).setParent(this);
-		((AxisEx) axis).setOrientation(AxisOrientation.VERTICAL);
+	public void addYViewportAxis(ViewportAxis axisGroup) {
+		yAxisGroup.add((ViewportAxisEx) axisGroup);
+		((ViewportAxisEx) axisGroup).setParent(this);
+		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.VERTICAL);
 	}
 
-	public void removeXAxis(Axis axis) {
-		if (axis instanceof MainAxisEx) {
-			if (((MainAxisEx) axis).getLayers().length > 0) {
-				throw new IllegalStateException("The axis has layer attached");
-			}
-			if (((MainAxisEx) axis).getAuxAxes().length > 0) {
-				throw new IllegalStateException(
-						"The axis has aux axis attached");
-			}
+	public void removeXViewportAxis(ViewportAxis axisGroup) {
+		if (axisGroup.getLayers().length > 0) {
+			throw new IllegalStateException("The axis has layer attached");
 		}
-		((ComponentEx) axis).setParent(null);
-		xaxes.remove(axis);
+
+		((ViewportAxisEx) axisGroup).setParent(null);
+		xAxisGroup.remove(axisGroup);
 	}
 
-	public void removeYAxis(Axis axis) {
-		if (axis instanceof MainAxisEx) {
-			if (((MainAxisEx) axis).getLayers().length > 0) {
-				throw new IllegalStateException("The axis has layer attached");
-			}
-			if (((MainAxisEx) axis).getAuxAxes().length > 0) {
-				throw new IllegalStateException(
-						"The axis has aux axis attached");
-			}
+	public void removeYViewportAxis(ViewportAxis axisGroup) {
+		if (axisGroup.getLayers().length > 0) {
+			throw new IllegalStateException("The axis has layer attached");
 		}
-		((ComponentEx) axis).setParent(null);
-		yaxes.remove(axis);
+
+		((ViewportAxisEx) axisGroup).setParent(null);
+		yAxisGroup.remove(axisGroup);
+	}
+
+	public SubplotEx getSubplot(int i) {
+		return subplots.get(i);
+	}
+
+	public int indexOf(SubplotEx subplot) {
+		return subplots.indexOf(subplot);
+	}
+
+	public SubplotEx[] getSubplots() {
+		return subplots.toArray(new SubplotEx[subplots.size()]);
+	}
+
+	public void addSubplot(Subplot subplot, Object constraint) {
+		subplots.add((SubplotEx) subplot);
+		((SubplotEx) subplot).setParent(this);
+
+		LayoutDirector ld = getLayoutDirector();
+		if (ld != null) {
+			ld.setConstraint((SubplotEx) subplot, constraint);
+		}
+	}
+
+	public void removeSubplot(Subplot subplot) {
+		LayoutDirector ld = getLayoutDirector();
+		if (ld != null) {
+			ld.remove((SubplotEx) subplot);
+		}
 	}
 
 	public SubplotEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
@@ -225,16 +342,15 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			result.layers.add(layerCopy);
 		}
 
-		// TODO: copy auxaxes's main
-		for (AxisEx axis : xaxes) {
-			AxisEx axisCopy = axis.deepCopy(orig2copyMap);
-			axisCopy.setParent(result);
-			result.xaxes.add(axisCopy);
+		for (ViewportAxisEx axisGroup : xAxisGroup) {
+			ViewportAxisEx axisGroupCopy = axisGroup.deepCopy(orig2copyMap);
+			axisGroupCopy.setParent(result);
+			result.xAxisGroup.add(axisGroupCopy);
 		}
-		for (AxisEx axis : yaxes) {
-			AxisEx axisCopy = axis.deepCopy(orig2copyMap);
-			axisCopy.setParent(result);
-			result.yaxes.add(axisCopy);
+		for (ViewportAxisEx axisGroup : yAxisGroup) {
+			ViewportAxisEx axisGroupCopy = axisGroup.deepCopy(orig2copyMap);
+			axisGroupCopy.setParent(result);
+			result.yAxisGroup.add(axisGroupCopy);
 		}
 
 		return result;
@@ -242,6 +358,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private void copyFrom(SubplotImpl src) {
 		super.copyFrom(src);
+		layoutDirector = src.layoutDirector;
 		pxf = src.pxf;
 		viewportPreferredSize = src.viewportPreferredSize;
 		viewportPhysicalBounds = src.viewportPhysicalBounds;

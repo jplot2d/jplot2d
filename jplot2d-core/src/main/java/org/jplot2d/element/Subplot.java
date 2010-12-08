@@ -23,15 +23,93 @@ import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.layout.LayoutDirector;
 
 /**
- * Subplot contains a group of layers that stack over each other, and axes
- * around the viewport.
+ * Subplot has a content area in the center, surrounded by margin area. The
+ * margin area hold axes, title and legend.
+ * <p>
+ * Subplot can optionally contains a group of layers that stack over each other,
+ * their viewports have the same bounds of the content area. <br/>
+ * Subplot can also contains a group of subplots, which are laid out by
+ * LayoutDirector.
  * 
  * @author Jingjing Li
  * 
  */
 public interface Subplot extends Container {
+
+	public boolean isAutoMarginTop();
+
+	public boolean isAutoMarginLeft();
+
+	public boolean isAutoMarginBottom();
+
+	public boolean isAutoMarginRight();
+
+	public void setAutoMarginTop(boolean auto);
+
+	public void setAutoMarginLeft(boolean auto);
+
+	public void setAutoMarginBottom(boolean auto);
+
+	public void setAutoMarginRight(boolean auto);
+
+	public double getMarginTop();
+
+	public double getMarginLeft();
+
+	public double getMarginBottom();
+
+	public double getMarginRight();
+
+	public void setMarginTop(double marginTop);
+
+	public void setMarginLeft(double marginLeft);
+
+	public void setMarginBottom(double marginBottom);
+
+	public void setMarginRight(double marginRight);
+
+	/**
+	 * Gets the layout director for this subplot.
+	 * 
+	 * @return the layout director for this subplot.
+	 */
+	public LayoutDirector getLayoutDirector();
+
+	/**
+	 * Sets the layout director for this subplot.
+	 * 
+	 * @param director
+	 *            the layout director
+	 */
+	public void setLayoutDirector(LayoutDirector director);
+
+	/**
+	 * Returns the constraint of the specified subplot in the current
+	 * LayoutManager.
+	 * 
+	 * @param subplot
+	 *            The subplot whose constraint is being set
+	 * @return the constraint
+	 * @throws IllegalArgumentException
+	 *             if the subplot is not contained by this plot
+	 */
+	public Object getConstraint(Subplot subplot);
+
+	/**
+	 * Sets the constraint of the specified subplot in the current
+	 * LayoutManager.
+	 * 
+	 * @param subplot
+	 *            The subplot whose constraint is being set
+	 * @param constraint
+	 *            the constraint
+	 * @throws IllegalArgumentException
+	 *             if the subplot is not contained by this plot
+	 */
+	public void setConstraint(Subplot subplot, Object constraint);
 
 	/**
 	 * Returns the the preferred viewport physical size.
@@ -48,18 +126,18 @@ public interface Subplot extends Container {
 	public void setViewportPreferredSize(Dimension2D size);
 
 	/**
-	 * Returns the physical rectangle of viewport.
+	 * Returns the rectangle of viewport.
 	 * 
-	 * @return the physical rectangle of viewport.
+	 * @return the rectangle of viewport.
 	 */
 	public Rectangle2D getViewportBounds();
 
 	/**
-	 * Sets the physical rectangle of viewport. All layers in this subplot have
-	 * the same viewport bounds.
+	 * Sets the rectangle of viewport. All layers in this subplot have the same
+	 * viewport bounds.
 	 * 
 	 * @param bounds
-	 *            the physical rectangle of viewport
+	 *            the rectangle of viewport
 	 */
 	public void setViewportBounds(Rectangle2D bounds);
 
@@ -112,5 +190,38 @@ public interface Subplot extends Container {
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeYViewportAxis(ViewportAxis axisGroup);
+
+	/**
+	 * Gets the nth subplot in this plot.
+	 * 
+	 * @param n
+	 *            the index of the component to get.
+	 * @return the nth subplot in this plot
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Subplot getSubplot(int n);
+
+	/**
+	 * Gets the nth subplot in this plot.
+	 * 
+	 * @param n
+	 *            the index of the component to get.
+	 * @return the nth subplot in this plot
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Subplot[] getSubplots();
+
+	/**
+	 * @param subplot
+	 * @param constraint
+	 */
+	@Hierarchy(HierarchyOp.ADD)
+	void addSubplot(Subplot subplot, Object constraint);
+
+	/**
+	 * @param subplot
+	 */
+	@Hierarchy(HierarchyOp.REMOVE)
+	void removeSubplot(Subplot subplot);
 
 }

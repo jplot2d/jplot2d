@@ -21,17 +21,13 @@ package org.jplot2d.element;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 
-import org.jplot2d.annotation.Hierarchy;
-import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.layout.LayoutDirector;
-
 /**
  * A Plot contains titles and subplots.
  * 
  * @author Jingjing Li
  * 
  */
-public interface Plot extends Container {
+public interface Plot extends Subplot {
 
 	/**
 	 * @return
@@ -40,6 +36,11 @@ public interface Plot extends Container {
 
 	public void setSizeMode(PlotSizeMode smode);
 
+	/**
+	 * Returns the container size.
+	 * 
+	 * @return the container size
+	 */
 	public Dimension getContainerSize();
 
 	/**
@@ -49,48 +50,8 @@ public interface Plot extends Container {
 	 */
 	public void setContainerSize(Dimension size);
 
-	public Dimension2D getTargetPhySize();
+	public Dimension2D getTargetPaperSize();
 
-	public void setTargetPhySize(Dimension2D physize);
-
-	/**
-	 * @return
-	 */
-	public LayoutDirector getLayoutDirector();
-
-	public void setLayoutDirector(LayoutDirector director);
-
-	/**
-	 * Gets the nth subplot in this plot.
-	 * 
-	 * @param n
-	 *            the index of the component to get.
-	 * @return the nth subplot in this plot
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Subplot getSubplot(int n);
-
-	/**
-	 * Gets the nth subplot in this plot.
-	 * 
-	 * @param n
-	 *            the index of the component to get.
-	 * @return the nth subplot in this plot
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public Subplot[] getSubplots();
-
-	/**
-	 * @param subplot
-	 * @param constraint
-	 */
-	@Hierarchy(HierarchyOp.ADD)
-	void addSubplot(Subplot subplot, Object constraint);
-
-	/**
-	 * @param subplot
-	 */
-	@Hierarchy(HierarchyOp.REMOVE)
-	void removeSubplot(Subplot subplot);
+	public void setTargetPaperSize(Dimension2D paperSize);
 
 }

@@ -36,7 +36,7 @@ public interface Layer extends Component {
 	 * 
 	 * @return the name
 	 */
-	public MathElement getName();
+	public String getName();
 
 	/**
 	 * Sets the name displayed in the legend
@@ -44,7 +44,22 @@ public interface Layer extends Component {
 	 * @param name
 	 *            the name displayed in the legend
 	 */
-	public void setName(MathElement name);
+	public void setName(String name);
+
+	/**
+	 * Returns the name displayed in the legend
+	 * 
+	 * @return the name
+	 */
+	public MathElement getNameModel();
+
+	/**
+	 * Sets the name displayed in the legend
+	 * 
+	 * @param name
+	 *            the name displayed in the legend
+	 */
+	public void setNameModel(MathElement name);
 
 	/**
 	 * Returns the data model of this layer.

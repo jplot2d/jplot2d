@@ -18,12 +18,16 @@
  */
 package org.jplot2d.layout;
 
+import java.awt.geom.Rectangle2D;
+
 import org.jplot2d.element.impl.SubplotEx;
 
 /**
- * The interface for jplot2d to layout subplots and other components. The way to
- * layout subplots can be customized, but the layers in subplot are stacked over
- * and cannot be changed.
+ * The interface for jplot2d to layout subplots. All methods of LayoutDirector
+ * will be called inside the plot engine. User should never call them directly.
+ * <p>
+ * A subplot's children subplots are laid out in the content area. All layers in
+ * subplot are stacked over and have the same size of the subplot.
  * <p>
  * The axis is a special component. Its length can be set when laid out, but its
  * height is fixed and derived from its internal status, such as tick height and
@@ -33,6 +37,13 @@ import org.jplot2d.element.impl.SubplotEx;
  * 
  */
 public interface LayoutDirector {
+
+	/**
+	 * Returns the viewport constraint for the given subplot.
+	 * 
+	 * @return the viewport constraint
+	 */
+	public Rectangle2D getViewportConstrant(SubplotEx subplot);
 
 	/**
 	 * Returns the constraint for the given subplot.

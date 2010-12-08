@@ -29,7 +29,7 @@ import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
-import org.jplot2d.layout.LayoutDirector;
+import org.jplot2d.element.impl.ViewportAxisEx;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -130,11 +130,6 @@ public abstract class PlotEnvironment extends Environment {
 	@Override
 	protected void commit() {
 
-		LayoutDirector director = plotImpl.getLayoutDirector();
-		if (director == null) {
-			return;
-		}
-
 		/*
 		 * Axis a special component. Its length can be set by layout manager,
 		 * but its thick depends on its internal status, such as tick height,
@@ -143,14 +138,13 @@ public abstract class PlotEnvironment extends Environment {
 		 * all subplot, then calculate auto range, then validate all axes.
 		 */
 
-		updateAxesThickness();
 		while (true) {
 
 			/*
 			 * Laying out axes may register some axis that ticks need be
 			 * re-calculated
 			 */
-			director.layout();
+			plotImpl.validate();
 
 			/*
 			 * Auto range axes MUST be executed after they are laid out. <br>
@@ -160,13 +154,10 @@ public abstract class PlotEnvironment extends Environment {
 			calcPendingLockGroupAutoRange();
 
 			/*
-			 * Calculating axes tick may register some axis that metrics need be
-			 * re-calculated
+			 * Calculating axes tick may invalidate some axis. Their metrics
+			 * need be re-calculated
 			 */
-			calcPendingAxesTick();
-
-			/* axis metrics change need re-laying out the plot */
-			updateAxesThickness();
+			calcAxesTick();
 
 			if (plotImpl.isValid()) {
 				break;
@@ -182,29 +173,25 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * 
 	 */
-	private void calcPendingAxesTick() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * 
-	 */
 	private void calcPendingLockGroupAutoRange() {
 		// TODO Auto-generated method stub
 
 	}
 
 	/**
-	 * validate all axes thickness
+	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
-	private void updateAxesThickness() {
+	private void calcAxesTick() {
 		for (SubplotEx sp : plotImpl.getSubplots()) {
-			for (AxisEx axis : sp.getXAxes()) {
-				axis.updateThickness();
+			for (ViewportAxisEx va : sp.getXViewportAxes()) {
+				for (AxisEx axis : va.getAxes()) {
+					axis.getTick().calcTicks();
+				}
 			}
-			for (AxisEx axis : sp.getYAxes()) {
-				axis.updateThickness();
+			for (ViewportAxisEx va : sp.getYViewportAxes()) {
+				for (AxisEx axis : va.getAxes()) {
+					axis.getTick().calcTicks();
+				}
 			}
 		}
 	}

@@ -169,7 +169,7 @@ public class AsyncRenderer<T> extends Renderer<T> {
 		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
 				unmodifiedCacheableComps, subcompsMap);
 
-		Dimension size = plot.getBounds().getBounds().getSize();
+		Dimension size = getDeviceBounds(plot).getSize();
 		Callable<T> callable = new RenderCallable(size, ainfo);
 		RenderTask task = new RenderTask(fsn++, callable);
 
