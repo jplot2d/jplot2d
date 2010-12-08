@@ -436,14 +436,24 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx {
 	}
 
 	/**
-	 * notified by main axis type changed. This mainly affect the label
-	 * calculation by value circle.
+	 * notified by viewport axis type changed. This mainly affect the canonical
+	 * values calculation.
 	 */
 	public void axisTypeChanged() {
 		_axisTypeChanged = true;
 	}
-	
-	//public void trfChanged()
+
+	/**
+	 * Called when axis transform or tick transform changed. The changing affect
+	 * the label density.
+	 */
+	public void axisOrTickTransformChanged() {
+		_trfChanged = true;
+	}
+
+	public TickAlgorithm getTickAlgorithm() {
+		return tickAlgorithm;
+	}
 
 	public void setTickAlgorithm(TickAlgorithm algorithm) {
 		if (tickAlgorithm != algorithm) {
@@ -636,8 +646,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx {
 			this.values = values;
 			_valuesChanged = true;
 		}
-		if (!NumberArrayUtils.equals(minorValues, tickCalculator
-				.getMinorValues())) {
+		if (!NumberArrayUtils.equals(minorValues,
+				tickCalculator.getMinorValues())) {
 			this.minorValues = tickCalculator.getMinorValues();
 			this.actualMinorNumber = tickCalculator.getMinorNumber();
 			_minorValuesChanged = true;

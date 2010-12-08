@@ -22,6 +22,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.text.Format;
 
+import org.jplot2d.axtick.TickAlgorithm;
+
 /**
  * @author Jingjing Li
  * 
@@ -45,6 +47,10 @@ public interface AxisTick extends Element {
 	 * @param visible
 	 */
 	public void setVisible(boolean visible);
+
+	public TickAlgorithm getTickAlgorithm();
+
+	public void setTickAlgorithm(TickAlgorithm algorithm);
 
 	/**
 	 * Returns true if the tick number is allowed to be automatically reduced to

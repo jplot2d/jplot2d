@@ -97,18 +97,8 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void setType(AxisType type) {
 		this.type = type;
-	}
-
-	/**
-	 * Change type by lock group
-	 * 
-	 * @param type
-	 */
-	void changeType(AxisType type) {
-		this.type = type;
 		for (AxisEx axis : axes) {
-			axis.getTick().axisTypeChanged();
-
+			axis.axisTypeChanged();
 			axis.getTick().setTickAlgorithm(type.getTickAlgorithm());
 		}
 	}
@@ -141,7 +131,7 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void setNormalTransfrom(NormalTransform ntf) {
 		this.ntf = ntf;
-		axf = null;
+		updateAxisTransform();
 	}
 
 	public double getLength() {
@@ -150,7 +140,7 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void setLength(double length) {
 		this.length = length;
-		axf = null;
+		updateAxisTransform();
 	}
 
 	public AxisTransform getAxisTransform() {
@@ -170,6 +160,13 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 					ntf.getRangeW());
 		}
 		return axf;
+	}
+
+	private void updateAxisTransform() {
+		axf = null;
+		for (AxisEx axis : axes) {
+			axis.axisTransformChanged();
+		}
 	}
 
 	public int indexOfAxis(AxisEx axis) {
