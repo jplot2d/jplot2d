@@ -49,7 +49,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private LayoutDirector layoutDirector;
 
-	private Dimension2D viewportPreferredSize = new DoubleDimension2D(4.0, 3.0);
+	private Dimension2D viewportPreferredSize = new DoubleDimension2D(400, 300);
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
@@ -194,18 +194,32 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void validate() {
-		if (isValid())
+		if (isValid()) {
 			return;
-		super.validate();
+		}
+
 		layout();
 		for (SubplotEx subplot : subplots) {
 			subplot.validate();
+		}
+		super.validate();
+	}
+
+	public void invalidate() {
+		if (isValid()) {
+			valid = false;
+			/*
+			 * Don't call getParent().invalidate(), let layoutDirector decide
+			 * it.
+			 */
+			if (layoutDirector != null)
+				layoutDirector.invalidateLayout(this);
 		}
 	}
 
 	private void layout() {
 		if (layoutDirector != null)
-			layoutDirector.layout();
+			layoutDirector.layout(this);
 	}
 
 	public Dimension2D getViewportPreferredSize() {

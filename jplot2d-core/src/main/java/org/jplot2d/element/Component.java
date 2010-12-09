@@ -184,14 +184,19 @@ public interface Component extends Element {
 
 	public void setLocation(double locX, double locY);
 
+	/**
+	 * Returns the paper size of this component.
+	 * 
+	 * @return
+	 */
 	public Dimension2D getSize();
 
 	/**
-	 * Returns the physical bounds relative to its container. The units of
-	 * bounds is pt (1/72 inch)
+	 * Returns the paper bounds relative to its container. The units of bounds
+	 * is pt (1/72 inch)
 	 * 
-	 * @return the physical bounds of this component.
+	 * @return the paper bounds of this component.
 	 */
-	public Rectangle2D getPhysicalBounds();
+	public Rectangle2D getBounds();
 
 }

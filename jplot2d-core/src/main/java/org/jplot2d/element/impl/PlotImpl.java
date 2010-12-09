@@ -32,13 +32,13 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class PlotImpl extends SubplotImpl implements PlotEx {
 
-	private double scale = 72;
+	private double scale = 1;
 
 	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_SIZE;
 
 	private Dimension containerSize = new Dimension();
 
-	private Dimension2D targetPhySize = new DoubleDimension2D(4.0, 3.0);
+	private Dimension2D targetSize = new DoubleDimension2D(480, 320);
 
 	public PlotImpl() {
 		super.setCacheable(true);
@@ -57,8 +57,8 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		this.sizeMode = sizeMode;
 	}
 
-	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
-		super.setPhysicalSize(physicalWidth, physicalHeight);
+	public void setSize(double physicalWidth, double physicalHeight) {
+		super.setSize(physicalWidth, physicalHeight);
 		/*
 		 * Calculate scale based on container size and physical size.
 		 */
@@ -102,14 +102,14 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 			double phyWidth = containerSize.width / scale;
 			double phyHeight = containerSize.height / scale;
 
-			setPhysicalSize(phyWidth, phyHeight);
+			setSize(phyWidth, phyHeight);
 			break;
 		}
 		case FIT_CONTAINER_SIZE: {
 			double phyWidth = containerSize.width / scale;
 			double phyHeight = containerSize.height / scale;
 
-			setPhysicalSize(phyWidth, phyHeight);
+			setSize(phyWidth, phyHeight);
 			break;
 		}
 		case FIXED_SIZE:
@@ -129,11 +129,11 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 	}
 
 	public Dimension2D getTargetPaperSize() {
-		return targetPhySize;
+		return targetSize;
 	}
 
 	public void setTargetPaperSize(Dimension2D paperSize) {
-		targetPhySize = paperSize;
+		targetSize = paperSize;
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
@@ -142,7 +142,7 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		PlotImpl plot = (PlotImpl) src;
 		sizeMode = plot.sizeMode;
 		containerSize = (Dimension) plot.containerSize.clone();
-		targetPhySize = (Dimension2D) plot.targetPhySize.clone();
+		targetSize = (Dimension2D) plot.targetSize.clone();
 		scale = plot.scale;
 
 		// copy subplots

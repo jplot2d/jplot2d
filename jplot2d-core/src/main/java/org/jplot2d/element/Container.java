@@ -29,19 +29,20 @@ import java.awt.geom.Dimension2D;
 public interface Container extends Component {
 
 	/**
-	 * Sets the physical size of this container.
+	 * Sets the paper size of this container.
 	 * 
-	 * @param physicalSize
+	 * @param paper
+	 *            size
 	 */
-	public void setPhysicalSize(Dimension2D physicalSize);
+	public void setSize(Dimension2D size);
 
 	/**
-	 * Sets the physical size of this container.
+	 * Sets the paper size of this container.
 	 * 
-	 * @param physicalWidth
-	 * @param physicalHeight
+	 * @param width
+	 * @param height
 	 */
-	public void setPhysicalSize(double physicalWidth, double physicalHeight);
+	public void setSize(double width, double height);
 
 	/**
 	 * Returns the PhysicalTransform of this component.

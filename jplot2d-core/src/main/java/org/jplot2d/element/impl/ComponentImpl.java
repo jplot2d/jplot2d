@@ -46,9 +46,9 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	private Font font;
 
-	private double physicalLocX, physicalLocY;
+	private double locX, locY;
 
-	protected double physicalWidth, physicalHeight;
+	protected double width, height;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
@@ -59,7 +59,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	 * @see #validate
 	 * @see #invalidate
 	 */
-	private boolean valid = false;
+	protected boolean valid = false;
 
 	private boolean redrawNeeded;
 
@@ -146,7 +146,7 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(physicalLocX, physicalLocY);
+		return new Point2D.Double(locX, locY);
 	}
 
 	public final void setLocation(Point2D p) {
@@ -154,17 +154,17 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void setLocation(double locX, double locY) {
-		physicalLocX = locX;
-		physicalLocY = locY;
+		this.locX = locX;
+		this.locY = locY;
 	}
 
 	public Dimension2D getSize() {
-		return new DoubleDimension2D(physicalWidth, physicalHeight);
+		return new DoubleDimension2D(width, height);
 	}
 
-	public Rectangle2D getPhysicalBounds() {
-		return new Rectangle2D.Double(physicalLocX, physicalLocY,
-				physicalWidth, physicalHeight);
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(locX, locY,
+				width, height);
 	}
 
 	/**
@@ -256,10 +256,10 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		setLocation(src.getLocation());
 
 		ComponentImpl comp = (ComponentImpl) src;
-		physicalLocX = comp.physicalLocX;
-		physicalLocY = comp.physicalLocY;
-		physicalWidth = comp.physicalWidth;
-		physicalHeight = comp.physicalHeight;
+		locX = comp.locX;
+		locY = comp.locY;
+		width = comp.width;
+		height = comp.height;
 		valid = comp.valid;
 		redrawNeeded = comp.redrawNeeded;
 	}

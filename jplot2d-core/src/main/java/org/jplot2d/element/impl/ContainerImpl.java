@@ -28,23 +28,21 @@ public class ContainerImpl extends ComponentImpl implements ContainerEx {
 		throw new UnsupportedOperationException();
 	}
 
-	public final void setPhysicalSize(Dimension2D physicalSize) {
-		this.setPhysicalSize(physicalSize.getWidth(), physicalSize.getHeight());
+	public final void setSize(Dimension2D size) {
+		this.setSize(size.getWidth(), size.getHeight());
 	}
 
-	public void setPhysicalSize(double physicalWidth, double physicalHeight) {
-		if (physicalWidth < 0 || physicalHeight < 0) {
-			throw new IllegalArgumentException(
-					"physical size must be positive " + physicalWidth + "x"
-							+ physicalHeight);
+	public void setSize(double width, double height) {
+		if (width < 0 || height < 0) {
+			throw new IllegalArgumentException("paper size must be positive "
+					+ width + "x" + height);
 		}
 
-		if (this.physicalWidth != physicalWidth
-				|| this.physicalHeight != physicalHeight) {
+		if (this.width != width || this.height != height) {
 			invalidate();
 			redraw();
-			this.physicalWidth = physicalWidth;
-			this.physicalHeight = physicalHeight;
+			this.width = width;
+			this.height = height;
 		}
 	}
 

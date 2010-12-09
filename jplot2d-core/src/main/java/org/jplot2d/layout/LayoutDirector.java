@@ -70,9 +70,19 @@ public interface LayoutDirector {
 	public void remove(SubplotEx subplot);
 
 	/**
-	 * Layout the plot.
+	 * Invalidates the layout, indicating that if the layout manager has cached
+	 * information it should be discarded. Also, this method optionally
+	 * invalidate the subplot's parent, depending on the nature of this
+	 * LayoutDirector.
 	 * 
+	 * @param subplot
+	 *            the subplot has been invalidate.
 	 */
-	public void layout();
+	public void invalidateLayout(SubplotEx subplot);
+
+	/**
+	 * Layout the subplot.
+	 */
+	public void layout(SubplotEx subplot);
 
 }
