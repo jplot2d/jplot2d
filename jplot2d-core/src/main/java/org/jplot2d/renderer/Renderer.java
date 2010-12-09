@@ -169,7 +169,7 @@ public abstract class Renderer<T> {
 					.getHeight()
 					* scale).getBounds();
 		} else {
-			Rectangle2D pbounds = comp.getPhysicalBounds();
+			Rectangle2D pbounds = comp.getBounds();
 			return comp.getParent().getPhysicalTransform().getPtoD(pbounds)
 					.getBounds();
 		}
