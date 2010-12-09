@@ -40,35 +40,12 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	/** The layout constraints */
 	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
 
-	/**
-	 * the margin around the subplot
-	 */
-	Insets2D contentsMargin = new Insets2D(0.1, 0.1, 0.1, 0.1);
-
-	/**
-	 * the margin around the plot
-	 */
-	Insets2D margin = new Insets2D(0.1, 0.1, 0.1, 0.1);
-
-	/**
-	 * the physical size of every grid cell
-	 */
-	GridCellGeom cellGeom;
-
-	GridCellInsets cellPadding = new GridCellInsets();
-
-	private SubplotEx plot;
-
 	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public SimpleLayoutDirector(SubplotEx plot) {
-		this.plot = plot;
-	}
-
 	/*
-	 * OverlayLayoutDirector doesn't impose viewport constraint on its children.
+	 * This LayoutDirector doesn't impose viewport constraint on its children.
 	 */
 	public Rectangle2D getViewportConstrant(SubplotEx subplot) {
 		return null;
@@ -84,39 +61,45 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	public void setConstraint(SubplotEx subplot, Object constraint) {
 		constraints.put(subplot, constraint);
+		// invalidate its parent
+		if (subplot.getParent() != null) {
+			subplot.getParent().invalidate();
+		}
 	}
 
-	public void layout() {
+	public void invalidateLayout(SubplotEx subplot) {
+		// do not handle subplot at all
+	}
 
-		for (LayerEx layer : plot.getLayers()) {
+	public void layout(SubplotEx subplot) {
+
+		Insets2D margin = calcMargin();
+
+		double contentWidth = subplot.getSize().getWidth();
+		double contentHeight = subplot.getSize().getHeight() - margin.getTop()
+				- margin.getBottom();
+		Rectangle2D contentRect = new Rectangle2D.Double(margin.getLeft(),
+				margin.getBottom(), contentWidth, contentHeight);
+		for (LayerEx layer : subplot.getLayers()) {
 			layer.setLocation(new Point2D.Double(0, 0));
-			layer.setPhysicalSize(plot.getSize());
-			plot.setViewportBounds(plot.getPhysicalBounds());
+			layer.setSize(subplot.getSize());
+			subplot.setViewportBounds(contentRect);
 		}
 
-		for (ViewportAxisEx axis : plot.getXViewportAxes()) {
-			axis.setLength(plot.getViewportBounds().getWidth());
+		for (ViewportAxisEx axis : subplot.getXViewportAxes()) {
+			axis.setLength(subplot.getViewportBounds().getWidth());
 			axis.validate();
 		}
-		for (ViewportAxisEx axis : plot.getYViewportAxes()) {
-			axis.setLength(plot.getViewportBounds().getHeight());
+		for (ViewportAxisEx axis : subplot.getYViewportAxes()) {
+			axis.setLength(subplot.getViewportBounds().getHeight());
 			axis.validate();
 		}
-
-		plot.validate();
 
 	}
 
-	public Insets2D getMargin() {
-		return margin;
-	}
-
-	public void setMargin(Insets2D margin) {
-		if (margin.equals(margin)) {
-			return;
-		}
-		this.margin = margin;
-		plot.invalidate();
+	private Insets2D calcMargin() {
+		// TODO Auto-generated method stub
+		return new Insets2D(8, 8, 8, 8);
 	}
 
 }

@@ -94,7 +94,7 @@ public class ComponentFactory {
 
 	public Plot createPlot() {
 		PlotImpl impl = new PlotImpl();
-		impl.setLayoutDirector(new SimpleLayoutDirector(impl));
+		impl.setLayoutDirector(new SimpleLayoutDirector());
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementAddition.class }, ih);

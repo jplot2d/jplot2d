@@ -155,7 +155,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 		g.setColor(Color.BLACK);
 		Rectangle rect = getParent().getPhysicalTransform()
-				.getPtoD(getPhysicalBounds()).getBounds();
+				.getPtoD(getBounds()).getBounds();
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
 		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
 

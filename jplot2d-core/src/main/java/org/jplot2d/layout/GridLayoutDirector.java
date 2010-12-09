@@ -40,7 +40,7 @@ import org.jplot2d.util.NumberUtils;
  * @author Jingjing Li
  * 
  */
-public class GridLayoutDirector implements LayoutDirector {
+public class GridLayoutDirector extends SimpleLayoutDirector {
 
 	/** The layout constraints */
 	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
@@ -70,27 +70,13 @@ public class GridLayoutDirector implements LayoutDirector {
 
 	private PlotEx plot;
 
-	static boolean approximate(double a, double b) {
-		return NumberUtils.approximate(a, b, 4);
+	public void invalidateLayout(SubplotEx subplot) {
+		if (subplot.getParent() != null) {
+			subplot.getParent().invalidate();
+		}
 	}
 
-	public GridLayoutDirector(PlotEx plot) {
-		this.plot = plot;
-	}
-
-	public Object getConstraint(SubplotEx subplot) {
-		return constraints.get(subplot);
-	}
-
-	public void remove(SubplotEx subplot) {
-		constraints.remove(subplot);
-	}
-
-	public void setConstraint(SubplotEx subplot, Object constraint) {
-		constraints.put(subplot, constraint);
-	}
-
-	public void layout() {
+	public void layout(SubplotEx subplot) {
 
 		/*
 		 * Laying out axes may register some axis that ticks need be
