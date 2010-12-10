@@ -4,4 +4,8 @@ import org.jplot2d.element.Layer;
 
 public interface LayerEx extends Layer, ContainerEx {
 
+	public ViewportAxisEx getXViewportAxis();
+
+	public ViewportAxisEx getYViewportAxis();
+
 }

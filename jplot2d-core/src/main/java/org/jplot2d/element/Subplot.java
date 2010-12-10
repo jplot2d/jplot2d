@@ -144,6 +144,11 @@ public interface Subplot extends Container {
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getLayer(int index);
 
+	/**
+	 * Returns all layers in the order of added.
+	 * 
+	 * @return all layers
+	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
 	public Layer[] getLayers();
 

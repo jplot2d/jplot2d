@@ -42,6 +42,8 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	private NormalTransform ntf;
 
+	private double offset;
+
 	private double length;
 
 	private AxisTransform axf;
@@ -134,13 +136,26 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		updateAxisTransform();
 	}
 
+	public double getOffset() {
+		return offset;
+	}
+
+	public void setOffset(double offset) {
+		if (this.offset != offset) {
+			this.offset = offset;
+			updateAxisTransform();
+		}
+	}
+
 	public double getLength() {
 		return length;
 	}
 
 	public void setLength(double length) {
-		this.length = length;
-		updateAxisTransform();
+		if (this.length != length) {
+			this.length = length;
+			updateAxisTransform();
+		}
 	}
 
 	public AxisTransform getAxisTransform() {
@@ -162,6 +177,9 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		return axf;
 	}
 
+	/**
+	 * Update axis transform when normal transform or paper range changed.
+	 */
 	private void updateAxisTransform() {
 		axf = null;
 		for (AxisEx axis : axes) {

@@ -48,10 +48,30 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 	 */
 	public void setNormalTransfrom(NormalTransform ntf);
 
+	/**
+	 * Returns the offset of this ViewportAxis.
+	 * 
+	 * @return the length
+	 */
+	public double getOffset();
+
+	/**
+	 * Set the offset for this ViewportAxis. All axes of a ViewportAxis have the
+	 * same offset.
+	 * 
+	 * @param offset
+	 */
+	public void setOffset(double offset);
+
+	/**
+	 * Returns the length of this ViewportAxis.
+	 * 
+	 * @return the length
+	 */
 	public double getLength();
 
 	/**
-	 * Set the length for this ViewportAxis. All axes of a ViewportAxis has the
+	 * Set the length for this ViewportAxis. All axes of a ViewportAxis have the
 	 * same length.
 	 * 
 	 * @param length
