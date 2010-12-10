@@ -175,11 +175,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 		environment.beginCommand(method.getName());
 		try {
-			boolean setterValueChanged = false;
 			if (iinfo.isPropWriteMethod(method)) {
 				/* property setter method */
-				setterValueChanged = invokeSetter(method, args[0]);
-				if (!setterValueChanged) {
+				boolean propChanged = invokeSetter(method, args[0]);
+				if (!propChanged) {
 					return null;
 				}
 			} else {
@@ -187,9 +186,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				invokeOther(method, args);
 			}
 
-			if (setterValueChanged) {
-				environment.elementPropertyChanged((ElementEx) impl);
-			}
+			// fire PropertyChanged
+			environment.elementPropertyChanged((ElementEx) impl);
 
 		} finally {
 			environment.endCommand();
