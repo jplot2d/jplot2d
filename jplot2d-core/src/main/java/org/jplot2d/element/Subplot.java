@@ -39,6 +39,8 @@ import org.jplot2d.layout.LayoutDirector;
  */
 public interface Subplot extends Container {
 
+	public Subplot getParent();
+
 	public boolean isAutoMarginTop();
 
 	public boolean isAutoMarginLeft();

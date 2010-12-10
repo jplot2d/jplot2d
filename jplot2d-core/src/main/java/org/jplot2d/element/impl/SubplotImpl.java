@@ -69,8 +69,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
-	public PlotEx getParent() {
-		return (PlotEx) super.getParent();
+	public SubplotEx getParent() {
+		return (SubplotEx) super.getParent();
 	}
 
 	public Map<Element, Element> getMooringMap() {
