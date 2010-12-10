@@ -4,7 +4,7 @@ import org.jplot2d.element.Subplot;
 
 public interface SubplotEx extends Subplot, ContainerEx {
 
-	public PlotEx getParent();
+	public SubplotEx getParent();
 
 	public int indexOf(LayerEx layer);
 
