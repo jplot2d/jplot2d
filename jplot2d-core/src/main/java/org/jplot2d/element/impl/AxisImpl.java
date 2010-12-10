@@ -69,7 +69,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	/* the label height + gap */
 	private static final double LABEL_RATIO = 1.1;
 
-	private final AxisTickImpl tick;
+	private AxisTickImpl tick;
 
 	private final TextComponentImpl title;
 
@@ -77,17 +77,17 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private AxisPosition position;
 
-	private double _asc, _desc;
+	private double asc, desc;
 
-	private double _labelOffset;
+	private double labelOffset;
 
-	private HAlign _labelHAlign;
+	private HAlign labelHAlign;
 
-	private VAlign _labelVAlign;
+	private VAlign labelVAlign;
 
-	private double _titleOffset;
+	private double titleOffset;
 
-	private VAlign _titleVAlign;
+	private VAlign titleVAlign;
 
 	private boolean thicknessCalculationNeeded = true;
 
@@ -188,12 +188,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public double getAsc() {
 		calcThickness();
-		return _asc;
+		return asc;
 	}
 
 	public double getDesc() {
 		calcThickness();
-		return _desc;
+		return desc;
 	}
 
 	/**
@@ -275,7 +275,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		if (getTitle().isVisible()
 				&& getTitle().getTextModel() != MathElement.NULL) {
-			double titleHeight = getTitle().getPhysicalBounds().getHeight();
+			double titleHeight = getTitle().getBounds().getHeight();
 			if (isTitlePositiveSide()) {
 				titleOffset = ba + baGap;
 				titleVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.BOTTOM
@@ -290,23 +290,26 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		}
 
 		boolean changed = false;
-		if (Math.abs(_labelOffset - labelOffset) > Math.abs(_labelOffset) * 1e-12
-				|| _labelHAlign != labelHAlign || _labelVAlign != labelVAlign) {
-			_labelOffset = labelOffset;
-			_labelHAlign = labelHAlign;
-			_labelVAlign = labelVAlign;
+		if (Math.abs(this.labelOffset - labelOffset) > Math
+				.abs(this.labelOffset) * 1e-12
+				|| this.labelHAlign != labelHAlign
+				|| this.labelVAlign != labelVAlign) {
+			this.labelOffset = labelOffset;
+			this.labelHAlign = labelHAlign;
+			this.labelVAlign = labelVAlign;
 			changed = true;
 		}
-		if (Math.abs(_titleOffset - titleOffset) > Math.abs(_titleOffset) * 1e-12
-				|| _titleVAlign != titleVAlign) {
-			_titleOffset = titleOffset;
-			_titleVAlign = titleVAlign;
+		if (Math.abs(this.titleOffset - titleOffset) > Math
+				.abs(this.titleOffset) * 1e-12
+				|| this.titleVAlign != titleVAlign) {
+			this.titleOffset = titleOffset;
+			this.titleVAlign = titleVAlign;
 			changed = true;
 		}
-		if (Math.abs(_asc - ba) > Math.abs(_asc) * 1e-12
-				|| Math.abs(_desc - bd) > Math.abs(_desc) * 1e-12) {
-			_asc = ba;
-			_desc = bd;
+		if (Math.abs(asc - ba) > Math.abs(asc) * 1e-12
+				|| Math.abs(desc - bd) > Math.abs(desc) * 1e-12) {
+			asc = ba;
+			desc = bd;
 			changed = true;
 		}
 
@@ -388,6 +391,22 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
+
+		AxisImpl axis = (AxisImpl) src;
+
+		this.orientation = axis.orientation;
+		this.position = axis.position;
+		this.asc = axis.asc;
+		this.desc = axis.desc;
+		this.labelOffset = axis.labelOffset;
+		this.labelHAlign = axis.labelHAlign;
+		this.labelVAlign = axis.labelVAlign;
+		this.titleOffset = axis.titleOffset;
+		this.titleVAlign = axis.titleVAlign;
+
+		tick = axis.tick.copy();
+		tick.setParent(this);
+		title.copyFrom(src, orig2copyMap);
 	}
 
 	public void draw(Graphics2D g) {
@@ -420,16 +439,16 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		}
 
 		if (getTick().isLabelVisible()) {
-			double labelLoc = p + _labelOffset;
-			VAlign vertalign = _labelVAlign;
-			HAlign horzalign = _labelHAlign;
+			double labelLoc = p + labelOffset;
+			VAlign vertalign = labelVAlign;
+			HAlign horzalign = labelHAlign;
 			drawLabels(g, labelLoc, vertalign, horzalign);
 		}
 
 		if (getTitle().isVisible()
 				&& getTitle().getTextModel() != MathElement.NULL) {
-			double titleLoc = p + _titleOffset;
-			VAlign valign = _titleVAlign;
+			double titleLoc = p + titleOffset;
+			VAlign valign = titleVAlign;
 			drawTitle(g, titleLoc, valign);
 		}
 
