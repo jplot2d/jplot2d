@@ -22,12 +22,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.jplot2d.data.LayerData;
 import org.jplot2d.element.ViewportAxis;
-import org.jplot2d.element.DataModel;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
@@ -41,6 +40,8 @@ import org.jplot2d.util.TeXMathUtils;
 public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private MathElement name;
+
+	private LayerData data;
 
 	private ViewportAxisEx xaxis, yaxis;
 
@@ -81,14 +82,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		this.name = name;
 	}
 
-	public DataModel getDataModel() {
-		// TODO Auto-generated method stub
-		return null;
+	public LayerData getData() {
+		return data;
 	}
 
-	public void setDataModel(DataModel dataModel) {
-		// TODO Auto-generated method stub
-
+	public void setData(LayerData data) {
+		this.data = data;
 	}
 
 	public Marker getMarker(int idx) {

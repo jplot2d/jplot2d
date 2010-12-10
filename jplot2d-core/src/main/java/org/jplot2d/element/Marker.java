@@ -19,9 +19,11 @@
 package org.jplot2d.element;
 
 /**
+ * A marker with a symbol and a text string.
+ * 
  * @author Jingjing Li
- *
+ * 
  */
-public class DataModel {
+public class Marker {
 
 }
