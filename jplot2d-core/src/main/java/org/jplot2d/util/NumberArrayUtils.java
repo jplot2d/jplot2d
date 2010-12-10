@@ -444,4 +444,30 @@ public class NumberArrayUtils {
 		return false;
 	}
 
+	public static Object clone(Object a) {
+		if (a instanceof double[]) {
+			return ((double[]) a).clone();
+		}
+		if (a instanceof float[]) {
+			return ((float[]) a).clone();
+		}
+		if (a instanceof long[]) {
+			return ((long[]) a).clone();
+		}
+		if (a instanceof int[]) {
+			return ((int[]) a).clone();
+		}
+		if (a instanceof short[]) {
+			return ((short[]) a).clone();
+		}
+		if (a instanceof byte[]) {
+			return ((byte[]) a).clone();
+		}
+		if (a instanceof boolean[]) {
+			return ((boolean[]) a).clone();
+		}
+		throw new IllegalArgumentException(
+				"The argument is not a number array.");
+	}
+
 }

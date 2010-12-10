@@ -41,7 +41,7 @@ import org.jplot2d.util.TeXMathUtils;
  * @author Jingjing Li
  * 
  */
-public class AxisTickImpl extends ElementImpl implements AxisTickEx {
+public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	public static final int AUTO_TICKS_MIN = 4;
 
@@ -859,6 +859,16 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx {
 			return result;
 		}
 		throw new Error();
+	}
+
+	public AxisTickImpl copy() {
+		AxisTickImpl result = null;
+		try {
+			result = (AxisTickImpl) this.clone();
+		} catch (CloneNotSupportedException e) {
+		}
+
+		return result;
 	}
 
 }
