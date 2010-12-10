@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.data.LayerData;
 import org.jplot2d.util.MathElement;
 
 /**
@@ -30,6 +31,8 @@ import org.jplot2d.util.MathElement;
  * 
  */
 public interface Layer extends Component {
+
+	public Subplot getParent();
 
 	/**
 	 * Returns the name displayed in the legend
@@ -66,7 +69,7 @@ public interface Layer extends Component {
 	 * 
 	 * @return the data model of this layer.
 	 */
-	public DataModel getDataModel();
+	public LayerData getData();
 
 	/**
 	 * Sets the data model to be shown in this layer.
@@ -74,7 +77,7 @@ public interface Layer extends Component {
 	 * @param dataModel
 	 *            the data model to be shown in this layer.
 	 */
-	public void setDataModel(DataModel dataModel);
+	public void setData(LayerData data);
 
 	/**
 	 * Returns the marker.
