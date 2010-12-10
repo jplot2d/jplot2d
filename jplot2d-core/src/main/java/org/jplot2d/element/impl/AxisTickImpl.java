@@ -801,7 +801,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		double maxDesity = 0;
 		double ticA = getAxis()
 				.transTickToPaper(Array.getDouble(tickValues, 0));
-		if (labelOrientation == getAxis().getOrientation()) {
+		if (labelOrientation == getAxis().getParent().getOrientation()) {
 			for (int i = 1; i < labelsSize.length; i++) {
 				double ticB = getAxis().transTickToPaper(
 						Array.getDouble(tickValues, i * labelInterval));

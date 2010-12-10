@@ -73,8 +73,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private final TextComponentImpl title;
 
-	private AxisOrientation orientation;
-
 	private AxisPosition position;
 
 	private double asc, desc;
@@ -163,14 +161,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public TextComponentEx getTitle() {
 		return title;
-	}
-
-	public AxisOrientation getOrientation() {
-		return orientation;
-	}
-
-	public void setOrientation(AxisOrientation orientation) {
-		this.orientation = orientation;
 	}
 
 	public AxisPosition getPosition() {
@@ -319,6 +309,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	}
 
+	private AxisOrientation getOrientation() {
+		return getParent().getOrientation();
+	}
+
 	private boolean isTitlePositiveSide() {
 		boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
 		return axisPositiveSide;
@@ -394,7 +388,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		AxisImpl axis = (AxisImpl) src;
 
-		this.orientation = axis.orientation;
 		this.position = axis.position;
 		this.asc = axis.asc;
 		this.desc = axis.desc;
@@ -737,7 +730,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private List<AxisEx> getOrthoAxes() {
 		List<AxisEx> axes = new ArrayList<AxisEx>();
-		if (orientation == AxisOrientation.HORIZONTAL) {
+		if (getOrientation() == AxisOrientation.HORIZONTAL) {
 			for (ViewportAxisEx ag : getParent().getParent().getYViewportAxes()) {
 				for (AxisEx a : ag.getAxes()) {
 					axes.add(a);
