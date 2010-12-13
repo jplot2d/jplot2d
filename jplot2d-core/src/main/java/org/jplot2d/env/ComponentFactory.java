@@ -20,6 +20,8 @@ package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
 
+import org.jplot2d.data.ArrayPair;
+import org.jplot2d.data.XYData;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
@@ -29,6 +31,7 @@ import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
+import org.jplot2d.element.XYDataPlot;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
@@ -38,6 +41,7 @@ import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.ViewportAxisImpl;
+import org.jplot2d.element.impl.XYDataPlotImpl;
 import org.jplot2d.layout.OverlayLayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 
@@ -114,12 +118,40 @@ public class ComponentFactory {
 		return proxy;
 	}
 
+	public Layer createLayer(double[] xarray, double[] yarray) {
+		return this.createLayer(new ArrayPair(xarray, yarray));
+	}
+
+	public Layer createLayer(ArrayPair xy) {
+		return this.createLayer(new XYData(xy));
+	}
+
+	public Layer createLayer(XYData data) {
+		Layer layer = this.createLayer();
+		XYDataPlot plotter = this.createXYDataPlotter();
+		plotter.setData(data);
+		layer.addDataPlotter(plotter);
+		return layer;
+	}
+
 	public Layer createLayer() {
 		LayerImpl impl = new LayerImpl();
 		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
 		Layer proxy = (Layer) Proxy.newProxyInstance(
 				Layer.class.getClassLoader(), new Class[] { Layer.class,
 						ElementAddition.class }, ih);
+
+		assignDummyEnv(impl, proxy);
+		return proxy;
+	}
+
+	public XYDataPlot createXYDataPlotter() {
+		XYDataPlotImpl impl = new XYDataPlotImpl();
+		ElementIH<XYDataPlot> ih = new ElementIH<XYDataPlot>(impl,
+				XYDataPlot.class);
+		XYDataPlot proxy = (XYDataPlot) Proxy.newProxyInstance(
+				XYDataPlot.class.getClassLoader(), new Class[] {
+						XYDataPlot.class, ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;

@@ -97,19 +97,6 @@ public interface Component extends Element {
 	public void setSelectable(boolean selectable);
 
 	/**
-	 * Returns <code>true</code> if the component is movable by mouse dragging.
-	 * Only selectable component can be movable.
-	 * 
-	 * @return <code>true</code> if movable
-	 */
-	public boolean isMovable();
-
-	/**
-	 * Set the movable property.
-	 */
-	public void setMovable(boolean movable);
-
-	/**
 	 * Returns the z-order of this component.
 	 * 
 	 * @return the z-order of this component
@@ -170,19 +157,6 @@ public interface Component extends Element {
 	 * @return the x,y origin of this plot component
 	 */
 	public Point2D getLocation();
-
-	/**
-	 * Moves this plot component to a new location. The origin of the new
-	 * location is specified by point <code>p</code>. Point2D <code>p</code> is
-	 * given in the parent's physical coordinate space.
-	 * 
-	 * @param p
-	 *            the point defining the origin of the new location, given in
-	 *            the coordinate space of this component's parent
-	 */
-	public void setLocation(Point2D loc);
-
-	public void setLocation(double locX, double locY);
 
 	/**
 	 * Returns the paper size of this component.

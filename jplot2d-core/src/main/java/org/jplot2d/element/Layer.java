@@ -20,7 +20,6 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.data.LayerData;
 import org.jplot2d.util.MathElement;
 
 /**
@@ -30,7 +29,7 @@ import org.jplot2d.util.MathElement;
  * @author Jingjing Li
  * 
  */
-public interface Layer extends Component {
+public interface Layer extends Container {
 
 	public Subplot getParent();
 
@@ -69,15 +68,28 @@ public interface Layer extends Component {
 	 * 
 	 * @return the data model of this layer.
 	 */
-	public LayerData getData();
+	@Hierarchy(HierarchyOp.GET)
+	public LayerDataPlot getDataPlotter(int index);
 
 	/**
-	 * Sets the data model to be shown in this layer.
+	 * Returns the data model of this layer.
+	 * 
+	 * @return the data model of this layer.
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public LayerDataPlot[] getDataPlotters();
+
+	@Hierarchy(HierarchyOp.REMOVE)
+	public void removeDataPlotter(LayerDataPlot plotter);
+
+	/**
+	 * Adds a data plotter to be shown in this layer.
 	 * 
 	 * @param dataModel
-	 *            the data model to be shown in this layer.
+	 *            the data model to be add.
 	 */
-	public void setData(LayerData data);
+	@Hierarchy(HierarchyOp.ADD)
+	public void addDataPlotter(LayerDataPlot plotter);
 
 	/**
 	 * Returns the marker.

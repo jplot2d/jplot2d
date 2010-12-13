@@ -19,13 +19,22 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.util.DoubleDimension2D;
 
 public class ContainerImpl extends ComponentImpl implements ContainerEx {
 
+	protected double width, height;
+
 	public PhysicalTransform getPhysicalTransform() {
 		throw new UnsupportedOperationException();
+	}
+
+	public Dimension2D getSize() {
+		return new DoubleDimension2D(width, height);
 	}
 
 	public final void setSize(Dimension2D size) {
@@ -46,4 +55,14 @@ public class ContainerImpl extends ComponentImpl implements ContainerEx {
 		}
 	}
 
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(getLocation().getX(), getLocation()
+				.getX(), width, height);
+	}
+
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
+
+		setSize(src.getSize());
+	}
 }

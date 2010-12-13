@@ -16,22 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.XYDataPlot;
 
 /**
- * A container has a physical transform, which can be used to calculate
- * children's location.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
-
-	/**
-	 * Returns the PhysicalTransform of this component.
-	 * 
-	 * @return
-	 */
-	public PhysicalTransform getPhysicalTransform();
+public interface XYDataPlotEx extends XYDataPlot, LayerDataPlotEx {
 
 }

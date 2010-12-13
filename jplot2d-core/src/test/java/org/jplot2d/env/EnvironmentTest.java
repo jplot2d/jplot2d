@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.ComponentImpl;
 import org.jplot2d.element.impl.ContainerEx;
 import org.jplot2d.element.impl.ContainerImpl;
 import org.junit.After;
@@ -80,11 +79,11 @@ public class EnvironmentTest {
 
 		compA = new ContainerImpl();
 		compA1 = new ContainerImpl();
-		compA1a = new ComponentImpl();
-		compA1b = new ComponentImpl();
+		compA1a = new ComponentStub();
+		compA1b = new ComponentStub();
 		compA2 = new ContainerImpl();
-		compA2a = new ComponentImpl();
-		compA2b = new ComponentImpl();
+		compA2a = new ComponentStub();
+		compA2b = new ComponentStub();
 
 		compA.setCacheable(true);
 
@@ -219,7 +218,7 @@ public class EnvironmentTest {
 
 		// add uncacheable component which has a cacheable parent
 		DummyEnvironment denvAA = new DummyEnvironment();
-		ComponentEx compAA = new ComponentImpl();
+		ComponentEx compAA = new ComponentStub();
 		ComponentEx proxyAA = compAA.deepCopy(null);
 		denvAA.registerComponent(compAA, proxyAA);
 		// link parent
@@ -237,7 +236,7 @@ public class EnvironmentTest {
 		DummyEnvironment denvB = new DummyEnvironment();
 		ContainerEx compB = new ContainerImpl();
 		ContainerEx proxyB = (ContainerEx) compB.deepCopy(null);
-		ComponentEx compBA = new ComponentImpl();
+		ComponentEx compBA = new ComponentStub();
 		ComponentEx proxyBA = compBA.deepCopy(null);
 		compB.setCacheable(true);
 		proxyB.setCacheable(true);

@@ -1,6 +1,7 @@
 package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.util.Map;
 
 import org.jplot2d.element.Component;
@@ -16,6 +17,32 @@ import org.jplot2d.element.Element;
 public interface ComponentEx extends Component, ElementEx {
 
 	public ContainerEx getParent();
+
+	/*
+	 * Returns <code>true</code> if the component is movable by mouse dragging.
+	 * Only selectable component can be movable.
+	 * 
+	 * @return <code>true</code> if movable
+	 */
+	public boolean isMovable();
+
+	/**
+	 * Set the movable property.
+	 */
+	public void setMovable(boolean movable);
+
+	/**
+	 * Moves this plot component to a new location. The origin of the new
+	 * location is specified by point <code>p</code>. Point2D <code>p</code> is
+	 * given in the parent's physical coordinate space.
+	 * 
+	 * @param p
+	 *            the point defining the origin of the new location, given in
+	 *            the coordinate space of this component's parent
+	 */
+	public void setLocation(Point2D loc);
+
+	public void setLocation(double locX, double locY);
 
 	/**
 	 * Returns a map to tell why this component cannot be removed from its
