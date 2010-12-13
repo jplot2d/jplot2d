@@ -18,20 +18,16 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.data.XYData;
+
 /**
- * A container has a physical transform, which can be used to calculate
- * children's location.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
+public interface XYDataPlot extends LayerDataPlot {
 
-	/**
-	 * Returns the PhysicalTransform of this component.
-	 * 
-	 * @return
-	 */
-	public PhysicalTransform getPhysicalTransform();
+	public XYData getData();
+
+	public void setData(XYData data);
 
 }

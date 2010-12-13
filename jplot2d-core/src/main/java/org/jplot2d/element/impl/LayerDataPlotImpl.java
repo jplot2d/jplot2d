@@ -16,22 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 
 /**
- * A container has a physical transform, which can be used to calculate
- * children's location.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
+public class LayerDataPlotImpl extends ComponentImpl implements
+		LayerDataPlotEx {
 
-	/**
-	 * Returns the PhysicalTransform of this component.
-	 * 
-	 * @return
-	 */
-	public PhysicalTransform getPhysicalTransform();
+	public LayerEx getParent() {
+		return (LayerEx) super.getParent();
+	}
+
+	public Dimension2D getSize() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getSize();
+		}
+	}
+
+	public Rectangle2D getBounds() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getBounds();
+		}
+	}
 
 }

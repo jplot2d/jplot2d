@@ -4,6 +4,8 @@ import org.jplot2d.element.Axis;
 
 public interface AxisEx extends Axis, ComponentEx {
 
+	public void setLocation(double locX, double locY);
+
 	public AxisTickEx getTick();
 
 	public double getThickness();

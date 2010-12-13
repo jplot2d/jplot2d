@@ -111,6 +111,42 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return (ViewportAxisEx) super.getParent();
 	}
 
+	public Dimension2D getSize() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			switch (getParent().getOrientation()) {
+			case HORIZONTAL:
+				return new DoubleDimension2D(getParent().getLength(),
+						getThickness());
+			case VERTICAL:
+				return new DoubleDimension2D(getThickness(), getParent()
+						.getLength());
+			default:
+				return null;
+			}
+		}
+	}
+
+	public Rectangle2D getBounds() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			switch (getParent().getOrientation()) {
+			case HORIZONTAL:
+				return new Rectangle2D.Double(getLocation().getX(),
+						getLocation().getY() + desc, getParent().getLength(),
+						getThickness());
+			case VERTICAL:
+				return new Rectangle2D.Double(getLocation().getX() - asc,
+						getLocation().getY(), getParent().getLength(),
+						getThickness());
+			default:
+				return null;
+			}
+		}
+	}
+
 	public void calcTicks() {
 		tick.calcTicks();
 	}
@@ -181,6 +217,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return asc;
 	}
 
+	/**
+	 * always negative
+	 */
 	public double getDesc() {
 		calcThickness();
 		return desc;

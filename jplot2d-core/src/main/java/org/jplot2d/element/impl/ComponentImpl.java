@@ -21,16 +21,13 @@ package org.jplot2d.element.impl;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.util.DoubleDimension2D;
 
-public class ComponentImpl extends ElementImpl implements ComponentEx {
+public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	private boolean visible = true;
 
@@ -47,8 +44,6 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 	private Font font;
 
 	private double locX, locY;
-
-	protected double width, height;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
@@ -158,15 +153,6 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		this.locY = locY;
 	}
 
-	public Dimension2D getSize() {
-		return new DoubleDimension2D(width, height);
-	}
-
-	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(locX, locY,
-				width, height);
-	}
-
 	/**
 	 * Determines whether this component is valid. A component is valid when it
 	 * is correctly sized and positioned within its parent container and all its
@@ -258,8 +244,6 @@ public class ComponentImpl extends ElementImpl implements ComponentEx {
 		ComponentImpl comp = (ComponentImpl) src;
 		locX = comp.locX;
 		locY = comp.locY;
-		width = comp.width;
-		height = comp.height;
 		valid = comp.valid;
 		redrawNeeded = comp.redrawNeeded;
 	}

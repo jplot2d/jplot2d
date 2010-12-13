@@ -19,19 +19,9 @@
 package org.jplot2d.element;
 
 /**
- * A container has a physical transform, which can be used to calculate
- * children's location.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
-
-	/**
-	 * Returns the PhysicalTransform of this component.
-	 * 
-	 * @return
-	 */
-	public PhysicalTransform getPhysicalTransform();
+public interface LayerDataPlot extends Component {
 
 }

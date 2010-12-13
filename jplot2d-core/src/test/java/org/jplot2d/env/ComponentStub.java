@@ -16,22 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.env;
+
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
+
+import org.jplot2d.element.impl.ComponentImpl;
 
 /**
- * A container has a physical transform, which can be used to calculate
- * children's location.
+ * Stub for ComponentImpl
  * 
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
+public class ComponentStub extends ComponentImpl {
 
-	/**
-	 * Returns the PhysicalTransform of this component.
-	 * 
-	 * @return
-	 */
-	public PhysicalTransform getPhysicalTransform();
+	public Dimension2D getSize() {
+		return null;
+	}
+
+	public Rectangle2D getBounds() {
+		return null;
+	}
 
 }

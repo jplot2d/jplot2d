@@ -18,14 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.data.LayerData;
+import org.jplot2d.element.LayerDataPlot;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
@@ -41,7 +39,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private MathElement name;
 
-	private LayerData data;
+	private List<LayerDataPlotEx> plotters = new ArrayList<LayerDataPlotEx>();
 
 	private ViewportAxisEx xaxis, yaxis;
 
@@ -82,12 +80,20 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		this.name = name;
 	}
 
-	public LayerData getData() {
-		return data;
+	public LayerDataPlot getDataPlotter(int index) {
+		return plotters.get(index);
 	}
 
-	public void setData(LayerData data) {
-		this.data = data;
+	public LayerDataPlotEx[] getDataPlotters() {
+		return plotters.toArray(new LayerDataPlotEx[plotters.size()]);
+	}
+
+	public void addDataPlotter(LayerDataPlot plotter) {
+		plotters.add((LayerDataPlotEx) plotter);
+	}
+
+	public void removeDataPlotter(LayerDataPlot plotter) {
+		plotters.remove(plotter);
 	}
 
 	public Marker getMarker(int idx) {
@@ -147,22 +153,23 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void draw(Graphics2D g) {
-		Shape oldClip = g.getClip();
-		Rectangle2D clip = getPhysicalTransform().getPtoD(
-				getParent().getViewportBounds());
-		g.setClip(clip);
-
-		g.setColor(Color.BLACK);
-		Rectangle rect = getParent().getPhysicalTransform()
-				.getPtoD(getBounds()).getBounds();
-		g.drawLine(rect.x, rect.y, (int) rect.getMaxX(), (int) rect.getMaxY());
-		g.drawLine(rect.x, (int) rect.getMaxY(), (int) rect.getMaxX(), rect.y);
-
-		g.setClip(oldClip);
+		for (LayerDataPlotEx plotter : plotters) {
+			plotter.draw(g);
+		}
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
+
+		LayerImpl layer = (LayerImpl) src;
+
+		// copy plotter
+		for (LayerDataPlotEx plotter : layer.plotters) {
+			LayerDataPlotEx plotterCopy = (LayerDataPlotEx) plotter
+					.deepCopy(orig2copyMap);
+			plotterCopy.setParent(this);
+			plotters.add(plotterCopy);
+		}
 	}
 
 }
