@@ -21,11 +21,14 @@ package org.jplot2d.element.impl;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
+import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.MathElement;
+import org.jplot2d.util.MathLabel;
 
 /**
  * @author Jingjing Li
@@ -35,17 +38,12 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	private static final Font DEFAULT_FONT = new Font("Serif", Font.PLAIN, 9);
 
-	private MathLabel label = new MathLabel(DEFAULT_FONT);
+	private MathLabel label = new MathLabel(null, DEFAULT_FONT);
 
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		getParent().invalidate();
-		redraw();
-	}
+	private double angle;
 
 	public void setFont(Font font) {
 		super.setFont(font);
-		getParent().invalidate();
 		redraw();
 	}
 
@@ -64,9 +62,8 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public void setTextModel(MathElement model) {
-		label.setModel(model);
+		label = new MathLabel(model, getFont(), getVAlign(), getHAlign());
 		if (isVisible()) {
-			getParent().invalidate();
 			redraw();
 		}
 	}
@@ -76,9 +73,9 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public void setHAlign(HAlign hAlign) {
-		label.setHAlign(hAlign);
+		label = new MathLabel(getTextModel(), getFont(), getVAlign(),
+				getHAlign());
 		if (isVisible()) {
-			getParent().invalidate();
 			redraw();
 		}
 	}
@@ -88,38 +85,39 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public void setVAlign(VAlign vAlign) {
-		label.setVAlign(vAlign);
+		label = new MathLabel(getTextModel(), getFont(), getVAlign(),
+				getHAlign());
 		if (isVisible()) {
-			getParent().invalidate();
 			redraw();
 		}
 	}
 
 	public double getAngle() {
-		return label.getAngle();
+		return angle;
 	}
 
 	public void setAngle(double angle) {
-		label.setAngle(angle);
+		this.angle = angle;
 		if (isVisible()) {
-			getParent().invalidate();
 			redraw();
 		}
 	}
 
 	public void draw(Graphics2D g) {
-		label.setPhysicalTransform(getParent().getPhysicalTransform());
-		label.draw(g);
+		label.draw(g, getParent().getPhysicalTransform(), getLocation(),
+				getAngle(), getColor());
 	}
 
 	public Dimension2D getSize() {
-		// TODO Auto-generated method stub
-		return null;
+		Rectangle2D bounds = label.getBounds();
+		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
 	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return null;
+		Point2D loc = getLocation();
+		Rectangle2D bounds = label.getBounds();
+		return new Rectangle2D.Double(loc.getX() + bounds.getX(), loc.getY()
+				+ bounds.getY(), bounds.getWidth(), bounds.getHeight());
 	}
 
 }
