@@ -173,10 +173,10 @@ public interface Subplot extends Container {
 	public ViewportAxis[] getYViewportAxes();
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addXViewportAxis(ViewportAxis axisGroup);
+	public void addXViewportAxis(ViewportAxis vpAxis);
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addYViewportAxis(ViewportAxis axisGroup);
+	public void addYViewportAxis(ViewportAxis vpAxis);
 
 	/**
 	 * Removes the specified X axis from this subplot if it is present.

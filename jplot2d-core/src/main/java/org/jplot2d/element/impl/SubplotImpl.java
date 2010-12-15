@@ -285,16 +285,16 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return yViewportAxis.toArray(new ViewportAxisEx[yViewportAxis.size()]);
 	}
 
-	public void addXViewportAxis(ViewportAxis axisGroup) {
-		xViewportAxis.add((ViewportAxisEx) axisGroup);
-		((ViewportAxisEx) axisGroup).setParent(this);
-		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.HORIZONTAL);
+	public void addXViewportAxis(ViewportAxis vpAxis) {
+		xViewportAxis.add((ViewportAxisEx) vpAxis);
+		((ViewportAxisEx) vpAxis).setParent(this);
+		((ViewportAxisEx) vpAxis).setOrientation(AxisOrientation.HORIZONTAL);
 	}
 
-	public void addYViewportAxis(ViewportAxis axisGroup) {
-		yViewportAxis.add((ViewportAxisEx) axisGroup);
-		((ViewportAxisEx) axisGroup).setParent(this);
-		((ViewportAxisEx) axisGroup).setOrientation(AxisOrientation.VERTICAL);
+	public void addYViewportAxis(ViewportAxis vpAxis) {
+		yViewportAxis.add((ViewportAxisEx) vpAxis);
+		((ViewportAxisEx) vpAxis).setParent(this);
+		((ViewportAxisEx) vpAxis).setOrientation(AxisOrientation.VERTICAL);
 	}
 
 	public void removeXViewportAxis(ViewportAxis axisGroup) {
