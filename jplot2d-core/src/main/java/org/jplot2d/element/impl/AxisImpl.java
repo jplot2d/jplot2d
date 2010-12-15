@@ -47,6 +47,7 @@ import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.MathElement;
+import org.jplot2d.util.MathLabel;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -410,12 +411,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	static Dimension2D[] getLabelsPhySize(MathElement[] labels, Font labelFont) {
 		Dimension2D[] ss = new Dimension2D[labels.length];
 
-		MathLabel labelDrawer = new MathLabel(labelFont, new Point2D.Double(0,
-				0), VAlign.MIDDLE, HAlign.CENTER);
-
 		for (int i = 0; i < labels.length; i++) {
-			labelDrawer.setModel(labels[i]);
-			Rectangle2D rect = labelDrawer.getBoundsP();
+			MathLabel labelDrawer = new MathLabel(labels[i], labelFont,
+					VAlign.MIDDLE, HAlign.CENTER);
+			Rectangle2D rect = labelDrawer.getBounds();
 			ss[i] = new DoubleDimension2D(rect.getWidth(), rect.getHeight());
 		}
 
@@ -600,17 +599,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					xt, yt) : new Point2D.Double(yt, xt);
 
 			MathLabel label = new MathLabel(labels[i],
-					tick.getActualLabelFont(), point);
-			label.setPhysicalTransform(pxf);
-			label.setAlign(vertalign, horzalign);
-			if (getTick().getLabelOrientation() == AxisOrientation.HORIZONTAL) {
-				label.setAngle(0);
-			} else if (getTick().getLabelOrientation() == AxisOrientation.VERTICAL) {
-				label.setAngle(90);
-			}
-			label.setColor(getTick().getLabelColor());
+					tick.getActualLabelFont(), vertalign, horzalign);
 
-			label.draw(g);
+			double angle = 0;
+			if (getTick().getLabelOrientation() == AxisOrientation.VERTICAL) {
+				angle = 90;
+			}
+			Color color = getTick().getLabelColor();
+
+			label.draw(g, pxf, point, angle, color);
 		}
 	}
 

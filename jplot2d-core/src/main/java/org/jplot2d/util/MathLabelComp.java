@@ -19,7 +19,7 @@
 /*
  * $Id: MathLabelComp.java,v 1.10 2010/08/26 07:39:53 jli Exp $
  */
-package org.jplot2d.element.impl;
+package org.jplot2d.util;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -28,7 +28,6 @@ import java.awt.font.LineMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.util.MathElement;
 
 /**
  * This class represent a component of {@link MathLabel}. It may be a simple

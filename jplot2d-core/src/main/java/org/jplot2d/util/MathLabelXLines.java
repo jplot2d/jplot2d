@@ -16,7 +16,7 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element.impl;
+package org.jplot2d.util;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
-import org.jplot2d.util.MathElement;
 
 /**
  * Composed of MathLabelComp, vertically group them. The base point of
