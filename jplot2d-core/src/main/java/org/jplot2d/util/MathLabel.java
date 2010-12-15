@@ -65,6 +65,15 @@ public class MathLabel {
 	}
 
 	public MathLabel(MathElement me, Font font, VAlign valign, HAlign halign) {
+		if (font == null) {
+			throw new IllegalArgumentException("font cannot be null");
+		}
+		if (valign == null) {
+			throw new IllegalArgumentException("valign cannot be null");
+		}
+		if (halign == null) {
+			throw new IllegalArgumentException("halign cannot be null");
+		}
 		_font = font;
 		_valign = valign;
 		_halign = halign;
