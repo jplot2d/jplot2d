@@ -132,7 +132,7 @@ public interface Layer extends Container {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setXViewportAxis(ViewportAxis axisGroup);
+	public void setXViewportAxis(ViewportAxis vpAxis);
 
 	/**
 	 * Attach this layer to the given Y axis. When adding a layer to a subplot,
@@ -142,7 +142,7 @@ public interface Layer extends Container {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setYViewportAxis(ViewportAxis axisGroup);
+	public void setYViewportAxis(ViewportAxis vpAxis);
 
 	/**
 	 * Attach this layer to the given X/Y axis pair. When adding a layer to a
@@ -155,6 +155,6 @@ public interface Layer extends Container {
 	 *            the y axis
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setViewportAxes(ViewportAxis xAxisGroup, ViewportAxis yAxisGroup);
+	public void setViewportAxes(ViewportAxis xVpAxis, ViewportAxis yVpAxis);
 
 }
