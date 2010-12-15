@@ -39,8 +39,8 @@ public abstract class ContainerImpl extends ComponentImpl implements
 
 	public void setSize(double width, double height) {
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("paper size must be positive "
-					+ width + "x" + height);
+			throw new IllegalArgumentException("paper size must be positive, "
+					+ width + "x" + height + "in invalid.");
 		}
 
 		if (this.width != width || this.height != height) {
@@ -59,6 +59,7 @@ public abstract class ContainerImpl extends ComponentImpl implements
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
 
-		setSize(src.getSize());
+		this.width = ((ContainerImpl) src).width;
+		this.height = ((ContainerImpl) src).height;
 	}
 }

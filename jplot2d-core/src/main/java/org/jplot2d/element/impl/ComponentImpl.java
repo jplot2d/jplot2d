@@ -22,6 +22,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.Map;
 
@@ -45,6 +47,8 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	private double locX, locY;
 
+	protected PropertyChangeSupport _changes = new PropertyChangeSupport(this);
+
 	/**
 	 * True when the object is valid. An invalid object needs to be laied out.
 	 * This flag is set to false when the object size is changed.
@@ -57,6 +61,14 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	protected boolean valid = false;
 
 	private boolean redrawNeeded;
+
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		_changes.addPropertyChangeListener(l);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		_changes.removePropertyChangeListener(l);
+	}
 
 	public final String getId() {
 		if (parent != null) {
@@ -231,21 +243,21 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		parent = src.getParent();
-		setVisible(src.isVisible());
-		setCacheable(src.isCacheable());
-		setSelectable(src.isSelectable());
-		setMovable(src.isMovable());
-		setZOrder(src.getZOrder());
-		setColor(src.getColor());
-		setFont(src.getFont());
-		setLocation(src.getLocation());
+
+		// do not copy parent
 
 		ComponentImpl comp = (ComponentImpl) src;
+
+		visible = comp.visible;
+		cacheable = comp.cacheable;
+		selectable = comp.selectable;
+		movable = comp.movable;
+		zOrder = comp.zOrder;
+		color = comp.color;
+		font = comp.font;
 		locX = comp.locX;
 		locY = comp.locY;
 		valid = comp.valid;
 		redrawNeeded = comp.redrawNeeded;
 	}
-
 }

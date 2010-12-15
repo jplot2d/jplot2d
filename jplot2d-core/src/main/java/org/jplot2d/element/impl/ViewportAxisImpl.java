@@ -30,6 +30,7 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.Range2D;
 
 public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
@@ -48,7 +49,7 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	private AxisTransform axf;
 
-	private List<AxisEx> axes = new ArrayList<AxisEx>();
+	private final List<AxisEx> axes = new ArrayList<AxisEx>();
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
@@ -91,6 +92,14 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		}
 
 		return result;
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getPhysicalTransform();
+		}
 	}
 
 	public AxisType getType() {
@@ -197,10 +206,12 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void addAxis(Axis axis) {
 		axes.add((AxisEx) axis);
+		((AxisEx) axis).setParent(this);
 	}
 
 	public void removeAxis(Axis axis) {
 		axes.remove(axis);
+		((AxisEx) axis).setParent(null);
 	}
 
 	public LayerEx[] getLayers() {
@@ -217,6 +228,16 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
+
+		ViewportAxisImpl va = (ViewportAxisImpl) src;
+		orientation = va.orientation;
+
+		for (AxisEx axis : va.axes) {
+			AxisEx aCopy = (AxisEx) axis.deepCopy(orig2copyMap);
+			aCopy.setParent(this);
+			axes.add(aCopy);
+		}
+
 	}
 
 }

@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
@@ -38,13 +39,28 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	private static final Font DEFAULT_FONT = new Font("Serif", Font.PLAIN, 9);
 
-	private MathLabel label = new MathLabel(null, DEFAULT_FONT);
+	private MathElement textModel;
+
+	private HAlign hAlign;
+
+	private VAlign vAlign;
 
 	private double angle;
 
+	private MathLabel label;
+
+	public TextComponentImpl() {
+		super.setFont(DEFAULT_FONT);
+		hAlign = HAlign.CENTER;
+		vAlign = VAlign.MIDDLE;
+	}
+
 	public void setFont(Font font) {
 		super.setFont(font);
-		redraw();
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
 	}
 
 	public String getText() {
@@ -58,35 +74,36 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public MathElement getTextModel() {
-		return label.getModel();
+		return textModel;
 	}
 
 	public void setTextModel(MathElement model) {
-		label = new MathLabel(model, getFont(), getVAlign(), getHAlign());
+		this.textModel = model;
+		label = null;
 		if (isVisible()) {
 			redraw();
 		}
 	}
 
 	public HAlign getHAlign() {
-		return label.getHAlign();
+		return hAlign;
 	}
 
 	public void setHAlign(HAlign hAlign) {
-		label = new MathLabel(getTextModel(), getFont(), getVAlign(),
-				getHAlign());
+		this.hAlign = hAlign;
+		label = null;
 		if (isVisible()) {
 			redraw();
 		}
 	}
 
 	public VAlign getVAlign() {
-		return label.getVAlign();
+		return vAlign;
 	}
 
 	public void setVAlign(VAlign vAlign) {
-		label = new MathLabel(getTextModel(), getFont(), getVAlign(),
-				getHAlign());
+		this.vAlign = vAlign;
+		label = null;
 		if (isVisible()) {
 			redraw();
 		}
@@ -103,21 +120,41 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 		}
 	}
 
-	public void draw(Graphics2D g) {
-		label.draw(g, getParent().getPhysicalTransform(), getLocation(),
-				getAngle(), getColor());
-	}
-
 	public Dimension2D getSize() {
 		Rectangle2D bounds = label.getBounds();
 		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
 	public Rectangle2D getBounds() {
-		Point2D loc = getLocation();
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getFont(), getVAlign(),
+					getHAlign());
+		}
 		Rectangle2D bounds = label.getBounds();
+
+		Point2D loc = getLocation();
 		return new Rectangle2D.Double(loc.getX() + bounds.getX(), loc.getY()
 				+ bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	}
+
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
+
+		TextComponentImpl tc = (TextComponentImpl) src;
+		this.textModel = tc.textModel;
+		this.hAlign = tc.hAlign;
+		this.vAlign = tc.vAlign;
+		this.angle = tc.angle;
+		this.label = tc.label;
+	}
+
+	public void draw(Graphics2D g) {
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getFont(), getVAlign(),
+					getHAlign());
+		}
+		label.draw(g, getParent().getPhysicalTransform(), getLocation(),
+				getAngle(), getColor());
 	}
 
 }
