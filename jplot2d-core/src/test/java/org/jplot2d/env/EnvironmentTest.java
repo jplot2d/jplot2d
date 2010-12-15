@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
-import org.jplot2d.element.impl.ContainerImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -77,11 +76,11 @@ public class EnvironmentTest {
 	public void setUp() throws Exception {
 		env = new EnvironmentStub();
 
-		compA = new ContainerImpl();
-		compA1 = new ContainerImpl();
+		compA = new ContainerStub();
+		compA1 = new ContainerStub();
 		compA1a = new ComponentStub();
 		compA1b = new ComponentStub();
-		compA2 = new ContainerImpl();
+		compA2 = new ContainerStub();
 		compA2a = new ComponentStub();
 		compA2b = new ComponentStub();
 
@@ -177,7 +176,7 @@ public class EnvironmentTest {
 		Environment env = new EnvironmentStub();
 
 		DummyEnvironment denv = new DummyEnvironment();
-		ContainerEx compA = new ContainerImpl();
+		ContainerEx compA = new ContainerStub();
 		ContainerEx proxyA = (ContainerEx) compA.deepCopy(null);
 		denv.registerComponent(compA, proxyA);
 
@@ -200,7 +199,7 @@ public class EnvironmentTest {
 		Environment env = new EnvironmentStub();
 
 		DummyEnvironment denv = new DummyEnvironment();
-		ContainerEx compA = new ContainerImpl();
+		ContainerEx compA = new ContainerStub();
 		ContainerEx proxyA = (ContainerEx) compA.deepCopy(null);
 		denv.registerComponent(compA, proxyA);
 
@@ -234,7 +233,7 @@ public class EnvironmentTest {
 
 		// add cacheable component with uncacheable sub-component
 		DummyEnvironment denvB = new DummyEnvironment();
-		ContainerEx compB = new ContainerImpl();
+		ContainerEx compB = new ContainerStub();
 		ContainerEx proxyB = (ContainerEx) compB.deepCopy(null);
 		ComponentEx compBA = new ComponentStub();
 		ComponentEx proxyBA = compBA.deepCopy(null);
