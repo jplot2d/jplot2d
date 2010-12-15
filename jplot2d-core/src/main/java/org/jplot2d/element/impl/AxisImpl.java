@@ -54,7 +54,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public class AxisImpl extends ComponentImpl implements AxisEx {
+public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	/**
 	 * the default physical width, 0.5 pt.
@@ -96,7 +96,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		tick = new AxisTickImpl();
 		tick.setParent(this);
 		tick.setTickAlgorithm(LinearTickAlgorithm.getInstance());
+
 		title = new TextComponentImpl();
+		title.setParent(this);
 	}
 
 	public String getSelfId() {
@@ -145,6 +147,14 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			default:
 				return null;
 			}
+		}
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getPhysicalTransform();
 		}
 	}
 
@@ -437,7 +447,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		tick = axis.tick.copy();
 		tick.setParent(this);
-		title.copyFrom(src, orig2copyMap);
+		title.copyFrom(axis.title, orig2copyMap);
 	}
 
 	public void draw(Graphics2D g) {

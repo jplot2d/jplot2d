@@ -2,7 +2,9 @@ package org.jplot2d.element.impl;
 
 import org.jplot2d.element.Axis;
 
-public interface AxisEx extends Axis, ComponentEx {
+public interface AxisEx extends Axis, ContainerEx {
+
+	public ViewportAxisEx getParent();
 
 	public void setLocation(double locX, double locY);
 

@@ -24,7 +24,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface Axis extends Component {
+public interface Axis extends Container {
 
 	/**
 	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT
