@@ -75,7 +75,9 @@ public class RenderEnvironment extends PlotEnvironment {
 		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
 		Map<ComponentEx, ComponentEx> compMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 		for (ComponentEx comp : cacheableComponentList) {
-			compMap.put(comp, (ComponentEx) copyMap.get(comp));
+			ComponentEx copy = (ComponentEx) copyMap.get(comp);
+			assert (copy != null) : "Null copy of Component " + comp;
+			compMap.put(comp, copy);
 			// unmodified components
 			if (!((ComponentEx) comp).isRedrawNeeded()) {
 				umCachableComps.add(comp);
@@ -92,8 +94,10 @@ public class RenderEnvironment extends PlotEnvironment {
 			int size = sublist.size();
 			ComponentEx[] copys = new ComponentEx[size];
 			for (int i = 0; i < size; i++) {
-				ComponentEx scopy = (ComponentEx) copyMap.get(sublist.get(i));
-				copys[i] = scopy;
+				ComponentEx copy = (ComponentEx) copyMap.get(sublist.get(i));
+				assert (copy != null) : "Null copy of Component "
+						+ sublist.get(i);
+				copys[i] = copy;
 			}
 			subcompsMap.put(key, copys);
 		}
