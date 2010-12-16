@@ -134,19 +134,81 @@ public interface Component extends Element {
 	public void setColor(Color c);
 
 	/**
-	 * Returns the font of this component.
+	 * Returns the effective font of this component.
 	 * 
-	 * @return the font of this component
-	 * @see #setFont
+	 * @return the effective font of this component
 	 */
-	public Font getFont();
+	public Font getEffectiveFont();
 
 	/**
-	 * Sets the font for this component.
+	 * Returns the name of the font.
+	 * 
+	 * @return the name of the font.
+	 */
+	public String getFontName();
+
+	/**
+	 * Apply the new font with the given name
+	 * 
+	 * @param name
+	 *            the font name.
+	 */
+	public void setFontName(String name);
+
+	/**
+	 * Returns the style of the font. The style can be PLAIN, BOLD, ITALIC, or
+	 * BOLD+ITALIC.
+	 * 
+	 * @return the style of the font
+	 * @see java.awt.Font
+	 */
+	public int getFontStyle();
+
+	/**
+	 * Apply a new style to the font. The style can be PLAIN, BOLD, ITALIC, or
+	 * BOLD+ITALIC.
+	 * 
+	 * @param style
+	 *            the style to apply
+	 * @see java.awt.Font
+	 */
+	public void setFontStyle(int style);
+
+	/**
+	 * Returns the Font size.
+	 * 
+	 * @return the font size.
+	 */
+	public float getFontSize();
+
+	/**
+	 * Sets a new size of the string.
+	 * 
+	 * @param size
+	 *            the new size of the font.
+	 */
+	public void setFontSize(float size);
+
+	/**
+	 * Returns the scale apply to parent's font size when font size is NaN.
+	 * 
+	 * @return the font scale.
+	 */
+	public float getFontScale();
+
+	/**
+	 * Sets the scale apply to parent's font size when font size is NaN.
+	 * 
+	 * @param scale
+	 *            the scale
+	 */
+	public void setFontScale(float scale);
+
+	/**
+	 * Sets the font name, style and size for this component.
 	 * 
 	 * @param font
 	 *            the desired <code>Font</code> for this component
-	 * @see #getFont
 	 */
 	public void setFont(Font font);
 

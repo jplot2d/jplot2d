@@ -52,6 +52,12 @@ public interface ComponentEx extends Component, ElementEx {
 	 */
 	public Map<Element, Element> getMooringMap();
 
+	public String getEffectiveFontName();
+
+	public int getEffectiveFontStyle();
+
+	public float getEffectiveFontSize();
+
 	/**
 	 * Determines whether this component is valid. A component is valid when it
 	 * is correctly sized and positioned within its parent container and all its
