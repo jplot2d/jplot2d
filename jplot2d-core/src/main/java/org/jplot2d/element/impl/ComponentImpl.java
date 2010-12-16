@@ -43,7 +43,13 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	private Color color = null;
 
-	private Font font;
+	private String fontName;
+
+	private int fontStyle = -1;
+
+	private float fontSize = Float.NaN;
+
+	private float fontScale = 1;
 
 	private double locX, locY;
 
@@ -144,12 +150,84 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		this.color = color;
 	}
 
-	public Font getFont() {
-		return font;
+	public String getFontName() {
+		return fontName;
+	}
+
+	public void setFontName(String name) {
+		fontName = name;
+	}
+
+	public int getFontStyle() {
+		return fontStyle;
+	}
+
+	public void setFontStyle(int style) {
+		fontStyle = style;
+	}
+
+	public float getFontSize() {
+		return fontSize;
+	}
+
+	public void setFontSize(float size) {
+		fontSize = size;
+	}
+
+	public float getFontScale() {
+		return fontScale;
+	}
+
+	public void setFontScale(float scale) {
+		fontScale = scale;
 	}
 
 	public void setFont(Font font) {
-		this.font = font;
+		if (font == null) {
+			fontName = null;
+			fontStyle = -1;
+			fontSize = Float.NaN;
+		} else {
+			fontName = font.getName();
+			fontStyle = font.getStyle();
+			fontSize = font.getSize2D();
+		}
+	}
+
+	public String getEffectiveFontName() {
+		if (fontName != null) {
+			return fontName;
+		} else if (getParent() != null) {
+			return getParent().getEffectiveFontName();
+		} else {
+			return null;
+		}
+	}
+
+	public int getEffectiveFontStyle() {
+		if ((fontStyle & ~0x03) == 0) {
+			return fontStyle;
+		} else if (getParent() != null) {
+			return getParent().getEffectiveFontStyle();
+		} else {
+			return -1;
+		}
+	}
+
+	public float getEffectiveFontSize() {
+		if (!Float.isNaN(fontSize)) {
+			return fontSize;
+		} else if (getParent() != null) {
+			return getParent().getEffectiveFontSize() * fontScale;
+		} else {
+			return Float.NaN;
+		}
+	}
+
+	public Font getEffectiveFont() {
+		float size = getEffectiveFontSize();
+		return new Font(getEffectiveFontName(), getEffectiveFontStyle(),
+				(int) size).deriveFont(size);
 	}
 
 	public Point2D getLocation() {
@@ -254,7 +332,10 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		movable = comp.movable;
 		zOrder = comp.zOrder;
 		color = comp.color;
-		font = comp.font;
+		fontName = comp.fontName;
+		fontStyle = comp.fontStyle;
+		fontSize = comp.fontSize;
+		fontScale = comp.fontScale;
 		locX = comp.locX;
 		locY = comp.locY;
 		valid = comp.valid;
