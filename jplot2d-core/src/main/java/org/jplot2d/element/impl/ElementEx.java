@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element.impl;
 
+import java.util.Map;
+
 import org.jplot2d.element.Element;
 
 /**
@@ -37,5 +39,14 @@ public interface ElementEx extends Element {
 	public void setParent(ElementEx parent);
 
 	public String getId();
+
+	/**
+	 * Create a deep copy of this element. The parent of the copy are not set.
+	 * 
+	 * @param orig2copyMap
+	 *            original element to copy map
+	 * @return a deep copy of this element
+	 */
+	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

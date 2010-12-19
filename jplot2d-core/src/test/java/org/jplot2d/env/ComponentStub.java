@@ -18,6 +18,7 @@
  */
 package org.jplot2d.env;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
@@ -37,6 +38,10 @@ public class ComponentStub extends ComponentImpl {
 
 	public Rectangle2D getBounds() {
 		return null;
+	}
+
+	public void draw(Graphics2D g) {
+		// do nothing
 	}
 
 }
