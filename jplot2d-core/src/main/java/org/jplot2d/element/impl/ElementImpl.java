@@ -24,7 +24,7 @@ import org.jplot2d.env.Environment;
  * @author Jingjing Li
  * 
  */
-public class ElementImpl implements ElementEx {
+public abstract class ElementImpl implements ElementEx {
 
 	protected ElementEx parent;
 

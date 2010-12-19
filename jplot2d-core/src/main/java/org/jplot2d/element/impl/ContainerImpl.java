@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
@@ -40,7 +41,7 @@ public abstract class ContainerImpl extends ComponentImpl implements
 	public void setSize(double width, double height) {
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("paper size must be positive, "
-					+ width + "x" + height + "in invalid.");
+					+ width + "x" + height + " is invalid.");
 		}
 
 		if (this.width != width || this.height != height) {
@@ -62,4 +63,9 @@ public abstract class ContainerImpl extends ComponentImpl implements
 		this.width = ((ContainerImpl) src).width;
 		this.height = ((ContainerImpl) src).height;
 	}
+
+	public void draw(Graphics2D g) {
+		// draw nothing
+	}
+
 }

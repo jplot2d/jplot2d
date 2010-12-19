@@ -20,7 +20,6 @@ package org.jplot2d.element.impl;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -298,11 +297,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		redrawNeeded = false;
 	}
 
-	public void draw(Graphics2D g) {
-		// draw nothing
-	}
-
-	public final ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		ComponentImpl result;
 
 		try {

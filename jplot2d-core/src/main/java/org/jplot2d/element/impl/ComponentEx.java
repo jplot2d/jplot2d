@@ -115,12 +115,21 @@ public interface ComponentEx extends Component, ElementEx {
 	void draw(Graphics2D g);
 
 	/**
+	 * Create a deep copy of this component. The parent of the copy are not set.
+	 * 
 	 * @param orig2copyMap
 	 *            original element to copy map
-	 * @return
+	 * @return a deep copy of this component
 	 */
 	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
+	/**
+	 * Copies all properties from given src to this component. Notice properties
+	 * of sub-components are not copied over.
+	 * 
+	 * @param src
+	 * @param orig2copyMap
+	 */
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap);
 
 }
