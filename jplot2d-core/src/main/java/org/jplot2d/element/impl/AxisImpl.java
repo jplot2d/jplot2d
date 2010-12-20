@@ -22,6 +22,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -59,22 +60,47 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	/**
 	 * the default physical width, 0.5 pt.
 	 */
-	private static final double DEFAULT_AXISLINE_WIDTH = 0.5 / 72;
+	private static final double DEFAULT_AXISLINE_WIDTH = 0.5;
 
-	/* the gap on the other side of ticks */
-	private static final double TIC_GAP = 0.05;
+	/* the gap between label and tick */
+	private static final double LABEL_GAP_RATIO = 1 / 4;
 
-	/* the tick height + gap */
-	private static final double TIC_RATIO = 1.3;
+	/* the gap between title and label */
+	private static final double TITLE_GAP_RATIO = 1 / 16;
 
-	/* the label height + gap */
-	private static final double LABEL_RATIO = 1.1;
+	protected final AxisTickEx tick;
 
-	private AxisTickImpl tick;
-
-	private final TextComponentImpl title;
+	protected final TextComponentEx title;
 
 	private AxisPosition position;
+
+	private boolean showGridLines;
+
+	private AxisTickTransform tickTransform;
+
+	private boolean tickVisible = true;
+
+	private AxisTickSide tickSide = AxisTickSide.OUTWARD;
+
+	private double tickHeight = 10.0;
+
+	private double minorHeight = 5.0;
+
+	private boolean labelVisible = true;
+
+	private AxisOrientation labelOrientation = AxisOrientation.HORIZONTAL;
+
+	private AxisLabelSide labelSide = AxisLabelSide.OUTWARD;
+
+	private Color labelColor;
+
+	private String labelFontName;
+
+	private int labelFontStyle = -1;
+
+	private float labelFontSize = Float.NaN;
+
+	/* thickness */
 
 	private double asc, desc;
 
@@ -90,8 +116,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private boolean thicknessCalculationNeeded = true;
 
-	private AxisTickTransform tickTransform;
-
 	public AxisImpl() {
 		tick = new AxisTickImpl();
 		tick.setParent(this);
@@ -99,6 +123,11 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 		title = new TextComponentImpl();
 		title.setParent(this);
+	}
+
+	protected AxisImpl(AxisTickEx tick, TextComponentEx title) {
+		this.tick = tick;
+		this.title = title;
 	}
 
 	public String getSelfId() {
@@ -138,12 +167,12 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			switch (getParent().getOrientation()) {
 			case HORIZONTAL:
 				return new Rectangle2D.Double(getLocation().getX(),
-						getLocation().getY() + desc, getParent().getLength(),
+						getLocation().getY() - desc, getParent().getLength(),
 						getThickness());
 			case VERTICAL:
 				return new Rectangle2D.Double(getLocation().getX() - asc,
-						getLocation().getY(), getParent().getLength(),
-						getThickness());
+						getLocation().getY(), getThickness(), getParent()
+								.getLength());
 			default:
 				return null;
 			}
@@ -158,8 +187,23 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 	}
 
+	public AxisPosition getPosition() {
+		return position;
+	}
+
+	public void setPosition(AxisPosition position) {
+		this.position = position;
+		invalidateThickness();
+	}
+
 	public void calcTicks() {
-		tick.calcTicks();
+		boolean tickChanged = tick.calcTicks(getRange(), tickTransform,
+				getParent().getAxisTransform(), getParent().getType()
+						.getCircle(), isLabelSameOrientation(),
+				getEffectiveLabelFont());
+		if (tickChanged) {
+			invalidateThickness();
+		}
 	}
 
 	public AxisTickTransform getTickTransform() {
@@ -168,38 +212,152 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public void setTickTransform(AxisTickTransform transform) {
 		this.tickTransform = transform;
-		tick.axisOrTickTransformChanged();
-	}
-
-	public void axisTransformChanged() {
-		tick.axisOrTickTransformChanged();
-	}
-
-	public void axisTypeChanged() {
-		tick.axisTypeChanged();
 	}
 
 	public Range2D getRange() {
-		// TODO Auto-generated method stub
-		return null;
+		Range2D range = getParent().getRange();
+		double start = tickTransform.transformUser2Tick(range.getStart());
+		double end = tickTransform.transformUser2Tick(range.getEnd());
+		return new Range2D.Double(start, end);
 	}
 
-	public void setRange(Range2D range) {
-		// TODO Auto-generated method stub
-
+	public final void setRange(Range2D range) {
+		setRange(range.getStart(), range.getEnd());
 	}
 
-	public void setRange(double low, double high) {
-		// TODO Auto-generated method stub
-
+	public void setRange(double start, double end) {
+		double ustart = tickTransform.transformTick2User(start);
+		double uend = tickTransform.transformTick2User(end);
+		getParent().setRange(ustart, uend);
 	}
 
-	public double getCanonicalValue(double d) {
-		return d % getParent().getType().getCircle();
+	public boolean isGridLines() {
+		return showGridLines;
 	}
 
-	public long getCanonicalValue(long d) {
-		return (long) (d % getParent().getType().getCircle());
+	public void setGridLines(boolean showGridLines) {
+		this.showGridLines = showGridLines;
+	}
+
+	public boolean isTickVisible() {
+		return tickVisible;
+	}
+
+	public void setTickVisible(boolean visible) {
+		this.tickVisible = visible;
+		invalidateThickness();
+	}
+
+	public AxisTickSide getTickSide() {
+		return tickSide;
+	}
+
+	public void setTickSide(AxisTickSide side) {
+		this.tickSide = side;
+		invalidateThickness();
+	}
+
+	public double getTickHeight() {
+		return tickHeight;
+	}
+
+	public void setTickHeight(double height) {
+		this.tickHeight = height;
+		invalidateThickness();
+	}
+
+	public double getMinorTickHeight() {
+		return minorHeight;
+	}
+
+	public void setMinorTickHeight(double height) {
+		this.minorHeight = height;
+	}
+
+	public boolean isLabelVisible() {
+		return labelVisible;
+	}
+
+	public void setLabelVisible(boolean visible) {
+		this.labelVisible = visible;
+		invalidateThickness();
+	}
+
+	public AxisOrientation getLabelOrientation() {
+		return labelOrientation;
+	}
+
+	public void setLabelOrientation(AxisOrientation orientation) {
+		this.labelOrientation = orientation;
+		invalidateThickness();
+	}
+
+	public boolean isLabelSameOrientation() {
+		return getOrientation() == getLabelOrientation();
+	}
+
+	public AxisLabelSide getLabelSide() {
+		return labelSide;
+	}
+
+	public void setLabelSide(AxisLabelSide side) {
+		this.labelSide = side;
+		invalidateThickness();
+	}
+
+	public Color getLabelColor() {
+		return labelColor;
+	}
+
+	public void setLabelColor(Color color) {
+		this.labelColor = color;
+	}
+
+	public Font getEffectiveLabelFont() {
+		String fname = (labelFontName != null) ? labelFontName
+				: getEffectiveFontName();
+		int fstyle = ((labelFontStyle & ~0x03) == 0) ? labelFontStyle
+				: getEffectiveFontStyle();
+		float fsize = (!Float.isNaN(labelFontSize)) ? labelFontSize
+				: getEffectiveFontSize();
+
+		return new Font(fname, fstyle, (int) fsize).deriveFont(fsize);
+	}
+
+	public void setLabelFont(Font font) {
+		if (font == null) {
+			labelFontName = null;
+			labelFontStyle = -1;
+			labelFontSize = Float.NaN;
+		} else {
+			labelFontName = font.getName();
+			labelFontStyle = font.getStyle();
+			labelFontSize = font.getSize2D();
+		}
+	}
+
+	public String getLabelFontName() {
+		return labelFontName;
+	}
+
+	public void setLabelFontName(String name) {
+		labelFontName = name;
+	}
+
+	public int getLabelFontStyle() {
+		return labelFontStyle;
+	}
+
+	public void setLabelFontStyle(int style) {
+		labelFontStyle = style;
+	}
+
+	public float getLabelFontSize() {
+		return labelFontSize;
+	}
+
+	public void setLabelFontSize(float size) {
+		labelFontSize = size;
 	}
 
 	public AxisTickEx getTick() {
@@ -210,17 +368,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return title;
 	}
 
-	public AxisPosition getPosition() {
-		return position;
-	}
-
-	public void setPosition(AxisPosition position) {
-		this.position = position;
-	}
-
 	public double getThickness() {
 		calcThickness();
-		return getAsc() + getDesc();
+		return asc + desc;
 	}
 
 	public double getAsc() {
@@ -240,18 +390,15 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * Mark the thickness is invalid. Changing tick height, label strings label
 	 * font or orientation will call this method
 	 */
-	void invalidateThickness() {
+	protected void invalidateThickness() {
 		thicknessCalculationNeeded = true;
 	}
 
 	/**
-	 * The <code>validate</code> method is used to cause this axis to lay out
-	 * its ticks and labels again. It should be invoked when its layout-related
-	 * information changed.
+	 * This method is used to cause this axis to lay out its ticks and labels
+	 * again. It should be invoked when its layout-related information changed.
 	 */
 	public void calcThickness() {
-
-		// we don't calc ticks here. getTick().calcTicks();
 
 		if (!thicknessCalculationNeeded) {
 			return;
@@ -260,72 +407,62 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 		double ba = 0;
 		double bd = 0;
-		double baGap, bdGap;
 		double labelOffset = 0;
 		VAlign labelVAlign = null;
 		HAlign labelHAlign = null;
 		double titleOffset = 0;
 		VAlign titleVAlign = null;
 
-		bdGap = TIC_GAP;
-		baGap = TIC_GAP;
-		if (getTick().getVisible()) {
-			if (isTickBothSide() || isTickPositiveSide()) {
-				ba += getTick().getTickHeight();
-				baGap = (TIC_RATIO - 1) * getTick().getTickHeight();
+		if (isTickVisible()) {
+			if (isTickBothSide() || isTickAscSide()) {
+				ba += getTickHeight();
 			}
-			if (isTickBothSide() || !isTickPositiveSide()) {
-				bd -= getTick().getTickHeight();
-				bdGap = (TIC_RATIO - 1) * getTick().getTickHeight();
+			if (isTickBothSide() || !isTickAscSide()) {
+				bd += getTickHeight();
 			}
 		}
 
-		if (getTick().isLabelVisible()) {
+		if (isLabelVisible()) {
 			double labelHeight = getLabelHeight();
-			if (isLabelPositiveSide()) {
-				labelOffset = ba + baGap;
-				if (getOrientation() == getTick().getLabelOrientation()) {
+			if (isLabelAscSide()) {
+				labelOffset = ba + labelHeight * LABEL_GAP_RATIO;
+				if (isLabelSameOrientation()) {
 					ba = labelOffset + labelHeight;
-					baGap = (LABEL_RATIO - 1) * labelHeight;
 					labelVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.BOTTOM
 							: VAlign.TOP;
 					labelHAlign = HAlign.CENTER;
 				} else {
 					ba = labelOffset + getLabelsMaxNormalPhysicalWidth();
-					baGap = TIC_GAP;
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.LEFT;
 				}
 			} else {
-				labelOffset = bd - bdGap;
-				if (getOrientation() == getTick().getLabelOrientation()) {
-					bd = labelOffset - labelHeight;
-					bdGap = (LABEL_RATIO - 1) * labelHeight;
+				labelOffset = -bd - labelHeight * LABEL_GAP_RATIO;
+				if (isLabelSameOrientation()) {
+					bd = -labelOffset + labelHeight;
 					labelVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.TOP
 							: VAlign.BOTTOM;
 					labelHAlign = HAlign.CENTER;
 				} else {
-					bd = labelOffset - getLabelsMaxNormalPhysicalWidth();
-					bdGap = TIC_GAP;
+					bd = -labelOffset + getLabelsMaxNormalPhysicalWidth();
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.RIGHT;
 				}
 			}
 		}
 
-		if (getTitle().isVisible()
-				&& getTitle().getTextModel() != MathElement.NULL) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
 			double titleHeight = getTitle().getBounds().getHeight();
-			if (isTitlePositiveSide()) {
-				titleOffset = ba + baGap;
+			if (isTitleAscSide()) {
+				titleOffset = ba + titleHeight * TITLE_GAP_RATIO;
 				titleVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.BOTTOM
 						: VAlign.TOP;
 				ba = titleOffset + titleHeight;
 			} else {
-				titleOffset = bd - bdGap;
+				titleOffset = -bd - titleHeight * TITLE_GAP_RATIO;
 				titleVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.TOP
 						: VAlign.BOTTOM;
-				bd = titleOffset - titleHeight;
+				bd = -titleOffset + titleHeight;
 			}
 		}
 
@@ -363,23 +500,28 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return getParent().getOrientation();
 	}
 
-	private boolean isTitlePositiveSide() {
+	private boolean isTitleAscSide() {
+		boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
 		boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-		return axisPositiveSide;
+		return axisHorizontal == axisPositiveSide;
 	}
 
 	private boolean isTickBothSide() {
-		return getTick().getSide() == AxisTickSide.BOTH;
+		return getTickSide() == AxisTickSide.BOTH;
 	}
 
-	private boolean isTickPositiveSide() {
+	private boolean isTickAscSide() {
+		boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
 		boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-		return axisPositiveSide == (getTick().getSide() == AxisTickSide.OUTWARD);
+		boolean outwardSide = (getTickSide() == AxisTickSide.OUTWARD);
+		return (axisHorizontal == axisPositiveSide) == outwardSide;
 	}
 
-	private boolean isLabelPositiveSide() {
+	private boolean isLabelAscSide() {
+		boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
 		boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-		return axisPositiveSide == (getTick().getLabelSide() == AxisLabelSide.OUTWARD);
+		boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
+		return (axisHorizontal == axisPositiveSide) == outwardSide;
 	}
 
 	/**
@@ -387,9 +529,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 */
 	private double getLabelHeight() {
 		FontRenderContext frc = new FontRenderContext(null, false, true);
-		LineMetrics lm = getTick().getLabelFont().getLineMetrics(
+		LineMetrics lm = getEffectiveLabelFont().getLineMetrics(
 				"Can be any string", frc);
-		return (lm.getAscent() + lm.getDescent()) / 72;
+		return (lm.getAscent() + lm.getDescent());
 	}
 
 	/**
@@ -398,8 +540,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * @return the maximum normal width.
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
-		Dimension2D[] labelsSize = getLabelsPhySize(
-				tick.getInRangeLabelModels(), tick.getActualLabelFont());
+		Dimension2D[] labelsSize = getLabelsPhySize(getTick().getLabelModels(),
+				getTick().getActualLabelFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -418,7 +560,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * 
 	 * @return the labels normal size.
 	 */
-	static Dimension2D[] getLabelsPhySize(MathElement[] labels, Font labelFont) {
+	public static Dimension2D[] getLabelsPhySize(MathElement[] labels,
+			Font labelFont) {
 		Dimension2D[] ss = new Dimension2D[labels.length];
 
 		for (int i = 0; i < labels.length; i++) {
@@ -429,6 +572,20 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 
 		return ss;
+	}
+
+	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+		AxisImpl result = new AxisImpl(tick.deepCopy(orig2copyMap),
+				title.deepCopy(orig2copyMap));
+
+		result.copyFrom(this, orig2copyMap);
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+
+		return result;
+
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
@@ -445,12 +602,18 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		this.titleOffset = axis.titleOffset;
 		this.titleVAlign = axis.titleVAlign;
 
-		tick = axis.tick.copy();
-		tick.setParent(this);
-		title.copyFrom(axis.title, orig2copyMap);
 	}
 
 	public void draw(Graphics2D g) {
+
+		g.setColor(Color.BLACK);
+		Rectangle rect = getParent().getPhysicalTransform()
+				.getPtoD(getBounds()).getBounds();
+		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
+		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1,
+				(int) rect.getMaxY() - 1);
+		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1,
+				rect.y);
 
 		g.setColor(getColor());
 
@@ -479,15 +642,14 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			p = getLocation().getX();
 		}
 
-		if (getTick().isLabelVisible()) {
+		if (isLabelVisible()) {
 			double labelLoc = p + labelOffset;
 			VAlign vertalign = labelVAlign;
 			HAlign horzalign = labelHAlign;
 			drawLabels(g, labelLoc, vertalign, horzalign);
 		}
 
-		if (getTitle().isVisible()
-				&& getTitle().getTextModel() != MathElement.NULL) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
 			double titleLoc = p + titleOffset;
 			VAlign valign = titleVAlign;
 			drawTitle(g, titleLoc, valign);
@@ -529,7 +691,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		 * implement notes: grid lines must be drawn before ticks, otherwise the
 		 * tick may be overlapped.
 		 */
-		if (getTick().isGridLines()) {
+		if (isGridLines()) {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
@@ -560,26 +722,26 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			g.setColor(oldColor);
 		}
 
-		if (getTick().getVisible()) {
+		if (isTickVisible()) {
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
 				double yp = getLocation().getY();
 				for (int i = 0; i < tvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(tvs, i));
-					drawXTic(g, xp, yp, getTick().getTickHeight());
+					drawXTic(g, xp, yp, getTickHeight());
 				}
 				for (int i = 0; i < mvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(mvs, i));
-					drawXTic(g, xp, yp, getTick().getMinorHeight());
+					drawXTic(g, xp, yp, getMinorTickHeight());
 				}
 			} else {
 				double xp = getLocation().getX();
 				for (int i = 0; i < tvslen; i++) {
 					double yp = transTickToPaper(Array.getDouble(tvs, i));
-					drawYTic(g, xp, yp, getTick().getTickHeight());
+					drawYTic(g, xp, yp, getTickHeight());
 				}
 				for (int i = 0; i < mvslen; i++) {
 					double yp = transTickToPaper(Array.getDouble(mvs, i));
-					drawYTic(g, xp, yp, getTick().getMinorHeight());
+					drawYTic(g, xp, yp, getMinorTickHeight());
 				}
 			}
 		}
@@ -600,7 +762,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		PhysicalTransform pxf = getParent().getPhysicalTransform();
 
 		Object tvs = getTick().getValues();
-		MathElement[] labels = tick.getInRangeLabelModels();
+		MathElement[] labels = getTick().getLabelModels();
 
 		for (int i = 0; i < labels.length; i++) {
 			double x = Array.getDouble(tvs, i * getTick().getLabelInterval());
@@ -608,14 +770,14 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			Point2D point = (getOrientation() == AxisOrientation.HORIZONTAL) ? new Point2D.Double(
 					xt, yt) : new Point2D.Double(yt, xt);
 
-			MathLabel label = new MathLabel(labels[i],
-					tick.getActualLabelFont(), vertalign, horzalign);
+			MathLabel label = new MathLabel(labels[i], getTick()
+					.getActualLabelFont(), vertalign, horzalign);
 
 			double angle = 0;
-			if (getTick().getLabelOrientation() == AxisOrientation.VERTICAL) {
+			if (getLabelOrientation() == AxisOrientation.VERTICAL) {
 				angle = 90;
 			}
-			Color color = getTick().getLabelColor();
+			Color color = getLabelColor();
 
 			label.draw(g, pxf, point, angle, color);
 		}
@@ -654,11 +816,10 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		double x0, y0, y1;
 		double yp0, yp1;
 
-		if (getTick().getSide() == AxisTickSide.BOTH) {
+		if (getTickSide() == AxisTickSide.BOTH) {
 			yp0 = yp + ticHeight;
 			yp1 = yp - ticHeight;
-		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTick()
-				.getSide() == AxisTickSide.OUTWARD)) {
+		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTickSide() == AxisTickSide.OUTWARD)) {
 			yp0 = yp + ticHeight;
 			yp1 = yp;
 		} else {
@@ -679,11 +840,10 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		double x0, x1, y0;
 		double xp0, xp1;
 
-		if (getTick().getSide() == AxisTickSide.BOTH) {
+		if (getTickSide() == AxisTickSide.BOTH) {
 			xp0 = xp + ticHeight;
 			xp1 = xp - ticHeight;
-		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTick()
-				.getSide() == AxisTickSide.OUTWARD)) {
+		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTickSide() == AxisTickSide.OUTWARD)) {
 			xp0 = xp + ticHeight;
 			xp1 = xp;
 		} else {
@@ -758,22 +918,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	}
 
-	/**
-	 * Transform world coordinate to physical coordinate on this axis.
-	 * 
-	 * @param uvalue
-	 * @return
-	 */
-	double transTickToPaper(double tickValue) {
-		double uv;
-		if (tickTransform != null) {
-			uv = tickTransform.transformTick2User(tickValue);
-		} else {
-			uv = tickValue;
-		}
-		return getParent().getAxisTransform().getTransP(uv);
-	}
-
 	private List<AxisEx> getOrthoAxes() {
 		List<AxisEx> axes = new ArrayList<AxisEx>();
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
@@ -790,6 +934,23 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			}
 		}
 		return axes;
+	}
+
+	/**
+	 * Transform tick value to paper value on this axis.
+	 * 
+	 * @param the
+	 *            tick value
+	 * @return paper value
+	 */
+	private double transTickToPaper(double tickValue) {
+		double uv;
+		if (tickTransform != null) {
+			uv = tickTransform.transformTick2User(tickValue);
+		} else {
+			uv = tickValue;
+		}
+		return getParent().getAxisTransform().getTransP(uv);
 	}
 
 }

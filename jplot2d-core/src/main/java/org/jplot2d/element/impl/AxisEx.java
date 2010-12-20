@@ -6,8 +6,6 @@ public interface AxisEx extends Axis, ContainerEx {
 
 	public ViewportAxisEx getParent();
 
-	public void setLocation(double locX, double locY);
-
 	public AxisTickEx getTick();
 
 	public double getThickness();
@@ -17,18 +15,9 @@ public interface AxisEx extends Axis, ContainerEx {
 	public double getDesc();
 
 	/**
-	 * Called by ViewportAxis when axis transform changed.
-	 */
-	public void axisTransformChanged();
-
-	/**
-	 * Called by ViewportAxis when axis type changed.
-	 */
-	public void axisTypeChanged();
-
-	/**
 	 * Calculate ticks when tick calculation is needed.
 	 */
 	public void calcTicks();
 
+	public void calcThickness();
 }

@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.Dimension2D;
 import java.lang.reflect.Array;
@@ -26,15 +25,16 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtick.TickCalculator;
 import org.jplot2d.axtick.TickUtils;
-import org.jplot2d.element.AxisLabelSide;
-import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.element.AxisTickSide;
+import org.jplot2d.axtrans.AxisTransform;
+import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.NumberArrayUtils;
+import org.jplot2d.util.Range2D;
 import org.jplot2d.util.TeXMathUtils;
 
 /**
@@ -45,41 +45,29 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	public static final int AUTO_TICKS_MIN = 4;
 
-	private boolean visible = true;
-
 	private boolean autoAdjustNumber;
 
 	private int tickNumber;
 
-	private boolean autoInterval;
+	private boolean autoInterval = true;
 
 	private double interval;
 
 	private double offset;
 
-	private boolean autoValues;
+	private boolean autoValues = true;
 
 	private Object fixedValues;
 
 	private Object fixedMinorValues;
 
-	private boolean showGridLines;
-
-	private double tickHeight;
-
-	private AxisTickSide tickSide;
-
-	private boolean autoMinorNumber;
+	private boolean autoMinorNumber = true;
 
 	private int actualMinorNumber;
 
 	private int minorNumber;
 
-	private double minorHeight;
-
-	private boolean labelVisible;
-
-	private boolean autoLabelFormat;
+	private boolean autoLabelFormat = true;
 
 	private Format labelTextFormat;
 
@@ -90,19 +78,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 */
 	private MathElement[] fixedLabels;
 
-	private Color labelColor;
-
-	private String fontName;
-
-	private int fontStyle = -1;
-
-	private float fontSize = Float.NaN;
-
-	private AxisLabelSide labelSide;
-
 	private int labelInterval;
-
-	private AxisOrientation labelOrientation;
 
 	/**
 	 * values in visible range
@@ -154,6 +130,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	private boolean _labelIntervalChanged;
 
+	private Font labelFont;
+
 	private boolean _propLabelFontChanged;
 
 	private boolean _labelOrientationChanged;
@@ -166,20 +144,18 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	private boolean _trfChanged;
 
-	public AxisImpl getParent() {
+	private Range2D range;
+
+	private AxisTickTransform tickTransform;
+
+	private AxisTransform axisTransform;
+
+	private double circMod;
+
+	private boolean labelSameOrientation;
+
+	public AxisEx getParent() {
 		return (AxisImpl) parent;
-	}
-
-	private AxisImpl getAxis() {
-		return (AxisImpl) parent;
-	}
-
-	public boolean getVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
 	}
 
 	public boolean getAutoAdjustNumber() {
@@ -246,30 +222,6 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		this.fixedMinorValues = minorValues;
 	}
 
-	public boolean isGridLines() {
-		return showGridLines;
-	}
-
-	public void setGridLines(boolean showGridLines) {
-		this.showGridLines = showGridLines;
-	}
-
-	public double getTickHeight() {
-		return tickHeight;
-	}
-
-	public void setTickHeight(double height) {
-		this.tickHeight = height;
-	}
-
-	public AxisTickSide getSide() {
-		return tickSide;
-	}
-
-	public void setSide(AxisTickSide side) {
-		this.tickSide = side;
-	}
-
 	public boolean isAutoMinorNumber() {
 		return autoMinorNumber;
 	}
@@ -286,23 +238,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		this.minorNumber = minors;
 	}
 
-	public double getMinorHeight() {
-		return minorHeight;
-	}
-
-	public void setMinorHeight(double height) {
-		this.minorHeight = height;
-	}
-
 	/* =========================== Labels ============================= */
-
-	public boolean isLabelVisible() {
-		return labelVisible;
-	}
-
-	public void setLabelVisible(boolean visible) {
-		this.labelVisible = visible;
-	}
 
 	public boolean isAutoLabelFormat() {
 		return autoLabelFormat;
@@ -345,62 +281,6 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			mes[i] = TeXMathUtils.parseText(labels[i]);
 		}
 		fixedLabels = mes;
-		calcTicks();
-
-	}
-
-	public Color getLabelColor() {
-		return labelColor;
-	}
-
-	public void setLabelColor(Color color) {
-		this.labelColor = color;
-	}
-
-	public Font getLabelFont() {
-		return new Font(fontName, fontStyle, (int) fontSize)
-				.deriveFont(fontSize);
-	}
-
-	public void setLabelFont(Font font) {
-		fontName = font.getName();
-		fontStyle = font.getStyle();
-		fontSize = font.getSize2D();
-
-		actualLabelFont = font;
-		_propLabelFontChanged = true;
-	}
-
-	public String getLabelFontName() {
-		return fontName;
-	}
-
-	public void setLabelFontName(String name) {
-		fontName = name;
-	}
-
-	public int getLabelFontStyle() {
-		return fontStyle;
-	}
-
-	public void setLabelFontStyle(int style) {
-		fontStyle = style;
-	}
-
-	public float getLabelFontSize() {
-		return fontSize;
-	}
-
-	public void setLabelFontSize(float size) {
-		fontSize = size;
-	}
-
-	public AxisLabelSide getLabelSide() {
-		return labelSide;
-	}
-
-	public void setLabelSide(AxisLabelSide side) {
-		this.labelSide = side;
 	}
 
 	public int getLabelInterval() {
@@ -409,14 +289,6 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	public void setLabelInterval(int n) {
 		this.labelInterval = n;
-	}
-
-	public AxisOrientation getLabelOrientation() {
-		return labelOrientation;
-	}
-
-	public void setLabelOrientation(AxisOrientation orientation) {
-		this.labelOrientation = orientation;
 	}
 
 	public Object getValues() {
@@ -431,24 +303,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		return actualLabelFont;
 	}
 
-	public MathElement[] getInRangeLabelModels() {
+	public MathElement[] getLabelModels() {
 		return labels;
-	}
-
-	/**
-	 * notified by viewport axis type changed. This mainly affect the canonical
-	 * values calculation.
-	 */
-	public void axisTypeChanged() {
-		_axisTypeChanged = true;
-	}
-
-	/**
-	 * Called when axis transform or tick transform changed. The changing affect
-	 * the label density.
-	 */
-	public void axisOrTickTransformChanged() {
-		_trfChanged = true;
 	}
 
 	public TickAlgorithm getTickAlgorithm() {
@@ -464,17 +320,46 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	public String[] getLabelStrings() {
-		// TODO Auto-generated method stub
-		return null;
+		String[] result = new String[labels.length];
+		for (int i = 0; i < labels.length; i++) {
+			result[i] = TeXMathUtils.toString(labels[i]);
+		}
+		return result;
 	}
 
-	public void calcTicks() {
+	public boolean calcTicks(Range2D range, AxisTickTransform txf,
+			AxisTransform axf, double circMod, boolean labelSameOrientation,
+			Font font) {
 
-		tickCalculator.setRange(getAxis().getRange());
+		if (!range.equals(this.range)) {
+			_rangeChanged = true;
+			this.range = range;
+			tickCalculator.setRange(range);
+		}
+		if (!txf.equals(this.tickTransform)) {
+			_trfChanged = true;
+			this.tickTransform = txf;
+		}
+		if (!axf.equals(this.axisTransform)) {
+			_trfChanged = true;
+			this.axisTransform = axf;
+		}
+		if (circMod != this.circMod) {
+			_axisTypeChanged = true;
+			this.circMod = circMod;
+		}
+		if (labelSameOrientation != this.labelSameOrientation) {
+			_labelOrientationChanged = true;
+			this.labelSameOrientation = labelSameOrientation;
+		}
+		if (!font.equals(labelFont)) {
+			labelFont = font;
+			_propLabelFontChanged = true;
+			actualLabelFont = font;
+		}
 
 		if (autoValues && autoInterval && autoAdjustNumber) {
-			calcAutoTicks();
-			return;
+			return calcAutoTicks();
 		}
 
 		int[] valueIdxes = null, mvalueIdxes;
@@ -573,25 +458,27 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		}
 		_propLabelFontChanged = _trfChanged = _axisTypeChanged = false;
 
+		boolean result = false;
+
 		if (labelsChanged || _labelIntervalChanged || _labelOrientationChanged
 				|| actualLabelFontChanged) {
-			getAxis().invalidateThickness();
-			getAxis().redraw();
+			result = true;
 			_labelIntervalChanged = _labelOrientationChanged = false;
 		}
 
 		if (_valuesChanged || _minorValuesChanged) {
-			getAxis().redraw();
+			result = true;
 			_valuesChanged = _minorValuesChanged = _trfChanged = false;
 		}
 
+		return result;
 	}
 
 	/**
 	 * calculate interval from given range, tick number, label height and label
 	 * format. This will set the interval, the values and the label density.
 	 */
-	private void calcAutoTicks() {
+	private boolean calcAutoTicks() {
 
 		/* Nothing changed */
 		if (!(autoValuesChanged || autoIntervalChanged
@@ -600,7 +487,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 				|| _labelFormatChanged || _labelIntervalChanged
 				|| _propLabelFontChanged || _labelOrientationChanged
 				|| _tickAlgorithmChanged || _trfChanged || _rangeChanged)) {
-			return;
+			return false;
 		}
 
 		autoValuesChanged = autoIntervalChanged = autoAdjustNumberChanged = false;
@@ -673,18 +560,20 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			actualLabelFontChanged = true;
 		}
 
+		boolean result = false;
+
 		if (labelsChanged || _labelIntervalChanged || _labelOrientationChanged
 				|| actualLabelFontChanged) {
-			getAxis().invalidateThickness();
-			getAxis().redraw();
+			result = true;
 			_labelIntervalChanged = _labelOrientationChanged = false;
 		}
 
 		if (_valuesChanged || _minorValuesChanged) {
-			getAxis().redraw();
+			result = true;
 			_valuesChanged = _minorValuesChanged = _trfChanged = false;
 		}
 
+		return result;
 	}
 
 	/**
@@ -756,7 +645,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	private Font shrinkLabelFont() {
 		double density = getLabelsDensity(values, labels, getLabelFont(),
 				labelInterval);
-		if (Double.isInfinite(density)) { // when device length is zero
+		if (Double.isInfinite(density)) { // when axis length is zero
 			return getLabelFont();
 		}
 
@@ -781,6 +670,10 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		return font;
 	}
 
+	private Font getLabelFont() {
+		return labelFont;
+	}
+
 	/**
 	 * density > 1 means label overlapped.
 	 * 
@@ -799,12 +692,11 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 		/* Note: when scale is very small, deltaD will be zero */
 		double maxDesity = 0;
-		double ticA = getAxis()
-				.transTickToPaper(Array.getDouble(tickValues, 0));
-		if (labelOrientation == getAxis().getParent().getOrientation()) {
+		double ticA = transTickToPaper(Array.getDouble(tickValues, 0));
+		if (labelSameOrientation) {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = getAxis().transTickToPaper(
-						Array.getDouble(tickValues, i * labelInterval));
+				double ticB = transTickToPaper(Array.getDouble(tickValues, i
+						* labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
 				double desity = (labelsSize[i - 1].getWidth() / 2
 						+ labelsSize[i].getWidth() / 2 + blankWidth)
@@ -816,8 +708,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			}
 		} else {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = getAxis().transTickToPaper(
-						Array.getDouble(tickValues, i * labelInterval));
+				double ticB = transTickToPaper(Array.getDouble(tickValues, i
+						* labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
 				double desity = (labelsSize[i - 1].getHeight() / 2
 						+ labelsSize[i].getHeight() / 2 + blankWidth)
@@ -834,6 +726,23 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	/**
+	 * Transform tick value to paper value on this axis.
+	 * 
+	 * @param the
+	 *            tick value
+	 * @return paper value
+	 */
+	private double transTickToPaper(double tickValue) {
+		double uv;
+		if (tickTransform != null) {
+			uv = tickTransform.transformTick2User(tickValue);
+		} else {
+			uv = tickValue;
+		}
+		return axisTransform.getTransP(uv);
+	}
+
+	/**
 	 * Calculate the canonical values of the given values. The canonical values
 	 * will be used to produce labels.
 	 * 
@@ -846,7 +755,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			double[] result = new double[Array.getLength(values)];
 			double[] array = (double[]) values;
 			for (int i = 0; i < array.length; i++) {
-				result[i] = getAxis().getCanonicalValue(array[i]);
+				result[i] = getCanonicalValue(array[i]);
 			}
 			return result;
 		}
@@ -854,20 +763,31 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			long[] result = new long[Array.getLength(values)];
 			long[] array = (long[]) values;
 			for (int i = 0; i < array.length; i++) {
-				result[i] = getAxis().getCanonicalValue(array[i]);
+				result[i] = getCanonicalValue(array[i]);
 			}
 			return result;
 		}
 		throw new Error();
 	}
 
-	public AxisTickImpl copy() {
+	private double getCanonicalValue(double d) {
+		return d % circMod;
+	}
+
+	private long getCanonicalValue(long d) {
+		return (long) (d % circMod);
+	}
+
+	public AxisTickImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisTickImpl result = null;
 		try {
 			result = (AxisTickImpl) this.clone();
 		} catch (CloneNotSupportedException e) {
 		}
 
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
 		return result;
 	}
 

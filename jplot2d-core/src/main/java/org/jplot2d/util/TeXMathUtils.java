@@ -20,7 +20,6 @@ package org.jplot2d.util;
 
 import java.io.StringReader;
 
-
 /**
  * Provide a static parse method to use thread local parser.
  * 
@@ -29,60 +28,56 @@ import java.io.StringReader;
  */
 public class TeXMathUtils {
 
-    private static final ThreadLocal<TeXMathParser> parserTL = new ThreadLocal<TeXMathParser>() {
-        @Override
-        protected TeXMathParser initialValue() {
-            return new TeXMathParser(new StringReader(""));
-        }
-    };
+	private static final ThreadLocal<TeXMathParser> parserTL = new ThreadLocal<TeXMathParser>() {
+		@Override
+		protected TeXMathParser initialValue() {
+			return new TeXMathParser(new StringReader(""));
+		}
+	};
 
-    /**
-     * Parse the given text into a math model. If the given text is null, then
-     * null is returned. if the given text does not represent a math model, such
-     * as "", or "$$", then a MathElement.NULL is returned.
-     * 
-     * @param text
-     * @return
-     */
-    public static MathElement parseText(String text) {
-        if (text == null) {
-            return null;
-        } else {
-            TeXMathParser parser = parserTL.get();
-            parser.ReInit(new StringReader(text));
+	/**
+	 * Parse the given text into a math model. If the given text is null, then
+	 * null is returned. if the given text does not represent a math model, such
+	 * as "", or "$$", then a MathElement.NULL is returned.
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static MathElement parseText(String text) {
+		if (text == null) {
+			return null;
+		} else {
+			TeXMathParser parser = parserTL.get();
+			parser.ReInit(new StringReader(text));
 
-            MathElement model;
-            try {
-                model = parser.parse();
-            } catch (ParseException e) {
-                throw new IllegalArgumentException(
-                        "the syntax of text is not correct", e);
-            } catch (TokenMgrError e) {
-                throw new IllegalArgumentException(
-                        "the syntax of text is not correct", e);
-            }
+			MathElement model;
+			try {
+				model = parser.parse();
+			} catch (ParseException e) {
+				throw new IllegalArgumentException(
+						"the syntax of text is not correct", e);
+			} catch (TokenMgrError e) {
+				throw new IllegalArgumentException(
+						"the syntax of text is not correct", e);
+			}
 
-            if (model == null) {
-                return MathElement.NULL;
-            } else {
-                return model;
-            }
-        }
-    }
+			return model;
+		}
+	}
 
-    /**
-     * Returns the TeX string to represent the given MathElement. Unlike
-     * String.valueOf(), this method returns null when the given MathElement is
-     * null.
-     * 
-     * @param me
-     *            the math model
-     * @return the TeX string
-     */
-    public static String toString(MathElement me) {
-        if (me == null) {
-            return null;
-        }
-        return me.toString();
-    }
+	/**
+	 * Returns the TeX string to represent the given MathElement. Unlike
+	 * String.valueOf(), this method returns null when the given MathElement is
+	 * null.
+	 * 
+	 * @param me
+	 *            the math model
+	 * @return the TeX string
+	 */
+	public static String toString(MathElement me) {
+		if (me == null) {
+			return null;
+		}
+		return me.toString();
+	}
 }
