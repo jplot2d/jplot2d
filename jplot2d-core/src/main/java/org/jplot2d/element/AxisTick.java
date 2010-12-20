@@ -18,13 +18,23 @@
  */
 package org.jplot2d.element;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.text.Format;
 
 import org.jplot2d.axtick.TickAlgorithm;
 
 /**
+ * Manage ticks of an axis.
+ * <p>
+ * The tick decision rules
+ * <ol>
+ * <li>if autoValues is false, the values can be set by
+ * {@link #setFixedValues(double[])}</li>
+ * <li>if autoInterval is false, the interval can be set by
+ * {@link #setTickInterval(double)}</li>
+ * <li>the interval is calculated according to tick number. If autoAdjustNumber
+ * is true, the number can be adjusted to derive better values.</li>
+ * </ol>
+ * 
  * @author Jingjing Li
  * 
  */
@@ -33,20 +43,6 @@ public interface AxisTick extends Element {
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
 	public Axis getParent();
-
-	/**
-	 * Returns if the tick mark is shown or not
-	 * 
-	 * @return if the tick mark is shown or not
-	 */
-	public boolean getVisible();
-
-	/**
-	 * Sets if the tick mark is shown or not
-	 * 
-	 * @param visible
-	 */
-	public void setVisible(boolean visible);
 
 	public TickAlgorithm getTickAlgorithm();
 
@@ -224,47 +220,6 @@ public interface AxisTick extends Element {
 	public void setFixedMinorValues(Object minorValues);
 
 	/**
-	 * Return if the grid line is displayed or not.
-	 * 
-	 * @return true if the grid line is displayed
-	 */
-	public boolean isGridLines();
-
-	/**
-	 * Sets grid lines of grey lines in corresponding of major ticks of the
-	 * axis.
-	 * 
-	 * @param showGridLines
-	 *            if true show the grid lines.
-	 */
-	public void setGridLines(boolean showGridLines);
-
-	/**
-	 * Returns the physical height of the major ticks of the axis
-	 * 
-	 * @return the height of the ticks
-	 */
-	public double getTickHeight();
-
-	/**
-	 * Set the physical height of the major ticks of the axis.
-	 * 
-	 * @param height
-	 *            the new height of the ticks
-	 */
-	public void setTickHeight(double height);
-
-	/**
-	 * Return the direction of the ticks
-	 */
-	public AxisTickSide getSide();
-
-	/**
-	 * Set the side position of the ticks
-	 */
-	public void setSide(AxisTickSide side);
-
-	/**
 	 * Returns <code>true</code> is the minor ticks number is derived from tick
 	 * interval.
 	 * 
@@ -321,36 +276,7 @@ public interface AxisTick extends Element {
 	 */
 	public void setMinorNumber(int minors);
 
-	/**
-	 * Return the physical height of the minor ticks of the axis.
-	 * 
-	 * @return the physical height of the minor ticks.
-	 */
-	public double getMinorHeight();
-
-	/**
-	 * Set the physical height of the minor ticks of the axis.
-	 * 
-	 * @param height
-	 *            the physical height of the ticks
-	 */
-	public void setMinorHeight(double height);
-
 	/* =========================== Labels ============================= */
-
-	/**
-	 * Returns if the tick labels is shown or not
-	 * 
-	 * @return if the tick mark is shown or not
-	 */
-	public boolean isLabelVisible();
-
-	/**
-	 * Sets if the tick labels is shown or not
-	 * 
-	 * @param visible
-	 */
-	public void setLabelVisible(boolean visible);
 
 	/**
 	 * Returns <code>true</code> if labels format is auto calculated or assigned
@@ -436,97 +362,6 @@ public interface AxisTick extends Element {
 	public void setFixedLabelStrings(String[] labels);
 
 	/**
-	 * Return the color of the labels of the ticks
-	 * 
-	 * @return the color of the labels
-	 */
-	public Color getLabelColor();
-
-	/**
-	 * Set the color of the labels of the ticks
-	 * 
-	 * @param color
-	 *            the color of the labels
-	 */
-	public void setLabelColor(Color color);
-
-	/**
-	 * Returns the font of this component.
-	 * 
-	 * @return the font of this component
-	 * @see #setFont
-	 */
-	public Font getLabelFont();
-
-	/**
-	 * Sets the font for this component.
-	 * 
-	 * @param font
-	 *            the desired <code>Font</code> for this component
-	 * @see #getFont
-	 */
-	public void setLabelFont(Font font);
-
-	/**
-	 * Returns the name of the font.
-	 * 
-	 * @return the name of the font.
-	 */
-	public String getLabelFontName();
-
-	/**
-	 * Apply the new font with the given name
-	 * 
-	 * @param name
-	 *            the font name.
-	 */
-	public void setLabelFontName(String name);
-
-	/**
-	 * Returns the style of the font. The style can be PLAIN, BOLD, ITALIC, or
-	 * BOLD+ITALIC.
-	 * 
-	 * @return the style of the font
-	 * @see java.awt.Font
-	 */
-	public int getLabelFontStyle();
-
-	/**
-	 * Apply a new style to the font. The style can be PLAIN, BOLD, ITALIC, or
-	 * BOLD+ITALIC.
-	 * 
-	 * @param style
-	 *            the style to apply
-	 * @see java.awt.Font
-	 */
-	public void setLabelFontStyle(int style);
-
-	/**
-	 * Returns the Font size.
-	 * 
-	 * @return the font size.
-	 */
-	public float getLabelFontSize();
-
-	/**
-	 * Sets a new size of the string.
-	 * 
-	 * @param size
-	 *            the new size of the font.
-	 */
-	public void setLabelFontSize(float size);
-
-	/**
-	 * Return the position of the label of the ticks
-	 */
-	public AxisLabelSide getLabelSide();
-
-	/**
-	 * Set the position of the label of the ticks respect of the axis
-	 */
-	public void setLabelSide(AxisLabelSide side);
-
-	/**
 	 * Get the label interval. The tick labels are displayed after that number
 	 * of ticks
 	 * 
@@ -541,23 +376,6 @@ public interface AxisTick extends Element {
 	 *            label displayed each n ticks .
 	 */
 	public void setLabelInterval(int n);
-
-	/**
-	 * Get the Orientation of the labels.
-	 * 
-	 * @return label orientation:<br>
-	 *         0 HORIZONTAL<br>
-	 *         1 VERTICAL
-	 */
-	public AxisOrientation getLabelOrientation();
-
-	/**
-	 * Set the orientation of the labels of the ticks <br>
-	 * 
-	 * @param orientation
-	 *            HORIZONTAL/VERTICAL
-	 */
-	public void setLabelOrientation(AxisOrientation orientation);
 
 	public String[] getLabelStrings();
 

@@ -18,7 +18,14 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Font;
+import java.util.Map;
+
+import org.jplot2d.axtrans.AxisTransform;
 import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.AxisTickTransform;
+import org.jplot2d.util.MathElement;
+import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
@@ -27,5 +34,15 @@ import org.jplot2d.element.AxisTick;
 public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public AxisEx getParent();
+
+	public MathElement[] getLabelModels();
+
+	public Font getActualLabelFont();
+
+	public boolean calcTicks(Range2D range, AxisTickTransform txf,
+			AxisTransform axf, double circMod, boolean labelSameOrientation,
+			Font labelFont);
+
+	public AxisTickEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

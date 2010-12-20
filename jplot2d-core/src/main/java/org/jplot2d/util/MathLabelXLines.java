@@ -59,7 +59,7 @@ public class MathLabelXLines {
 		_halign = halign;
 		_valign = valign;
 
-		if (me == null || me == MathElement.NULL) {
+		if (me == null) {
 			_width = 0;
 			_height = 0;
 			return;
