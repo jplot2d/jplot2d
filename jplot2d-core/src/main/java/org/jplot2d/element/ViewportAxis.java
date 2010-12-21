@@ -75,6 +75,9 @@ public interface ViewportAxis extends Container {
 	@Hierarchy(HierarchyOp.JOIN)
 	public AxisLockGroup setLockGroup(AxisLockGroup group);
 
+	@Hierarchy(HierarchyOp.GET)
+	public Axis getAxis(int index);
+
 	/**
 	 * Returns all axes belongs to this group.
 	 * 
