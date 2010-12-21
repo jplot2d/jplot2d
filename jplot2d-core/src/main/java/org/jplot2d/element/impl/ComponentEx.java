@@ -1,5 +1,7 @@
 package org.jplot2d.element.impl;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Map;
@@ -52,11 +54,25 @@ public interface ComponentEx extends Component, ElementEx {
 	 */
 	public Map<Element, Element> getMooringMap();
 
+	/**
+	 * Returns the effective color of this component.
+	 * 
+	 * @return the effective color of this component
+	 */
+	public Color getEffectiveColor();
+
 	public String getEffectiveFontName();
 
 	public int getEffectiveFontStyle();
 
 	public float getEffectiveFontSize();
+
+	/**
+	 * Returns the effective font of this component.
+	 * 
+	 * @return the effective font of this component
+	 */
+	public Font getEffectiveFont();
 
 	/**
 	 * Determines whether this component is valid. A component is valid when it
@@ -110,7 +126,8 @@ public interface ComponentEx extends Component, ElementEx {
 	 * Draw this component only. All its children is not drawn.
 	 * 
 	 * @param g
-	 *            to the Graphics2D drawing
+	 *            to the Graphics2D drawing. The transformation of this
+	 *            component is not applied.
 	 */
 	void draw(Graphics2D g);
 

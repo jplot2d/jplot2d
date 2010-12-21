@@ -107,6 +107,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		pxf = null;
 		redraw();
 
+		// notify all layers
+		for (LayerEx layer : layers) {
+			layer.parentPhysicalTransformChanged();
+		}
 		// notify all subplots
 		for (SubplotEx sp : subplots) {
 			sp.parentPhysicalTransformChanged();
@@ -208,12 +212,12 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public void invalidate() {
 		if (isValid()) {
 			valid = false;
-			/*
-			 * Don't call getParent().invalidate(), let layoutDirector decide
-			 * it.
-			 */
-			if (layoutDirector != null)
+			if (getParent() != null) {
+				getParent().invalidate();
+			}
+			if (layoutDirector != null) {
 				layoutDirector.invalidateLayout(this);
+			}
 		}
 	}
 
