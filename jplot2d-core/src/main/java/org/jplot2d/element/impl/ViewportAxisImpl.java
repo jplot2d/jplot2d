@@ -35,11 +35,11 @@ import org.jplot2d.util.Range2D;
 
 public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
+	private AxisLockGroupEx group;
+
 	private AxisType type;
 
 	private AxisOrientation orientation;
-
-	private AxisLockGroupEx group;
 
 	private NormalTransform ntf;
 
@@ -59,17 +59,20 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		group = new AxisLockGroupImpl();
 		group.addViewportAxis(this);
 
+		type = AxisType.LINEAR;
+		ntf = type.getTransformType().createNormalTransform(
+				type.getDefaultWorldRange());
 	}
 
 	public String getSelfId() {
 		if (getParent() != null) {
 			int xidx = getParent().indexOfXViewportAxis(this);
 			if (xidx != -1) {
-				return "XG" + xidx;
+				return "X" + xidx;
 			}
 			int yidx = getParent().indexOfYViewportAxis(this);
 			if (yidx != -1) {
-				return "YG" + yidx;
+				return "Y" + yidx;
 			}
 			return null;
 		} else {
@@ -109,7 +112,6 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 	public void setType(AxisType type) {
 		this.type = type;
 		for (AxisEx axis : axes) {
-			axis.axisTypeChanged();
 			axis.getTick().setTickAlgorithm(type.getTickAlgorithm());
 		}
 	}
@@ -169,17 +171,7 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public AxisTransform getAxisTransform() {
 		if (axf == null) {
-			double offset = 0;
-			switch (this.getOrientation()) {
-			case HORIZONTAL:
-				offset = this.getLocation().getX();
-				break;
-			case VERTICAL:
-				offset = this.getLocation().getY();
-				break;
-			}
-
-			Range2D prange = new Range2D.Double(offset, offset + getLength());
+			Range2D prange = new Range2D.Double(0, getLength());
 			axf = type.getTransformType().createTransform(prange,
 					ntf.getRangeW());
 		}
@@ -191,9 +183,10 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 	 */
 	private void updateAxisTransform() {
 		axf = null;
-		for (AxisEx axis : axes) {
-			axis.axisTransformChanged();
-		}
+	}
+
+	public Axis getAxis(int index) {
+		return axes.get(index);
 	}
 
 	public int indexOfAxis(AxisEx axis) {
@@ -230,13 +223,25 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		super.copyFrom(src, orig2copyMap);
 
 		ViewportAxisImpl va = (ViewportAxisImpl) src;
-		orientation = va.orientation;
+		this.orientation = va.orientation;
+		this.ntf = va.ntf;
+		this.offset = va.offset;
+		this.length = va.length;
 
 		for (AxisEx axis : va.axes) {
 			AxisEx aCopy = (AxisEx) axis.deepCopy(orig2copyMap);
 			aCopy.setParent(this);
 			axes.add(aCopy);
 		}
+
+	}
+
+	public Range2D getRange() {
+		return ntf.getRangeW();
+	}
+
+	public void setRange(double ustart, double uend) {
+		// TODO Auto-generated method stub
 
 	}
 

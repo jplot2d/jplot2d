@@ -53,15 +53,15 @@ public class AxisImplTest {
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		checkDouble(axis.getAsc(), 0);
-		checkDouble(axis.getDesc(), 23.96875);
+		checkDouble(axis.getDesc(), 25.4609375);
 
 		axis.setTickSide(AxisTickSide.INWARD);
-		checkDouble(axis.getAsc(), 10.0);
-		checkDouble(axis.getDesc(), 13.96875);
+		checkDouble(axis.getAsc(), 8.0);
+		checkDouble(axis.getDesc(), 17.4609375);
 
 		axis.setPosition(AxisPosition.POSITIVE_SIDE);
-		checkDouble(axis.getAsc(), 13.96875);
-		checkDouble(axis.getDesc(), 10.0);
+		checkDouble(axis.getAsc(), 17.4609375);
+		checkDouble(axis.getDesc(), 8.0);
 	}
 
 	@Test
@@ -82,16 +82,16 @@ public class AxisImplTest {
 		when(axis.getTick().getActualLabelFont()).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
-		checkDouble(axis.getAsc(), 24.6015625);
+		checkDouble(axis.getAsc(), 26.09375);
 		checkDouble(axis.getDesc(), 0);
 
 		axis.setTickSide(AxisTickSide.INWARD);
-		checkDouble(axis.getAsc(), 14.6015625);
-		checkDouble(axis.getDesc(), 10.0);
+		checkDouble(axis.getAsc(), 18.09375);
+		checkDouble(axis.getDesc(), 8.0);
 
 		axis.setPosition(AxisPosition.POSITIVE_SIDE);
-		checkDouble(axis.getAsc(), 10.0);
-		checkDouble(axis.getDesc(), 14.6015625);
+		checkDouble(axis.getAsc(), 8.0);
+		checkDouble(axis.getDesc(), 18.09375);
 
 		when(axis.getTick().getLabelModels())
 				.thenReturn(
@@ -99,7 +99,7 @@ public class AxisImplTest {
 								new MathElement.Mn("5.0"),
 								new MathElement.Mn("10.0") });
 		axis.invalidateThickness();
-		checkDouble(axis.getAsc(), 10.0);
-		checkDouble(axis.getDesc(), 25.083984375);
+		checkDouble(axis.getAsc(), 8.0);
+		checkDouble(axis.getDesc(), 28.576171875);
 	}
 }

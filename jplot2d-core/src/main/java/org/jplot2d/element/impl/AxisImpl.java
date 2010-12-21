@@ -22,12 +22,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -60,13 +60,13 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	/**
 	 * the default physical width, 0.5 pt.
 	 */
-	private static final double DEFAULT_AXISLINE_WIDTH = 0.5;
+	private static final float DEFAULT_AXISLINE_WIDTH = 0.5f;
 
 	/* the gap between label and tick */
-	private static final double LABEL_GAP_RATIO = 1 / 4;
+	private static final double LABEL_GAP_RATIO = 1.0 / 4;
 
 	/* the gap between title and label */
-	private static final double TITLE_GAP_RATIO = 1 / 16;
+	private static final double TITLE_GAP_RATIO = 1.0 / 4;
 
 	protected final AxisTickEx tick;
 
@@ -82,9 +82,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private AxisTickSide tickSide = AxisTickSide.OUTWARD;
 
-	private double tickHeight = 10.0;
+	private double tickHeight = 8.0;
 
-	private double minorHeight = 5.0;
+	private double minorHeight = 4.0;
 
 	private boolean labelVisible = true;
 
@@ -183,7 +183,12 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		if (getParent() == null) {
 			return null;
 		} else {
-			return getParent().getPhysicalTransform();
+			PhysicalTransform pxf = getParent().getPhysicalTransform()
+					.translate(getLocation().getX(), getLocation().getY());
+			if (getOrientation() == AxisOrientation.VERTICAL) {
+				pxf = pxf.rotate(Math.PI / 2);
+			}
+			return pxf;
 		}
 	}
 
@@ -216,9 +221,13 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public Range2D getRange() {
 		Range2D range = getParent().getRange();
-		double start = tickTransform.transformUser2Tick(range.getStart());
-		double end = tickTransform.transformUser2Tick(range.getEnd());
-		return new Range2D.Double(start, end);
+		if (tickTransform != null) {
+			double start = tickTransform.transformUser2Tick(range.getStart());
+			double end = tickTransform.transformUser2Tick(range.getEnd());
+			return new Range2D.Double(start, end);
+		} else {
+			return range;
+		}
 	}
 
 	public final void setRange(Range2D range) {
@@ -292,7 +301,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		invalidateThickness();
 	}
 
-	public boolean isLabelSameOrientation() {
+	protected boolean isLabelSameOrientation() {
 		return getOrientation() == getLabelOrientation();
 	}
 
@@ -428,25 +437,23 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 				labelOffset = ba + labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
 					ba = labelOffset + labelHeight;
-					labelVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.BOTTOM
-							: VAlign.TOP;
+					labelVAlign = VAlign.BOTTOM;
 					labelHAlign = HAlign.CENTER;
 				} else {
 					ba = labelOffset + getLabelsMaxNormalPhysicalWidth();
 					labelVAlign = VAlign.MIDDLE;
-					labelHAlign = HAlign.LEFT;
+					labelHAlign = HAlign.RIGHT;
 				}
 			} else {
 				labelOffset = -bd - labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
 					bd = -labelOffset + labelHeight;
-					labelVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.TOP
-							: VAlign.BOTTOM;
+					labelVAlign = VAlign.TOP;
 					labelHAlign = HAlign.CENTER;
 				} else {
 					bd = -labelOffset + getLabelsMaxNormalPhysicalWidth();
 					labelVAlign = VAlign.MIDDLE;
-					labelHAlign = HAlign.RIGHT;
+					labelHAlign = HAlign.LEFT;
 				}
 			}
 		}
@@ -455,13 +462,11 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			double titleHeight = getTitle().getBounds().getHeight();
 			if (isTitleAscSide()) {
 				titleOffset = ba + titleHeight * TITLE_GAP_RATIO;
-				titleVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.BOTTOM
-						: VAlign.TOP;
+				titleVAlign = VAlign.BOTTOM;
 				ba = titleOffset + titleHeight;
 			} else {
 				titleOffset = -bd - titleHeight * TITLE_GAP_RATIO;
-				titleVAlign = (getOrientation() == AxisOrientation.HORIZONTAL) ? VAlign.TOP
-						: VAlign.BOTTOM;
+				titleVAlign = VAlign.TOP;
 				bd = -titleOffset + titleHeight;
 			}
 		}
@@ -577,7 +582,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisImpl result = new AxisImpl(tick.deepCopy(orig2copyMap),
 				title.deepCopy(orig2copyMap));
-
+		result.tick.setParent(result);
+		result.title.setParent(result);
 		result.copyFrom(this, orig2copyMap);
 
 		if (orig2copyMap != null) {
@@ -604,73 +610,32 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D graphics) {
 
-		g.setColor(Color.BLACK);
-		Rectangle rect = getParent().getPhysicalTransform()
-				.getPtoD(getBounds()).getBounds();
-		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
-		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1,
-				(int) rect.getMaxY() - 1);
-		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1,
-				rect.y);
+		Graphics2D g = (Graphics2D) graphics.create();
 
-		g.setColor(getColor());
+		g.transform(getPhysicalTransform().getTransform());
 
-		Stroke oldStroke = g.getStroke();
-		/*
-		 * Workaround for a bug of java2d (Sun Bug ID 6635297), pixel rounding
-		 * behave different between solid line and dash line. This cause grid
-		 * lines not coinciding with major ticks. Turning ANTIALIAS ON can avoid
-		 * it.
-		 */
-		RenderingHints oldRenderingHints = g.getRenderingHints();
+		g.setColor(getEffectiveColor());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-		PhysicalTransform _lxf = getParent().getPhysicalTransform();
-
-		g.setStroke(new BasicStroke(
-				(float) (_lxf.getScale() * DEFAULT_AXISLINE_WIDTH)));
+		g.setStroke(new BasicStroke(DEFAULT_AXISLINE_WIDTH));
 		drawAxisLine(g);
 		drawTicks(g);
 
-		double p;
-		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			p = getLocation().getY();
-		} else {
-			p = getLocation().getX();
-		}
-
 		if (isLabelVisible()) {
-			double labelLoc = p + labelOffset;
-			VAlign vertalign = labelVAlign;
-			HAlign horzalign = labelHAlign;
-			drawLabels(g, labelLoc, vertalign, horzalign);
+			drawLabels(g, labelVAlign, labelHAlign);
 		}
 
 		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
-			double titleLoc = p + titleOffset;
-			VAlign valign = titleVAlign;
-			drawTitle(g, titleLoc, valign);
+			drawTitle(graphics);
 		}
-
-		g.setRenderingHints(oldRenderingHints);
-		g.setStroke(oldStroke);
 
 	}
 
 	private void drawAxisLine(Graphics2D g2) {
-		PhysicalTransform pxf = getParent().getPhysicalTransform();
-		Point2D dloc = pxf.getPtoD(getLocation());
-		Shape s;
-		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX()
-					+ getParent().getLength() * pxf.getScale(), dloc.getY());
-		} else {
-			s = new Line2D.Double(dloc.getX(), dloc.getY(), dloc.getX(),
-					dloc.getY() - getParent().getLength() * pxf.getScale());
-		}
+		Shape s = new Line2D.Double(0, 0, getParent().getLength(), 0);
 		g2.draw(s);
 	}
 
@@ -723,26 +688,13 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 
 		if (isTickVisible()) {
-			if (getOrientation() == AxisOrientation.HORIZONTAL) {
-				double yp = getLocation().getY();
-				for (int i = 0; i < tvslen; i++) {
-					double xp = transTickToPaper(Array.getDouble(tvs, i));
-					drawXTic(g, xp, yp, getTickHeight());
-				}
-				for (int i = 0; i < mvslen; i++) {
-					double xp = transTickToPaper(Array.getDouble(mvs, i));
-					drawXTic(g, xp, yp, getMinorTickHeight());
-				}
-			} else {
-				double xp = getLocation().getX();
-				for (int i = 0; i < tvslen; i++) {
-					double yp = transTickToPaper(Array.getDouble(tvs, i));
-					drawYTic(g, xp, yp, getTickHeight());
-				}
-				for (int i = 0; i < mvslen; i++) {
-					double yp = transTickToPaper(Array.getDouble(mvs, i));
-					drawYTic(g, xp, yp, getMinorTickHeight());
-				}
+			for (int i = 0; i < tvslen; i++) {
+				double xp = transTickToPaper(Array.getDouble(tvs, i));
+				drawXTic(g, xp, getTickHeight());
+			}
+			for (int i = 0; i < mvslen; i++) {
+				double xp = transTickToPaper(Array.getDouble(mvs, i));
+				drawXTic(g, xp, getMinorTickHeight());
 			}
 		}
 	}
@@ -756,105 +708,64 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * @param vertalign
 	 * @param horzalign
 	 */
-	private void drawLabels(Graphics2D g, double yt, VAlign vertalign,
-			HAlign horzalign) {
-
-		PhysicalTransform pxf = getParent().getPhysicalTransform();
+	private void drawLabels(Graphics2D g, VAlign vertalign, HAlign horzalign) {
 
 		Object tvs = getTick().getValues();
 		MathElement[] labels = getTick().getLabelModels();
 
+		AffineTransform oldTransform = g.getTransform();
+
 		for (int i = 0; i < labels.length; i++) {
 			double x = Array.getDouble(tvs, i * getTick().getLabelInterval());
 			double xt = transTickToPaper(x);
-			Point2D point = (getOrientation() == AxisOrientation.HORIZONTAL) ? new Point2D.Double(
-					xt, yt) : new Point2D.Double(yt, xt);
 
 			MathLabel label = new MathLabel(labels[i], getTick()
 					.getActualLabelFont(), vertalign, horzalign);
 
-			double angle = 0;
-			if (getLabelOrientation() == AxisOrientation.VERTICAL) {
-				angle = 90;
-			}
 			Color color = getLabelColor();
 
-			label.draw(g, pxf, point, angle, color);
+			g.translate(xt, labelOffset);
+			g.scale(1, -1);
+			if (!isLabelSameOrientation()) {
+				g.rotate(Math.PI / 2.0);
+			}
+			g.setColor(color);
+
+			label.draw(g);
+
+			g.setTransform(oldTransform);
 		}
+
 	}
 
-	private void drawTitle(Graphics2D g, double vloc, VAlign vertalign) {
-		double xt, yt;
-
+	private void drawTitle(Graphics2D g) {
 		TextComponentEx title = getTitle();
 
-		xt = getLocation().getX() + getParent().getLength() * 0.5;
-		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			xt = getLocation().getX() + getParent().getLength() * 0.5;
-			yt = vloc;
-		} else {
-			yt = getLocation().getY() + getParent().getLength() * 0.5;
-			xt = vloc;
-		}
-		title.setLocation(new Point2D.Double(xt, yt));
+		double xt = getParent().getLength() * 0.5;
+		title.setLocation(new Point2D.Double(xt, titleOffset));
 		title.setHAlign(HAlign.CENTER);
-		title.setVAlign(vertalign);
-		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			title.setAngle(0);
-		} else if (getOrientation() == AxisOrientation.VERTICAL) {
-			title.setAngle(90);
-		}
+		title.setVAlign(titleVAlign);
 
 		title.draw(g);
 
 	}
 
-	private void drawXTic(Graphics2D g, double xp, double yp, double ticHeight) {
+	private void drawXTic(Graphics2D g, double xp, double ticHeight) {
 
-		PhysicalTransform _lxf = getParent().getPhysicalTransform();
-
-		double x0, y0, y1;
 		double yp0, yp1;
 
-		if (getTickSide() == AxisTickSide.BOTH) {
-			yp0 = yp + ticHeight;
-			yp1 = yp - ticHeight;
-		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTickSide() == AxisTickSide.OUTWARD)) {
-			yp0 = yp + ticHeight;
-			yp1 = yp;
+		if (isTickBothSide()) {
+			yp0 = +ticHeight;
+			yp1 = -ticHeight;
+		} else if (isTickAscSide()) {
+			yp0 = +ticHeight;
+			yp1 = 0;
 		} else {
-			yp0 = yp;
-			yp1 = yp - ticHeight;
+			yp0 = 0;
+			yp1 = -ticHeight;
 		}
 
-		x0 = _lxf.getXPtoD(xp);
-		y0 = _lxf.getYPtoD(yp0);
-		y1 = _lxf.getYPtoD(yp1);
-		Shape line = new Line2D.Double(x0, y0, x0, y1);
-		g.draw(line);
-	}
-
-	private void drawYTic(Graphics2D g, double xp, double yp, double ticHeight) {
-		PhysicalTransform _lxf = getParent().getPhysicalTransform();
-
-		double x0, x1, y0;
-		double xp0, xp1;
-
-		if (getTickSide() == AxisTickSide.BOTH) {
-			xp0 = xp + ticHeight;
-			xp1 = xp - ticHeight;
-		} else if ((getPosition() == AxisPosition.POSITIVE_SIDE) == (getTickSide() == AxisTickSide.OUTWARD)) {
-			xp0 = xp + ticHeight;
-			xp1 = xp;
-		} else {
-			xp0 = xp;
-			xp1 = xp - ticHeight;
-		}
-
-		y0 = _lxf.getYPtoD(yp);
-		x0 = _lxf.getXPtoD(xp0);
-		x1 = _lxf.getXPtoD(xp1);
-		Shape line = new Line2D.Double(x0, y0, x1, y0);
+		Shape line = new Line2D.Double(xp, yp0, xp, yp1);
 		g.draw(line);
 	}
 

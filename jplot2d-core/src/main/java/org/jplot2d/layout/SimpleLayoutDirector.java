@@ -29,6 +29,7 @@ import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LayerEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.ViewportAxisEx;
+import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
 
@@ -78,7 +79,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		Insets2D margin = calcMargin(subplot);
 
-		double contentWidth = subplot.getSize().getWidth();
+		double contentWidth = subplot.getSize().getWidth() - margin.getLeft()
+				- margin.getRight();
 		double contentHeight = subplot.getSize().getHeight() - margin.getTop()
 				- margin.getBottom();
 		Rectangle2D contentRect = new Rectangle2D.Double(margin.getLeft(),
@@ -88,8 +90,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		// layers always have the same bounds as subplot
 		for (LayerEx layer : subplot.getLayers()) {
-			layer.setLocation(new Point2D.Double(0, 0));
-			layer.setSize(subplot.getSize());
+			layer.setLocation(new Point2D.Double(margin.getLeft(), margin
+					.getBottom()));
+			layer.setSize(new DoubleDimension2D(contentWidth, contentHeight));
 		}
 
 		locateAxes(subplot, contentRect);
@@ -126,16 +129,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		if (sp.isAutoMarginTop()) {
+		if (!sp.isAutoMarginTop()) {
 			mTop = sp.getMarginTop();
 		}
-		if (sp.isAutoMarginLeft()) {
+		if (!sp.isAutoMarginLeft()) {
 			mLeft = sp.getMarginLeft();
 		}
-		if (sp.isAutoMarginBottom()) {
+		if (!sp.isAutoMarginBottom()) {
 			mBottom = sp.getMarginBottom();
 		}
-		if (sp.isAutoMarginRight()) {
+		if (!sp.isAutoMarginRight()) {
 			mRight = sp.getMarginRight();
 		}
 
@@ -195,14 +198,14 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			double xloc = iabLeft;
 			AxisEx am = leftAxisM.get(0);
 			am.setLocation(xloc, iabBottom);
-			xloc += am.getDesc();
+			xloc -= am.getDesc();
 			for (int i = 1; i < leftAxisM.size(); i++) {
 				am = leftAxisM.get(i);
 				if (i > 0) {
 					xloc -= am.getAsc();
 				}
 				am.setLocation(xloc, iabBottom);
-				xloc += am.getDesc();
+				xloc -= am.getDesc();
 			}
 		}
 		if (rightAxisM.size() > 0) {
@@ -212,7 +215,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			xloc += am.getAsc();
 			for (int i = 1; i < rightAxisM.size(); i++) {
 				am = rightAxisM.get(i);
-				xloc -= am.getDesc();
+				xloc += am.getDesc();
 				am.setLocation(xloc, iabBottom);
 				xloc += am.getAsc();
 			}
@@ -226,7 +229,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				am = bottomAxisM.get(i);
 				yloc -= am.getAsc();
 				am.setLocation(iabLeft, yloc);
-				yloc += am.getDesc();
+				yloc -= am.getDesc();
 			}
 		}
 		if (topAxisM.size() > 0) {
@@ -236,7 +239,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			yloc += am.getAsc();
 			for (int i = 1; i < topAxisM.size(); i++) {
 				am = topAxisM.get(i);
-				yloc -= am.getDesc();
+				yloc += am.getDesc();
 				am.setLocation(iabLeft, yloc);
 				yloc += am.getAsc();
 			}

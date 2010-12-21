@@ -43,11 +43,13 @@ import org.jplot2d.util.TeXMathUtils;
  */
 public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
+	public static final int DEFAULT_TICKS_NUMBER = 11;
+
 	public static final int AUTO_TICKS_MIN = 4;
 
-	private boolean autoAdjustNumber;
+	private boolean autoAdjustNumber = true;
 
-	private int tickNumber;
+	private int tickNumber = DEFAULT_TICKS_NUMBER;
 
 	private boolean autoInterval = true;
 
@@ -65,7 +67,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	private int actualMinorNumber;
 
-	private int minorNumber;
+	private int minorNumber = -1;
 
 	private boolean autoLabelFormat = true;
 
@@ -78,7 +80,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 */
 	private MathElement[] fixedLabels;
 
-	private int labelInterval;
+	private int labelInterval = 1;
 
 	/**
 	 * values in visible range
@@ -288,6 +290,10 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	public void setLabelInterval(int n) {
+		if (n <= 0) {
+			throw new IllegalArgumentException(
+					"Label interval cannot be 0 or negative.");
+		}
 		this.labelInterval = n;
 	}
 
@@ -336,7 +342,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			this.range = range;
 			tickCalculator.setRange(range);
 		}
-		if (!txf.equals(this.tickTransform)) {
+		if (txf != this.tickTransform
+				&& (txf == null || !txf.equals(this.tickTransform))) {
 			_trfChanged = true;
 			this.tickTransform = txf;
 		}

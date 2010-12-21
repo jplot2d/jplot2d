@@ -20,6 +20,7 @@ package org.jplot2d.element.impl;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -30,14 +31,13 @@ import org.jplot2d.element.VAlign;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.MathLabel;
+import org.jplot2d.util.TeXMathUtils;
 
 /**
  * @author Jingjing Li
  * 
  */
 public class TextComponentImpl extends ComponentImpl implements TextComponentEx {
-
-	private static final Font DEFAULT_FONT = new Font("Serif", Font.PLAIN, 9);
 
 	private MathElement textModel;
 
@@ -50,7 +50,6 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	private MathLabel label;
 
 	public TextComponentImpl() {
-		super.setFont(DEFAULT_FONT);
 		hAlign = HAlign.CENTER;
 		vAlign = VAlign.MIDDLE;
 	}
@@ -64,13 +63,11 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public String getText() {
-		// TODO Auto-generated method stub
-		return null;
+		return TeXMathUtils.toString(textModel);
 	}
 
 	public void setText(String text) {
-		// TODO Auto-generated method stub
-
+		setTextModel(TeXMathUtils.parseText(text));
 	}
 
 	public MathElement getTextModel() {
@@ -127,14 +124,18 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	public Rectangle2D getBounds() {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getFont(), getVAlign(),
-					getHAlign());
+			label = new MathLabel(getTextModel(), getEffectiveFont(),
+					getVAlign(), getHAlign());
 		}
 		Rectangle2D bounds = label.getBounds();
 
 		Point2D loc = getLocation();
 		return new Rectangle2D.Double(loc.getX() + bounds.getX(), loc.getY()
 				+ bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	}
+
+	public TextComponentImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+		return (TextComponentImpl) super.deepCopy(orig2copyMap);
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
@@ -150,11 +151,22 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	public void draw(Graphics2D g) {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getFont(), getVAlign(),
-					getHAlign());
+			label = new MathLabel(getTextModel(), getEffectiveFont(),
+					getVAlign(), getHAlign());
 		}
-		label.draw(g, getParent().getPhysicalTransform(), getLocation(),
-				getAngle(), getColor());
+
+		AffineTransform oldTransform = g.getTransform();
+
+		g.transform(getParent().getPhysicalTransform().getTransform());
+		g.translate(getLocation().getX(), getLocation().getY());
+		g.scale(1.0, -1.0);
+		g.rotate(-Math.PI * angle / 180.0);
+
+		g.setColor(getEffectiveColor());
+
+		label.draw(g);
+
+		g.setTransform(oldTransform);
 	}
 
 }
