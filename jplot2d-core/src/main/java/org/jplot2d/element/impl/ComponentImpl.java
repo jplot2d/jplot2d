@@ -157,6 +157,16 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		fontName = name;
 	}
 
+	public Color getEffectiveColor() {
+		if (color != null) {
+			return color;
+		} else if (getParent() != null) {
+			return getParent().getEffectiveColor();
+		} else {
+			return null;
+		}
+	}
+
 	public int getFontStyle() {
 		return fontStyle;
 	}

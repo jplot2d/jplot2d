@@ -134,13 +134,6 @@ public interface Component extends Element {
 	public void setColor(Color c);
 
 	/**
-	 * Returns the effective font of this component.
-	 * 
-	 * @return the effective font of this component
-	 */
-	public Font getEffectiveFont();
-
-	/**
 	 * Returns the name of the font.
 	 * 
 	 * @return the name of the font.
