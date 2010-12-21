@@ -18,17 +18,12 @@
  */
 package org.jplot2d.util;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.HAlign;
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
 
 /**
@@ -87,39 +82,15 @@ public class MathLabel {
 				dbnds.getHeight());
 	}
 
-	public void draw(Graphics2D g, PhysicalTransform pxf, Point2D loc,
-			double angle, Color color) {
-		if (g == null) {
-			return;
-		}
+	public void draw(Graphics2D g) {
 
-		/*
-		 * construct an AffineTransform with NaN may cause drawString() run out
-		 * of memory.
-		 */
-		AffineTransform af = AffineTransform.getTranslateInstance(
-				pxf.getXPtoD(loc.getX()), pxf.getYPtoD(loc.getY()));
-		af.scale(pxf.getScale(), pxf.getScale());
-		af.rotate(-Math.PI * angle / 180.0);
-
-		/* calculate device bounds */
-		Rectangle2D bounds = _mlc.getBounds();
-		GeneralPath gp = new GeneralPath(bounds);
-		gp.transform(af);
-
-		// g2.draw(_dbounds.getBounds());
-
-		AffineTransform oldTransform = g.getTransform();
 		RenderingHints oldRenderingHints = g.getRenderingHints();
 
-		g.transform(af);
-		g.setColor(color);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-		// g2.drawRect(-1, -1, 2, 2);
 		_mlc.draw(g);
 
 		g.setRenderingHints(oldRenderingHints);
@@ -128,7 +99,6 @@ public class MathLabel {
 		 * ID 6468831)
 		 */
 		g.setStroke(g.getStroke());
-		g.setTransform(oldTransform);
 
 	}
 

@@ -25,6 +25,7 @@ import org.jplot2d.data.XYData;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.TextComponent;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
@@ -40,9 +41,9 @@ import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
+import org.jplot2d.element.impl.TextComponentEx;
 import org.jplot2d.element.impl.ViewportAxisImpl;
 import org.jplot2d.element.impl.XYDataPlotImpl;
-import org.jplot2d.layout.OverlayLayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 
 /**
@@ -192,8 +193,10 @@ public class ComponentFactory {
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
-		((ElementAddition) vaProxy).setEnvironment(env);
-		((ElementAddition) groupProxy).setEnvironment(env);
+		synchronized (Environment.getGlobalLock()) {
+			((ElementAddition) vaProxy).setEnvironment(env);
+			((ElementAddition) groupProxy).setEnvironment(env);
+		}
 		env.registerComponent(va, vaProxy);
 		env.registerElement(group, groupProxy);
 
@@ -216,7 +219,9 @@ public class ComponentFactory {
 	 * @return
 	 */
 	public Axis createAxis() {
+		// this create tick and title inside
 		AxisImpl axis = new AxisImpl();
+
 		ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
 		Axis axisProxy = (Axis) Proxy.newProxyInstance(
 				Axis.class.getClassLoader(), new Class[] { Axis.class,
@@ -229,13 +234,24 @@ public class ComponentFactory {
 				AxisTick.class.getClassLoader(), new Class[] { AxisTick.class,
 						ElementAddition.class }, tickIH);
 
+		TextComponentEx title = axis.getTitle();
+		ElementIH<TextComponent> titleIH = new ElementIH<TextComponent>(title,
+				TextComponent.class);
+		TextComponent titleProxy = (TextComponent) Proxy.newProxyInstance(
+				TextComponent.class.getClassLoader(), new Class[] {
+						TextComponent.class, ElementAddition.class }, titleIH);
+
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
-		((ElementAddition) axisProxy).setEnvironment(env);
-		((ElementAddition) tickProxy).setEnvironment(env);
+		synchronized (Environment.getGlobalLock()) {
+			((ElementAddition) axisProxy).setEnvironment(env);
+			((ElementAddition) tickProxy).setEnvironment(env);
+			((ElementAddition) titleProxy).setEnvironment(env);
+		}
 		env.registerComponent(axis, axisProxy);
 		env.registerElement(tick, tickProxy);
+		env.registerElement(title, titleProxy);
 
 		return axisProxy;
 	}

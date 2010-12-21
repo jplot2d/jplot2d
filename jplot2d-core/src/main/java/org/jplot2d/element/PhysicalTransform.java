@@ -23,23 +23,22 @@ import java.awt.geom.Rectangle2D;
 public class PhysicalTransform implements Cloneable {
 
 	private final double xoff, yoff, scale;
+	private final double theta;
 
-	public PhysicalTransform(double xoff, double yoff, double scale) {
+	public PhysicalTransform(double xoff, double yoff, double scale,
+			double theta) {
 		this.xoff = xoff;
 		this.yoff = yoff;
 		this.scale = scale;
+		this.theta = theta;
+	}
+
+	public PhysicalTransform(double xoff, double yoff, double scale) {
+		this(xoff, yoff, scale, 0);
 	}
 
 	public PhysicalTransform(Point2D p, double scale) {
-		this.xoff = p.getX();
-		this.yoff = p.getY();
-		this.scale = scale;
-	}
-
-	public PhysicalTransform(PhysicalTransform pxf) {
-		this.xoff = pxf.xoff;
-		this.yoff = pxf.yoff;
-		this.scale = pxf.scale;
+		this(p.getX(), p.getY(), scale, 0);
 	}
 
 	public PhysicalTransform clone() {
@@ -71,6 +70,10 @@ public class PhysicalTransform implements Cloneable {
 	 */
 	public PhysicalTransform translate(double tx, double ty) {
 		return new PhysicalTransform(xoff + tx, yoff - ty, scale);
+	}
+
+	public PhysicalTransform rotate(double theta) {
+		return new PhysicalTransform(xoff, yoff, scale, this.theta + theta);
 	}
 
 	public boolean equals(Object obj) {
@@ -150,6 +153,9 @@ public class PhysicalTransform implements Cloneable {
 		AffineTransform af = new AffineTransform();
 		af.scale(scale, -scale);
 		af.translate(xoff, -yoff);
+		if (theta != 0) {
+			af.rotate(theta);
+		}
 		return af;
 	}
 

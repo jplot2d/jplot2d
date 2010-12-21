@@ -119,21 +119,20 @@ public class AsyncRenderer<T> extends Renderer<T> {
 				 * PARALLEL mode. In SURPASS mode, old renderers are canceled
 				 * and removed from the queue when new renderer is added.
 				 */
-				if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE)
-					;
-				for (;;) {
-					RenderTask renderer = renderTaskQueue.poll();
-					if (renderer.getFsn() == fsn) {
-						break;
-					}
-					/* cancel old renderer */
-					if (renderer.getFsn() < fsn && renderer.cancel(true)) {
-						logger.info("[R] Renderer " + fsn
-								+ " finished. Cancel the old renderer "
-								+ renderer.getFsn());
+				if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
+					for (;;) {
+						RenderTask renderer = renderTaskQueue.poll();
+						if (renderer.getFsn() == fsn) {
+							break;
+						}
+						/* cancel old renderer */
+						if (renderer.getFsn() < fsn && renderer.cancel(true)) {
+							logger.info("[R] Renderer " + fsn
+									+ " finished. Cancel the old renderer "
+									+ renderer.getFsn());
+						}
 					}
 				}
-
 			}
 		}
 
@@ -182,11 +181,10 @@ public class AsyncRenderer<T> extends Renderer<T> {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger
-								.info("[R] Render task "
-										+ fsn
-										+ " to be exec. Cancel the running render task "
-										+ rtask.getFsn());
+						logger.info("[R] Render task "
+								+ fsn
+								+ " to be exec. Cancel the running render task "
+								+ rtask.getFsn());
 					}
 				}
 			}

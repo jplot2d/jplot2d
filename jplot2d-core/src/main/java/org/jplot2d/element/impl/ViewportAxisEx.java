@@ -22,6 +22,7 @@ import org.jplot2d.axtrans.AxisTransform;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.AxisOrientation;
+import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
@@ -89,5 +90,9 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 	public void removeLayer(LayerEx layer);
 
 	public AxisTransform getAxisTransform();
+
+	public Range2D getRange();
+
+	public void setRange(double ustart, double uend);
 
 }

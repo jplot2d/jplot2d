@@ -137,8 +137,9 @@ public abstract class PlotEnvironment extends Environment {
 		 * are set. So we cannot use deep-first validate tree. we must layout
 		 * all subplot, then calculate auto range, then validate all axes.
 		 */
+		calcAxesThickness();
 
-		while (true) {
+		while (!plotImpl.isValid()) {
 
 			/*
 			 * Laying out axes may register some axis that ticks need be
@@ -157,11 +158,11 @@ public abstract class PlotEnvironment extends Environment {
 			 * Calculating axes tick may invalidate some axis. Their metrics
 			 * need be re-calculated
 			 */
-			calcAxesTick();
+			calcAxesTick(plotImpl);
 
-			if (plotImpl.isValid()) {
-				break;
-			}
+			/* thickness changes may invalidate the plot */
+			calcAxesThickness();
+
 		}
 
 		Map<ElementEx, ElementEx> copyMap = makeUndoMemento();
@@ -181,18 +182,37 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
-	private void calcAxesTick() {
+	private void calcAxesThickness() {
 		for (SubplotEx sp : plotImpl.getSubplots()) {
 			for (ViewportAxisEx va : sp.getXViewportAxes()) {
 				for (AxisEx axis : va.getAxes()) {
-					axis.calcTicks();
+					axis.calcThickness();
 				}
 			}
 			for (ViewportAxisEx va : sp.getYViewportAxes()) {
 				for (AxisEx axis : va.getAxes()) {
-					axis.calcTicks();
+					axis.calcThickness();
 				}
 			}
+		}
+	}
+
+	/**
+	 * Calculate axis ticks according to its length, range and tick properties.
+	 */
+	private void calcAxesTick(SubplotEx subplot) {
+		for (ViewportAxisEx va : subplot.getXViewportAxes()) {
+			for (AxisEx axis : va.getAxes()) {
+				axis.calcTicks();
+			}
+		}
+		for (ViewportAxisEx va : subplot.getYViewportAxes()) {
+			for (AxisEx axis : va.getAxes()) {
+				axis.calcTicks();
+			}
+		}
+		for (SubplotEx sp : plotImpl.getSubplots()) {
+			calcAxesTick(sp);
 		}
 	}
 

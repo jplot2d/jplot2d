@@ -18,7 +18,9 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.geom.Dimension2D;
 import java.util.Map;
 
@@ -34,15 +36,20 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	private double scale = 1;
 
-	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_SIZE;
+	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_WITH_TARGET_SIZE;
 
-	private Dimension containerSize = new Dimension();
+	private Dimension containerSize = new Dimension(480, 320);
 
 	private Dimension2D targetSize = new DoubleDimension2D(480, 320);
 
 	public PlotImpl() {
+		super.setColor(Color.BLACK);
+		super.setFontName("Serif");
+		super.setFontStyle(Font.PLAIN);
+		super.setFontSize(12.0f);
+
 		super.setCacheable(true);
-		pxf = new PhysicalTransform(0.0, 0.0, scale);
+		super.setSize(containerSize);
 	}
 
 	public void setCacheable(boolean cacheMode) {
