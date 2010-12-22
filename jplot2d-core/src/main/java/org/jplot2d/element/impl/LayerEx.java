@@ -10,4 +10,6 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public ViewportAxisEx getYViewportAxis();
 
+	public void parentPhysicalTransformChanged();
+
 }

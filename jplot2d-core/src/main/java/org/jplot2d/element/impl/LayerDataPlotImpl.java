@@ -25,7 +25,7 @@ import java.awt.geom.Rectangle2D;
  * @author Jingjing Li
  * 
  */
-public class LayerDataPlotImpl extends ComponentImpl implements
+public abstract class LayerDataPlotImpl extends ComponentImpl implements
 		LayerDataPlotEx {
 
 	public LayerEx getParent() {
@@ -44,7 +44,8 @@ public class LayerDataPlotImpl extends ComponentImpl implements
 		if (getParent() == null) {
 			return null;
 		} else {
-			return getParent().getBounds();
+			return new Rectangle2D.Double(0, 0, getSize().getWidth(), getSize()
+					.getHeight());
 		}
 	}
 

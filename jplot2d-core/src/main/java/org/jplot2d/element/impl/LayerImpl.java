@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,8 @@ import org.jplot2d.util.TeXMathUtils;
  * 
  */
 public class LayerImpl extends ContainerImpl implements LayerEx {
+
+	private PhysicalTransform pxf;
 
 	private MathElement name;
 
@@ -60,8 +61,23 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return super.getMooringMap();
 	}
 
+	public void setLocation(double locX, double locY) {
+		super.setLocation(locX, locY);
+		pxf = null;
+		redraw();
+	}
+
 	public PhysicalTransform getPhysicalTransform() {
-		return getParent().getPhysicalTransform();
+		if (pxf == null) {
+			pxf = getParent().getPhysicalTransform().translate(
+					getLocation().getX(), getLocation().getY());
+		}
+		return pxf;
+	}
+
+	public void parentPhysicalTransformChanged() {
+		pxf = null;
+		redraw();
 	}
 
 	public String getName() {
@@ -90,10 +106,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	public void addDataPlotter(LayerDataPlot plotter) {
 		plotters.add((LayerDataPlotEx) plotter);
+		((LayerDataPlotEx) plotter).setParent(this);
 	}
 
 	public void removeDataPlotter(LayerDataPlot plotter) {
 		plotters.remove(plotter);
+		((LayerDataPlotEx) plotter).setParent(null);
 	}
 
 	public Marker getMarker(int idx) {
@@ -149,12 +167,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		this.yaxis = (ViewportAxisEx) yaxis;
 		if (this.xaxis != null) {
 			this.yaxis.addLayer(this);
-		}
-	}
-
-	public void draw(Graphics2D g) {
-		for (LayerDataPlotEx plotter : plotters) {
-			plotter.draw(g);
 		}
 	}
 

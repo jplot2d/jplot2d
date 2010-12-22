@@ -20,6 +20,8 @@ package org.jplot2d.element.impl;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -346,4 +348,17 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		valid = comp.valid;
 		redrawNeeded = comp.redrawNeeded;
 	}
+
+	protected void drawBounds(Graphics2D g) {
+		g.setColor(Color.BLACK);
+		Rectangle rect = getParent().getPhysicalTransform()
+				.getPtoD(getBounds()).getBounds();
+		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
+		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1,
+				(int) rect.getMaxY() - 1);
+		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1,
+				rect.y);
+
+	}
+
 }

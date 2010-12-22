@@ -357,13 +357,6 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		viewportPreferredSize = sp.viewportPreferredSize;
 		viewportPhysicalBounds = sp.viewportPhysicalBounds;
 
-		// copy layers
-		for (LayerEx layer : sp.layers) {
-			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
-			layerCopy.setParent(this);
-			layers.add(layerCopy);
-		}
-
 		// copy axes
 		for (ViewportAxisEx va : sp.xViewportAxis) {
 			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
@@ -374,6 +367,25 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
 			vaCopy.setParent(this);
 			yViewportAxis.add(vaCopy);
+		}
+
+		// copy layers
+		for (LayerEx layer : sp.layers) {
+			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
+			layerCopy.setParent(this);
+			layers.add(layerCopy);
+
+			// link layer and viewport axis
+			if (layer.getXViewportAxis() != null) {
+				ViewportAxisEx xcopy = (ViewportAxisEx) orig2copyMap.get(layer
+						.getXViewportAxis());
+				layerCopy.setXViewportAxis(xcopy);
+			}
+			if (layer.getYViewportAxis() != null) {
+				ViewportAxisEx ycopy = (ViewportAxisEx) orig2copyMap.get(layer
+						.getYViewportAxis());
+				layerCopy.setYViewportAxis(ycopy);
+			}
 		}
 
 	}
