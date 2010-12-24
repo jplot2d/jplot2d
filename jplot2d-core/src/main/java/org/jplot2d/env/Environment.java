@@ -32,6 +32,7 @@ import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.util.WarningMessage;
 
 /**
  * An environment that a plot can realization. Once a plot is put an
@@ -79,6 +80,8 @@ public abstract class Environment {
 
 	private final List<JPlot2DChangeListener> plotStructureListenerList = Collections
 			.synchronizedList(new ArrayList<JPlot2DChangeListener>());
+
+	private final List<WarningMessage> warnings = new ArrayList<WarningMessage>();
 
 	public static Object getGlobalLock() {
 		return LOCK;
@@ -135,15 +138,17 @@ public abstract class Environment {
 	 * A component has been added to this environment, after setting the parent.
 	 * The added component either is cacheable, or has a cacheable parent.
 	 * 
-	 * @param <T>
 	 * @param comp
-	 * @param proxy
+	 *            the added ComponentEx
+	 * @param env
+	 *            the environment of the added component
 	 */
 	void componentAdded(ComponentEx comp, Environment env) {
 
 		proxyMap.putAll(env.proxyMap);
 		addOrder(cacheableComponentList, env.cacheableComponentList);
 		subComponentMap.putAll(env.subComponentMap);
+		warnings.addAll(env.warnings);
 
 		/* merge uncacheable component tree */
 		if (!comp.isCacheable()) {
@@ -160,6 +165,7 @@ public abstract class Environment {
 		env.proxyMap.clear();
 		env.cacheableComponentList.clear();
 		env.subComponentMap.clear();
+		env.warnings.clear();
 
 		fireComponentAdded((Component) getProxy(comp));
 	}
@@ -178,10 +184,10 @@ public abstract class Environment {
 	/**
 	 * Called when a component has been removed from its parent
 	 * 
+	 * @param oldParent
 	 * @param comp
 	 *            the removed component
-	 * @return A map. The key is removed component. The value is the removed
-	 *         component proxy
+	 * @return a DummyEnvironment hosts the removed component and descendants.
 	 */
 	DummyEnvironment componentRemoved(ComponentEx oldParent, ComponentEx comp) {
 

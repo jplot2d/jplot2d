@@ -27,12 +27,15 @@ import java.util.Map;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.WarningMessage;
 
 /**
  * @author Jingjing Li
  * 
  */
 public class PlotImpl extends SubplotImpl implements PlotEx {
+
+	private WarningReceiver warningReceiver;
 
 	private double scale = 1;
 
@@ -54,6 +57,16 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	public void setCacheable(boolean cacheMode) {
 		// ignore setting cacheable
+	}
+
+	public void setWarningReceiver(WarningReceiver warningReceiver) {
+		this.warningReceiver = warningReceiver;
+	}
+
+	public void warning(WarningMessage msg) {
+		if ((warningReceiver != null)) {
+			warningReceiver.warning(msg);
+		}
 	}
 
 	public PlotSizeMode getSizeMode() {

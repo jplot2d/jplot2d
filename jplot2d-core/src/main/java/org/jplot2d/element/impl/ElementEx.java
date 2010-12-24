@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
+import org.jplot2d.util.WarningMessage;
 
 /**
  * @author Jingjing Li
@@ -39,6 +40,14 @@ public interface ElementEx extends Element {
 	public void setParent(ElementEx parent);
 
 	public String getId();
+
+	/**
+	 * Element call this method to notify warning to its parent.
+	 * 
+	 * @param msg
+	 *            the warning message
+	 */
+	public void warning(WarningMessage msg);
 
 	/**
 	 * Create a deep copy of this element. The parent of the copy are not set.
