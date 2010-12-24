@@ -21,7 +21,7 @@ package org.jplot2d.env;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
-import org.jplot2d.data.XYData;
+import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
@@ -32,7 +32,7 @@ import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
-import org.jplot2d.element.XYDataPlot;
+import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
@@ -43,7 +43,7 @@ import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.TextComponentEx;
 import org.jplot2d.element.impl.ViewportAxisImpl;
-import org.jplot2d.element.impl.XYDataPlotImpl;
+import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.layout.SimpleLayoutDirector;
 
 /**
@@ -124,14 +124,14 @@ public class ComponentFactory {
 	}
 
 	public Layer createLayer(ArrayPair xy) {
-		return this.createLayer(new XYData(xy));
+		return this.createLayer(new XYGraph(xy));
 	}
 
-	public Layer createLayer(XYData data) {
+	public Layer createLayer(XYGraph graph) {
 		Layer layer = this.createLayer();
-		XYDataPlot plotter = this.createXYDataPlotter();
-		plotter.setData(data);
-		layer.addDataPlotter(plotter);
+		XYGraphPlotter plotter = this.createXYGraphPlotter();
+		plotter.setGraph(graph);
+		layer.addGraphPlotter(plotter);
 		return layer;
 	}
 
@@ -146,13 +146,13 @@ public class ComponentFactory {
 		return proxy;
 	}
 
-	public XYDataPlot createXYDataPlotter() {
-		XYDataPlotImpl impl = new XYDataPlotImpl();
-		ElementIH<XYDataPlot> ih = new ElementIH<XYDataPlot>(impl,
-				XYDataPlot.class);
-		XYDataPlot proxy = (XYDataPlot) Proxy.newProxyInstance(
-				XYDataPlot.class.getClassLoader(), new Class[] {
-						XYDataPlot.class, ElementAddition.class }, ih);
+	public XYGraphPlotter createXYGraphPlotter() {
+		XYGraphPlotterImpl impl = new XYGraphPlotterImpl();
+		ElementIH<XYGraphPlotter> ih = new ElementIH<XYGraphPlotter>(impl,
+				XYGraphPlotter.class);
+		XYGraphPlotter proxy = (XYGraphPlotter) Proxy.newProxyInstance(
+				XYGraphPlotter.class.getClassLoader(), new Class[] {
+						XYGraphPlotter.class, ElementAddition.class }, ih);
 
 		assignDummyEnv(impl, proxy);
 		return proxy;
@@ -251,6 +251,10 @@ public class ComponentFactory {
 		}
 		env.registerComponent(axis, axisProxy);
 		env.registerElement(tick, tickProxy);
+		/*
+		 * register the title as an element, the axis take the responsibility to
+		 * draw the title
+		 */
 		env.registerElement(title, titleProxy);
 
 		return axisProxy;

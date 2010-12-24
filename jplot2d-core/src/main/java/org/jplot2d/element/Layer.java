@@ -64,32 +64,38 @@ public interface Layer extends Container {
 	public void setNameModel(MathElement name);
 
 	/**
-	 * Returns the data model of this layer.
+	 * Returns the graph plotter on the given index.
 	 * 
-	 * @return the data model of this layer.
+	 * @return the graph plotter on the given index
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public LayerDataPlot getDataPlotter(int index);
+	public GraphPlotter getGraphPlotter(int index);
 
 	/**
-	 * Returns the data model of this layer.
+	 * Returns all graph plotters of this layer.
 	 * 
-	 * @return the data model of this layer.
+	 * @return all graph plotters of this layer.
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public LayerDataPlot[] getDataPlotters();
-
-	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeDataPlotter(LayerDataPlot plotter);
+	public GraphPlotter[] getGraphPlotters();
 
 	/**
-	 * Adds a data plotter to be shown in this layer.
+	 * Adds a graph plotter to this layer.
 	 * 
-	 * @param dataModel
-	 *            the data model to be add.
+	 * @param plotter
+	 *            the plotter to be add.
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	public void addDataPlotter(LayerDataPlot plotter);
+	public void addGraphPlotter(GraphPlotter plotter);
+
+	/**
+	 * Remove the graph plotter from this layer.
+	 * 
+	 * @param plotter
+	 *            the plotter to be removed
+	 */
+	@Hierarchy(HierarchyOp.REMOVE)
+	public void removeGraphPlotter(GraphPlotter plotter);
 
 	/**
 	 * Returns the marker.

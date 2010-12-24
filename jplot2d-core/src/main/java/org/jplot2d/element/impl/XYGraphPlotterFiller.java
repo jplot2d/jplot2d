@@ -26,7 +26,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import org.jplot2d.data.XYData;
+import org.jplot2d.data.XYGraph;
 import org.jplot2d.util.LineHatchPaint;
 import org.jplot2d.util.NumberUtils;
 
@@ -36,17 +36,17 @@ import org.jplot2d.util.NumberUtils;
  * @author Jingjing Li
  * 
  */
-public class XYDataPlotterFiller {
+public class XYGraphPlotterFiller {
 
-	private static final ThreadLocal<XYDataPlotterFiller> _threadLocalBuilder = new ThreadLocal<XYDataPlotterFiller>();
+	private static final ThreadLocal<XYGraphPlotterFiller> _threadLocalBuilder = new ThreadLocal<XYGraphPlotterFiller>();
 
 	private final Path2D.Float path = new Path2D.Float();
 
 	private LayerEx cg;
 
-	private XYDataPlotEx style;
+	private XYGraphPlotterEx style;
 
-	private XYData line;
+	private XYGraph line;
 
 	private Rectangle2D clip;
 
@@ -60,12 +60,12 @@ public class XYDataPlotterFiller {
 
 	private Paint hatchPaint;
 
-	private XYDataPlotterFiller() {
+	private XYGraphPlotterFiller() {
 
 	}
 
-	private void setLineData(XYDataPlotEx dp) {
-		this.line = dp.getData();
+	private void setLineData(XYGraphPlotterEx dp) {
+		this.line = dp.getGraph();
 		this.cg = dp.getParent();
 		this.style = dp;
 
@@ -184,11 +184,11 @@ public class XYDataPlotterFiller {
 		return hatchPaint;
 	}
 
-	public static XYDataPlotterFiller getInstance(XYDataPlotImpl dp,
+	public static XYGraphPlotterFiller getInstance(XYGraphPlotterImpl dp,
 			Rectangle clip) {
-		XYDataPlotterFiller builder = _threadLocalBuilder.get();
+		XYGraphPlotterFiller builder = _threadLocalBuilder.get();
 		if (builder == null) {
-			builder = new XYDataPlotterFiller();
+			builder = new XYGraphPlotterFiller();
 			_threadLocalBuilder.set(builder);
 		}
 

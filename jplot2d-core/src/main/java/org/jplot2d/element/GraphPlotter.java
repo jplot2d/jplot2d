@@ -16,37 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element.impl;
+package org.jplot2d.element;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
+import org.jplot2d.data.Graph;
 
 /**
  * @author Jingjing Li
  * 
  */
-public abstract class LayerDataPlotImpl extends ComponentImpl implements
-		GraphPlotterEx {
+public interface GraphPlotter extends Component {
 
-	public LayerEx getParent() {
-		return (LayerEx) super.getParent();
-	}
-
-	public Dimension2D getSize() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return getParent().getSize();
-		}
-	}
-
-	public Rectangle2D getBounds() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return new Rectangle2D.Double(0, 0, getSize().getWidth(), getSize()
-					.getHeight());
-		}
-	}
+	public Graph getGraph();
 
 }

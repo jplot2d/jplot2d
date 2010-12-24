@@ -26,7 +26,7 @@ import org.jplot2d.util.Range2D;
  * 
  * @author Jingjing Li
  */
-public final class XYData implements LayerData {
+public final class XYGraph implements Graph {
 
 	/** the default capacity for idx lists */
 	private static final int DEFAULT_CAPACITY = 4;
@@ -65,15 +65,15 @@ public final class XYData implements LayerData {
 
 	private boolean hasPointOutsideXBounds, hasPointOutsideYBounds;
 
-	public XYData(ArrayPair xy) {
+	public XYGraph(ArrayPair xy) {
 		this(xy, null, null);
 	}
 
-	public XYData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
+	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
 		this(xy, errorX, errorY, null, null);
 	}
 
-	public XYData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
+	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
 			Range2D xboundary, Range2D yboundary) {
 		_xy = xy;
 		_errorX = errorX;
@@ -83,16 +83,16 @@ public final class XYData implements LayerData {
 		extractDataFeature();
 	}
 
-	public XYData setXBoundary(Range2D xboundary) {
+	public XYGraph setXBoundary(Range2D xboundary) {
 		return setBoundary(xboundary, null);
 	}
 
-	public XYData setYBoundary(Range2D yboundary) {
+	public XYGraph setYBoundary(Range2D yboundary) {
 		return setBoundary(null, yboundary);
 	}
 
-	public XYData setBoundary(Range2D xboundary, Range2D yboundary) {
-		return new XYData(_xy, _errorX, _errorY, xboundary, yboundary);
+	public XYGraph setBoundary(Range2D xboundary, Range2D yboundary) {
+		return new XYGraph(_xy, _errorX, _errorY, xboundary, yboundary);
 	}
 
 	/**
@@ -257,9 +257,9 @@ public final class XYData implements LayerData {
 	 * @param xy
 	 * @return a new LineData object.
 	 */
-	public XYData addPoints(ArrayPair xy) {
+	public XYGraph addPoints(ArrayPair xy) {
 		if (xy != null) {
-			XYData nld = new XYData(_xy.append(xy), _errorX, _errorY);
+			XYGraph nld = new XYGraph(_xy.append(xy), _errorX, _errorY);
 			return nld;
 		}
 		return this;
@@ -382,21 +382,21 @@ public final class XYData implements LayerData {
 		return _errorY.getQDouble(idx);
 	}
 
-	public XYData setErrorX(ArrayPair arrayPair) {
-		XYData nld = new XYData(_xy, arrayPair, _errorY);
+	public XYGraph setErrorX(ArrayPair arrayPair) {
+		XYGraph nld = new XYGraph(_xy, arrayPair, _errorY);
 		return nld;
 	}
 
-	public XYData appendErrorX(ArrayPair arrayPair) {
+	public XYGraph appendErrorX(ArrayPair arrayPair) {
 		return setErrorX(_errorX.append(arrayPair));
 	}
 
-	public XYData setErrorY(ArrayPair arrayPair) {
-		XYData nld = new XYData(_xy, _errorX, arrayPair);
+	public XYGraph setErrorY(ArrayPair arrayPair) {
+		XYGraph nld = new XYGraph(_xy, _errorX, arrayPair);
 		return nld;
 	}
 
-	public XYData appendErrorY(ArrayPair arrayPair) {
+	public XYGraph appendErrorY(ArrayPair arrayPair) {
 		return setErrorY(_errorY.append(arrayPair));
 	}
 
