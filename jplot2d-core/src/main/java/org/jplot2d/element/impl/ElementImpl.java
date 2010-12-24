@@ -19,6 +19,7 @@
 package org.jplot2d.element.impl;
 
 import org.jplot2d.env.Environment;
+import org.jplot2d.util.WarningMessage;
 
 /**
  * @author Jingjing Li
@@ -46,6 +47,12 @@ public abstract class ElementImpl implements ElementEx {
 
 	protected String getSelfId() {
 		return "Component@" + System.identityHashCode(this);
+	}
+
+	public void warning(WarningMessage msg) {
+		if ((getParent() != null)) {
+			getParent().warning(msg);
+		}
 	}
 
 }

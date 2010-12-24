@@ -19,17 +19,22 @@
 package org.jplot2d.env;
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.AxisEx;
+import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.ViewportAxisEx;
+import org.jplot2d.element.impl.WarningReceiver;
+import org.jplot2d.util.WarningMessage;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -39,7 +44,17 @@ import org.jplot2d.element.impl.ViewportAxisEx;
  */
 public abstract class PlotEnvironment extends Environment {
 
+	private WarningReceiver warningReceiver = new WarningReceiver() {
+
+		public void warning(WarningMessage msg) {
+			warnings.add(msg);
+		}
+
+	};
+
 	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>();
+
+	protected final List<WarningMessage> warnings = new ArrayList<WarningMessage>();
 
 	/**
 	 * The plot proxy
@@ -94,6 +109,7 @@ public abstract class PlotEnvironment extends Environment {
 		this.plotImpl = (PlotEx) ((ElementAddition) plot).getImpl();
 
 		componentAdded(plotImpl, oldEnv);
+		plotImpl.setWarningReceiver(warningReceiver);
 
 		endCommand();
 		oldEnv.endCommand();
@@ -175,8 +191,11 @@ public abstract class PlotEnvironment extends Environment {
 	 * 
 	 */
 	private void calcPendingLockGroupAutoRange() {
-		// TODO Auto-generated method stub
-
+		for (ElementEx element : proxyMap.keySet()) {
+			if (element instanceof AxisLockGroupEx) {
+				((AxisLockGroupEx) element).calcAutoRange();
+			}
+		}
 	}
 
 	/**
@@ -376,6 +395,31 @@ public abstract class PlotEnvironment extends Environment {
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.batchModeChanged(evt);
 			}
+		}
+	}
+
+	/**
+	 * Returns all warnings
+	 * 
+	 * @return all warnings
+	 */
+	public WarningMessage[] getWarnings() {
+		synchronized (warnings) {
+			return warnings.toArray(new WarningMessage[warnings.size()]);
+		}
+	}
+
+	/**
+	 * Returns all warnings and clear the existent warnings.
+	 * 
+	 * @return all warnings
+	 */
+	public WarningMessage[] removeWarnings() {
+		synchronized (warnings) {
+			WarningMessage[] result = warnings
+					.toArray(new WarningMessage[warnings.size()]);
+			warnings.clear();
+			return result;
 		}
 	}
 
