@@ -18,16 +18,14 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
-
-import org.jplot2d.element.XYDataPlot;
+import org.jplot2d.element.GraphPlotter;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface XYDataPlotEx extends XYDataPlot, LayerDataPlotEx {
+public interface GraphPlotterEx extends GraphPlotter, ComponentEx {
 
-	public Color getActualSymbolColor(int i);
+	public LayerEx getParent();
 
 }

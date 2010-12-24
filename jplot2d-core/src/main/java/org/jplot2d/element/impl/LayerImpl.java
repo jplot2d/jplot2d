@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.LayerDataPlot;
+import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
@@ -40,7 +40,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private MathElement name;
 
-	private List<LayerDataPlotEx> plotters = new ArrayList<LayerDataPlotEx>();
+	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
 	private ViewportAxisEx xaxis, yaxis;
 
@@ -96,22 +96,22 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		this.name = name;
 	}
 
-	public LayerDataPlot getDataPlotter(int index) {
+	public GraphPlotter getGraphPlotter(int index) {
 		return plotters.get(index);
 	}
 
-	public LayerDataPlotEx[] getDataPlotters() {
-		return plotters.toArray(new LayerDataPlotEx[plotters.size()]);
+	public GraphPlotterEx[] getGraphPlotters() {
+		return plotters.toArray(new GraphPlotterEx[plotters.size()]);
 	}
 
-	public void addDataPlotter(LayerDataPlot plotter) {
-		plotters.add((LayerDataPlotEx) plotter);
-		((LayerDataPlotEx) plotter).setParent(this);
+	public void addGraphPlotter(GraphPlotter plotter) {
+		plotters.add((GraphPlotterEx) plotter);
+		((GraphPlotterEx) plotter).setParent(this);
 	}
 
-	public void removeDataPlotter(LayerDataPlot plotter) {
+	public void removeGraphPlotter(GraphPlotter plotter) {
 		plotters.remove(plotter);
-		((LayerDataPlotEx) plotter).setParent(null);
+		((GraphPlotterEx) plotter).setParent(null);
 	}
 
 	public Marker getMarker(int idx) {
@@ -176,8 +176,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		LayerImpl layer = (LayerImpl) src;
 
 		// copy plotter
-		for (LayerDataPlotEx plotter : layer.plotters) {
-			LayerDataPlotEx plotterCopy = (LayerDataPlotEx) plotter
+		for (GraphPlotterEx plotter : layer.plotters) {
+			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter
 					.deepCopy(orig2copyMap);
 			plotterCopy.setParent(this);
 			plotters.add(plotterCopy);

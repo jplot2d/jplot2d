@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.jplot2d.data.XYData;
-import org.jplot2d.element.impl.XYDataPlotterChunker.ChunkData;
+import org.jplot2d.data.XYGraph;
+import org.jplot2d.element.impl.XYGraphPlotterDataChunker.ChunkData;
 import org.jplot2d.util.LineHatchPaint;
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.SymbolShape;
@@ -42,7 +42,8 @@ import org.jplot2d.util.SymbolShape;
  * @author Jingjing Li
  * 
  */
-public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
+public class XYGraphPlotterImpl extends LayerDataPlotImpl implements
+		XYGraphPlotterEx {
 
 	/**
 	 * The error arrow length in pt
@@ -51,7 +52,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 
 	private static final float ARROW_HEAD_LENGTH = ARROW_LENGTH / 4;
 
-	private XYData data;
+	private XYGraph graph;
 
 	private boolean symbolVisible = true;
 
@@ -77,12 +78,12 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 
 	private FillClosureType fillClosureType;
 
-	public XYData getData() {
-		return data;
+	public XYGraph getGraph() {
+		return graph;
 	}
 
-	public void setData(XYData data) {
-		this.data = data;
+	public void setGraph(XYGraph graph) {
+		this.graph = graph;
 	}
 
 	public boolean isSymbolsVisible() {
@@ -189,9 +190,9 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
 
-		XYDataPlotImpl dp = (XYDataPlotImpl) src;
+		XYGraphPlotterImpl dp = (XYGraphPlotterImpl) src;
 
-		this.data = dp.data;
+		this.graph = dp.graph;
 		this.symbolVisible = dp.symbolVisible;
 		this.lineVisible = dp.lineVisible;
 		this.chartType = dp.chartType;
@@ -204,7 +205,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 
 	public void draw(Graphics2D graphics) {
 
-		if (getData() == null) {
+		if (getGraph() == null) {
 			return;
 		}
 
@@ -222,7 +223,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	}
 
 	private void fillLineAera(Graphics2D g) {
-		XYDataPlotterFiller filler = XYDataPlotterFiller.getInstance(this,
+		XYGraphPlotterFiller filler = XYGraphPlotterFiller.getInstance(this,
 				g.getClipBounds());
 		Shape shape = filler.getShape();
 
@@ -244,7 +245,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 
 		double scale = getParent().getPhysicalTransform().getScale();
 
-		XYDataPlotterChunker chunker = XYDataPlotterChunker.getInstance(this,
+		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker.getInstance(this,
 				g.getClipBounds());
 
 		for (ChunkData data : chunker) {
@@ -414,7 +415,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	}
 
 	static void drawLine(Graphics2D g2, float[] xout, float[] yout, int lsize,
-			XYDataPlotEx style, double scale) {
+			XYGraphPlotterEx style, double scale) {
 
 		// set line stroke
 		g2.setStroke(scaleStroke(style.getLineStroke(), scale));
@@ -446,7 +447,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	 * Draw Histogram lines that data points is on the level center.
 	 */
 	private static void drawHistogram(Graphics2D g, ChunkData data,
-			XYDataPlotEx style, double scale) {
+			XYGraphPlotterEx style, double scale) {
 
 		float[] x = data.xBuf;
 		float[] y = data.yBuf;
@@ -486,7 +487,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	 * @param style
 	 */
 	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y,
-			int lsize, XYDataPlotEx style, double scale) {
+			int lsize, XYGraphPlotterEx style, double scale) {
 		int nsize = lsize * 2 - 1;
 		float[] xout = new float[nsize];
 		float[] yout = new float[nsize];
@@ -520,7 +521,7 @@ public class XYDataPlotImpl extends LayerDataPlotImpl implements XYDataPlotEx {
 	 *            line attribute
 	 */
 	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints,
-			XYDataPlotEx style, Color[] colors, double scale) {
+			XYGraphPlotterEx style, Color[] colors, double scale) {
 
 		if (style.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks

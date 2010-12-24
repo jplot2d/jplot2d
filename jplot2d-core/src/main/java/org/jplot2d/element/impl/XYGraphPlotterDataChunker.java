@@ -26,17 +26,17 @@ import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.jplot2d.data.XYData;
+import org.jplot2d.data.XYGraph;
 
 /**
- * Supply device data points in iterable chunks.
+ * Supply graph data points in iterable chunks.
  * 
  * @author Jingjing Li
  */
-public class XYDataPlotterChunker implements
-		Iterable<XYDataPlotterChunker.ChunkData> {
+public class XYGraphPlotterDataChunker implements
+		Iterable<XYGraphPlotterDataChunker.ChunkData> {
 
-	private static final ThreadLocal<XYDataPlotterChunker> _threadLocalBuilder = new ThreadLocal<XYDataPlotterChunker>();
+	private static final ThreadLocal<XYGraphPlotterDataChunker> _threadLocalBuilder = new ThreadLocal<XYGraphPlotterDataChunker>();
 
 	private static final int CHUNK_SIZE = 1000;
 
@@ -316,20 +316,20 @@ public class XYDataPlotterChunker implements
 
 	private LayerEx cg;
 
-	private XYDataPlotEx style;
+	private XYGraphPlotterEx style;
 
-	private XYData line;
+	private XYGraph line;
 
 	private Rectangle2D clip;
 
 	private final DataChunkIterator ite = new DataChunkIterator();
 
-	private XYDataPlotterChunker() {
+	private XYGraphPlotterDataChunker() {
 
 	}
 
-	private void setLineData(XYDataPlotEx dp) {
-		this.line = dp.getData();
+	private void setLineData(XYGraphPlotterEx dp) {
+		this.line = dp.getGraph();
 		this.cg = dp.getParent();
 		this.style = dp;
 	}
@@ -402,11 +402,11 @@ public class XYDataPlotterChunker implements
 		return result;
 	}
 
-	public static XYDataPlotterChunker getInstance(XYDataPlotEx dp,
+	public static XYGraphPlotterDataChunker getInstance(XYGraphPlotterEx dp,
 			Rectangle clip) {
-		XYDataPlotterChunker builder = _threadLocalBuilder.get();
+		XYGraphPlotterDataChunker builder = _threadLocalBuilder.get();
 		if (builder == null) {
-			builder = new XYDataPlotterChunker();
+			builder = new XYGraphPlotterDataChunker();
 			_threadLocalBuilder.set(builder);
 		}
 

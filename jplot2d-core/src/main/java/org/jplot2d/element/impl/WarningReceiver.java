@@ -16,12 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.util.WarningMessage;
 
 /**
+ * This interface receive plot waning messages.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface LayerDataPlot extends Component {
+public interface WarningReceiver {
+
+	/**
+	 * Plot call this method to add warnings.
+	 * 
+	 * @param msg
+	 *            the warning message
+	 */
+	public void warning(WarningMessage msg);
 
 }

@@ -10,6 +10,8 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public ViewportAxisEx getYViewportAxis();
 
+	public GraphPlotterEx[] getGraphPlotters();
+
 	public void parentPhysicalTransformChanged();
 
 }

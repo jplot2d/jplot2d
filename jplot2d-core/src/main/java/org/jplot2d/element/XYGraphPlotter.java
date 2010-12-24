@@ -21,14 +21,14 @@ package org.jplot2d.element;
 import java.awt.Paint;
 import java.awt.Stroke;
 
-import org.jplot2d.data.XYData;
+import org.jplot2d.data.XYGraph;
 import org.jplot2d.util.SymbolShape;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface XYDataPlot extends LayerDataPlot {
+public interface XYGraphPlotter extends GraphPlotter {
 
 	public enum ChartType {
 		/**
@@ -77,9 +77,9 @@ public interface XYDataPlot extends LayerDataPlot {
 		BOTTOM
 	}
 
-	public XYData getData();
+	public XYGraph getGraph();
 
-	public void setData(XYData data);
+	public void setGraph(XYGraph graph);
 
 	public boolean isSymbolsVisible();
 
