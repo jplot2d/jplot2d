@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
-/*
- * $Id: NormalTransform.java,v 1.2 2010/06/11 09:44:31 jli Exp $
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtrans;
 
@@ -30,112 +27,118 @@ public abstract class NormalTransform implements Cloneable {
 
 	public static final Range2D NORMAL_RANGE = new Range2D.Double(0.0, 1.0);
 
-    protected boolean _valid = false;
+	private TransformType type;
 
-    protected double _a;
+	protected boolean _valid = false;
 
-    protected double _b;
+	protected double _a;
 
-    /**
-     * Create a non-transformable AxisTranform.
-     */
-    protected NormalTransform() {
+	protected double _b;
 
-    }
+	/**
+	 * Create a non-transformable AxisTranform.
+	 */
+	protected NormalTransform(TransformType type) {
+		this.type = type;
+	}
 
-    /**
-     * Create a copy of this <code>NormalTransform</code>.
-     * 
-     * @return the copy
-     */
-    public abstract NormalTransform copy();
+	public TransformType getType() {
+		return type;
+	}
 
-    /**
-     * Derive a new NormalTransform with offset set to 0;
-     * 
-     * @return the derived NormalTransform
-     */
-    public NormalTransform deriveNoOffset() {
-        NormalTransform result = this.copy();
-        result._b = 0;
-        return result;
-    }
+	/**
+	 * Create a copy of this <code>NormalTransform</code>.
+	 * 
+	 * @return the copy
+	 */
+	public abstract NormalTransform copy();
 
-    /**
-     * Returns if this AxisTransform is ready to transform values. Only
-     * <code>true</code> after both physical range and world range are set
-     * properly.
-     * 
-     * @return <code>true</code> if this AxisTransform is ready to transform
-     *         values.
-     */
-    public boolean isValid() {
-        return _valid;
-    }
+	/**
+	 * Derive a new NormalTransform with offset set to 0;
+	 * 
+	 * @return the derived NormalTransform
+	 */
+	public NormalTransform deriveNoOffset() {
+		NormalTransform result = this.copy();
+		result._b = 0;
+		return result;
+	}
 
-    public double getScale() {
-        if (!_valid) {
-            throw new IllegalStateException("Transform is invalid");
-        }
-        return _a;
-    }
+	/**
+	 * Returns if this AxisTransform is ready to transform values. Only
+	 * <code>true</code> after both physical range and world range are set
+	 * properly.
+	 * 
+	 * @return <code>true</code> if this AxisTransform is ready to transform
+	 *         values.
+	 */
+	public boolean isValid() {
+		return _valid;
+	}
 
-    public double getOffset() {
-        if (!_valid) {
-            throw new IllegalStateException("Transform is invalid");
-        }
-        return _b;
-    }
+	public double getScale() {
+		if (!_valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return _a;
+	}
 
-    /**
-     * Transform from world to physical coordinate.
-     * 
-     * @param u
-     *            world value
-     * @return physical value
-     */
-    public abstract double getTransP(double u);
+	public double getOffset() {
+		if (!_valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return _b;
+	}
 
-    /**
-     * Transform from physical to world coordinate.
-     * 
-     * @param p
-     *            physical value
-     * @return world value
-     */
-    public abstract double getTransU(double p);
+	/**
+	 * Transform from world to physical coordinate.
+	 * 
+	 * @param u
+	 *            world value
+	 * @return physical value
+	 */
+	public abstract double getTransP(double u);
 
-    public Range2D getTransP(Range2D wrange) {
-        return new Range2D.Double(getTransP(wrange.getStart()), wrange
-                .isStartIncluded(), getTransP(wrange.getEnd()), wrange
-                .isEndIncluded());
-    }
+	/**
+	 * Transform from physical to world coordinate.
+	 * 
+	 * @param p
+	 *            physical value
+	 * @return world value
+	 */
+	public abstract double getTransU(double p);
 
-    public Range2D getTransU(Range2D prange) {
-        return new Range2D.Double(getTransU(prange.getStart()), prange
-                .isStartIncluded(), getTransU(prange.getEnd()), prange
-                .isEndIncluded());
-    }
+	public Range2D getTransP(Range2D wrange) {
+		return new Range2D.Double(getTransP(wrange.getStart()),
+				wrange.isStartIncluded(), getTransP(wrange.getEnd()),
+				wrange.isEndIncluded());
+	}
 
-    public void zoom(Range2D npr) {
-        _b = _b + _a * npr.getStart();
-        _a = _a * npr.getSpan();
-        // prevent overflow
-        if (_a == Double.POSITIVE_INFINITY) {
-            _a = Double.MAX_VALUE;
-        } else if (_a == Double.NEGATIVE_INFINITY) {
-            _a = -Double.MAX_VALUE;
-        }
-    }
+	public Range2D getTransU(Range2D prange) {
+		return new Range2D.Double(getTransU(prange.getStart()),
+				prange.isStartIncluded(), getTransU(prange.getEnd()),
+				prange.isEndIncluded());
+	}
 
-    public void invert() {
-        _b += _a;
-        _a = -_a;
-    }
+	public void zoom(Range2D npr) {
+		_b = _b + _a * npr.getStart();
+		_a = _a * npr.getSpan();
+		// prevent overflow
+		if (_a == Double.POSITIVE_INFINITY) {
+			_a = Double.MAX_VALUE;
+		} else if (_a == Double.NEGATIVE_INFINITY) {
+			_a = -Double.MAX_VALUE;
+		}
+	}
 
-    public abstract Range2D getRangeW();
+	public void invert() {
+		_b += _a;
+		_a = -_a;
+	}
 
-    public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi,
-            double precisionLimit);
+	public abstract Range2D getRangeW();
+
+	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi,
+			double precisionLimit);
 
 }
