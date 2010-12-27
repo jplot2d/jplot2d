@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * 
+ * Copyright 2010 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtype;
 
@@ -41,26 +38,20 @@ public abstract class AxisType {
 	private static final Map<String, AxisType> axisTypeMap = Collections
 			.synchronizedMap(new LinkedHashMap<String, AxisType>());
 
-	public static final AxisType LINEAR = new LinearAxisType();
+	public static final AxisType NUMBER = NumberAxisType.getInstance();
 
-	public static final AxisType LOG = new LogAxisType();
+	public static final AxisType DATE = DateAxisType.getInstance();
 
-	public static final AxisType DATE = new DateAxisType();
+	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType
+			.getInstance();
 
-	public static final AxisType RIGHT_ASCENSION = new RightAscensionAxisType();
-
-	public static final AxisType DECLINATION = new DeclinationAxisType();
+	public static final AxisType DECLINATION = DeclinationAxisType
+			.getInstance();
 
 	private final String name;
 
-	private final TransformType transformType;
-
-	private final TickAlgorithm tickAlgorithm;
-
-	public AxisType(String name, TransformType att, TickAlgorithm ta) {
+	public AxisType(String name) {
 		this.name = name;
-		transformType = att;
-		tickAlgorithm = ta;
 		axisTypeMap.put(name, this);
 	}
 
@@ -68,35 +59,34 @@ public abstract class AxisType {
 		return name;
 	}
 
-	public TransformType getTransformType() {
-		return transformType;
-	}
+	public abstract boolean canSupport(TransformType txfType);
 
-	public TickAlgorithm getTickAlgorithm() {
-		return tickAlgorithm;
-	}
+	public abstract TransformType getDefaultTransformType();
 
 	/**
-	 * The returned boundary never is inverted.
+	 * The boundary of the axis nature. The returned boundary is never inverted.
+	 * For circular axis, this boundary is valid limit for data values, not for
+	 * displayed label values.
 	 * 
 	 * @return
 	 */
-	public abstract Range2D getBoundary();
+	public abstract Range2D getBoundary(TransformType txfType);
 
 	/**
-	 * @return the default world range when auto-range a axis that contains no
-	 *         valid data
+	 * @return the default world range when the axis contains no valid data
 	 */
-	public abstract Range2D getDefaultWorldRange();
+	public abstract Range2D getDefaultWorldRange(TransformType txfType);
+
+	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType);
 
 	/**
+	 * Some axis has a circular nature, such as angle. This range is a canonical
+	 * range that all values should displayed in the range.
 	 * 
-	 * @param values
-	 *            the values in an array object
-	 * @return a array of canonical values
+	 * @return <true> is this axis is circular nature.
 	 */
-	public double getCircle() {
-		return Double.POSITIVE_INFINITY;
+	public Range2D getCircularRange() {
+		return null;
 	}
 
 	public String toString() {

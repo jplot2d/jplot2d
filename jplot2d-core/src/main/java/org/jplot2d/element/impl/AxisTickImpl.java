@@ -27,10 +27,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.axtick.RangeAdvisor;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtick.TickCalculator;
 import org.jplot2d.axtick.TickUtils;
-import org.jplot2d.axtrans.AxisTransform;
+import org.jplot2d.axtrans.NormalTransform;
+import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.NumberArrayUtils;
@@ -38,6 +40,9 @@ import org.jplot2d.util.Range2D;
 import org.jplot2d.util.TeXMathUtils;
 
 /**
+ * This class has some internal cache for its parent's properties to trace the
+ * values valid conditions.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -150,9 +155,11 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	private AxisTickTransform tickTransform;
 
-	private AxisTransform axisTransform;
+	private NormalTransform axisNormalTransform;
 
-	private double circMod;
+	private double axisLength;
+
+	private Range2D circularRange;
 
 	private boolean labelSameOrientation;
 
@@ -334,8 +341,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	public boolean calcTicks(Range2D range, AxisTickTransform txf,
-			AxisTransform axf, double circMod, boolean labelSameOrientation,
-			Font font) {
+			NormalTransform axf, double axisLength, Range2D circularRange,
+			boolean labelSameOrientation, Font font) {
 
 		if (!range.equals(this.range)) {
 			_rangeChanged = true;
@@ -347,13 +354,17 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			_trfChanged = true;
 			this.tickTransform = txf;
 		}
-		if (!axf.equals(this.axisTransform)) {
+		if (!axf.equals(this.axisNormalTransform)) {
 			_trfChanged = true;
-			this.axisTransform = axf;
+			this.axisNormalTransform = axf;
 		}
-		if (circMod != this.circMod) {
+		if (axisLength != this.axisLength) {
+			_trfChanged = true;
+			this.axisLength = axisLength;
+		}
+		if (circularRange != this.circularRange) {
 			_axisTypeChanged = true;
-			this.circMod = circMod;
+			this.circularRange = circularRange;
 		}
 		if (labelSameOrientation != this.labelSameOrientation) {
 			_labelOrientationChanged = true;
@@ -524,8 +535,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 					labelTextFormat, labelFormat);
 			labels = calcLabels(fixedLabels, autoLabels, labelInterval);
 
-			double density = getLabelsDensity(values, labels, getLabelFont(),
-					labelInterval);
+			double density = getLabelsDensity(values, labels, getLabelFont());
 			if (density <= 1) {
 				break;
 			}
@@ -650,8 +660,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	private Font shrinkLabelFont() {
-		double density = getLabelsDensity(values, labels, getLabelFont(),
-				labelInterval);
+		double density = getLabelsDensity(values, labels, getLabelFont());
 		if (Double.isInfinite(density)) { // when axis length is zero
 			return getLabelFont();
 		}
@@ -663,7 +672,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			font = font
 					.deriveFont((float) (font.getSize2D() / ((density > 1.1) ? density
 							: 1.1)));
-			density = getLabelsDensity(values, labels, font, labelInterval);
+			density = getLabelsDensity(values, labels, font);
 
 			if (oldDensity / density >= 1.1) {
 				oldDensity = density;
@@ -687,7 +696,13 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 * @return the label density.
 	 */
 	private double getLabelsDensity(Object tickValues, MathElement[] labels,
-			Font labelFont, int labelInterval) {
+			Font labelFont) {
+		return getLabelsDensity(axisNormalTransform, axisLength, tickValues,
+				labels, labelFont);
+	}
+
+	private double getLabelsDensity(NormalTransform nxf, double axisLength,
+			Object tickValues, MathElement[] labels, Font labelFont) {
 
 		if (Array.getLength(tickValues) == 0) {
 			return 0;
@@ -699,11 +714,12 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 		/* Note: when scale is very small, deltaD will be zero */
 		double maxDesity = 0;
-		double ticA = transTickToPaper(Array.getDouble(tickValues, 0));
+		double ticA = transTickToPaper(nxf, axisLength,
+				Array.getDouble(tickValues, 0));
 		if (labelSameOrientation) {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = transTickToPaper(Array.getDouble(tickValues, i
-						* labelInterval));
+				double ticB = transTickToPaper(nxf, axisLength,
+						Array.getDouble(tickValues, i * labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
 				double desity = (labelsSize[i - 1].getWidth() / 2
 						+ labelsSize[i].getWidth() / 2 + blankWidth)
@@ -715,8 +731,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			}
 		} else {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = transTickToPaper(Array.getDouble(tickValues, i
-						* labelInterval));
+				double ticB = transTickToPaper(nxf, axisLength,
+						Array.getDouble(tickValues, i * labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
 				double desity = (labelsSize[i - 1].getHeight() / 2
 						+ labelsSize[i].getHeight() / 2 + blankWidth)
@@ -739,14 +755,15 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 *            tick value
 	 * @return paper value
 	 */
-	private double transTickToPaper(double tickValue) {
+	private double transTickToPaper(NormalTransform nxf, double axisLength,
+			double tickValue) {
 		double uv;
 		if (tickTransform != null) {
 			uv = tickTransform.transformTick2User(tickValue);
 		} else {
 			uv = tickValue;
 		}
-		return axisTransform.getTransP(uv);
+		return nxf.getTransP(uv) * axisLength;
 	}
 
 	/**
@@ -754,6 +771,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 * will be used to produce labels.
 	 * 
 	 * @param values
+	 *            the tick values
 	 * @param mod
 	 * @return the canonical values
 	 */
@@ -778,11 +796,112 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	private double getCanonicalValue(double d) {
-		return d % circMod;
+		if (circularRange == null) {
+			return d;
+		}
+
+		double uv;
+		if (tickTransform == null) {
+			uv = d;
+		} else {
+			uv = tickTransform.transformTick2User(d);
+		}
+		double canon = uv % circularRange.getSpan() + circularRange.getMin();
+		if (tickTransform == null) {
+			return canon;
+		} else {
+			return tickTransform.transformUser2Tick(canon);
+		}
 	}
 
 	private long getCanonicalValue(long d) {
-		return (long) (d % circMod);
+		if (circularRange == null) {
+			return d;
+		}
+
+		double uv;
+		if (tickTransform == null) {
+			uv = d;
+		} else {
+			uv = tickTransform.transformTick2User(d);
+		}
+		double canon = uv % circularRange.getSpan() + circularRange.getMin();
+		if (tickTransform == null) {
+			return (long) canon;
+		} else {
+			return (long) tickTransform.transformUser2Tick(canon);
+		}
+	}
+
+	/**
+	 * This method not change internal status of TickManager. Only get those
+	 * values: tickCalculator, tickNumber, labelFormat, labelInterval
+	 * 
+	 * @param txfType
+	 *            transform type
+	 * @param axisLength
+	 * @param range
+	 *            the core range
+	 * @return the expanded range
+	 */
+	public Range2D expandRangeToTick(TransformType txfType, double axisLength,
+			Range2D range) {
+		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
+		rav.setRange(range);
+		if (autoValues) {
+			if (autoInterval) {
+				if (autoAdjustNumber) {
+					expandRangeToAutoAdjustedTick(txfType, axisLength, range);
+				} else {
+					rav.expandRangeByTickNumber(tickNumber);
+				}
+			} else {
+				rav.expandRangeByTickInterval(interval);
+			}
+		}
+		return rav.getRange();
+	}
+
+	/**
+	 * expand range on autoAdjustNumber axis.
+	 */
+	private Range2D expandRangeToAutoAdjustedTick(TransformType txfType,
+			double axisLength, Range2D range) {
+		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
+		int tickNumber = this.tickNumber;
+		while (true) {
+			rav.setRange(range);
+			rav.expandRangeByTickNumber(tickNumber);
+			Range2D r = rav.getRange();
+			tickCalculator.calcValuesByTickInterval(rav.getInterval(), 0, 0);
+			Object values = tickCalculator.getValues();
+			Format labelTextFormat;
+			String labelFormat;
+			if (autoLabelFormat) {
+				labelTextFormat = tickCalculator
+						.calcAutoLabelTextFormat(getCanonicalValues(values));
+				labelFormat = tickCalculator
+						.calcAutoLabelFormat(getCanonicalValues(values));
+			} else {
+				labelTextFormat = this.labelTextFormat;
+				labelFormat = this.labelFormat;
+			}
+			MathElement[] autoLabels = calcAutoLabels(
+					getCanonicalValues(values), labelTextFormat, labelFormat);
+			MathElement[] labels = calcLabels(null, autoLabels, labelInterval);
+
+			NormalTransform trf = txfType.createNormalTransform(r);
+			double density = getLabelsDensity(trf, axisLength, values, labels,
+					labelFont);
+			if (density > 1) {
+				/* fast approximating, the next tick we should try */
+				tickNumber = Math.min(tickNumber, Array.getLength(values)) - 1;
+				if (tickNumber >= AUTO_TICKS_MIN) {
+					continue;
+				}
+			}
+			return r;
+		}
 	}
 
 	public AxisTickImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {

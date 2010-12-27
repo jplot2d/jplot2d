@@ -203,9 +203,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public void calcTicks() {
 		boolean tickChanged = tick.calcTicks(getRange(), tickTransform,
-				getParent().getAxisTransform(), getParent().getType()
-						.getCircle(), isLabelSameOrientation(),
-				getEffectiveLabelFont());
+				getParent().getNormalTransform(), getParent().getLength(),
+				getParent().getType().getCircularRange(),
+				isLabelSameOrientation(), getEffectiveLabelFont());
 		if (tickChanged) {
 			invalidateThickness();
 		}
