@@ -21,7 +21,8 @@ package org.jplot2d.element.impl;
 import java.awt.Font;
 import java.util.Map;
 
-import org.jplot2d.axtrans.AxisTransform;
+import org.jplot2d.axtrans.NormalTransform;
+import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTick;
 import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.MathElement;
@@ -35,14 +36,28 @@ public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public AxisEx getParent();
 
+	public AxisTickEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
+
 	public MathElement[] getLabelModels();
 
 	public Font getActualLabelFont();
 
 	public boolean calcTicks(Range2D range, AxisTickTransform txf,
-			AxisTransform axf, double circMod, boolean labelSameOrientation,
-			Font labelFont);
+			NormalTransform axf, double axisLength, Range2D circularRange,
+			boolean labelSameOrientation, Font labelFont);
 
-	public AxisTickEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
+	/**
+	 * This method not change internal status of TickManager. Only get those
+	 * values: tickCalculator, tickNumber, labelFormat, labelInterval
+	 * 
+	 * @param txfType
+	 *            transform type
+	 * @param axisLength
+	 * @param range
+	 *            the core range
+	 * @return the expanded range
+	 */
+	public Range2D expandRangeToTick(TransformType txfType, double axisLength,
+			Range2D range);
 
 }
