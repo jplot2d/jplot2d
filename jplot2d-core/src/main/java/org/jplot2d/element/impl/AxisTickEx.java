@@ -21,10 +21,8 @@ package org.jplot2d.element.impl;
 import java.awt.Font;
 import java.util.Map;
 
-import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTick;
-import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.Range2D;
 
@@ -42,9 +40,7 @@ public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public Font getActualLabelFont();
 
-	public boolean calcTicks(Range2D range, AxisTickTransform txf,
-			NormalTransform axf, double axisLength, Range2D circularRange,
-			boolean labelSameOrientation, Font labelFont);
+	public boolean calcTicks();
 
 	/**
 	 * This method not change internal status of TickManager. Only get those
