@@ -81,16 +81,6 @@ public interface Axis extends Container {
 	public void setRange(Range2D range);
 
 	/**
-	 * Set the tick range of the axis.
-	 * 
-	 * @param start
-	 *            the start value of new tick range of the axis
-	 * @param end
-	 *            the end value of new tick range of the axis
-	 */
-	public void setRange(double start, double end);
-
-	/**
 	 * Return if the grid line is displayed or not.
 	 * 
 	 * @return true if the grid line is displayed

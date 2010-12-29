@@ -74,9 +74,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private AxisPosition position;
 
-	private boolean showGridLines;
-
 	private AxisTickTransform tickTransform;
+
+	private boolean showGridLines;
 
 	private boolean tickVisible = true;
 
@@ -202,10 +202,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	public void calcTicks() {
-		boolean tickChanged = tick.calcTicks(getRange(), tickTransform,
-				getParent().getNormalTransform(), getParent().getLength(),
-				getParent().getType().getCircularRange(),
-				isLabelSameOrientation(), getEffectiveLabelFont());
+		boolean tickChanged = tick.calcTicks();
 		if (tickChanged) {
 			invalidateThickness();
 		}
@@ -230,14 +227,10 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 	}
 
-	public final void setRange(Range2D range) {
-		setRange(range.getStart(), range.getEnd());
-	}
-
-	public void setRange(double start, double end) {
-		double ustart = tickTransform.transformTick2User(start);
-		double uend = tickTransform.transformTick2User(end);
-		getParent().setRange(ustart, uend);
+	public void setRange(Range2D range) {
+		double ustart = tickTransform.transformTick2User(range.getStart());
+		double uend = tickTransform.transformTick2User(range.getEnd());
+		getParent().setRange(new Range2D.Double(ustart, uend));
 	}
 
 	public boolean isGridLines() {

@@ -340,40 +340,44 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		return result;
 	}
 
-	public boolean calcTicks(Range2D range, AxisTickTransform txf,
-			NormalTransform axf, double axisLength, Range2D circularRange,
-			boolean labelSameOrientation, Font font) {
+	public boolean calcTicks() {
 
-		if (!range.equals(this.range)) {
+		AxisEx ax = getParent();
+		ViewportAxisEx va = getParent().getParent();
+		AxisTickTransform txf = getParent().getTickTransform();
+
+		if (!ax.getRange().equals(this.range)) {
 			_rangeChanged = true;
-			this.range = range;
+			this.range = ax.getRange();
 			tickCalculator.setRange(range);
 		}
 		if (txf != this.tickTransform
 				&& (txf == null || !txf.equals(this.tickTransform))) {
 			_trfChanged = true;
-			this.tickTransform = txf;
+			this.tickTransform = ax.getTickTransform();
 		}
-		if (!axf.equals(this.axisNormalTransform)) {
+		if (!va.getNormalTransform().equals(this.axisNormalTransform)) {
 			_trfChanged = true;
-			this.axisNormalTransform = axf;
+			this.axisNormalTransform = va.getNormalTransform();
 		}
-		if (axisLength != this.axisLength) {
+		if (va.getLength() != this.axisLength) {
 			_trfChanged = true;
-			this.axisLength = axisLength;
+			this.axisLength = va.getLength();
 		}
-		if (circularRange != this.circularRange) {
+		if (va.getType().getCircularRange() != this.circularRange) {
 			_axisTypeChanged = true;
-			this.circularRange = circularRange;
+			this.circularRange = va.getType().getCircularRange();
 		}
+		boolean labelSameOrientation = (va.getOrientation() == ax
+				.getLabelOrientation());
 		if (labelSameOrientation != this.labelSameOrientation) {
 			_labelOrientationChanged = true;
 			this.labelSameOrientation = labelSameOrientation;
 		}
-		if (!font.equals(labelFont)) {
-			labelFont = font;
+		if (!ax.getEffectiveLabelFont().equals(labelFont)) {
 			_propLabelFontChanged = true;
-			actualLabelFont = font;
+			labelFont = ax.getEffectiveLabelFont();
+			actualLabelFont = labelFont;
 		}
 
 		if (autoValues && autoInterval && autoAdjustNumber) {
@@ -892,7 +896,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 			NormalTransform trf = txfType.createNormalTransform(r);
 			double density = getLabelsDensity(trf, axisLength, values, labels,
-					labelFont);
+					getParent().getEffectiveLabelFont());
 			if (density > 1) {
 				/* fast approximating, the next tick we should try */
 				tickNumber = Math.min(tickNumber, Array.getLength(values)) - 1;
