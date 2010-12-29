@@ -16,20 +16,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import static org.junit.Assert.*;
+
+import java.awt.Font;
+
+import org.junit.Test;
 
 /**
- * Defines a viewport of a layer. All layer's viewport in a subplot has the same
- * physical bounds. A viewport has an associated data model and a pair of x,y
- * transform.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Viewport {
+public class TextComponentImplTest {
 
-	public void setViewportTransform(ViewportTransform vxf);
-
-	public void setPhysicalBounds();
+	@Test
+	public void testSetFont() {
+		TextComponentImpl tc = new TextComponentImpl();
+		Font font = new Font("Serif", Font.PLAIN, 12);
+		tc.setFont(font);
+		assertEquals(tc.getEffectiveFont(), font);
+	}
 
 }
