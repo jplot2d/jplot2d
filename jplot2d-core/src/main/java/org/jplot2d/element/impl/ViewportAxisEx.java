@@ -20,6 +20,7 @@ package org.jplot2d.element.impl;
 
 import org.jplot2d.axtrans.AxisTransform;
 import org.jplot2d.axtrans.NormalTransform;
+import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.util.Range2D;
@@ -79,6 +80,8 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 	 */
 	public void setLength(double length);
 
+	public AxisLockGroupEx getLockGroup();
+
 	public AxisEx[] getAxes();
 
 	public int indexOfAxis(AxisEx axis);
@@ -91,8 +94,8 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 
 	public AxisTransform getAxisTransform();
 
-	public Range2D getRange();
+	public Range2D expandRangeToTick(Range2D ur);
 
-	public void setRange(double ustart, double uend);
+	public void changeTransformType(TransformType txfType);
 
 }
