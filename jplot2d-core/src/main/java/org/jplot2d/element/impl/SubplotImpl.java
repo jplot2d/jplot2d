@@ -42,10 +42,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	protected PhysicalTransform pxf;
 
-	private boolean autoMarginTop = true, autoMarginLeft = true,
-			autoMarginBottom = true, autoMarginRight = true;
-
-	private double marginTop, marginLeft, marginBottom, marginRight;
+	private SubplotMarginEx margin = new SubplotMarginImpl();
 
 	private LayoutDirector layoutDirector;
 
@@ -117,68 +114,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
-	public boolean isAutoMarginTop() {
-		return autoMarginTop;
-	}
-
-	public boolean isAutoMarginLeft() {
-		return autoMarginLeft;
-	}
-
-	public boolean isAutoMarginBottom() {
-		return autoMarginBottom;
-	}
-
-	public boolean isAutoMarginRight() {
-		return autoMarginRight;
-	}
-
-	public void setAutoMarginTop(boolean auto) {
-		autoMarginTop = auto;
-	}
-
-	public void setAutoMarginLeft(boolean auto) {
-		autoMarginLeft = auto;
-	}
-
-	public void setAutoMarginBottom(boolean auto) {
-		autoMarginBottom = auto;
-	}
-
-	public void setAutoMarginRight(boolean auto) {
-		autoMarginRight = auto;
-	}
-
-	public double getMarginTop() {
-		return marginTop;
-	}
-
-	public double getMarginLeft() {
-		return marginLeft;
-	}
-
-	public double getMarginBottom() {
-		return marginBottom;
-	}
-
-	public double getMarginRight() {
-		return marginRight;
-	}
-
-	public void setMarginTop(double marginTop) {
-		this.marginTop = marginTop;
-	}
-
-	public void setMarginLeft(double marginLeft) {
-		this.marginLeft = marginLeft;
-	}
-
-	public void setMarginBottom(double marginBottom) {
-		this.marginBottom = marginBottom;
-	}
-
-	public void setMarginRight(double marginRight) {
-		this.marginRight = marginRight;
+	public SubplotMarginEx getMargin() {
+		return margin;
 	}
 
 	public LayoutDirector getLayoutDirector() {
@@ -348,32 +285,30 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	public SubplotImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+		SubplotImpl result = (SubplotImpl) super.deepCopy(orig2copyMap);
 
-		SubplotImpl sp = (SubplotImpl) src;
-		layoutDirector = sp.layoutDirector;
-		pxf = sp.pxf;
-		viewportPreferredSize = sp.viewportPreferredSize;
-		viewportPhysicalBounds = sp.viewportPhysicalBounds;
+		// copy margin
+		result.margin = margin.deepCopy(orig2copyMap);
+		result.margin.setParent(result);
 
 		// copy axes
-		for (ViewportAxisEx va : sp.xViewportAxis) {
+		for (ViewportAxisEx va : xViewportAxis) {
 			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
-			vaCopy.setParent(this);
-			xViewportAxis.add(vaCopy);
+			vaCopy.setParent(result);
+			result.xViewportAxis.add(vaCopy);
 		}
-		for (ViewportAxisEx va : sp.yViewportAxis) {
+		for (ViewportAxisEx va : yViewportAxis) {
 			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
-			vaCopy.setParent(this);
-			yViewportAxis.add(vaCopy);
+			vaCopy.setParent(result);
+			result.yViewportAxis.add(vaCopy);
 		}
 
 		// copy layers
-		for (LayerEx layer : sp.layers) {
+		for (LayerEx layer : layers) {
 			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
-			layerCopy.setParent(this);
-			layers.add(layerCopy);
+			layerCopy.setParent(result);
+			result.layers.add(layerCopy);
 
 			// link layer and viewport axis
 			if (layer.getXViewportAxis() != null) {
@@ -387,6 +322,18 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 				layerCopy.setYViewportAxis(ycopy);
 			}
 		}
+
+		return result;
+	}
+
+	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
+		super.copyFrom(src, orig2copyMap);
+
+		SubplotImpl sp = (SubplotImpl) src;
+		layoutDirector = sp.layoutDirector;
+		pxf = sp.pxf;
+		viewportPreferredSize = sp.viewportPreferredSize;
+		viewportPhysicalBounds = sp.viewportPhysicalBounds;
 
 	}
 

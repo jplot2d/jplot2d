@@ -28,6 +28,7 @@ import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LayerEx;
 import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.element.impl.ViewportAxisEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
@@ -79,6 +80,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		Insets2D margin = calcMargin(subplot);
 
+		subplot.getMargin().setMarginTop(margin.getTop());
+		subplot.getMargin().setMarginLeft(margin.getLeft());
+		subplot.getMargin().setMarginBottom(margin.getBottom());
+		subplot.getMargin().setMarginRight(margin.getRight());
+
 		double contentWidth = subplot.getSize().getWidth() - margin.getLeft()
 				- margin.getRight();
 		double contentHeight = subplot.getSize().getHeight() - margin.getTop()
@@ -99,18 +105,24 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private Insets2D calcMargin(SubplotEx sp) {
+	private Insets2D calcMargin(SubplotEx subplot) {
+
+		SubplotMarginEx margin = subplot.getMargin();
+
 		// quick return
-		if (!sp.isAutoMarginTop() && !sp.isAutoMarginLeft()
-				&& !sp.isAutoMarginBottom() && !sp.isAutoMarginRight()) {
-			return new Insets2D(sp.getMarginTop(), sp.getMarginLeft(),
-					sp.getMarginBottom(), sp.getMarginRight());
+		if (!margin.isAutoMarginTop() && !margin.isAutoMarginLeft()
+				&& !margin.isAutoMarginBottom() && !margin.isAutoMarginRight()) {
+			return new Insets2D(margin.getMarginTop(), margin.getMarginLeft(),
+					margin.getMarginBottom(), margin.getMarginRight());
 		}
 
-		double mTop = 0, mLeft = 0, mBottom = 0, mRight = 0;
+		double mTop = margin.getExtraTop();
+		double mLeft = margin.getExtraLeft();
+		double mBottom = margin.getExtraBottom();
+		double mRight = margin.getExtraRight();
 
 		// count axis thickness
-		for (ViewportAxisEx xva : sp.getXViewportAxes()) {
+		for (ViewportAxisEx xva : subplot.getXViewportAxes()) {
 			for (AxisEx axis : xva.getAxes()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					mTop += axis.getThickness();
@@ -119,7 +131,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				}
 			}
 		}
-		for (ViewportAxisEx yva : sp.getYViewportAxes()) {
+		for (ViewportAxisEx yva : subplot.getYViewportAxes()) {
 			for (AxisEx axis : yva.getAxes()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					mRight += axis.getThickness();
@@ -129,17 +141,17 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		if (!sp.isAutoMarginTop()) {
-			mTop = sp.getMarginTop();
+		if (!margin.isAutoMarginTop()) {
+			mTop = margin.getMarginTop();
 		}
-		if (!sp.isAutoMarginLeft()) {
-			mLeft = sp.getMarginLeft();
+		if (!margin.isAutoMarginLeft()) {
+			mLeft = margin.getMarginLeft();
 		}
-		if (!sp.isAutoMarginBottom()) {
-			mBottom = sp.getMarginBottom();
+		if (!margin.isAutoMarginBottom()) {
+			mBottom = margin.getMarginBottom();
 		}
-		if (!sp.isAutoMarginRight()) {
-			mRight = sp.getMarginRight();
+		if (!margin.isAutoMarginRight()) {
+			mRight = margin.getMarginRight();
 		}
 
 		return new Insets2D(mTop, mLeft, mBottom, mRight);

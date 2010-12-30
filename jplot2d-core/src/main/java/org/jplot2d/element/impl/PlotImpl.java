@@ -51,6 +51,11 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		super.setFontStyle(Font.PLAIN);
 		super.setFontSize(12.0f);
 
+		getMargin().setExtraTop(12);
+		getMargin().setExtraLeft(12);
+		getMargin().setExtraBottom(12);
+		getMargin().setExtraRight(12);
+
 		super.setCacheable(true);
 		super.setSize(containerSize);
 	}

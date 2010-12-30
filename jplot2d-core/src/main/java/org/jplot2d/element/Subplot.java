@@ -27,7 +27,7 @@ import org.jplot2d.layout.LayoutDirector;
 
 /**
  * Subplot has a content area in the center, surrounded by margin area. The
- * margin area hold axes, title and legend.
+ * margin area holds axes, title and legend.
  * <p>
  * Subplot can optionally contains a group of layers that stack over each other,
  * their viewports have the same bounds of the content area. <br/>
@@ -41,37 +41,12 @@ public interface Subplot extends Container {
 
 	public Subplot getParent();
 
-	public boolean isAutoMarginTop();
-
-	public boolean isAutoMarginLeft();
-
-	public boolean isAutoMarginBottom();
-
-	public boolean isAutoMarginRight();
-
-	public void setAutoMarginTop(boolean auto);
-
-	public void setAutoMarginLeft(boolean auto);
-
-	public void setAutoMarginBottom(boolean auto);
-
-	public void setAutoMarginRight(boolean auto);
-
-	public double getMarginTop();
-
-	public double getMarginLeft();
-
-	public double getMarginBottom();
-
-	public double getMarginRight();
-
-	public void setMarginTop(double marginTop);
-
-	public void setMarginLeft(double marginLeft);
-
-	public void setMarginBottom(double marginBottom);
-
-	public void setMarginRight(double marginRight);
+	/**
+	 * Returns the margin area of this subplot.
+	 * 
+	 * @return
+	 */
+	public SubplotMargin getMargin();
 
 	/**
 	 * Gets the layout director for this subplot.

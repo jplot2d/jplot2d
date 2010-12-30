@@ -25,6 +25,7 @@ import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.SubplotMargin;
 import org.jplot2d.element.TextComponent;
 import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.AxisLockGroup;
@@ -41,6 +42,7 @@ import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
+import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.element.impl.TextComponentEx;
 import org.jplot2d.element.impl.ViewportAxisImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
@@ -115,7 +117,22 @@ public class ComponentFactory {
 				Subplot.class.getClassLoader(), new Class[] { Subplot.class,
 						ElementAddition.class }, ih);
 
-		assignDummyEnv(impl, proxy);
+		SubplotMarginEx margin = impl.getMargin();
+		ElementIH<SubplotMargin> marginIH = new ElementIH<SubplotMargin>(
+				margin, SubplotMargin.class);
+		SubplotMargin marginProxy = (SubplotMargin) Proxy.newProxyInstance(
+				SubplotMargin.class.getClassLoader(), new Class[] {
+						SubplotMargin.class, ElementAddition.class }, marginIH);
+
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+				: new DummyEnvironment();
+		synchronized (Environment.getGlobalLock()) {
+			((ElementAddition) proxy).setEnvironment(env);
+			((ElementAddition) marginProxy).setEnvironment(env);
+		}
+		env.registerComponent(impl, proxy);
+		env.registerElement(margin, marginProxy);
+
 		return proxy;
 	}
 
