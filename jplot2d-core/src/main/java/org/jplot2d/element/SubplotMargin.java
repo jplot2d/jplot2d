@@ -135,7 +135,7 @@ public interface SubplotMargin extends Element {
 	 * Sets the margin value. The value only take effect when
 	 * {@link #isAutoMarginLeft()} is <code>false</code>.
 	 * 
-	 * @param marginTop
+	 * @param marginLeft
 	 */
 	public void setMarginLeft(double marginLeft);
 
@@ -143,7 +143,7 @@ public interface SubplotMargin extends Element {
 	 * Sets the margin value. The value only take effect when
 	 * {@link #isAutoMarginBottom()} is <code>false</code>.
 	 * 
-	 * @param marginTop
+	 * @param marginBottom
 	 */
 	public void setMarginBottom(double marginBottom);
 
@@ -151,7 +151,7 @@ public interface SubplotMargin extends Element {
 	 * Sets the margin value. The value only take effect when
 	 * {@link #isAutoMarginRight()} is <code>false</code>.
 	 * 
-	 * @param marginTop
+	 * @param marginRight
 	 */
 	public void setMarginRight(double marginRight);
 
@@ -170,16 +170,16 @@ public interface SubplotMargin extends Element {
 	public double getExtraLeft();
 
 	/**
-	 * Returns the extra top margin plus to the auto margin value.
+	 * Returns the extra bottom margin plus to the auto margin value.
 	 * 
-	 * @return the extra top margin
+	 * @return the extra bottom margin
 	 */
 	public double getExtraBottom();
 
 	/**
-	 * Returns the extra top margin plus to the auto margin value.
+	 * Returns the extra right margin plus to the auto margin value.
 	 * 
-	 * @return the extra top margin
+	 * @return the extra right margin
 	 */
 	public double getExtraRight();
 
@@ -192,26 +192,26 @@ public interface SubplotMargin extends Element {
 	public void setExtraTop(double marginTop);
 
 	/**
-	 * Sets the extra top margin plus to the auto margin value.
+	 * Sets the extra left margin plus to the auto margin value.
 	 * 
 	 * @param marginTop
-	 *            the extra top margin
+	 *            the extra left margin
 	 */
 	public void setExtraLeft(double marginLeft);
 
 	/**
-	 * Sets the extra top margin plus to the auto margin value.
+	 * Sets the extra bottom margin plus to the auto margin value.
 	 * 
 	 * @param marginTop
-	 *            the extra top margin
+	 *            the extra bottom margin
 	 */
 	public void setExtraBottom(double marginBottom);
 
 	/**
-	 * Sets the extra top margin plus to the auto margin value.
+	 * Sets the extra right margin plus to the auto margin value.
 	 * 
 	 * @param marginTop
-	 *            the extra top margin
+	 *            the extra right margin
 	 */
 	public void setExtraRight(double marginRight);
 

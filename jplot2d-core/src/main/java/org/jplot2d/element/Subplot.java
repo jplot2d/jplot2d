@@ -89,34 +89,25 @@ public interface Subplot extends Container {
 	public void setConstraint(Subplot subplot, Object constraint);
 
 	/**
-	 * Returns the the preferred viewport physical size.
+	 * Returns the the preferred content area size.
 	 * 
-	 * @return the the preferred viewport physical size
+	 * @return the the preferred content area size
 	 */
-	public Dimension2D getViewportPreferredSize();
+	public Dimension2D getPreferredContentSize();
 
 	/**
-	 * Sets the preferred viewport physical size
+	 * Sets the preferred content area size
 	 * 
 	 * @param size
 	 */
-	public void setViewportPreferredSize(Dimension2D size);
+	public void setPreferredContentSize(Dimension2D size);
 
 	/**
-	 * Returns the rectangle of viewport.
+	 * Returns the rectangle of content area.
 	 * 
-	 * @return the rectangle of viewport.
+	 * @return the rectangle of content area.
 	 */
-	public Rectangle2D getViewportBounds();
-
-	/**
-	 * Sets the rectangle of viewport. All layers in this subplot have the same
-	 * viewport bounds.
-	 * 
-	 * @param bounds
-	 *            the rectangle of viewport
-	 */
-	public void setViewportBounds(Rectangle2D bounds);
+	public Rectangle2D getContentBounds();
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getLayer(int index);

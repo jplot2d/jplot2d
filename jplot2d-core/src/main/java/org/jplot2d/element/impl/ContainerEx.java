@@ -14,4 +14,6 @@ public interface ContainerEx extends Container, ComponentEx {
 	 */
 	public void setSize(Dimension2D size);
 
+	public void setSize(double width, double height);
+
 }
