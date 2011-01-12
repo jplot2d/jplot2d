@@ -46,7 +46,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private LayoutDirector layoutDirector;
 
-	private Dimension2D viewportPreferredSize = new DoubleDimension2D(400, 300);
+	private Rectangle2D contentConstraint;
+
+	private Dimension2D preferredContentSize = new DoubleDimension2D(400, 300);
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
@@ -54,7 +56,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private final List<ViewportAxisEx> yViewportAxis = new ArrayList<ViewportAxisEx>();
 
-	private Rectangle2D viewportPhysicalBounds;
+	private Rectangle2D contentBounds;
 
 	protected final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
 
@@ -134,6 +136,14 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		layoutDirector.setConstraint((SubplotEx) subplot, constraint);
 	}
 
+	public Rectangle2D getContentConstrant() {
+		return contentConstraint;
+	}
+
+	public void setContentConstrant(Rectangle2D bounds) {
+		this.contentConstraint = bounds;
+	}
+
 	public void validate() {
 		if (isValid()) {
 			return;
@@ -163,20 +173,20 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			layoutDirector.layout(this);
 	}
 
-	public Dimension2D getViewportPreferredSize() {
-		return viewportPreferredSize;
+	public Dimension2D getPreferredContentSize() {
+		return preferredContentSize;
 	}
 
-	public void setViewportPreferredSize(Dimension2D physize) {
-		viewportPreferredSize = physize;
+	public void setPreferredContentSize(Dimension2D physize) {
+		preferredContentSize = physize;
 	}
 
-	public Rectangle2D getViewportBounds() {
-		return viewportPhysicalBounds;
+	public Rectangle2D getContentBounds() {
+		return contentBounds;
 	}
 
-	public void setViewportBounds(Rectangle2D bounds) {
-		this.viewportPhysicalBounds = bounds;
+	public void setContentBounds(Rectangle2D bounds) {
+		this.contentBounds = bounds;
 	}
 
 	public Layer getLayer(int index) {
@@ -332,8 +342,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		SubplotImpl sp = (SubplotImpl) src;
 		layoutDirector = sp.layoutDirector;
 		pxf = sp.pxf;
-		viewportPreferredSize = sp.viewportPreferredSize;
-		viewportPhysicalBounds = sp.viewportPhysicalBounds;
+		preferredContentSize = sp.preferredContentSize;
+		contentBounds = sp.contentBounds;
 
 	}
 

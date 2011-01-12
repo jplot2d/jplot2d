@@ -663,7 +663,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c
 					.getAlpha() / 2));
 
-			Rectangle2D plotRect = getParent().getParent().getViewportBounds();
+			Rectangle2D plotRect = getParent().getParent().getContentBounds();
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
 				for (int i = 0; i < tvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(tvs, i));
