@@ -85,6 +85,10 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		}
 	}
 
+	public String toString() {
+		return getId();
+	}
+
 	public ContainerEx getParent() {
 		return (ContainerEx) parent;
 	}
@@ -99,9 +103,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		if (getParent() != null) {
-			getParent().invalidate();
-		}
 		redraw();
 	}
 
@@ -252,45 +253,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	public void setLocation(double locX, double locY) {
 		this.locX = locX;
 		this.locY = locY;
-	}
-
-	/**
-	 * Determines whether this component is valid. A component is valid when it
-	 * is correctly sized and positioned within its parent container and all its
-	 * children are also valid.
-	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code>
-	 *         otherwise
-	 * @see #validate
-	 * @see #invalidate
-	 */
-	public boolean isValid() {
-		return valid;
-	}
-
-	/**
-	 * Mark this component and all of its subcomponents has a valid layout.
-	 * 
-	 * @see #invalidate
-	 */
-	public void validate() {
-		valid = true;
-	}
-
-	/**
-	 * Invalidates this component. This component and all parents above it are
-	 * marked as needing to be laid out. This method can be called often, so it
-	 * needs to execute quickly.
-	 * 
-	 * @see #validate
-	 */
-	public void invalidate() {
-		if (isValid()) {
-			valid = false;
-			if (getParent() != null) {
-				getParent().invalidate();
-			}
-		}
 	}
 
 	public void redraw() {

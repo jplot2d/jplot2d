@@ -44,12 +44,8 @@ public abstract class ContainerImpl extends ComponentImpl implements
 					+ width + "x" + height + " is invalid.");
 		}
 
-		if (this.width != width || this.height != height) {
-			invalidate();
-			redraw();
-			this.width = width;
-			this.height = height;
-		}
+		this.width = width;
+		this.height = height;
 	}
 
 	public Rectangle2D getBounds() {

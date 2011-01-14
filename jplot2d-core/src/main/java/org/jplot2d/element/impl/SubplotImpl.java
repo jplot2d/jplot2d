@@ -141,19 +141,25 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void setContentConstrant(Rectangle2D bounds) {
+		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+			throw new IllegalArgumentException("Size must be positive, "
+					+ width + "x" + height + " is invalid.");
+		}
 		this.contentConstraint = bounds;
 	}
 
-	public void validate() {
-		if (isValid()) {
-			return;
-		}
-
-		layout();
-		for (SubplotEx subplot : subplots) {
-			subplot.validate();
-		}
-		super.validate();
+	/**
+	 * Determines whether this component is valid. A component is valid when it
+	 * is correctly sized and positioned within its parent container and all its
+	 * children are also valid.
+	 * 
+	 * @return <code>true</code> if the component is valid, <code>false</code>
+	 *         otherwise
+	 * @see #validate
+	 * @see #invalidate
+	 */
+	public boolean isValid() {
+		return valid;
 	}
 
 	public void invalidate() {
@@ -168,6 +174,20 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
+	public void validate() {
+		if (isValid()) {
+			return;
+		}
+
+		layout();
+
+		for (SubplotEx subplot : subplots) {
+			subplot.validate();
+		}
+
+		valid = true;
+	}
+
 	private void layout() {
 		if (layoutDirector != null)
 			layoutDirector.layout(this);
@@ -177,8 +197,12 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return preferredContentSize;
 	}
 
-	public void setPreferredContentSize(Dimension2D physize) {
-		preferredContentSize = physize;
+	public void setPreferredContentSize(Dimension2D size) {
+		if (size.getWidth() <= 0 || size.getHeight() <= 0) {
+			throw new IllegalArgumentException("Size must be positive, "
+					+ width + "x" + height + " is invalid.");
+		}
+		preferredContentSize = size;
 	}
 
 	public Rectangle2D getContentBounds() {
@@ -186,6 +210,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void setContentBounds(Rectangle2D bounds) {
+		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+			throw new IllegalArgumentException("Size must be positive, "
+					+ width + "x" + height + " is invalid.");
+		}
 		this.contentBounds = bounds;
 	}
 
