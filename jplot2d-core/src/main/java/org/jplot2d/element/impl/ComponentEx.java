@@ -75,37 +75,6 @@ public interface ComponentEx extends Component, ElementEx {
 	public Font getEffectiveFont();
 
 	/**
-	 * Determines whether this component is valid. A component is valid when it
-	 * is correctly sized and positioned within its parent container and all its
-	 * children are also valid. In order to account for peers' size
-	 * requirements, components are invalidated before they are first shown on
-	 * the screen. By the time the parent container is fully realized, all its
-	 * components will be valid.
-	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code>
-	 *         otherwise
-	 * @see #validate
-	 * @see #invalidate
-	 */
-	public boolean isValid();
-
-	/**
-	 * Invalidates this component. This component and all parents above it are
-	 * marked as needing to be laid out. This method can be called often, so it
-	 * needs to execute quickly.
-	 * 
-	 * @see #validate
-	 */
-	public void invalidate();
-
-	/**
-	 * Mark this component has a valid layout.
-	 * 
-	 * @see #invalidate
-	 */
-	public void validate();
-
-	/**
 	 * Mark this component need to redraw.
 	 */
 	public void redraw();
