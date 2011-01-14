@@ -94,12 +94,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private Color labelColor;
 
-	private String labelFontName;
-
-	private int labelFontStyle = -1;
-
-	private float labelFontSize = Float.NaN;
-
 	/* thickness */
 
 	private double asc, desc;
@@ -192,6 +186,20 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 	}
 
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		invalidate();
+	}
+
+	/**
+	 * Invalidate the subplot.
+	 */
+	private void invalidate() {
+		if (getParent() != null && getParent().getParent() != null) {
+			getParent().getParent().invalidate();
+		}
+	}
+
 	public AxisPosition getPosition() {
 		return position;
 	}
@@ -199,6 +207,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setPosition(AxisPosition position) {
 		this.position = position;
 		invalidateThickness();
+		invalidate();
 	}
 
 	public void calcTicks() {
@@ -239,6 +248,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public void setGridLines(boolean showGridLines) {
 		this.showGridLines = showGridLines;
+		redraw();
 	}
 
 	public boolean isTickVisible() {
@@ -248,6 +258,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setTickVisible(boolean visible) {
 		this.tickVisible = visible;
 		invalidateThickness();
+		redraw();
 	}
 
 	public AxisTickSide getTickSide() {
@@ -257,6 +268,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setTickSide(AxisTickSide side) {
 		this.tickSide = side;
 		invalidateThickness();
+		redraw();
 	}
 
 	public double getTickHeight() {
@@ -266,6 +278,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setTickHeight(double height) {
 		this.tickHeight = height;
 		invalidateThickness();
+		redraw();
 	}
 
 	public double getMinorTickHeight() {
@@ -283,6 +296,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setLabelVisible(boolean visible) {
 		this.labelVisible = visible;
 		invalidateThickness();
+		redraw();
 	}
 
 	public AxisOrientation getLabelOrientation() {
@@ -292,6 +306,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setLabelOrientation(AxisOrientation orientation) {
 		this.labelOrientation = orientation;
 		invalidateThickness();
+		redraw();
 	}
 
 	protected boolean isLabelSameOrientation() {
@@ -305,6 +320,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setLabelSide(AxisLabelSide side) {
 		this.labelSide = side;
 		invalidateThickness();
+		redraw();
 	}
 
 	public Color getLabelColor() {
@@ -313,53 +329,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public void setLabelColor(Color color) {
 		this.labelColor = color;
-	}
-
-	public Font getEffectiveLabelFont() {
-		String fname = (labelFontName != null) ? labelFontName
-				: getEffectiveFontName();
-		int fstyle = ((labelFontStyle & ~0x03) == 0) ? labelFontStyle
-				: getEffectiveFontStyle();
-		float fsize = (!Float.isNaN(labelFontSize)) ? labelFontSize
-				: getEffectiveFontSize();
-
-		return new Font(fname, fstyle, (int) fsize).deriveFont(fsize);
-	}
-
-	public void setLabelFont(Font font) {
-		if (font == null) {
-			labelFontName = null;
-			labelFontStyle = -1;
-			labelFontSize = Float.NaN;
-		} else {
-			labelFontName = font.getName();
-			labelFontStyle = font.getStyle();
-			labelFontSize = font.getSize2D();
-		}
-	}
-
-	public String getLabelFontName() {
-		return labelFontName;
-	}
-
-	public void setLabelFontName(String name) {
-		labelFontName = name;
-	}
-
-	public int getLabelFontStyle() {
-		return labelFontStyle;
-	}
-
-	public void setLabelFontStyle(int style) {
-		labelFontStyle = style;
-	}
-
-	public float getLabelFontSize() {
-		return labelFontSize;
-	}
-
-	public void setLabelFontSize(float size) {
-		labelFontSize = size;
+		redraw();
 	}
 
 	public AxisTickEx getTick() {
@@ -396,10 +366,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		thicknessCalculationNeeded = true;
 	}
 
-	/**
-	 * This method is used to cause this axis to lay out its ticks and labels
-	 * again. It should be invoked when its layout-related information changed.
-	 */
 	public void calcThickness() {
 
 		if (!thicknessCalculationNeeded) {
@@ -464,31 +430,16 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			}
 		}
 
-		boolean changed = false;
-		if (Math.abs(this.labelOffset - labelOffset) > Math
-				.abs(this.labelOffset) * 1e-12
-				|| this.labelHAlign != labelHAlign
-				|| this.labelVAlign != labelVAlign) {
-			this.labelOffset = labelOffset;
-			this.labelHAlign = labelHAlign;
-			this.labelVAlign = labelVAlign;
-			changed = true;
-		}
-		if (Math.abs(this.titleOffset - titleOffset) > Math
-				.abs(this.titleOffset) * 1e-12
-				|| this.titleVAlign != titleVAlign) {
-			this.titleOffset = titleOffset;
-			this.titleVAlign = titleVAlign;
-			changed = true;
-		}
+		this.labelOffset = labelOffset;
+		this.labelHAlign = labelHAlign;
+		this.labelVAlign = labelVAlign;
+		this.titleOffset = titleOffset;
+		this.titleVAlign = titleVAlign;
+
 		if (Math.abs(asc - ba) > Math.abs(asc) * 1e-12
 				|| Math.abs(desc - bd) > Math.abs(desc) * 1e-12) {
 			asc = ba;
 			desc = bd;
-			changed = true;
-		}
-
-		if (changed) {
 			invalidate();
 		}
 
@@ -527,8 +478,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 */
 	private double getLabelHeight() {
 		FontRenderContext frc = new FontRenderContext(null, false, true);
-		LineMetrics lm = getEffectiveLabelFont().getLineMetrics(
-				"Can be any string", frc);
+		LineMetrics lm = getEffectiveFont().getLineMetrics("Can be any string",
+				frc);
 		return (lm.getAscent() + lm.getDescent());
 	}
 
@@ -767,7 +718,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * 
 	 * @param g
 	 * @param xp
-	 *            perpendicularity
+	 *            x location
 	 * @param sp
 	 *            start p
 	 * @param ep
@@ -797,7 +748,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * 
 	 * @param g
 	 * @param yp
-	 *            perpendicularity
+	 *            y location
 	 * @param sp
 	 *            start p
 	 * @param ep
