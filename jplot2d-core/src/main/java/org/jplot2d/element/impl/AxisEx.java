@@ -19,5 +19,11 @@ public interface AxisEx extends Axis, ContainerEx {
 	 */
 	public void calcTicks();
 
+	/**
+	 * This method is used to calculate asc and desc of this axis. If the the
+	 * asc or desc changed, it'll call invalidate() to notify subplot the layout
+	 * is invalid.
+	 */
 	public void calcThickness();
+
 }

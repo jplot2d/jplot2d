@@ -374,9 +374,9 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			_labelOrientationChanged = true;
 			this.labelSameOrientation = labelSameOrientation;
 		}
-		if (!ax.getEffectiveLabelFont().equals(labelFont)) {
+		if (!ax.getEffectiveFont().equals(labelFont)) {
 			_propLabelFontChanged = true;
-			labelFont = ax.getEffectiveLabelFont();
+			labelFont = ax.getEffectiveFont();
 			actualLabelFont = labelFont;
 		}
 
@@ -896,7 +896,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 			NormalTransform trf = txfType.createNormalTransform(r);
 			double density = getLabelsDensity(trf, axisLength, values, labels,
-					getParent().getEffectiveLabelFont());
+					getParent().getEffectiveFont());
 			if (density > 1) {
 				/* fast approximating, the next tick we should try */
 				tickNumber = Math.min(tickNumber, Array.getLength(values)) - 1;
