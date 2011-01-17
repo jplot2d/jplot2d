@@ -33,6 +33,9 @@ import org.jplot2d.util.Range2D;
  */
 public interface ViewportAxis extends Container {
 
+	@Hierarchy(HierarchyOp.GET)
+	public Subplot getParent();
+
 	/**
 	 * Orientation is not a set-able property. It just show the orientation of
 	 * this axis after it has been add as a X/Y axis.

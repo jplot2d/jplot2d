@@ -39,6 +39,7 @@ import org.jplot2d.layout.LayoutDirector;
  */
 public interface Subplot extends Container {
 
+	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();
 
 	/**
@@ -120,8 +121,9 @@ public interface Subplot extends Container {
 	@Hierarchy(HierarchyOp.GETARRAY)
 	public Layer[] getLayers();
 
-	@Hierarchy(HierarchyOp.ADD)
-	public void addLayer(Layer layer);
+	@Hierarchy(HierarchyOp.ADD_REF2)
+	public void addLayer(Layer layer, ViewportAxis xViewportAxis,
+			ViewportAxis yViewportAxis);
 
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeLayer(Layer layer);

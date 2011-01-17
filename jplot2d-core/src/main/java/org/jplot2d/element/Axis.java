@@ -19,8 +19,9 @@
 package org.jplot2d.element;
 
 import java.awt.Color;
-import java.awt.Font;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -28,6 +29,9 @@ import org.jplot2d.util.Range2D;
  * 
  */
 public interface Axis extends Container {
+
+	@Hierarchy(HierarchyOp.GET)
+	public ViewportAxis getParent();
 
 	/**
 	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT

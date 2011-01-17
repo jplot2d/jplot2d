@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.data.Graph;
 
 /**
@@ -25,6 +27,9 @@ import org.jplot2d.data.Graph;
  * 
  */
 public interface GraphPlotter extends Component {
+
+	@Hierarchy(HierarchyOp.GET)
+	public Layer getParent();
 
 	public Graph getGraph();
 
