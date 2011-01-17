@@ -145,6 +145,11 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			invokeSetRef2ElementMethod(method, args);
 			return null;
 		}
+		/* addComponent(Component comp, Element e1, Elemente2) */
+		if (iinfo.isAddRef2Method(method)) {
+			invokeAddRefMethod(method, args, 2);
+			return null;
+		}
 
 		environment.begin();
 		try {
@@ -459,6 +464,55 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			throw e.getCause();
 		} finally {
 			env.endCommand();
+		}
+	}
+
+	/**
+	 * Called when adding a child component. The child component is the 1st
+	 * argument of the calling method.
+	 * 
+	 * @param method
+	 * @param args
+	 *            the arguments
+	 * @throws Throwable
+	 */
+	private void invokeAddRefMethod(Method method, Object[] args, int nref)
+			throws Throwable {
+		ElementAddition cproxy = (ElementAddition) args[0];
+		ComponentEx cimpl;
+		Object[] cargs = args.clone();
+
+		Environment penv;
+		Environment cenv;
+		synchronized (Environment.getGlobalLock()) {
+			// local safe copy
+			penv = environment;
+			cenv = ((Element) args[0]).getEnvironment();
+			cenv.beginCommand("");
+			cimpl = (ComponentEx) cproxy.getImpl();
+			if (cimpl.getParent() != null) {
+				cenv.end();
+				throw new IllegalArgumentException("");
+			}
+			penv.beginCommand("");
+			// update environment for all adding components
+			for (Element proxy : cenv.proxyMap.values()) {
+				((ElementAddition) proxy).setEnvironment(penv);
+			}
+			for (int i = 1; i <= nref; i++) {
+				cargs[i] = (args[i] == null) ? null
+						: ((ElementAddition) args[i]).getImpl();
+			}
+		}
+		try {
+			cargs[0] = cimpl;
+			method.invoke(impl, cargs);
+			penv.componentAdded(cimpl, cenv);
+		} catch (InvocationTargetException e) {
+			throw e.getCause();
+		} finally {
+			cenv.endCommand();
+			penv.endCommand();
 		}
 	}
 
