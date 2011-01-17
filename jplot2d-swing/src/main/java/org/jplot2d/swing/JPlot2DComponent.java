@@ -34,8 +34,8 @@ import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 
 /**
- * A JComponent display a plot in its center. The plot is rendered in async
- * renderer.
+ * A JComponent display a plot in its center. The plot is rendered in
+ * asynchronous renderer.
  * 
  * @author Jingjing Li
  * 
@@ -61,7 +61,6 @@ public class JPlot2DComponent extends JComponent {
 		env = new RenderEnvironment();
 		env.setPlot(plot);
 
-		setDoubleBuffered(false);
 		setBackground(Color.GRAY);
 		setOpaque(true);
 
@@ -74,9 +73,8 @@ public class JPlot2DComponent extends JComponent {
 			public void renderingFinished(RenderingFinishedEvent event) {
 				long fsn = event.getFsn();
 				if (fsn < ifsn) {
-					logger
-							.info("[R] Rendering finished in wrong order, drop F."
-									+ fsn + " Current frame is " + ifsn);
+					logger.info("[R] Rendering finished in wrong order, drop F."
+							+ fsn + " Current frame is " + ifsn);
 					return;
 				}
 				ifsn = fsn;
@@ -102,6 +100,9 @@ public class JPlot2DComponent extends JComponent {
 	}
 
 	public void paintComponent(Graphics g) {
+		// clear background
+		g.clearRect(0, 0, getWidth(), getHeight());
+
 		if (image != null) {
 			int width = image.getWidth();
 			int height = image.getHeight();
