@@ -66,8 +66,7 @@ public class LayerAxisTest {
 
 		sp.addXViewportAxis(xaxis);
 		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer);
-		layer.setViewportAxes(xaxis, yaxis);
+		sp.addLayer(layer, xaxis, yaxis);
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
@@ -103,8 +102,7 @@ public class LayerAxisTest {
 
 		sp.addXViewportAxis(xaxis);
 		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer);
-		layer.setViewportAxes(xaxis, yaxis);
+		sp.addLayer(layer, xaxis, yaxis);
 
 		sp.removeLayer(layer);
 
@@ -115,13 +113,12 @@ public class LayerAxisTest {
 		assertArrayEquals(xaxis.getLayers(), new Object[0]);
 		assertArrayEquals(xaxis.getLayers(), new Object[0]);
 
-		sp.addLayer(layer);
+		sp.addLayer(layer, xaxis, yaxis);
 
-		assertNull(layer.getXViewportAxis());
-		assertNull(layer.getYViewportAxis());
-		assertArrayEquals(xaxis.getLayers(), new Object[0]);
-		assertArrayEquals(xaxis.getLayers(), new Object[0]);
-
+		assertSame(layer.getXViewportAxis(), xaxis);
+		assertSame(layer.getYViewportAxis(), yaxis);
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 	}
 
 	/**
@@ -137,8 +134,7 @@ public class LayerAxisTest {
 
 		sp.addXViewportAxis(xaxis);
 		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer);
-		layer.setViewportAxes(xaxis, yaxis);
+		sp.addLayer(layer, xaxis, yaxis);
 
 		assertSame(xaxis.getEnvironment(), sp.getEnvironment());
 		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
@@ -195,8 +191,7 @@ public class LayerAxisTest {
 		p.addSubplot(sp, null);
 		sp.addXViewportAxis(xaxis);
 		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer);
-		layer.setViewportAxes(xaxis, yaxis);
+		sp.addLayer(layer, xaxis, yaxis);
 
 		p.removeSubplot(sp);
 
@@ -221,10 +216,8 @@ public class LayerAxisTest {
 		p.addSubplot(sp1, null);
 		sp0.addXViewportAxis(xaxis);
 		sp0.addYViewportAxis(yaxis);
-		sp0.addLayer(layer0);
-		layer0.setViewportAxes(xaxis, yaxis);
-		sp1.addLayer(layer1);
-		layer1.setViewportAxes(xaxis, yaxis);
+		sp0.addLayer(layer0, xaxis, yaxis);
+		sp1.addLayer(layer1, xaxis, yaxis);
 
 		try {
 			p.removeSubplot(sp0);
