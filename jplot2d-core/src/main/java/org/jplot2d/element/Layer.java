@@ -31,6 +31,7 @@ import org.jplot2d.util.MathElement;
  */
 public interface Layer extends Container {
 
+	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();
 
 	/**

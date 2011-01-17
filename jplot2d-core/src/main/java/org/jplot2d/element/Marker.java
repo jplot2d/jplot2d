@@ -20,6 +20,9 @@ package org.jplot2d.element;
 
 import java.awt.geom.Point2D;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+
 /**
  * A marker with a symbol and a text string.
  * 
@@ -27,6 +30,9 @@ import java.awt.geom.Point2D;
  * 
  */
 public interface Marker extends Component {
+
+	@Hierarchy(HierarchyOp.GET)
+	public Layer getParent();
 
 	/**
 	 * Returns <code>true</code> if the component is movable by mouse dragging.
@@ -51,7 +57,5 @@ public interface Marker extends Component {
 	 *            the coordinate space of this component's parent
 	 */
 	public void setLocation(Point2D loc);
-
-	public void setLocation(double locX, double locY);
 
 }
