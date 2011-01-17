@@ -18,23 +18,20 @@
  */
 package org.jplot2d.swing;
 
-import java.util.logging.Logger;
-
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import org.jplot2d.element.Plot;
-import org.jplot2d.env.RenderEnvironment;
 
 /**
+ * A dedicated JFrame to display a plot.
+ * 
  * @author Jingjing Li
  * 
  */
 public class JPlot2DFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-
-	private static Logger logger = Logger.getLogger("org.jplot2d.swing");
 
 	public JPlot2DFrame(Plot plot) {
 		super();
