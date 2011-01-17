@@ -39,7 +39,7 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	private double scale = 1;
 
-	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_WITH_TARGET_SIZE;
+	private PlotSizeMode sizeMode = PlotSizeMode.FIXED_SIZE;
 
 	private Dimension containerSize = new Dimension(480, 320);
 
@@ -80,17 +80,66 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	public void setSizeMode(PlotSizeMode sizeMode) {
 		this.sizeMode = sizeMode;
+
+		switch (getSizeMode()) {
+		case FIT_CONTAINER_WITH_TARGET_SIZE: {
+			Dimension2D tcSize = getTargetPaperSize();
+
+			double scaleX = containerSize.width / tcSize.getWidth();
+			double scaleY = containerSize.height / tcSize.getHeight();
+			double scale = (scaleX < scaleY) ? scaleX : scaleY;
+
+			double width = containerSize.width / scale;
+			double height = containerSize.height / scale;
+
+			if (this.width != width || this.height != height
+					|| this.scale != scale) {
+				super.setSize(width, height);
+				this.scale = scale;
+				updatePxf();
+			}
+			break;
+		}
+		case FIT_CONTAINER_SIZE: {
+			double width = containerSize.width / scale;
+			double height = containerSize.height / scale;
+
+			if (this.width != width || this.height != height) {
+				super.setSize(width, height);
+				updatePxf();
+			}
+			break;
+		}
+		case FIXED_SIZE:
+			break;
+		case FIT_CONTENTS: {
+			/*
+			 * Calculate scale based on container size and physical size.
+			 */
+			Dimension2D prefSize = getLayoutDirector().getPreferredSize(this);
+			if (this.width != prefSize.getWidth()
+					|| this.height != prefSize.getHeight()) {
+				super.setSize(prefSize);
+				double scaleX = containerSize.width / width;
+				double scaleY = containerSize.height / height;
+				scale = (scaleX < scaleY) ? scaleX : scaleY;
+				updatePxf();
+			}
+			break;
+		}
+		}
 	}
 
-	public void setSize(double physicalWidth, double physicalHeight) {
-		super.setSize(physicalWidth, physicalHeight);
+	/* This method should only be call from user, not internal method */
+	public void setSize(double width, double height) {
+		super.setSize(width, height);
 		/*
 		 * Calculate scale based on container size and physical size.
 		 */
 		Dimension2D physize = getSize();
 		double scaleX = containerSize.width / physize.getWidth();
 		double scaleY = containerSize.height / physize.getHeight();
-		this.scale = (scaleX < scaleY) ? scaleX : scaleY;
+		scale = (scaleX < scaleY) ? scaleX : scaleY;
 
 		updatePxf();
 	}
@@ -124,17 +173,25 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 			double scaleY = containerSize.height / tcSize.getHeight();
 			double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-			double phyWidth = containerSize.width / scale;
-			double phyHeight = containerSize.height / scale;
+			double width = containerSize.width / scale;
+			double height = containerSize.height / scale;
 
-			setSize(phyWidth, phyHeight);
+			if (this.width != width || this.height != height
+					|| this.scale != scale) {
+				super.setSize(width, height);
+				this.scale = scale;
+				updatePxf();
+			}
 			break;
 		}
 		case FIT_CONTAINER_SIZE: {
-			double phyWidth = containerSize.width / scale;
-			double phyHeight = containerSize.height / scale;
+			double width = containerSize.width / scale;
+			double height = containerSize.height / scale;
 
-			setSize(phyWidth, phyHeight);
+			if (this.width != width || this.height != height) {
+				super.setSize(width, height);
+				updatePxf();
+			}
 			break;
 		}
 		case FIXED_SIZE:
@@ -145,9 +202,12 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 			Dimension2D physize = getSize();
 			double scaleX = containerSize.width / physize.getWidth();
 			double scaleY = containerSize.height / physize.getHeight();
-			this.scale = (scaleX < scaleY) ? scaleX : scaleY;
+			double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-			updatePxf();
+			if (this.scale != scale) {
+				this.scale = scale;
+				updatePxf();
+			}
 			break;
 		}
 		}

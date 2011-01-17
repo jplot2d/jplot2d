@@ -294,6 +294,18 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		((AxisEx) axis).setParent(null);
 	}
 
+	public boolean canContributeToParent() {
+		if (!isVisible() || isCacheable()) {
+			return false;
+		}
+		for (AxisEx ax : axes) {
+			if (ax.isVisible() && !ax.isCacheable()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public LayerEx[] getLayers() {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}

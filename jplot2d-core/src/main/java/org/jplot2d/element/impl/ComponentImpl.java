@@ -56,18 +56,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	protected PropertyChangeSupport _changes = new PropertyChangeSupport(this);
 
-	/**
-	 * True when the object is valid. An invalid object needs to be laied out.
-	 * This flag is set to false when the object size is changed.
-	 * 
-	 * @serial
-	 * @see #isValid
-	 * @see #validate
-	 * @see #invalidate
-	 */
-	protected boolean valid = false;
-
-	private boolean redrawNeeded;
+	private boolean redrawNeeded = true;;
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		_changes.addPropertyChangeListener(l);
@@ -307,7 +296,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		fontScale = comp.fontScale;
 		locX = comp.locX;
 		locY = comp.locY;
-		valid = comp.valid;
 		redrawNeeded = comp.redrawNeeded;
 	}
 
