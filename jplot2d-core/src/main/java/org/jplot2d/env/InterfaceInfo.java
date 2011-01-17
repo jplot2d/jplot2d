@@ -49,32 +49,27 @@ public class InterfaceInfo {
 
 	private final Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
 
+	/**
+	 * Load interface info for the given interface and its parents.The subclass
+	 * may hide the info of its superclass. For example, if a sub-interface only
+	 * redeclare a getter, the info will report the property is read-only.
+	 * 
+	 * @param interfaceClass
+	 */
 	public static InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
 		InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
 		if (iinfo == null) {
 			iinfo = new InterfaceInfo();
-			iinfo.loadBeanInfo(interfaceClass);
-			for (Class<?> superClass : interfaceClass.getInterfaces()) {
-				InterfaceInfo sii = loadInterfaceInfo(superClass);
-				iinfo.merge(sii);
-			}
+			iinfo.loadBeanInfoCascade(interfaceClass);
 		}
 		return iinfo;
 	}
 
-	/**
-	 * The subclass may hide the info of its superclass. For example, if a
-	 * sub-interface only redeclare a getter, the info will report the property
-	 * is read-only.
-	 * 
-	 * @param sii
-	 */
-	private void merge(InterfaceInfo sii) {
-		propWriteReadMap.putAll(sii.propWriteReadMap);
-		propReadMethods.addAll(sii.propReadMethods);
-		listenerGarMethods.addAll(sii.listenerGarMethods);
-		hierachyMethodMap.putAll(sii.hierachyMethodMap);
-		properties.putAll(sii.properties);
+	private void loadBeanInfoCascade(Class<?> interfaceClass) {
+		for (Class<?> superClass : interfaceClass.getInterfaces()) {
+			loadBeanInfoCascade(superClass);
+		}
+		loadBeanInfo(interfaceClass);
 	}
 
 	private void loadBeanInfo(Class<?> beanClass) {
@@ -220,6 +215,11 @@ public class InterfaceInfo {
 	protected boolean isRef2ElementMethod(Method method) {
 		HierarchyOp hop = hierachyMethodMap.get(method);
 		return hop != null && hop == HierarchyOp.REF2;
+	}
+
+	protected boolean isAddRef2Method(Method method) {
+		HierarchyOp hop = hierachyMethodMap.get(method);
+		return hop != null && hop == HierarchyOp.ADD_REF2;
 	}
 
 	public Map<String, PropertyDescriptor> getPropertyMap() {
