@@ -53,6 +53,10 @@ public abstract class ContainerImpl extends ComponentImpl implements
 				.getX(), width, height);
 	}
 
+	public boolean canContributeToParent() {
+		return isVisible() && !isCacheable();
+	}
+
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
 

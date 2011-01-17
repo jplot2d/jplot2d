@@ -124,6 +124,18 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	}
 
+	public boolean canContributeToParent() {
+		if (!isVisible() || isCacheable()) {
+			return false;
+		}
+		for (GraphPlotterEx gp : plotters) {
+			if (gp.isVisible() && !gp.isCacheable()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public ViewportAxisEx getXViewportAxis() {
 		return xaxis;
 	}

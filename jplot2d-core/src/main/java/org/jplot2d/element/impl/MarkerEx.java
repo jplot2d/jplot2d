@@ -28,4 +28,6 @@ import org.jplot2d.element.Marker;
  */
 public interface MarkerEx extends Marker, ComponentEx {
 
+	public LayerEx getParent();
+
 }
