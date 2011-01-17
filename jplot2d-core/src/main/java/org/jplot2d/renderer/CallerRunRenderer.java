@@ -27,7 +27,7 @@ import java.util.concurrent.Executor;
  * @author Jingjing Li
  * 
  */
-public class SingleThreadRenderer<T> extends SyncRenderer<T> {
+public class CallerRunRenderer<T> extends SyncRenderer<T> {
 
 	private static Executor callerRunsExecutor = new Executor() {
 
@@ -37,7 +37,7 @@ public class SingleThreadRenderer<T> extends SyncRenderer<T> {
 
 	};
 
-	public SingleThreadRenderer(Assembler<T> assembler) {
+	public CallerRunRenderer(Assembler<T> assembler) {
 		super(assembler, callerRunsExecutor);
 	}
 
