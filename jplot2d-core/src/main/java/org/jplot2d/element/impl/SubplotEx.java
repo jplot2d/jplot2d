@@ -83,4 +83,6 @@ public interface SubplotEx extends Subplot, ContainerEx {
 	 */
 	public void setContentConstrant(Rectangle2D constraint);
 
+	public void childPreferredContentSizeChanged();
+
 }
