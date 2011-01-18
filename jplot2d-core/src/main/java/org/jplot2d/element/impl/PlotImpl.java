@@ -39,11 +39,13 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	private double scale = 1;
 
-	private PlotSizeMode sizeMode = PlotSizeMode.FIXED_SIZE;
+	private PlotSizeMode sizeMode = PlotSizeMode.FIT_CONTAINER_WITH_TARGET_SIZE;
 
-	private Dimension containerSize = new Dimension(480, 320);
+	private boolean preferredSizeChanged;
 
-	private Dimension2D targetSize = new DoubleDimension2D(480, 320);
+	private Dimension containerSize = new Dimension(640, 480);
+
+	private Dimension2D targetSize = new DoubleDimension2D(640, 480);
 
 	public PlotImpl() {
 		super.setColor(Color.BLACK);
@@ -72,6 +74,28 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		if ((warningReceiver != null)) {
 			warningReceiver.warning(msg);
 		}
+	}
+
+	public void childPreferredContentSizeChanged() {
+		preferredSizeChanged = true;
+	}
+
+	public void validate() {
+		if (getLayoutDirector() != null
+				&& getSizeMode() == PlotSizeMode.FIT_CONTENTS) {
+			if (!isValid() || preferredSizeChanged) {
+				Dimension2D prefSize = getLayoutDirector().getPreferredSize(
+						this);
+				if (this.width != prefSize.getWidth()
+						|| this.height != prefSize.getHeight()) {
+					this.setSize(prefSize);
+				}
+				preferredSizeChanged = false;
+
+			}
+		}
+
+		super.validate();
 	}
 
 	public PlotSizeMode getSizeMode() {
@@ -116,15 +140,7 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 			/*
 			 * Calculate scale based on container size and physical size.
 			 */
-			Dimension2D prefSize = getLayoutDirector().getPreferredSize(this);
-			if (this.width != prefSize.getWidth()
-					|| this.height != prefSize.getHeight()) {
-				super.setSize(prefSize);
-				double scaleX = containerSize.width / width;
-				double scaleY = containerSize.height / height;
-				scale = (scaleX < scaleY) ? scaleX : scaleY;
-				updatePxf();
-			}
+			childPreferredContentSizeChanged();
 			break;
 		}
 		}
@@ -136,12 +152,12 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		/*
 		 * Calculate scale based on container size and physical size.
 		 */
-		Dimension2D physize = getSize();
-		double scaleX = containerSize.width / physize.getWidth();
-		double scaleY = containerSize.height / physize.getHeight();
+		double scaleX = containerSize.width / width;
+		double scaleY = containerSize.height / height;
 		scale = (scaleX < scaleY) ? scaleX : scaleY;
 
 		updatePxf();
+		invalidate();
 	}
 
 	/**
