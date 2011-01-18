@@ -53,5 +53,10 @@ public enum HierarchyOp {
 	/**
 	 * The method should set 2 elements as its reference. (2x 1:n reffrom:refto)
 	 */
-	REF2
+	REF2,
+	/**
+	 * The method should add an element as its child (1:n parent:children), and
+	 * set 2 elements as its reference
+	 */
+	ADD_REF2
 }
