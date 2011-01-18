@@ -105,13 +105,39 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void addGraphPlotter(GraphPlotter plotter) {
-		plotters.add((GraphPlotterEx) plotter);
-		((GraphPlotterEx) plotter).setParent(this);
+		GraphPlotterEx gp = (GraphPlotterEx) plotter;
+		plotters.add(gp);
+		gp.setParent(this);
+
+		if (gp.isVisible() && !gp.isCacheable()) {
+			redraw();
+		}
+		if (gp.isVisible()) {
+			if (xaxis != null && xaxis.getLockGroup().isAutoRange()) {
+				xaxis.getLockGroup().reAutoRange();
+			}
+			if (yaxis != null && yaxis.getLockGroup().isAutoRange()) {
+				yaxis.getLockGroup().reAutoRange();
+			}
+		}
 	}
 
 	public void removeGraphPlotter(GraphPlotter plotter) {
-		plotters.remove(plotter);
-		((GraphPlotterEx) plotter).setParent(null);
+		GraphPlotterEx gp = (GraphPlotterEx) plotter;
+		plotters.remove(gp);
+		gp.setParent(null);
+
+		if (gp.isVisible() && !gp.isCacheable()) {
+			redraw();
+		}
+		if (gp.isVisible()) {
+			if (xaxis.getLockGroup().isAutoRange()) {
+				xaxis.getLockGroup().reAutoRange();
+			}
+			if (yaxis.getLockGroup().isAutoRange()) {
+				yaxis.getLockGroup().reAutoRange();
+			}
+		}
 	}
 
 	public Marker getMarker(int idx) {
