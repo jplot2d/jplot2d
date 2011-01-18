@@ -149,9 +149,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			this.xaxis.removeLayer(this);
 		}
 		this.xaxis = (ViewportAxisEx) axis;
-		if (this.xaxis != null) {
-			this.xaxis.addLayer(this);
-		}
+		this.xaxis.addLayer(this);
 	}
 
 	public void setYViewportAxis(ViewportAxis axis) {
@@ -159,27 +157,17 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			this.yaxis.removeLayer(this);
 		}
 		this.yaxis = (ViewportAxisEx) axis;
-		if (this.xaxis != null) {
-			this.yaxis.addLayer(this);
-		}
+		this.yaxis.addLayer(this);
 	}
 
 	public void setViewportAxes(ViewportAxis xaxis, ViewportAxis yaxis) {
-		if (this.xaxis != null) {
-			this.xaxis.removeLayer(this);
-		}
-		this.xaxis = (ViewportAxisEx) xaxis;
-		if (this.xaxis != null) {
-			this.xaxis.addLayer(this);
-		}
+		setXViewportAxis(xaxis);
+		setYViewportAxis(yaxis);
+	}
 
-		if (this.yaxis != null) {
-			this.yaxis.removeLayer(this);
-		}
-		this.yaxis = (ViewportAxisEx) yaxis;
-		if (this.xaxis != null) {
-			this.yaxis.addLayer(this);
-		}
+	public void detachAxes() {
+		this.xaxis.removeLayer(this);
+		this.yaxis.removeLayer(this);
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
