@@ -405,7 +405,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	private void invokeSetRefElementMethod(Method method, Object[] args)
 			throws Throwable {
-		ElementAddition cproxy = (ElementAddition) args[0];
+		if (args[0] == null) {
+			throw new IllegalArgumentException("Null is not a valid argument.");
+		}
 		Element cimpl;
 
 		Environment env;
@@ -418,7 +420,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 						"Must belongd to the same environment");
 			}
 			env.beginCommand("");
-			cimpl = cproxy.getImpl();
+			cimpl = ((ElementAddition) args[0]).getImpl();
 		}
 		try {
 			Object[] cargs = args.clone();
@@ -433,6 +435,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	private void invokeSetRef2ElementMethod(Method method, Object[] args)
 			throws Throwable {
+		if (args[0] == null || args[1] == null) {
+			throw new IllegalArgumentException("Null is not a valid argument.");
+		}
 		Element cimpl0, cimpl1;
 
 		Environment env;
@@ -440,20 +445,18 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			// local safe copy
 			env = environment;
 
-			if (args[0] != null && ((Element) args[0]).getEnvironment() != env) {
+			if (((Element) args[0]).getEnvironment() != env) {
 				throw new IllegalArgumentException(
 						"Must belongd to the same environment");
 			}
-			if (args[1] != null && ((Element) args[1]).getEnvironment() != env) {
+			if (((Element) args[1]).getEnvironment() != env) {
 				throw new IllegalArgumentException(
 						"Must belongd to the same environment");
 			}
 
 			env.beginCommand("");
-			cimpl0 = (args[0] == null) ? null : ((ElementAddition) args[0])
-					.getImpl();
-			cimpl1 = (args[1] == null) ? null : ((ElementAddition) args[1])
-					.getImpl();
+			cimpl0 = ((ElementAddition) args[0]).getImpl();
+			cimpl1 = ((ElementAddition) args[1]).getImpl();
 		}
 		try {
 			Object[] cargs = args.clone();
