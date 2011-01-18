@@ -18,7 +18,7 @@
  */
 package org.jplot2d.layout;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Dimension2D;
 
 import org.jplot2d.element.impl.SubplotEx;
 
@@ -27,7 +27,7 @@ import org.jplot2d.element.impl.SubplotEx;
  * will be called inside the plot engine. User should never call them directly.
  * <p>
  * A subplot's children subplots are laid out in the content area. All layers in
- * subplot are stacked over and have the same size of the subplot.
+ * subplot are stacked over and have the same size of the content area.
  * <p>
  * The axis is a special component. Its length can be set when laid out, but its
  * height is fixed and derived from its internal status, such as tick height and
@@ -37,13 +37,6 @@ import org.jplot2d.element.impl.SubplotEx;
  * 
  */
 public interface LayoutDirector {
-
-	/**
-	 * Returns the viewport constraint for the given subplot.
-	 * 
-	 * @return the viewport constraint
-	 */
-	public Rectangle2D getViewportConstrant(SubplotEx subplot);
 
 	/**
 	 * Returns the constraint for the given subplot.
@@ -71,9 +64,7 @@ public interface LayoutDirector {
 
 	/**
 	 * Invalidates the layout, indicating that if the layout manager has cached
-	 * information it should be discarded. Also, this method optionally
-	 * invalidate the subplot's parent, depending on the nature of this
-	 * LayoutDirector.
+	 * information it should be discarded.
 	 * 
 	 * @param subplot
 	 *            the subplot has been invalidate.
@@ -84,5 +75,14 @@ public interface LayoutDirector {
 	 * Layout the subplot.
 	 */
 	public void layout(SubplotEx subplot);
+
+	/**
+	 * Returns the preferred size of the given subplot.
+	 * 
+	 * @param subplot
+	 *            The subplot
+	 * @return The preferred size
+	 */
+	public Dimension2D getPreferredSize(SubplotEx subplot);
 
 }

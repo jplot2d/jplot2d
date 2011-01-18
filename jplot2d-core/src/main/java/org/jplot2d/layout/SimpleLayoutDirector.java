@@ -18,6 +18,7 @@
  */
 package org.jplot2d.layout;
 
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -42,18 +43,21 @@ import org.jplot2d.util.NumberUtils;
  */
 public class SimpleLayoutDirector implements LayoutDirector {
 
+	/**
+	 * All Axes in a subplot grouped by position.
+	 */
+	public static class AxesInSubplot {
+		final ArrayList<AxisEx> leftAxes = new ArrayList<AxisEx>();
+		final ArrayList<AxisEx> rightAxes = new ArrayList<AxisEx>();
+		final ArrayList<AxisEx> topAxes = new ArrayList<AxisEx>();
+		final ArrayList<AxisEx> bottomAxes = new ArrayList<AxisEx>();
+	}
+
 	/** The layout constraints */
 	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
 
 	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
-	}
-
-	/*
-	 * This LayoutDirector doesn't impose viewport constraint on its children.
-	 */
-	public Rectangle2D getViewportConstrant(SubplotEx subplot) {
-		return null;
 	}
 
 	public Object getConstraint(SubplotEx subplot) {
@@ -78,86 +82,119 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	public void layout(SubplotEx subplot) {
 
-		Insets2D margin = calcMargin(subplot);
+		Rectangle2D contentRect;
+		AxesInSubplot ais = getAllAxes(subplot);
 
-		subplot.getMargin().setMarginTop(margin.getTop());
-		subplot.getMargin().setMarginLeft(margin.getLeft());
-		subplot.getMargin().setMarginBottom(margin.getBottom());
-		subplot.getMargin().setMarginRight(margin.getRight());
+		if (subplot.getContentConstrant() != null) {
+			contentRect = subplot.getContentConstrant();
+		} else {
+			Insets2D margin = calcMargin(subplot.getMargin(), ais);
 
-		double contentWidth = subplot.getSize().getWidth() - margin.getLeft()
-				- margin.getRight();
-		double contentHeight = subplot.getSize().getHeight() - margin.getTop()
-				- margin.getBottom();
-		Rectangle2D contentRect = new Rectangle2D.Double(margin.getLeft(),
-				margin.getBottom(), contentWidth, contentHeight);
+			subplot.getMargin().setMarginTop(margin.getTop());
+			subplot.getMargin().setMarginLeft(margin.getLeft());
+			subplot.getMargin().setMarginBottom(margin.getBottom());
+			subplot.getMargin().setMarginRight(margin.getRight());
 
-		subplot.setViewportBounds(contentRect);
-
-		// layers always have the same bounds as subplot
-		for (LayerEx layer : subplot.getLayers()) {
-			layer.setLocation(new Point2D.Double(margin.getLeft(), margin
-					.getBottom()));
-			layer.setSize(new DoubleDimension2D(contentWidth, contentHeight));
+			double contentWidth = subplot.getSize().getWidth()
+					- margin.getLeft() - margin.getRight();
+			double contentHeight = subplot.getSize().getHeight()
+					- margin.getTop() - margin.getBottom();
+			contentRect = new Rectangle2D.Double(margin.getLeft(),
+					margin.getBottom(), contentWidth, contentHeight);
 		}
 
-		locateAxes(subplot, contentRect);
-
+		subplot.setContentBounds(contentRect);
+		locateAxes(subplot, contentRect, ais);
+		locateLayers(subplot, contentRect);
 	}
 
-	private Insets2D calcMargin(SubplotEx subplot) {
+	private AxesInSubplot getAllAxes(SubplotEx subplot) {
+		AxesInSubplot ais = new AxesInSubplot();
 
-		SubplotMarginEx margin = subplot.getMargin();
-
-		// quick return
-		if (!margin.isAutoMarginTop() && !margin.isAutoMarginLeft()
-				&& !margin.isAutoMarginBottom() && !margin.isAutoMarginRight()) {
-			return new Insets2D(margin.getMarginTop(), margin.getMarginLeft(),
-					margin.getMarginBottom(), margin.getMarginRight());
-		}
-
-		double mTop = margin.getExtraTop();
-		double mLeft = margin.getExtraLeft();
-		double mBottom = margin.getExtraBottom();
-		double mRight = margin.getExtraRight();
-
-		// count axis thickness
 		for (ViewportAxisEx xva : subplot.getXViewportAxes()) {
 			for (AxisEx axis : xva.getAxes()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-					mTop += axis.getThickness();
+					ais.topAxes.add(axis);
 				} else {
-					mBottom += axis.getThickness();
+					ais.bottomAxes.add(axis);
 				}
 			}
 		}
 		for (ViewportAxisEx yva : subplot.getYViewportAxes()) {
 			for (AxisEx axis : yva.getAxes()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-					mRight += axis.getThickness();
+					ais.rightAxes.add(axis);
 				} else {
-					mLeft += axis.getThickness();
+					ais.leftAxes.add(axis);
 				}
 			}
 		}
 
-		if (!margin.isAutoMarginTop()) {
-			mTop = margin.getMarginTop();
-		}
-		if (!margin.isAutoMarginLeft()) {
+		return ais;
+	}
+
+	static Insets2D calcMargin(SubplotMarginEx margin, AxesInSubplot ais) {
+
+		// SubplotMarginEx margin = subplot.getMargin();
+
+		double mTop;
+		double mLeft;
+		double mBottom;
+		double mRight;
+
+		if (margin.isAutoMarginLeft()) {
+			mLeft = margin.getExtraLeft();
+			if (ais.leftAxes.size() > 0) {
+				for (AxisEx am : ais.leftAxes) {
+					mLeft += am.getAsc() + am.getDesc();
+				}
+				mLeft -= ais.leftAxes.get(0).getDesc();
+			}
+		} else {
 			mLeft = margin.getMarginLeft();
 		}
-		if (!margin.isAutoMarginBottom()) {
-			mBottom = margin.getMarginBottom();
-		}
-		if (!margin.isAutoMarginRight()) {
+
+		if (margin.isAutoMarginRight()) {
+			mRight = margin.getExtraRight();
+			if (ais.rightAxes.size() > 0) {
+				for (AxisEx am : ais.rightAxes) {
+					mRight += am.getAsc() + am.getDesc();
+				}
+				mRight -= ais.rightAxes.get(0).getAsc();
+			}
+		} else {
 			mRight = margin.getMarginRight();
+		}
+
+		if (margin.isAutoMarginTop()) {
+			mTop = margin.getExtraTop();
+			if (ais.topAxes.size() > 0) {
+				for (AxisEx am : ais.topAxes) {
+					mTop += am.getAsc() + am.getDesc();
+				}
+				mTop -= ais.topAxes.get(0).getDesc();
+			}
+		} else {
+			mTop = margin.getMarginTop();
+		}
+
+		if (margin.isAutoMarginBottom()) {
+			mBottom = margin.getExtraBottom();
+			if (ais.bottomAxes.size() > 0) {
+				for (AxisEx am : ais.bottomAxes) {
+					mBottom += am.getAsc() + am.getDesc();
+				}
+				mBottom -= ais.bottomAxes.get(0).getAsc();
+			}
+		} else {
+			mBottom = margin.getMarginBottom();
 		}
 
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
 
-	private static void locateAxes(SubplotEx sp, Rectangle2D contentBox) {
+	private static void locateAxes(SubplotEx sp, Rectangle2D contentBox,
+			AxesInSubplot ais) {
 
 		// set offset and length for ViewportAxisEx
 		for (ViewportAxisEx xva : sp.getXViewportAxes()) {
@@ -170,34 +207,10 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		// find all axes in inner-to-outer order
-		ArrayList<AxisEx> topAxisM = new ArrayList<AxisEx>();
-		ArrayList<AxisEx> leftAxisM = new ArrayList<AxisEx>();
-		ArrayList<AxisEx> bottomAxisM = new ArrayList<AxisEx>();
-		ArrayList<AxisEx> rightAxisM = new ArrayList<AxisEx>();
-
-		LayerEx[] layers = sp.getLayers();
-		for (LayerEx layer : layers) {
-			ViewportAxisEx xva = layer.getXViewportAxis();
-			ViewportAxisEx yva = layer.getYViewportAxis();
-			if (xva != null) {
-				for (AxisEx axis : xva.getAxes()) {
-					if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-						topAxisM.add(axis);
-					} else {
-						bottomAxisM.add(axis);
-					}
-				}
-			}
-			if (yva != null) {
-				for (AxisEx axis : yva.getAxes()) {
-					if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-						rightAxisM.add(axis);
-					} else {
-						leftAxisM.add(axis);
-					}
-				}
-			}
-		}
+		ArrayList<AxisEx> topAxes = ais.topAxes;
+		ArrayList<AxisEx> leftAxes = ais.leftAxes;
+		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
+		ArrayList<AxisEx> rightAxes = ais.rightAxes;
 
 		// viewport box
 		double iabLeft = contentBox.getMinX();
@@ -206,13 +219,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		double iabTop = contentBox.getMaxY();
 
 		/* locate axes */
-		if (leftAxisM.size() > 0) {
+		if (leftAxes.size() > 0) {
 			double xloc = iabLeft;
-			AxisEx am = leftAxisM.get(0);
+			AxisEx am = leftAxes.get(0);
 			am.setLocation(xloc, iabBottom);
 			xloc -= am.getDesc();
-			for (int i = 1; i < leftAxisM.size(); i++) {
-				am = leftAxisM.get(i);
+			for (int i = 1; i < leftAxes.size(); i++) {
+				am = leftAxes.get(i);
 				if (i > 0) {
 					xloc -= am.getAsc();
 				}
@@ -220,42 +233,80 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				xloc -= am.getDesc();
 			}
 		}
-		if (rightAxisM.size() > 0) {
+		if (rightAxes.size() > 0) {
 			double xloc = iabRight;
-			AxisEx am = rightAxisM.get(0);
+			AxisEx am = rightAxes.get(0);
 			am.setLocation(xloc, iabBottom);
 			xloc += am.getAsc();
-			for (int i = 1; i < rightAxisM.size(); i++) {
-				am = rightAxisM.get(i);
+			for (int i = 1; i < rightAxes.size(); i++) {
+				am = rightAxes.get(i);
 				xloc += am.getDesc();
 				am.setLocation(xloc, iabBottom);
 				xloc += am.getAsc();
 			}
 		}
-		if (bottomAxisM.size() > 0) {
+		if (bottomAxes.size() > 0) {
 			double yloc = iabBottom;
-			AxisEx am = bottomAxisM.get(0);
+			AxisEx am = bottomAxes.get(0);
 			am.setLocation(iabLeft, yloc);
 			yloc += am.getDesc();
-			for (int i = 1; i < bottomAxisM.size(); i++) {
-				am = bottomAxisM.get(i);
+			for (int i = 1; i < bottomAxes.size(); i++) {
+				am = bottomAxes.get(i);
 				yloc -= am.getAsc();
 				am.setLocation(iabLeft, yloc);
 				yloc -= am.getDesc();
 			}
 		}
-		if (topAxisM.size() > 0) {
+		if (topAxes.size() > 0) {
 			double yloc = iabTop;
-			AxisEx am = topAxisM.get(0);
+			AxisEx am = topAxes.get(0);
 			am.setLocation(iabLeft, yloc);
 			yloc += am.getAsc();
-			for (int i = 1; i < topAxisM.size(); i++) {
-				am = topAxisM.get(i);
+			for (int i = 1; i < topAxes.size(); i++) {
+				am = topAxes.get(i);
 				yloc += am.getDesc();
 				am.setLocation(iabLeft, yloc);
 				yloc += am.getAsc();
 			}
 		}
+	}
+
+	private static void locateLayers(SubplotEx subplot, Rectangle2D contentBox) {
+		for (LayerEx layer : subplot.getLayers()) {
+			layer.setLocation(new Point2D.Double(contentBox.getX(), contentBox
+					.getY()));
+			layer.setSize(new DoubleDimension2D(contentBox.getWidth(),
+					contentBox.getHeight()));
+		}
+	}
+
+	public Dimension2D getPreferredSize(SubplotEx subplot) {
+		Dimension2D prefContSize = getPreferredContentSize(subplot);
+		if (prefContSize == null) {
+			return null;
+		} else {
+			AxesInSubplot ais = getAllAxes(subplot);
+			Insets2D margin = calcMargin(subplot.getMargin(), ais);
+			double w = prefContSize.getWidth() + margin.getLeft()
+					+ margin.getRight();
+			double h = prefContSize.getHeight() + margin.getTop()
+					+ margin.getBottom();
+			return new DoubleDimension2D(w, h);
+		}
+	}
+
+	/**
+	 * Calculate the preferred content size of the given subplot. The default
+	 * implementation returns the subplot.getPreferredContentSize(), which can
+	 * be override by subclass to consider nested subplots. The returned size
+	 * may be <code>null</code> if there is no enough information to derive a
+	 * value.
+	 * 
+	 * @param subplot
+	 * @return the preferred content size
+	 */
+	protected Dimension2D getPreferredContentSize(SubplotEx subplot) {
+		return subplot.getPreferredContentSize();
 	}
 
 }
