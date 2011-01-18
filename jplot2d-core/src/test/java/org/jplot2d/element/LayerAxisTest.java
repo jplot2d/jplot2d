@@ -172,8 +172,24 @@ public class LayerAxisTest {
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
 
-		// detach axes
-		layer.setViewportAxes(null, null);
+		// try to detach axis
+		try {
+			layer.setXViewportAxis(null);
+			fail("IllegalArgumentException should be thrown");
+		} catch (IllegalArgumentException e) {
+
+		}
+		try {
+			layer.setYViewportAxis(null);
+			fail("IllegalArgumentException should be thrown");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		// remove layer then remove axes
+		sp.removeLayer(layer);
+		assertNull(layer.getXViewportAxis());
+		assertNull(layer.getYViewportAxis());
 
 		sp.removeXViewportAxis(xaxis);
 		sp.removeYViewportAxis(yaxis);
