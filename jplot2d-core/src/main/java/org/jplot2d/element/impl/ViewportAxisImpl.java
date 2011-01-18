@@ -312,10 +312,26 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 
 	public void addLayer(LayerEx layer) {
 		layers.add(layer);
+		if (group.isAutoRange()) {
+			for (GraphPlotterEx plotter : ((LayerEx) layer).getGraphPlotters()) {
+				if (plotter.isVisible()) {
+					group.reAutoRange();
+					break;
+				}
+			}
+		}
 	}
 
 	public void removeLayer(LayerEx layer) {
 		layers.remove(layer);
+		if (group.isAutoRange()) {
+			for (GraphPlotterEx plotter : ((LayerEx) layer).getGraphPlotters()) {
+				if (plotter.isVisible()) {
+					group.reAutoRange();
+					break;
+				}
+			}
+		}
 	}
 
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {

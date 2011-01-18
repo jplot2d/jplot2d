@@ -88,8 +88,20 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 
 	public LayerEx[] getLayers();
 
+	/**
+	 * Called when a layer attach to this viewport axis
+	 * 
+	 * @param layer
+	 *            the layer
+	 */
 	public void addLayer(LayerEx layer);
 
+	/**
+	 * Called when a layer detach from this viewport axis
+	 * 
+	 * @param layer
+	 *            the layer
+	 */
 	public void removeLayer(LayerEx layer);
 
 	public AxisTransform getAxisTransform();
