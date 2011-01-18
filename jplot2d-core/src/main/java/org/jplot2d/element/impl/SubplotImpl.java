@@ -45,21 +45,23 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	private SubplotMarginEx margin = new SubplotMarginImpl();
 
 	/**
-	 * True when the object is valid. An invalid object needs to be laied out.
+	 * True when the object is valid. An invalid object needs to be laid out.
 	 * This flag is set to false when the object size is changed.
 	 * 
-	 * @serial
 	 * @see #isValid
 	 * @see #validate
 	 * @see #invalidate
 	 */
-	protected boolean valid = false;
+	private boolean valid = true;
 
 	private LayoutDirector layoutDirector;
 
 	private Rectangle2D contentConstraint;
 
-	private Dimension2D preferredContentSize = new DoubleDimension2D(400, 300);
+	/**
+	 * Must be valid size (positive width and height)
+	 */
+	private Dimension2D preferredContentSize = new DoubleDimension2D(320, 240);
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
@@ -192,7 +194,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			return;
 		}
 
-		layout();
+		if (layoutDirector != null) {
+			layoutDirector.layout(this);
+		}
 
 		for (SubplotEx subplot : subplots) {
 			subplot.validate();
@@ -201,21 +205,27 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		valid = true;
 	}
 
-	private void layout() {
-		if (layoutDirector != null)
-			layoutDirector.layout(this);
-	}
-
 	public Dimension2D getPreferredContentSize() {
 		return preferredContentSize;
 	}
 
 	public void setPreferredContentSize(Dimension2D size) {
+		if (size == null) {
+			throw new IllegalArgumentException(
+					"Preferred content size cannpt be null.");
+		}
 		if (size.getWidth() <= 0 || size.getHeight() <= 0) {
 			throw new IllegalArgumentException("Size must be positive, "
 					+ width + "x" + height + " is invalid.");
 		}
 		preferredContentSize = size;
+		childPreferredContentSizeChanged();
+	}
+
+	public void childPreferredContentSizeChanged() {
+		if (getParent() != null) {
+			getParent().childPreferredContentSizeChanged();
+		}
 	}
 
 	public Rectangle2D getContentBounds() {
@@ -256,7 +266,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
 		((LayerEx) layer).setParent(null);
-		layer.setViewportAxes(null, null);
+		((LayerEx) layer).detachAxes();
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
@@ -296,8 +306,11 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (vpa.canContributeToParent()) {
 			redraw();
 		}
-		if (vpa.getAxes().length > 0) {
-			invalidate();
+		for (AxisEx axis : vpa.getAxes()) {
+			if (axis.isVisible()) {
+				invalidate();
+				break;
+			}
 		}
 	}
 
@@ -310,8 +323,11 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (vpa.canContributeToParent()) {
 			redraw();
 		}
-		if (vpa.getAxes().length > 0) {
-			invalidate();
+		for (AxisEx axis : vpa.getAxes()) {
+			if (axis.isVisible()) {
+				invalidate();
+				break;
+			}
 		}
 	}
 
@@ -327,14 +343,17 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (vpa.canContributeToParent()) {
 			redraw();
 		}
-		if (vpAxis.getAxes().length > 0) {
-			invalidate();
+		for (AxisEx axis : vpa.getAxes()) {
+			if (axis.isVisible()) {
+				invalidate();
+				break;
+			}
 		}
 	}
 
 	public void removeYViewportAxis(ViewportAxis vpAxis) {
 		ViewportAxisEx vpa = (ViewportAxisEx) vpAxis;
-		if (vpAxis.getLayers().length > 0) {
+		if (vpa.getLayers().length > 0) {
 			throw new IllegalStateException("The axis has layer attached");
 		}
 
@@ -344,8 +363,11 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (vpa.canContributeToParent()) {
 			redraw();
 		}
-		if (vpAxis.getAxes().length > 0) {
-			invalidate();
+		for (AxisEx axis : vpa.getAxes()) {
+			if (axis.isVisible()) {
+				invalidate();
+				break;
+			}
 		}
 	}
 
@@ -365,7 +387,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		subplots.add((SubplotEx) subplot);
 		((SubplotEx) subplot).setParent(this);
 
-		invalidate();
+		if (subplot.isVisible()) {
+			invalidate();
+		}
 
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
@@ -379,7 +403,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			ld.remove((SubplotEx) subplot);
 		}
 
-		invalidate();
+		if (subplot.isVisible()) {
+			invalidate();
+		}
 	}
 
 	public boolean canContributeToParent() {
