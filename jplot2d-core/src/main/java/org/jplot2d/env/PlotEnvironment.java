@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.ComponentEx;
@@ -153,9 +154,9 @@ public abstract class PlotEnvironment extends Environment {
 		 * are set. So we cannot use deep-first validate tree. we must layout
 		 * all subplot, then calculate auto range, then validate all axes.
 		 */
-		calcAxesThickness();
+		calcAxesThickness(plotImpl);
 
-		while (!plotImpl.isValid()) {
+		while (true) {
 
 			/*
 			 * Laying out axes may register some axis that ticks need be
@@ -177,8 +178,11 @@ public abstract class PlotEnvironment extends Environment {
 			calcAxesTick(plotImpl);
 
 			/* thickness changes may invalidate the plot */
-			calcAxesThickness();
+			calcAxesThickness(plotImpl);
 
+			if (plotImpl.isValid()) {
+				break;
+			}
 		}
 
 		Map<ElementEx, ElementEx> copyMap = makeUndoMemento();
@@ -201,18 +205,19 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
-	private void calcAxesThickness() {
-		for (SubplotEx sp : plotImpl.getSubplots()) {
-			for (ViewportAxisEx va : sp.getXViewportAxes()) {
-				for (AxisEx axis : va.getAxes()) {
-					axis.calcThickness();
-				}
+	private void calcAxesThickness(SubplotEx subplot) {
+		for (ViewportAxisEx va : subplot.getXViewportAxes()) {
+			for (AxisEx axis : va.getAxes()) {
+				axis.calcThickness();
 			}
-			for (ViewportAxisEx va : sp.getYViewportAxes()) {
-				for (AxisEx axis : va.getAxes()) {
-					axis.calcThickness();
-				}
+		}
+		for (ViewportAxisEx va : subplot.getYViewportAxes()) {
+			for (AxisEx axis : va.getAxes()) {
+				axis.calcThickness();
 			}
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			calcAxesThickness(sp);
 		}
 	}
 
@@ -230,7 +235,7 @@ public abstract class PlotEnvironment extends Environment {
 				axis.calcTicks();
 			}
 		}
-		for (SubplotEx sp : plotImpl.getSubplots()) {
+		for (SubplotEx sp : subplot.getSubplots()) {
 			calcAxesTick(sp);
 		}
 	}
