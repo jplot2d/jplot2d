@@ -70,10 +70,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	public void setConstraint(SubplotEx subplot, Object constraint) {
 		constraints.put(subplot, constraint);
-		// invalidate its parent
-		if (subplot.getParent() != null) {
-			subplot.getParent().invalidate();
-		}
 	}
 
 	public void invalidateLayout(SubplotEx subplot) {
@@ -99,6 +95,12 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					- margin.getLeft() - margin.getRight();
 			double contentHeight = subplot.getSize().getHeight()
 					- margin.getTop() - margin.getBottom();
+			if (contentWidth < SubplotEx.MIN_CONTENT_SIZE.getWidth()) {
+				contentWidth = SubplotEx.MIN_CONTENT_SIZE.getWidth();
+			}
+			if (contentHeight < SubplotEx.MIN_CONTENT_SIZE.getHeight()) {
+				contentHeight = SubplotEx.MIN_CONTENT_SIZE.getHeight();
+			}
 			contentRect = new Rectangle2D.Double(margin.getLeft(),
 					margin.getBottom(), contentWidth, contentHeight);
 		}
