@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -42,11 +42,11 @@ public class XYGraphPlotterFiller {
 
 	private final Path2D.Float path = new Path2D.Float();
 
-	private LayerEx cg;
+	private LayerEx layer;
 
-	private XYGraphPlotterEx style;
+	private XYGraphPlotterEx plotter;
 
-	private XYGraph line;
+	private XYGraph graph;
 
 	private Rectangle2D clip;
 
@@ -65,9 +65,9 @@ public class XYGraphPlotterFiller {
 	}
 
 	private void setLineData(XYGraphPlotterEx dp) {
-		this.line = dp.getGraph();
-		this.cg = dp.getParent();
-		this.style = dp;
+		this.graph = dp.getGraph();
+		this.layer = dp.getParent();
+		this.plotter = dp;
 
 		reset();
 	}
@@ -91,19 +91,19 @@ public class XYGraphPlotterFiller {
 
 		boolean hasPre = false;
 
-		for (int i = 0; i < line.size(); i++) {
+		for (int i = 0; i < graph.size(); i++) {
 
 			/* ignore NaN value */
-			if (Double.isNaN(line.getX(i)) || Double.isNaN(line.getY(i))) {
+			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
 				continue;
 			}
 
-			double x = cg.getPhysicalTransform().getXPtoD(
-					cg.getXViewportAxis().getAxisTransform()
-							.getTransP(line.getX(i)));
-			double y = cg.getPhysicalTransform().getYPtoD(
-					cg.getYViewportAxis().getAxisTransform()
-							.getTransP(line.getY(i)));
+			double x = layer.getPhysicalTransform().getXPtoD(
+					layer.getXViewportAxis().getAxisTransform()
+							.getTransP(graph.getX(i)));
+			double y = layer.getPhysicalTransform().getYPtoD(
+					layer.getYViewportAxis().getAxisTransform()
+							.getTransP(graph.getY(i)));
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -125,7 +125,7 @@ public class XYGraphPlotterFiller {
 	}
 
 	private void closeLine() {
-		switch (style.getFillClosureType()) {
+		switch (plotter.getFillClosureType()) {
 		case SELF:
 			path.closePath();
 			break;
@@ -159,7 +159,7 @@ public class XYGraphPlotterFiller {
 	 * @return
 	 */
 	public Paint createHatchPaint(LineHatchPaint hp) {
-		double scale = cg.getPhysicalTransform().getScale();
+		double scale = layer.getPhysicalTransform().getScale();
 		Dimension size = new Dimension((int) clip.getMaxX(),
 				(int) clip.getMaxY());
 

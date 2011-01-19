@@ -1,21 +1,3 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 package org.jplot2d.element.impl;
 
 import java.awt.Color;
@@ -153,7 +135,7 @@ public class XYGraphPlotterDataChunker implements
 		private void prepareNextChunk(ChunkData data) {
 			// fill the next chunk, non-empty
 			data.reset();
-			while (i < line.size()) {
+			while (i < graph.size()) {
 				fillChunk(data);
 				if (data.size > 0) {
 					break;
@@ -169,31 +151,31 @@ public class XYGraphPlotterDataChunker implements
 		private void fillChunk(ChunkData data) {
 
 			/* eat off the beginning NaNs */
-			while (i < line.size()) {
-				if (Double.isNaN(line.getX(i)) || Double.isNaN(line.getY(i))) {
+			while (i < graph.size()) {
+				if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
 					i++;
 				} else {
 					break;
 				}
 			}
-			if (i >= line.size()) {
+			if (i >= graph.size()) {
 				return;
 			}
 
-			boolean drawMark = style.isSymbolsVisible();
+			boolean drawMark = plotter.isSymbolsVisible();
 
 			boolean haspre = false;
 			double prex = Double.NaN;
 			double prey = Double.NaN;
 			boolean isPreBigNumber = false;
 
-			while (i < line.size()) {
+			while (i < graph.size()) {
 
-				double x = getXUtoD2(line.getX(i));
-				double y = getYUtoD2(line.getY(i));
+				double x = getXUtoD2(graph.getX(i));
+				double y = getYUtoD2(graph.getY(i));
 
 				/* break at NaN value */
-				if (Double.isNaN(line.getX(i)) || Double.isNaN(line.getY(i))) {
+				if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
 					i++;
 					break;
 				}
@@ -236,45 +218,47 @@ public class XYGraphPlotterDataChunker implements
 
 					/* markColorBuf */
 					if (drawMark) {
-						data.markColorBuf[data.size] = style
+						data.markColorBuf[data.size] = plotter
 								.getActualSymbolColor(i);
 					}
 
 					/* error buffer */
-					if (line.getXError() != null && i < line.getXError().size()) {
-						boolean vxlow = !Double.isNaN(line.getXErrorLow(i));
-						boolean vxhigh = !Double.isNaN(line.getXErrorHigh(i));
+					if (graph.getXError() != null
+							&& i < graph.getXError().size()) {
+						boolean vxlow = !Double.isNaN(graph.getXErrorLow(i));
+						boolean vxhigh = !Double.isNaN(graph.getXErrorHigh(i));
 						if (vxlow || vxhigh) {
 							data.xErrorSize = data.size + 1;
 							if (vxlow) {
-								data.xLowBuf[data.size] = (float) getXUtoD2(line
-										.getX(i) - line.getXErrorLow(i));
+								data.xLowBuf[data.size] = (float) getXUtoD2(graph
+										.getX(i) - graph.getXErrorLow(i));
 							} else {
 								data.xLowBuf[data.size] = data.xBuf[data.size];
 							}
 							if (vxhigh) {
-								data.xHighBuf[data.size] = (float) getXUtoD2(line
-										.getX(i) + line.getXErrorHigh(i));
+								data.xHighBuf[data.size] = (float) getXUtoD2(graph
+										.getX(i) + graph.getXErrorHigh(i));
 							} else {
 								data.xHighBuf[data.size] = data.xBuf[data.size];
 							}
 						}
 					}
 
-					if (line.getYError() != null && i < line.getYError().size()) {
-						boolean vylow = !Double.isNaN(line.getYErrorLow(i));
-						boolean vyhigh = !Double.isNaN(line.getYErrorHigh(i));
+					if (graph.getYError() != null
+							&& i < graph.getYError().size()) {
+						boolean vylow = !Double.isNaN(graph.getYErrorLow(i));
+						boolean vyhigh = !Double.isNaN(graph.getYErrorHigh(i));
 						if (vylow || vyhigh) {
 							data.yErrorSize = data.size + 1;
 							if (vylow) {
-								data.yLowBuf[data.size] = (float) getYUtoD2(line
-										.getY(i) - line.getYErrorLow(i));
+								data.yLowBuf[data.size] = (float) getYUtoD2(graph
+										.getY(i) - graph.getYErrorLow(i));
 							} else {
 								data.yLowBuf[data.size] = data.yBuf[data.size];
 							}
 							if (vyhigh) {
-								data.yHighBuf[data.size] = (float) getYUtoD2(line
-										.getY(i) + line.getYErrorHigh(i));
+								data.yHighBuf[data.size] = (float) getYUtoD2(graph
+										.getY(i) + graph.getYErrorHigh(i));
 							} else {
 								data.yHighBuf[data.size] = data.yBuf[data.size];
 							}
@@ -303,22 +287,22 @@ public class XYGraphPlotterDataChunker implements
 		}
 
 		private double getXUtoD2(double v) {
-			return cg.getPhysicalTransform().getXPtoD(
-					cg.getXViewportAxis().getAxisTransform().getTransP(v));
+			return layer.getPhysicalTransform().getXPtoD(
+					layer.getXViewportAxis().getAxisTransform().getTransP(v));
 		}
 
 		private double getYUtoD2(double v) {
-			return cg.getPhysicalTransform().getYPtoD(
-					cg.getYViewportAxis().getAxisTransform().getTransP(v));
+			return layer.getPhysicalTransform().getYPtoD(
+					layer.getYViewportAxis().getAxisTransform().getTransP(v));
 		}
 
 	}
 
-	private LayerEx cg;
+	private LayerEx layer;
 
-	private XYGraphPlotterEx style;
+	private XYGraphPlotterEx plotter;
 
-	private XYGraph line;
+	private XYGraph graph;
 
 	private Rectangle2D clip;
 
@@ -329,9 +313,9 @@ public class XYGraphPlotterDataChunker implements
 	}
 
 	private void setLineData(XYGraphPlotterEx dp) {
-		this.line = dp.getGraph();
-		this.cg = dp.getParent();
-		this.style = dp;
+		this.graph = dp.getGraph();
+		this.layer = dp.getParent();
+		this.plotter = dp;
 	}
 
 	private void setClip(Rectangle2D clip) {
