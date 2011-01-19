@@ -25,6 +25,7 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.layout.LayoutDirector;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * Subplot has a content area in the center, surrounded by margin area. The
@@ -39,6 +40,9 @@ import org.jplot2d.layout.LayoutDirector;
  * 
  */
 public interface Subplot extends Container {
+
+	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8,
+			8);
 
 	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();
