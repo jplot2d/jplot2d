@@ -36,6 +36,10 @@ import org.jplot2d.element.Axis;
  */
 public class TestUtils {
 
+	private TestUtils() {
+
+	}
+
 	public static void checkDouble(double a, double ref) {
 		assertEquals(a, ref, Math.abs(ref) * 1e-12);
 	}

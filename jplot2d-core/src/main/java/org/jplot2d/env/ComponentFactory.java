@@ -290,8 +290,10 @@ public class ComponentFactory {
 				AxisLockGroup.class.getClassLoader(), new Class[] {
 						AxisLockGroup.class, ElementAddition.class }, ih);
 
-		env.begin();
-		((ElementAddition) proxy).setEnvironment(env);
+		synchronized (Environment.getGlobalLock()) {
+			env.begin();
+			((ElementAddition) proxy).setEnvironment(env);
+		}
 		env.registerElement(impl, proxy);
 		env.end();
 
