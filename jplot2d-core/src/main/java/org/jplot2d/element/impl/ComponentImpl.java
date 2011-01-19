@@ -300,6 +300,9 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	protected void drawBounds(Graphics2D g) {
+		if (getParent() == null) {
+			return;
+		}
 		g.setColor(Color.BLACK);
 		Rectangle rect = getParent().getPhysicalTransform()
 				.getPtoD(getBounds()).getBounds();

@@ -19,6 +19,7 @@
 package org.jplot2d.element;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.annotation.Hierarchy;
@@ -41,6 +42,29 @@ public interface Subplot extends Container {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();
+
+	/**
+	 * Moves this plot component to a new location. The origin of the new
+	 * location is specified by point <code>p</code>. Point2D <code>p</code> is
+	 * given in the parent's physical coordinate space.
+	 * 
+	 * @param p
+	 *            the point defining the origin of the new location, given in
+	 *            the coordinate space of this component's parent
+	 */
+	public void setLocation(Point2D loc);
+
+	public void setLocation(double locX, double locY);
+
+	/**
+	 * Sets the paper size of this container.
+	 * 
+	 * @param paper
+	 *            size
+	 */
+	public void setSize(Dimension2D size);
+
+	public void setSize(double width, double height);
 
 	/**
 	 * Returns the margin area of this subplot.

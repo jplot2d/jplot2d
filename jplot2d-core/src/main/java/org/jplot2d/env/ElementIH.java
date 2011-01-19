@@ -503,6 +503,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				((ElementAddition) proxy).setEnvironment(penv);
 			}
 			for (int i = 1; i <= nref; i++) {
+				if (((Element) args[i]).getEnvironment() != penv) {
+					throw new IllegalArgumentException(
+							"The reference argument must belongd to the environment of the container to be added.");
+				}
 				cargs[i] = (args[i] == null) ? null
 						: ((ElementAddition) args[i]).getImpl();
 			}
