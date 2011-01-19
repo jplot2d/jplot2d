@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.layout.LayoutDirector;
+import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -40,13 +42,16 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
+	protected double width, height;
+
 	protected PhysicalTransform pxf;
 
 	private SubplotMarginEx margin = new SubplotMarginImpl();
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out.
-	 * This flag is set to false when the object size is changed.
+	 * This flag is set to false when the object size is changed. The initial
+	 * value is true, because the {@link #contentBounds} and size are both 0*0.
 	 * 
 	 * @see #isValid
 	 * @see #validate
@@ -54,7 +59,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	 */
 	private boolean valid = true;
 
-	private LayoutDirector layoutDirector;
+	private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
 	private Rectangle2D contentConstraint;
 
@@ -107,6 +112,33 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			pxf = null;
 			redraw();
 		}
+	}
+
+	public Dimension2D getSize() {
+		return new DoubleDimension2D(width, height);
+	}
+
+	public final void setSize(Dimension2D size) {
+		this.setSize(size.getWidth(), size.getHeight());
+	}
+
+	public void setSize(double width, double height) {
+		if (width < 0 || height < 0) {
+			throw new IllegalArgumentException("paper size must be positive, "
+					+ width + "x" + height + " is invalid.");
+		}
+
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			pxf = null;
+			invalidate();
+		}
+	}
+
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(getLocation().getX(), getLocation()
+				.getY(), width, height);
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
@@ -459,18 +491,13 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
 			layerCopy.setParent(result);
 			result.layers.add(layerCopy);
+		}
 
-			// link layer and viewport axis
-			if (layer.getXViewportAxis() != null) {
-				ViewportAxisEx xcopy = (ViewportAxisEx) orig2copyMap.get(layer
-						.getXViewportAxis());
-				layerCopy.setXViewportAxis(xcopy);
-			}
-			if (layer.getYViewportAxis() != null) {
-				ViewportAxisEx ycopy = (ViewportAxisEx) orig2copyMap.get(layer
-						.getYViewportAxis());
-				layerCopy.setYViewportAxis(ycopy);
-			}
+		// copy subplots
+		for (SubplotEx sp : subplots) {
+			SubplotEx spCopy = (SubplotEx) sp.deepCopy(orig2copyMap);
+			((ComponentEx) spCopy).setParent(this);
+			result.subplots.add(spCopy);
 		}
 
 		return result;
@@ -480,12 +507,18 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		super.copyFrom(src, orig2copyMap);
 
 		SubplotImpl sp = (SubplotImpl) src;
+		width = sp.width;
+		height = sp.height;
 		valid = sp.valid;
 		layoutDirector = sp.layoutDirector;
 		pxf = sp.pxf;
 		preferredContentSize = sp.preferredContentSize;
 		contentBounds = sp.contentBounds;
+	}
 
+	public void draw(Graphics2D g) {
+		// draw nothing
+		drawBounds(g);
 	}
 
 }

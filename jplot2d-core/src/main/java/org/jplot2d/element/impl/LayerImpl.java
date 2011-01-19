@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import org.jplot2d.element.ViewportAxis;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.TeXMathUtils;
 
@@ -65,6 +68,23 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		super.setLocation(locX, locY);
 		pxf = null;
 		redraw();
+	}
+
+	public Dimension2D getSize() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			Rectangle2D rect = getParent().getContentBounds();
+			return new DoubleDimension2D(rect.getWidth(), rect.getHeight());
+		}
+	}
+
+	public Rectangle2D getBounds() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getContentBounds();
+		}
 	}
 
 	public PhysicalTransform getPhysicalTransform() {

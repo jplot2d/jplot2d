@@ -59,7 +59,8 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		getMargin().setExtraRight(12);
 
 		super.setCacheable(true);
-		super.setSize(containerSize);
+		super.width = containerSize.getWidth();
+		super.height = containerSize.getHeight();
 	}
 
 	public void setCacheable(boolean cacheMode) {
@@ -74,6 +75,13 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		if ((warningReceiver != null)) {
 			warningReceiver.warning(msg);
 		}
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		if (pxf == null) {
+			pxf = new PhysicalTransform(0.0, getSize().getHeight(), scale);
+		}
+		return pxf;
 	}
 
 	public void childPreferredContentSizeChanged() {
@@ -96,6 +104,20 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		}
 
 		super.validate();
+	}
+
+	/**
+	 * set this plot a new physical transform. this will trigger a redraw
+	 * notification.
+	 */
+	private void updatePxf() {
+		pxf = null;
+		redraw();
+
+		// notify all subplots
+		for (SubplotEx sp : subplots) {
+			sp.parentPhysicalTransformChanged();
+		}
 	}
 
 	public PlotSizeMode getSizeMode() {
@@ -158,20 +180,6 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 		updatePxf();
 		invalidate();
-	}
-
-	/**
-	 * set this plot a new physical transform. this will trigger a redraw
-	 * notification.
-	 */
-	private void updatePxf() {
-		pxf = new PhysicalTransform(0.0, getSize().getHeight(), scale);
-		redraw();
-
-		// notify all subplots
-		for (SubplotEx sp : subplots) {
-			sp.parentPhysicalTransformChanged();
-		}
 	}
 
 	public Dimension getContainerSize() {
@@ -237,6 +245,15 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		targetSize = paperSize;
 	}
 
+	public PlotImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+		PlotImpl result = (PlotImpl) super.deepCopy(orig2copyMap);
+
+		// link layer and viewport axis
+		linkLayerAndAxes(this, orig2copyMap);
+
+		return result;
+	}
+
 	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
 		super.copyFrom(src, orig2copyMap);
 
@@ -245,14 +262,26 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		containerSize = (Dimension) plot.containerSize.clone();
 		targetSize = (Dimension2D) plot.targetSize.clone();
 		scale = plot.scale;
+	}
 
-		// copy subplots
-		for (SubplotEx sp : plot.subplots) {
-			SubplotEx spCopy = (SubplotEx) sp.deepCopy(orig2copyMap);
-			((ComponentEx) spCopy).setParent(this);
-			subplots.add(spCopy);
+	private static void linkLayerAndAxes(SubplotEx subplot,
+			Map<ElementEx, ElementEx> orig2copyMap) {
+		for (LayerEx layer : subplot.getLayers()) {
+			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
+			if (layer.getXViewportAxis() != null) {
+				ViewportAxisEx xcopy = (ViewportAxisEx) orig2copyMap.get(layer
+						.getXViewportAxis());
+				layerCopy.setXViewportAxis(xcopy);
+			}
+			if (layer.getYViewportAxis() != null) {
+				ViewportAxisEx ycopy = (ViewportAxisEx) orig2copyMap.get(layer
+						.getYViewportAxis());
+				layerCopy.setYViewportAxis(ycopy);
+			}
 		}
-
+		for (SubplotEx sp : subplot.getSubplots()) {
+			linkLayerAndAxes(sp, orig2copyMap);
+		}
 	}
 
 }

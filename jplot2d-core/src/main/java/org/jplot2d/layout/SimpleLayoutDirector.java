@@ -275,8 +275,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		for (LayerEx layer : subplot.getLayers()) {
 			layer.setLocation(new Point2D.Double(contentBox.getX(), contentBox
 					.getY()));
-			layer.setSize(new DoubleDimension2D(contentBox.getWidth(),
-					contentBox.getHeight()));
 		}
 	}
 

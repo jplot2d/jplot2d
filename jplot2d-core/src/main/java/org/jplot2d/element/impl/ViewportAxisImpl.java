@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -110,6 +112,22 @@ public class ViewportAxisImpl extends ContainerImpl implements ViewportAxisEx {
 		}
 
 		return result;
+	}
+
+	public Dimension2D getSize() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getSize();
+		}
+	}
+
+	public Rectangle2D getBounds() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getBounds();
+		}
 	}
 
 	public PhysicalTransform getPhysicalTransform() {

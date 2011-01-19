@@ -62,7 +62,7 @@ public class BoundsConstraint {
 		return fixedInsets;
 	}
 
-	public Insets2D getelasticInsets() {
+	public Insets2D getElasticInsets() {
 		return elasticInsets;
 	}
 }
