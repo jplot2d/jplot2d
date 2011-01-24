@@ -18,7 +18,7 @@
  */
 package org.jplot2d.env;
 
-import org.jplot2d.element.Element;
+import org.jplot2d.element.impl.ElementEx;
 
 /**
  * Interface that provide methods for called from an environment.
@@ -44,6 +44,6 @@ public interface ElementAddition {
 	 * 
 	 * @return the impl
 	 */
-	public Element getImpl();
+	public ElementEx getImpl();
 
 }

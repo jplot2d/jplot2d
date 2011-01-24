@@ -288,12 +288,14 @@ public class XYGraphPlotterDataChunker implements
 
 		private double getXUtoD2(double v) {
 			return layer.getPhysicalTransform().getXPtoD(
-					layer.getXViewportAxis().getAxisTransform().getTransP(v));
+					layer.getXRangeManager().getNormalTransform().getTransP(v)
+							* layer.getSize().getWidth());
 		}
 
 		private double getYUtoD2(double v) {
 			return layer.getPhysicalTransform().getYPtoD(
-					layer.getYViewportAxis().getAxisTransform().getTransP(v));
+					layer.getYRangeManager().getNormalTransform().getTransP(v)
+							* layer.getSize().getHeight());
 		}
 
 	}

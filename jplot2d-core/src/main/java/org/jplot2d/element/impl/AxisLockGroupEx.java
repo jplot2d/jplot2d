@@ -28,17 +28,19 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface AxisLockGroupEx extends AxisLockGroup, MultiParentElementEx {
+public interface AxisLockGroupEx extends AxisLockGroup, ElementEx, Joinable {
 
-	public ViewportAxisEx[] getParents();
+	public AxisRangeManagerEx getParent();
 
-	public ViewportAxisEx[] getViewportAxes();
+	public AxisRangeManagerEx[] getRangeManagers();
 
-	public void addViewportAxis(ViewportAxisEx axisGroup);
+	public int indexOfRangeManager(AxisRangeManagerEx rangeManager);
 
-	public void removeViewportAxis(ViewportAxisEx axisGroup);
+	public void addRangeManager(AxisRangeManagerEx rangeManager);
 
-	public ViewportAxisEx getPrimaryAxis();
+	public void removeRangeManager(AxisRangeManagerEx rangeManager);
+
+	public AxisRangeManagerEx getPrimaryAxis();
 
 	/**
 	 * Force re-autorange this axis group. This method is called when layer data
@@ -53,7 +55,7 @@ public interface AxisLockGroupEx extends AxisLockGroup, MultiParentElementEx {
 	public void calcAutoRange();
 
 	public void zoomVirtualRange(Range2D range,
-			Map<ViewportAxisEx, NormalTransform> vtMap);
+			Map<AxisRangeManagerEx, NormalTransform> vtMap);
 
 	/**
 	 * Validate axes range after axis type or axis transform type changed.

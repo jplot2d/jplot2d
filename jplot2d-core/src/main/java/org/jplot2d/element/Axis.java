@@ -31,7 +31,21 @@ import org.jplot2d.util.Range2D;
 public interface Axis extends Container {
 
 	@Hierarchy(HierarchyOp.GET)
-	public ViewportAxis getParent();
+	public Subplot getParent();
+
+	@Hierarchy(HierarchyOp.GET)
+	public AxisRangeManager getRangeManager();
+
+	@Hierarchy(HierarchyOp.JOIN)
+	public void setRangeManager(AxisRangeManager rangeManager);
+
+	/**
+	 * Orientation is a read-only property. It just show the orientation of this
+	 * axis after it has been add as a X/Y axis.
+	 * 
+	 * @return orientation of this axis
+	 */
+	public AxisOrientation getOrientation();
 
 	/**
 	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT
@@ -215,6 +229,7 @@ public interface Axis extends Container {
 	 * 
 	 * @return the tick of this axis
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public AxisTick getTick();
 
 	/**
@@ -222,6 +237,7 @@ public interface Axis extends Container {
 	 * 
 	 * @return the title of this axis
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public TextComponent getTitle();
 
 }

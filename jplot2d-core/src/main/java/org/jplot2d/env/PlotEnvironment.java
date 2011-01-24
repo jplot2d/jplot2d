@@ -26,14 +26,12 @@ import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotEx;
-import org.jplot2d.element.impl.ViewportAxisEx;
 import org.jplot2d.element.impl.WarningReceiver;
 import org.jplot2d.util.WarningMessage;
 
@@ -206,15 +204,11 @@ public abstract class PlotEnvironment extends Environment {
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
 	private void calcAxesThickness(SubplotEx subplot) {
-		for (ViewportAxisEx va : subplot.getXViewportAxes()) {
-			for (AxisEx axis : va.getAxes()) {
-				axis.calcThickness();
-			}
+		for (AxisEx axis : subplot.getXAxes()) {
+			axis.calcThickness();
 		}
-		for (ViewportAxisEx va : subplot.getYViewportAxes()) {
-			for (AxisEx axis : va.getAxes()) {
-				axis.calcThickness();
-			}
+		for (AxisEx axis : subplot.getYAxes()) {
+			axis.calcThickness();
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {
 			calcAxesThickness(sp);
@@ -225,15 +219,11 @@ public abstract class PlotEnvironment extends Environment {
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
 	private void calcAxesTick(SubplotEx subplot) {
-		for (ViewportAxisEx va : subplot.getXViewportAxes()) {
-			for (AxisEx axis : va.getAxes()) {
-				axis.calcTicks();
-			}
+		for (AxisEx axis : subplot.getXAxes()) {
+			axis.calcTicks();
 		}
-		for (ViewportAxisEx va : subplot.getYViewportAxes()) {
-			for (AxisEx axis : va.getAxes()) {
-				axis.calcTicks();
-			}
+		for (AxisEx axis : subplot.getYAxes()) {
+			axis.calcTicks();
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {
 			calcAxesTick(sp);

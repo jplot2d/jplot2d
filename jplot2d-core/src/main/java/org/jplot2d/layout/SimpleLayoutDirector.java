@@ -30,7 +30,6 @@ import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LayerEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.SubplotMarginEx;
-import org.jplot2d.element.impl.ViewportAxisEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
@@ -110,25 +109,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		locateLayers(subplot, contentRect);
 	}
 
-	private AxesInSubplot getAllAxes(SubplotEx subplot) {
+	protected static AxesInSubplot getAllAxes(SubplotEx subplot) {
 		AxesInSubplot ais = new AxesInSubplot();
 
-		for (ViewportAxisEx xva : subplot.getXViewportAxes()) {
-			for (AxisEx axis : xva.getAxes()) {
-				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-					ais.topAxes.add(axis);
-				} else {
-					ais.bottomAxes.add(axis);
-				}
+		for (AxisEx axis : subplot.getXAxes()) {
+			if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
+				ais.topAxes.add(axis);
+			} else {
+				ais.bottomAxes.add(axis);
 			}
 		}
-		for (ViewportAxisEx yva : subplot.getYViewportAxes()) {
-			for (AxisEx axis : yva.getAxes()) {
-				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-					ais.rightAxes.add(axis);
-				} else {
-					ais.leftAxes.add(axis);
-				}
+		for (AxisEx axis : subplot.getYAxes()) {
+			if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
+				ais.rightAxes.add(axis);
+			} else {
+				ais.leftAxes.add(axis);
 			}
 		}
 
@@ -198,14 +193,14 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	private static void locateAxes(SubplotEx sp, Rectangle2D contentBox,
 			AxesInSubplot ais) {
 
-		// set offset and length for ViewportAxisEx
-		for (ViewportAxisEx xva : sp.getXViewportAxes()) {
-			xva.setOffset(contentBox.getX());
-			xva.setLength(contentBox.getWidth());
+		// set offset and length for axes
+		for (AxisEx xa : sp.getXAxes()) {
+			xa.setOffset(contentBox.getX());
+			xa.setLength(contentBox.getWidth());
 		}
-		for (ViewportAxisEx yva : sp.getYViewportAxes()) {
-			yva.setOffset(contentBox.getY());
-			yva.setLength(contentBox.getHeight());
+		for (AxisEx ya : sp.getYAxes()) {
+			ya.setOffset(contentBox.getY());
+			ya.setLength(contentBox.getHeight());
 		}
 
 		// find all axes in inner-to-outer order

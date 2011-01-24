@@ -18,22 +18,19 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.axtrans.AxisTransform;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
-import org.jplot2d.element.ViewportAxis;
-import org.jplot2d.element.AxisOrientation;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
+public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
+		Joinable {
 
-	public SubplotEx getParent();
-
-	public void setOrientation(AxisOrientation orientation);
+	public AxisEx getParent();
 
 	/**
 	 * Returns the normal transform of this axis
@@ -50,41 +47,15 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 	 */
 	public void setNormalTransfrom(NormalTransform ntf);
 
-	/**
-	 * Returns the offset of this ViewportAxis.
-	 * 
-	 * @return the length
-	 */
-	public double getOffset();
-
-	/**
-	 * Set the offset for this ViewportAxis. All axes of a ViewportAxis have the
-	 * same offset.
-	 * 
-	 * @param offset
-	 */
-	public void setOffset(double offset);
-
-	/**
-	 * Returns the length of this ViewportAxis.
-	 * 
-	 * @return the length
-	 */
-	public double getLength();
-
-	/**
-	 * Set the length for this ViewportAxis. All axes of a ViewportAxis have the
-	 * same length.
-	 * 
-	 * @param length
-	 */
-	public void setLength(double length);
-
 	public AxisLockGroupEx getLockGroup();
 
 	public AxisEx[] getAxes();
 
 	public int indexOfAxis(AxisEx axis);
+
+	public void addAxis(AxisEx axis);
+
+	public void removeAxis(AxisEx axis);
 
 	public LayerEx[] getLayers();
 
@@ -103,8 +74,6 @@ public interface ViewportAxisEx extends ViewportAxis, ContainerEx {
 	 *            the layer
 	 */
 	public void removeLayer(LayerEx layer);
-
-	public AxisTransform getAxisTransform();
 
 	public Range2D expandRangeToTick(Range2D ur);
 

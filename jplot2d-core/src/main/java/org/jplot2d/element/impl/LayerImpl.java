@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.GraphPlotter;
-import org.jplot2d.element.ViewportAxis;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
@@ -45,13 +45,14 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
-	private ViewportAxisEx xaxis, yaxis;
+	private AxisRangeManagerEx xaxis, yaxis;
 
-	public String getSelfId() {
+	protected String getSelfId() {
 		if (getParent() != null) {
 			return "Layer" + getParent().indexOf(this);
 		} else {
-			return "Layer@" + System.identityHashCode(this);
+			return "Layer@"
+					+ Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -182,33 +183,33 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return false;
 	}
 
-	public ViewportAxisEx getXViewportAxis() {
+	public AxisRangeManagerEx getXRangeManager() {
 		return xaxis;
 	}
 
-	public ViewportAxisEx getYViewportAxis() {
+	public AxisRangeManagerEx getYRangeManager() {
 		return yaxis;
 	}
 
-	public void setXViewportAxis(ViewportAxis axis) {
+	public void setXRangeManager(AxisRangeManager axis) {
 		if (this.xaxis != null) {
 			this.xaxis.removeLayer(this);
 		}
-		this.xaxis = (ViewportAxisEx) axis;
+		this.xaxis = (AxisRangeManagerEx) axis;
 		this.xaxis.addLayer(this);
 	}
 
-	public void setYViewportAxis(ViewportAxis axis) {
+	public void setYRangeManager(AxisRangeManager axis) {
 		if (this.yaxis != null) {
 			this.yaxis.removeLayer(this);
 		}
-		this.yaxis = (ViewportAxisEx) axis;
+		this.yaxis = (AxisRangeManagerEx) axis;
 		this.yaxis.addLayer(this);
 	}
 
-	public void setViewportAxes(ViewportAxis xaxis, ViewportAxis yaxis) {
-		setXViewportAxis(xaxis);
-		setYViewportAxis(yaxis);
+	public void setViewportAxes(AxisRangeManager xaxis, AxisRangeManager yaxis) {
+		setXRangeManager(xaxis);
+		setYRangeManager(yaxis);
 	}
 
 	public void detachAxes() {

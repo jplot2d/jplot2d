@@ -39,18 +39,18 @@ public class LayerAxisTest {
 	 */
 	@Test
 	public void testLayerAttachAxis() {
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		AxisRangeManager xaxis = factory.createAxisRangeManager();
+		AxisRangeManager yaxis = factory.createAxisRangeManager();
 		Layer layer = factory.createLayer();
 
 		try {
-			layer.setXViewportAxis(xaxis);
+			layer.setXRangeManager(xaxis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
 		}
 		try {
-			layer.setYViewportAxis(yaxis);
+			layer.setYRangeManager(yaxis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -60,32 +60,36 @@ public class LayerAxisTest {
 	@Test
 	public void testAddAxisAndLayer() {
 		Subplot sp = factory.createSubplot();
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
 
-		sp.addXViewportAxis(xaxis);
-		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer, xaxis, yaxis);
+		sp.addXAxis(xaxis);
+		sp.addYAxis(yaxis);
+		sp.addLayer(layer, xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertSame(layer.getXRangeManager(), xaxis.getRangeManager());
+		assertSame(layer.getYRangeManager(), yaxis.getRangeManager());
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
 
 		// set axis again
-		layer.setViewportAxes(xaxis, yaxis);
+		layer.setViewportAxes(xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertSame(layer.getXRangeManager(), xaxis.getRangeManager());
+		assertSame(layer.getYRangeManager(), yaxis.getRangeManager());
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
 	}
 
 	/**
@@ -96,29 +100,31 @@ public class LayerAxisTest {
 	public void testRemovAndAddLayer() {
 
 		Subplot sp = factory.createSubplot();
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
 
-		sp.addXViewportAxis(xaxis);
-		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer, xaxis, yaxis);
+		sp.addXAxis(xaxis);
+		sp.addYAxis(yaxis);
+		sp.addLayer(layer, xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		sp.removeLayer(layer);
 
 		assertNotSame(layer.getEnvironment(), sp.getEnvironment());
 		assertNull(layer.getParent());
-		assertNull(layer.getXViewportAxis());
-		assertNull(layer.getYViewportAxis());
-		assertArrayEquals(xaxis.getLayers(), new Object[0]);
-		assertArrayEquals(xaxis.getLayers(), new Object[0]);
+		assertNull(layer.getXRangeManager());
+		assertNull(layer.getYRangeManager());
+		assertArrayEquals(xaxis.getRangeManager().getLayers(), new Object[0]);
+		assertArrayEquals(xaxis.getRangeManager().getLayers(), new Object[0]);
 
-		sp.addLayer(layer, xaxis, yaxis);
+		sp.addLayer(layer, xaxis.getRangeManager(), yaxis.getRangeManager());
 
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertSame(layer.getXRangeManager(), xaxis.getRangeManager());
+		assertSame(layer.getYRangeManager(), yaxis.getRangeManager());
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
 	}
 
 	/**
@@ -128,33 +134,36 @@ public class LayerAxisTest {
 	public void testRemovAxis() {
 
 		Subplot sp = factory.createSubplot();
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
+		AxisRangeManager xva = xaxis.getRangeManager();
+		AxisRangeManager yva = yaxis.getRangeManager();
 
-		sp.addXViewportAxis(xaxis);
-		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer, xaxis, yaxis);
+		sp.addXAxis(xaxis);
+		sp.addYAxis(yaxis);
+		sp.addLayer(layer, xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		assertSame(xaxis.getEnvironment(), sp.getEnvironment());
 		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
-		assertArrayEquals(sp.getXViewportAxes(), new ViewportAxis[] { xaxis });
-		assertArrayEquals(sp.getYViewportAxes(), new ViewportAxis[] { yaxis });
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(sp.getXAxes(), new Axis[] { xaxis });
+		assertArrayEquals(sp.getYAxes(), new Axis[] { yaxis });
+		assertSame(layer.getXRangeManager(), xva);
+		assertSame(layer.getYRangeManager(), yva);
+		assertArrayEquals(xva.getLayers(), new Object[] { layer });
+		assertArrayEquals(yva.getLayers(), new Object[] { layer });
 
+		// removing axis not allowed
 		try {
-			sp.removeXViewportAxis(xaxis);
+			sp.removeXAxis(xaxis);
 			fail("IllegalStateException should be thrown");
 		} catch (IllegalStateException e) {
 
 		}
 		try {
-			sp.removeYViewportAxis(yaxis);
+			sp.removeYAxis(yaxis);
 			fail("IllegalStateException should be thrown");
 		} catch (IllegalStateException e) {
 
@@ -165,56 +174,60 @@ public class LayerAxisTest {
 		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
-		assertArrayEquals(sp.getXViewportAxes(), new ViewportAxis[] { xaxis });
-		assertArrayEquals(sp.getYViewportAxes(), new ViewportAxis[] { yaxis });
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertArrayEquals(sp.getXAxes(), new Axis[] { xaxis });
+		assertArrayEquals(sp.getYAxes(), new Axis[] { yaxis });
+		assertSame(layer.getXRangeManager(), xva);
+		assertSame(layer.getYRangeManager(), yva);
+		assertArrayEquals(xva.getLayers(), new Object[] { layer });
+		assertArrayEquals(yva.getLayers(), new Object[] { layer });
 
-		// try to detach axis
+		// try to detach viewport axis
 		try {
-			layer.setXViewportAxis(null);
+			layer.setXRangeManager(null);
 			fail("IllegalArgumentException should be thrown");
 		} catch (IllegalArgumentException e) {
 
 		}
 		try {
-			layer.setYViewportAxis(null);
+			layer.setYRangeManager(null);
 			fail("IllegalArgumentException should be thrown");
 		} catch (IllegalArgumentException e) {
 
 		}
 
-		// remove layer then remove axes
+		// remove layer will release viewport axes
 		sp.removeLayer(layer);
-		assertNull(layer.getXViewportAxis());
-		assertNull(layer.getYViewportAxis());
+		assertNull(layer.getXRangeManager());
+		assertNull(layer.getYRangeManager());
 
-		sp.removeXViewportAxis(xaxis);
-		sp.removeYViewportAxis(yaxis);
-
+		sp.removeXAxis(xaxis);
+		sp.removeYAxis(yaxis);
 	}
 
+	/**
+	 * Remove subplot will remove axes and layers together.
+	 */
 	@Test
 	public void testRemovSubplot() {
 		Plot p = factory.createPlot();
 		Subplot sp = factory.createSubplot();
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
 
 		p.addSubplot(sp, null);
-		sp.addXViewportAxis(xaxis);
-		sp.addYViewportAxis(yaxis);
-		sp.addLayer(layer, xaxis, yaxis);
+		sp.addXAxis(xaxis);
+		sp.addYAxis(yaxis);
+		sp.addLayer(layer, xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		p.removeSubplot(sp);
 
-		assertSame(layer.getXViewportAxis(), xaxis);
-		assertSame(layer.getYViewportAxis(), yaxis);
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
-		assertArrayEquals(xaxis.getLayers(), new Object[] { layer });
+		assertSame(layer.getXRangeManager(), xaxis.getRangeManager());
+		assertSame(layer.getYRangeManager(), yaxis.getRangeManager());
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
+		assertArrayEquals(xaxis.getRangeManager().getLayers(),
+				new Object[] { layer });
 
 	}
 
@@ -223,17 +236,17 @@ public class LayerAxisTest {
 		Plot p = factory.createPlot();
 		Subplot sp0 = factory.createSubplot();
 		Subplot sp1 = factory.createSubplot();
-		ViewportAxis xaxis = factory.createViewportAxis();
-		ViewportAxis yaxis = factory.createViewportAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		Layer layer0 = factory.createLayer();
 		Layer layer1 = factory.createLayer();
 
 		p.addSubplot(sp0, null);
 		p.addSubplot(sp1, null);
-		sp0.addXViewportAxis(xaxis);
-		sp0.addYViewportAxis(yaxis);
-		sp0.addLayer(layer0, xaxis, yaxis);
-		sp1.addLayer(layer1, xaxis, yaxis);
+		sp0.addXAxis(xaxis);
+		sp0.addYAxis(yaxis);
+		sp0.addLayer(layer0, xaxis.getRangeManager(), yaxis.getRangeManager());
+		sp1.addLayer(layer1, xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		try {
 			p.removeSubplot(sp0);

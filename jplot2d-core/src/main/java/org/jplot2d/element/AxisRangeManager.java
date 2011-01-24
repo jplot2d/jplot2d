@@ -25,24 +25,13 @@ import org.jplot2d.axtype.AxisType;
 import org.jplot2d.util.Range2D;
 
 /**
- * A viewport axis define a transformation of viewport. It may contains a group
- * of axes, which represent the same user range with different ticks.
+ * A viewport axis define a transformation of viewport. It can be shared by a
+ * group of axes, which represent the same user range with different ticks.
  * 
  * @author Jingjing Li
  * 
  */
-public interface ViewportAxis extends Container {
-
-	@Hierarchy(HierarchyOp.GET)
-	public Subplot getParent();
-
-	/**
-	 * Orientation is not a set-able property. It just show the orientation of
-	 * this axis after it has been add as a X/Y axis.
-	 * 
-	 * @return orientation of this axis
-	 */
-	public AxisOrientation getOrientation();
+public interface AxisRangeManager extends Element {
 
 	/**
 	 * Returns <code>true</code> if the margin is extended to axis major tick
@@ -73,7 +62,6 @@ public interface ViewportAxis extends Container {
 	 * 
 	 * @param factor
 	 *            the margin factor
-	 * @throws WarningException
 	 */
 	public void setMarginFactor(double factor);
 
@@ -184,14 +172,9 @@ public interface ViewportAxis extends Container {
 	 * 
 	 * @param group
 	 *            the lock group to join to.
-	 * 
-	 * @return the old lock group to that this axis belongs
 	 */
 	@Hierarchy(HierarchyOp.JOIN)
-	public AxisLockGroup setLockGroup(AxisLockGroup group);
-
-	@Hierarchy(HierarchyOp.GET)
-	public Axis getAxis(int index);
+	public void setLockGroup(AxisLockGroup group);
 
 	/**
 	 * Returns all axes belongs to this group.
@@ -200,12 +183,6 @@ public interface ViewportAxis extends Container {
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
 	public Axis[] getAxes();
-
-	@Hierarchy(HierarchyOp.ADD)
-	public void addAxis(Axis axis);
-
-	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeAxis(Axis axis);
 
 	/**
 	 * Returns all layers attaching to this axis group.

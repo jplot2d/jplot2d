@@ -18,30 +18,21 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.annotation.Hierarchy;
-import org.jplot2d.annotation.HierarchyOp;
-
 /**
+ * The getParent() will returns the only parent of this element. If this element
+ * has multiple referencer, getParent() returns <code>null</code>. This make a
+ * referenceable element can be removed together with its only referencer.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface MultiParentElementEx extends ElementEx {
+public interface Joinable {
 
 	/**
-	 * Gets the only parent of this component. If this element has multiple
-	 * parents, this methods returns <code>null</code>.
-	 * 
-	 * @return the only parent of this component
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public ElementEx getParent();
-
-	/**
-	 * Returns all parents of this element.
+	 * Returns <code>null</code> if this element is referenced.
 	 * 
 	 * @return all parents of this element
 	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public ElementEx[] getParents();
+	public boolean isReferenced();
 
 }

@@ -19,8 +19,8 @@
 package org.jplot2d.element.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.axtrans.NormalTransform;
@@ -41,18 +41,27 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	 * The unitive axis type. can be null is this lock group contains more than
 	 * one axis type
 	 */
-	private TransformType _type;
+	private TransformType type;
 
-	private ViewportAxisEx _prim;
+	private AxisRangeManagerEx prim;
 
 	private boolean autoRange = true;
 
-	private Collection<ViewportAxisEx> axes = new ArrayList<ViewportAxisEx>();
+	private List<AxisRangeManagerEx> arms = new ArrayList<AxisRangeManagerEx>();
 
 	private boolean autoRangeNeeded = true;
 
-	public ViewportAxisEx[] getParents() {
-		return getViewportAxes();
+	public String getId() {
+		return "AxisLockGroup@"
+				+ Integer.toHexString(System.identityHashCode(this));
+	}
+
+	public AxisRangeManagerEx getParent() {
+		return (AxisRangeManagerEx) super.getParent();
+	}
+
+	public boolean isReferenced() {
+		return arms.size() > 0;
 	}
 
 	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
@@ -60,64 +69,71 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 		return null;
 	}
 
-	public ViewportAxisEx[] getViewportAxes() {
-		return axes.toArray(new ViewportAxisEx[axes.size()]);
+	public int indexOfRangeManager(AxisRangeManagerEx rangeManager) {
+		return arms.indexOf(rangeManager);
 	}
 
-	public void addViewportAxis(ViewportAxisEx axis) {
-		axes.add(axis);
-		if (axes.size() == 1) {
+	public AxisRangeManagerEx[] getRangeManagers() {
+		return arms.toArray(new AxisRangeManagerEx[arms.size()]);
+	}
+
+	public void addRangeManager(AxisRangeManagerEx axis) {
+		arms.add(axis);
+		if (arms.size() == 1) {
 			parent = axis;
-			_prim = axis;
-			_type = axis.getTransformType();
+			prim = axis;
+			type = axis.getTransformType();
 		} else {
 			parent = null;
 		}
 
-		if (_type != axis.getType()) {
-			_type = null;
+		if (type != axis.getType()) {
+			type = null;
 		}
 
 	}
 
-	public void removeViewportAxis(ViewportAxisEx axis) {
-		axes.remove(axis);
+	public void removeRangeManager(AxisRangeManagerEx axis) {
+		arms.remove(axis);
 
 		autoRange = false;
 
-		if (axes.size() == 1) {
-			parent = axis;
+		if (arms.size() == 1) {
+			parent = arms.get(0);
+			prim = arms.get(0);
+			type = prim.getTransformType();
 		} else {
 			parent = null;
-		}
 
-		/* find a new primary axis */
-		if (_prim == axis) {
-			for (ViewportAxisEx a : axes) {
-				_prim = a;
-				break;
-			}
-		}
-
-		// try to find unique type
-		if (_type == null) {
-			TransformType utype = null;
-			for (ViewportAxisEx ax : axes) {
-				if (utype == null) {
-					utype = ax.getTransformType();
-				} else {
-					if (utype != ax.getTransformType()) {
-						utype = null;
-						break;
-					}
+			/* find a new primary axis */
+			if (prim == axis) {
+				for (AxisRangeManagerEx a : arms) {
+					prim = a;
+					break;
 				}
 			}
-			_type = utype;
+
+			// try to find unique type
+			if (type == null) {
+				TransformType utype = null;
+				for (AxisRangeManagerEx ax : arms) {
+					if (utype == null) {
+						utype = ax.getTransformType();
+					} else {
+						if (utype != ax.getTransformType()) {
+							utype = null;
+							break;
+						}
+					}
+				}
+				type = utype;
+			}
 		}
+
 	}
 
-	public ViewportAxisEx getPrimaryAxis() {
-		return _prim;
+	public AxisRangeManagerEx getPrimaryAxis() {
+		return prim;
 	}
 
 	public boolean isAutoRange() {
@@ -143,7 +159,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	/**
 	 * Execute a global autorange on the given axes locking group.
 	 * 
-	 * @param axes
+	 * @param arms
 	 *            the axes that global auto-range take place
 	 * @throws WarningException
 	 *             This WarningException can be a NegativeValueInLogException or
@@ -151,8 +167,8 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	 */
 	private void autoRange() {
 
-		Map<ViewportAxisEx, NormalTransform> vtMap = AxisRangeUtils
-				.createVirtualTransformMap(axes);
+		Map<AxisRangeManagerEx, NormalTransform> vtMap = AxisRangeUtils
+				.createVirtualTransformMap(arms);
 
 		RangeStatus<Boolean> pRange = calcNiceVirtualRange(vtMap);
 
@@ -182,7 +198,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 		}
 
 		/* extend master range to tick */
-		ViewportAxisEx master = getPrimaryAxis();
+		AxisRangeManagerEx master = getPrimaryAxis();
 		Range2D extRange;
 		if (master.isAutoMargin()) {
 			Range2D ur = vtMap.get(master).getTransU(rs);
@@ -223,12 +239,12 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	 *         value bounds
 	 */
 	private RangeStatus<Boolean> calcNiceVirtualRange(
-			Map<ViewportAxisEx, NormalTransform> vtMap) {
+			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
 
 		/* find the physical intersected range of valid world range among layers */
 		Range2D pbnds = new Range2D.Double(Double.NEGATIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
-		for (ViewportAxisEx ax : axes) {
+		for (AxisRangeManagerEx ax : arms) {
 			Range2D aprange = vtMap.get(ax).getTransP(
 					ax.getType().getBoundary(ax.getTransformType()));
 			pbnds = pbnds.intersect(aprange);
@@ -241,18 +257,17 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 		Range2D padRange = null;
 		boolean dataOutsideBounds = false;
-		for (ViewportAxisEx ax : axes) {
+		for (AxisRangeManagerEx ax : arms) {
 			for (LayerEx layer : ax.getLayers()) {
 				Range2D urange = vtMap.get(ax).getTransU(pbnds);
 				Range2D wDRange = new Range2D.Double();
 
-				switch (ax.getOrientation()) {
-				case HORIZONTAL:
-					boolean yar = layer.getYViewportAxis().getLockGroup()
+				if (layer.getXRangeManager() == ax) {
+					boolean yar = layer.getYRangeManager().getLockGroup()
 							.isAutoRange();
-					Range2D yRange = (yar) ? layer.getYViewportAxis().getType()
+					Range2D yRange = (yar) ? layer.getYRangeManager().getType()
 							.getBoundary(ax.getTransformType()) : layer
-							.getYViewportAxis().getRange();
+							.getYRangeManager().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(urange,
 								yRange);
@@ -261,13 +276,12 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 							dataOutsideBounds = true;
 						}
 					}
-					break;
-				case VERTICAL:
-					boolean xar = layer.getXViewportAxis().getLockGroup()
+				} else if (layer.getYRangeManager() == ax) {
+					boolean xar = layer.getXRangeManager().getLockGroup()
 							.isAutoRange();
-					Range2D xRange = (xar) ? layer.getXViewportAxis().getType()
+					Range2D xRange = (xar) ? layer.getXRangeManager().getType()
 							.getBoundary(ax.getTransformType()) : layer
-							.getXViewportAxis().getRange();
+							.getXRangeManager().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(xRange,
 								urange);
@@ -276,7 +290,6 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 							dataOutsideBounds = true;
 						}
 					}
-					break;
 				}
 
 				if (wDRange != null) {
@@ -307,27 +320,22 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	}
 
 	public void zoomVirtualRange(Range2D range,
-			Map<ViewportAxisEx, NormalTransform> vtMap) {
+			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
 		HashSet<AxisLockGroupEx> orthset = new HashSet<AxisLockGroupEx>();
 
-		for (ViewportAxisEx axis : axes) {
+		for (AxisRangeManagerEx axis : arms) {
 			NormalTransform vt = vtMap.get(axis);
 			vt.zoom(range);
 			Range2D wrange = vt.getRangeW();
 			axis.setNormalTransfrom(axis.getTransformType()
 					.createNormalTransform(wrange));
 
-			switch (axis.getOrientation()) {
-			case HORIZONTAL:
-				for (LayerEx layer : axis.getLayers()) {
-					orthset.add(layer.getYViewportAxis().getLockGroup());
+			for (LayerEx layer : axis.getLayers()) {
+				if (layer.getXRangeManager() == axis) {
+					orthset.add(layer.getYRangeManager().getLockGroup());
+				} else if (layer.getXRangeManager() == axis) {
+					orthset.add(layer.getXRangeManager().getLockGroup());
 				}
-				break;
-			case VERTICAL:
-				for (LayerEx layer : axis.getLayers()) {
-					orthset.add(layer.getXViewportAxis().getLockGroup());
-				}
-				break;
 			}
 		}
 
@@ -343,7 +351,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	public void zoomRange(double start, double end) {
 		Range2D range = new Range2D.Double(start, end);
 
-		Range2D validRange = AxisRangeUtils.validateNormalRange(range, axes,
+		Range2D validRange = AxisRangeUtils.validateNormalRange(range, arms,
 				false);
 		if (!validRange.equals(range)) {
 			warning(new RangeAdjustedToValueBoundsWarning(
@@ -351,12 +359,12 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 		}
 
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(
-				validRange, axes);
+				validRange, arms);
 		if (rs.getStatus() != null) {
 			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
 		}
 		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(rs,
-				axes);
+				arms);
 		if (xrs.getStatus() != null) {
 			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
 		}
@@ -375,24 +383,19 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	public void zoomNormalRange(Range2D npRange) {
 		HashSet<AxisLockGroupEx> orthset = new HashSet<AxisLockGroupEx>();
 
-		for (ViewportAxisEx axis : axes) {
+		for (AxisRangeManagerEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform();
 			npt.zoom(npRange);
 			Range2D wrange = npt.getRangeW();
 			axis.setNormalTransfrom(axis.getTransformType()
 					.createNormalTransform(wrange));
 
-			switch (axis.getOrientation()) {
-			case HORIZONTAL:
-				for (LayerEx layer : axis.getLayers()) {
-					orthset.add(layer.getYViewportAxis().getLockGroup());
+			for (LayerEx layer : axis.getLayers()) {
+				if (layer.getXRangeManager() == axis) {
+					orthset.add(layer.getYRangeManager().getLockGroup());
+				} else if (layer.getXRangeManager() == axis) {
+					orthset.add(layer.getXRangeManager().getLockGroup());
 				}
-				break;
-			case VERTICAL:
-				for (LayerEx layer : axis.getLayers()) {
-					orthset.add(layer.getXViewportAxis().getLockGroup());
-				}
-				break;
 			}
 		}
 
@@ -409,12 +412,12 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	 * @return null if the group contains multiple types.
 	 */
 	public TransformType getType() {
-		return _type;
+		return type;
 	}
 
 	public void setType(TransformType type) {
 
-		for (ViewportAxisEx ax : axes) {
+		for (AxisRangeManagerEx ax : arms) {
 			ax.changeTransformType(type);
 		}
 
@@ -437,7 +440,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 			 * if no locked axes contains valid value, put them in the default
 			 * world range
 			 */
-			for (ViewportAxisEx ax : axes) {
+			for (AxisRangeManagerEx ax : arms) {
 				Range2D defaultWRange = ax.getType().getDefaultWorldRange(
 						ax.getTransformType());
 				Range2D nwr = (ax.isInverted()) ? defaultWRange.invert()
@@ -453,7 +456,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 		if (pRange.getSpan() == 0) {
 			/* if only one valid data point */
-			for (ViewportAxisEx ax : axes) {
+			for (AxisRangeManagerEx ax : arms) {
 				Range2D defaultWRange = ax.getType().getDefaultWorldRange(
 						ax.getTransformType());
 				Range2D nwr = (ax.isInverted()) ? defaultWRange.invert()
@@ -464,13 +467,13 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 			Range2D pr = validateNormalRange(INFINITY_PHYSICAL_RANGE);
 			RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pr,
-					axes);
-			Range2D ur = _prim.getNormalTransform().getTransU(rs);
-			Range2D exur = _prim.expandRangeToTick(ur);
-			Range2D expr = _prim.getNormalTransform().getTransP(exur);
+					arms);
+			Range2D ur = prim.getNormalTransform().getTransU(rs);
+			Range2D exur = prim.expandRangeToTick(ur);
+			Range2D expr = prim.getNormalTransform().getTransP(exur);
 
 			RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(
-					expr, axes);
+					expr, arms);
 			zoomNormalRange(xrs);
 
 			warning(new RangeSelectionWarning(
@@ -478,7 +481,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 			return;
 		}
 
-		for (ViewportAxisEx ax : axes) {
+		for (AxisRangeManagerEx ax : arms) {
 			Range2D wr = ax.getNormalTransform().getTransU(pRange);
 			// set the inverted nature
 			if (ax.getType().getDefaultWorldRange(ax.getTransformType())
@@ -492,9 +495,9 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 		if (isAutoRange()) {
 			reAutoRange();
 		} else {
-			ViewportAxisEx coreAxis = null;
+			AxisRangeManagerEx coreAxis = null;
 			Range2D coreRange = null;
-			for (ViewportAxisEx ax : axes) {
+			for (AxisRangeManagerEx ax : arms) {
 				if (ax.getCoreRange() != null) {
 					coreAxis = ax;
 					coreRange = ax.getCoreRange();
@@ -510,13 +513,13 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 				}
 
 				RangeStatus<PrecisionState> rs = AxisRangeUtils
-						.ensurePrecision(NORM_PHYSICAL_RANGE, axes);
+						.ensurePrecision(NORM_PHYSICAL_RANGE, arms);
 				if (rs.getStatus() != null) {
 					warning(new RangeSelectionWarning(rs.getStatus()
 							.getMessage()));
 				}
 				RangeStatus<PrecisionState> xrs = AxisRangeUtils
-						.ensureCircleSpan(rs, axes);
+						.ensureCircleSpan(rs, arms);
 				if (xrs.getStatus() != null) {
 					warning(new RangeSelectionWarning(xrs.getStatus()
 							.getMessage()));
@@ -529,7 +532,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	}
 
 	private Range2D validateNormalRange(Range2D range) {
-		return AxisRangeUtils.validateNormalRange(range, axes, true);
+		return AxisRangeUtils.validateNormalRange(range, arms, true);
 	}
 
 }

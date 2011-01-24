@@ -29,6 +29,60 @@ import org.junit.Test;
  */
 public class SubplotImplTest {
 
+	@Test
+	public void testAddXAxis() {
+		SubplotImpl sp = new SubplotImpl();
+		AxisEx axis = mock(AxisEx.class);
+		when(axis.canContributeToParent()).thenReturn(true);
+
+		try {
+			sp.addXAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
+		when(axis.getRangeManager()).thenReturn(arm);
+		try {
+			sp.addXAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		when(arm.getLockGroup()).thenReturn(alg);
+		sp.addXAxis(axis);
+	}
+
+	@Test
+	public void testAddYAxis() {
+		SubplotImpl sp = new SubplotImpl();
+		AxisEx axis = mock(AxisEx.class);
+		when(axis.canContributeToParent()).thenReturn(true);
+
+		try {
+			sp.addYAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
+		when(axis.getRangeManager()).thenReturn(arm);
+		try {
+			sp.addYAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		when(arm.getLockGroup()).thenReturn(alg);
+		sp.addYAxis(axis);
+	}
+
 	/**
 	 * Test all methods which can trigger redraw()
 	 */
@@ -49,30 +103,34 @@ public class SubplotImplTest {
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
-		ViewportAxisEx xvpa = mock(ViewportAxisEx.class);
-		when(xvpa.canContributeToParent()).thenReturn(true);
-		when(xvpa.getAxes()).thenReturn(new AxisEx[0]);
-		when(xvpa.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addXViewportAxis(xvpa);
+		AxisEx xaxis = mock(AxisEx.class);
+		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx xalg = mock(AxisLockGroupEx.class);
+		when(xaxis.canContributeToParent()).thenReturn(true);
+		when(xaxis.getRangeManager()).thenReturn(xarm);
+		when(xarm.getLockGroup()).thenReturn(xalg);
+		sp.addXAxis(xaxis);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
-		ViewportAxisEx yvpa = mock(ViewportAxisEx.class);
-		when(yvpa.canContributeToParent()).thenReturn(true);
-		when(yvpa.getAxes()).thenReturn(new AxisEx[0]);
-		when(yvpa.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addYViewportAxis(yvpa);
+		AxisEx yaxis = mock(AxisEx.class);
+		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx yalg = mock(AxisLockGroupEx.class);
+		when(yaxis.canContributeToParent()).thenReturn(true);
+		when(yaxis.getRangeManager()).thenReturn(yarm);
+		when(yarm.getLockGroup()).thenReturn(yalg);
+		sp.addYAxis(yaxis);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
-		sp.addLayer(layer0, xvpa, yvpa);
+		sp.addLayer(layer0, xaxis.getRangeManager(), yaxis.getRangeManager());
 		assertFalse(sp.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
-		sp.addLayer(layer1, xvpa, yvpa);
+		sp.addLayer(layer1, xaxis.getRangeManager(), yaxis.getRangeManager());
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
@@ -83,11 +141,11 @@ public class SubplotImplTest {
 		sp.removeLayer(layer0);
 		assertFalse(sp.isRedrawNeeded());
 
-		sp.removeXViewportAxis(xvpa);
+		sp.removeXAxis(xaxis);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
-		sp.removeYViewportAxis(yvpa);
+		sp.removeYAxis(yaxis);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 	}
@@ -100,63 +158,51 @@ public class SubplotImplTest {
 		SubplotImpl sp = new SubplotImpl();
 		assertTrue(sp.isValid());
 
-		ViewportAxisEx xvpa0 = mock(ViewportAxisEx.class);
-		when(xvpa0.getAxes()).thenReturn(new AxisEx[0]);
-		when(xvpa0.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addXViewportAxis(xvpa0);
+		// add or remove invisible axis does not invalid
+		AxisEx xaxis0 = mock(AxisEx.class);
+		AxisRangeManagerEx xarm0 = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx xalg0 = mock(AxisLockGroupEx.class);
+		when(xaxis0.getRangeManager()).thenReturn(xarm0);
+		when(xarm0.getLockGroup()).thenReturn(xalg0);
+		sp.addXAxis(xaxis0);
 		assertTrue(sp.isValid());
-		sp.removeXViewportAxis(xvpa0);
-		assertTrue(sp.isValid());
-
-		xvpa0 = mock(ViewportAxisEx.class);
-		AxisEx xa0 = mock(AxisEx.class);
-		when(xvpa0.getAxes()).thenReturn(new AxisEx[] { xa0 });
-		when(xvpa0.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addXViewportAxis(xvpa0);
-		assertTrue(sp.isValid());
-		sp.removeXViewportAxis(xvpa0);
+		sp.removeXAxis(xaxis0);
 		assertTrue(sp.isValid());
 
-		ViewportAxisEx xvpa = mock(ViewportAxisEx.class);
-		AxisEx xa = mock(AxisEx.class);
-		when(xa.isVisible()).thenReturn(true);
-		when(xvpa.getAxes()).thenReturn(new AxisEx[] { xa });
-		when(xvpa.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addXViewportAxis(xvpa);
+		AxisEx xaxis = mock(AxisEx.class);
+		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx xalg = mock(AxisLockGroupEx.class);
+		when(xaxis.getRangeManager()).thenReturn(xarm);
+		when(xarm.getLockGroup()).thenReturn(xalg);
+		when(xaxis.isVisible()).thenReturn(true);
+		sp.addXAxis(xaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
-		sp.removeXViewportAxis(xvpa);
+		sp.removeXAxis(xaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
 
-		ViewportAxisEx yvpa0 = mock(ViewportAxisEx.class);
-		when(yvpa0.getAxes()).thenReturn(new AxisEx[0]);
-		when(yvpa0.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addYViewportAxis(yvpa0);
+		AxisEx yaxis0 = mock(AxisEx.class);
+		AxisRangeManagerEx yarm0 = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx yalg0 = mock(AxisLockGroupEx.class);
+		when(yaxis0.getRangeManager()).thenReturn(yarm0);
+		when(yarm0.getLockGroup()).thenReturn(yalg0);
+		sp.addYAxis(yaxis0);
 		assertTrue(sp.isValid());
 		sp.validate();
-		sp.removeYViewportAxis(yvpa0);
+		sp.removeYAxis(yaxis0);
 		assertTrue(sp.isValid());
 
-		yvpa0 = mock(ViewportAxisEx.class);
-		AxisEx ya0 = mock(AxisEx.class);
-		when(yvpa0.getAxes()).thenReturn(new AxisEx[] { ya0 });
-		when(yvpa0.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addYViewportAxis(yvpa0);
-		assertTrue(sp.isValid());
-		sp.validate();
-		sp.removeYViewportAxis(yvpa0);
-		assertTrue(sp.isValid());
-
-		ViewportAxisEx yvpa = mock(ViewportAxisEx.class);
-		AxisEx ya = mock(AxisEx.class);
-		when(ya.isVisible()).thenReturn(true);
-		when(yvpa.getAxes()).thenReturn(new AxisEx[] { ya });
-		when(yvpa.getLayers()).thenReturn(new LayerEx[0]);
-		sp.addYViewportAxis(yvpa);
+		AxisEx yaxis = mock(AxisEx.class);
+		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx yalg = mock(AxisLockGroupEx.class);
+		when(yaxis.getRangeManager()).thenReturn(yarm);
+		when(yarm.getLockGroup()).thenReturn(yalg);
+		when(yaxis.isVisible()).thenReturn(true);
+		sp.addYAxis(yaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
-		sp.removeYViewportAxis(yvpa);
+		sp.removeYAxis(yaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
 

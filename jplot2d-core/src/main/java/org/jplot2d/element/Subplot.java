@@ -150,29 +150,29 @@ public interface Subplot extends Container {
 	public Layer[] getLayers();
 
 	@Hierarchy(HierarchyOp.ADD_REF2)
-	public void addLayer(Layer layer, ViewportAxis xViewportAxis,
-			ViewportAxis yViewportAxis);
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
+			AxisRangeManager yRangeManager);
 
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeLayer(Layer layer);
 
 	@Hierarchy(HierarchyOp.GET)
-	public ViewportAxis getXViewportAxis(int index);
+	public Axis getXAxis(int index);
 
 	@Hierarchy(HierarchyOp.GET)
-	public ViewportAxis getYViewportAxis(int index);
+	public Axis getYAxis(int index);
 
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public ViewportAxis[] getXViewportAxes();
+	public Axis[] getXAxes();
 
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public ViewportAxis[] getYViewportAxes();
+	public Axis[] getYAxes();
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addXViewportAxis(ViewportAxis vpAxis);
+	public void addXAxis(Axis vpAxis);
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addYViewportAxis(ViewportAxis vpAxis);
+	public void addYAxis(Axis vpAxis);
 
 	/**
 	 * Removes the specified X axis from this subplot if it is present.
@@ -182,7 +182,7 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified X axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeXViewportAxis(ViewportAxis axisGroup);
+	public void removeXAxis(Axis axis);
 
 	/**
 	 * Removes the specified Y axis from this subplot if it is present.
@@ -192,7 +192,7 @@ public interface Subplot extends Container {
 	 * @return <code>true</code> if this subplot contained the specified Y axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeYViewportAxis(ViewportAxis axisGroup);
+	public void removeYAxis(Axis axis);
 
 	/**
 	 * Gets the nth subplot in this plot.

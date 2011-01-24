@@ -27,7 +27,7 @@ import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
 import org.jplot2d.element.SubplotMargin;
 import org.jplot2d.element.TextComponent;
-import org.jplot2d.element.ViewportAxis;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
@@ -35,7 +35,6 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.Subplot;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
-import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
 import org.jplot2d.element.impl.AxisTickEx;
 import org.jplot2d.element.impl.ComponentEx;
@@ -44,9 +43,8 @@ import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.element.impl.TextComponentEx;
-import org.jplot2d.element.impl.ViewportAxisImpl;
+import org.jplot2d.element.impl.AxisRangeManagerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
-import org.jplot2d.layout.SimpleLayoutDirector;
 
 /**
  * A factory to produce all kind of plot components.
@@ -175,31 +173,21 @@ public class ComponentFactory {
 	}
 
 	/**
-	 * Create a ViewportAxis, which contains an Axes. The position of the axis
-	 * is {@link AxisPosition#NEGATIVE_SIDE}
+	 * Create a AxisRangeManager, which contains a group.
 	 * 
 	 * @return
 	 */
-	public ViewportAxis createViewportAxis() {
-		return createViewportAxis(1);
-	}
+	public AxisRangeManager createAxisRangeManager() {
+		AxisRangeManagerImpl va = new AxisRangeManagerImpl();
+		AxisLockGroupImpl group = new AxisLockGroupImpl();
+		va.setLockGroup(group);
 
-	/**
-	 * Create a ViewportAxis, which contains n Axes. The position of the 1st
-	 * axis is {@link AxisPosition#NEGATIVE_SIDE}, the position of 2nd axis is
-	 * {@link AxisPosition#POSITIVE_SIDE}
-	 * 
-	 * @return
-	 */
-	public ViewportAxis createViewportAxis(int n) {
-		ViewportAxisImpl va = new ViewportAxisImpl();
-		ElementIH<ViewportAxis> axisIH = new ElementIH<ViewportAxis>(va,
-				ViewportAxis.class);
-		ViewportAxis vaProxy = (ViewportAxis) Proxy.newProxyInstance(
-				ViewportAxis.class.getClassLoader(), new Class[] {
-						ViewportAxis.class, ElementAddition.class }, axisIH);
+		ElementIH<AxisRangeManager> vaIH = new ElementIH<AxisRangeManager>(va,
+				AxisRangeManager.class);
+		AxisRangeManager vaProxy = (AxisRangeManager) Proxy.newProxyInstance(
+				AxisRangeManager.class.getClassLoader(), new Class[] {
+						AxisRangeManager.class, ElementAddition.class }, vaIH);
 
-		AxisLockGroupEx group = va.getLockGroup();
 		ElementIH<AxisLockGroup> groupIH = new ElementIH<AxisLockGroup>(group,
 				AxisLockGroup.class);
 		AxisLockGroup groupProxy = (AxisLockGroup) Proxy.newProxyInstance(
@@ -213,17 +201,8 @@ public class ComponentFactory {
 			((ElementAddition) vaProxy).setEnvironment(env);
 			((ElementAddition) groupProxy).setEnvironment(env);
 		}
-		env.registerComponent(va, vaProxy);
+		env.registerElement(va, vaProxy);
 		env.registerElement(group, groupProxy);
-
-		// add axis
-		for (int i = 0; i < n; i++) {
-			Axis axis = createAxis();
-			if (i % 2 == 1) {
-				axis.setPosition(AxisPosition.POSITIVE_SIDE);
-			}
-			vaProxy.addAxis(axis);
-		}
 
 		return vaProxy;
 	}
@@ -235,45 +214,93 @@ public class ComponentFactory {
 	 * @return
 	 */
 	public Axis createAxis() {
-		// this create tick and title inside
-		AxisImpl axis = new AxisImpl();
+		return createAxes(1)[0];
+	}
 
-		ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
-		Axis axisProxy = (Axis) Proxy.newProxyInstance(
-				Axis.class.getClassLoader(), new Class[] { Axis.class,
-						ElementAddition.class }, axisIH);
+	/**
+	 * Create n Axes which share the same range manager. The position of the
+	 * axis on index 0 is {@link AxisPosition#NEGATIVE_SIDE}, the position of
+	 * the axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}
+	 * 
+	 * @return
+	 */
+	public Axis[] createAxes(int n) {
 
-		AxisTickEx tick = axis.getTick();
-		ElementIH<AxisTick> tickIH = new ElementIH<AxisTick>(tick,
-				AxisTick.class);
-		AxisTick tickProxy = (AxisTick) Proxy.newProxyInstance(
-				AxisTick.class.getClassLoader(), new Class[] { AxisTick.class,
-						ElementAddition.class }, tickIH);
+		Axis[] result = new Axis[n];
 
-		TextComponentEx title = axis.getTitle();
-		ElementIH<TextComponent> titleIH = new ElementIH<TextComponent>(title,
-				TextComponent.class);
-		TextComponent titleProxy = (TextComponent) Proxy.newProxyInstance(
-				TextComponent.class.getClassLoader(), new Class[] {
-						TextComponent.class, ElementAddition.class }, titleIH);
+		AxisRangeManagerImpl va = new AxisRangeManagerImpl();
+		AxisLockGroupImpl group = new AxisLockGroupImpl();
+		va.setLockGroup(group);
+
+		ElementIH<AxisRangeManager> vaIH = new ElementIH<AxisRangeManager>(va,
+				AxisRangeManager.class);
+		AxisRangeManager vaProxy = (AxisRangeManager) Proxy.newProxyInstance(
+				AxisRangeManager.class.getClassLoader(), new Class[] {
+						AxisRangeManager.class, ElementAddition.class }, vaIH);
+
+		ElementIH<AxisLockGroup> groupIH = new ElementIH<AxisLockGroup>(group,
+				AxisLockGroup.class);
+		AxisLockGroup groupProxy = (AxisLockGroup) Proxy.newProxyInstance(
+				AxisLockGroup.class.getClassLoader(), new Class[] {
+						AxisLockGroup.class, ElementAddition.class }, groupIH);
 
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 
 		synchronized (Environment.getGlobalLock()) {
-			((ElementAddition) axisProxy).setEnvironment(env);
-			((ElementAddition) tickProxy).setEnvironment(env);
-			((ElementAddition) titleProxy).setEnvironment(env);
+			((ElementAddition) vaProxy).setEnvironment(env);
+			((ElementAddition) groupProxy).setEnvironment(env);
 		}
-		env.registerComponent(axis, axisProxy);
-		env.registerElement(tick, tickProxy);
-		/*
-		 * register the title as an element, the axis take the responsibility to
-		 * draw the title
-		 */
-		env.registerElement(title, titleProxy);
+		env.registerElement(va, vaProxy);
+		env.registerElement(group, groupProxy);
 
-		return axisProxy;
+		// add axis
+		for (int i = 0; i < n; i++) {
+			// this create tick and title inside
+			AxisImpl axis = new AxisImpl();
+			axis.setRangeManager(va);
+
+			ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
+			Axis axisProxy = (Axis) Proxy.newProxyInstance(
+					Axis.class.getClassLoader(), new Class[] { Axis.class,
+							ElementAddition.class }, axisIH);
+
+			AxisTickEx tick = axis.getTick();
+			ElementIH<AxisTick> tickIH = new ElementIH<AxisTick>(tick,
+					AxisTick.class);
+			AxisTick tickProxy = (AxisTick) Proxy.newProxyInstance(
+					AxisTick.class.getClassLoader(), new Class[] {
+							AxisTick.class, ElementAddition.class }, tickIH);
+
+			TextComponentEx title = axis.getTitle();
+			ElementIH<TextComponent> titleIH = new ElementIH<TextComponent>(
+					title, TextComponent.class);
+			TextComponent titleProxy = (TextComponent) Proxy.newProxyInstance(
+					TextComponent.class.getClassLoader(), new Class[] {
+							TextComponent.class, ElementAddition.class },
+					titleIH);
+
+			if (i % 2 == 1) {
+				axis.setPosition(AxisPosition.POSITIVE_SIDE);
+			}
+
+			synchronized (Environment.getGlobalLock()) {
+				((ElementAddition) axisProxy).setEnvironment(env);
+				((ElementAddition) tickProxy).setEnvironment(env);
+				((ElementAddition) titleProxy).setEnvironment(env);
+			}
+			env.registerComponent(axis, axisProxy);
+			env.registerElement(tick, tickProxy);
+			/*
+			 * register the title as an element, the axis take the
+			 * responsibility to draw the title
+			 */
+			env.registerElement(title, titleProxy);
+
+			result[i] = axisProxy;
+		}
+
+		return result;
 	}
 
 	/**
@@ -281,13 +308,16 @@ public class ComponentFactory {
 	 *            the axis the group will add first
 	 * @return
 	 */
-	public AxisLockGroup createAxisLockGroup(Environment env) {
+	public AxisLockGroup createAxisLockGroup() {
 		AxisLockGroupImpl impl = new AxisLockGroupImpl();
 		ElementIH<AxisLockGroup> ih = new ElementIH<AxisLockGroup>(impl,
 				AxisLockGroup.class);
 		AxisLockGroup proxy = (AxisLockGroup) Proxy.newProxyInstance(
 				AxisLockGroup.class.getClassLoader(), new Class[] {
 						AxisLockGroup.class, ElementAddition.class }, ih);
+
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+				: new DummyEnvironment();
 
 		synchronized (Environment.getGlobalLock()) {
 			env.begin();

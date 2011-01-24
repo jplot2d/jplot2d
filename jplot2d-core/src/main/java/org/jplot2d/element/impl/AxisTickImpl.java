@@ -343,7 +343,7 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	public boolean calcTicks() {
 
 		AxisEx ax = getParent();
-		ViewportAxisEx va = getParent().getParent();
+		AxisRangeManagerEx va = getParent().getRangeManager();
 		AxisTickTransform txf = getParent().getTickTransform();
 
 		if (!ax.getRange().equals(this.range)) {
@@ -360,15 +360,15 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 			_trfChanged = true;
 			this.axisNormalTransform = va.getNormalTransform();
 		}
-		if (va.getLength() != this.axisLength) {
+		if (ax.getLength() != this.axisLength) {
 			_trfChanged = true;
-			this.axisLength = va.getLength();
+			this.axisLength = ax.getLength();
 		}
 		if (va.getType().getCircularRange() != this.circularRange) {
 			_axisTypeChanged = true;
 			this.circularRange = va.getType().getCircularRange();
 		}
-		boolean labelSameOrientation = (va.getOrientation() == ax
+		boolean labelSameOrientation = (ax.getOrientation() == ax
 				.getLabelOrientation());
 		if (labelSameOrientation != this.labelSameOrientation) {
 			_labelOrientationChanged = true;

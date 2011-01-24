@@ -26,8 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.element.Axis;
 import org.jplot2d.element.Subplot;
-import org.jplot2d.element.ViewportAxis;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
@@ -70,9 +71,9 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
-	private final List<ViewportAxisEx> xViewportAxis = new ArrayList<ViewportAxisEx>();
+	private final List<AxisEx> xAxis = new ArrayList<AxisEx>();
 
-	private final List<ViewportAxisEx> yViewportAxis = new ArrayList<ViewportAxisEx>();
+	private final List<AxisEx> yAxis = new ArrayList<AxisEx>();
 
 	private Rectangle2D contentBounds;
 
@@ -82,7 +83,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (getParent() != null) {
 			return "Subplot" + getParent().indexOf(this);
 		} else {
-			return "Subplot@" + System.identityHashCode(this);
+			return "Subplot@"
+					+ Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -93,13 +95,16 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public Map<Element, Element> getMooringMap() {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
-		for (ViewportAxisEx ag : xViewportAxis) {
-			if (ag.getLockGroup().getViewportAxes().length > 1) {
-				result.put(ag, ag.getLockGroup());
+		for (AxisEx axis : xAxis) {
+			AxisRangeManagerEx va = axis.getRangeManager();
+			if (va.getAxes().length > 1) {
+				result.put(axis, va);
+			} else if (va.getLockGroup().getRangeManagers().length > 1) {
+				result.put(va, va.getLockGroup());
 			}
-			for (LayerEx layer : ag.getLayers()) {
+			for (LayerEx layer : va.getLayers()) {
 				if (layer.getParent() != this) {
-					result.put(ag, layer);
+					result.put(va, layer);
 				}
 			}
 		}
@@ -284,11 +289,11 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
-	public void addLayer(Layer layer, ViewportAxis xViewportAxis,
-			ViewportAxis yViewportAxis) {
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
+			AxisRangeManager yRangeManager) {
 		layers.add((LayerEx) layer);
 		((LayerEx) layer).setParent(this);
-		((LayerEx) layer).setViewportAxes(xViewportAxis, yViewportAxis);
+		((LayerEx) layer).setViewportAxes(xRangeManager, yRangeManager);
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
@@ -305,101 +310,113 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
-	public ViewportAxisEx getXViewportAxis(int index) {
-		return xViewportAxis.get(index);
+	public AxisEx getXAxis(int index) {
+		return xAxis.get(index);
 	}
 
-	public ViewportAxisEx getYViewportAxis(int index) {
-		return yViewportAxis.get(index);
+	public AxisEx getYAxis(int index) {
+		return yAxis.get(index);
 	}
 
-	public int indexOfXViewportAxis(ViewportAxisEx axisGroup) {
-		return xViewportAxis.indexOf(axisGroup);
+	public int indexOfXAxis(AxisEx axis) {
+		return xAxis.indexOf(axis);
 	}
 
-	public int indexOfYViewportAxis(ViewportAxisEx axisGroup) {
-		return yViewportAxis.indexOf(axisGroup);
+	public int indexOfYAxis(AxisEx axis) {
+		return yAxis.indexOf(axis);
 	}
 
-	public ViewportAxisEx[] getXViewportAxes() {
-		return xViewportAxis.toArray(new ViewportAxisEx[xViewportAxis.size()]);
+	public AxisEx[] getXAxes() {
+		return xAxis.toArray(new AxisEx[xAxis.size()]);
 	}
 
-	public ViewportAxisEx[] getYViewportAxes() {
-		return yViewportAxis.toArray(new ViewportAxisEx[yViewportAxis.size()]);
+	public AxisEx[] getYAxes() {
+		return yAxis.toArray(new AxisEx[yAxis.size()]);
 	}
 
-	public void addXViewportAxis(ViewportAxis vpAxis) {
-		ViewportAxisEx vpa = (ViewportAxisEx) vpAxis;
-		xViewportAxis.add(vpa);
-		vpa.setParent(this);
-		vpa.setOrientation(AxisOrientation.HORIZONTAL);
+	public void addXAxis(Axis axis) {
+		AxisEx ax = (AxisEx) axis;
 
-		if (vpa.canContributeToParent()) {
+		if (ax.getRangeManager() == null) {
+			throw new IllegalArgumentException("The axis has no range manager.");
+		}
+		if (ax.getRangeManager().getLockGroup() == null) {
+			throw new IllegalArgumentException(
+					"The axis's range manager has no lock group.");
+		}
+
+		xAxis.add(ax);
+		ax.setParent(this);
+		ax.setOrientation(AxisOrientation.HORIZONTAL);
+
+		if (ax.canContributeToParent()) {
 			redraw();
 		}
-		for (AxisEx axis : vpa.getAxes()) {
-			if (axis.isVisible()) {
-				invalidate();
-				break;
-			}
+		if (ax.isVisible()) {
+			invalidate();
 		}
 	}
 
-	public void addYViewportAxis(ViewportAxis vpAxis) {
-		ViewportAxisEx vpa = (ViewportAxisEx) vpAxis;
-		yViewportAxis.add(vpa);
-		vpa.setParent(this);
-		vpa.setOrientation(AxisOrientation.VERTICAL);
+	public void addYAxis(Axis axis) {
+		AxisEx ax = (AxisEx) axis;
 
-		if (vpa.canContributeToParent()) {
+		if (ax.getRangeManager() == null) {
+			throw new IllegalArgumentException("The axis has no range manager.");
+		}
+		if (ax.getRangeManager().getLockGroup() == null) {
+			throw new IllegalArgumentException(
+					"The axis's range manager has no lock group.");
+		}
+
+		yAxis.add(ax);
+		ax.setParent(this);
+		ax.setOrientation(AxisOrientation.VERTICAL);
+
+		if (ax.canContributeToParent()) {
 			redraw();
 		}
-		for (AxisEx axis : vpa.getAxes()) {
-			if (axis.isVisible()) {
-				invalidate();
-				break;
-			}
+		if (ax.isVisible()) {
+			invalidate();
 		}
 	}
 
-	public void removeXViewportAxis(ViewportAxis vpAxis) {
-		ViewportAxisEx vpa = (ViewportAxisEx) vpAxis;
-		if (vpa.getLayers().length > 0) {
-			throw new IllegalStateException("The axis has layer attached");
+	public void removeXAxis(Axis axis) {
+		AxisEx ax = (AxisEx) axis;
+		ax.setParent(null);
+		xAxis.remove(ax);
+
+		if (ax.getRangeManager().getParent() == null) {
+			// quit the range manager if axis is not its only member
+			ax.setRangeManager(null);
+		} else if (ax.getRangeManager().getLockGroup().getParent() == null) {
+			// quit the lock group if range manager can be remove together but
+			// it is not the lock group's only member
+			ax.getRangeManager().setLockGroup(null);
 		}
 
-		vpa.setParent(null);
-		xViewportAxis.remove(vpa);
-
-		if (vpa.canContributeToParent()) {
+		if (ax.canContributeToParent()) {
 			redraw();
 		}
-		for (AxisEx axis : vpa.getAxes()) {
-			if (axis.isVisible()) {
-				invalidate();
-				break;
-			}
+		if (ax.isVisible()) {
+			invalidate();
 		}
 	}
 
-	public void removeYViewportAxis(ViewportAxis vpAxis) {
-		ViewportAxisEx vpa = (ViewportAxisEx) vpAxis;
-		if (vpa.getLayers().length > 0) {
-			throw new IllegalStateException("The axis has layer attached");
+	public void removeYAxis(Axis axis) {
+		AxisEx ax = (AxisEx) axis;
+		ax.setParent(null);
+		yAxis.remove(ax);
+
+		// quit the range manager if axis is not its only member
+		if (ax.getRangeManager().getParent() == null) {
+			ax.setRangeManager(null);
 		}
 
-		vpa.setParent(null);
-		yViewportAxis.remove(vpAxis);
-
-		if (vpa.canContributeToParent()) {
+		if (ax.canContributeToParent()) {
 			redraw();
 		}
-		for (AxisEx axis : vpa.getAxes()) {
-			if (axis.isVisible()) {
-				invalidate();
-				break;
-			}
+		if (ax.isVisible()) {
+			invalidate();
 		}
 	}
 
@@ -444,12 +461,12 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		if (!isVisible() || isCacheable()) {
 			return false;
 		}
-		for (ViewportAxisEx vpa : xViewportAxis) {
+		for (AxisEx vpa : xAxis) {
 			if (vpa.canContributeToParent()) {
 				return true;
 			}
 		}
-		for (ViewportAxisEx vpa : yViewportAxis) {
+		for (AxisEx vpa : yAxis) {
 			if (vpa.canContributeToParent()) {
 				return true;
 			}
@@ -475,15 +492,15 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		result.margin.setParent(result);
 
 		// copy axes
-		for (ViewportAxisEx va : xViewportAxis) {
-			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
+		for (AxisEx va : xAxis) {
+			AxisEx vaCopy = (AxisEx) va.deepCopy(orig2copyMap);
 			vaCopy.setParent(result);
-			result.xViewportAxis.add(vaCopy);
+			result.xAxis.add(vaCopy);
 		}
-		for (ViewportAxisEx va : yViewportAxis) {
-			ViewportAxisEx vaCopy = (ViewportAxisEx) va.deepCopy(orig2copyMap);
+		for (AxisEx va : yAxis) {
+			AxisEx vaCopy = (AxisEx) va.deepCopy(orig2copyMap);
 			vaCopy.setParent(result);
-			result.yViewportAxis.add(vaCopy);
+			result.yAxis.add(vaCopy);
 		}
 
 		// copy layers

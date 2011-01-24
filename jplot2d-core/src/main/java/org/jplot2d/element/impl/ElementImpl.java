@@ -42,7 +42,11 @@ public abstract class ElementImpl implements ElementEx {
 	}
 
 	public String getId() {
-		return getSelfId();
+		if (parent != null) {
+			return getSelfId() + "." + parent.getId();
+		} else {
+			return getSelfId();
+		}
 	}
 
 	protected String getSelfId() {

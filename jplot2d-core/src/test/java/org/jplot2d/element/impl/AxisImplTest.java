@@ -41,15 +41,23 @@ public class AxisImplTest {
 	public void testTicknessX() {
 		AxisImpl axis = new AxisImpl(mock(AxisTickEx.class),
 				new TextComponentImpl());
-		ViewportAxisEx va = mock(ViewportAxisEx.class);
-		when(va.getOrientation()).thenReturn(AxisOrientation.HORIZONTAL);
-		when(va.getEffectiveFontName()).thenReturn("Lucida Bright");
-		when(va.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
-		when(va.getEffectiveFontSize()).thenReturn(12.0f);
-		axis.setParent(va);
-
+		axis.setOrientation(AxisOrientation.HORIZONTAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
+
+		SubplotEx sp = mock(SubplotEx.class);
+		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
+		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
+		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
+		axis.setParent(sp);
+		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
+		axis.setRangeManager(va);
+
+		when(axis.getTick().getLabelModels()).thenReturn(
+				new MathElement[] { new MathElement.Mn("0"),
+						new MathElement.Mn("5"), new MathElement.Mn("10") });
+		Font font = axis.getEffectiveFont();
+		when(axis.getTick().getActualLabelFont()).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		checkDouble(axis.getAsc(), 0);
@@ -68,12 +76,17 @@ public class AxisImplTest {
 	public void testTicknessY() {
 		AxisImpl axis = new AxisImpl(mock(AxisTickEx.class),
 				new TextComponentImpl());
-		ViewportAxisEx va = mock(ViewportAxisEx.class);
-		when(va.getOrientation()).thenReturn(AxisOrientation.VERTICAL);
-		when(va.getEffectiveFontName()).thenReturn("Lucida Bright");
-		when(va.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
-		when(va.getEffectiveFontSize()).thenReturn(12.0f);
-		axis.setParent(va);
+		axis.setOrientation(AxisOrientation.VERTICAL);
+		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
+		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
+
+		SubplotEx sp = mock(SubplotEx.class);
+		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
+		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
+		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
+		axis.setParent(sp);
+		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
+		axis.setRangeManager(va);
 
 		when(axis.getTick().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"),
