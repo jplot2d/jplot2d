@@ -63,6 +63,6 @@ public interface AxisLockGroup extends Element {
 	 * @return all axes belongs to this group
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public ViewportAxis[] getViewportAxes();
+	public AxisRangeManager[] getRangeManagers();
 
 }

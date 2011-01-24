@@ -99,11 +99,13 @@ public class XYGraphPlotterFiller {
 			}
 
 			double x = layer.getPhysicalTransform().getXPtoD(
-					layer.getXViewportAxis().getAxisTransform()
-							.getTransP(graph.getX(i)));
+					layer.getXRangeManager().getNormalTransform()
+							.getTransP(graph.getX(i))
+							* layer.getSize().getWidth());
 			double y = layer.getPhysicalTransform().getYPtoD(
-					layer.getYViewportAxis().getAxisTransform()
-							.getTransP(graph.getY(i)));
+					layer.getYRangeManager().getNormalTransform()
+							.getTransP(graph.getY(i))
+							* layer.getSize().getHeight());
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);

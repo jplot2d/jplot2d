@@ -63,6 +63,10 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		super.height = containerSize.getHeight();
 	}
 
+	public String getSelfId() {
+		return "Plot@" + Integer.toHexString(System.identityHashCode(this));
+	}
+
 	public void setCacheable(boolean cacheMode) {
 		// ignore setting cacheable
 	}
@@ -268,15 +272,15 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 			Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : subplot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
-			if (layer.getXViewportAxis() != null) {
-				ViewportAxisEx xcopy = (ViewportAxisEx) orig2copyMap.get(layer
-						.getXViewportAxis());
-				layerCopy.setXViewportAxis(xcopy);
+			if (layer.getXRangeManager() != null) {
+				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap
+						.get(layer.getXRangeManager());
+				layerCopy.setXRangeManager(xcopy);
 			}
-			if (layer.getYViewportAxis() != null) {
-				ViewportAxisEx ycopy = (ViewportAxisEx) orig2copyMap.get(layer
-						.getYViewportAxis());
-				layerCopy.setYViewportAxis(ycopy);
+			if (layer.getYRangeManager() != null) {
+				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap
+						.get(layer.getYRangeManager());
+				layerCopy.setYRangeManager(ycopy);
 			}
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {

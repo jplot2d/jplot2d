@@ -34,6 +34,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,9 +44,11 @@ import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTickSide;
 import org.jplot2d.element.AxisTickTransform;
+import org.jplot2d.element.Element;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.MathElement;
 import org.jplot2d.util.MathLabel;
@@ -68,9 +71,17 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	/* the gap between title and label */
 	private static final double TITLE_GAP_RATIO = 1.0 / 4;
 
-	protected final AxisTickEx tick;
+	private final AxisTickEx tick;
 
-	protected final TextComponentEx title;
+	private final TextComponentEx title;
+
+	private AxisOrientation orientation;
+
+	private AxisRangeManagerEx rangeManager;
+
+	private double offset;
+
+	private double length;
 
 	private AxisPosition position;
 
@@ -124,30 +135,53 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		this.title = title;
 	}
 
-	public String getSelfId() {
+	protected String getSelfId() {
 		if (getParent() != null) {
-			int xidx = getParent().indexOfAxis(this);
-			return "Axis" + xidx;
-		} else {
-			return "Axis@" + System.identityHashCode(this);
+			switch (getOrientation()) {
+			case HORIZONTAL:
+				int xidx = getParent().indexOfXAxis(this);
+				return "X" + xidx;
+			case VERTICAL:
+				int yidx = getParent().indexOfYAxis(this);
+				return "Y" + yidx;
+			}
 		}
+		return "Axis@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
-	public ViewportAxisEx getParent() {
-		return (ViewportAxisEx) super.getParent();
+	public SubplotEx getParent() {
+		return (SubplotEx) super.getParent();
+	}
+
+	public Map<Element, Element> getMooringMap() {
+		Map<Element, Element> result = new HashMap<Element, Element>();
+
+		if (rangeManager.getParent() == this) {
+			for (LayerEx layer : rangeManager.getLayers()) {
+				result.put(rangeManager, layer);
+			}
+		}
+
+		return result;
+	}
+
+	public AxisOrientation getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(AxisOrientation orientation) {
+		this.orientation = orientation;
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null) {
+		if (getOrientation() == null) {
 			return null;
 		} else {
-			switch (getParent().getOrientation()) {
+			switch (getOrientation()) {
 			case HORIZONTAL:
-				return new DoubleDimension2D(getParent().getLength(),
-						getThickness());
+				return new DoubleDimension2D(getLength(), getThickness());
 			case VERTICAL:
-				return new DoubleDimension2D(getThickness(), getParent()
-						.getLength());
+				return new DoubleDimension2D(getThickness(), getLength());
 			default:
 				return null;
 			}
@@ -155,18 +189,17 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	public Rectangle2D getBounds() {
-		if (getParent() == null) {
+		if (getOrientation() == null) {
 			return null;
 		} else {
-			switch (getParent().getOrientation()) {
+			switch (getOrientation()) {
 			case HORIZONTAL:
 				return new Rectangle2D.Double(getLocation().getX(),
-						getLocation().getY() - desc, getParent().getLength(),
+						getLocation().getY() - desc, getLength(),
 						getThickness());
 			case VERTICAL:
 				return new Rectangle2D.Double(getLocation().getX() - asc,
-						getLocation().getY(), getThickness(), getParent()
-								.getLength());
+						getLocation().getY(), getThickness(), getLength());
 			default:
 				return null;
 			}
@@ -200,6 +233,40 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 	}
 
+	public AxisRangeManagerEx getRangeManager() {
+		return rangeManager;
+	}
+
+	public void setRangeManager(AxisRangeManager rangeManager) {
+		if (this.rangeManager != null) {
+			this.rangeManager.removeAxis(this);
+		}
+		this.rangeManager = (AxisRangeManagerEx) rangeManager;
+		if (this.rangeManager != null) {
+			this.rangeManager.addAxis(this);
+		}
+	}
+
+	public double getOffset() {
+		return offset;
+	}
+
+	public void setOffset(double offset) {
+		if (this.offset != offset) {
+			this.offset = offset;
+		}
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public void setLength(double length) {
+		if (this.length != length) {
+			this.length = length;
+		}
+	}
+
 	public AxisPosition getPosition() {
 		return position;
 	}
@@ -226,7 +293,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	public Range2D getRange() {
-		Range2D range = getParent().getRange();
+		Range2D range = rangeManager.getRange();
 		if (tickTransform != null) {
 			double start = tickTransform.transformUser2Tick(range.getStart());
 			double end = tickTransform.transformUser2Tick(range.getEnd());
@@ -239,7 +306,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setRange(Range2D range) {
 		double ustart = tickTransform.transformTick2User(range.getStart());
 		double uend = tickTransform.transformTick2User(range.getEnd());
-		getParent().setRange(new Range2D.Double(ustart, uend));
+		rangeManager.setRange(new Range2D.Double(ustart, uend));
 	}
 
 	public boolean isGridLines() {
@@ -445,10 +512,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	}
 
-	private AxisOrientation getOrientation() {
-		return getParent().getOrientation();
-	}
-
 	private boolean isTitleAscSide() {
 		boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
 		boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
@@ -543,6 +606,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 		AxisImpl axis = (AxisImpl) src;
 
+		this.orientation = axis.orientation;
+		this.offset = axis.offset;
+		this.length = axis.length;
 		this.position = axis.position;
 		this.asc = axis.asc;
 		this.desc = axis.desc;
@@ -579,7 +645,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	private void drawAxisLine(Graphics2D g2) {
-		Shape s = new Line2D.Double(0, 0, getParent().getLength(), 0);
+		Shape s = new Line2D.Double(0, 0, getLength(), 0);
 		g2.draw(s);
 	}
 
@@ -614,7 +680,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c
 					.getAlpha() / 2));
 
-			Rectangle2D plotRect = getParent().getParent().getContentBounds();
+			Rectangle2D plotRect = getParent().getContentBounds();
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
 				for (int i = 0; i < tvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(tvs, i));
@@ -685,7 +751,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	private void drawTitle(Graphics2D g) {
 		TextComponentEx title = getTitle();
 
-		double xt = getParent().getLength() * 0.5;
+		double xt = getLength() * 0.5;
 		title.setLocation(new Point2D.Double(xt, titleOffset));
 		title.setHAlign(HAlign.CENTER);
 		title.setVAlign(titleVAlign);
@@ -776,16 +842,12 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	private List<AxisEx> getOrthoAxes() {
 		List<AxisEx> axes = new ArrayList<AxisEx>();
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
-			for (ViewportAxisEx ag : getParent().getParent().getYViewportAxes()) {
-				for (AxisEx a : ag.getAxes()) {
-					axes.add(a);
-				}
+			for (AxisEx a : getParent().getYAxes()) {
+				axes.add(a);
 			}
 		} else {
-			for (ViewportAxisEx ag : getParent().getParent().getXViewportAxes()) {
-				for (AxisEx a : ag.getAxes()) {
-					axes.add(a);
-				}
+			for (AxisEx a : getParent().getXAxes()) {
+				axes.add(a);
 			}
 		}
 		return axes;
@@ -805,7 +867,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		} else {
 			uv = tickValue;
 		}
-		return getParent().getAxisTransform().getTransP(uv);
+		return rangeManager.getNormalTransform().getTransP(uv) * length;
 	}
 
 }

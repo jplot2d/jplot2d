@@ -1,12 +1,45 @@
 package org.jplot2d.element.impl;
 
 import org.jplot2d.element.Axis;
+import org.jplot2d.element.AxisOrientation;
 
 public interface AxisEx extends Axis, ContainerEx {
 
-	public ViewportAxisEx getParent();
+	public SubplotEx getParent();
+
+	public AxisRangeManagerEx getRangeManager();
 
 	public AxisTickEx getTick();
+
+	public void setOrientation(AxisOrientation orientation);
+
+	/**
+	 * Returns the offset of this axis.
+	 * 
+	 * @return the length
+	 */
+	public double getOffset();
+
+	/**
+	 * Set the offset for this axis.
+	 * 
+	 * @param offset
+	 */
+	public void setOffset(double offset);
+
+	/**
+	 * Returns the length of this axis.
+	 * 
+	 * @return the length
+	 */
+	public double getLength();
+
+	/**
+	 * Set the length for this axis.
+	 * 
+	 * @param length
+	 */
+	public void setLength(double length);
 
 	public double getThickness();
 

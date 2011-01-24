@@ -37,17 +37,18 @@ public enum HierarchyOp {
 	 */
 	ADD,
 	/**
-	 * The method should remove an element from its children (1:n
-	 * parent:children)
+	 * The method should remove an element and all its children. (1:n
+	 * parent:children).
 	 */
 	REMOVE,
 	/**
-	 * The method should add this element as a parent of the destination
-	 * element. (n:1 parent:children)
+	 * The method should set an element as its reference (n:1 reffrom:refto). If
+	 * the referenced element has no parent, it will be bring into the
+	 * environment of the element who reference it.
 	 */
 	JOIN,
 	/**
-	 * The method should set an element as its reference. (1:n reffrom:refto)
+	 * The method should set an element as its reference (1:n reffrom:refto).
 	 */
 	REF,
 	/**

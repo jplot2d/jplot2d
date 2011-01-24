@@ -66,14 +66,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		_changes.removePropertyChangeListener(l);
 	}
 
-	public final String getId() {
-		if (parent != null) {
-			return parent.getId() + "-" + getSelfId();
-		} else {
-			return getSelfId();
-		}
-	}
-
 	public ContainerEx getParent() {
 		return (ContainerEx) parent;
 	}

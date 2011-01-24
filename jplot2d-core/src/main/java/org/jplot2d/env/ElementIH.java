@@ -29,7 +29,7 @@ import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.element.impl.MultiParentElementEx;
+import org.jplot2d.element.impl.Joinable;
 
 /**
  * This InvocationHandler intercept calls on proxy objects, and wrap the calls
@@ -50,7 +50,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private T impl;
 
 	/**
-	 * Guarded by Env Global LOCK
+	 * This field must be read within Environment Global LOCK
 	 */
 	private volatile Environment environment;
 
@@ -130,17 +130,17 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			invokeRemoveCompMethod(method, args);
 			return null;
 		}
-		/* set(Element element) with join meaning */
+		/* set(Element) as a join reference */
 		if (iinfo.isJoinElementMethod(method)) {
 			invokeJoinElementMethod(method, args);
 			return null;
 		}
-		/* set(Element element) with reference meaning */
+		/* set(Element element) as a reference */
 		if (iinfo.isRefElementMethod(method)) {
 			invokeSetRefElementMethod(method, args);
 			return null;
 		}
-		/* set(Element, Element) with reference meaning */
+		/* set(Element, Element) as a references */
 		if (iinfo.isRef2ElementMethod(method)) {
 			invokeSetRef2ElementMethod(method, args);
 			return null;
@@ -263,25 +263,29 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
-				throw new IllegalArgumentException("");
+				throw new IllegalArgumentException(
+						"The component to be added already has a parent.");
 			}
 			penv.beginCommand("");
+			Object[] cargs = args.clone();
+			cargs[0] = cimpl;
+			try {
+				method.invoke(impl, cargs);
+			} catch (InvocationTargetException e) {
+				cenv.endCommand();
+				penv.endCommand();
+				throw e.getCause();
+			}
+
 			// update environment for all adding components
 			for (Element proxy : cenv.proxyMap.values()) {
 				((ElementAddition) proxy).setEnvironment(penv);
 			}
-		}
-		try {
-			Object[] cargs = args.clone();
-			cargs[0] = cimpl;
-			method.invoke(impl, cargs);
 			penv.componentAdded(cimpl, cenv);
-		} catch (InvocationTargetException e) {
-			throw e.getCause();
-		} finally {
-			cenv.endCommand();
-			penv.endCommand();
 		}
+
+		cenv.endCommand();
+		penv.endCommand();
 	}
 
 	/**
@@ -345,6 +349,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			throw throwable;
 		}
 
+		// FIXME: to remove orphan viewport axis after layer is removed
 	}
 
 	/**
@@ -356,50 +361,81 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 */
 	private void invokeJoinElementMethod(Method method, Object[] args)
 			throws Throwable {
-		ElementAddition cproxy = (ElementAddition) args[0];
+		if (args[0] == null) {
+			throw new IllegalArgumentException("Null is not a valid argument.");
+		}
+		boolean add = false;
 
-		Throwable throwable = null;
-
-		Environment penv;
+		ElementEx cimpl;
+		Environment env;
+		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
-			penv = environment;
-			Environment denv = ((Element) args[0]).getEnvironment();
-			if (penv != denv) {
-				throw new IllegalArgumentException(
-						"Must belongd to the same environment");
+			env = environment;
+			cenv = ((Element) args[0]).getEnvironment();
+
+			cenv = ((Element) args[0]).getEnvironment();
+			cenv.beginCommand("");
+			cimpl = ((ElementAddition) args[0]).getImpl();
+			if (env != cenv) {
+				if (cimpl instanceof Joinable) {
+					if (((Joinable) cimpl).isReferenced()) {
+						cenv.end();
+						throw new IllegalArgumentException(
+								"The element to be referenced has been referenced by element from another environment.");
+					}
+				} else {
+					cenv.end();
+					throw new IllegalArgumentException(
+							"The argument is not referencable.");
+				}
+				add = true;
+				env.beginCommand("");
 			}
 
-			penv.beginCommand("");
-			ElementEx cimpl = (ElementEx) cproxy.getImpl();
+			Method reader = iinfo.getPropReadMethodByWriteMethod(method);
+			Object oldRef = invokeGetter(reader);
+			if (cimpl == oldRef) {
+				if (add) {
+					cenv.endCommand();
+				}
+				env.endCommand();
+				return;
+			}
 
 			// join the new child
-			MultiParentElementEx oldChildImpl = null;
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
 			try {
-				oldChildImpl = (MultiParentElementEx) method
-						.invoke(impl, cargs);
+				method.invoke(impl, cargs);
 			} catch (InvocationTargetException e) {
-				throwable = e.getCause();
+				if (add) {
+					cenv.endCommand();
+				}
+				env.endCommand();
+				throw e.getCause();
 			}
 
+			// update environment for all adding components
+			for (Element proxy : cenv.proxyMap.values()) {
+				((ElementAddition) proxy).setEnvironment(env);
+			}
+			if (add) {
+				env.elementAdded(cimpl, cenv);
+			}
 			// remove the old child if it's orphan
-			if (throwable == null) {
-				if (oldChildImpl.getParents().length == 0) {
-					Environment cenv = penv.removeOrphan(oldChildImpl);
-					// update environment for the removing component
-					for (Element proxy : cenv.proxyMap.values()) {
-						((ElementAddition) proxy).setEnvironment(cenv);
-					}
+			if (oldRef != null && !((Joinable) oldRef).isReferenced()) {
+				Environment nenv = env.removeOrphan((ElementEx) oldRef);
+				// update environment for the removing component
+				for (Element proxy : nenv.proxyMap.values()) {
+					((ElementAddition) proxy).setEnvironment(nenv);
 				}
 			}
 		}
 
-		penv.endCommand();
-
-		if (throwable != null) {
-			throw throwable;
+		if (add) {
+			cenv.endCommand();
 		}
+		env.endCommand();
 
 	}
 
@@ -505,7 +541,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			for (int i = 1; i <= nref; i++) {
 				if (((Element) args[i]).getEnvironment() != penv) {
 					throw new IllegalArgumentException(
-							"The reference argument must belongd to the environment of the container to be added.");
+							"The reference argument must belong to the environment of the container to be added.");
 				}
 				cargs[i] = (args[i] == null) ? null
 						: ((ElementAddition) args[i]).getImpl();
