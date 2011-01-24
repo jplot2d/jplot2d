@@ -46,7 +46,12 @@ public abstract class ElementImpl implements ElementEx {
 	}
 
 	protected String getSelfId() {
-		return "Component@" + System.identityHashCode(this);
+		return this.getClass().getSimpleName() + "@"
+				+ Integer.toHexString(System.identityHashCode(this));
+	}
+
+	public String toString() {
+		return getId();
 	}
 
 	public void warning(WarningMessage msg) {
