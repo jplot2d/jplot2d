@@ -74,10 +74,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		}
 	}
 
-	public String toString() {
-		return getId();
-	}
-
 	public ContainerEx getParent() {
 		return (ContainerEx) parent;
 	}

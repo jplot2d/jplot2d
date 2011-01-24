@@ -138,6 +138,28 @@ public abstract class Environment {
 	 * A component has been added to this environment, after setting the parent.
 	 * The added component either is cacheable, or has a cacheable parent.
 	 * 
+	 * @param element
+	 *            the added element
+	 * @param env
+	 *            the environment of the added element
+	 */
+	void elementAdded(ElementEx element, Environment env) {
+
+		proxyMap.putAll(env.proxyMap);
+		addOrder(cacheableComponentList, env.cacheableComponentList);
+		subComponentMap.putAll(env.subComponentMap);
+		warnings.addAll(env.warnings);
+
+		env.proxyMap.clear();
+		env.cacheableComponentList.clear();
+		env.subComponentMap.clear();
+		env.warnings.clear();
+	}
+
+	/**
+	 * A component has been added to this environment, after setting the parent.
+	 * The added component either is cacheable, or has a cacheable parent.
+	 * 
 	 * @param comp
 	 *            the added ComponentEx
 	 * @param env
@@ -205,11 +227,6 @@ public abstract class Environment {
 
 				List<ComponentEx> removedSubcomps = subComponentMap.remove(c);
 				removedSubComponentMap.put(c, removedSubcomps);
-
-				// remove the components from proxyMap
-				for (ComponentEx sc : removedSubcomps) {
-					removedProxyMap.put(sc, proxyMap.remove(sc));
-				}
 			}
 		}
 
@@ -232,19 +249,14 @@ public abstract class Environment {
 
 			// put top uncacheable component to subComponentMap
 			removedSubComponentMap.put(comp, removedUncacheableComps);
-
-			// remove the components from proxyMap
-			for (ComponentEx sc : removedUncacheableComps) {
-				removedProxyMap.put(sc, proxyMap.remove(sc));
-			}
 		}
 
-		// remove the elements whoes parent has been removed
+		// remove all elements whoes parent has been removed
 		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet()
 				.iterator();
 		while (ite.hasNext()) {
 			Entry<ElementEx, Element> e = ite.next();
-			if (removedProxyMap.containsKey(e.getKey().getParent())) {
+			if (isAncestor(comp, e.getKey())) {
 				removedProxyMap.put(e.getKey(), e.getValue());
 				ite.remove();
 			}
@@ -257,7 +269,7 @@ public abstract class Environment {
 		return result;
 	}
 
-	private boolean isAncestor(Component ancestor, Component c) {
+	private boolean isAncestor(Element ancestor, Element c) {
 		if (c == null) {
 			return false;
 		} else if (c == ancestor) {
