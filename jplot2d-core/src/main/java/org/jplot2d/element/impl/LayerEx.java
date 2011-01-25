@@ -14,9 +14,4 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public void parentPhysicalTransformChanged();
 
-	/**
-	 * This method is called when a layer is moved form a subplot.
-	 */
-	public void detachAxes();
-
 }

@@ -19,7 +19,6 @@
 package org.jplot2d.element.impl;
 
 import java.awt.Font;
-import java.util.Map;
 
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTick;
@@ -33,8 +32,6 @@ import org.jplot2d.util.Range2D;
 public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public AxisEx getParent();
-
-	public AxisTickEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 	public MathElement[] getLabelModels();
 

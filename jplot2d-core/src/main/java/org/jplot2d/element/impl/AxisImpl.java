@@ -71,9 +71,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	/* the gap between title and label */
 	private static final double TITLE_GAP_RATIO = 1.0 / 4;
 
-	private final AxisTickEx tick;
+	private AxisTickEx tick;
 
-	private final TextComponentEx title;
+	private TextComponentEx title;
 
 	private AxisOrientation orientation;
 
@@ -586,26 +586,35 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return ss;
 	}
 
-	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		AxisImpl result = new AxisImpl(tick.deepCopy(orig2copyMap),
-				title.deepCopy(orig2copyMap));
+	@Override
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		AxisImpl result = new AxisImpl(
+				((AxisTickEx) tick.copyStructure(orig2copyMap)),
+				(TextComponentEx) title.copyStructure(orig2copyMap));
 		result.tick.setParent(result);
 		result.title.setParent(result);
-		result.copyFrom(this, orig2copyMap);
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
 
+		AxisRangeManagerEx armCopy = (AxisRangeManagerEx) orig2copyMap
+				.get(rangeManager);
+		if (armCopy == null) {
+			armCopy = (AxisRangeManagerEx) rangeManager.copyStructure(orig2copyMap);
+		}
+		result.rangeManager = armCopy;
+		armCopy.addAxis(result);
+
 		return result;
 
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		AxisImpl axis = (AxisImpl) src;
-
 		this.orientation = axis.orientation;
 		this.offset = axis.offset;
 		this.length = axis.length;
@@ -617,7 +626,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		this.labelVAlign = axis.labelVAlign;
 		this.titleOffset = axis.titleOffset;
 		this.titleVAlign = axis.titleVAlign;
-
 	}
 
 	public void draw(Graphics2D graphics) {

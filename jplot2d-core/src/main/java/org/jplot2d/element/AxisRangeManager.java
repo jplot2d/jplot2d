@@ -25,8 +25,9 @@ import org.jplot2d.axtype.AxisType;
 import org.jplot2d.util.Range2D;
 
 /**
- * A viewport axis define a transformation of viewport. It can be shared by a
- * group of axes, which represent the same user range with different ticks.
+ * A AxisRangeManager define a X or Y transformation of a viewport. It can be
+ * shared by a group of axes, which represent the same user range with different
+ * ticks.
  * 
  * @author Jingjing Li
  * 

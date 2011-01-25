@@ -64,9 +64,15 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 		return arms.size() > 0;
 	}
 
-	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		AxisLockGroupImpl alg = (AxisLockGroupImpl) src;
+		this.type = alg.type;
+		this.prim = alg.prim;
+		this.autoRange = alg.autoRange;
+		this.autoRangeNeeded = alg.autoRangeNeeded;
 	}
 
 	public int indexOfRangeManager(AxisRangeManagerEx rangeManager) {

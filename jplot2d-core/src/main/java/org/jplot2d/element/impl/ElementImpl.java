@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element.impl;
 
+import java.util.Map;
+
 import org.jplot2d.env.Environment;
 import org.jplot2d.util.WarningMessage;
 
@@ -62,6 +64,26 @@ public abstract class ElementImpl implements ElementEx {
 		if ((getParent() != null)) {
 			getParent().warning(msg);
 		}
+	}
+
+	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		ElementImpl result;
+
+		try {
+			result = this.getClass().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+
+		return result;
+	}
+
+	public void copyFrom(ElementEx src) {
+		// copy nothing
 	}
 
 }

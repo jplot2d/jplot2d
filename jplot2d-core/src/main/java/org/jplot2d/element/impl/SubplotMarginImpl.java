@@ -134,7 +134,8 @@ public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
 		this.extraRight = marginRight;
 	}
 
-	public SubplotMarginImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	@Override
+	public SubplotMarginImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		SubplotMarginImpl result = null;
 		try {
 			result = (SubplotMarginImpl) this.clone();

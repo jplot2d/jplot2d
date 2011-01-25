@@ -29,7 +29,7 @@ import org.jplot2d.element.impl.ElementImpl;
  */
 public class ElementStub extends ElementImpl {
 
-	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		return this;
 	}
 

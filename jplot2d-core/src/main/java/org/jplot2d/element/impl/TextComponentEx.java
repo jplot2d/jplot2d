@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.util.Map;
-
 import org.jplot2d.element.TextComponent;
 
 /**
@@ -27,7 +25,5 @@ import org.jplot2d.element.TextComponent;
  * 
  */
 public interface TextComponentEx extends TextComponent, ComponentEx {
-
-	public TextComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

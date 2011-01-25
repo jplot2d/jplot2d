@@ -98,7 +98,7 @@ public interface ComponentEx extends Component, ElementEx {
 	 *            to the Graphics2D drawing. The transformation of this
 	 *            component is not applied.
 	 */
-	void draw(Graphics2D g);
+	public void draw(Graphics2D g);
 
 	/**
 	 * Create a deep copy of this component. The parent of the copy are not set.
@@ -107,15 +107,6 @@ public interface ComponentEx extends Component, ElementEx {
 	 *            original element to copy map
 	 * @return a deep copy of this component
 	 */
-	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
-
-	/**
-	 * Copies all properties from given src to this component. Notice properties
-	 * of sub-components are not copied over.
-	 * 
-	 * @param src
-	 * @param orig2copyMap
-	 */
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap);
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

@@ -293,7 +293,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			AxisRangeManager yRangeManager) {
 		layers.add((LayerEx) layer);
 		((LayerEx) layer).setParent(this);
-		((LayerEx) layer).setViewportAxes(xRangeManager, yRangeManager);
+		((LayerEx) layer).setRangeManager(xRangeManager, yRangeManager);
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
@@ -303,7 +303,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	public void removeLayer(Layer layer) {
 		layers.remove(layer);
 		((LayerEx) layer).setParent(null);
-		((LayerEx) layer).detachAxes();
+		((LayerEx) layer).setRangeManager(null, null);
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
@@ -484,44 +484,49 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return false;
 	}
 
-	public SubplotImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		SubplotImpl result = (SubplotImpl) super.deepCopy(orig2copyMap);
+	@Override
+	public SubplotImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		SubplotImpl result = (SubplotImpl) super.copyStructure(orig2copyMap);
 
 		// copy margin
-		result.margin = margin.deepCopy(orig2copyMap);
+		result.margin = (SubplotMarginEx) margin.copyStructure(orig2copyMap);
 		result.margin.setParent(result);
 
 		// copy axes
 		for (AxisEx va : xAxis) {
-			AxisEx vaCopy = (AxisEx) va.deepCopy(orig2copyMap);
+			AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
 			vaCopy.setParent(result);
 			result.xAxis.add(vaCopy);
 		}
 		for (AxisEx va : yAxis) {
-			AxisEx vaCopy = (AxisEx) va.deepCopy(orig2copyMap);
+			AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
 			vaCopy.setParent(result);
 			result.yAxis.add(vaCopy);
 		}
 
 		// copy layers
 		for (LayerEx layer : layers) {
-			LayerEx layerCopy = (LayerEx) layer.deepCopy(orig2copyMap);
+			LayerEx layerCopy = (LayerEx) layer.copyStructure(orig2copyMap);
 			layerCopy.setParent(result);
 			result.layers.add(layerCopy);
 		}
 
 		// copy subplots
 		for (SubplotEx sp : subplots) {
-			SubplotEx spCopy = (SubplotEx) sp.deepCopy(orig2copyMap);
+			SubplotEx spCopy = (SubplotEx) sp.copyStructure(orig2copyMap);
 			((ComponentEx) spCopy).setParent(this);
 			result.subplots.add(spCopy);
 		}
 
+		// link layer and range manager
+		linkLayerAndRangeManager(this, orig2copyMap);
+
 		return result;
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		SubplotImpl sp = (SubplotImpl) src;
 		width = sp.width;
@@ -531,6 +536,35 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		pxf = sp.pxf;
 		preferredContentSize = sp.preferredContentSize;
 		contentBounds = sp.contentBounds;
+	}
+
+	/**
+	 * Deep search layers to find the copy whoes range manager not been linked,
+	 * and set for them.
+	 * 
+	 * @param subplot
+	 * @param orig2copyMap
+	 */
+	protected static void linkLayerAndRangeManager(SubplotEx subplot,
+			Map<ElementEx, ElementEx> orig2copyMap) {
+		for (LayerEx layer : subplot.getLayers()) {
+			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
+			if (layerCopy.getXRangeManager() == null
+					&& layer.getXRangeManager() != null) {
+				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap
+						.get(layer.getXRangeManager());
+				layerCopy.setXRangeManager(xcopy);
+			}
+			if (layerCopy.getYRangeManager() == null
+					&& layer.getYRangeManager() != null) {
+				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap
+						.get(layer.getYRangeManager());
+				layerCopy.setYRangeManager(ycopy);
+			}
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			linkLayerAndRangeManager(sp, orig2copyMap);
+		}
 	}
 
 	public void draw(Graphics2D g) {

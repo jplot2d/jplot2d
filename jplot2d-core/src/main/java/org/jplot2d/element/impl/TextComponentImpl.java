@@ -24,7 +24,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
@@ -134,12 +133,9 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 				+ bounds.getY(), bounds.getWidth(), bounds.getHeight());
 	}
 
-	public TextComponentImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		return (TextComponentImpl) super.deepCopy(orig2copyMap);
-	}
-
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		TextComponentImpl tc = (TextComponentImpl) src;
 		this.textModel = tc.textModel;

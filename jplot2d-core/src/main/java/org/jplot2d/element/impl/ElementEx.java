@@ -50,12 +50,22 @@ public interface ElementEx extends Element {
 	public void warning(WarningMessage msg);
 
 	/**
-	 * Create a deep copy of this element. The parent of the copy are not set.
+	 * Create a structural copy of this element and put them into orig2copyMap.
+	 * All properties are not copied. The parent of the copy are not set by this
+	 * method.
 	 * 
 	 * @param orig2copyMap
 	 *            original element to copy map
-	 * @return a deep copy of this element
+	 * @return the structural copy of this element
 	 */
-	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
+	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap);
 
+	/**
+	 * Copies all properties from given src to this element. Notice properties
+	 * of sub-elements are not copied over.
+	 * 
+	 * @param src
+	 *            the src
+	 */
+	public void copyFrom(ElementEx src);
 }

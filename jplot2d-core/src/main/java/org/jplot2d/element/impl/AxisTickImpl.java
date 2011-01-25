@@ -908,7 +908,8 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		}
 	}
 
-	public AxisTickImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	@Override
+	public AxisTickImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisTickImpl result = null;
 		try {
 			result = (AxisTickImpl) this.clone();
