@@ -249,43 +249,25 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		targetSize = paperSize;
 	}
 
-	public PlotImpl deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		PlotImpl result = (PlotImpl) super.deepCopy(orig2copyMap);
+	@Override
+	public PlotImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		PlotImpl result = (PlotImpl) super.copyStructure(orig2copyMap);
 
-		// link layer and viewport axis
-		linkLayerAndAxes(this, orig2copyMap);
+		// link layer and range manager
+		linkLayerAndRangeManager(this, orig2copyMap);
 
 		return result;
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		PlotImpl plot = (PlotImpl) src;
 		sizeMode = plot.sizeMode;
 		containerSize = (Dimension) plot.containerSize.clone();
 		targetSize = (Dimension2D) plot.targetSize.clone();
 		scale = plot.scale;
-	}
-
-	private static void linkLayerAndAxes(SubplotEx subplot,
-			Map<ElementEx, ElementEx> orig2copyMap) {
-		for (LayerEx layer : subplot.getLayers()) {
-			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
-			if (layer.getXRangeManager() != null) {
-				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap
-						.get(layer.getXRangeManager());
-				layerCopy.setXRangeManager(xcopy);
-			}
-			if (layer.getYRangeManager() != null) {
-				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap
-						.get(layer.getYRangeManager());
-				layerCopy.setYRangeManager(ycopy);
-			}
-		}
-		for (SubplotEx sp : subplot.getSubplots()) {
-			linkLayerAndAxes(sp, orig2copyMap);
-		}
 	}
 
 }

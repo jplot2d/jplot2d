@@ -79,7 +79,7 @@ public class LayerAxisTest {
 				new Object[] { layer });
 
 		// set axis again
-		layer.setViewportAxes(xaxis.getRangeManager(), yaxis.getRangeManager());
+		layer.setRangeManager(xaxis.getRangeManager(), yaxis.getRangeManager());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);

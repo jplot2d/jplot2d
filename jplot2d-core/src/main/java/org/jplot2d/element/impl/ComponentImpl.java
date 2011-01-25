@@ -248,30 +248,16 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		redrawNeeded = false;
 	}
 
-	public ComponentEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
-		ComponentImpl result;
-
-		try {
-			result = this.getClass().newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-		result.copyFrom(this, orig2copyMap);
-
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
-
-		return result;
+	@Override
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		return (ComponentEx) super.copyStructure(orig2copyMap);
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-
-		// do not copy parent
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		ComponentImpl comp = (ComponentImpl) src;
-
 		visible = comp.visible;
 		cacheable = comp.cacheable;
 		selectable = comp.selectable;

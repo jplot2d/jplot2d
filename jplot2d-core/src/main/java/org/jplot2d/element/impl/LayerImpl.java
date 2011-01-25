@@ -196,7 +196,9 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			this.xaxis.removeLayer(this);
 		}
 		this.xaxis = (AxisRangeManagerEx) axis;
-		this.xaxis.addLayer(this);
+		if (this.xaxis != null) {
+			this.xaxis.addLayer(this);
+		}
 	}
 
 	public void setYRangeManager(AxisRangeManager axis) {
@@ -204,31 +206,36 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			this.yaxis.removeLayer(this);
 		}
 		this.yaxis = (AxisRangeManagerEx) axis;
-		this.yaxis.addLayer(this);
+		if (this.yaxis != null) {
+			this.yaxis.addLayer(this);
+		}
 	}
 
-	public void setViewportAxes(AxisRangeManager xaxis, AxisRangeManager yaxis) {
+	public void setRangeManager(AxisRangeManager xaxis, AxisRangeManager yaxis) {
 		setXRangeManager(xaxis);
 		setYRangeManager(yaxis);
 	}
 
-	public void detachAxes() {
-		this.xaxis.removeLayer(this);
-		this.yaxis.removeLayer(this);
-	}
-
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
-
-		LayerImpl layer = (LayerImpl) src;
+	@Override
+	public LayerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		LayerImpl result = (LayerImpl) super.copyStructure(orig2copyMap);
 
 		// copy plotter
-		for (GraphPlotterEx plotter : layer.plotters) {
+		for (GraphPlotterEx plotter : this.plotters) {
 			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter
-					.deepCopy(orig2copyMap);
+					.copyStructure(orig2copyMap);
 			plotterCopy.setParent(this);
-			plotters.add(plotterCopy);
+			result.plotters.add(plotterCopy);
 		}
+
+		return result;
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		LayerImpl layer = (LayerImpl) src;
+		this.pxf = layer.pxf;
+		this.name = layer.name;
 	}
 
 }

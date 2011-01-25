@@ -385,18 +385,36 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		return null;
 	}
 
-	public ElementEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap) {
+	@Override
+	public AxisRangeManagerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisRangeManagerImpl result = new AxisRangeManagerImpl();
-		result.copyFrom(this, orig2copyMap);
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(this, result);
+		}
+
+		// copy or link group
+		AxisLockGroupEx algCopy = (AxisLockGroupEx) orig2copyMap.get(group);
+		if (algCopy == null) {
+			algCopy = (AxisLockGroupEx) group.copyStructure(orig2copyMap);
+		}
+		result.group = algCopy;
+		algCopy.addRangeManager(result);
+
 		return result;
 	}
 
-	protected void copyFrom(AxisRangeManagerImpl src,
-			Map<ElementEx, ElementEx> orig2copyMap) {
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
-		AxisRangeManagerImpl va = (AxisRangeManagerImpl) src;
-		this.ntf = va.ntf;
-
+		AxisRangeManagerImpl arm = (AxisRangeManagerImpl) src;
+		this.type = arm.type;
+		this.txfType = arm.txfType;
+		this.autoMargin = arm.autoMargin;
+		this.marginFactor = arm.marginFactor;
+		this.coreRange = arm.coreRange;
+		this.ntf = arm.ntf;
 	}
 
 }

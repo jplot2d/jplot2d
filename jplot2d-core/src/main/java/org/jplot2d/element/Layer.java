@@ -162,6 +162,7 @@ public interface Layer extends Container {
 	 *            the y axis
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setViewportAxes(AxisRangeManager xVpAxis, AxisRangeManager yVpAxis);
+	public void setRangeManager(AxisRangeManager xRangeManager,
+			AxisRangeManager yRangeManager);
 
 }

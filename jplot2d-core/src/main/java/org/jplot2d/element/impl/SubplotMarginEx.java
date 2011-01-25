@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.util.Map;
-
 import org.jplot2d.element.SubplotMargin;
 
 /**
@@ -29,7 +27,5 @@ import org.jplot2d.element.SubplotMargin;
 public interface SubplotMarginEx extends SubplotMargin, ElementEx {
 
 	public SubplotEx getParent();
-
-	public SubplotMarginEx deepCopy(Map<ElementEx, ElementEx> orig2copyMap);
 
 }

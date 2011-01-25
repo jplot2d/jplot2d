@@ -319,7 +319,10 @@ public abstract class PlotEnvironment extends Environment {
 		 * only when no history and all renderer is sync renderer and the
 		 * component renderer is caller run, the deepCopy can be omitted.
 		 */
-		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.deepCopy(copyMap);
+		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.copyStructure(copyMap);
+		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
+			me.getValue().copyFrom(me.getKey());
+		}
 
 		// build copy to proxy map
 		Map<ElementEx, Element> proxyMap2 = new HashMap<ElementEx, Element>();
@@ -347,7 +350,7 @@ public abstract class PlotEnvironment extends Environment {
 		// the value is copy of element, the key is original element
 		Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 		// copy implements
-		plotImpl = (PlotEx) memento.getPlot().deepCopy(copyMap);
+		plotImpl = (PlotEx) memento.getPlot().copyStructure(copyMap);
 
 		Map<ElementEx, ElementEx> eleMap = new HashMap<ElementEx, ElementEx>();
 		this.proxyMap.clear();

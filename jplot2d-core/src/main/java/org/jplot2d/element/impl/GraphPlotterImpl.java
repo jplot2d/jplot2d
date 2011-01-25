@@ -25,7 +25,7 @@ import java.awt.geom.Rectangle2D;
  * @author Jingjing Li
  * 
  */
-public abstract class LayerDataPlotImpl extends ComponentImpl implements
+public abstract class GraphPlotterImpl extends ComponentImpl implements
 		GraphPlotterEx {
 
 	public LayerEx getParent() {

@@ -42,7 +42,7 @@ import org.jplot2d.util.SymbolShape;
  * @author Jingjing Li
  * 
  */
-public class XYGraphPlotterImpl extends LayerDataPlotImpl implements
+public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		XYGraphPlotterEx {
 
 	/**
@@ -187,8 +187,9 @@ public class XYGraphPlotterImpl extends LayerDataPlotImpl implements
 		this.fillClosureType = type;
 	}
 
-	public void copyFrom(ComponentEx src, Map<ElementEx, ElementEx> orig2copyMap) {
-		super.copyFrom(src, orig2copyMap);
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
 
 		XYGraphPlotterImpl dp = (XYGraphPlotterImpl) src;
 
@@ -245,8 +246,8 @@ public class XYGraphPlotterImpl extends LayerDataPlotImpl implements
 
 		double scale = getParent().getPhysicalTransform().getScale();
 
-		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker.getInstance(this,
-				g.getClipBounds());
+		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker
+				.getInstance(this, g.getClipBounds());
 
 		for (ChunkData data : chunker) {
 			if (Thread.interrupted()) {
