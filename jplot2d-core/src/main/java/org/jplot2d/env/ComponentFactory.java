@@ -25,6 +25,7 @@ import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.Element;
 import org.jplot2d.element.SubplotMargin;
 import org.jplot2d.element.TextComponent;
 import org.jplot2d.element.AxisRangeManager;
@@ -36,6 +37,7 @@ import org.jplot2d.element.Subplot;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
+import org.jplot2d.element.impl.AxisRangeManagerEx;
 import org.jplot2d.element.impl.AxisTickEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
@@ -54,30 +56,60 @@ import org.jplot2d.element.impl.XYGraphPlotterImpl;
  */
 public class ComponentFactory {
 
-	private static ComponentFactory instance = new ComponentFactory(false);
+	private static ComponentFactory instance = new ComponentFactory(false, null);
 
 	private static ComponentFactory threadSafeInstance = new ComponentFactory(
-			true);
+			true, null);
 
+	/**
+	 * Returns an instance of ComponentFactory. All component created by this
+	 * factory are not thread-safe.
+	 * 
+	 * @return an instance of ComponentFactory
+	 */
 	public static ComponentFactory getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Returns an instance of ComponentFactory. All component created by this
+	 * factory are thread-safe.
+	 * 
+	 * @return an instance of ComponentFactory
+	 */
 	public static ComponentFactory getThreadSafeInstance() {
 		return threadSafeInstance;
 	}
 
+	/**
+	 * Returns an instance of ComponentFactory which is configured by profile.
+	 * All component created by this factory are not thread-safe.
+	 * 
+	 * @param profile
+	 * @return an instance of ComponentFactory
+	 */
+	public static ComponentFactory getInstance(Profile profile) {
+		return new ComponentFactory(false, profile);
+	}
+
+	/**
+	 * Returns an instance of ComponentFactory which is configured by profile.
+	 * All component created by this factory are thread-safe.
+	 * 
+	 * @param profile
+	 * @return an instance of ComponentFactory
+	 */
+	public static ComponentFactory getThreadSafeInstance(Profile profile) {
+		return new ComponentFactory(true, profile);
+	}
+
 	private final boolean threadSafe;
 
-	// TODO : parameterized
-	// public static ComponentFactory getInstance(Profile profile) {
-	// return instance;
-	// }
+	private final Profile profile;
 
-	// FIXME: sub-element
-
-	private ComponentFactory(boolean threadSafe) {
+	private ComponentFactory(boolean threadSafe, Profile profile) {
 		this.threadSafe = threadSafe;
+		this.profile = profile;
 	}
 
 	/**
@@ -97,8 +129,16 @@ public class ComponentFactory {
 		env.end();
 	}
 
+	private void applyProfile(Element element) {
+		if (profile != null) {
+			profile.applyTo(element);
+		}
+
+	}
+
 	public Plot createPlot() {
 		PlotImpl impl = new PlotImpl();
+		applyProfile(impl);
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
 		Plot proxy = (Plot) Proxy.newProxyInstance(Plot.class.getClassLoader(),
 				new Class[] { Plot.class, ElementAddition.class }, ih);
@@ -109,6 +149,7 @@ public class ComponentFactory {
 
 	public Subplot createSubplot() {
 		SubplotImpl impl = new SubplotImpl();
+		applyProfile(impl);
 		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
 		Subplot proxy = (Subplot) Proxy.newProxyInstance(
 				Subplot.class.getClassLoader(), new Class[] { Subplot.class,
@@ -151,6 +192,7 @@ public class ComponentFactory {
 
 	public Layer createLayer() {
 		LayerImpl impl = new LayerImpl();
+		applyProfile(impl);
 		ElementIH<Layer> ih = new ElementIH<Layer>(impl, Layer.class);
 		Layer proxy = (Layer) Proxy.newProxyInstance(
 				Layer.class.getClassLoader(), new Class[] { Layer.class,
@@ -162,6 +204,7 @@ public class ComponentFactory {
 
 	public XYGraphPlotter createXYGraphPlotter() {
 		XYGraphPlotterImpl impl = new XYGraphPlotterImpl();
+		applyProfile(impl);
 		ElementIH<XYGraphPlotter> ih = new ElementIH<XYGraphPlotter>(impl,
 				XYGraphPlotter.class);
 		XYGraphPlotter proxy = (XYGraphPlotter) Proxy.newProxyInstance(
@@ -180,6 +223,8 @@ public class ComponentFactory {
 	public AxisRangeManager createAxisRangeManager() {
 		AxisRangeManagerImpl va = new AxisRangeManagerImpl();
 		AxisLockGroupImpl group = new AxisLockGroupImpl();
+		applyProfile(va);
+		applyProfile(group);
 		va.setLockGroup(group);
 
 		ElementIH<AxisRangeManager> vaIH = new ElementIH<AxisRangeManager>(va,
@@ -226,39 +271,18 @@ public class ComponentFactory {
 	 */
 	public Axis[] createAxes(int n) {
 
+		AxisRangeManager rm = createAxisRangeManager();
+		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
+		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm)
+				.getImpl();
+
 		Axis[] result = new Axis[n];
-
-		AxisRangeManagerImpl va = new AxisRangeManagerImpl();
-		AxisLockGroupImpl group = new AxisLockGroupImpl();
-		va.setLockGroup(group);
-
-		ElementIH<AxisRangeManager> vaIH = new ElementIH<AxisRangeManager>(va,
-				AxisRangeManager.class);
-		AxisRangeManager vaProxy = (AxisRangeManager) Proxy.newProxyInstance(
-				AxisRangeManager.class.getClassLoader(), new Class[] {
-						AxisRangeManager.class, ElementAddition.class }, vaIH);
-
-		ElementIH<AxisLockGroup> groupIH = new ElementIH<AxisLockGroup>(group,
-				AxisLockGroup.class);
-		AxisLockGroup groupProxy = (AxisLockGroup) Proxy.newProxyInstance(
-				AxisLockGroup.class.getClassLoader(), new Class[] {
-						AxisLockGroup.class, ElementAddition.class }, groupIH);
-
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
-
-		synchronized (Environment.getGlobalLock()) {
-			((ElementAddition) vaProxy).setEnvironment(env);
-			((ElementAddition) groupProxy).setEnvironment(env);
-		}
-		env.registerElement(va, vaProxy);
-		env.registerElement(group, groupProxy);
 
 		// add axis
 		for (int i = 0; i < n; i++) {
 			// this create tick and title inside
 			AxisImpl axis = new AxisImpl();
-			axis.setRangeManager(va);
+			axis.setRangeManager(rme);
 
 			ElementIH<Axis> axisIH = new ElementIH<Axis>(axis, Axis.class);
 			Axis axisProxy = (Axis) Proxy.newProxyInstance(
@@ -310,6 +334,7 @@ public class ComponentFactory {
 	 */
 	public AxisLockGroup createAxisLockGroup() {
 		AxisLockGroupImpl impl = new AxisLockGroupImpl();
+		applyProfile(impl);
 		ElementIH<AxisLockGroup> ih = new ElementIH<AxisLockGroup>(impl,
 				AxisLockGroup.class);
 		AxisLockGroup proxy = (AxisLockGroup) Proxy.newProxyInstance(
