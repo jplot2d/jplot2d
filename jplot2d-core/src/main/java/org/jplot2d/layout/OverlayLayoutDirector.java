@@ -18,8 +18,6 @@
  */
 package org.jplot2d.layout;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.util.Insets2D;
 
@@ -82,7 +80,7 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 			double spbH = baseH - spacingT - spacingB;
 
 			// locate subplot
-			sp.setLocation(new Point2D.Double(spbX, spbY));
+			sp.setLocation(spbX, spbY);
 			sp.setSize(spbW, spbH);
 		}
 

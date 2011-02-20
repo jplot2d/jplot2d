@@ -25,6 +25,7 @@ import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.SubplotMargin;
 import org.jplot2d.element.TextComponent;
@@ -39,6 +40,7 @@ import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
 import org.jplot2d.element.impl.AxisTickEx;
+import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.PlotImpl;
@@ -296,13 +298,12 @@ public class ComponentFactory {
 					AxisTick.class.getClassLoader(), new Class[] {
 							AxisTick.class, ElementAddition.class }, tickIH);
 
-			TextComponentEx title = axis.getTitle();
-			ElementIH<TextComponent> titleIH = new ElementIH<TextComponent>(
-					title, TextComponent.class);
-			TextComponent titleProxy = (TextComponent) Proxy.newProxyInstance(
-					TextComponent.class.getClassLoader(), new Class[] {
-							TextComponent.class, ElementAddition.class },
-					titleIH);
+			AxisTitleEx title = axis.getTitle();
+			ElementIH<AxisTitle> titleIH = new ElementIH<AxisTitle>(title,
+					AxisTitle.class);
+			AxisTitle titleProxy = (AxisTitle) Proxy.newProxyInstance(
+					AxisTitle.class.getClassLoader(), new Class[] {
+							AxisTitle.class, ElementAddition.class }, titleIH);
 
 			if (i % 2 == 1) {
 				axis.setPosition(AxisPosition.POSITIVE_SIDE);
@@ -315,10 +316,6 @@ public class ComponentFactory {
 			}
 			env.registerComponent(axis, axisProxy);
 			env.registerElement(tick, tickProxy);
-			/*
-			 * register the title as an element, the axis take the
-			 * responsibility to draw the title
-			 */
 			env.registerElement(title, titleProxy);
 
 			result[i] = axisProxy;

@@ -19,7 +19,6 @@
 package org.jplot2d.layout;
 
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.Map;
 
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.impl.AxisEx;
-import org.jplot2d.element.impl.LayerEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.util.DoubleDimension2D;
@@ -106,7 +104,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		subplot.setContentBounds(contentRect);
 		locateAxes(subplot, contentRect, ais);
-		locateLayers(subplot, contentRect);
 	}
 
 	protected static AxesInSubplot getAllAxes(SubplotEx subplot) {
@@ -265,13 +262,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				am.setLocation(iabLeft, yloc);
 				yloc += am.getAsc();
 			}
-		}
-	}
-
-	private static void locateLayers(SubplotEx subplot, Rectangle2D contentBox) {
-		for (LayerEx layer : subplot.getLayers()) {
-			layer.setLocation(new Point2D.Double(contentBox.getX(), contentBox
-					.getY()));
 		}
 	}
 

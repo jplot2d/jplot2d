@@ -42,7 +42,7 @@ public class AxisTest {
 	public void testCreateAxis() {
 		Axis axis = factory.createAxis();
 		AxisTick tick = axis.getTick();
-		TextComponent title = axis.getTitle();
+		AxisTitle title = axis.getTitle();
 		AxisRangeManager arm = axis.getRangeManager();
 		AxisLockGroup group = arm.getLockGroup();
 		assertTrue(axis instanceof ElementAddition);

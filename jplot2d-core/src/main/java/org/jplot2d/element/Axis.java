@@ -238,6 +238,6 @@ public interface Axis extends Container {
 	 * @return the title of this axis
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public TextComponent getTitle();
+	public AxisTitle getTitle();
 
 }

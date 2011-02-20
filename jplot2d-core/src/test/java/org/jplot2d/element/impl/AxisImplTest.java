@@ -40,7 +40,7 @@ public class AxisImplTest {
 	@Test
 	public void testTicknessX() {
 		AxisImpl axis = new AxisImpl(mock(AxisTickEx.class),
-				new TextComponentImpl());
+				new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.HORIZONTAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
@@ -75,7 +75,7 @@ public class AxisImplTest {
 	@Test
 	public void testTicknessY() {
 		AxisImpl axis = new AxisImpl(mock(AxisTickEx.class),
-				new TextComponentImpl());
+				new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.VERTICAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);

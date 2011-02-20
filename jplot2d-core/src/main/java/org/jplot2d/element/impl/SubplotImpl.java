@@ -20,6 +20,7 @@ package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +43,8 @@ import org.jplot2d.util.DoubleDimension2D;
  * 
  */
 public class SubplotImpl extends ContainerImpl implements SubplotEx {
+
+	private double locX, locY;
 
 	protected double width, height;
 
@@ -111,9 +114,18 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		return result;
 	}
 
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
+	}
+
+	public final void setLocation(Point2D p) {
+		setLocation(p.getX(), p.getY());
+	}
+
 	public void setLocation(double locX, double locY) {
 		if (getLocation().getX() != locX || getLocation().getY() != locY) {
-			super.setLocation(locX, locY);
+			this.locX = locX;
+			this.locY = locY;
 			pxf = null;
 			redraw();
 		}
@@ -274,7 +286,15 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			throw new IllegalArgumentException("Size must be positive, "
 					+ width + "x" + height + " is invalid.");
 		}
+		if (bounds.equals(this.contentBounds)) {
+			return;
+		}
+
 		this.contentBounds = bounds;
+
+		for (LayerEx layer : getLayers()) {
+			layer.updateLocation();
+		}
 	}
 
 	public Layer getLayer(int index) {
@@ -529,6 +549,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		super.copyFrom(src);
 
 		SubplotImpl sp = (SubplotImpl) src;
+		locX = sp.locX;
+		locY = sp.locY;
 		width = sp.width;
 		height = sp.height;
 		valid = sp.valid;

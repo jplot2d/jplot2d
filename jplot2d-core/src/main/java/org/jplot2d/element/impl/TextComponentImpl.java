@@ -38,6 +38,8 @@ import org.jplot2d.util.TeXMathUtils;
  */
 public class TextComponentImpl extends ComponentImpl implements TextComponentEx {
 
+	private double locX, locY;
+
 	private MathElement textModel;
 
 	private HAlign hAlign;
@@ -51,6 +53,21 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	public TextComponentImpl() {
 		hAlign = HAlign.CENTER;
 		vAlign = VAlign.MIDDLE;
+	}
+
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
+	}
+
+	public final void setLocation(Point2D p) {
+		setLocation(p.getX(), p.getY());
+	}
+
+	public void setLocation(double locX, double locY) {
+		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+			this.locX = locX;
+			this.locY = locY;
+		}
 	}
 
 	public void setFont(Font font) {
@@ -138,6 +155,8 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 		super.copyFrom(src);
 
 		TextComponentImpl tc = (TextComponentImpl) src;
+		locX = tc.locX;
+		locY = tc.locY;
 		this.textModel = tc.textModel;
 		this.hAlign = tc.hAlign;
 		this.vAlign = tc.vAlign;

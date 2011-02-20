@@ -11,6 +11,17 @@ public interface AxisEx extends Axis, ContainerEx {
 
 	public AxisTickEx getTick();
 
+	/**
+	 * Moves this plot component to a new location. The origin of the new
+	 * location is specified by point <code>p</code>. Point2D <code>p</code> is
+	 * given in the parent's physical coordinate space.
+	 * 
+	 * @param p
+	 *            the point defining the origin of the new location, given in
+	 *            the coordinate space of this component's parent
+	 */
+	public void setLocation(double locX, double locY);
+
 	public void setOrientation(AxisOrientation orientation);
 
 	/**
@@ -51,6 +62,8 @@ public interface AxisEx extends Axis, ContainerEx {
 	 * Calculate ticks when tick calculation is needed.
 	 */
 	public void calcTicks();
+
+	public void invalidateThickness();
 
 	/**
 	 * This method is used to calculate asc and desc of this axis. If the the
