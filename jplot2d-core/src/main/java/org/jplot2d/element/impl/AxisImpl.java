@@ -73,7 +73,11 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private AxisTickEx tick;
 
-	private TextComponentEx title;
+	private AxisTitleEx title;
+
+	private double locX, locY;
+
+	private boolean titleVisible = true;
 
 	private AxisOrientation orientation;
 
@@ -126,11 +130,11 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		tick.setParent(this);
 		tick.setTickAlgorithm(LinearTickAlgorithm.getInstance());
 
-		title = new TextComponentImpl();
+		title = new AxisTitleImpl();
 		title.setParent(this);
 	}
 
-	protected AxisImpl(AxisTickEx tick, TextComponentEx title) {
+	protected AxisImpl(AxisTickEx tick, AxisTitleEx title) {
 		this.tick = tick;
 		this.title = title;
 	}
@@ -163,6 +167,17 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		}
 
 		return result;
+	}
+
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
+	}
+
+	public void setLocation(double locX, double locY) {
+		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+			this.locX = locX;
+			this.locY = locY;
+		}
 	}
 
 	public AxisOrientation getOrientation() {
@@ -228,8 +243,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * Invalidate the subplot.
 	 */
 	private void invalidate() {
-		if (getParent() != null && getParent().getParent() != null) {
-			getParent().getParent().invalidate();
+		if (getParent() != null) {
+			getParent().invalidate();
 		}
 	}
 
@@ -403,8 +418,18 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return tick;
 	}
 
-	public TextComponentEx getTitle() {
+	public AxisTitleEx getTitle() {
 		return title;
+	}
+
+	public boolean isTitleVisible() {
+		return titleVisible;
+	}
+
+	public void setTitleVisible(boolean visible) {
+		this.titleVisible = visible;
+		invalidateThickness();
+		redraw();
 	}
 
 	public double getThickness() {
@@ -429,7 +454,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	 * Mark the thickness is invalid. Changing tick height, label strings label
 	 * font or orientation will call this method
 	 */
-	protected void invalidateThickness() {
+	public void invalidateThickness() {
 		thicknessCalculationNeeded = true;
 	}
 
@@ -484,15 +509,18 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			}
 		}
 
-		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
-			double titleHeight = getTitle().getBounds().getHeight();
+		if (titleVisible && getTitle().getTextModel() != null) {
 			if (isTitleAscSide()) {
-				titleOffset = ba + titleHeight * TITLE_GAP_RATIO;
 				titleVAlign = VAlign.BOTTOM;
+				getTitle().setVAlign(titleVAlign);
+				double titleHeight = getTitle().getSize().getHeight();
+				titleOffset = ba + titleHeight * TITLE_GAP_RATIO;
 				ba = titleOffset + titleHeight;
 			} else {
-				titleOffset = -bd - titleHeight * TITLE_GAP_RATIO;
 				titleVAlign = VAlign.TOP;
+				getTitle().setVAlign(titleVAlign);
+				double titleHeight = getTitle().getSize().getHeight();
+				titleOffset = -bd - titleHeight * TITLE_GAP_RATIO;
 				bd = -titleOffset + titleHeight;
 			}
 		}
@@ -590,7 +618,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisImpl result = new AxisImpl(
 				((AxisTickEx) tick.copyStructure(orig2copyMap)),
-				(TextComponentEx) title.copyStructure(orig2copyMap));
+				(AxisTitleEx) title.copyStructure(orig2copyMap));
 		result.tick.setParent(result);
 		result.title.setParent(result);
 
@@ -601,7 +629,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		AxisRangeManagerEx armCopy = (AxisRangeManagerEx) orig2copyMap
 				.get(rangeManager);
 		if (armCopy == null) {
-			armCopy = (AxisRangeManagerEx) rangeManager.copyStructure(orig2copyMap);
+			armCopy = (AxisRangeManagerEx) rangeManager
+					.copyStructure(orig2copyMap);
 		}
 		result.rangeManager = armCopy;
 		armCopy.addAxis(result);
@@ -615,6 +644,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		super.copyFrom(src);
 
 		AxisImpl axis = (AxisImpl) src;
+		locX = axis.locX;
+		locY = axis.locY;
 		this.orientation = axis.orientation;
 		this.offset = axis.offset;
 		this.length = axis.length;
@@ -646,7 +677,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			drawLabels(g, labelVAlign, labelHAlign);
 		}
 
-		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
+		if (titleVisible && getTitle().getTextModel() != null) {
 			drawTitle(graphics);
 		}
 
@@ -757,15 +788,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	private void drawTitle(Graphics2D g) {
-		TextComponentEx title = getTitle();
-
-		double xt = getLength() * 0.5;
-		title.setLocation(new Point2D.Double(xt, titleOffset));
-		title.setHAlign(HAlign.CENTER);
-		title.setVAlign(titleVAlign);
-
-		title.draw(g);
-
+		double x = getLength() * 0.5;
+		getTitle().draw(g, x, titleOffset);
 	}
 
 	private void drawXTic(Graphics2D g, double xp, double ticHeight) {

@@ -20,6 +20,7 @@ package org.jplot2d.env;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.impl.ComponentImpl;
@@ -31,6 +32,10 @@ import org.jplot2d.element.impl.ComponentImpl;
  * 
  */
 public class ComponentStub extends ComponentImpl {
+
+	public Point2D getLocation() {
+		return null;
+	}
 
 	public Dimension2D getSize() {
 		return null;

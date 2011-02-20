@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
@@ -51,8 +50,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	private float fontSize = Float.NaN;
 
 	private float fontScale = 1;
-
-	private double locX, locY;
 
 	protected PropertyChangeSupport _changes = new PropertyChangeSupport(this);
 
@@ -129,14 +126,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		this.color = color;
 	}
 
-	public String getFontName() {
-		return fontName;
-	}
-
-	public void setFontName(String name) {
-		fontName = name;
-	}
-
 	public Color getEffectiveColor() {
 		if (color != null) {
 			return color;
@@ -145,6 +134,14 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		} else {
 			return null;
 		}
+	}
+
+	public String getFontName() {
+		return fontName;
+	}
+
+	public void setFontName(String name) {
+		fontName = name;
 	}
 
 	public int getFontStyle() {
@@ -219,19 +216,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 				(int) size).deriveFont(size);
 	}
 
-	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
-	}
-
-	public final void setLocation(Point2D p) {
-		setLocation(p.getX(), p.getY());
-	}
-
-	public void setLocation(double locX, double locY) {
-		this.locX = locX;
-		this.locY = locY;
-	}
-
 	public void redraw() {
 		if (cacheable) {
 			redrawNeeded = true;
@@ -268,8 +252,6 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		fontStyle = comp.fontStyle;
 		fontSize = comp.fontSize;
 		fontScale = comp.fontScale;
-		locX = comp.locX;
-		locY = comp.locY;
 		redrawNeeded = comp.redrawNeeded;
 	}
 

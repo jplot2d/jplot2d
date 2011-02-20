@@ -19,6 +19,7 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,16 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return super.getMooringMap();
 	}
 
-	public void setLocation(double locX, double locY) {
-		super.setLocation(locX, locY);
+	public Point2D getLocation() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			Rectangle2D rect = getParent().getContentBounds();
+			return new Point2D.Double(rect.getX(), rect.getY());
+		}
+	}
+
+	public void updateLocation() {
 		pxf = null;
 		redraw();
 	}

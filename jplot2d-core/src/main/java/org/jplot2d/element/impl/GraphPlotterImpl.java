@@ -19,6 +19,7 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -28,8 +29,18 @@ import java.awt.geom.Rectangle2D;
 public abstract class GraphPlotterImpl extends ComponentImpl implements
 		GraphPlotterEx {
 
+	private static Point2D LOCATION = new Point2D.Double();
+
 	public LayerEx getParent() {
 		return (LayerEx) super.getParent();
+	}
+
+	public Point2D getLocation() {
+		return LOCATION;
+	}
+
+	public void setLocation(double locX, double locY) {
+		throw new UnsupportedOperationException();
 	}
 
 	public Dimension2D getSize() {

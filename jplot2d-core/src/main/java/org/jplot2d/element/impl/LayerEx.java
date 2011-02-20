@@ -14,4 +14,9 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public void parentPhysicalTransformChanged();
 
+	/**
+	 * notify from its parent subplot that this layer's location is changed.
+	 */
+	public void updateLocation();
+
 }

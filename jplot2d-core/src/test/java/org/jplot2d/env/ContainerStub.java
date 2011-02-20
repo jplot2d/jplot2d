@@ -19,6 +19,7 @@
 package org.jplot2d.env;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.PhysicalTransform;
@@ -33,6 +34,10 @@ import org.jplot2d.element.impl.ContainerImpl;
 public class ContainerStub extends ContainerImpl {
 
 	public PhysicalTransform getPhysicalTransform() {
+		return null;
+	}
+
+	public Point2D getLocation() {
 		return null;
 	}
 
