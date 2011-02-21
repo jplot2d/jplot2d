@@ -159,4 +159,13 @@ public class PhysicalTransform implements Cloneable {
 		return af;
 	}
 
+	public String toString() {
+		if (theta == 0) {
+			return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ")";
+		} else {
+			return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ","
+					+ theta + ")";
+		}
+	}
+
 }
