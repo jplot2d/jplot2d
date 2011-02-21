@@ -279,6 +279,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setLength(double length) {
 		if (this.length != length) {
 			this.length = length;
+			if (rangeManager.getLockGroup().isAutoRange()) {
+				rangeManager.getLockGroup().reAutoRange();
+			}
 		}
 	}
 

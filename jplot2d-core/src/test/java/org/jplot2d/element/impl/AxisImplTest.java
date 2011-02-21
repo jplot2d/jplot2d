@@ -115,4 +115,18 @@ public class AxisImplTest {
 		checkDouble(axis.getAsc(), 8.0);
 		checkDouble(axis.getDesc(), 28.576171875);
 	}
+
+	@Test
+	public void testSetLength() {
+		AxisEx axis = new AxisImpl();
+		AxisRangeManagerEx arm = new AxisRangeManagerImpl();
+		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		when(alg.isAutoRange()).thenReturn(true);
+		axis.setRangeManager(arm);
+		arm.setLockGroup(alg);
+
+		verify(alg, times(0)).reAutoRange();
+		axis.setLength(100);
+		verify(alg, times(1)).reAutoRange();
+	}
 }
