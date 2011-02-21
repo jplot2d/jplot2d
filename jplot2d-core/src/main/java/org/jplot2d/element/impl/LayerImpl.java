@@ -98,9 +98,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
-		if (pxf == null) {
-			pxf = getParent().getPhysicalTransform().translate(
-					getLocation().getX(), getLocation().getY());
+		if (pxf == null && getParent() != null) {
+			Rectangle2D rect = getParent().getContentBounds();
+			pxf = getParent().getPhysicalTransform().translate(rect.getX(),
+					rect.getY());
 		}
 		return pxf;
 	}

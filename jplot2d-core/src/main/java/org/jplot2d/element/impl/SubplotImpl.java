@@ -72,13 +72,13 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	 */
 	private Dimension2D preferredContentSize = new DoubleDimension2D(320, 240);
 
-	private final List<LayerEx> layers = new ArrayList<LayerEx>();
+	private Rectangle2D contentBounds;
 
 	private final List<AxisEx> xAxis = new ArrayList<AxisEx>();
 
 	private final List<AxisEx> yAxis = new ArrayList<AxisEx>();
 
-	private Rectangle2D contentBounds;
+	protected final List<LayerEx> layers = new ArrayList<LayerEx>();
 
 	protected final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
 

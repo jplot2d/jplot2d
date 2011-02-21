@@ -118,6 +118,10 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		pxf = null;
 		redraw();
 
+		// notify all layers
+		for (LayerEx layer : layers) {
+			layer.parentPhysicalTransformChanged();
+		}
 		// notify all subplots
 		for (SubplotEx sp : subplots) {
 			sp.parentPhysicalTransformChanged();
