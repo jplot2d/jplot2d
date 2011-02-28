@@ -22,16 +22,16 @@
 package org.jplot2d.layout;
 
 /**
- * Constraint for grid layout.
+ * The constraint defines the x,y indexes in the grid of grid layout.
  * 
  * @author Jingjing Li
  * 
  */
-public class SubPlotGridConstraints {
+public class GridConstraint {
 
 	private final int x, y;
 
-	public SubPlotGridConstraints(int gridx, int gridy) {
+	public GridConstraint(int gridx, int gridy) {
 		this.x = gridx;
 		this.y = gridy;
 	}
@@ -45,8 +45,8 @@ public class SubPlotGridConstraints {
 	}
 
 	public boolean equals(Object obj) {
-		if (obj instanceof SubPlotGridConstraints) {
-			SubPlotGridConstraints spgc = (SubPlotGridConstraints) obj;
+		if (obj instanceof GridConstraint) {
+			GridConstraint spgc = (GridConstraint) obj;
 			return (x == spgc.x) && (y == spgc.y);
 		}
 		return false;
