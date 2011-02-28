@@ -18,7 +18,6 @@
  */
 package org.jplot2d.layout;
 
-import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 
 /**
- * The space are distributed to subplots according to ratio of
+ * The space are distributed to subplots according to ratio of their
  * preferedContentSize.
  * 
  * @author Jingjing Li
@@ -41,6 +40,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 	private final double hgap = 0;
 
 	private final double vgap = 0;
+
+	private Map<SubplotEx, GridCellGeom> subplotsPreferredContentsGeomMap = new HashMap<SubplotEx, GridCellGeom>();
+
+	private Map<SubplotEx, GridCellInsets> subplotsMarginGeomMap = new HashMap<SubplotEx, GridCellInsets>();
 
 	protected static Map<SubplotEx, AxesInSubplot> getSubplotAxisMap(
 			SubplotEx[] subplots) {
@@ -59,12 +62,197 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		return glaMap;
 	}
 
+	public void invalidateLayout(SubplotEx subplot) {
+		subplotsPreferredContentsGeomMap.remove(subplot);
+		subplotsMarginGeomMap.remove(subplot);
+	}
+
+	public void layout(SubplotEx subplot) {
+
+		super.layout(subplot);
+
+		GridCellGeom contGeom = getSubplotsPreferredContentsGeom(subplot);
+		GridCellInsets marginGeom = getSubplotsMarginGeom(subplot);
+
+		// calculate contents size factor of subplots.
+		Dimension2D scsFactor = calcSubplotContentFactor(subplot, marginGeom);
+
+		TreeMap<Integer, Double> cellWidthMap = new TreeMap<Integer, Double>();
+		TreeMap<Integer, Double> cellHeightMap = new TreeMap<Integer, Double>();
+
+		for (SubplotEx sp : subplot.getSubplots()) {
+			GridConstraint grid = (GridConstraint) getConstraint(sp);
+			int col = (grid == null) ? 0 : grid.getGridX();
+			int row = (grid == null) ? 0 : grid.getGridY();
+
+			double contWidth = scsFactor.getWidth() * contGeom.getWidth(col);
+			double contHeight = scsFactor.getHeight() * contGeom.getHeight(row);
+
+			/*
+			 * impose viewport constraint on its children.
+			 */
+			sp.setContentConstrant(new Rectangle2D.Double(marginGeom
+					.getLeft(col), marginGeom.getBottom(row), contWidth,
+					contHeight));
+
+			double cw = marginGeom.getLeft(col) + contWidth
+					+ marginGeom.getRight(col);
+			double ch = marginGeom.getTop(row) + contHeight
+					+ marginGeom.getBottom(row);
+
+			if (cellWidthMap.get(col) == null || cellWidthMap.get(col) < cw) {
+				cellWidthMap.put(col, cw);
+			}
+			if (cellHeightMap.get(row) == null || cellHeightMap.get(row) < ch) {
+				cellHeightMap.put(row, ch);
+			}
+		}
+
+		GridCellGeom cellGeom = new GridCellGeom(cellWidthMap, cellHeightMap);
+
+		Rectangle2D cbnds = subplot.getContentBounds();
+		for (SubplotEx sp : subplot.getSubplots()) {
+			GridConstraint grid = (GridConstraint) getConstraint(sp);
+			int col = (grid == null) ? 0 : grid.getGridX();
+			int row = (grid == null) ? 0 : grid.getGridY();
+
+			// the physical bottom-left of a grid in chart(root layer)
+			double cws = cellGeom.getSumWidthLeft(col);
+			double chs = cellGeom.getSumHeightTop(row);
+			double pX = cbnds.getX() + cws + col * hgap;
+			double pY = cbnds.getY() + cbnds.getHeight() - chs
+					- cellGeom.getHeight(row) - row * vgap;
+
+			sp.setLocation(pX, pY);
+			sp.setSize(cellGeom.getWidth(col), cellGeom.getHeight(row));
+		}
+
+	}
+
 	/**
-	 * calculate max padding (from grid bounds to data area bounds)
+	 * calculate cell size by contents size, grid size and gap.
 	 * 
-	 * @return the max padding
+	 * @param ctsSize
+	 * @param gridSize
+	 * @param padding
+	 * @param hgap
+	 * @param vgap
+	 * @return contents size factor
 	 */
-	protected GridCellInsets calcMaxPadding(Map<SubplotEx, AxesInSubplot> saMap) {
+	private Dimension2D calcSubplotContentFactor(SubplotEx subplot,
+			GridCellInsets padding) {
+
+		double ctsWidth = subplot.getContentBounds().getWidth();
+		double ctsHeight = subplot.getContentBounds().getHeight();
+
+		GridCellGeom contGeom = getSubplotsPreferredContentsGeom(subplot);
+
+		double sumWeightX = contGeom.getSumWidth();
+		double sumWeightY = contGeom.getSumHeight();
+
+		double xn = contGeom.getColNum();
+		double yn = contGeom.getRowNum();
+
+		double sumXpad = padding.getSumWidth();
+		double sumYpad = padding.getSumHeight();
+
+		double xfactor, yfactor;
+		if (xn == 0 || yn == 0) {
+			xfactor = ctsWidth;
+			yfactor = ctsHeight;
+		} else {
+			xfactor = (ctsWidth - sumXpad - hgap * (xn - 1)) / sumWeightX;
+			yfactor = (ctsHeight - sumYpad - vgap * (yn - 1)) / sumWeightY;
+		}
+
+		return new DoubleDimension2D(xfactor, yfactor);
+	}
+
+	public Dimension2D getPreferredContentSize(SubplotEx subplot) {
+		GridCellGeom contentGeom = getSubplotsPreferredContentsGeom(subplot);
+		GridCellInsets marginGeom = getSubplotsMarginGeom(subplot);
+
+		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
+		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
+		for (SubplotEx sp : subplot.getSubplots()) {
+			GridConstraint grid = (GridConstraint) getConstraint(sp);
+			int col = (grid == null) ? 0 : grid.getGridX();
+			int row = (grid == null) ? 0 : grid.getGridY();
+			double width = contentGeom.getWidth(col) + marginGeom.getLeft(col)
+					+ marginGeom.getRight(col);
+			double Height = contentGeom.getHeight(row) + marginGeom.getTop(row)
+					+ marginGeom.getBottom(row);
+			if (colWidthMap.get(col) == null || colWidthMap.get(col) < width) {
+				colWidthMap.put(col, width);
+			}
+			if (rowHeightMap.get(row) == null || rowHeightMap.get(row) < Height) {
+				rowHeightMap.put(row, Height);
+			}
+		}
+
+		GridCellGeom geom = new GridCellGeom(colWidthMap, rowHeightMap);
+		double width = geom.getSumWidth();
+		double height = geom.getSumHeight();
+		Dimension2D spcs = subplot.getPreferredContentSize();
+		if (spcs != null && width < spcs.getWidth()) {
+			width = spcs.getWidth();
+		}
+		if (spcs != null && height < spcs.getHeight()) {
+			height = spcs.getHeight();
+		}
+		return new DoubleDimension2D(width, height);
+	}
+
+	/**
+	 * Returns row width and column height of the subplots of the given subplot.
+	 * 
+	 * @param subplot
+	 * @return
+	 */
+	private GridCellGeom getSubplotsPreferredContentsGeom(SubplotEx subplot) {
+		if (subplotsPreferredContentsGeomMap.containsKey(subplot)) {
+			return subplotsPreferredContentsGeomMap.get(subplot);
+		}
+
+		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
+		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
+		for (SubplotEx sp : subplot.getSubplots()) {
+			GridConstraint grid = (GridConstraint) getConstraint(sp);
+			int col = (grid == null) ? 0 : grid.getGridX();
+			int row = (grid == null) ? 0 : grid.getGridY();
+			double width = 0;
+			double Height = 0;
+			Dimension2D contentSize = sp.getLayoutDirector()
+					.getPreferredContentSize(sp);
+			if (contentSize != null) {
+				width = contentSize.getWidth();
+				Height = contentSize.getHeight();
+			}
+			if (colWidthMap.get(col) == null || colWidthMap.get(col) < width) {
+				colWidthMap.put(col, width);
+			}
+			if (rowHeightMap.get(row) == null || rowHeightMap.get(row) < Height) {
+				rowHeightMap.put(row, Height);
+			}
+		}
+
+		GridCellGeom geom = new GridCellGeom(colWidthMap, rowHeightMap);
+		subplotsPreferredContentsGeomMap.put(subplot, geom);
+		return geom;
+	}
+
+	/**
+	 * calculate the max margin (from grid bounds to data area bounds)
+	 * 
+	 * @return the max margin
+	 */
+	private GridCellInsets getSubplotsMarginGeom(SubplotEx subplot) {
+		if (subplotsMarginGeomMap.containsKey(subplot)) {
+			return subplotsMarginGeomMap.get(subplot);
+		}
+
+		Map<SubplotEx, AxesInSubplot> saMap = getSubplotAxisMap(subplot
+				.getSubplots());
 
 		Map<Integer, Double> topPadding = new HashMap<Integer, Double>();
 		Map<Integer, Double> leftPadding = new HashMap<Integer, Double>();
@@ -74,7 +262,7 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		for (Map.Entry<SubplotEx, AxesInSubplot> me : saMap.entrySet()) {
 			SubplotEx sp = me.getKey();
 			AxesInSubplot ais = me.getValue();
-			SubPlotGridConstraints grid = (SubPlotGridConstraints) getConstraint(sp);
+			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
 
@@ -97,210 +285,11 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 				bottomPadding.put(row, padding.getBottom());
 			}
 		}
-		return new GridCellInsets(topPadding, leftPadding, bottomPadding,
-				rightPadding);
-	}
 
-	/**
-	 * Calculate cell geometry by adding plot size and cell padding.
-	 * 
-	 * @param subplots
-	 * @param plotSize
-	 * @param padding
-	 * @return
-	 */
-	protected GridCellGeom calcCellGeom(SubplotEx[] subplots,
-			Dimension2D plotSize, GridCellInsets padding) {
-		TreeMap<Integer, Double> cellWidthMap = new TreeMap<Integer, Double>();
-		TreeMap<Integer, Double> cellHeightMap = new TreeMap<Integer, Double>();
-
-		for (SubplotEx sp : subplots) {
-			SubPlotGridConstraints grid = (SubPlotGridConstraints) getConstraint(sp);
-			int col = (grid == null) ? 0 : grid.getGridX();
-			int row = (grid == null) ? 0 : grid.getGridY();
-			double weightx = 0;
-			double weighty = 0;
-			if (sp.getPreferredContentSize() != null) {
-				weightx = sp.getPreferredContentSize().getWidth();
-				weighty = sp.getPreferredContentSize().getHeight();
-			}
-
-			double cw = padding.getLeft(col) + plotSize.getWidth() * weightx
-					+ padding.getRight(col);
-			double ch = padding.getTop(row) + plotSize.getHeight() * weighty
-					+ padding.getBottom(row);
-
-			if (cellWidthMap.get(col) == null || cellWidthMap.get(col) < cw) {
-				cellWidthMap.put(col, cw);
-			}
-			if (cellHeightMap.get(row) == null || cellHeightMap.get(row) < ch) {
-				cellHeightMap.put(row, ch);
-			}
-		}
-
-		return new GridCellGeom(cellWidthMap, cellHeightMap);
-	}
-
-	/**
-	 * Locate every subplot by the bounds and scale information of
-	 * PlotLayoutDirector.
-	 * <p>
-	 * Note: we cannot locate the bounds only, the scale must be set to new
-	 * created subplot.
-	 * 
-	 * @param subplots
-	 * @param pld
-	 */
-	protected void locateSubPlots(SubplotEx[] subplots, Rectangle2D ctsBounds,
-			GridCellGeom cellGeom) {
-		for (SubplotEx sp : subplots) {
-			Rectangle2D sbp = getSubPlotBounds(sp, ctsBounds, cellGeom);
-			sp.setLocation(sbp.getX(), sbp.getY());
-			sp.setSize(sbp.getWidth(), sbp.getHeight());
-		}
-	}
-
-	/**
-	 * Returns the physical bounds of the given grid.
-	 * 
-	 * @param subplot
-	 * @return the physical bounds
-	 */
-	private Rectangle2D getSubPlotBounds(SubplotEx subplot,
-			Rectangle2D gcBounds, GridCellGeom cellGeom) {
-		SubPlotGridConstraints gc = (SubPlotGridConstraints) getConstraint(subplot);
-		if (gc == null) {
-			gc = new SubPlotGridConstraints(0, 0);
-		}
-		// the physical bottom-left of a grid in chart(root layer)
-		double cws = cellGeom.getSumWidthLeft(gc.getGridX());
-		double chs = cellGeom.getSumHeightTop(gc.getGridY());
-		double pX = gcBounds.getX() + cws + gc.getGridX() * hgap;
-		double pY = gcBounds.getY() + gcBounds.getHeight() - chs
-				- cellGeom.getHeight(gc.getGridY()) - gc.getGridY() * vgap;
-
-		return new Rectangle2D.Double(pX, pY, cellGeom.getWidth(gc.getGridX()),
-				cellGeom.getHeight(gc.getGridY()));
-
-	}
-
-	/**
-	 * Locate sub-elements in a subplot
-	 * 
-	 * @param subplots
-	 *            all subplots in grid
-	 * @param cscSize
-	 *            the common subplots content size
-	 * @param padding
-	 */
-	protected void layoutSubPlots(SubplotEx[] subplots, Dimension2D cscSize,
-			GridCellInsets padding) {
-
-		for (SubplotEx sp : subplots) {
-			SubPlotGridConstraints grid = (SubPlotGridConstraints) getConstraint(sp);
-			int col = (grid == null) ? 0 : grid.getGridX();
-			int row = (grid == null) ? 0 : grid.getGridY();
-			double weightx = 0;
-			double weighty = 0;
-			if (sp.getPreferredContentSize() != null) {
-				weightx = sp.getPreferredContentSize().getWidth();
-				weighty = sp.getPreferredContentSize().getHeight();
-			}
-
-			double portWidth = cscSize.getWidth() * weightx;
-			double portHeight = cscSize.getHeight() * weighty;
-
-			/*
-			 * impose viewport constraint on its children.
-			 */
-			sp.setContentConstrant(new Rectangle2D.Double(padding.getLeft(col),
-					padding.getBottom(row), portWidth, portHeight));
-
-		}
-	}
-
-	public void layout(SubplotEx subplot) {
-
-		super.layout(subplot);
-
-		Rectangle2D cbnds = subplot.getContentBounds();
-
-		SubplotEx[] subplots = subplot.getSubplots();
-		Map<SubplotEx, AxesInSubplot> glaMap = getSubplotAxisMap(subplots);
-
-		GridCellInsets padding = calcMaxPadding(glaMap);
-
-		Dimension2D ctsSize = new DoubleDimension2D(cbnds.getWidth(),
-				cbnds.getHeight());
-
-		// calculate contents size factor of subplots.
-		Dimension2D scsf = calcSubplotContentFactor(subplots, ctsSize, padding);
-		layoutSubPlots(subplots, scsf, padding);
-
-		GridCellGeom cellGeom = calcCellGeom(subplots, scsf, padding);
-		locateSubPlots(subplots, cbnds, cellGeom);
-
-	}
-
-	/**
-	 * calculate cell size by contents size, grid size and gap.
-	 * 
-	 * @param ctsSize
-	 * @param gridSize
-	 * @param padding
-	 * @param hgap
-	 * @param vgap
-	 * @return contents size factor
-	 */
-	private Dimension2D calcSubplotContentFactor(SubplotEx[] subplots,
-			Dimension2D ctsSize, GridCellInsets padding) {
-
-		Map<Integer, Double> weightxMap = new HashMap<Integer, Double>();
-		Map<Integer, Double> weightyMap = new HashMap<Integer, Double>();
-		for (SubplotEx sp : subplots) {
-			SubPlotGridConstraints grid = (SubPlotGridConstraints) getConstraint(sp);
-			int col = (grid == null) ? 0 : grid.getGridX();
-			int row = (grid == null) ? 0 : grid.getGridY();
-			double weightx = 0;
-			double weighty = 0;
-			if (sp.getPreferredContentSize() != null) {
-				weightx = sp.getPreferredContentSize().getWidth();
-				weighty = sp.getPreferredContentSize().getHeight();
-			}
-			if (weightxMap.get(col) == null || weightxMap.get(col) < weightx) {
-				weightxMap.put(col, weightx);
-			}
-			if (weightyMap.get(row) == null || weightyMap.get(row) < weighty) {
-				weightyMap.put(row, weighty);
-			}
-		}
-		double sumWeightX = 0;
-		double sumWeightY = 0;
-		for (Double wx : weightxMap.values()) {
-			sumWeightX += wx;
-		}
-		for (Double wy : weightyMap.values()) {
-			sumWeightY += wy;
-		}
-		Dimension gridDim = new Dimension(weightxMap.size(), weightyMap.size());
-
-		double sumXpad = padding.getSumWidth();
-		double sumYpad = padding.getSumHeight();
-
-		double plotWidth, plotHeight;
-		if (gridDim.width == 0 || gridDim.height == 0) {
-			plotWidth = ctsSize.getWidth();
-			plotHeight = ctsSize.getHeight();
-		} else {
-			plotWidth = (ctsSize.getWidth() - sumXpad - hgap
-					* (gridDim.width - 1))
-					/ sumWeightX;
-			plotHeight = (ctsSize.getHeight() - sumYpad - vgap
-					* (gridDim.height - 1))
-					/ sumWeightY;
-		}
-
-		return new DoubleDimension2D(plotWidth, plotHeight);
+		GridCellInsets insets = new GridCellInsets(topPadding, leftPadding,
+				bottomPadding, rightPadding);
+		subplotsMarginGeomMap.put(subplot, insets);
+		return insets;
 	}
 
 }

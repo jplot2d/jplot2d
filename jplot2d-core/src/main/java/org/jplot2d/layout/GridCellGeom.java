@@ -18,16 +18,17 @@
  */
 package org.jplot2d.layout;
 
+import java.util.Map;
 import java.util.SortedMap;
 
 public class GridCellGeom {
 
-	private final SortedMap<Integer, Double> colWidth, rowHeight;
+	private final Map<Integer, Double> colWidth, rowHeight;
 
 	private final double sumWidth, sumHeight;
 
-	public GridCellGeom(SortedMap<Integer, Double> colWidth,
-			SortedMap<Integer, Double> rowHeight) {
+	public GridCellGeom(Map<Integer, Double> colWidth,
+			Map<Integer, Double> rowHeight) {
 		this.colWidth = colWidth;
 		this.rowHeight = rowHeight;
 		double sw = 0, sh = 0;

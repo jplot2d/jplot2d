@@ -21,37 +21,45 @@ package org.jplot2d.layout;
 import org.jplot2d.util.Insets2D;
 
 /**
- * This constraint defines bounds relative to it's contaner's bounds.
+ * This constraint defines bounds relative to its contaner's bounds.
  * 
  * @author Jingjing Li
  * 
  */
 public class BoundsConstraint {
 
+	private static Insets2D ZERO_INSETS = new Insets2D(0, 0, 0, 0);
+
 	private final Insets2D fixedInsets;
 
 	private final Insets2D elasticInsets;
 
 	/**
+	 * Construct a BoundsConstraint with the 4 elastic gaps relative to its
+	 * contaner's bounds.
 	 * 
+	 * @param elasticTop
+	 *            the ratio of top gap, relative to its contaner's height
+	 * @param elasticLeft
+	 *            the ratio of left gap, relative to its contaner's width
+	 * @param elasticBottom
+	 *            the ratio of bottom gap, relative to its contaner's height
+	 * @param elasticRight
+	 *            the ratio of right gap, relative to its contaner's width
 	 */
-	public BoundsConstraint() {
-		this(new Insets2D(0, 0, 0, 0));
+	public BoundsConstraint(double elasticTop, double elasticLeft,
+			double elasticBottom, double elasticRight) {
+		this(ZERO_INSETS, new Insets2D(elasticTop, elasticLeft, elasticBottom,
+				elasticRight));
 	}
 
 	/**
+	 * Construct a BoundsConstraint with the fixed gaps and elastic gaps.
+	 * 
 	 * @param fixedMargin
-	 *            the fixed margin in pt
-	 */
-	public BoundsConstraint(Insets2D fixedInsets) {
-		this(fixedInsets, new Insets2D(0, 0, 0, 0));
-	}
-
-	/**
-	 * @param fixedMargin
-	 *            the fixed margin in pt
+	 *            the fixed gap in pt
 	 * @param elasticMargin
-	 *            the elastic margin ratio.
+	 *            the elastic gap ratio.
 	 */
 	public BoundsConstraint(Insets2D fixedInsets, Insets2D elasticInsets) {
 		this.fixedInsets = fixedInsets;

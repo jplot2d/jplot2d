@@ -85,4 +85,6 @@ public interface LayoutDirector {
 	 */
 	public Dimension2D getPreferredSize(SubplotEx subplot);
 
+	public Dimension2D getPreferredContentSize(SubplotEx subplot);
+
 }

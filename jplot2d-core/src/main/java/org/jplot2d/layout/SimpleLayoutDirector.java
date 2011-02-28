@@ -265,6 +265,20 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 	}
 
+	/**
+	 * Calculate the preferred content size of the given subplot. The default
+	 * implementation returns the subplot.getPreferredContentSize(), which can
+	 * be override by subclass to consider nested subplots. The returned size
+	 * may be <code>null</code> if there is no enough information to derive a
+	 * value.
+	 * 
+	 * @param subplot
+	 * @return the preferred content size
+	 */
+	public Dimension2D getPreferredContentSize(SubplotEx subplot) {
+		return subplot.getPreferredContentSize();
+	}
+
 	public Dimension2D getPreferredSize(SubplotEx subplot) {
 		Dimension2D prefContSize = getPreferredContentSize(subplot);
 		if (prefContSize == null) {
@@ -278,20 +292,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					+ margin.getBottom();
 			return new DoubleDimension2D(w, h);
 		}
-	}
-
-	/**
-	 * Calculate the preferred content size of the given subplot. The default
-	 * implementation returns the subplot.getPreferredContentSize(), which can
-	 * be override by subclass to consider nested subplots. The returned size
-	 * may be <code>null</code> if there is no enough information to derive a
-	 * value.
-	 * 
-	 * @param subplot
-	 * @return the preferred content size
-	 */
-	protected Dimension2D getPreferredContentSize(SubplotEx subplot) {
-		return subplot.getPreferredContentSize();
 	}
 
 }
