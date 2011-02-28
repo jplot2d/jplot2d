@@ -19,17 +19,11 @@
 package org.jplot2d.layout;
 
 import static org.jplot2d.util.TestUtils.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.SubplotMarginEx;
-import org.jplot2d.element.impl.SubplotMarginImpl;
-import org.jplot2d.layout.SimpleLayoutDirector.AxesInSubplot;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.Insets2D;
 import org.junit.Test;
 
 /**
