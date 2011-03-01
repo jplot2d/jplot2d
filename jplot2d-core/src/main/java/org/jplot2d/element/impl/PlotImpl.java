@@ -22,18 +22,23 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.geom.Dimension2D;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.PlotSizeMode;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.WarningMessage;
+import org.jplot2d.util.WarningReceiver;
 
 /**
  * @author Jingjing Li
  * 
  */
 public class PlotImpl extends SubplotImpl implements PlotEx {
+
+	private boolean rerenderNeeded = true;
 
 	private WarningReceiver warningReceiver;
 
@@ -69,6 +74,18 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 	public void setCacheable(boolean cacheMode) {
 		// ignore setting cacheable
+	}
+
+	public boolean isRerenderNeeded() {
+		return rerenderNeeded;
+	}
+
+	public void rerender() {
+		rerenderNeeded = true;
+	}
+
+	public void clearRerenderNeeded() {
+		rerenderNeeded = false;
 	}
 
 	public void setWarningReceiver(WarningReceiver warningReceiver) {
@@ -272,6 +289,107 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		containerSize = (Dimension) plot.containerSize.clone();
 		targetSize = (Dimension2D) plot.targetSize.clone();
 		scale = plot.scale;
+	}
+
+	public void commit() {
+
+		/*
+		 * Axis a special component. Its length can be set by layout manager,
+		 * but its thick depends on its internal status, such as tick height,
+		 * labels. The auto range must be re-calculated after all axes length
+		 * are set. So we cannot use deep-first validate tree. we must layout
+		 * all subplot, then calculate auto range, then validate all axes.
+		 */
+		calcAxesThickness(this);
+
+		while (true) {
+
+			/*
+			 * Laying out axes may register some axis that ticks need be
+			 * re-calculated
+			 */
+			this.validate();
+
+			/*
+			 * Auto range axes MUST be executed after they are laid out. <br>
+			 * Auto range axes may register some axis that ticks need be
+			 * re-calculated
+			 */
+			calcPendingLockGroupAutoRange();
+
+			/*
+			 * Calculating axes tick may invalidate some axis. Their metrics
+			 * need be re-calculated
+			 */
+			calcAxesTick(this);
+
+			/* thickness changes may invalidate the plot */
+			calcAxesThickness(this);
+
+			if (this.isValid()) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Re-autorange on all AxisLockGroups whoes autorange are true.
+	 */
+	private void calcPendingLockGroupAutoRange() {
+		Set<AxisLockGroupEx> algs = new HashSet<AxisLockGroupEx>();
+		fillLockGroups(this, algs);
+
+		for (AxisLockGroupEx alg : algs) {
+			alg.calcAutoRange();
+		}
+	}
+
+	/**
+	 * fill all AxisLockGroups in the given subplot to the set.
+	 */
+	private void fillLockGroups(SubplotEx subplot, Set<AxisLockGroupEx> algs) {
+		for (AxisEx axis : subplot.getXAxes()) {
+			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
+			algs.add(alg);
+		}
+		for (AxisEx axis : subplot.getYAxes()) {
+			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
+			algs.add(alg);
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			fillLockGroups(sp, algs);
+		}
+	}
+
+	/**
+	 * Calculate axis thickness according to its tick height, label font and
+	 * label orientation.
+	 */
+	private void calcAxesThickness(SubplotEx subplot) {
+		for (AxisEx axis : subplot.getXAxes()) {
+			axis.calcThickness();
+		}
+		for (AxisEx axis : subplot.getYAxes()) {
+			axis.calcThickness();
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			calcAxesThickness(sp);
+		}
+	}
+
+	/**
+	 * Calculate axis ticks according to its length, range and tick properties.
+	 */
+	private void calcAxesTick(SubplotEx subplot) {
+		for (AxisEx axis : subplot.getXAxes()) {
+			axis.calcTicks();
+		}
+		for (AxisEx axis : subplot.getYAxes()) {
+			axis.calcTicks();
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			calcAxesTick(sp);
+		}
 	}
 
 }

@@ -140,9 +140,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		plotters.add(gp);
 		gp.setParent(this);
 
-		if (gp.isVisible() && !gp.isCacheable()) {
+		if (gp.canContributeToParent()) {
 			redraw();
+		} else if (gp.canContribute()) {
+			rerender();
 		}
+
 		if (gp.isVisible()) {
 			if (xaxis != null && xaxis.getLockGroup().isAutoRange()) {
 				xaxis.getLockGroup().reAutoRange();
@@ -158,9 +161,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		plotters.remove(gp);
 		gp.setParent(null);
 
-		if (gp.isVisible() && !gp.isCacheable()) {
+		if (gp.canContributeToParent()) {
 			redraw();
+		} else if (gp.canContribute()) {
+			rerender();
 		}
+
 		if (gp.isVisible()) {
 			if (xaxis.getLockGroup().isAutoRange()) {
 				xaxis.getLockGroup().reAutoRange();
@@ -187,6 +193,18 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 		for (GraphPlotterEx gp : plotters) {
 			if (gp.isVisible() && !gp.isCacheable()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean canContribute() {
+		if (!isVisible()) {
+			return false;
+		}
+		for (GraphPlotterEx gp : plotters) {
+			if (gp.isVisible()) {
 				return true;
 			}
 		}

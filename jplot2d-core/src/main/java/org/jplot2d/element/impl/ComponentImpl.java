@@ -71,6 +71,14 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return Collections.emptyMap();
 	}
 
+	public boolean canContributeToParent() {
+		return isVisible() && !isCacheable();
+	}
+
+	public boolean canContribute() {
+		return isVisible();
+	}
+
 	public boolean isVisible() {
 		return visible;
 	}
@@ -216,20 +224,27 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 				(int) size).deriveFont(size);
 	}
 
+	public boolean isRedrawNeeded() {
+		return redrawNeeded;
+	}
+
 	public void redraw() {
 		if (cacheable) {
 			redrawNeeded = true;
+			rerender();
 		} else if (getParent() != null) {
 			getParent().redraw();
 		}
 	}
 
-	public boolean isRedrawNeeded() {
-		return redrawNeeded;
-	}
-
 	public void clearRedrawNeeded() {
 		redrawNeeded = false;
+	}
+
+	public void rerender() {
+		if (getParent() != null) {
+			getParent().rerender();
+		}
 	}
 
 	@Override

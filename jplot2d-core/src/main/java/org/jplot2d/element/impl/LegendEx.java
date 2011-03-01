@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,22 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.util.WarningMessage;
+import org.jplot2d.element.Legend;
 
 /**
- * This interface receive plot waning messages.
- * 
  * @author Jingjing Li
- * 
+ *
  */
-public interface WarningReceiver {
-
-	/**
-	 * Plot call this method to add warnings.
-	 * 
-	 * @param msg
-	 *            the warning message
-	 */
-	public void warning(WarningMessage msg);
+public interface LegendEx extends Legend, ContainerEx {
 
 }

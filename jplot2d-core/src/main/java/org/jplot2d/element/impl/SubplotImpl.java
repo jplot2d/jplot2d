@@ -34,6 +34,7 @@ import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.element.Title;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.util.DoubleDimension2D;
@@ -50,7 +51,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	protected PhysicalTransform pxf;
 
-	private SubplotMarginEx margin = new SubplotMarginImpl();
+	private SubplotMarginEx margin;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out.
@@ -74,6 +75,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	private Rectangle2D contentBounds;
 
+	private LegendEx legend;
+
+	private final List<TitleEx> titles = new ArrayList<TitleEx>();
+
 	private final List<AxisEx> xAxis = new ArrayList<AxisEx>();
 
 	private final List<AxisEx> yAxis = new ArrayList<AxisEx>();
@@ -81,6 +86,13 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	protected final List<LayerEx> layers = new ArrayList<LayerEx>();
 
 	protected final List<SubplotEx> subplots = new ArrayList<SubplotEx>();
+
+	public SubplotImpl() {
+		margin = new SubplotMarginImpl();
+		margin.setParent(this);
+		legend = new LegendImpl();
+		legend.setParent(this);
+	}
 
 	public String getSelfId() {
 		if (getParent() != null) {
@@ -297,6 +309,50 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 	}
 
+	public LegendEx getLegend() {
+		return legend;
+	}
+
+	public TitleEx getTitle(int index) {
+		return titles.get(index);
+	}
+
+	public TitleEx[] getTitles() {
+		return titles.toArray(new TitleEx[titles.size()]);
+	}
+
+	public void addTitle(Title title) {
+		TitleEx tx = (TitleEx) title;
+
+		titles.add(tx);
+		tx.setParent(this);
+
+		if (tx.canContributeToParent()) {
+			redraw();
+		} else if (tx.canContribute()) {
+			rerender();
+		}
+		if (tx.canContribute() && tx.getPosition() != null) {
+			invalidate();
+		}
+	}
+
+	public void removeTitle(Title title) {
+		TitleEx tx = (TitleEx) title;
+
+		titles.remove(tx);
+		tx.setParent(null);
+
+		if (tx.canContributeToParent()) {
+			redraw();
+		} else if (tx.canContribute()) {
+			rerender();
+		}
+		if (tx.canContribute() && tx.getPosition() != null) {
+			invalidate();
+		}
+	}
+
 	public Layer getLayer(int index) {
 		return layers.get(index);
 	}
@@ -317,6 +373,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
+		} else if (((LayerEx) layer).canContribute()) {
+			rerender();
 		}
 	}
 
@@ -327,6 +385,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (((LayerEx) layer).canContributeToParent()) {
 			redraw();
+		} else if (((LayerEx) layer).canContribute()) {
+			rerender();
 		}
 	}
 
@@ -371,6 +431,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (ax.canContributeToParent()) {
 			redraw();
+		} else if (ax.canContribute()) {
+			rerender();
 		}
 		if (ax.isVisible()) {
 			invalidate();
@@ -394,6 +456,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (ax.canContributeToParent()) {
 			redraw();
+		} else if (ax.canContribute()) {
+			rerender();
 		}
 		if (ax.isVisible()) {
 			invalidate();
@@ -416,6 +480,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (ax.canContributeToParent()) {
 			redraw();
+		} else if (ax.canContribute()) {
+			rerender();
 		}
 		if (ax.isVisible()) {
 			invalidate();
@@ -434,6 +500,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 		if (ax.canContributeToParent()) {
 			redraw();
+		} else if (ax.canContribute()) {
+			rerender();
 		}
 		if (ax.isVisible()) {
 			invalidate();
@@ -453,25 +521,40 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void addSubplot(Subplot subplot, Object constraint) {
-		subplots.add((SubplotEx) subplot);
-		((SubplotEx) subplot).setParent(this);
+		SubplotEx sp = (SubplotEx) subplot;
+		subplots.add(sp);
+		sp.setParent(this);
 
-		if (subplot.isVisible()) {
-			invalidate();
+		if (sp.canContributeToParent()) {
+			redraw();
+		} else if (sp.canContribute()) {
+			rerender();
 		}
 
+		if (sp.isVisible()) {
+			invalidate();
+		}
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
-			ld.setConstraint((SubplotEx) subplot, constraint);
+			ld.setConstraint(sp, constraint);
 		}
 	}
 
 	public void removeSubplot(Subplot subplot) {
+		SubplotEx sp = (SubplotEx) subplot;
+		subplots.remove(sp);
+		sp.setParent(null);
+
+		if (sp.canContributeToParent()) {
+			redraw();
+		} else if (sp.canContribute()) {
+			rerender();
+		}
+
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
 			ld.remove((SubplotEx) subplot);
 		}
-
 		if (subplot.isVisible()) {
 			invalidate();
 		}
@@ -498,6 +581,33 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 		for (SubplotEx sp : subplots) {
 			if (sp.canContributeToParent()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean canContribute() {
+		if (!isVisible()) {
+			return false;
+		}
+		for (AxisEx vpa : xAxis) {
+			if (vpa.canContribute()) {
+				return true;
+			}
+		}
+		for (AxisEx vpa : yAxis) {
+			if (vpa.canContribute()) {
+				return true;
+			}
+		}
+		for (LayerEx layer : layers) {
+			if (layer.canContribute()) {
+				return true;
+			}
+		}
+		for (SubplotEx sp : subplots) {
+			if (sp.canContribute()) {
 				return true;
 			}
 		}
@@ -590,8 +700,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public void draw(Graphics2D g) {
-		// draw nothing
-		drawBounds(g);
+		// for debugging
+		// drawBounds(g);
 	}
 
 }

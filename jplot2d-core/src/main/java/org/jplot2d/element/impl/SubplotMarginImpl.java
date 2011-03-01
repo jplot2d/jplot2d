@@ -34,10 +34,6 @@ public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
 
 	private double extraTop, extraLeft, extraBottom, extraRight;
 
-	public SubplotEx getParent() {
-		return (SubplotEx) parent;
-	}
-
 	public boolean isAutoMarginTop() {
 		return autoMarginTop;
 	}

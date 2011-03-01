@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.SubplotMargin;
+import org.jplot2d.element.Title;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface SubplotMarginEx extends SubplotMargin, ElementEx {
+public interface TitleEx extends Title, ComponentEx {
 
 }

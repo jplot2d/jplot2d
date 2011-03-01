@@ -41,6 +41,23 @@ public interface ComponentEx extends Component, ElementEx {
 	public Map<Element, Element> getMooringMap();
 
 	/**
+	 * Returns <code>true</code> if this component can contribute visible parts
+	 * to its parent. Notice cacheable component does not contribute to its
+	 * parent.
+	 * 
+	 * @return the indicator
+	 */
+	public boolean canContributeToParent();
+
+	/**
+	 * Returns <code>true</code> if this component can contribute visible parts
+	 * to plot rendering artifact.
+	 * 
+	 * @return the indicator
+	 */
+	public boolean canContribute();
+
+	/**
 	 * Returns the effective color of this component.
 	 * 
 	 * @return the effective color of this component
@@ -61,21 +78,28 @@ public interface ComponentEx extends Component, ElementEx {
 	public Font getEffectiveFont();
 
 	/**
-	 * Mark this component need to redraw.
-	 */
-	public void redraw();
-
-	/**
-	 * Returns <code>true</code> when this component need redraw.
+	 * Returns <code>true</code> when this component need to be redrawn. The
+	 * result only apply to cacheable component.
 	 * 
 	 * @return the redraw status
 	 */
 	public boolean isRedrawNeeded();
 
 	/**
+	 * Mark this component need to to redrawn. If this component is not
+	 * cacheable, this method will called on its parent.
+	 */
+	public void redraw();
+
+	/**
 	 * Clear the redraw needed flag.
 	 */
 	public void clearRedrawNeeded();
+
+	/**
+	 * Mark the plot artifact need to be re-rendered.
+	 */
+	public void rerender();
 
 	/**
 	 * Draw this component only. All its children is not drawn.
