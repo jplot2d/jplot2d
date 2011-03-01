@@ -28,7 +28,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface Axis extends Container {
+public interface Axis extends Component {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();

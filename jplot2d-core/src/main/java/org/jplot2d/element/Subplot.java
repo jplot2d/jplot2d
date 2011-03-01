@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -138,6 +138,45 @@ public interface Subplot extends Container {
 	 */
 	public Rectangle2D getContentBounds();
 
+	/**
+	 * Returns the legend of this subplot.
+	 * 
+	 * @return the legend of this subplot
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Legend getLegend();
+
+	/**
+	 * Gets the nth title in this plot.
+	 * 
+	 * @param n
+	 *            the index of the title to get.
+	 * @return the nth title in this subplot
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Title getTitle(int index);
+
+	/**
+	 * Returns all titles in the order of added.
+	 * 
+	 * @return all titles
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Title[] getTitles();
+
+	@Hierarchy(HierarchyOp.ADD)
+	public void addTitle(Title title);
+
+	@Hierarchy(HierarchyOp.REMOVE)
+	public void removeTitle(Title title);
+
+	/**
+	 * Gets the nth layer in this plot.
+	 * 
+	 * @param n
+	 *            the index of the layer to get.
+	 * @return the nth layer in this subplot
+	 */
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getLayer(int index);
 
@@ -169,10 +208,10 @@ public interface Subplot extends Container {
 	public Axis[] getYAxes();
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addXAxis(Axis vpAxis);
+	public void addXAxis(Axis axis);
 
 	@Hierarchy(HierarchyOp.ADD)
-	public void addYAxis(Axis vpAxis);
+	public void addYAxis(Axis axis);
 
 	/**
 	 * Removes the specified X axis from this subplot if it is present.
@@ -199,7 +238,7 @@ public interface Subplot extends Container {
 	 * 
 	 * @param n
 	 *            the index of the component to get.
-	 * @return the nth subplot in this plot
+	 * @return the nth subplot in this subplot
 	 */
 	@Hierarchy(HierarchyOp.GET)
 	public Subplot getSubplot(int n);

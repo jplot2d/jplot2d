@@ -23,10 +23,6 @@ import java.awt.Graphics2D;
 public abstract class ContainerImpl extends ComponentImpl implements
 		ContainerEx {
 
-	public boolean canContributeToParent() {
-		return isVisible() && !isCacheable();
-	}
-
 	public void draw(Graphics2D g) {
 		// draw nothing
 	}

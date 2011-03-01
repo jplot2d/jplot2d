@@ -26,14 +26,11 @@ import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.impl.AxisEx;
-import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.element.impl.SubplotEx;
-import org.jplot2d.element.impl.WarningReceiver;
 import org.jplot2d.util.WarningMessage;
+import org.jplot2d.util.WarningReceiver;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -145,89 +142,15 @@ public abstract class PlotEnvironment extends Environment {
 	@Override
 	protected void commit() {
 
-		/*
-		 * Axis a special component. Its length can be set by layout manager,
-		 * but its thick depends on its internal status, such as tick height,
-		 * labels. The auto range must be re-calculated after all axes length
-		 * are set. So we cannot use deep-first validate tree. we must layout
-		 * all subplot, then calculate auto range, then validate all axes.
-		 */
-		calcAxesThickness(plotImpl);
-
-		while (true) {
-
-			/*
-			 * Laying out axes may register some axis that ticks need be
-			 * re-calculated
-			 */
-			plotImpl.validate();
-
-			/*
-			 * Auto range axes MUST be executed after they are laid out. <br>
-			 * Auto range axes may register some axis that ticks need be
-			 * re-calculated
-			 */
-			calcPendingLockGroupAutoRange();
-
-			/*
-			 * Calculating axes tick may invalidate some axis. Their metrics
-			 * need be re-calculated
-			 */
-			calcAxesTick(plotImpl);
-
-			/* thickness changes may invalidate the plot */
-			calcAxesThickness(plotImpl);
-
-			if (plotImpl.isValid()) {
-				break;
-			}
-		}
+		plotImpl.commit();
 
 		Map<ElementEx, ElementEx> copyMap = makeUndoMemento();
 
-		renderOnCommit(plotImpl, copyMap);
+		if (plotImpl.isRerenderNeeded()) {
+			plotImpl.clearRerenderNeeded();
+			renderOnCommit(plotImpl, copyMap);
+		}
 
-	}
-
-	/**
-	 * 
-	 */
-	private void calcPendingLockGroupAutoRange() {
-		for (ElementEx element : proxyMap.keySet()) {
-			if (element instanceof AxisLockGroupEx) {
-				((AxisLockGroupEx) element).calcAutoRange();
-			}
-		}
-	}
-
-	/**
-	 * Calculate axis ticks according to its length, range and tick properties.
-	 */
-	private void calcAxesThickness(SubplotEx subplot) {
-		for (AxisEx axis : subplot.getXAxes()) {
-			axis.calcThickness();
-		}
-		for (AxisEx axis : subplot.getYAxes()) {
-			axis.calcThickness();
-		}
-		for (SubplotEx sp : subplot.getSubplots()) {
-			calcAxesThickness(sp);
-		}
-	}
-
-	/**
-	 * Calculate axis ticks according to its length, range and tick properties.
-	 */
-	private void calcAxesTick(SubplotEx subplot) {
-		for (AxisEx axis : subplot.getXAxes()) {
-			axis.calcTicks();
-		}
-		for (AxisEx axis : subplot.getYAxes()) {
-			axis.calcTicks();
-		}
-		for (SubplotEx sp : subplot.getSubplots()) {
-			calcAxesTick(sp);
-		}
 	}
 
 	public int getHistoryCapacity() {
