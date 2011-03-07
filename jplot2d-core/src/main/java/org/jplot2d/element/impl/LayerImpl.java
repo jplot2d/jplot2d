@@ -31,8 +31,6 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.MathElement;
-import org.jplot2d.util.TeXMathUtils;
 
 /**
  * @author Jingjing Li
@@ -41,8 +39,6 @@ import org.jplot2d.util.TeXMathUtils;
 public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private PhysicalTransform pxf;
-
-	private MathElement name;
 
 	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
@@ -109,22 +105,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public void parentPhysicalTransformChanged() {
 		pxf = null;
 		redraw();
-	}
-
-	public String getName() {
-		return TeXMathUtils.toString(name);
-	}
-
-	public void setName(String name) {
-		this.name = TeXMathUtils.parseText(name);
-	}
-
-	public MathElement getNameModel() {
-		return name;
-	}
-
-	public void setNameModel(MathElement name) {
-		this.name = name;
 	}
 
 	public GraphPlotter getGraphPlotter(int index) {
@@ -263,7 +243,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public void copyFrom(ElementEx src) {
 		LayerImpl layer = (LayerImpl) src;
 		this.pxf = layer.pxf;
-		this.name = layer.name;
 	}
 
 }
