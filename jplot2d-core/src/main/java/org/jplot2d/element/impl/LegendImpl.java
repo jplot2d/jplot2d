@@ -21,10 +21,13 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
@@ -32,14 +35,27 @@ import org.jplot2d.element.VAlign;
  */
 public class LegendImpl extends ContainerImpl implements LegendEx {
 
-	public Point2D getLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	private double locX, locY;
+
+	private PhysicalTransform pxf;
+
+	private Position position = Position.BOTTOMCENTER;
+
+	private HAlign halign;
+
+	private VAlign valign;
+
+	private boolean enabled = true;
+
+	private final Collection<LegendItemEx> items = new ArrayList<LegendItemEx>();
+
+	private double lengthConstraint = Double.NaN;
+
+	private boolean relayoutItemsNeeded;
 
 	public Dimension2D getSize() {
 		// TODO Auto-generated method stub
-		return null;
+		return new DoubleDimension2D();
 	}
 
 	public Rectangle2D getBounds() {
@@ -48,43 +64,94 @@ public class LegendImpl extends ContainerImpl implements LegendEx {
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
-		// TODO Auto-generated method stub
-		return null;
+		if (pxf == null) {
+			pxf = getParent().getPhysicalTransform().translate(
+					getLocation().getX(), getLocation().getY());
+		}
+		return pxf;
 	}
 
-	public Position getPosition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setPosition(Position position) {
-		// TODO Auto-generated method stub
-		
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
 	}
 
 	public void setLocation(Point2D loc) {
-		// TODO Auto-generated method stub
-		
+		setLocation(loc.getX(), loc.getY());
+	}
+
+	public void setLocation(double locX, double locY) {
+		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+			this.locX = locX;
+			this.locY = locY;
+			pxf = null;
+			redraw();
+		}
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 
 	public HAlign getHAlign() {
-		// TODO Auto-generated method stub
-		return null;
+		return halign;
 	}
 
 	public void setHAlign(HAlign halign) {
-		// TODO Auto-generated method stub
-		
+		this.halign = halign;
 	}
 
 	public VAlign getVAlign() {
-		// TODO Auto-generated method stub
-		return null;
+		return valign;
 	}
 
 	public void setVAlign(VAlign valign) {
-		// TODO Auto-generated method stub
-		
+		this.valign = valign;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public void addLegendItem(LegendItemEx item) {
+		items.add(item);
+	}
+
+	public void removeLegendItem(LegendItemEx item) {
+		items.remove(item);
+	}
+
+	public double getLengthConstraint() {
+		return lengthConstraint;
+	}
+
+	public void setLengthConstraint(double length) {
+		if (lengthConstraint != length) {
+			lengthConstraint = length;
+			relayoutItemsNeeded = true;
+		}
+	}
+
+	/*
+	 * Only contribute contents when it has items.
+	 */
+	public boolean canContribute() {
+		return false;
+	}
+
+	public void calcSize() {
+		if (!relayoutItemsNeeded) {
+			return;
+		}
+
+		relayoutItemsNeeded = true;
 	}
 
 }

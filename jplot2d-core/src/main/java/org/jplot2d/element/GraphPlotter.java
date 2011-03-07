@@ -21,6 +21,7 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.data.Graph;
+import org.jplot2d.util.MathElement;
 
 /**
  * @author Jingjing Li
@@ -31,6 +32,38 @@ public interface GraphPlotter extends Component {
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();
 
+	/**
+	 * Returns the name displayed in the legend
+	 * 
+	 * @return the name
+	 */
+	public String getName();
+
+	/**
+	 * Sets the name displayed in the legend
+	 * 
+	 * @param name
+	 *            the name displayed in the legend
+	 */
+	public void setName(String name);
+
+	/**
+	 * Returns the name displayed in the legend
+	 * 
+	 * @return the name
+	 */
+	public MathElement getNameModel();
+
+	/**
+	 * Sets the name displayed in the legend
+	 * 
+	 * @param name
+	 *            the name displayed in the legend
+	 */
+	public void setNameModel(MathElement name);
+
 	public Graph getGraph();
+
+	public LegendItem getLegendItem();
 
 }

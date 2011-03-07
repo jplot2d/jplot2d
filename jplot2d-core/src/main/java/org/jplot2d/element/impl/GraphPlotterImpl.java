@@ -22,6 +22,10 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.element.LegendItem;
+import org.jplot2d.util.MathElement;
+import org.jplot2d.util.TeXMathUtils;
+
 /**
  * @author Jingjing Li
  * 
@@ -30,6 +34,14 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 		GraphPlotterEx {
 
 	private static Point2D LOCATION = new Point2D.Double();
+
+	private MathElement name;
+
+	private LegendItemEx legendItem;
+
+	public GraphPlotterImpl() {
+		legendItem = new LegendItemImpl(this);
+	}
 
 	public LayerEx getParent() {
 		return (LayerEx) super.getParent();
@@ -58,6 +70,32 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 			return new Rectangle2D.Double(0, 0, getSize().getWidth(), getSize()
 					.getHeight());
 		}
+	}
+
+	public String getName() {
+		return TeXMathUtils.toString(name);
+	}
+
+	public void setName(String name) {
+		this.name = TeXMathUtils.parseText(name);
+	}
+
+	public MathElement getNameModel() {
+		return name;
+	}
+
+	public void setNameModel(MathElement name) {
+		this.name = name;
+	}
+
+	public LegendItem getLegendItem() {
+		return legendItem;
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		GraphPlotterImpl gp = (GraphPlotterImpl) src;
+		this.name = gp.name;
 	}
 
 }

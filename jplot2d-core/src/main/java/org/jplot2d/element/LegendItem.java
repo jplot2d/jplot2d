@@ -16,39 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element.impl;
-
-import org.jplot2d.element.Legend;
+package org.jplot2d.element;
 
 /**
+ * An item in legend. It will be hosted by the legend of the subplot which host
+ * the GraphPlotter. If the hosting legend is disabled, it will be hosted by
+ * legend of parent subplot.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface LegendEx extends Legend, ContainerEx {
+public interface LegendItem extends Component {
 
-	public void addLegendItem(LegendItemEx item);
-
-	public void removeLegendItem(LegendItemEx item);
-
-	/**
-	 * Returns the constraint of length.
-	 * 
-	 * @return the length
-	 */
-	public double getLengthConstraint();
-
-	/**
-	 * Set the constraint of length
-	 * 
-	 * @param length
-	 */
-	public void setLengthConstraint(double length);
-
-	/**
-	 * This method is used to calculate size of this legend. If the the size
-	 * changed and this legend is visible, it'll call invalidate() to notify
-	 * subplot its layout is invalid.
-	 */
-	public void calcSize();
+	public GraphPlotter getGraphPlotter();
 
 }

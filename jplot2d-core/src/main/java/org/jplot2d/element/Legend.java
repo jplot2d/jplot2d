@@ -105,4 +105,21 @@ public interface Legend extends Container {
 	 */
 	public void setVAlign(VAlign valign);
 
+	/**
+	 * Returns <code>true</code> if this legend is enabled. By default, the
+	 * legend is enabled.
+	 * 
+	 * @return the enabled flag.
+	 */
+	public boolean isEnabled();
+
+	/**
+	 * Set to <code>true</code> to let this legend to host items. Otherwise the
+	 * items will be displayed in parent legend. The disabled legend will not
+	 * show.
+	 * 
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled);
+
 }
