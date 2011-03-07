@@ -20,7 +20,6 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.util.MathElement;
 
 /**
  * A layer can contains an dataset and optionally some markers. Every layer has
@@ -33,36 +32,6 @@ public interface Layer extends Container {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Subplot getParent();
-
-	/**
-	 * Returns the name displayed in the legend
-	 * 
-	 * @return the name
-	 */
-	public String getName();
-
-	/**
-	 * Sets the name displayed in the legend
-	 * 
-	 * @param name
-	 *            the name displayed in the legend
-	 */
-	public void setName(String name);
-
-	/**
-	 * Returns the name displayed in the legend
-	 * 
-	 * @return the name
-	 */
-	public MathElement getNameModel();
-
-	/**
-	 * Sets the name displayed in the legend
-	 * 
-	 * @param name
-	 *            the name displayed in the legend
-	 */
-	public void setNameModel(MathElement name);
 
 	/**
 	 * Returns the graph plotter on the given index.
