@@ -25,20 +25,6 @@ public interface AxisEx extends Axis, ContainerEx {
 	public void setOrientation(AxisOrientation orientation);
 
 	/**
-	 * Returns the offset of this axis.
-	 * 
-	 * @return the length
-	 */
-	public double getOffset();
-
-	/**
-	 * Set the offset for this axis.
-	 * 
-	 * @param offset
-	 */
-	public void setOffset(double offset);
-
-	/**
 	 * Returns the length of this axis.
 	 * 
 	 * @return the length
@@ -66,9 +52,9 @@ public interface AxisEx extends Axis, ContainerEx {
 	public void invalidateThickness();
 
 	/**
-	 * This method is used to calculate asc and desc of this axis. If the the
-	 * asc or desc changed, it'll call invalidate() to notify subplot the layout
-	 * is invalid.
+	 * calculate asc and desc of this axis. If the the asc or desc changed, and
+	 * this axis is visible, it'll call invalidate() to notify subplot its
+	 * layout is invalid.
 	 */
 	public void calcThickness();
 
