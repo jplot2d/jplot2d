@@ -83,8 +83,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	private AxisRangeManagerEx rangeManager;
 
-	private double offset;
-
 	private double length;
 
 	private AxisPosition position;
@@ -259,16 +257,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		this.rangeManager = (AxisRangeManagerEx) rangeManager;
 		if (this.rangeManager != null) {
 			this.rangeManager.addAxis(this);
-		}
-	}
-
-	public double getOffset() {
-		return offset;
-	}
-
-	public void setOffset(double offset) {
-		if (this.offset != offset) {
-			this.offset = offset;
 		}
 	}
 
@@ -538,7 +526,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 				|| Math.abs(desc - bd) > Math.abs(desc) * 1e-12) {
 			asc = ba;
 			desc = bd;
-			invalidate();
+			if (isVisible()) {
+				invalidate();
+			}
 		}
 
 	}
@@ -650,7 +640,6 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		locX = axis.locX;
 		locY = axis.locY;
 		this.orientation = axis.orientation;
-		this.offset = axis.offset;
 		this.length = axis.length;
 		this.position = axis.position;
 		this.asc = axis.asc;
