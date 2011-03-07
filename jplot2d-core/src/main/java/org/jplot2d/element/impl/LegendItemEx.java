@@ -18,37 +18,14 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.Legend;
+import org.jplot2d.element.LegendItem;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface LegendEx extends Legend, ContainerEx {
+public interface LegendItemEx extends LegendItem, ComponentEx {
 
-	public void addLegendItem(LegendItemEx item);
-
-	public void removeLegendItem(LegendItemEx item);
-
-	/**
-	 * Returns the constraint of length.
-	 * 
-	 * @return the length
-	 */
-	public double getLengthConstraint();
-
-	/**
-	 * Set the constraint of length
-	 * 
-	 * @param length
-	 */
-	public void setLengthConstraint(double length);
-
-	/**
-	 * This method is used to calculate size of this legend. If the the size
-	 * changed and this legend is visible, it'll call invalidate() to notify
-	 * subplot its layout is invalid.
-	 */
-	public void calcSize();
+	public LegendEx getParent();
 
 }
