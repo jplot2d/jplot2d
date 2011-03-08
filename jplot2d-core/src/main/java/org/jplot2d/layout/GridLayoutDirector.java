@@ -26,7 +26,6 @@ import java.util.TreeMap;
 
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.Insets2D;
 
 /**
  * The space are distributed to subplots according to ratio of their
@@ -242,9 +241,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 	}
 
 	/**
-	 * calculate the max margin (from grid bounds to data area bounds)
+	 * calculate the margin (from grid bounds to data area bounds) for every row
+	 * and columns of subplots in the given subplot.
 	 * 
-	 * @return the max margin
+	 * @return the margin
 	 */
 	private GridCellInsets getSubplotsMarginGeom(SubplotEx subplot) {
 		if (subplotsMarginGeomMap.containsKey(subplot)) {
@@ -254,10 +254,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		Map<SubplotEx, AxesInSubplot> saMap = getSubplotAxisMap(subplot
 				.getSubplots());
 
-		Map<Integer, Double> topPadding = new HashMap<Integer, Double>();
-		Map<Integer, Double> leftPadding = new HashMap<Integer, Double>();
-		Map<Integer, Double> bottomPadding = new HashMap<Integer, Double>();
-		Map<Integer, Double> rightPadding = new HashMap<Integer, Double>();
+		Map<Integer, Double> topMargin = new HashMap<Integer, Double>();
+		Map<Integer, Double> leftMargin = new HashMap<Integer, Double>();
+		Map<Integer, Double> bottomMargin = new HashMap<Integer, Double>();
+		Map<Integer, Double> rightMargin = new HashMap<Integer, Double>();
 
 		for (Map.Entry<SubplotEx, AxesInSubplot> me : saMap.entrySet()) {
 			SubplotEx sp = me.getKey();
@@ -266,28 +266,28 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
 
-			Insets2D padding = calcMargin(sp.getMargin(), ais);
+			double mLeft = calcLeftMargin(sp, ais);
+			double mRight = calcRightMargin(sp, ais);
+			double mTop = calcTopMargin(sp, ais);
+			double mBottom = calcBottomMargin(sp, ais);
 
-			if (leftPadding.get(col) == null
-					|| leftPadding.get(col) < padding.getLeft()) {
-				leftPadding.put(col, padding.getLeft());
+			if (leftMargin.get(col) == null || leftMargin.get(col) < mLeft) {
+				leftMargin.put(col, mLeft);
 			}
-			if (rightPadding.get(col) == null
-					|| rightPadding.get(col) < padding.getRight()) {
-				rightPadding.put(col, padding.getRight());
+			if (rightMargin.get(col) == null || rightMargin.get(col) < mRight) {
+				rightMargin.put(col, mRight);
 			}
-			if (topPadding.get(row) == null
-					|| topPadding.get(row) < padding.getTop()) {
-				topPadding.put(row, padding.getTop());
+			if (topMargin.get(row) == null || topMargin.get(row) < mTop) {
+				topMargin.put(row, mTop);
 			}
-			if (bottomPadding.get(row) == null
-					|| bottomPadding.get(row) < padding.getBottom()) {
-				bottomPadding.put(row, padding.getBottom());
+			if (bottomMargin.get(row) == null
+					|| bottomMargin.get(row) < mBottom) {
+				bottomMargin.put(row, mBottom);
 			}
 		}
 
-		GridCellInsets insets = new GridCellInsets(topPadding, leftPadding,
-				bottomPadding, rightPadding);
+		GridCellInsets insets = new GridCellInsets(topMargin, leftMargin,
+				bottomMargin, rightMargin);
 		subplotsMarginGeomMap.put(subplot, insets);
 		return insets;
 	}

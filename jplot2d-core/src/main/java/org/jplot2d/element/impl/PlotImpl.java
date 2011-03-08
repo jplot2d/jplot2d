@@ -298,9 +298,14 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		 * but its thick depends on its internal status, such as tick height,
 		 * labels. The auto range must be re-calculated after all axes length
 		 * are set. So we cannot use deep-first validate tree. we must layout
-		 * all subplot, then calculate auto range, then validate all axes.
+		 * all subplot, then calculate auto range, then calculate thickness of
+		 * all axes.
 		 */
-		calcAxesThickness(this);
+
+		/*
+		 * The initial axis has 0 length and no label. The initial legend size
+		 * as it contains 1 item. In most case, this assumption is correct.
+		 */
 
 		while (true) {
 
@@ -325,6 +330,8 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 
 			/* thickness changes may invalidate the plot */
 			calcAxesThickness(this);
+			/* length constraint changes may invalidate the plot */
+			calcLegendSize(this);
 
 			if (this.isValid()) {
 				break;
@@ -367,10 +374,14 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 	 */
 	private void calcAxesThickness(SubplotEx subplot) {
 		for (AxisEx axis : subplot.getXAxes()) {
-			axis.calcThickness();
+			if (axis.isVisible()) {
+				axis.calcThickness();
+			}
 		}
 		for (AxisEx axis : subplot.getYAxes()) {
-			axis.calcThickness();
+			if (axis.isVisible()) {
+				axis.calcThickness();
+			}
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {
 			calcAxesThickness(sp);
@@ -389,6 +400,19 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {
 			calcAxesTick(sp);
+		}
+	}
+
+	/**
+	 * Calculate legend size according to its length constraint, items and item
+	 * font.
+	 */
+	private void calcLegendSize(SubplotEx subplot) {
+		if (subplot.getLegend().isVisible()) {
+			subplot.getLegend().calcSize();
+		}
+		for (SubplotEx sp : subplot.getSubplots()) {
+			calcLegendSize(sp);
 		}
 	}
 
