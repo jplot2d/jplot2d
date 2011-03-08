@@ -94,6 +94,13 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		legend.setParent(this);
 	}
 
+	protected SubplotImpl(LegendEx legend) {
+		margin = new SubplotMarginImpl();
+		margin.setParent(this);
+		this.legend = legend;
+		legend.setParent(this);
+	}
+
 	public String getSelfId() {
 		if (getParent() != null) {
 			return "Subplot" + getParent().indexOf(this);
@@ -315,6 +322,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	public TitleEx getTitle(int index) {
 		return titles.get(index);
+	}
+
+	public int indexOf(TitleEx title) {
+		return titles.indexOf(title);
 	}
 
 	public TitleEx[] getTitles() {

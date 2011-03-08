@@ -43,6 +43,10 @@ public interface SubplotEx extends Subplot, ContainerEx {
 
 	public LegendEx getLegend();
 
+	public int indexOf(TitleEx title);
+
+	public TitleEx[] getTitles();
+
 	public int indexOf(LayerEx layer);
 
 	public LayerEx[] getLayers();
