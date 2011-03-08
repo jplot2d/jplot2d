@@ -18,16 +18,15 @@
  */
 package org.jplot2d.env;
 
-import java.beans.BeanInfo;
-import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.annotation.Hierarchy;
@@ -35,6 +34,10 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 
 public class InterfaceInfo {
+
+	private static final String IS_PREFIX = "is";
+	private static final String GET_PREFIX = "get";
+	private static final String SET_PREFIX = "set";
 
 	private static Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<Class<?>, InterfaceInfo>();
 
@@ -60,26 +63,24 @@ public class InterfaceInfo {
 		InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
 		if (iinfo == null) {
 			iinfo = new InterfaceInfo();
-			iinfo.loadBeanInfoCascade(interfaceClass);
+			iinfo.load(interfaceClass);
+			interfaceInfoCache.put(interfaceClass, iinfo);
 		}
 		return iinfo;
 	}
 
-	private void loadBeanInfoCascade(Class<?> interfaceClass) {
-		for (Class<?> superClass : interfaceClass.getInterfaces()) {
-			loadBeanInfoCascade(superClass);
-		}
-		loadBeanInfo(interfaceClass);
-	}
+	private void load(Class<?> beanClass) {
 
-	private void loadBeanInfo(Class<?> beanClass) {
-		BeanInfo bi = null;
+		// get an array of all the public methods at all level
+		Method methods[] = beanClass.getMethods();
+
+		PropertyDescriptor[] pds = null;
 		try {
-			bi = Introspector.getBeanInfo(beanClass);
+			pds = getPropertyInfo(methods);
 		} catch (IntrospectionException e) {
 			throw new Error(e);
 		}
-		PropertyDescriptor[] pds = bi.getPropertyDescriptors();
+
 		for (PropertyDescriptor p : pds) {
 			if (p.getPropertyType() != null) {
 				Method readMethod = p.getReadMethod();
@@ -104,30 +105,17 @@ public class InterfaceInfo {
 			}
 		}
 
-		MethodDescriptor[] mds = bi.getMethodDescriptors();
-		for (MethodDescriptor md : mds) {
-			Method method = md.getMethod();
+		for (Method method : methods) {
 			Hierarchy hierAnn = method.getAnnotation(Hierarchy.class);
 			if (hierAnn != null) {
 				hierachyMethodMap.put(method, hierAnn.value());
 			}
 		}
 
-		EventSetDescriptor[] events = bi.getEventSetDescriptors();
-		for (EventSetDescriptor esd : events) {
-			Method getListener = esd.getGetListenerMethod();
-			if (getListener != null) {
-				listenerGarMethods.add(getListener);
-			}
-			Method addListener = esd.getAddListenerMethod();
-			if (addListener != null) {
-				listenerGarMethods.add(addListener);
-			}
-			Method removeListener = esd.getRemoveListenerMethod();
-			if (removeListener != null) {
-				listenerGarMethods.add(removeListener);
-			}
-		}
+	}
+
+	public Map<String, PropertyDescriptor> getPropertyMap() {
+		return properties;
 	}
 
 	/**
@@ -222,8 +210,113 @@ public class InterfaceInfo {
 		return hop != null && hop == HierarchyOp.ADD_REF2;
 	}
 
-	public Map<String, PropertyDescriptor> getPropertyMap() {
-		return properties;
+	/**
+	 * @return An array of PropertyDescriptors
+	 * @throws IntrospectionException
+	 */
+	private PropertyDescriptor[] getPropertyInfo(Method[] methods)
+			throws IntrospectionException {
+
+		Map<String, Method> pdReaderMap = new HashMap<String, Method>();
+		Map<String, Method> pdWriterMap = new HashMap<String, Method>();
+
+		for (int i = 0; i < methods.length; i++) {
+			Method method = methods[i];
+			if (method == null) {
+				continue;
+			}
+			// skip static methods.
+			int mods = method.getModifiers();
+			if (Modifier.isStatic(mods)) {
+				continue;
+			}
+			String name = method.getName();
+			// Optimization. Don't bother with invalid propertyNames.
+			if (name.length() <= 3 && !name.startsWith(IS_PREFIX)) {
+				continue;
+			}
+
+			Class<?>[] argTypes = method.getParameterTypes();
+			Class<?> resultType = method.getReturnType();
+			int argCount = argTypes.length;
+
+			if (argCount == 0) {
+				String pname = null;
+				if (name.startsWith(GET_PREFIX)) {
+					// Simple getter
+					pname = decapitalize(name.substring(3));
+				} else if (resultType == boolean.class
+						&& name.startsWith(IS_PREFIX)) {
+					// Boolean getter
+					pname = decapitalize(name.substring(2));
+				}
+				if (pname != null) {
+					// replace the overridden getter method
+					Method pre = pdReaderMap.get(pname);
+					if (pre == null) {
+						pdReaderMap.put(pname, method);
+					} else if (pre.getReturnType().isAssignableFrom(
+							method.getReturnType())) {
+						pdReaderMap.put(pname, method);
+					} else if (method.getReturnType().isAssignableFrom(
+							pre.getReturnType())) {
+						// the return type of exist getter is more precise
+					} else {
+						throw new IntrospectionException(
+								"getter name conflict: " + name);
+					}
+				}
+			} else if (argCount == 1) {
+				if (resultType == void.class && name.startsWith(SET_PREFIX)) {
+					// Simple setter
+					String pname = decapitalize(name.substring(3));
+					if (pdWriterMap.containsKey(pname)) {
+						throw new IntrospectionException(
+								"setter name conflict: " + name);
+					}
+					pdWriterMap.put(pname, method);
+				}
+			}
+		}
+
+		List<PropertyDescriptor> pdList = new ArrayList<PropertyDescriptor>();
+		for (Map.Entry<String, Method> me : pdReaderMap.entrySet()) {
+			String pname = me.getKey();
+			Method reader = me.getValue();
+			Method writer = pdWriterMap.get(pname);
+			PropertyDescriptor pd = new PropertyDescriptor(pname, reader,
+					writer);
+			pdList.add(pd);
+		}
+
+		return pdList.toArray(new PropertyDescriptor[pdList.size()]);
+	}
+
+	/**
+	 * Utility method to take a string and convert it to normal Java variable
+	 * name capitalization. This normally means converting the first character
+	 * from upper case to lower case, but in the (unusual) special case when
+	 * there is more than one character and both the first and second characters
+	 * are upper case, we leave it alone.
+	 * <p>
+	 * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as
+	 * "URL".
+	 * 
+	 * @param name
+	 *            The string to be decapitalized.
+	 * @return The decapitalized version of the string.
+	 */
+	private static String decapitalize(String name) {
+		if (name == null || name.length() == 0) {
+			return name;
+		}
+		if (name.length() > 1 && Character.isUpperCase(name.charAt(1))
+				&& Character.isUpperCase(name.charAt(0))) {
+			return name;
+		}
+		char chars[] = name.toCharArray();
+		chars[0] = Character.toLowerCase(chars[0]);
+		return new String(chars);
 	}
 
 }
