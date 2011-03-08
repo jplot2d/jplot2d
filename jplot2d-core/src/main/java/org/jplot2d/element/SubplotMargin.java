@@ -20,7 +20,8 @@ package org.jplot2d.element;
 
 /**
  * Subplot has a content area in the center, surrounded by margin area. The
- * margin area holds axes, title and legend.
+ * margin area holds axes, title and legend. Besides the margin, there are also
+ * extra margins. The extra margin plus the margin will be the total margin.
  * 
  * @author Jingjing Li
  * 
@@ -56,8 +57,8 @@ public interface SubplotMargin extends Element {
 	public boolean isAutoMarginRight();
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value,
-	 * plus the extra value, as the actual margin. If set to
+	 * Set to <code>true</code> to let layout director to choose a nice value.
+	 * If set to
 	 * <code>false<code>, user must supply the margin value by {@link #setMarginTop(double)}.
 	 * 
 	 * @param auto
@@ -66,8 +67,8 @@ public interface SubplotMargin extends Element {
 	public void setAutoMarginTop(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value,
-	 * plus the extra value, as the actual margin. If set to
+	 * Set to <code>true</code> to let layout director to choose a nice value.
+	 * If set to
 	 * <code>false<code>, user must supply the margin value by {@link #setMarginLeft(double)}.
 	 * 
 	 * @param auto
@@ -76,8 +77,8 @@ public interface SubplotMargin extends Element {
 	public void setAutoMarginLeft(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value,
-	 * plus the extra value, as the actual margin. If set to
+	 * Set to <code>true</code> to let layout director to choose a nice value.
+	 * If set to
 	 * <code>false<code>, user must supply the margin value by {@link #setMarginBottom(double)}.
 	 * 
 	 * @param auto
@@ -86,8 +87,8 @@ public interface SubplotMargin extends Element {
 	public void setAutoMarginBottom(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value,
-	 * plus the extra value, as the actual margin. If set to
+	 * Set to <code>true</code> to let layout director to choose a nice value.
+	 * If set to
 	 * <code>false<code>, user must supply the margin value by {@link #setMarginRight(double)}.
 	 * 
 	 * @param auto
@@ -156,35 +157,35 @@ public interface SubplotMargin extends Element {
 	public void setMarginRight(double marginRight);
 
 	/**
-	 * Returns the extra top margin plus to the auto margin value.
+	 * Returns the extra top margin.
 	 * 
 	 * @return the extra top margin
 	 */
 	public double getExtraTop();
 
 	/**
-	 * Returns the extra left margin plus to the auto margin value.
+	 * Returns the extra left margin.
 	 * 
 	 * @return the extra left margin
 	 */
 	public double getExtraLeft();
 
 	/**
-	 * Returns the extra bottom margin plus to the auto margin value.
+	 * Returns the extra bottom margin.
 	 * 
 	 * @return the extra bottom margin
 	 */
 	public double getExtraBottom();
 
 	/**
-	 * Returns the extra right margin plus to the auto margin value.
+	 * Returns the extra right margin.
 	 * 
 	 * @return the extra right margin
 	 */
 	public double getExtraRight();
 
 	/**
-	 * Sets the extra top margin plus to the auto margin value.
+	 * Sets the extra top margin.
 	 * 
 	 * @param marginTop
 	 *            the extra top margin
@@ -192,7 +193,7 @@ public interface SubplotMargin extends Element {
 	public void setExtraTop(double marginTop);
 
 	/**
-	 * Sets the extra left margin plus to the auto margin value.
+	 * Sets the extra left margin.
 	 * 
 	 * @param marginTop
 	 *            the extra left margin
@@ -200,7 +201,7 @@ public interface SubplotMargin extends Element {
 	public void setExtraLeft(double marginLeft);
 
 	/**
-	 * Sets the extra bottom margin plus to the auto margin value.
+	 * Sets the extra bottom margin.
 	 * 
 	 * @param marginTop
 	 *            the extra bottom margin
@@ -208,7 +209,7 @@ public interface SubplotMargin extends Element {
 	public void setExtraBottom(double marginBottom);
 
 	/**
-	 * Sets the extra right margin plus to the auto margin value.
+	 * Sets the extra right margin.
 	 * 
 	 * @param marginTop
 	 *            the extra right margin

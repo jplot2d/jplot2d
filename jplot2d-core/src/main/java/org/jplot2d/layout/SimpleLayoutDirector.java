@@ -26,8 +26,10 @@ import java.util.Map;
 
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.impl.AxisEx;
+import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.SubplotMarginEx;
+import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
@@ -49,6 +51,10 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		final ArrayList<AxisEx> topAxes = new ArrayList<AxisEx>();
 		final ArrayList<AxisEx> bottomAxes = new ArrayList<AxisEx>();
 	}
+
+	private static final double TITLE_GAP_RATIO = 0.25;
+
+	private static double LEGEND_GAP = 8.0;
 
 	/** The layout constraints */
 	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
@@ -81,7 +87,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		if (subplot.getContentConstrant() != null) {
 			contentRect = subplot.getContentConstrant();
 		} else {
-			Insets2D margin = calcMargin(subplot.getMargin(), ais);
+			Insets2D margin = calcMargin(subplot, ais);
 
 			subplot.getMargin().setMarginTop(margin.getTop());
 			subplot.getMargin().setMarginLeft(margin.getLeft());
@@ -127,62 +133,213 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return ais;
 	}
 
-	static Insets2D calcMargin(SubplotMarginEx margin, AxesInSubplot ais) {
+	protected static double calcLeftMargin(SubplotEx subplot, AxesInSubplot ais) {
+		SubplotMarginEx margin = subplot.getMargin();
 
-		// SubplotMarginEx margin = subplot.getMargin();
-
-		double mTop;
-		double mLeft;
-		double mBottom;
-		double mRight;
-
-		if (margin.isAutoMarginLeft()) {
-			mLeft = margin.getExtraLeft();
-			if (ais.leftAxes.size() > 0) {
-				for (AxisEx am : ais.leftAxes) {
-					mLeft += am.getAsc() + am.getDesc();
-				}
-				mLeft -= ais.leftAxes.get(0).getDesc();
-			}
-		} else {
-			mLeft = margin.getMarginLeft();
+		if (!margin.isAutoMarginLeft()) {
+			return margin.getMarginLeft() + margin.getExtraLeft();
 		}
 
-		if (margin.isAutoMarginRight()) {
-			mRight = margin.getExtraRight();
+		double mLeft = margin.getExtraLeft();
+
+		if (ais.leftAxes.size() > 0) {
+			for (AxisEx am : ais.leftAxes) {
+				mLeft += am.getAsc() + am.getDesc();
+			}
+			mLeft -= ais.leftAxes.get(0).getDesc();
+		}
+
+		LegendEx legend = subplot.getLegend();
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case LEFTTOP:
+			case LEFTMIDDLE:
+			case LEFTBOTTOM: {
+				mLeft += LEGEND_GAP + legend.getSize().getWidth();
+				break;
+			}
+			}
+		}
+
+		return mLeft;
+	}
+
+	protected static double calcRightMargin(SubplotEx subplot, AxesInSubplot ais) {
+		SubplotMarginEx margin = subplot.getMargin();
+
+		if (!margin.isAutoMarginRight()) {
+			return margin.getMarginRight() + margin.getExtraRight();
+		}
+
+		double mRight = margin.getExtraRight();
+
+		if (ais.rightAxes.size() > 0) {
 			if (ais.rightAxes.size() > 0) {
 				for (AxisEx am : ais.rightAxes) {
 					mRight += am.getAsc() + am.getDesc();
 				}
 				mRight -= ais.rightAxes.get(0).getAsc();
 			}
-		} else {
-			mRight = margin.getMarginRight();
 		}
 
-		if (margin.isAutoMarginTop()) {
-			mTop = margin.getExtraTop();
-			if (ais.topAxes.size() > 0) {
-				for (AxisEx am : ais.topAxes) {
-					mTop += am.getAsc() + am.getDesc();
-				}
-				mTop -= ais.topAxes.get(0).getDesc();
+		LegendEx legend = subplot.getLegend();
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case RIGHTTOP:
+			case RIGHTMIDDLE:
+			case RIGHTBOTTOM: {
+				mRight += LEGEND_GAP + legend.getSize().getWidth();
+				break;
 			}
-		} else {
-			mTop = margin.getMarginTop();
+			}
 		}
 
-		if (margin.isAutoMarginBottom()) {
-			mBottom = margin.getExtraBottom();
-			if (ais.bottomAxes.size() > 0) {
-				for (AxisEx am : ais.bottomAxes) {
-					mBottom += am.getAsc() + am.getDesc();
-				}
-				mBottom -= ais.bottomAxes.get(0).getAsc();
-			}
-		} else {
-			mBottom = margin.getMarginBottom();
+		return mRight;
+	}
+
+	protected static double calcTopMargin(SubplotEx subplot, AxesInSubplot ais) {
+		SubplotMarginEx margin = subplot.getMargin();
+
+		if (!margin.isAutoMarginTop()) {
+			return margin.getMarginTop() + margin.getExtraTop();
 		}
+
+		double mTop = margin.getExtraTop();
+
+		if (ais.topAxes.size() > 0) {
+			for (AxisEx am : ais.topAxes) {
+				mTop += am.getAsc() + am.getDesc();
+			}
+			mTop -= ais.topAxes.get(0).getDesc();
+		}
+
+		LegendEx legend = subplot.getLegend();
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case TOPLEFT:
+			case TOPCENTER:
+			case TOPRIGHT: {
+				mTop += LEGEND_GAP + legend.getSize().getHeight();
+				break;
+			}
+			}
+		}
+
+		for (TitleEx title : subplot.getTitles()) {
+			if (title.canContribute()) {
+				double titleHeight = title.getSize().getHeight();
+				switch (title.getPosition()) {
+				case TOPLEFT:
+				case TOPCENTER:
+				case TOPRIGHT: {
+					mTop += (1 + TITLE_GAP_RATIO) * titleHeight;
+					break;
+				}
+				}
+			}
+		}
+
+		return mTop;
+	}
+
+	protected static double calcBottomMargin(SubplotEx subplot,
+			AxesInSubplot ais) {
+		SubplotMarginEx margin = subplot.getMargin();
+
+		if (!margin.isAutoMarginBottom()) {
+			return margin.getMarginBottom() + margin.getExtraBottom();
+		}
+
+		double mBottom = margin.getExtraBottom();
+
+		if (ais.bottomAxes.size() > 0) {
+			for (AxisEx am : ais.bottomAxes) {
+				mBottom += am.getAsc() + am.getDesc();
+			}
+			mBottom -= ais.bottomAxes.get(0).getAsc();
+		}
+
+		LegendEx legend = subplot.getLegend();
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case BOTTOMLEFT:
+			case BOTTOMCENTER:
+			case BOTTOMRIGHT: {
+				mBottom += LEGEND_GAP + legend.getSize().getHeight();
+				break;
+			}
+			}
+		}
+
+		for (TitleEx title : subplot.getTitles()) {
+			if (title.canContribute()) {
+				double titleHeight = title.getSize().getHeight();
+				switch (title.getPosition()) {
+				case BOTTOMLEFT:
+				case BOTTOMCENTER:
+				case BOTTOMRIGHT: {
+					mBottom += (1 + TITLE_GAP_RATIO) * titleHeight;
+					break;
+				}
+				}
+			}
+		}
+
+		return mBottom;
+	}
+
+	/**
+	 * Calculate the margin of the given subplot. The legend size can be
+	 * calculated by pre-setting its length constraint.
+	 * 
+	 * @param subplot
+	 * @param ais
+	 * @return
+	 */
+	static Insets2D calcMargin(SubplotEx subplot, AxesInSubplot ais) {
+
+		double mLeft, mRight, mTop, mBottom;
+
+		LegendEx legend = subplot.getLegend();
+
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case TOPLEFT:
+			case TOPCENTER:
+			case TOPRIGHT:
+			case BOTTOMLEFT:
+			case BOTTOMCENTER:
+			case BOTTOMRIGHT: {
+				double legendWidth = subplot.getSize().getWidth()
+						- subplot.getMargin().getExtraLeft()
+						- subplot.getMargin().getExtraRight();
+				legend.setLengthConstraint(legendWidth);
+				break;
+			}
+			}
+		}
+
+		mTop = calcTopMargin(subplot, ais);
+		mBottom = calcBottomMargin(subplot, ais);
+
+		if (legend.canContribute()) {
+			switch (legend.getPosition()) {
+			case LEFTTOP:
+			case LEFTMIDDLE:
+			case LEFTBOTTOM:
+			case RIGHTTOP:
+			case RIGHTMIDDLE:
+			case RIGHTBOTTOM: {
+				double contentHeight = subplot.getSize().getHeight() - mTop
+						- mBottom;
+				legend.setLengthConstraint(contentHeight);
+				break;
+			}
+			}
+		}
+
+		mLeft = calcLeftMargin(subplot, ais);
+		mRight = calcRightMargin(subplot, ais);
 
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
@@ -192,11 +349,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		// set offset and length for axes
 		for (AxisEx xa : sp.getXAxes()) {
-			xa.setOffset(contentBox.getX());
 			xa.setLength(contentBox.getWidth());
 		}
 		for (AxisEx ya : sp.getYAxes()) {
-			ya.setOffset(contentBox.getY());
 			ya.setLength(contentBox.getHeight());
 		}
 
@@ -285,7 +440,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			return null;
 		} else {
 			AxesInSubplot ais = getAllAxes(subplot);
-			Insets2D margin = calcMargin(subplot.getMargin(), ais);
+			Insets2D margin = calcMargin(subplot, ais);
 			double w = prefContSize.getWidth() + margin.getLeft()
 					+ margin.getRight();
 			double h = prefContSize.getHeight() + margin.getTop()

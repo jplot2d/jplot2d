@@ -18,14 +18,16 @@
  */
 package org.jplot2d.layout;
 
-import static org.junit.Assert.*;
+import static org.jplot2d.util.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import org.jplot2d.element.impl.AxisEx;
-import org.jplot2d.element.impl.SubplotMarginEx;
-import org.jplot2d.element.impl.SubplotMarginImpl;
+import org.jplot2d.element.impl.LegendEx;
+import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.SubplotImpl;
+import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.layout.SimpleLayoutDirector.AxesInSubplot;
-import org.jplot2d.util.Insets2D;
+import org.jplot2d.util.DoubleDimension2D;
 import org.junit.Test;
 
 /**
@@ -35,34 +37,86 @@ import org.junit.Test;
 public class SimpleLayoutDirectorTest {
 
 	@Test
-	public void calcMarginTest() {
-		SubplotMarginEx margin = new SubplotMarginImpl();
+	public void testCalcMargin() {
+		LegendEx legend = mock(LegendEx.class);
+		SubplotEx subplot = new SubplotImpl(legend) {
+		};
 		AxesInSubplot ais = new AxesInSubplot();
-		assertEquals(SimpleLayoutDirector.calcMargin(margin, ais),
-				new Insets2D(0, 0, 0, 0));
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 0);
+
+		// add axes
 
 		AxisEx left = mock(AxisEx.class);
-		when(left.getAsc()).thenReturn(0.4);
-		when(left.getDesc()).thenReturn(0.1);
+		when(left.getAsc()).thenReturn(8.0);
+		when(left.getDesc()).thenReturn(2.0);
 
 		AxisEx right = mock(AxisEx.class);
-		when(right.getAsc()).thenReturn(0.1);
-		when(right.getDesc()).thenReturn(0.4);
+		when(right.getAsc()).thenReturn(2.0);
+		when(right.getDesc()).thenReturn(8.0);
 
 		AxisEx top = mock(AxisEx.class);
-		when(top.getAsc()).thenReturn(0.25);
-		when(top.getDesc()).thenReturn(0.125);
+		when(top.getAsc()).thenReturn(5.0);
+		when(top.getDesc()).thenReturn(2.5);
 
 		AxisEx bottom = mock(AxisEx.class);
-		when(bottom.getAsc()).thenReturn(0.125);
-		when(bottom.getDesc()).thenReturn(0.25);
+		when(bottom.getAsc()).thenReturn(2.5);
+		when(bottom.getDesc()).thenReturn(5.0);
 
 		ais.leftAxes.add(left);
 		ais.rightAxes.add(right);
 		ais.topAxes.add(top);
 		ais.bottomAxes.add(bottom);
-		assertEquals(SimpleLayoutDirector.calcMargin(margin, ais),
-				new Insets2D(0.25, 0.4, 0.25, 0.4));
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 8.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 8.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 5.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 5.0);
+
+		subplot.getMargin().setExtraLeft(10.0);
+		subplot.getMargin().setExtraRight(9.0);
+		subplot.getMargin().setExtraTop(8.0);
+		subplot.getMargin().setExtraBottom(7.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 13.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 12.0);
+
+		// add title
+		TitleEx title0 = mock(TitleEx.class);
+		when(title0.canContribute()).thenReturn(true);
+		when(title0.getPosition()).thenReturn(TitleEx.Position.TOPCENTER);
+		when(title0.getSize()).thenReturn(new DoubleDimension2D(20, 12));
+		TitleEx title1 = mock(TitleEx.class);
+		when(title1.canContribute()).thenReturn(true);
+		when(title1.getPosition()).thenReturn(TitleEx.Position.TOPCENTER);
+		when(title1.getSize()).thenReturn(new DoubleDimension2D(20, 8));
+		subplot.addTitle(title0);
+		subplot.addTitle(title1);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 12.0);
+
+		// add legend
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getPosition()).thenReturn(LegendEx.Position.BOTTOMCENTER);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(100, 40));
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 60.0);
+
+		// no auto margin
+		subplot.getMargin().setAutoMarginLeft(false);
+		subplot.getMargin().setAutoMarginRight(false);
+		subplot.getMargin().setAutoMarginTop(false);
+		subplot.getMargin().setAutoMarginBottom(false);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 10.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 9.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 8.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 7.0);
 	}
 
 }
