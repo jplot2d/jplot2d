@@ -53,6 +53,19 @@ public class LegendImpl extends ContainerImpl implements LegendEx {
 
 	private boolean relayoutItemsNeeded;
 
+	public String getSelfId() {
+		if (getParent() != null) {
+			return "Legend";
+		} else {
+			return "Legend@"
+					+ Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
+	public SubplotEx getParent() {
+		return (SubplotEx) super.getParent();
+	}
+
 	public Dimension2D getSize() {
 		// TODO Auto-generated method stub
 		return new DoubleDimension2D();

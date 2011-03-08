@@ -18,39 +18,33 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.Legend;
-
 /**
  * @author Jingjing Li
  * 
  */
-public interface LegendEx extends Legend, ContainerEx {
+public class TitleImpl extends TextComponentImpl implements TitleEx {
 
-	public SubplotEx getParent();
-	
-	public void addLegendItem(LegendItemEx item);
+	public String getSelfId() {
+		if (getParent() != null) {
+			return "Title" + getParent().indexOf(this);
+		} else {
+			return "Title@"
+					+ Integer.toHexString(System.identityHashCode(this));
+		}
+	}
 
-	public void removeLegendItem(LegendItemEx item);
+	public SubplotEx getParent() {
+		return (SubplotEx) super.getParent();
+	}
 
-	/**
-	 * Returns the constraint of length.
-	 * 
-	 * @return the length
-	 */
-	public double getLengthConstraint();
+	public Position getPosition() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	/**
-	 * Set the constraint of length
-	 * 
-	 * @param length
-	 */
-	public void setLengthConstraint(double length);
+	public void setPosition(Position position) {
+		// TODO Auto-generated method stub
 
-	/**
-	 * This method is used to calculate size of this legend. If the the size
-	 * changed and this legend is visible, it'll call invalidate() to notify
-	 * subplot its layout is invalid.
-	 */
-	public void calcSize();
+	}
 
 }
