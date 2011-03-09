@@ -125,11 +125,13 @@ public class SubplotImplTest {
 
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
+		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
 		sp.addLayer(layer0, xaxis.getRangeManager(), yaxis.getRangeManager());
 		assertFalse(sp.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
+		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
 		sp.addLayer(layer1, xaxis.getRangeManager(), yaxis.getRangeManager());
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();

@@ -71,9 +71,9 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	/* the gap between title and label */
 	private static final double TITLE_GAP_RATIO = 1.0 / 4;
 
-	private AxisTickEx tick;
+	private final AxisTickEx tick;
 
-	private AxisTitleEx title;
+	private final AxisTitleEx title;
 
 	private double locX, locY;
 

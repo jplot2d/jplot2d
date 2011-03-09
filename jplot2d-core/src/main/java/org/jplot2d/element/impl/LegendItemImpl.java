@@ -23,24 +23,38 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.util.MathElement;
+import org.jplot2d.util.MathLabel;
+import org.jplot2d.util.TeXMathUtils;
+
 /**
  * @author Jingjing Li
  * 
  */
-public class LegendItemImpl extends ComponentImpl implements LegendItemEx {
+public class LegendItemImpl extends ElementImpl implements LegendItemEx {
 
-	private final GraphPlotterEx graphPlotter;
+	private boolean visible = true;
 
-	public LegendItemImpl(GraphPlotterEx graphPlotter) {
-		this.graphPlotter = graphPlotter;
+	private MathElement textModel;
+
+	private MathLabel label;
+
+	private LegendEx legend;
+
+	public LegendItemImpl() {
+
 	}
 
-	public LegendEx getParent() {
-		return (LegendEx) super.getParent();
+	public GraphPlotterEx getParent() {
+		return (GraphPlotterEx) super.getParent();
 	}
 
-	public GraphPlotterEx getGraphPlotter() {
-		return graphPlotter;
+	public LegendEx getLegend() {
+		return legend;
+	}
+
+	public void setLegend(LegendEx legend) {
+		this.legend = legend;
 	}
 
 	public Point2D getLocation() {
@@ -58,9 +72,56 @@ public class LegendItemImpl extends ComponentImpl implements LegendItemEx {
 		return null;
 	}
 
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+		invalidate();
+		redraw();
+	}
+
+	public String getText() {
+		return TeXMathUtils.toString(textModel);
+	}
+
+	public void setText(String text) {
+		setTextModel(TeXMathUtils.parseText(text));
+	}
+
+	public MathElement getTextModel() {
+		return textModel;
+	}
+
+	public void setTextModel(MathElement model) {
+		this.textModel = model;
+		label = null;
+		if (isVisible()) {
+			invalidate();
+			redraw();
+		}
+	}
+
+	/**
+	 * Invalidate the legend
+	 */
+	private void invalidate() {
+		if (getLegend() != null) {
+			getLegend().invalidate();
+		}
+	}
+
+	private void redraw() {
+		if (getLegend() != null) {
+			getLegend().invalidate();
+			getLegend().redraw();
+		}
+	}
+
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

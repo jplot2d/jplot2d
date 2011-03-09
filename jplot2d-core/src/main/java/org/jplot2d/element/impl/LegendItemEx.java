@@ -24,8 +24,12 @@ import org.jplot2d.element.LegendItem;
  * @author Jingjing Li
  * 
  */
-public interface LegendItemEx extends LegendItem, ComponentEx {
+public interface LegendItemEx extends LegendItem, ElementEx {
 
-	public LegendEx getParent();
+	public GraphPlotterEx getParent();
+
+	public LegendEx getLegend();
+
+	public void setLegend(LegendEx legend);
 
 }

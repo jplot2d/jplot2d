@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -51,8 +51,6 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	protected PhysicalTransform pxf;
 
-	private SubplotMarginEx margin;
-
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out.
 	 * This flag is set to false when the object size is changed. The initial
@@ -74,6 +72,8 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	private Dimension2D preferredContentSize = new DoubleDimension2D(320, 240);
 
 	private Rectangle2D contentBounds;
+
+	private SubplotMarginEx margin;
 
 	private LegendEx legend;
 
@@ -378,26 +378,38 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 
 	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
 			AxisRangeManager yRangeManager) {
-		layers.add((LayerEx) layer);
-		((LayerEx) layer).setParent(this);
-		((LayerEx) layer).setRangeManager(xRangeManager, yRangeManager);
+		LayerEx lx = (LayerEx) layer;
+		layers.add(lx);
+		lx.setParent(this);
+		lx.setRangeManager(xRangeManager, yRangeManager);
 
-		if (((LayerEx) layer).canContributeToParent()) {
+		if (lx.canContributeToParent()) {
 			redraw();
-		} else if (((LayerEx) layer).canContribute()) {
+		} else if (lx.canContribute()) {
 			rerender();
+		}
+
+		// add legend items
+		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
+			getLegend().addLegendItem(gp.getLegendItem());
 		}
 	}
 
 	public void removeLayer(Layer layer) {
-		layers.remove(layer);
-		((LayerEx) layer).setParent(null);
-		((LayerEx) layer).setRangeManager(null, null);
+		LayerEx lx = (LayerEx) layer;
+		layers.remove(lx);
+		lx.setParent(null);
+		lx.setRangeManager(null, null);
 
-		if (((LayerEx) layer).canContributeToParent()) {
+		if (lx.canContributeToParent()) {
 			redraw();
-		} else if (((LayerEx) layer).canContribute()) {
+		} else if (lx.canContribute()) {
 			rerender();
+		}
+
+		// remove legend items
+		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
+			getLegend().removeLegendItem(gp.getLegendItem());
 		}
 	}
 
@@ -633,6 +645,10 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		result.margin = (SubplotMarginEx) margin.copyStructure(orig2copyMap);
 		result.margin.setParent(result);
 
+		// copy legend
+		result.legend = (LegendEx) legend.copyStructure(orig2copyMap);
+		result.legend.setParent(result);
+
 		// copy axes
 		for (AxisEx va : xAxis) {
 			AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
@@ -658,9 +674,6 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 			((ComponentEx) spCopy).setParent(this);
 			result.subplots.add(spCopy);
 		}
-
-		// link layer and range manager
-		linkLayerAndRangeManager(this, orig2copyMap);
 
 		return result;
 	}
@@ -707,6 +720,21 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		}
 		for (SubplotEx sp : subplot.getSubplots()) {
 			linkLayerAndRangeManager(sp, orig2copyMap);
+		}
+	}
+
+	protected static void linkLegendAndLegendItem(SubplotEx subplot,
+			Map<ElementEx, ElementEx> orig2copyMap) {
+		for (LayerEx layer : subplot.getLayers()) {
+			for (GraphPlotterEx gp : layer.getGraphPlotters()) {
+				LegendItemEx li = gp.getLegendItem();
+				LegendItemEx liCopy = (LegendItemEx) orig2copyMap.get(li);
+				if (liCopy.getLegend() == null) {
+					LegendEx legendCopy = (LegendEx) orig2copyMap.get(li
+							.getLegend());
+					legendCopy.addLegendItem(liCopy);
+				}
+			}
 		}
 	}
 

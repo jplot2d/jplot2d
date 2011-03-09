@@ -27,8 +27,8 @@ import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
 import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.LegendItem;
 import org.jplot2d.element.SubplotMargin;
-import org.jplot2d.element.TextComponent;
 import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
@@ -43,10 +43,10 @@ import org.jplot2d.element.impl.AxisTickEx;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
+import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.SubplotMarginEx;
-import org.jplot2d.element.impl.TextComponentEx;
 import org.jplot2d.element.impl.AxisRangeManagerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 
@@ -158,6 +158,7 @@ public class ComponentFactory {
 						ElementAddition.class }, ih);
 
 		SubplotMarginEx margin = impl.getMargin();
+		applyProfile(margin);
 		ElementIH<SubplotMargin> marginIH = new ElementIH<SubplotMargin>(
 				margin, SubplotMargin.class);
 		SubplotMargin marginProxy = (SubplotMargin) Proxy.newProxyInstance(
@@ -205,16 +206,30 @@ public class ComponentFactory {
 	}
 
 	public XYGraphPlotter createXYGraphPlotter() {
-		XYGraphPlotterImpl impl = new XYGraphPlotterImpl();
-		applyProfile(impl);
-		ElementIH<XYGraphPlotter> ih = new ElementIH<XYGraphPlotter>(impl,
+		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
+		applyProfile(gp);
+		ElementIH<XYGraphPlotter> gpIH = new ElementIH<XYGraphPlotter>(gp,
 				XYGraphPlotter.class);
-		XYGraphPlotter proxy = (XYGraphPlotter) Proxy.newProxyInstance(
+		XYGraphPlotter gpProxy = (XYGraphPlotter) Proxy.newProxyInstance(
 				XYGraphPlotter.class.getClassLoader(), new Class[] {
-						XYGraphPlotter.class, ElementAddition.class }, ih);
+						XYGraphPlotter.class, ElementAddition.class }, gpIH);
 
-		assignDummyEnv(impl, proxy);
-		return proxy;
+		LegendItemEx li = gp.getLegendItem();
+		ElementIH<LegendItem> liIH = new ElementIH<LegendItem>(li,
+				LegendItem.class);
+		LegendItem liProxy = (LegendItem) Proxy.newProxyInstance(
+				LegendItem.class.getClassLoader(), new Class[] {
+						LegendItem.class, ElementAddition.class }, liIH);
+
+		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
+				: new DummyEnvironment();
+		synchronized (Environment.getGlobalLock()) {
+			((ElementAddition) gpProxy).setEnvironment(env);
+			((ElementAddition) liProxy).setEnvironment(env);
+		}
+		env.registerComponent(gp, gpProxy);
+		env.registerElement(li, liProxy);
+		return gpProxy;
 	}
 
 	/**
