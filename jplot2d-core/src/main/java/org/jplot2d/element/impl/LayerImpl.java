@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -120,6 +120,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		plotters.add(gp);
 		gp.setParent(this);
 
+		// add legend item
+		if (getParent() != null) {
+			getParent().getLegend().addLegendItem(gp.getLegendItem());
+		}
+
 		if (gp.canContributeToParent()) {
 			redraw();
 		} else if (gp.canContribute()) {
@@ -140,6 +145,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		GraphPlotterEx gp = (GraphPlotterEx) plotter;
 		plotters.remove(gp);
 		gp.setParent(null);
+
+		// remove legend item
+		if (getParent() != null) {
+			getParent().getLegend().removeLegendItem(gp.getLegendItem());
+		}
 
 		if (gp.canContributeToParent()) {
 			redraw();

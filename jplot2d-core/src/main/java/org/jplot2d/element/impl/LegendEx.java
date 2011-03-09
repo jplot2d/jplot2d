@@ -27,9 +27,24 @@ import org.jplot2d.element.Legend;
 public interface LegendEx extends Legend, ContainerEx {
 
 	public SubplotEx getParent();
-	
+
+	/**
+	 * Add the given item to this legend. If this legend is disabled, the item
+	 * should be added to its 1st enabled upper level legend. This method will
+	 * set the legend property of added item to the actual hosting legend.
+	 * 
+	 * @param item
+	 *            the legend item to be added
+	 */
 	public void addLegendItem(LegendItemEx item);
 
+	/**
+	 * Remove the given item from this legend. If this legend is disabled, the
+	 * item should be removed from its hosting legend.
+	 * 
+	 * @param item
+	 *            the legend item to be removed
+	 */
 	public void removeLegendItem(LegendItemEx item);
 
 	/**
@@ -45,6 +60,11 @@ public interface LegendEx extends Legend, ContainerEx {
 	 * @param length
 	 */
 	public void setLengthConstraint(double length);
+
+	/**
+	 * Notify this legend need to re-layout its items.
+	 */
+	public void invalidate();
 
 	/**
 	 * This method is used to calculate size of this legend. If the the size

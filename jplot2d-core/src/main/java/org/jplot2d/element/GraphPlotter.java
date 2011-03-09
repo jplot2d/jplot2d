@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,9 +21,10 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.data.Graph;
-import org.jplot2d.util.MathElement;
 
 /**
+ * A plotter to draw Graph data in a viewport of layer.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -33,37 +34,18 @@ public interface GraphPlotter extends Component {
 	public Layer getParent();
 
 	/**
-	 * Returns the name displayed in the legend
+	 * Returns the legend item associated with this graph plotter.
 	 * 
-	 * @return the name
+	 * @return the legend item
 	 */
-	public String getName();
-
-	/**
-	 * Sets the name displayed in the legend
-	 * 
-	 * @param name
-	 *            the name displayed in the legend
-	 */
-	public void setName(String name);
-
-	/**
-	 * Returns the name displayed in the legend
-	 * 
-	 * @return the name
-	 */
-	public MathElement getNameModel();
-
-	/**
-	 * Sets the name displayed in the legend
-	 * 
-	 * @param name
-	 *            the name displayed in the legend
-	 */
-	public void setNameModel(MathElement name);
-
-	public Graph getGraph();
-
+	@Hierarchy(HierarchyOp.GET)
 	public LegendItem getLegendItem();
+
+	/**
+	 * Returns the graph data that this plotter will draw.
+	 * 
+	 * @return
+	 */
+	public Graph getGraph();
 
 }

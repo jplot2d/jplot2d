@@ -18,16 +18,77 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.util.MathElement;
+
 /**
- * An item in legend. It will be hosted by the legend of the subplot which host
- * the GraphPlotter. If the hosting legend is disabled, it will be hosted by
- * legend of parent subplot.
+ * An item in legend to show a short line and a text. It will be hosted by the
+ * legend of the subplot which host the GraphPlotter. If the hosting legend is
+ * disabled, it will be hosted by legend of parent subplot.
  * 
  * @author Jingjing Li
  * 
  */
-public interface LegendItem extends Component {
+public interface LegendItem extends Element {
 
-	public GraphPlotter getGraphPlotter();
+	@Hierarchy(HierarchyOp.GET)
+	public GraphPlotter getParent();
+
+	/**
+	 * Returns the legend who show this item
+	 * 
+	 * @return the legend who show this item
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Legend getLegend();
+
+	/**
+	 * returns <code>true</code> if this item is displayed in legend; otherwise,
+	 * returns <code>false</code>.
+	 * 
+	 * @return the flag
+	 */
+	public boolean isVisible();
+
+	/**
+	 * Sets a flag indicating whether this item should be displayed in the
+	 * legend. The default value is <code>true</code>, even if the GraphPlotter
+	 * is invisible.
+	 * 
+	 * @param show
+	 *            the flag
+	 */
+	public void setVisible(boolean show);
+
+	/**
+	 * Returns the text displayed in the legend item
+	 * 
+	 * @return the text
+	 */
+	public String getText();
+
+	/**
+	 * Sets the text displayed in the legend item
+	 * 
+	 * @param text
+	 *            the text displayed in the legend item
+	 */
+	public void setText(String text);
+
+	/**
+	 * Returns the text displayed in the legend item
+	 * 
+	 * @return the text
+	 */
+	public MathElement getTextModel();
+
+	/**
+	 * Sets the text displayed in the legend item
+	 * 
+	 * @param text
+	 *            the text displayed in the legend
+	 */
+	public void setTextModel(MathElement model);
 
 }

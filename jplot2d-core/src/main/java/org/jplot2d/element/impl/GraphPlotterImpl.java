@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,10 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
-import org.jplot2d.element.LegendItem;
-import org.jplot2d.util.MathElement;
-import org.jplot2d.util.TeXMathUtils;
+import java.util.Map;
 
 /**
  * @author Jingjing Li
@@ -35,16 +32,19 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 
 	private static Point2D LOCATION = new Point2D.Double();
 
-	private MathElement name;
+	private final LegendItemEx legendItem;
 
-	private LegendItemEx legendItem;
-
-	public GraphPlotterImpl() {
-		legendItem = new LegendItemImpl(this);
+	protected GraphPlotterImpl(LegendItemEx legendItem) {
+		this.legendItem = legendItem;
+		legendItem.setParent(this);
 	}
 
 	public LayerEx getParent() {
 		return (LayerEx) super.getParent();
+	}
+
+	public LegendItemEx getLegendItem() {
+		return legendItem;
 	}
 
 	public Point2D getLocation() {
@@ -72,30 +72,16 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 		}
 	}
 
-	public String getName() {
-		return TeXMathUtils.toString(name);
-	}
-
-	public void setName(String name) {
-		this.name = TeXMathUtils.parseText(name);
-	}
-
-	public MathElement getNameModel() {
-		return name;
-	}
-
-	public void setNameModel(MathElement name) {
-		this.name = name;
-	}
-
-	public LegendItem getLegendItem() {
-		return legendItem;
-	}
-
 	@Override
-	public void copyFrom(ElementEx src) {
-		GraphPlotterImpl gp = (GraphPlotterImpl) src;
-		this.name = gp.name;
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		GraphPlotterImpl result = (GraphPlotterImpl) super
+				.copyStructure(orig2copyMap);
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(getLegendItem(), result.getLegendItem());
+		}
+
+		return result;
 	}
 
 }

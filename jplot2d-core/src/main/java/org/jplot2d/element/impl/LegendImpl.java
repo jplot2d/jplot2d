@@ -66,6 +66,13 @@ public class LegendImpl extends ContainerImpl implements LegendEx {
 		return (SubplotEx) super.getParent();
 	}
 
+	/*
+	 * Only contribute contents when it has items.
+	 */
+	public boolean canContribute() {
+		return isVisible() && items.size() > 0;
+	}
+
 	public Dimension2D getSize() {
 		// TODO Auto-generated method stub
 		return new DoubleDimension2D();
@@ -135,10 +142,37 @@ public class LegendImpl extends ContainerImpl implements LegendEx {
 
 	public void addLegendItem(LegendItemEx item) {
 		items.add(item);
+		if (isEnabled()) {
+			item.setLegend(this);
+		} else {
+			LegendEx enabledLegend = getEnabledLegend(getParent());
+			if (enabledLegend != null) {
+				enabledLegend.addLegendItem(item);
+			}
+		}
+	}
+
+	private static LegendEx getEnabledLegend(SubplotEx subplot) {
+		if (subplot == null) {
+			return null;
+		}
+		if (subplot.getLegend().isEnabled()) {
+			return subplot.getLegend();
+		} else {
+			return getEnabledLegend(subplot.getParent());
+		}
 	}
 
 	public void removeLegendItem(LegendItemEx item) {
 		items.remove(item);
+		if (isEnabled()) {
+			item.setLegend(null);
+		} else {
+			LegendEx enabledLegend = getEnabledLegend(getParent());
+			if (enabledLegend != null) {
+				enabledLegend.removeLegendItem(item);
+			}
+		}
 	}
 
 	public double getLengthConstraint() {
@@ -152,11 +186,8 @@ public class LegendImpl extends ContainerImpl implements LegendEx {
 		}
 	}
 
-	/*
-	 * Only contribute contents when it has items.
-	 */
-	public boolean canContribute() {
-		return false;
+	public void invalidate() {
+		relayoutItemsNeeded = true;
 	}
 
 	public void calcSize() {

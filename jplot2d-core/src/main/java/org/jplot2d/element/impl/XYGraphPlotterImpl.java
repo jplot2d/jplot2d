@@ -78,6 +78,10 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	private FillClosureType fillClosureType;
 
+	public XYGraphPlotterImpl() {
+		super(new LegendItemImpl());
+	}
+
 	public XYGraph getGraph() {
 		return graph;
 	}

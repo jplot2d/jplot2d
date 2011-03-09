@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -27,5 +27,7 @@ import org.jplot2d.element.GraphPlotter;
 public interface GraphPlotterEx extends GraphPlotter, ComponentEx {
 
 	public LayerEx getParent();
+
+	public LegendItemEx getLegendItem();
 
 }

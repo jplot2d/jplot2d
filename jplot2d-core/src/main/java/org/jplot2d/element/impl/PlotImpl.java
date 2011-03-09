@@ -277,6 +277,9 @@ public class PlotImpl extends SubplotImpl implements PlotEx {
 		// link layer and range manager
 		linkLayerAndRangeManager(this, orig2copyMap);
 
+		// link legend and LegendItem
+		linkLegendAndLegendItem(this, orig2copyMap);
+
 		return result;
 	}
 
