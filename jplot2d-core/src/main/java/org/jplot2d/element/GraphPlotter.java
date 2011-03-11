@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import java.awt.Color;
+
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.data.Graph;
@@ -28,7 +30,7 @@ import org.jplot2d.data.Graph;
  * @author Jingjing Li
  * 
  */
-public interface GraphPlotter extends Component {
+public interface GraphPlotter extends Element {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();
@@ -47,5 +49,41 @@ public interface GraphPlotter extends Component {
 	 * @return
 	 */
 	public Graph getGraph();
+
+	/**
+	 * Determines whether this plotter should plot the graph. plotter are
+	 * initially visible.
+	 * 
+	 * @return <code>true</code> if the plotter is visible, <code>false</code>
+	 *         otherwise
+	 * @see #setVisible
+	 */
+	public boolean isVisible();
+
+	/**
+	 * Plot or not the graph depending on the value of parameter <code>b</code>.
+	 * 
+	 * @param b
+	 *            if <code>true</code>, plot the graph
+	 * @see #isVisible
+	 */
+	public void setVisible(boolean b);
+
+	/**
+	 * Gets the default color of this plotter.
+	 * 
+	 * @return the default color of this plotter.
+	 * @see #setColor
+	 */
+	public Color getColor();
+
+	/**
+	 * Sets the default color of this plotter.
+	 * 
+	 * @param c
+	 *            the default color of this plotter.
+	 * @see #getColor
+	 */
+	public void setColor(Color c);
 
 }
