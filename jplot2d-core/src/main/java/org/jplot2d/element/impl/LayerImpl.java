@@ -125,13 +125,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			getParent().getLegend().addLegendItem(gp.getLegendItem());
 		}
 
-		if (gp.canContributeToParent()) {
-			redraw();
-		} else if (gp.canContribute()) {
-			rerender();
-		}
-
 		if (gp.isVisible()) {
+			redraw();
 			if (xaxis != null && xaxis.getLockGroup().isAutoRange()) {
 				xaxis.getLockGroup().reAutoRange();
 			}
@@ -151,13 +146,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			getParent().getLegend().removeLegendItem(gp.getLegendItem());
 		}
 
-		if (gp.canContributeToParent()) {
-			redraw();
-		} else if (gp.canContribute()) {
-			rerender();
-		}
-
 		if (gp.isVisible()) {
+			redraw();
 			if (xaxis.getLockGroup().isAutoRange()) {
 				xaxis.getLockGroup().reAutoRange();
 			}
@@ -182,7 +172,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			return false;
 		}
 		for (GraphPlotterEx gp : plotters) {
-			if (gp.isVisible() && !gp.isCacheable()) {
+			if (gp.isVisible()) {
 				return true;
 			}
 		}

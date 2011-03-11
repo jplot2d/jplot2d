@@ -216,7 +216,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 		Graphics2D g = (Graphics2D) graphics.create();
 		Rectangle2D clip = getParent().getPhysicalTransform().getPtoD(
-				getBounds());
+				new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(),
+						getParent().getSize().getHeight()));
 		g.setClip(clip);
 
 		if (isFillEnabled()) {
@@ -420,10 +421,10 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	static void drawLine(Graphics2D g2, float[] xout, float[] yout, int lsize,
-			XYGraphPlotterEx style, double scale) {
+			XYGraphPlotterEx plotter, double scale) {
 
 		// set line stroke
-		g2.setStroke(scaleStroke(style.getLineStroke(), scale));
+		g2.setStroke(scaleStroke(plotter.getLineStroke(), scale));
 
 		// draw lines
 		Path2D.Float gp = new Path2D.Float();
@@ -452,7 +453,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 * Draw Histogram lines that data points is on the level center.
 	 */
 	private static void drawHistogram(Graphics2D g, ChunkData data,
-			XYGraphPlotterEx style, double scale) {
+			XYGraphPlotterEx plotter, double scale) {
 
 		float[] x = data.xBuf;
 		float[] y = data.yBuf;
@@ -478,7 +479,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		xout[j] = x[lsize - 1];
 		yout[j] = y[lsize - 1];
 
-		drawLine(g, xout, yout, nsize, style, scale);
+		drawLine(g, xout, yout, nsize, plotter, scale);
 	}
 
 	/**
@@ -489,10 +490,10 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 * @param y
 	 * @param lsize
 	 *            the number of points
-	 * @param style
+	 * @param plotter
 	 */
 	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y,
-			int lsize, XYGraphPlotterEx style, double scale) {
+			int lsize, XYGraphPlotterEx plotter, double scale) {
 		int nsize = lsize * 2 - 1;
 		float[] xout = new float[nsize];
 		float[] yout = new float[nsize];
@@ -509,7 +510,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		xout[hi] = x[lsize - 1];
 		yout[hi] = y[lsize - 1];
 
-		drawLine(g, xout, yout, nsize, style, scale);
+		drawLine(g, xout, yout, nsize, plotter, scale);
 	}
 
 	/**
@@ -522,13 +523,13 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 *            horizontal coordinate
 	 * @param yp
 	 *            vertical coordinate
-	 * @param style
+	 * @param plotter
 	 *            line attribute
 	 */
 	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints,
-			XYGraphPlotterEx style, Color[] colors, double scale) {
+			XYGraphPlotterEx plotter, Color[] colors, double scale) {
 
-		if (style.getSymbolShape() == SymbolShape.DOT) {
+		if (plotter.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks
 			BasicStroke markStroke = new BasicStroke(0, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_BEVEL, 10f);
@@ -545,9 +546,9 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 			}
 		} else {
 			// use half of line stroke to draw marks
-			g.setStroke(scaleStroke(style.getLineStroke(), scale / 2));
+			g.setStroke(scaleStroke(plotter.getLineStroke(), scale / 2));
 
-			SymbolShape ss = style.getSymbolShape();
+			SymbolShape ss = plotter.getSymbolShape();
 			for (int i = 0; i < npoints; i++) {
 				/* not draw mark if the point is brought to clip border */
 				if (colors[i] == null) {
@@ -556,7 +557,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 				g.setColor(colors[i]);
 
-				double safScale = scale * style.getSymbolSize();
+				double safScale = scale * plotter.getSymbolSize();
 				AffineTransform maf = AffineTransform.getTranslateInstance(
 						xp[i], yp[i]);
 				maf.scale(safScale, safScale);
