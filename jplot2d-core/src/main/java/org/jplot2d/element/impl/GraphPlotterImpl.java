@@ -18,21 +18,21 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 /**
  * @author Jingjing Li
  * 
  */
-public abstract class GraphPlotterImpl extends ElementImpl implements
+public abstract class GraphPlotterImpl extends ComponentImpl implements
 		GraphPlotterEx {
 
+	private static Point2D LOCATION = new Point2D.Double();
+
 	private final LegendItemEx legendItem;
-
-	private Color color;
-
-	private boolean visible;
 
 	protected GraphPlotterImpl(LegendItemEx legendItem) {
 		this.legendItem = legendItem;
@@ -47,37 +47,33 @@ public abstract class GraphPlotterImpl extends ElementImpl implements
 		return legendItem;
 	}
 
-	public boolean isVisible() {
-		return visible;
+	public Point2D getLocation() {
+		return LOCATION;
 	}
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-		if (getParent() != null) {
-			getParent().redraw();
+	public void setLocation(double locX, double locY) {
+		throw new UnsupportedOperationException();
+	}
+
+	public Dimension2D getSize() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			return getParent().getSize();
 		}
 	}
 
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	public Color getEffectiveColor() {
-		if (color != null) {
-			return color;
-		} else if (getParent() != null) {
-			return getParent().getEffectiveColor();
-		} else {
+	public Rectangle2D getBounds() {
+		if (getParent() == null) {
 			return null;
+		} else {
+			return new Rectangle2D.Double(0, 0, getSize().getWidth(), getSize()
+					.getHeight());
 		}
 	}
 
 	@Override
-	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		GraphPlotterImpl result = (GraphPlotterImpl) super
 				.copyStructure(orig2copyMap);
 

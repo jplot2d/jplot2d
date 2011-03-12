@@ -24,7 +24,7 @@ import org.jplot2d.element.GraphPlotter;
  * @author Jingjing Li
  * 
  */
-public interface GraphPlotterEx extends GraphPlotter, ElementEx {
+public interface GraphPlotterEx extends GraphPlotter, ComponentEx {
 
 	public LayerEx getParent();
 
