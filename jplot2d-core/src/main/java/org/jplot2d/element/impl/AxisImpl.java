@@ -234,13 +234,13 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		invalidate();
+		invalidateSubplot();
 	}
 
 	/**
 	 * Invalidate the subplot.
 	 */
-	private void invalidate() {
+	private void invalidateSubplot() {
 		if (getParent() != null) {
 			getParent().invalidate();
 		}
@@ -280,7 +280,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	public void setPosition(AxisPosition position) {
 		this.position = position;
 		invalidateThickness();
-		invalidate();
+		invalidateSubplot();
 	}
 
 	public void calcTicks() {
@@ -527,7 +527,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 			asc = ba;
 			desc = bd;
 			if (isVisible()) {
-				invalidate();
+				invalidateSubplot();
 			}
 		}
 
