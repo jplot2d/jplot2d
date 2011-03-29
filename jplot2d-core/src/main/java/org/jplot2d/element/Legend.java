@@ -21,6 +21,8 @@ package org.jplot2d.element;
 import java.awt.geom.Point2D;
 
 /**
+ * Legend display legend items in grid cells.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -29,6 +31,23 @@ public interface Legend extends Container {
 	public enum Position {
 		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
 	};
+
+	/**
+	 * Returns <code>true</code> if this legend is enabled. By default, the
+	 * legend is enabled.
+	 * 
+	 * @return the enabled flag.
+	 */
+	public boolean isEnabled();
+
+	/**
+	 * Set to <code>true</code> to let this legend to host items. Otherwise the
+	 * items will be displayed in parent legend. The disabled legend will not
+	 * show.
+	 * 
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled);
 
 	/**
 	 * Gets the current position of this legend.
@@ -66,6 +85,19 @@ public interface Legend extends Container {
 	 *            the base point given in the physical coordinate space
 	 */
 	public void setLocation(Point2D loc);
+
+	/**
+	 * Moves this legend to a new location.
+	 * <p>
+	 * Notice: This method should be called when the position is
+	 * <code>null</code>, otherwise the behavior is not defined.
+	 * 
+	 * @param x
+	 *            the x-coordinate of the new location
+	 * @param y
+	 *            the y-coordinate of the new location
+	 */
+	public void setLocation(double x, double y);
 
 	/**
 	 * Get the horizontal alignment.
@@ -106,20 +138,18 @@ public interface Legend extends Container {
 	public void setVAlign(VAlign valign);
 
 	/**
-	 * Returns <code>true</code> if this legend is enabled. By default, the
-	 * legend is enabled.
+	 * Returns the number of columns in the legend item.
 	 * 
-	 * @return the enabled flag.
+	 * @return the number of columns
 	 */
-	public boolean isEnabled();
+	public int getColumns();
 
 	/**
-	 * Set to <code>true</code> to let this legend to host items. Otherwise the
-	 * items will be displayed in parent legend. The disabled legend will not
-	 * show.
+	 * Sets the number of columns. This method only take effect when position is
+	 * <code>null<code>. Otherwise the columns is auto selected.
 	 * 
-	 * @param enabled
+	 * @param cols
+	 *            number of columns
 	 */
-	public void setEnabled(boolean enabled);
-
+	public void setColumns(int columns);
 }

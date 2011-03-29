@@ -62,9 +62,14 @@ public interface LegendEx extends Legend, ContainerEx {
 	public void setLengthConstraint(double length);
 
 	/**
-	 * Notify this legend need to re-layout its items.
+	 * Notify this legend one of its item's size changed
 	 */
-	public void invalidate();
+	public void itemSizeChanged(LegendItemEx item);
+
+	/**
+	 * Notify this legend one of its item's visible changed
+	 */
+	public void itemVisibleChanged(LegendItemImpl item);
 
 	/**
 	 * This method is used to calculate size of this legend. If the the size

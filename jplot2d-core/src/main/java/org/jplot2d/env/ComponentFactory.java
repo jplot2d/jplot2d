@@ -27,6 +27,7 @@ import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTick;
 import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.Legend;
 import org.jplot2d.element.LegendItem;
 import org.jplot2d.element.SubplotMargin;
 import org.jplot2d.element.AxisRangeManager;
@@ -43,6 +44,7 @@ import org.jplot2d.element.impl.AxisTickEx;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.LayerImpl;
+import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotImpl;
@@ -150,14 +152,22 @@ public class ComponentFactory {
 	}
 
 	public Subplot createSubplot() {
-		SubplotImpl impl = new SubplotImpl();
-		applyProfile(impl);
-		ElementIH<Subplot> ih = new ElementIH<Subplot>(impl, Subplot.class);
-		Subplot proxy = (Subplot) Proxy.newProxyInstance(
+		SubplotImpl subplot = new SubplotImpl();
+		applyProfile(subplot);
+		ElementIH<Subplot> subplotIH = new ElementIH<Subplot>(subplot,
+				Subplot.class);
+		Subplot subplotProxy = (Subplot) Proxy.newProxyInstance(
 				Subplot.class.getClassLoader(), new Class[] { Subplot.class,
-						ElementAddition.class }, ih);
+						ElementAddition.class }, subplotIH);
 
-		SubplotMarginEx margin = impl.getMargin();
+		LegendEx legend = subplot.getLegend();
+		applyProfile(legend);
+		ElementIH<Legend> legendIH = new ElementIH<Legend>(legend, Legend.class);
+		Legend legendProxy = (Legend) Proxy.newProxyInstance(
+				Legend.class.getClassLoader(), new Class[] { Legend.class,
+						ElementAddition.class }, legendIH);
+
+		SubplotMarginEx margin = subplot.getMargin();
 		applyProfile(margin);
 		ElementIH<SubplotMargin> marginIH = new ElementIH<SubplotMargin>(
 				margin, SubplotMargin.class);
@@ -168,13 +178,15 @@ public class ComponentFactory {
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();
 		synchronized (Environment.getGlobalLock()) {
-			((ElementAddition) proxy).setEnvironment(env);
+			((ElementAddition) subplotProxy).setEnvironment(env);
+			((ElementAddition) legendProxy).setEnvironment(env);
 			((ElementAddition) marginProxy).setEnvironment(env);
 		}
-		env.registerComponent(impl, proxy);
+		env.registerComponent(subplot, subplotProxy);
+		env.registerComponent(legend, legendProxy);
 		env.registerElement(margin, marginProxy);
 
-		return proxy;
+		return subplotProxy;
 	}
 
 	public Layer createLayer(double[] xarray, double[] yarray) {

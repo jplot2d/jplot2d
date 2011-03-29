@@ -21,7 +21,10 @@ package org.jplot2d.layout;
 import static org.jplot2d.util.TestUtils.*;
 import static org.mockito.Mockito.*;
 
+import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.impl.AxisEx;
+import org.jplot2d.element.impl.AxisLockGroupEx;
+import org.jplot2d.element.impl.AxisRangeManagerEx;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.SubplotEx;
 import org.jplot2d.element.impl.SubplotImpl;
@@ -117,6 +120,57 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 9.0);
 		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 8.0);
 		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 7.0);
+	}
+
+	@Test
+	public void testLayoutMargin() {
+		LegendEx legend = mock(LegendEx.class);
+		SubplotEx subplot = new SubplotImpl(legend) {
+		};
+		subplot.setSize(300, 200);
+
+		// add axes
+		AxisRangeManagerEx rm = mock(AxisRangeManagerEx.class);
+		AxisLockGroupEx lg = mock(AxisLockGroupEx.class);
+		when(rm.getLockGroup()).thenReturn(lg);
+
+		AxisEx left = mock(AxisEx.class);
+		when(left.getRangeManager()).thenReturn(rm);
+		when(left.canContribute()).thenReturn(true);
+		when(left.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
+		when(left.getAsc()).thenReturn(8.0);
+		when(left.getDesc()).thenReturn(2.0);
+
+		AxisEx right = mock(AxisEx.class);
+		when(right.getRangeManager()).thenReturn(rm);
+		when(right.canContribute()).thenReturn(true);
+		when(right.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
+		when(right.getAsc()).thenReturn(2.0);
+		when(right.getDesc()).thenReturn(8.0);
+
+		AxisEx top = mock(AxisEx.class);
+		when(top.getRangeManager()).thenReturn(rm);
+		when(top.canContribute()).thenReturn(true);
+		when(top.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
+		when(top.getAsc()).thenReturn(5.0);
+		when(top.getDesc()).thenReturn(2.5);
+
+		AxisEx bottom = mock(AxisEx.class);
+		when(bottom.getRangeManager()).thenReturn(rm);
+		when(bottom.canContribute()).thenReturn(true);
+		when(bottom.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
+		when(bottom.getAsc()).thenReturn(2.5);
+		when(bottom.getDesc()).thenReturn(5.0);
+
+		subplot.addYAxis(left);
+		subplot.addYAxis(right);
+		subplot.addXAxis(top);
+		subplot.addXAxis(bottom);
+
+		subplot.validate();
+		checkRectangle2D(subplot.getContentBounds(), 8.0, 5.0, 300 - 8 - 8,
+				200 - 5 - 5);
+
 	}
 
 }

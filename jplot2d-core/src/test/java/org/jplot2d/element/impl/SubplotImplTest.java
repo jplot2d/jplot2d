@@ -21,6 +21,9 @@ package org.jplot2d.element.impl;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 /**
@@ -177,6 +180,7 @@ public class SubplotImplTest {
 		when(xaxis.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		when(xaxis.isVisible()).thenReturn(true);
+		when(xaxis.canContribute()).thenReturn(true);
 		sp.addXAxis(xaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
@@ -201,6 +205,7 @@ public class SubplotImplTest {
 		when(yaxis.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		when(yaxis.isVisible()).thenReturn(true);
+		when(yaxis.canContribute()).thenReturn(true);
 		sp.addYAxis(yaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
@@ -223,7 +228,17 @@ public class SubplotImplTest {
 		sp.removeSubplot(spInvisble);
 		assertTrue(sp.isValid());
 		sp.validate();
+	}
 
+	@Test
+	public void testCopyStructure() {
+		SubplotImpl sp = new SubplotImpl();
+		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
+		SubplotImpl sp2 = sp.copyStructure(orig2copyMap);
+		assertEquals(orig2copyMap.size(), 3);
+		assertSame(sp2, orig2copyMap.get(sp));
+		assertSame(sp2.getMargin(), orig2copyMap.get(sp.getMargin()));
+		assertSame(sp2.getLegend(), orig2copyMap.get(sp.getLegend()));
 	}
 
 }
