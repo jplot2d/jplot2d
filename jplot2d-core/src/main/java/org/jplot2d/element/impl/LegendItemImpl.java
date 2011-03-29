@@ -18,26 +18,20 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
-import org.jplot2d.util.MathElement;
-import org.jplot2d.util.MathLabel;
-import org.jplot2d.util.TeXMathUtils;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class LegendItemImpl extends ElementImpl implements LegendItemEx {
+public abstract class LegendItemImpl extends ElementImpl implements
+		LegendItemEx {
 
 	private boolean visible = true;
 
-	private MathElement textModel;
-
-	private MathLabel label;
+	private double locX, locY;
 
 	private LegendEx legend;
 
@@ -58,18 +52,18 @@ public class LegendItemImpl extends ElementImpl implements LegendItemEx {
 	}
 
 	public Point2D getLocation() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Point2D.Double(locX, locY);
 	}
 
-	public Dimension2D getSize() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setLocation(double locX, double locY) {
+		this.locX = locX;
+		this.locY = locY;
 	}
 
 	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return null;
+		Dimension2D size = getSize();
+		return new Rectangle2D.Double(locX, locY, size.getWidth(),
+				size.getHeight());
 	}
 
 	public boolean isVisible() {
@@ -78,50 +72,9 @@ public class LegendItemImpl extends ElementImpl implements LegendItemEx {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		invalidate();
-		redraw();
-	}
-
-	public String getText() {
-		return TeXMathUtils.toString(textModel);
-	}
-
-	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
-
-	public MathElement getTextModel() {
-		return textModel;
-	}
-
-	public void setTextModel(MathElement model) {
-		this.textModel = model;
-		label = null;
-		if (isVisible()) {
-			invalidate();
-			redraw();
-		}
-	}
-
-	/**
-	 * Invalidate the legend
-	 */
-	private void invalidate() {
 		if (getLegend() != null) {
-			getLegend().invalidate();
+			getLegend().itemVisibleChanged(this);
 		}
-	}
-
-	private void redraw() {
-		if (getLegend() != null) {
-			getLegend().invalidate();
-			getLegend().redraw();
-		}
-	}
-
-	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

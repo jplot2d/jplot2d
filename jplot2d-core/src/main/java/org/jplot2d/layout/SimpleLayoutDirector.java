@@ -109,24 +109,37 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		subplot.setContentBounds(contentRect);
-		locateAxes(subplot, contentRect, ais);
+		layoutLeftMargin(subplot, contentRect, ais);
+		layoutRightMargin(subplot, contentRect, ais);
+		layoutTopMargin(subplot, contentRect, ais);
+		layoutBottomMargin(subplot, contentRect, ais);
 	}
 
+	/**
+	 * Return all visible axes on left, right, top, bottom margins.
+	 * 
+	 * @param subplot
+	 * @return
+	 */
 	protected static AxesInSubplot getAllAxes(SubplotEx subplot) {
 		AxesInSubplot ais = new AxesInSubplot();
 
 		for (AxisEx axis : subplot.getXAxes()) {
-			if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-				ais.topAxes.add(axis);
-			} else {
-				ais.bottomAxes.add(axis);
+			if (axis.canContribute()) {
+				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
+					ais.topAxes.add(axis);
+				} else {
+					ais.bottomAxes.add(axis);
+				}
 			}
 		}
 		for (AxisEx axis : subplot.getYAxes()) {
-			if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
-				ais.rightAxes.add(axis);
-			} else {
-				ais.leftAxes.add(axis);
+			if (axis.canContribute()) {
+				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
+					ais.rightAxes.add(axis);
+				} else {
+					ais.leftAxes.add(axis);
+				}
 			}
 		}
 
@@ -344,78 +357,201 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
 
-	private static void locateAxes(SubplotEx sp, Rectangle2D contentBox,
+	private static void layoutLeftMargin(SubplotEx sp, Rectangle2D contentBox,
 			AxesInSubplot ais) {
 
-		// set offset and length for axes
-		for (AxisEx xa : sp.getXAxes()) {
-			xa.setLength(contentBox.getWidth());
-		}
-		for (AxisEx ya : sp.getYAxes()) {
-			ya.setLength(contentBox.getHeight());
-		}
-
-		// find all axes in inner-to-outer order
-		ArrayList<AxisEx> topAxes = ais.topAxes;
+		// all left axes in inner-to-outer order
 		ArrayList<AxisEx> leftAxes = ais.leftAxes;
-		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
-		ArrayList<AxisEx> rightAxes = ais.rightAxes;
 
 		// viewport box
 		double iabLeft = contentBox.getMinX();
-		double iabRight = contentBox.getMaxX();
 		double iabBottom = contentBox.getMinY();
-		double iabTop = contentBox.getMaxY();
+
+		double xloc = iabLeft;
 
 		/* locate axes */
 		if (leftAxes.size() > 0) {
-			double xloc = iabLeft;
 			AxisEx am = leftAxes.get(0);
+			am.setLength(contentBox.getHeight());
 			am.setLocation(xloc, iabBottom);
 			xloc -= am.getDesc();
 			for (int i = 1; i < leftAxes.size(); i++) {
 				am = leftAxes.get(i);
-				if (i > 0) {
-					xloc -= am.getAsc();
-				}
+				am.setLength(contentBox.getHeight());
+				xloc -= am.getAsc();
 				am.setLocation(xloc, iabBottom);
 				xloc -= am.getDesc();
 			}
 		}
+
+		LegendEx legend = sp.getLegend();
+
+		/* locate legend */
+		if (legend.canContribute()) {
+			xloc -= LEGEND_GAP;
+			double y;
+			switch (legend.getPosition()) {
+			case LEFTTOP:
+				y = contentBox.getMaxY();
+				legend.setLocation(xloc, y);
+				break;
+			case LEFTMIDDLE:
+				y = contentBox.getCenterY();
+				legend.setLocation(xloc, y);
+				break;
+			case LEFTBOTTOM:
+				y = contentBox.getMinY();
+				legend.setLocation(xloc, y);
+				break;
+			}
+		}
+
+	}
+
+	private static void layoutRightMargin(SubplotEx sp, Rectangle2D contentBox,
+			AxesInSubplot ais) {
+
+		// all right axes in inner-to-outer order
+		ArrayList<AxisEx> rightAxes = ais.rightAxes;
+
+		// viewport box
+		double iabRight = contentBox.getMaxX();
+		double iabBottom = contentBox.getMinY();
+
+		double xloc = iabRight;
+
+		/* locate axes */
 		if (rightAxes.size() > 0) {
-			double xloc = iabRight;
 			AxisEx am = rightAxes.get(0);
+			am.setLength(contentBox.getHeight());
 			am.setLocation(xloc, iabBottom);
 			xloc += am.getAsc();
 			for (int i = 1; i < rightAxes.size(); i++) {
 				am = rightAxes.get(i);
+				am.setLength(contentBox.getHeight());
 				xloc += am.getDesc();
 				am.setLocation(xloc, iabBottom);
 				xloc += am.getAsc();
 			}
 		}
+
+		/* locate legend */
+		LegendEx legend = sp.getLegend();
+		if (legend.canContribute()) {
+			xloc += LEGEND_GAP;
+			double y;
+			switch (legend.getPosition()) {
+			case RIGHTTOP:
+				y = contentBox.getMaxY();
+				legend.setLocation(xloc, y);
+				break;
+			case RIGHTMIDDLE:
+				y = contentBox.getCenterY();
+				legend.setLocation(xloc, y);
+				break;
+			case RIGHTBOTTOM:
+				y = contentBox.getMinY();
+				legend.setLocation(xloc, y);
+				break;
+			}
+		}
+
+	}
+
+	private static void layoutTopMargin(SubplotEx sp, Rectangle2D contentBox,
+			AxesInSubplot ais) {
+
+		// all left axes in inner-to-outer order
+		ArrayList<AxisEx> topAxes = ais.topAxes;
+
+		// viewport box
+		double iabLeft = contentBox.getMinX();
+		double iabTop = contentBox.getMaxY();
+
+		double yloc = iabTop;
+
+		// locate axes
+		if (topAxes.size() > 0) {
+			AxisEx am = topAxes.get(0);
+			am.setLength(contentBox.getWidth());
+			am.setLocation(iabLeft, yloc);
+			yloc += am.getAsc();
+			for (int i = 1; i < topAxes.size(); i++) {
+				am = topAxes.get(i);
+				am.setLength(contentBox.getWidth());
+				yloc += am.getDesc();
+				am.setLocation(iabLeft, yloc);
+				yloc += am.getAsc();
+			}
+		}
+
+		// locate legend
+		LegendEx legend = sp.getLegend();
+		if (legend.canContribute()) {
+			double x;
+			yloc += LEGEND_GAP;
+			switch (legend.getPosition()) {
+			case TOPLEFT:
+				x = contentBox.getMinX();
+				legend.setLocation(x, yloc);
+				break;
+			case TOPCENTER:
+				x = contentBox.getCenterX();
+				legend.setLocation(x, yloc);
+				break;
+			case TOPRIGHT:
+				x = contentBox.getMaxX();
+				legend.setLocation(x, yloc);
+				break;
+			}
+		}
+	}
+
+	private static void layoutBottomMargin(SubplotEx sp,
+			Rectangle2D contentBox, AxesInSubplot ais) {
+
+		// all bottom axes in inner-to-outer order
+		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
+
+		// viewport box
+		double iabLeft = contentBox.getMinX();
+		double iabBottom = contentBox.getMinY();
+
+		double yloc = iabBottom;
+
+		// locate axes
 		if (bottomAxes.size() > 0) {
-			double yloc = iabBottom;
 			AxisEx am = bottomAxes.get(0);
+			am.setLength(contentBox.getWidth());
 			am.setLocation(iabLeft, yloc);
 			yloc += am.getDesc();
 			for (int i = 1; i < bottomAxes.size(); i++) {
 				am = bottomAxes.get(i);
+				am.setLength(contentBox.getWidth());
 				yloc -= am.getAsc();
 				am.setLocation(iabLeft, yloc);
 				yloc -= am.getDesc();
 			}
 		}
-		if (topAxes.size() > 0) {
-			double yloc = iabTop;
-			AxisEx am = topAxes.get(0);
-			am.setLocation(iabLeft, yloc);
-			yloc += am.getAsc();
-			for (int i = 1; i < topAxes.size(); i++) {
-				am = topAxes.get(i);
-				yloc += am.getDesc();
-				am.setLocation(iabLeft, yloc);
-				yloc += am.getAsc();
+
+		// locate legend
+		LegendEx legend = sp.getLegend();
+		if (legend.canContribute()) {
+			double x;
+			yloc -= LEGEND_GAP;
+			switch (legend.getPosition()) {
+			case BOTTOMLEFT:
+				x = contentBox.getMinX();
+				legend.setLocation(x, yloc);
+				break;
+			case BOTTOMCENTER:
+				x = contentBox.getCenterX();
+				legend.setLocation(x, yloc);
+				break;
+			case BOTTOMRIGHT:
+				x = contentBox.getMaxX();
+				legend.setLocation(x, yloc);
+				break;
 			}
 		}
 	}

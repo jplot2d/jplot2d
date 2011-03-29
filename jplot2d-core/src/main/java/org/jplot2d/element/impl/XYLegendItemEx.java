@@ -18,30 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
-
-import org.jplot2d.element.LegendItem;
-
 /**
  * @author Jingjing Li
  * 
  */
-public interface LegendItemEx extends LegendItem, ElementEx {
+public interface XYLegendItemEx extends LegendItemEx {
 
-	public GraphPlotterEx getParent();
-
-	public LegendEx getLegend();
-
-	public void setLegend(LegendEx legend);
-
-	public Dimension2D getSize();
-
-	/**
-	 * Set location in legend
-	 */
-	public void setLocation(double locx, double locy);
-
-	public void draw(Graphics2D g);
+	public XYGraphPlotterEx getParent();
 
 }
