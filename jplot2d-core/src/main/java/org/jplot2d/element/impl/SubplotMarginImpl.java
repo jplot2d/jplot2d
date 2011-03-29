@@ -34,6 +34,15 @@ public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
 
 	private double extraTop, extraLeft, extraBottom, extraRight;
 
+	public String getSelfId() {
+		if (getParent() != null) {
+			return "Margin";
+		} else {
+			return "Margin@"
+					+ Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
 	public boolean isAutoMarginTop() {
 		return autoMarginTop;
 	}
@@ -131,7 +140,8 @@ public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
 	}
 
 	@Override
-	public SubplotMarginImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+	public SubplotMarginImpl copyStructure(
+			Map<ElementEx, ElementEx> orig2copyMap) {
 		SubplotMarginImpl result = null;
 		try {
 			result = (SubplotMarginImpl) this.clone();
