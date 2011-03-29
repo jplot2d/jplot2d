@@ -85,7 +85,11 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		redraw();
+		if (canContributeToParent()) {
+			redraw();
+		} else if (canContribute()) {
+			rerender();
+		}
 	}
 
 	public boolean isCacheable() {

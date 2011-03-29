@@ -173,8 +173,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(getLocation().getX(), getLocation()
-				.getY(), width, height);
+		return new Rectangle2D.Double(locX, locY, width, height);
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
@@ -457,7 +456,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		} else if (ax.canContribute()) {
 			rerender();
 		}
-		if (ax.isVisible()) {
+		if (ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -482,7 +481,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		} else if (ax.canContribute()) {
 			rerender();
 		}
-		if (ax.isVisible()) {
+		if (ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -506,7 +505,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		} else if (ax.canContribute()) {
 			rerender();
 		}
-		if (ax.isVisible()) {
+		if (ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -526,7 +525,7 @@ public class SubplotImpl extends ContainerImpl implements SubplotEx {
 		} else if (ax.canContribute()) {
 			rerender();
 		}
-		if (ax.isVisible()) {
+		if (ax.canContribute()) {
 			invalidate();
 		}
 	}
