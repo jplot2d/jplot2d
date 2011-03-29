@@ -28,6 +28,8 @@ import org.jplot2d.element.XYGraphPlotter;
  */
 public interface XYGraphPlotterEx extends XYGraphPlotter, GraphPlotterEx {
 
-	public Color getActualSymbolColor(int i);
+	public Color getEffectiveSymbolColor();
+
+	public Color getEffectiveSymbolColor(int i);
 
 }

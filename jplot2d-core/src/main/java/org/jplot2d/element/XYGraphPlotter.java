@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,8 +18,9 @@
  */
 package org.jplot2d.element;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Paint;
-import java.awt.Stroke;
 
 import org.jplot2d.data.XYGraph;
 import org.jplot2d.util.SymbolShape;
@@ -103,18 +104,17 @@ public interface XYGraphPlotter extends GraphPlotter {
 	public void setChartType(ChartType chartType);
 
 	/**
-	 * Returns the symbol to be used.The symbols are displays only if the type
-	 * of line is MARKED or NONE.
+	 * Returns the symbol shape.
 	 * 
-	 * @return the symbol
+	 * @return the symbol shape
 	 */
 	public SymbolShape getSymbolShape();
 
 	/**
-	 * Sets the specified symbol to be used. The symbols are displayes only if
-	 * the type of line is MARKED or NONE.
+	 * Sets the specified symbol shape to be used.
 	 * 
 	 * @param symbolShape
+	 *            the symbol shape
 	 */
 	public void setSymbolShape(SymbolShape symbolShape);
 
@@ -126,16 +126,20 @@ public interface XYGraphPlotter extends GraphPlotter {
 	public float getSymbolSize();
 
 	/**
-	 * Set the size of the symbol used
+	 * Set the size of symbols
 	 * 
 	 * @param size
-	 *            of the symbol used
+	 *            the size of symbols
 	 */
 	public void setSymbolSize(float size);
 
-	public Stroke getLineStroke();
+	public Color getSymbolColor();
 
-	public void setLineStroke(Stroke stroke);
+	public void setSymbolColor(Color color);
+
+	public BasicStroke getLineStroke();
+
+	public void setLineStroke(BasicStroke stroke);
 
 	public boolean isFillEnabled();
 
