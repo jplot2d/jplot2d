@@ -219,7 +219,7 @@ public class XYGraphPlotterDataChunker implements
 					/* markColorBuf */
 					if (drawMark) {
 						data.markColorBuf[data.size] = plotter
-								.getActualSymbolColor(i);
+								.getEffectiveSymbolColor(i);
 					}
 
 					/* error buffer */

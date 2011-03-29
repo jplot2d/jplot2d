@@ -23,7 +23,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -54,7 +53,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	private XYGraph graph;
 
-	private boolean symbolVisible = true;
+	private boolean symbolVisible = false;
 
 	private boolean lineVisible = true;
 
@@ -68,7 +67,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
 
-	private Stroke lineStroke = new BasicStroke(0.5f);
+	private BasicStroke lineStroke = new BasicStroke(0.5f);
 
 	private Color lineColor;
 
@@ -79,7 +78,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	private FillClosureType fillClosureType;
 
 	public XYGraphPlotterImpl() {
-		super(new LegendItemImpl());
+		super(new XYLegendItemImpl());
 	}
 
 	public XYGraph getGraph() {
@@ -139,31 +138,41 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		this.symbolSize = size;
 	}
 
-	public Color getSymbolsColor() {
+	public Color getSymbolColor() {
 		return symbolColor;
 	}
 
-	public Color getActualSymbolColor(int idx) {
+	public void setSymbolColor(Color color) {
+		symbolColor = color;
+	}
+
+	public Color getEffectiveSymbolColor() {
+		if (getSymbolColor() != null) {
+			return getSymbolColor();
+		} else {
+			return getEffectiveColor();
+		}
+	}
+
+	public Color getEffectiveSymbolColor(int idx) {
 		Color icolor = null;
 		synchronized (_symbolColorMap) {
 			if (_symbolColorMap.size() > 0) {
 				icolor = _symbolColorMap.get(idx);
 			}
 		}
-		if (icolor == null) {
-			icolor = this.getSymbolsColor();
+		if (icolor != null) {
+			return icolor;
+		} else {
+			return getEffectiveSymbolColor();
 		}
-		if (icolor == null) {
-			icolor = this.getColor();
-		}
-		return icolor;
 	}
 
-	public Stroke getLineStroke() {
+	public BasicStroke getLineStroke() {
 		return lineStroke;
 	}
 
-	public void setLineStroke(Stroke stroke) {
+	public void setLineStroke(BasicStroke stroke) {
 		this.lineStroke = stroke;
 	}
 
@@ -216,8 +225,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 		Graphics2D g = (Graphics2D) graphics.create();
 		Rectangle2D clip = getParent().getPhysicalTransform().getPtoD(
-				new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(),
-						getParent().getSize().getHeight()));
+				getBounds());
 		g.setClip(clip);
 
 		if (isFillEnabled()) {
@@ -420,33 +428,25 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	}
 
-	static void drawLine(Graphics2D g2, float[] xout, float[] yout, int lsize,
+	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize,
 			XYGraphPlotterEx plotter, double scale) {
-
 		// set line stroke
-		g2.setStroke(scaleStroke(plotter.getLineStroke(), scale));
-
+		g.setStroke(scaleStroke(plotter.getLineStroke(), scale));
 		// draw lines
 		Path2D.Float gp = new Path2D.Float();
 		gp.moveTo(xout[0], yout[0]);
 		for (int i = 1; i < lsize; i++) {
 			gp.lineTo(xout[i], yout[i]);
 		}
-		g2.draw(gp);
-
+		g.draw(gp);
 	}
 
-	private static Stroke scaleStroke(Stroke stroke, double scale) {
-		if (stroke instanceof BasicStroke) {
-			BasicStroke bstroke = (BasicStroke) stroke;
-			float[] dashArray = (bstroke.getDashArray() == null) ? null
-					: NumberArrayUtils.multiply(bstroke.getDashArray(), scale);
-			return new BasicStroke((float) (bstroke.getLineWidth() * scale),
-					BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10f,
-					dashArray, 0f);
-		} else {
-			return stroke;
-		}
+	private static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
+		float[] dashArray = (stroke.getDashArray() == null) ? null
+				: NumberArrayUtils.multiply(stroke.getDashArray(), scale);
+		return new BasicStroke((float) (stroke.getLineWidth() * scale),
+				BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10f, dashArray,
+				0f);
 	}
 
 	/**
@@ -546,7 +546,9 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 			}
 		} else {
 			// use half of line stroke to draw marks
-			g.setStroke(scaleStroke(plotter.getLineStroke(), scale / 2));
+			double lw = plotter.getLineStroke().getLineWidth() * scale / 2;
+			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_BEVEL, 10f));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			for (int i = 0; i < npoints; i++) {
