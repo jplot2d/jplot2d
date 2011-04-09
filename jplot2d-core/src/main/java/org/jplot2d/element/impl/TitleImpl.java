@@ -33,8 +33,8 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		}
 	}
 
-	public SubplotEx getParent() {
-		return (SubplotEx) super.getParent();
+	public PlotEx getParent() {
+		return (PlotEx) super.getParent();
 	}
 
 	public Position getPosition() {

@@ -31,7 +31,7 @@ import org.jplot2d.util.Range2D;
 public interface Axis extends Component {
 
 	@Hierarchy(HierarchyOp.GET)
-	public Subplot getParent();
+	public Plot getParent();
 
 	@Hierarchy(HierarchyOp.GET)
 	public AxisRangeManager getRangeManager();

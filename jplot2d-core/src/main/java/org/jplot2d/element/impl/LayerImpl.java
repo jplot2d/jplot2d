@@ -53,8 +53,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public SubplotEx getParent() {
-		return (SubplotEx) super.getParent();
+	public PlotEx getParent() {
+		return (PlotEx) super.getParent();
 	}
 
 	public Map<Element, Element> getMooringMap() {

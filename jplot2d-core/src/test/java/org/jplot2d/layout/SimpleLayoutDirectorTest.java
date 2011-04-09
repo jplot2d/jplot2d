@@ -26,8 +26,8 @@ import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
 import org.jplot2d.element.impl.LegendEx;
-import org.jplot2d.element.impl.SubplotEx;
-import org.jplot2d.element.impl.SubplotImpl;
+import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.layout.SimpleLayoutDirector.AxesInSubplot;
 import org.jplot2d.util.DoubleDimension2D;
@@ -42,7 +42,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testCalcMargin() {
 		LegendEx legend = mock(LegendEx.class);
-		SubplotEx subplot = new SubplotImpl(legend) {
+		PlotEx subplot = new PlotImpl(legend) {
 		};
 		AxesInSubplot ais = new AxesInSubplot();
 		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 0);
@@ -125,7 +125,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutMargin() {
 		LegendEx legend = mock(LegendEx.class);
-		SubplotEx subplot = new SubplotImpl(legend) {
+		PlotEx subplot = new PlotImpl(legend) {
 		};
 		subplot.setSize(300, 200);
 

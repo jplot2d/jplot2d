@@ -20,7 +20,7 @@ package org.jplot2d.layout;
 
 import java.awt.geom.Dimension2D;
 
-import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.PlotEx;
 
 /**
  * The interface for jplot2d to layout subplots. All methods of LayoutDirector
@@ -45,7 +45,7 @@ public interface LayoutDirector {
 	 *            The subplot
 	 * @return The constraint
 	 */
-	public Object getConstraint(SubplotEx subplot);
+	public Object getConstraint(PlotEx subplot);
 
 	/**
 	 * Sets the constraint for the given subplot.
@@ -53,14 +53,14 @@ public interface LayoutDirector {
 	 * @param subplot
 	 * @param constraint
 	 */
-	public void setConstraint(SubplotEx subplot, Object constraint);
+	public void setConstraint(PlotEx subplot, Object constraint);
 
 	/**
 	 * Removes the given child from this layout.
 	 * 
 	 * @param subplot
 	 */
-	public void remove(SubplotEx subplot);
+	public void remove(PlotEx subplot);
 
 	/**
 	 * Invalidates the layout, indicating that if the layout manager has cached
@@ -69,12 +69,12 @@ public interface LayoutDirector {
 	 * @param subplot
 	 *            the subplot has been invalidate.
 	 */
-	public void invalidateLayout(SubplotEx subplot);
+	public void invalidateLayout(PlotEx subplot);
 
 	/**
 	 * Layout the subplot.
 	 */
-	public void layout(SubplotEx subplot);
+	public void layout(PlotEx subplot);
 
 	/**
 	 * Returns the preferred size of the given subplot.
@@ -83,8 +83,8 @@ public interface LayoutDirector {
 	 *            The subplot
 	 * @return The preferred size
 	 */
-	public Dimension2D getPreferredSize(SubplotEx subplot);
+	public Dimension2D getPreferredSize(PlotEx subplot);
 
-	public Dimension2D getPreferredContentSize(SubplotEx subplot);
+	public Dimension2D getPreferredContentSize(PlotEx subplot);
 
 }
