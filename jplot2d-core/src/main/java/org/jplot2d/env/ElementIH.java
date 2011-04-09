@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
@@ -597,10 +596,14 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			if (impl instanceof Component
-					&& method.getName().equals("setZOrder")) {
-				environment.componentZOrderChanged((ComponentEx) impl);
+			if (impl instanceof ComponentEx) {
+				if (method.getName().equals("setCacheable")) {
+					environment.componentCacheModeChanged((ComponentEx) impl);
+				} else if (method.getName().equals("setZOrder")) {
+					environment.componentZOrderChanged((ComponentEx) impl);
+				}
 			}
+
 		}
 	}
 

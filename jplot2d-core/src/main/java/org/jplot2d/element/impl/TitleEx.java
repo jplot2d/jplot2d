@@ -26,6 +26,6 @@ import org.jplot2d.element.Title;
  */
 public interface TitleEx extends Title, ComponentEx {
 
-	public SubplotEx getParent();
+	public PlotEx getParent();
 
 }

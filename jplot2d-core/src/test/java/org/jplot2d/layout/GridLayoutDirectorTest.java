@@ -20,8 +20,8 @@ package org.jplot2d.layout;
 
 import static org.jplot2d.util.TestUtils.*;
 
-import org.jplot2d.element.impl.SubplotEx;
-import org.jplot2d.element.impl.SubplotImpl;
+import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class GridLayoutDirectorTest {
 
 	@Test
 	public void testLayout() {
-		SubplotEx sp00 = new SubplotImpl();
+		PlotEx sp00 = new PlotImpl();
 		sp00.setPreferredContentSize(new DoubleDimension2D(640, 480));
 		SubplotMarginEx margin00 = sp00.getMargin();
 		margin00.setAutoMarginTop(false);
@@ -46,7 +46,7 @@ public class GridLayoutDirectorTest {
 		margin00.setMarginBottom(0);
 		margin00.setMarginRight(0);
 
-		SubplotEx sp01 = new SubplotImpl();
+		PlotEx sp01 = new PlotImpl();
 		sp01.setPreferredContentSize(new DoubleDimension2D(320, 240));
 		SubplotMarginEx margin01 = sp01.getMargin();
 		margin01.setAutoMarginTop(false);
@@ -58,7 +58,7 @@ public class GridLayoutDirectorTest {
 		margin01.setMarginBottom(6);
 		margin01.setMarginRight(0);
 
-		SubplotEx sp10 = new SubplotImpl();
+		PlotEx sp10 = new PlotImpl();
 		sp10.setPreferredContentSize(new DoubleDimension2D(320, 240));
 		SubplotMarginEx margin10 = sp10.getMargin();
 		margin10.setAutoMarginTop(false);
@@ -70,7 +70,7 @@ public class GridLayoutDirectorTest {
 		margin10.setMarginBottom(0);
 		margin10.setMarginRight(5);
 
-		SubplotEx sp11 = new SubplotImpl();
+		PlotEx sp11 = new PlotImpl();
 		sp11.setPreferredContentSize(new DoubleDimension2D(320, 240));
 		SubplotMarginEx margin11 = sp11.getMargin();
 		margin11.setAutoMarginTop(false);
@@ -82,7 +82,7 @@ public class GridLayoutDirectorTest {
 		margin11.setMarginBottom(7);
 		margin11.setMarginRight(7);
 
-		SubplotEx sp = new SubplotImpl();
+		PlotEx sp = new PlotImpl();
 		SubplotMarginEx margin = sp.getMargin();
 		margin.setAutoMarginTop(false);
 		margin.setAutoMarginLeft(false);

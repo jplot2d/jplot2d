@@ -45,7 +45,7 @@ public class AxisImplTest {
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
 
-		SubplotEx sp = mock(SubplotEx.class);
+		PlotEx sp = mock(PlotEx.class);
 		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
 		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
@@ -80,7 +80,7 @@ public class AxisImplTest {
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
 
-		SubplotEx sp = mock(SubplotEx.class);
+		PlotEx sp = mock(PlotEx.class);
 		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
 		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);

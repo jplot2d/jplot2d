@@ -5,7 +5,7 @@ import org.jplot2d.element.AxisOrientation;
 
 public interface AxisEx extends Axis, ContainerEx {
 
-	public SubplotEx getParent();
+	public PlotEx getParent();
 
 	public AxisRangeManagerEx getRangeManager();
 

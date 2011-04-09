@@ -151,8 +151,8 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return "Axis@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
-	public SubplotEx getParent() {
-		return (SubplotEx) super.getParent();
+	public PlotEx getParent() {
+		return (PlotEx) super.getParent();
 	}
 
 	public Map<Element, Element> getMooringMap() {
