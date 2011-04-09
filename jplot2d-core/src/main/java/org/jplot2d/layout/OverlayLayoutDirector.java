@@ -18,7 +18,7 @@
  */
 package org.jplot2d.layout;
 
-import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.Insets2D;
 
 /**
@@ -33,7 +33,7 @@ import org.jplot2d.util.Insets2D;
  */
 public class OverlayLayoutDirector extends SimpleLayoutDirector {
 
-	public void layout(SubplotEx subplot) {
+	public void layout(PlotEx subplot) {
 
 		super.layout(subplot);
 
@@ -47,7 +47,7 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 	 * 
 	 * @param subplots
 	 */
-	private void layoutSubplots(SubplotEx subplot) {
+	private void layoutSubplots(PlotEx subplot) {
 		if (subplot.getSubplots().length == 0) {
 			return;
 		}
@@ -57,7 +57,7 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 		double baseW = subplot.getContentBounds().getWidth();
 		double baseH = subplot.getContentBounds().getHeight();
 
-		for (SubplotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : subplot.getSubplots()) {
 
 			double spacingL = 0;
 			double spacingR = 0;

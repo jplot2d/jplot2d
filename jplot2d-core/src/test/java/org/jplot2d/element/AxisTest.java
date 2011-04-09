@@ -72,7 +72,7 @@ public class AxisTest {
 
 	@Test
 	public void testAddAndRemoveAxis() {
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		AxisRangeManager xva = xaxis.getRangeManager();
@@ -108,7 +108,7 @@ public class AxisTest {
 
 	@Test
 	public void testSetAxisRangeManager() {
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 
@@ -167,7 +167,7 @@ public class AxisTest {
 
 	@Test
 	public void testSetAxisLockGroup() {
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		AxisRangeManager xva = xaxis.getRangeManager();

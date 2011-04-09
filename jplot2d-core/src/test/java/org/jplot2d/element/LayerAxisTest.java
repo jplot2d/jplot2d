@@ -59,7 +59,7 @@ public class LayerAxisTest {
 
 	@Test
 	public void testAddAxisAndLayer() {
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
@@ -99,7 +99,7 @@ public class LayerAxisTest {
 	@Test
 	public void testRemovAndAddLayer() {
 
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
@@ -133,7 +133,7 @@ public class LayerAxisTest {
 	@Test
 	public void testRemovAxis() {
 
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
@@ -210,7 +210,7 @@ public class LayerAxisTest {
 	@Test
 	public void testRemovSubplot() {
 		Plot p = factory.createPlot();
-		Subplot sp = factory.createSubplot();
+		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
@@ -234,8 +234,8 @@ public class LayerAxisTest {
 	@Test
 	public void testRemovSubplotWithAxisBeingAttached() {
 		Plot p = factory.createPlot();
-		Subplot sp0 = factory.createSubplot();
-		Subplot sp1 = factory.createSubplot();
+		Plot sp0 = factory.createSubplot();
+		Plot sp1 = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer0 = factory.createLayer();

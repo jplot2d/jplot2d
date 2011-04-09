@@ -27,7 +27,7 @@ import java.util.Map;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LegendEx;
-import org.jplot2d.element.impl.SubplotEx;
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.util.DoubleDimension2D;
@@ -57,29 +57,29 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	private static double LEGEND_GAP = 8.0;
 
 	/** The layout constraints */
-	private Map<SubplotEx, Object> constraints = new HashMap<SubplotEx, Object>();
+	private Map<PlotEx, Object> constraints = new HashMap<PlotEx, Object>();
 
 	static boolean approximate(double a, double b) {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public Object getConstraint(SubplotEx subplot) {
+	public Object getConstraint(PlotEx subplot) {
 		return constraints.get(subplot);
 	}
 
-	public void remove(SubplotEx subplot) {
+	public void remove(PlotEx subplot) {
 		constraints.remove(subplot);
 	}
 
-	public void setConstraint(SubplotEx subplot, Object constraint) {
+	public void setConstraint(PlotEx subplot, Object constraint) {
 		constraints.put(subplot, constraint);
 	}
 
-	public void invalidateLayout(SubplotEx subplot) {
+	public void invalidateLayout(PlotEx subplot) {
 		// do not handle subplot at all
 	}
 
-	public void layout(SubplotEx subplot) {
+	public void layout(PlotEx subplot) {
 
 		Rectangle2D contentRect;
 		AxesInSubplot ais = getAllAxes(subplot);
@@ -98,11 +98,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					- margin.getLeft() - margin.getRight();
 			double contentHeight = subplot.getSize().getHeight()
 					- margin.getTop() - margin.getBottom();
-			if (contentWidth < SubplotEx.MIN_CONTENT_SIZE.getWidth()) {
-				contentWidth = SubplotEx.MIN_CONTENT_SIZE.getWidth();
+			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
+				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
 			}
-			if (contentHeight < SubplotEx.MIN_CONTENT_SIZE.getHeight()) {
-				contentHeight = SubplotEx.MIN_CONTENT_SIZE.getHeight();
+			if (contentHeight < PlotEx.MIN_CONTENT_SIZE.getHeight()) {
+				contentHeight = PlotEx.MIN_CONTENT_SIZE.getHeight();
 			}
 			contentRect = new Rectangle2D.Double(margin.getLeft(),
 					margin.getBottom(), contentWidth, contentHeight);
@@ -121,7 +121,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	 * @param subplot
 	 * @return
 	 */
-	protected static AxesInSubplot getAllAxes(SubplotEx subplot) {
+	protected static AxesInSubplot getAllAxes(PlotEx subplot) {
 		AxesInSubplot ais = new AxesInSubplot();
 
 		for (AxisEx axis : subplot.getXAxes()) {
@@ -146,7 +146,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return ais;
 	}
 
-	protected static double calcLeftMargin(SubplotEx subplot, AxesInSubplot ais) {
+	protected static double calcLeftMargin(PlotEx subplot, AxesInSubplot ais) {
 		SubplotMarginEx margin = subplot.getMargin();
 
 		if (!margin.isAutoMarginLeft()) {
@@ -177,7 +177,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mLeft;
 	}
 
-	protected static double calcRightMargin(SubplotEx subplot, AxesInSubplot ais) {
+	protected static double calcRightMargin(PlotEx subplot, AxesInSubplot ais) {
 		SubplotMarginEx margin = subplot.getMargin();
 
 		if (!margin.isAutoMarginRight()) {
@@ -210,7 +210,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mRight;
 	}
 
-	protected static double calcTopMargin(SubplotEx subplot, AxesInSubplot ais) {
+	protected static double calcTopMargin(PlotEx subplot, AxesInSubplot ais) {
 		SubplotMarginEx margin = subplot.getMargin();
 
 		if (!margin.isAutoMarginTop()) {
@@ -255,7 +255,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mTop;
 	}
 
-	protected static double calcBottomMargin(SubplotEx subplot,
+	protected static double calcBottomMargin(PlotEx subplot,
 			AxesInSubplot ais) {
 		SubplotMarginEx margin = subplot.getMargin();
 
@@ -309,7 +309,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	 * @param ais
 	 * @return
 	 */
-	static Insets2D calcMargin(SubplotEx subplot, AxesInSubplot ais) {
+	static Insets2D calcMargin(PlotEx subplot, AxesInSubplot ais) {
 
 		double mLeft, mRight, mTop, mBottom;
 
@@ -357,7 +357,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
 
-	private static void layoutLeftMargin(SubplotEx sp, Rectangle2D contentBox,
+	private static void layoutLeftMargin(PlotEx sp, Rectangle2D contentBox,
 			AxesInSubplot ais) {
 
 		// all left axes in inner-to-outer order
@@ -408,7 +408,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutRightMargin(SubplotEx sp, Rectangle2D contentBox,
+	private static void layoutRightMargin(PlotEx sp, Rectangle2D contentBox,
 			AxesInSubplot ais) {
 
 		// all right axes in inner-to-outer order
@@ -458,7 +458,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutTopMargin(SubplotEx sp, Rectangle2D contentBox,
+	private static void layoutTopMargin(PlotEx sp, Rectangle2D contentBox,
 			AxesInSubplot ais) {
 
 		// all left axes in inner-to-outer order
@@ -507,7 +507,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 	}
 
-	private static void layoutBottomMargin(SubplotEx sp,
+	private static void layoutBottomMargin(PlotEx sp,
 			Rectangle2D contentBox, AxesInSubplot ais) {
 
 		// all bottom axes in inner-to-outer order
@@ -566,11 +566,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	 * @param subplot
 	 * @return the preferred content size
 	 */
-	public Dimension2D getPreferredContentSize(SubplotEx subplot) {
+	public Dimension2D getPreferredContentSize(PlotEx subplot) {
 		return subplot.getPreferredContentSize();
 	}
 
-	public Dimension2D getPreferredSize(SubplotEx subplot) {
+	public Dimension2D getPreferredSize(PlotEx subplot) {
 		Dimension2D prefContSize = getPreferredContentSize(subplot);
 		if (prefContSize == null) {
 			return null;

@@ -18,6 +18,8 @@
  */
 package org.jplot2d.env;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
@@ -35,7 +37,6 @@ import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.Subplot;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
@@ -47,7 +48,6 @@ import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
-import org.jplot2d.element.impl.SubplotImpl;
 import org.jplot2d.element.impl.SubplotMarginEx;
 import org.jplot2d.element.impl.AxisRangeManagerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
@@ -140,7 +140,22 @@ public class ComponentFactory {
 
 	}
 
+	/**
+	 * Create a top level plot with setting the default color, font, and margin
+	 * 
+	 * @return
+	 */
 	public Plot createPlot() {
+		Plot plot = createSubplot();
+
+		plot.setCacheable(true);
+		plot.setColor(Color.BLACK);
+		plot.setFont(new Font("Serif", Font.PLAIN, 12));
+		plot.getMargin().setExtraTop(12);
+		plot.getMargin().setExtraLeft(12);
+		plot.getMargin().setExtraBottom(12);
+		plot.getMargin().setExtraRight(12);
+
 		PlotImpl impl = new PlotImpl();
 		applyProfile(impl);
 		ElementIH<Plot> ih = new ElementIH<Plot>(impl, Plot.class);
@@ -151,13 +166,17 @@ public class ComponentFactory {
 		return proxy;
 	}
 
-	public Subplot createSubplot() {
-		SubplotImpl subplot = new SubplotImpl();
+	/**
+	 * Create a plot which has no default values.
+	 * 
+	 * @return
+	 */
+	public Plot createSubplot() {
+		PlotImpl subplot = new PlotImpl();
 		applyProfile(subplot);
-		ElementIH<Subplot> subplotIH = new ElementIH<Subplot>(subplot,
-				Subplot.class);
-		Subplot subplotProxy = (Subplot) Proxy.newProxyInstance(
-				Subplot.class.getClassLoader(), new Class[] { Subplot.class,
+		ElementIH<Plot> subplotIH = new ElementIH<Plot>(subplot, Plot.class);
+		Plot subplotProxy = (Plot) Proxy.newProxyInstance(
+				Plot.class.getClassLoader(), new Class[] { Plot.class,
 						ElementAddition.class }, subplotIH);
 
 		LegendEx legend = subplot.getLegend();

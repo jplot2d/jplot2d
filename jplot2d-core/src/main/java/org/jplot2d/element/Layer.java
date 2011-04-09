@@ -31,7 +31,7 @@ import org.jplot2d.annotation.HierarchyOp;
 public interface Layer extends Container {
 
 	@Hierarchy(HierarchyOp.GET)
-	public Subplot getParent();
+	public Plot getParent();
 
 	/**
 	 * Returns the graph plotter on the given index.

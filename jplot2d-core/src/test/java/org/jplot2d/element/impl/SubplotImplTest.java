@@ -34,7 +34,7 @@ public class SubplotImplTest {
 
 	@Test
 	public void testAddXAxis() {
-		SubplotImpl sp = new SubplotImpl();
+		PlotImpl sp = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
 		when(axis.canContributeToParent()).thenReturn(true);
 
@@ -61,7 +61,7 @@ public class SubplotImplTest {
 
 	@Test
 	public void testAddYAxis() {
-		SubplotImpl sp = new SubplotImpl();
+		PlotImpl sp = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
 		when(axis.canContributeToParent()).thenReturn(true);
 
@@ -91,7 +91,7 @@ public class SubplotImplTest {
 	 */
 	@Test
 	public void testRedraw() {
-		SubplotImpl sp = new SubplotImpl();
+		PlotImpl sp = new PlotImpl();
 		sp.setCacheable(true);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
@@ -160,7 +160,7 @@ public class SubplotImplTest {
 	 */
 	@Test
 	public void testInvalidate() {
-		SubplotImpl sp = new SubplotImpl();
+		PlotImpl sp = new PlotImpl();
 		assertTrue(sp.isValid());
 
 		// add or remove invisible axis does not invalid
@@ -213,7 +213,7 @@ public class SubplotImplTest {
 		assertFalse(sp.isValid());
 		sp.validate();
 
-		SubplotImpl sp0 = new SubplotImpl();
+		PlotImpl sp0 = new PlotImpl();
 		sp.addSubplot(sp0, null);
 		assertFalse(sp.isValid());
 		sp.validate();
@@ -221,7 +221,7 @@ public class SubplotImplTest {
 		assertFalse(sp.isValid());
 		sp.validate();
 
-		SubplotImpl spInvisble = new SubplotImpl();
+		PlotImpl spInvisble = new PlotImpl();
 		spInvisble.setVisible(false);
 		sp.addSubplot(spInvisble, null);
 		assertTrue(sp.isValid());
@@ -232,9 +232,9 @@ public class SubplotImplTest {
 
 	@Test
 	public void testCopyStructure() {
-		SubplotImpl sp = new SubplotImpl();
+		PlotImpl sp = new PlotImpl();
 		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
-		SubplotImpl sp2 = sp.copyStructure(orig2copyMap);
+		PlotImpl sp2 = sp.copyStructure(orig2copyMap);
 		assertEquals(orig2copyMap.size(), 3);
 		assertSame(sp2, orig2copyMap.get(sp));
 		assertSame(sp2.getMargin(), orig2copyMap.get(sp.getMargin()));

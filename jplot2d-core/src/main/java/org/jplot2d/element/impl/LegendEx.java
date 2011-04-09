@@ -26,7 +26,7 @@ import org.jplot2d.element.Legend;
  */
 public interface LegendEx extends Legend, ContainerEx {
 
-	public SubplotEx getParent();
+	public PlotEx getParent();
 
 	/**
 	 * Add the given item to this legend. If this legend is disabled, the item
