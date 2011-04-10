@@ -460,9 +460,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void draw(Graphics2D graphics) {
-		if (!isEnabled() || !isVisible()) {
+		if (!canContribute()) {
 			return;
 		}
+
+		drawBounds(graphics);
 
 		Graphics2D g = (Graphics2D) graphics.create();
 		g.transform(getPhysicalTransform().getTransform());

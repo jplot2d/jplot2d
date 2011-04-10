@@ -125,6 +125,9 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutMargin() {
 		LegendEx legend = mock(LegendEx.class);
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+
 		PlotEx subplot = new PlotImpl(legend) {
 		};
 		subplot.setSize(300, 200);
