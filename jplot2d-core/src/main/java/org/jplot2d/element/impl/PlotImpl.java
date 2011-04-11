@@ -51,8 +51,14 @@ import org.jplot2d.util.WarningReceiver;
  */
 public class PlotImpl extends ContainerImpl implements PlotEx {
 
+	/**
+	 * The container size only take effect when this plot is top plot.
+	 */
 	private Dimension2D containerSize = new Dimension(640, 480);
 
+	/**
+	 * The size mode only take effect when this plot is top plot.
+	 */
 	private SizeMode sizeMode;
 
 	private double locX, locY;
@@ -751,20 +757,20 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		PlotImpl sp = (PlotImpl) src;
-		locX = sp.locX;
-		locY = sp.locY;
-		width = sp.width;
-		height = sp.height;
-		valid = sp.valid;
-		layoutDirector = sp.layoutDirector;
-		pxf = sp.pxf;
-		preferredContentSize = sp.preferredContentSize;
-		contentBounds = sp.contentBounds;
+		PlotImpl plot = (PlotImpl) src;
+		locX = plot.locX;
+		locY = plot.locY;
+		width = plot.width;
+		height = plot.height;
+		valid = plot.valid;
+		layoutDirector = plot.layoutDirector;
+		pxf = plot.pxf;
+		preferredContentSize = plot.preferredContentSize;
+		contentBounds = plot.contentBounds;
 
-		containerSize = sp.containerSize;
-		sizeMode = sp.sizeMode;
-		rerenderNeeded = sp.rerenderNeeded;
+		containerSize = plot.containerSize;
+		sizeMode = plot.sizeMode;
+		rerenderNeeded = plot.rerenderNeeded;
 	}
 
 	/**
