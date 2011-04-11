@@ -21,8 +21,9 @@ package org.jplot2d.sizing;
 import java.awt.geom.Dimension2D;
 
 /**
- * The plot paper size is fixed. Changing the container size will change the
- * scale. Changing the scale will set container size to null.
+ * The plot paper size is auto packed to its contains. Changing the container
+ * size will change the scale. Changing the scale will set container size to
+ * null.
  * 
  * @author Jingjing Li
  * 

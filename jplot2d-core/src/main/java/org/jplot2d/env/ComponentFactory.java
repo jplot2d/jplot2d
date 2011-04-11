@@ -140,6 +140,11 @@ public class ComponentFactory {
 
 	}
 
+	/**
+	 * Create a top level plot with setting the default color, font, and margin
+	 * 
+	 * @return
+	 */
 	public Plot createPlot() {
 		Plot plot = createSubplot();
 
@@ -154,6 +159,11 @@ public class ComponentFactory {
 		return plot;
 	}
 
+	/**
+	 * Create a plot which has no default values.
+	 * 
+	 * @return
+	 */
 	public Plot createSubplot() {
 		PlotImpl subplot = new PlotImpl();
 		applyProfile(subplot);

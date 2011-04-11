@@ -20,6 +20,8 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
+import org.jplot2d.util.DoubleDimension2D;
+
 /**
  * The plot paper size is fixed. Changing the container size will change the
  * scale. Changing the scale will set container size to null.
@@ -29,28 +31,26 @@ import java.awt.geom.Dimension2D;
  */
 public class FixedSizeMode extends AbstractSizeMode {
 
+	private static final Dimension2D DEFAULT_SIZE = new DoubleDimension2D(604,
+			480);
+
+	/**
+	 * The plot paper size is set to default size, 640x480.
+	 */
+	public FixedSizeMode() {
+		this(DEFAULT_SIZE);
+	}
+
 	public FixedSizeMode(Dimension2D size) {
-		if (size == null) {
-			this.autoPack = true;
-		} else {
-			this.autoPack = false;
-			this.width = size.getWidth();
-			this.height = size.getHeight();
-		}
+		this.autoPack = false;
+		this.width = size.getWidth();
+		this.height = size.getHeight();
 	}
 
 	public FixedSizeMode(double width, double height) {
 		this.autoPack = false;
 		this.width = width;
 		this.height = height;
-	}
-
-	/**
-	 * The plot paper size is auto packed according to its preferred content
-	 * size.
-	 */
-	public FixedSizeMode() {
-		this.autoPack = true;
 	}
 
 	public void update() {

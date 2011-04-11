@@ -27,6 +27,10 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 
 	public void update() {
 		Dimension2D containerSize = plot.getContainerSize();
+		setContainerSize(containerSize);
+	}
+
+	private void setContainerSize(Dimension2D containerSize) {
 
 		if (targetSize != null) {
 			Dimension2D tcSize = targetSize;

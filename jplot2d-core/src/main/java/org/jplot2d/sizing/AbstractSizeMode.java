@@ -56,17 +56,20 @@ public abstract class AbstractSizeMode implements SizeMode {
 		return autoPack;
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
-		if (pxf == null) {
-			pxf = new PhysicalTransform(0.0, getSize().getHeight(), scale);
-		}
-		return pxf;
-	}
-
 	public Dimension2D getSize() {
 		return new DoubleDimension2D(width, height);
 	}
 
+	public PhysicalTransform getPhysicalTransform() {
+		if (pxf == null) {
+			pxf = new PhysicalTransform(0.0, height, scale);
+		}
+		return pxf;
+	}
+
+	/**
+	 * Update the PhysicalTransform
+	 */
 	protected void updatePxf() {
 		pxf = null;
 	}
