@@ -204,7 +204,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	private Object invokeGetCompMethod(Method method, Object[] args)
 			throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
-			environment.beginCommand(method.getName());
+			environment.begin();
 		}
 		try {
 			ElementEx compImpl = (ElementEx) method.invoke(impl, args);
@@ -212,14 +212,14 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			environment.endCommand();
+			environment.end();
 		}
 	}
 
 	private Object invokeGetCompArrayMethod(Method method, Object[] args)
 			throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
-			environment.beginCommand(method.getName());
+			environment.begin();
 		}
 		try {
 			Object compImpls = method.invoke(impl, args);
@@ -234,7 +234,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			environment.endCommand();
+			environment.end();
 		}
 	}
 
