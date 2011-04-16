@@ -207,12 +207,11 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		} else {
 			switch (getOrientation()) {
 			case HORIZONTAL:
-				return new Rectangle2D.Double(getLocation().getX(),
-						getLocation().getY() - desc, getLength(),
+				return new Rectangle2D.Double(locX, locY - desc, getLength(),
 						getThickness());
 			case VERTICAL:
-				return new Rectangle2D.Double(getLocation().getX() - asc,
-						getLocation().getY(), getThickness(), getLength());
+				return new Rectangle2D.Double(locX - asc, locY, getThickness(),
+						getLength());
 			default:
 				return null;
 			}

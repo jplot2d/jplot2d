@@ -286,7 +286,8 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 				(int) rect.getMaxY() - 1);
 		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1,
 				rect.y);
-
+		g.drawString(this.getClass().getSimpleName(), rect.x,
+				(int) (rect.getMaxY() - 1));
 	}
 
 }
