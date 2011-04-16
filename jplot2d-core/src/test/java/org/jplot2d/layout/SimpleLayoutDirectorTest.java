@@ -32,7 +32,7 @@ import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.TitleEx;
-import org.jplot2d.layout.SimpleLayoutDirector.AxesInSubplot;
+import org.jplot2d.layout.SimpleLayoutDirector.AxesInPlot;
 import org.jplot2d.util.DoubleDimension2D;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class SimpleLayoutDirectorTest {
 		LegendEx legend = mock(LegendEx.class);
 		PlotEx subplot = new PlotImpl(legend) {
 		};
-		AxesInSubplot ais = new AxesInSubplot();
+		AxesInPlot ais = new AxesInPlot();
 		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 0);
 		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 0);
 		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 0);

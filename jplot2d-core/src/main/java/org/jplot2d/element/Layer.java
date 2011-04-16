@@ -101,8 +101,8 @@ public interface Layer extends Container {
 	public AxisRangeManager getYRangeManager();
 
 	/**
-	 * Attach this layer to the given X axis. When adding a layer to a subplot,
-	 * The axis must exist in the destination environment, otherwise a exception
+	 * Attach this layer to the given X axis. When adding a layer to a plot, the
+	 * axis must exist in the destination environment, otherwise a exception
 	 * will be thrown.
 	 * 
 	 * @param axis
@@ -111,8 +111,8 @@ public interface Layer extends Container {
 	public void setXRangeManager(AxisRangeManager rangeManager);
 
 	/**
-	 * Attach this layer to the given Y axis. When adding a layer to a subplot,
-	 * The axis must exist in the destination environment, otherwise a exception
+	 * Attach this layer to the given Y axis. When adding a layer to a plot, the
+	 * axis must exist in the destination environment, otherwise a exception
 	 * will be thrown.
 	 * 
 	 * @param axis
@@ -122,8 +122,8 @@ public interface Layer extends Container {
 
 	/**
 	 * Attach this layer to the given X/Y axis pair. When adding a layer to a
-	 * subplot, The X/Y axes must exist in the destination environment,
-	 * otherwise a exception will be thrown.
+	 * plot, the X/Y axes must exist in the destination environment, otherwise a
+	 * exception will be thrown.
 	 * 
 	 * @param xaxis
 	 *            the x axis

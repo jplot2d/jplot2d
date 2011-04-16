@@ -53,7 +53,7 @@ public interface AxisEx extends Axis, ContainerEx {
 
 	/**
 	 * calculate asc and desc of this axis. If the the asc or desc changed, and
-	 * this axis is visible, it'll call invalidate() to notify subplot its
+	 * this axis is visible, it'll call invalidate() to notify plot its
 	 * layout is invalid.
 	 */
 	public void calcThickness();

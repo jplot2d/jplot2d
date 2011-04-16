@@ -21,7 +21,7 @@ package org.jplot2d.element;
 import java.awt.geom.Point2D;
 
 /**
- * A text title of subplot.
+ * A text title of plot.
  * 
  * @author Jingjing Li
  * 
@@ -43,7 +43,8 @@ public interface Title extends TextComponent {
 	 * Sets the position of this title. Possible value is TOPLEFT, TOPCENTER,
 	 * TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT. Only when position is
 	 * <code>null</code>, the title can be located by
-	 * {@link #setLocation(Point2D)}, {@link #setHAlign()}, {@link #setVAlign()}.
+	 * {@link #setLocation(Point2D)}, {@link #setHAlign()}, {@link #setVAlign()}
+	 * .
 	 * 
 	 * @param position
 	 *            the position of this title.

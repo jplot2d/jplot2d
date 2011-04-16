@@ -40,46 +40,45 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 	private final double vgap = 0;
 
-	private Map<PlotEx, GridCellGeom> subplotsPreferredContentsGeomMap = new HashMap<PlotEx, GridCellGeom>();
+	private Map<PlotEx, GridCellGeom> plotsPreferredContentsGeomMap = new HashMap<PlotEx, GridCellGeom>();
 
-	private Map<PlotEx, GridCellInsets> subplotsMarginGeomMap = new HashMap<PlotEx, GridCellInsets>();
+	private Map<PlotEx, GridCellInsets> plotsMarginGeomMap = new HashMap<PlotEx, GridCellInsets>();
 
-	protected static Map<PlotEx, AxesInSubplot> getSubplotAxisMap(
-			PlotEx[] subplots) {
+	protected static Map<PlotEx, AxesInPlot> getSubplotAxisMap(PlotEx[] subplots) {
 
-		Map<PlotEx, AxesInSubplot> glaMap = new HashMap<PlotEx, AxesInSubplot>();
+		Map<PlotEx, AxesInPlot> glaMap = new HashMap<PlotEx, AxesInPlot>();
 
 		/*
 		 * Gather metrics for every axis. Iterate over grid to ensure the axes'
 		 * z-order.
 		 */
 		for (PlotEx subplot : subplots) {
-			AxesInSubplot ais = getAllAxes(subplot);
+			AxesInPlot ais = getAllAxes(subplot);
 			glaMap.put(subplot, ais);
 		}
 
 		return glaMap;
 	}
 
-	public void invalidateLayout(PlotEx subplot) {
-		subplotsPreferredContentsGeomMap.remove(subplot);
-		subplotsMarginGeomMap.remove(subplot);
+	public void invalidateLayout(PlotEx plot) {
+		plotsPreferredContentsGeomMap.remove(plot);
+		plotsMarginGeomMap.remove(plot);
 	}
 
-	public void layout(PlotEx subplot) {
+	public void layout(PlotEx plot) {
 
-		super.layout(subplot);
+		super.layout(plot);
 
-		GridCellGeom contGeom = getSubplotsPreferredContentsGeom(subplot);
-		GridCellInsets marginGeom = getSubplotsMarginGeom(subplot);
+		GridCellGeom contGeom = getSubplotsPreferredContentsGeom(plot);
+		GridCellInsets marginGeom = getSubplotsMarginGeom(plot);
 
 		// calculate contents size factor of subplots.
-		Dimension2D scsFactor = calcSubplotContentFactor(subplot, marginGeom);
+		Dimension2D scsFactor = calcSubplotContentFactor(plot, marginGeom);
 
 		TreeMap<Integer, Double> cellWidthMap = new TreeMap<Integer, Double>();
 		TreeMap<Integer, Double> cellHeightMap = new TreeMap<Integer, Double>();
 
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
@@ -109,8 +108,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 		GridCellGeom cellGeom = new GridCellGeom(cellWidthMap, cellHeightMap);
 
-		Rectangle2D cbnds = subplot.getContentBounds();
-		for (PlotEx sp : subplot.getSubplots()) {
+		Rectangle2D cbnds = plot.getContentBounds();
+		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
@@ -167,13 +166,13 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		return new DoubleDimension2D(xfactor, yfactor);
 	}
 
-	public Dimension2D getPreferredContentSize(PlotEx subplot) {
-		GridCellGeom contentGeom = getSubplotsPreferredContentsGeom(subplot);
-		GridCellInsets marginGeom = getSubplotsMarginGeom(subplot);
+	public Dimension2D getPreferredContentSize(PlotEx plot) {
+		GridCellGeom contentGeom = getSubplotsPreferredContentsGeom(plot);
+		GridCellInsets marginGeom = getSubplotsMarginGeom(plot);
 
 		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
 		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
@@ -192,7 +191,7 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		GridCellGeom geom = new GridCellGeom(colWidthMap, rowHeightMap);
 		double width = geom.getSumWidth();
 		double height = geom.getSumHeight();
-		Dimension2D spcs = subplot.getPreferredContentSize();
+		Dimension2D spcs = plot.getPreferredContentSize();
 		if (spcs != null && width < spcs.getWidth()) {
 			width = spcs.getWidth();
 		}
@@ -203,19 +202,19 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 	}
 
 	/**
-	 * Returns row width and column height of the subplots of the given subplot.
+	 * Returns row width and column height of the subplots of the given plot.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @return
 	 */
-	private GridCellGeom getSubplotsPreferredContentsGeom(PlotEx subplot) {
-		if (subplotsPreferredContentsGeomMap.containsKey(subplot)) {
-			return subplotsPreferredContentsGeomMap.get(subplot);
+	private GridCellGeom getSubplotsPreferredContentsGeom(PlotEx plot) {
+		if (plotsPreferredContentsGeomMap.containsKey(plot)) {
+			return plotsPreferredContentsGeomMap.get(plot);
 		}
 
 		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
 		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
@@ -236,32 +235,31 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		}
 
 		GridCellGeom geom = new GridCellGeom(colWidthMap, rowHeightMap);
-		subplotsPreferredContentsGeomMap.put(subplot, geom);
+		plotsPreferredContentsGeomMap.put(plot, geom);
 		return geom;
 	}
 
 	/**
 	 * calculate the margin (from grid bounds to data area bounds) for every row
-	 * and columns of subplots in the given subplot.
+	 * and columns of subplots in the given plot.
 	 * 
 	 * @return the margin
 	 */
-	private GridCellInsets getSubplotsMarginGeom(PlotEx subplot) {
-		if (subplotsMarginGeomMap.containsKey(subplot)) {
-			return subplotsMarginGeomMap.get(subplot);
+	private GridCellInsets getSubplotsMarginGeom(PlotEx plot) {
+		if (plotsMarginGeomMap.containsKey(plot)) {
+			return plotsMarginGeomMap.get(plot);
 		}
 
-		Map<PlotEx, AxesInSubplot> saMap = getSubplotAxisMap(subplot
-				.getSubplots());
+		Map<PlotEx, AxesInPlot> saMap = getSubplotAxisMap(plot.getSubplots());
 
 		Map<Integer, Double> topMargin = new HashMap<Integer, Double>();
 		Map<Integer, Double> leftMargin = new HashMap<Integer, Double>();
 		Map<Integer, Double> bottomMargin = new HashMap<Integer, Double>();
 		Map<Integer, Double> rightMargin = new HashMap<Integer, Double>();
 
-		for (Map.Entry<PlotEx, AxesInSubplot> me : saMap.entrySet()) {
+		for (Map.Entry<PlotEx, AxesInPlot> me : saMap.entrySet()) {
 			PlotEx sp = me.getKey();
-			AxesInSubplot ais = me.getValue();
+			AxesInPlot ais = me.getValue();
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
@@ -288,7 +286,7 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 		GridCellInsets insets = new GridCellInsets(topMargin, leftMargin,
 				bottomMargin, rightMargin);
-		subplotsMarginGeomMap.put(subplot, insets);
+		plotsMarginGeomMap.put(plot, insets);
 		return insets;
 	}
 

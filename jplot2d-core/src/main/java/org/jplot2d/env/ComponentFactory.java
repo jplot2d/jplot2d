@@ -31,7 +31,7 @@ import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Legend;
 import org.jplot2d.element.LegendItem;
-import org.jplot2d.element.SubplotMargin;
+import org.jplot2d.element.PlotMargin;
 import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
@@ -48,7 +48,7 @@ import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
-import org.jplot2d.element.impl.SubplotMarginEx;
+import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisRangeManagerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 
@@ -179,13 +179,13 @@ public class ComponentFactory {
 				Legend.class.getClassLoader(), new Class[] { Legend.class,
 						ElementAddition.class }, legendIH);
 
-		SubplotMarginEx margin = subplot.getMargin();
+		PlotMarginEx margin = subplot.getMargin();
 		applyProfile(margin);
-		ElementIH<SubplotMargin> marginIH = new ElementIH<SubplotMargin>(
-				margin, SubplotMargin.class);
-		SubplotMargin marginProxy = (SubplotMargin) Proxy.newProxyInstance(
-				SubplotMargin.class.getClassLoader(), new Class[] {
-						SubplotMargin.class, ElementAddition.class }, marginIH);
+		ElementIH<PlotMargin> marginIH = new ElementIH<PlotMargin>(
+				margin, PlotMargin.class);
+		PlotMargin marginProxy = (PlotMargin) Proxy.newProxyInstance(
+				PlotMargin.class.getClassLoader(), new Class[] {
+						PlotMargin.class, ElementAddition.class }, marginIH);
 
 		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
 				: new DummyEnvironment();

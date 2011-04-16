@@ -22,7 +22,7 @@ import static org.jplot2d.util.TestUtils.*;
 
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
-import org.jplot2d.element.impl.SubplotMarginEx;
+import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class GridLayoutDirectorTest {
 	public void testLayout() {
 		PlotEx sp00 = new PlotImpl();
 		sp00.setPreferredContentSize(new DoubleDimension2D(640, 480));
-		SubplotMarginEx margin00 = sp00.getMargin();
+		PlotMarginEx margin00 = sp00.getMargin();
 		margin00.setAutoMarginTop(false);
 		margin00.setAutoMarginLeft(false);
 		margin00.setAutoMarginBottom(false);
@@ -48,7 +48,7 @@ public class GridLayoutDirectorTest {
 
 		PlotEx sp01 = new PlotImpl();
 		sp01.setPreferredContentSize(new DoubleDimension2D(320, 240));
-		SubplotMarginEx margin01 = sp01.getMargin();
+		PlotMarginEx margin01 = sp01.getMargin();
 		margin01.setAutoMarginTop(false);
 		margin01.setAutoMarginLeft(false);
 		margin01.setAutoMarginBottom(false);
@@ -60,7 +60,7 @@ public class GridLayoutDirectorTest {
 
 		PlotEx sp10 = new PlotImpl();
 		sp10.setPreferredContentSize(new DoubleDimension2D(320, 240));
-		SubplotMarginEx margin10 = sp10.getMargin();
+		PlotMarginEx margin10 = sp10.getMargin();
 		margin10.setAutoMarginTop(false);
 		margin10.setAutoMarginLeft(false);
 		margin10.setAutoMarginBottom(false);
@@ -72,7 +72,7 @@ public class GridLayoutDirectorTest {
 
 		PlotEx sp11 = new PlotImpl();
 		sp11.setPreferredContentSize(new DoubleDimension2D(320, 240));
-		SubplotMarginEx margin11 = sp11.getMargin();
+		PlotMarginEx margin11 = sp11.getMargin();
 		margin11.setAutoMarginTop(false);
 		margin11.setAutoMarginLeft(false);
 		margin11.setAutoMarginBottom(false);
@@ -83,7 +83,7 @@ public class GridLayoutDirectorTest {
 		margin11.setMarginRight(7);
 
 		PlotEx sp = new PlotImpl();
-		SubplotMarginEx margin = sp.getMargin();
+		PlotMarginEx margin = sp.getMargin();
 		margin.setAutoMarginTop(false);
 		margin.setAutoMarginLeft(false);
 		margin.setAutoMarginBottom(false);

@@ -8,13 +8,13 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Defines the conversion between physical units and device units. Every subplot
+ * Defines the conversion between physical units and device units. Every plot
  * has its own physical coordinate system, and maintains a PhysicalTransform
  * object.
  * <p>
  * The transform is defined by 3 parameters. The xoff is the physical distance
- * between subplot left bound to chart left bound. The yoff is the physical
- * distance between subplot bottom bound to chart top bound. The scale is the
+ * between plot left bound to chart left bound. The yoff is the physical
+ * distance between plot bottom bound to chart top bound. The scale is the
  * factor of device to physical.
  * 
  * @author Jingjing Li

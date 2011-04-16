@@ -30,14 +30,14 @@ import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.element.impl.SubplotMarginEx;
+import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
 
 /**
- * This LayoutDirector only layout layers, all subplot are invisible.
+ * This LayoutDirector only layout layers, all subplot are not considered.
  * 
  * @author Jingjing Li
  * 
@@ -45,9 +45,9 @@ import org.jplot2d.util.NumberUtils;
 public class SimpleLayoutDirector implements LayoutDirector {
 
 	/**
-	 * All Axes in a subplot grouped by position.
+	 * All Axes in a plot grouped by position.
 	 */
-	public static class AxesInSubplot {
+	public static class AxesInPlot {
 		final ArrayList<AxisEx> leftAxes = new ArrayList<AxisEx>();
 		final ArrayList<AxisEx> rightAxes = new ArrayList<AxisEx>();
 		final ArrayList<AxisEx> topAxes = new ArrayList<AxisEx>();
@@ -65,41 +65,41 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return NumberUtils.approximate(a, b, 4);
 	}
 
-	public Object getConstraint(PlotEx subplot) {
-		return constraints.get(subplot);
+	public Object getConstraint(PlotEx plot) {
+		return constraints.get(plot);
 	}
 
-	public void remove(PlotEx subplot) {
-		constraints.remove(subplot);
+	public void remove(PlotEx plot) {
+		constraints.remove(plot);
 	}
 
-	public void setConstraint(PlotEx subplot, Object constraint) {
-		constraints.put(subplot, constraint);
+	public void setConstraint(PlotEx plot, Object constraint) {
+		constraints.put(plot, constraint);
 	}
 
-	public void invalidateLayout(PlotEx subplot) {
-		// do not handle subplot at all
+	public void invalidateLayout(PlotEx plot) {
+		// nothing to do
 	}
 
-	public void layout(PlotEx subplot) {
+	public void layout(PlotEx plot) {
 
 		Rectangle2D contentRect;
-		AxesInSubplot ais = getAllAxes(subplot);
+		AxesInPlot ais = getAllAxes(plot);
 
-		if (subplot.getContentConstrant() != null) {
-			contentRect = subplot.getContentConstrant();
+		if (plot.getContentConstrant() != null) {
+			contentRect = plot.getContentConstrant();
 		} else {
-			Insets2D margin = calcMargin(subplot, ais);
+			Insets2D margin = calcMargin(plot, ais);
 
-			subplot.getMargin().setMarginTop(margin.getTop());
-			subplot.getMargin().setMarginLeft(margin.getLeft());
-			subplot.getMargin().setMarginBottom(margin.getBottom());
-			subplot.getMargin().setMarginRight(margin.getRight());
+			plot.getMargin().setMarginTop(margin.getTop());
+			plot.getMargin().setMarginLeft(margin.getLeft());
+			plot.getMargin().setMarginBottom(margin.getBottom());
+			plot.getMargin().setMarginRight(margin.getRight());
 
-			double contentWidth = subplot.getSize().getWidth()
-					- margin.getLeft() - margin.getRight();
-			double contentHeight = subplot.getSize().getHeight()
-					- margin.getTop() - margin.getBottom();
+			double contentWidth = plot.getSize().getWidth() - margin.getLeft()
+					- margin.getRight();
+			double contentHeight = plot.getSize().getHeight() - margin.getTop()
+					- margin.getBottom();
 			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
 				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
 			}
@@ -110,23 +110,23 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					margin.getBottom(), contentWidth, contentHeight);
 		}
 
-		subplot.setContentBounds(contentRect);
-		layoutLeftMargin(subplot, contentRect, ais);
-		layoutRightMargin(subplot, contentRect, ais);
-		layoutTopMargin(subplot, contentRect, ais);
-		layoutBottomMargin(subplot, contentRect, ais);
+		plot.setContentBounds(contentRect);
+		layoutLeftMargin(plot, contentRect, ais);
+		layoutRightMargin(plot, contentRect, ais);
+		layoutTopMargin(plot, contentRect, ais);
+		layoutBottomMargin(plot, contentRect, ais);
 	}
 
 	/**
 	 * Return all visible axes on left, right, top, bottom margins.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @return
 	 */
-	protected static AxesInSubplot getAllAxes(PlotEx subplot) {
-		AxesInSubplot ais = new AxesInSubplot();
+	protected static AxesInPlot getAllAxes(PlotEx plot) {
+		AxesInPlot ais = new AxesInPlot();
 
-		for (AxisEx axis : subplot.getXAxes()) {
+		for (AxisEx axis : plot.getXAxes()) {
 			if (axis.canContribute()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					ais.topAxes.add(axis);
@@ -135,7 +135,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				}
 			}
 		}
-		for (AxisEx axis : subplot.getYAxes()) {
+		for (AxisEx axis : plot.getYAxes()) {
 			if (axis.canContribute()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					ais.rightAxes.add(axis);
@@ -148,8 +148,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return ais;
 	}
 
-	protected static double calcLeftMargin(PlotEx subplot, AxesInSubplot ais) {
-		SubplotMarginEx margin = subplot.getMargin();
+	protected static double calcLeftMargin(PlotEx plot, AxesInPlot ais) {
+		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoMarginLeft()) {
 			return margin.getMarginLeft() + margin.getExtraLeft();
@@ -164,7 +164,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			mLeft -= ais.leftAxes.get(0).getDesc();
 		}
 
-		LegendEx legend = subplot.getLegend();
+		LegendEx legend = plot.getLegend();
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case LEFTTOP:
@@ -179,8 +179,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mLeft;
 	}
 
-	protected static double calcRightMargin(PlotEx subplot, AxesInSubplot ais) {
-		SubplotMarginEx margin = subplot.getMargin();
+	protected static double calcRightMargin(PlotEx plot, AxesInPlot ais) {
+		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoMarginRight()) {
 			return margin.getMarginRight() + margin.getExtraRight();
@@ -197,7 +197,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		LegendEx legend = subplot.getLegend();
+		LegendEx legend = plot.getLegend();
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
@@ -212,8 +212,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mRight;
 	}
 
-	protected static double calcTopMargin(PlotEx subplot, AxesInSubplot ais) {
-		SubplotMarginEx margin = subplot.getMargin();
+	protected static double calcTopMargin(PlotEx plot, AxesInPlot ais) {
+		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoMarginTop()) {
 			return margin.getMarginTop() + margin.getExtraTop();
@@ -228,7 +228,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			mTop -= ais.topAxes.get(0).getDesc();
 		}
 
-		LegendEx legend = subplot.getLegend();
+		LegendEx legend = plot.getLegend();
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case TOPLEFT:
@@ -240,7 +240,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		for (TitleEx title : subplot.getTitles()) {
+		for (TitleEx title : plot.getTitles()) {
 			if (title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
@@ -257,8 +257,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mTop;
 	}
 
-	protected static double calcBottomMargin(PlotEx subplot, AxesInSubplot ais) {
-		SubplotMarginEx margin = subplot.getMargin();
+	protected static double calcBottomMargin(PlotEx plot, AxesInPlot ais) {
+		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoMarginBottom()) {
 			return margin.getMarginBottom() + margin.getExtraBottom();
@@ -273,7 +273,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			mBottom -= ais.bottomAxes.get(0).getAsc();
 		}
 
-		LegendEx legend = subplot.getLegend();
+		LegendEx legend = plot.getLegend();
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
@@ -285,7 +285,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		for (TitleEx title : subplot.getTitles()) {
+		for (TitleEx title : plot.getTitles()) {
 			if (title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
@@ -303,18 +303,18 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	/**
-	 * Calculate the margin of the given subplot. The legend size can be
-	 * calculated by pre-setting its length constraint.
+	 * Calculate the margin of the given plot. The legend size can be calculated
+	 * by pre-setting its length constraint.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @param ais
 	 * @return
 	 */
-	static Insets2D calcMargin(PlotEx subplot, AxesInSubplot ais) {
+	static Insets2D calcMargin(PlotEx plot, AxesInPlot ais) {
 
 		double mLeft, mRight, mTop, mBottom;
 
-		LegendEx legend = subplot.getLegend();
+		LegendEx legend = plot.getLegend();
 
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
@@ -324,17 +324,17 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			case BOTTOMLEFT:
 			case BOTTOMCENTER:
 			case BOTTOMRIGHT: {
-				double legendWidth = subplot.getSize().getWidth()
-						- subplot.getMargin().getExtraLeft()
-						- subplot.getMargin().getExtraRight();
+				double legendWidth = plot.getSize().getWidth()
+						- plot.getMargin().getExtraLeft()
+						- plot.getMargin().getExtraRight();
 				legend.setLengthConstraint(legendWidth);
 				break;
 			}
 			}
 		}
 
-		mTop = calcTopMargin(subplot, ais);
-		mBottom = calcBottomMargin(subplot, ais);
+		mTop = calcTopMargin(plot, ais);
+		mBottom = calcBottomMargin(plot, ais);
 
 		if (legend.canContribute()) {
 			switch (legend.getPosition()) {
@@ -344,7 +344,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			case RIGHTTOP:
 			case RIGHTMIDDLE:
 			case RIGHTBOTTOM: {
-				double contentHeight = subplot.getSize().getHeight() - mTop
+				double contentHeight = plot.getSize().getHeight() - mTop
 						- mBottom;
 				legend.setLengthConstraint(contentHeight);
 				break;
@@ -352,14 +352,14 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		mLeft = calcLeftMargin(subplot, ais);
-		mRight = calcRightMargin(subplot, ais);
+		mLeft = calcLeftMargin(plot, ais);
+		mRight = calcRightMargin(plot, ais);
 
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
 
 	private static void layoutLeftMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInSubplot ais) {
+			AxesInPlot ais) {
 
 		// all left axes in inner-to-outer order
 		ArrayList<AxisEx> leftAxes = ais.leftAxes;
@@ -416,7 +416,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	private static void layoutRightMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInSubplot ais) {
+			AxesInPlot ais) {
 
 		// all right axes in inner-to-outer order
 		ArrayList<AxisEx> rightAxes = ais.rightAxes;
@@ -472,7 +472,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	private static void layoutTopMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInSubplot ais) {
+			AxesInPlot ais) {
 
 		// all left axes in inner-to-outer order
 		ArrayList<AxisEx> topAxes = ais.topAxes;
@@ -527,7 +527,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	private static void layoutBottomMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInSubplot ais) {
+			AxesInPlot ais) {
 
 		// all bottom axes in inner-to-outer order
 		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
@@ -582,26 +582,25 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	/**
-	 * Calculate the preferred content size of the given subplot. The default
-	 * implementation returns the subplot.getPreferredContentSize(), which can
-	 * be override by subclass to consider nested subplots. The returned size
-	 * may be <code>null</code> if there is no enough information to derive a
-	 * value.
+	 * Calculate the preferred content size of the given plot. The default
+	 * implementation returns the plot.getPreferredContentSize(), which can be
+	 * override by subclass to consider nested subplots. The returned size may
+	 * be <code>null</code> if there is no enough information to derive a value.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @return the preferred content size
 	 */
-	public Dimension2D getPreferredContentSize(PlotEx subplot) {
-		return subplot.getPreferredContentSize();
+	public Dimension2D getPreferredContentSize(PlotEx plot) {
+		return plot.getPreferredContentSize();
 	}
 
-	public Dimension2D getPreferredSize(PlotEx subplot) {
-		Dimension2D prefContSize = getPreferredContentSize(subplot);
+	public Dimension2D getPreferredSize(PlotEx plot) {
+		Dimension2D prefContSize = getPreferredContentSize(plot);
 		if (prefContSize == null) {
 			return null;
 		} else {
-			AxesInSubplot ais = getAllAxes(subplot);
-			Insets2D margin = calcMargin(subplot, ais);
+			AxesInPlot ais = getAllAxes(plot);
+			Insets2D margin = calcMargin(plot, ais);
 			double w = prefContSize.getWidth() + margin.getLeft()
 					+ margin.getRight();
 			double h = prefContSize.getHeight() + margin.getTop()

@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Jingjing Li
  * 
  */
-public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
+public class PlotMarginImpl extends ElementImpl implements PlotMarginEx,
 		Cloneable {
 
 	private boolean autoMarginTop = true, autoMarginLeft = true,
@@ -140,11 +140,11 @@ public class SubplotMarginImpl extends ElementImpl implements SubplotMarginEx,
 	}
 
 	@Override
-	public SubplotMarginImpl copyStructure(
+	public PlotMarginImpl copyStructure(
 			Map<ElementEx, ElementEx> orig2copyMap) {
-		SubplotMarginImpl result = null;
+		PlotMarginImpl result = null;
 		try {
-			result = (SubplotMarginImpl) this.clone();
+			result = (PlotMarginImpl) this.clone();
 		} catch (CloneNotSupportedException e) {
 		}
 
