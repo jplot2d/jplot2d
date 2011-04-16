@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jplot2d.element.AxisPosition;
+import org.jplot2d.element.HAlign;
+import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.PlotEx;
@@ -54,7 +56,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	private static final double TITLE_GAP_RATIO = 0.25;
 
-	private static double LEGEND_GAP = 8.0;
+	static double LEGEND_GAP = 8.0;
 
 	/** The layout constraints */
 	private Map<PlotEx, Object> constraints = new HashMap<PlotEx, Object>();
@@ -255,8 +257,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mTop;
 	}
 
-	protected static double calcBottomMargin(PlotEx subplot,
-			AxesInSubplot ais) {
+	protected static double calcBottomMargin(PlotEx subplot, AxesInSubplot ais) {
 		SubplotMarginEx margin = subplot.getMargin();
 
 		if (!margin.isAutoMarginBottom()) {
@@ -390,20 +391,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		if (legend.canContribute()) {
 			xloc -= LEGEND_GAP;
 			double y;
+			VAlign valign;
 			switch (legend.getPosition()) {
 			case LEFTTOP:
 				y = contentBox.getMaxY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.TOP;
 				break;
 			case LEFTMIDDLE:
 				y = contentBox.getCenterY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.MIDDLE;
 				break;
 			case LEFTBOTTOM:
 				y = contentBox.getMinY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.BOTTOM;
 				break;
+			default:
+				return;
 			}
+			legend.setLocation(xloc, y);
+			legend.setHAlign(HAlign.RIGHT);
+			legend.setVAlign(valign);
 		}
 
 	}
@@ -440,20 +447,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		if (legend.canContribute()) {
 			xloc += LEGEND_GAP;
 			double y;
+			VAlign valign;
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
 				y = contentBox.getMaxY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.TOP;
 				break;
 			case RIGHTMIDDLE:
 				y = contentBox.getCenterY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.MIDDLE;
 				break;
 			case RIGHTBOTTOM:
 				y = contentBox.getMinY();
-				legend.setLocation(xloc, y);
+				valign = VAlign.BOTTOM;
 				break;
+			default:
+				return;
 			}
+			legend.setLocation(xloc, y);
+			legend.setHAlign(HAlign.LEFT);
+			legend.setVAlign(valign);
 		}
 
 	}
@@ -488,27 +501,33 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		// locate legend
 		LegendEx legend = sp.getLegend();
 		if (legend.canContribute()) {
-			double x;
 			yloc += LEGEND_GAP;
+			double x;
+			HAlign halign;
 			switch (legend.getPosition()) {
 			case TOPLEFT:
 				x = contentBox.getMinX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.LEFT;
 				break;
 			case TOPCENTER:
 				x = contentBox.getCenterX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.CENTER;
 				break;
 			case TOPRIGHT:
 				x = contentBox.getMaxX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.RIGHT;
 				break;
+			default:
+				return;
 			}
+			legend.setLocation(x, yloc);
+			legend.setHAlign(halign);
+			legend.setVAlign(VAlign.BOTTOM);
 		}
 	}
 
-	private static void layoutBottomMargin(PlotEx sp,
-			Rectangle2D contentBox, AxesInSubplot ais) {
+	private static void layoutBottomMargin(PlotEx sp, Rectangle2D contentBox,
+			AxesInSubplot ais) {
 
 		// all bottom axes in inner-to-outer order
 		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
@@ -524,7 +543,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			AxisEx am = bottomAxes.get(0);
 			am.setLength(contentBox.getWidth());
 			am.setLocation(iabLeft, yloc);
-			yloc += am.getDesc();
+			yloc -= am.getDesc();
 			for (int i = 1; i < bottomAxes.size(); i++) {
 				am = bottomAxes.get(i);
 				am.setLength(contentBox.getWidth());
@@ -537,22 +556,28 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		// locate legend
 		LegendEx legend = sp.getLegend();
 		if (legend.canContribute()) {
-			double x;
 			yloc -= LEGEND_GAP;
+			double x;
+			HAlign halign;
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
 				x = contentBox.getMinX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.LEFT;
 				break;
 			case BOTTOMCENTER:
 				x = contentBox.getCenterX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.CENTER;
 				break;
 			case BOTTOMRIGHT:
 				x = contentBox.getMaxX();
-				legend.setLocation(x, yloc);
+				halign = HAlign.RIGHT;
 				break;
+			default:
+				return;
 			}
+			legend.setLocation(x, yloc);
+			legend.setHAlign(halign);
+			legend.setVAlign(VAlign.TOP);
 		}
 	}
 

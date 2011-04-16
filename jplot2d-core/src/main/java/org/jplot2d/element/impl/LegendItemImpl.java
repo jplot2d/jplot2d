@@ -77,4 +77,14 @@ public abstract class LegendItemImpl extends ElementImpl implements
 		}
 	}
 
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		LegendItemImpl item = (LegendItemImpl) src;
+		visible = item.visible;
+		locX = item.locX;
+		locY = item.locY;
+	}
+
 }

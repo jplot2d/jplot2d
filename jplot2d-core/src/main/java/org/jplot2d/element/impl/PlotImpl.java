@@ -227,6 +227,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		pxf = null;
 		redraw();
 
+		/* Axis, Title, Legend and Marker do not cache their physical transform */
+
 		// notify all layers
 		for (LayerEx layer : layers) {
 			layer.parentPhysicalTransformChanged();
@@ -743,6 +745,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			result.subplots.add(spCopy);
 		}
 
+		// only link elements on top level plot
 		if (getParent() == null) {
 			// link layer and range manager
 			linkLayerAndRangeManager(this, orig2copyMap);
@@ -972,7 +975,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * font.
 	 */
 	private void calcLegendSize(PlotEx subplot) {
-		if (subplot.getLegend().isVisible()) {
+		if (subplot.getLegend().canContribute()) {
 			subplot.getLegend().calcSize();
 		}
 		for (PlotEx sp : subplot.getSubplots()) {
