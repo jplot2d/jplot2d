@@ -22,6 +22,9 @@ import static org.jplot2d.util.TestUtils.*;
 import static org.mockito.Mockito.*;
 
 import org.jplot2d.element.AxisPosition;
+import org.jplot2d.element.HAlign;
+import org.jplot2d.element.Legend;
+import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisLockGroupEx;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
@@ -109,7 +112,8 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
 		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
 		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 38.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 60.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais),
+				7.0 + 40.0 + SimpleLayoutDirector.LEGEND_GAP + 5.0);
 
 		// no auto margin
 		subplot.getMargin().setAutoMarginLeft(false);
@@ -125,8 +129,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutMargin() {
 		LegendEx legend = mock(LegendEx.class);
-		when(legend.canContribute()).thenReturn(true);
-		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(legend.canContribute()).thenReturn(false);
 
 		PlotEx subplot = new PlotImpl(legend) {
 		};
@@ -171,9 +174,107 @@ public class SimpleLayoutDirectorTest {
 		subplot.addXAxis(bottom);
 
 		subplot.validate();
-		checkRectangle2D(subplot.getContentBounds(), 8.0, 5.0, 300 - 8 - 8,
+		checkRectangle2D(subplot.getContentBounds(), 8.0, 5, 300 - 8 - 8,
 				200 - 5 - 5);
+		verify(legend, never()).setLocation(anyDouble(), anyDouble());
+		verify(legend, never()).setHAlign(any(HAlign.class));
+		verify(legend, never()).setVAlign(any(VAlign.class));
+	}
 
+	@Test
+	public void testLayoutLegendBottomCenter() {
+		LegendEx legend = mock(LegendEx.class);
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(legend.getPosition()).thenReturn(Legend.Position.BOTTOMCENTER);
+
+		PlotEx subplot = new PlotImpl(legend) {
+		};
+		subplot.setSize(300, 200);
+		subplot.getMargin().setExtraLeft(12.0);
+		subplot.getMargin().setExtraRight(12.0);
+		subplot.getMargin().setExtraTop(12.0);
+		subplot.getMargin().setExtraBottom(12.0);
+
+		subplot.validate();
+		double bottomMargin = 12 + 10 + SimpleLayoutDirector.LEGEND_GAP;
+		checkRectangle2D(subplot.getContentBounds(), 12, bottomMargin,
+				300 - 12 - 12, 200 - 12 - bottomMargin);
+		verify(legend).setLocation(150, 12 + 10);
+		verify(legend).setHAlign(HAlign.CENTER);
+		verify(legend).setVAlign(VAlign.TOP);
+	}
+
+	@Test
+	public void testLayoutLegendTopCenter() {
+		LegendEx legend = mock(LegendEx.class);
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(legend.getPosition()).thenReturn(Legend.Position.TOPCENTER);
+
+		PlotEx subplot = new PlotImpl(legend) {
+		};
+		subplot.setSize(300, 200);
+		subplot.getMargin().setExtraLeft(12.0);
+		subplot.getMargin().setExtraRight(12.0);
+		subplot.getMargin().setExtraTop(12.0);
+		subplot.getMargin().setExtraBottom(12.0);
+
+		subplot.validate();
+		double topMargin = 12 + 10 + SimpleLayoutDirector.LEGEND_GAP;
+		checkRectangle2D(subplot.getContentBounds(), 12, 12, 300 - 12 - 12,
+				200 - topMargin - 12);
+		verify(legend).setLocation(150, 200 - 12 - 10);
+		verify(legend).setHAlign(HAlign.CENTER);
+		verify(legend).setVAlign(VAlign.BOTTOM);
+	}
+
+	@Test
+	public void testLayoutLegendLeftMiddle() {
+		LegendEx legend = mock(LegendEx.class);
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(legend.getPosition()).thenReturn(Legend.Position.LEFTMIDDLE);
+
+		PlotEx subplot = new PlotImpl(legend) {
+		};
+		subplot.setSize(300, 200);
+		subplot.getMargin().setExtraLeft(12.0);
+		subplot.getMargin().setExtraRight(12.0);
+		subplot.getMargin().setExtraTop(12.0);
+		subplot.getMargin().setExtraBottom(12.0);
+
+		subplot.validate();
+		double leftMargin = 12 + 30 + SimpleLayoutDirector.LEGEND_GAP;
+		checkRectangle2D(subplot.getContentBounds(), leftMargin, 12,
+				300 - leftMargin - 12, 200 - 12 - 12);
+		verify(legend).setLocation(12 + 30, 100);
+		verify(legend).setHAlign(HAlign.RIGHT);
+		verify(legend).setVAlign(VAlign.MIDDLE);
+	}
+
+	@Test
+	public void testLayoutLegendRightMiddle() {
+		LegendEx legend = mock(LegendEx.class);
+		when(legend.canContribute()).thenReturn(true);
+		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(legend.getPosition()).thenReturn(Legend.Position.RIGHTMIDDLE);
+
+		PlotEx subplot = new PlotImpl(legend) {
+		};
+		subplot.setSize(300, 200);
+		subplot.getMargin().setExtraLeft(12.0);
+		subplot.getMargin().setExtraRight(12.0);
+		subplot.getMargin().setExtraTop(12.0);
+		subplot.getMargin().setExtraBottom(12.0);
+
+		subplot.validate();
+		double rightMargin = 12 + 30 + SimpleLayoutDirector.LEGEND_GAP;
+		checkRectangle2D(subplot.getContentBounds(), 12, 12,
+				300 - 12 - rightMargin, 200 - 12 - 12);
+		verify(legend).setLocation(300 - 12 - 30, 100);
+		verify(legend).setHAlign(HAlign.LEFT);
+		verify(legend).setVAlign(VAlign.MIDDLE);
 	}
 
 }

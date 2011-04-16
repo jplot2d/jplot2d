@@ -54,8 +54,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	private double width, height;
 
-	private PhysicalTransform pxf;
-
 	private Position position = Position.BOTTOMCENTER;
 
 	private HAlign halign;
@@ -108,24 +106,25 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (isEnabled() && items.size() > 0) {
-			invalidateSubplot();
+			if (getParent() != null) {
+				getParent().invalidate();
+			}
 		}
 	}
 
 	public Dimension2D getSize() {
 		calcSize();
-		return new DoubleDimension2D();
+		return new DoubleDimension2D(width, height);
 	}
 
 	public Rectangle2D getBounds() {
-
 		double x, y;
 		switch (getHAlign()) {
 		case RIGHT:
 			x = locX - width;
 			break;
 		case CENTER:
-			x = locY - width / 2;
+			x = locX - width / 2;
 			break;
 		default:
 			x = locX;
@@ -143,11 +142,16 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
-		if (pxf == null) {
-			pxf = getParent().getPhysicalTransform().translate(
-					getLocation().getX(), getLocation().getY());
-		}
+	/**
+	 * The physical transform is for legend items. The original point is on
+	 * bottom-left corner.
+	 * 
+	 * @return
+	 */
+	private PhysicalTransform getPhysicalTransform() {
+		Rectangle2D bounds = getBounds();
+		PhysicalTransform pxf = getParent().getPhysicalTransform().translate(
+				bounds.getX(), bounds.getY());
 		return pxf;
 	}
 
@@ -163,7 +167,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (getLocation().getX() != locX || getLocation().getY() != locY) {
 			this.locX = locX;
 			this.locY = locY;
-			pxf = null;
 			redraw();
 		}
 	}
@@ -174,6 +177,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setPosition(Position position) {
 		this.position = position;
+		if (canContribute()) {
+			invalidatePlotIfVisible();
+		}
 	}
 
 	public HAlign getHAlign() {
@@ -216,8 +222,12 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		items.add(item);
 		if (isEnabled()) {
 			item.setLegend(this);
-			visibleItemNum++;
-			relayoutItemsNeeded = true;
+			if (item.isVisible()) {
+				visibleItemNum++;
+				maxItemSize = null;
+				relayoutItemsNeeded = true;
+				invalidatePlotIfVisible();
+			}
 		} else {
 			LegendEx enabledLegend = getEnabledLegend(getParent());
 			if (enabledLegend != null) {
@@ -230,18 +240,20 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		items.remove(item);
 		if (isEnabled()) {
 			item.setLegend(null);
-			visibleItemNum--;
-			relayoutItemsNeeded = true;
+			if (item.isVisible()) {
+				visibleItemNum--;
+				if (item.getSize().equals(maxItemSize)) {
+					maxItemSize = null;
+				}
+				relayoutItemsNeeded = true;
+				invalidatePlotIfVisible();
+			}
 		} else {
 			LegendEx enabledLegend = getEnabledLegend(getParent());
 			if (enabledLegend != null) {
 				enabledLegend.removeLegendItem(item);
 			}
 		}
-	}
-
-	public double getLengthConstraint() {
-		return lengthConstraint;
 	}
 
 	public void setLengthConstraint(double length) {
@@ -255,6 +267,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (item.getSize().equals(maxItemSize)) {
 			maxItemSize = null;
 			relayoutItemsNeeded = true;
+			invalidatePlotIfVisible();
 		}
 	}
 
@@ -268,6 +281,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			visibleItemNum--;
 		}
 		relayoutItemsNeeded = true;
+		invalidatePlotIfVisible();
 	}
 
 	@Override
@@ -280,7 +294,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		locY = legend.locY;
 		width = legend.width;
 		height = legend.height;
-		pxf = legend.pxf;
 		position = legend.position;
 		halign = legend.halign;
 		valign = legend.valign;
@@ -291,8 +304,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		relayoutItemsNeeded = legend.relayoutItemsNeeded;
 	}
 
-	private void invalidateSubplot() {
-		if (getParent() != null) {
+	/**
+	 * Invalid plot if this legend is visible
+	 */
+	private void invalidatePlotIfVisible() {
+		if (isVisible() && getParent() != null) {
 			getParent().invalidate();
 		}
 	}
@@ -310,7 +326,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case BOTTOMLEFT:
 		case BOTTOMCENTER:
 		case BOTTOMRIGHT: {
-			fitColumnsToWidth(getLengthConstraint());
+			fitColumnsToWidth(lengthConstraint);
 			double width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
 					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
 			double height = (maxItemSize.getHeight() + ROW_SPACE) * rows
@@ -318,7 +334,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			this.width = width;
 			if (this.height != height) {
 				this.height = height;
-				invalidateSubplot();
+				invalidatePlotIfVisible();
 			}
 			break;
 		}
@@ -328,14 +344,14 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case RIGHTTOP:
 		case RIGHTMIDDLE:
 		case RIGHTBOTTOM: {
-			fitRowsToHeight(getLengthConstraint());
+			fitRowsToHeight(lengthConstraint);
 			double width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
 					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
 			double height = (maxItemSize.getHeight() + ROW_SPACE) * rows
 					- ROW_SPACE + 2 * VERTICAL_BORDER;
 			if (this.width != width) {
 				this.width = width;
-				invalidateSubplot();
+				invalidatePlotIfVisible();
 			}
 			this.height = height;
 			break;
@@ -464,8 +480,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			return;
 		}
 
-		drawBounds(graphics);
+		// drawBounds(graphics);
 
+		// transform to relative paper space
 		Graphics2D g = (Graphics2D) graphics.create();
 		g.transform(getPhysicalTransform().getTransform());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

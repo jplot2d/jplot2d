@@ -52,7 +52,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	private MathElement textModel;
 
-	private MathLabel label;
+	private transient MathLabel label;
 
 	public XYLegendItemImpl() {
 
@@ -65,7 +65,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	private MathLabel getLabel() {
 		if (label == null) {
 			label = new MathLabel(getTextModel(), getLegend()
-					.getEffectiveFont(), VAlign.MIDDLE, HAlign.CENTER);
+					.getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
 		}
 		return label;
 	}
@@ -182,6 +182,14 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		getLabel().draw(g);
 
 		g.setTransform(oldTransform);
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		XYLegendItemImpl xyli = (XYLegendItemImpl) src;
+		textModel = xyli.textModel;
 	}
 
 }

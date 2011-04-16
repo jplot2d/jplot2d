@@ -205,13 +205,25 @@ public class ComponentFactory {
 		return this.createLayer(new ArrayPair(xarray, yarray));
 	}
 
+	public Layer createLayer(double[] xarray, double[] yarray, String name) {
+		return this.createLayer(new ArrayPair(xarray, yarray), name);
+	}
+
 	public Layer createLayer(ArrayPair xy) {
 		return this.createLayer(new XYGraph(xy));
 	}
 
+	public Layer createLayer(ArrayPair xy, String name) {
+		return this.createLayer(new XYGraph(xy), name);
+	}
+
 	public Layer createLayer(XYGraph graph) {
+		return createLayer(graph, null);
+	}
+
+	public Layer createLayer(XYGraph graph, String name) {
 		Layer layer = this.createLayer();
-		XYGraphPlotter plotter = this.createXYGraphPlotter();
+		XYGraphPlotter plotter = this.createXYGraphPlotter(name);
 		plotter.setGraph(graph);
 		layer.addGraphPlotter(plotter);
 		return layer;
@@ -230,6 +242,10 @@ public class ComponentFactory {
 	}
 
 	public XYGraphPlotter createXYGraphPlotter() {
+		return createXYGraphPlotter(null);
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(String name) {
 		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
 		applyProfile(gp);
 		ElementIH<XYGraphPlotter> gpIH = new ElementIH<XYGraphPlotter>(gp,
@@ -239,6 +255,9 @@ public class ComponentFactory {
 						XYGraphPlotter.class, ElementAddition.class }, gpIH);
 
 		LegendItemEx li = gp.getLegendItem();
+		if (name != null) {
+			li.setText(name);
+		}
 		ElementIH<LegendItem> liIH = new ElementIH<LegendItem>(li,
 				LegendItem.class);
 		LegendItem liProxy = (LegendItem) Proxy.newProxyInstance(

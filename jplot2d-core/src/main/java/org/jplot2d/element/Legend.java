@@ -21,12 +21,13 @@ package org.jplot2d.element;
 import java.awt.geom.Point2D;
 
 /**
- * Legend display legend items in grid cells.
+ * Legend display legend items. If there is no item in a legend, it will not
+ * show.
  * 
  * @author Jingjing Li
  * 
  */
-public interface Legend extends Container {
+public interface Legend extends Component {
 
 	public enum Position {
 		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
