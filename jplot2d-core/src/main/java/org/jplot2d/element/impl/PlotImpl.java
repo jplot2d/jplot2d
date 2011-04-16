@@ -95,7 +95,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private Rectangle2D contentBounds;
 
-	private SubplotMarginEx margin;
+	private PlotMarginEx margin;
 
 	private LegendEx legend;
 
@@ -110,14 +110,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private final List<PlotEx> subplots = new ArrayList<PlotEx>();
 
 	public PlotImpl() {
-		margin = new SubplotMarginImpl();
+		margin = new PlotMarginImpl();
 		margin.setParent(this);
 		legend = new LegendImpl();
 		legend.setParent(this);
 	}
 
 	protected PlotImpl(LegendEx legend) {
-		margin = new SubplotMarginImpl();
+		margin = new PlotMarginImpl();
 		margin.setParent(this);
 		this.legend = legend;
 		legend.setParent(this);
@@ -125,10 +125,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public String getSelfId() {
 		if (getParent() != null) {
-			return "Subplot" + getParent().indexOf(this);
+			return "Plot" + getParent().indexOf(this);
 		} else {
-			return "Subplot@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return "Plot@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -239,7 +238,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public SubplotMarginEx getMargin() {
+	public PlotMarginEx getMargin() {
 		return margin;
 	}
 
@@ -712,7 +711,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		PlotImpl result = (PlotImpl) super.copyStructure(orig2copyMap);
 
 		// copy margin
-		result.margin = (SubplotMarginEx) margin.copyStructure(orig2copyMap);
+		result.margin = (PlotMarginEx) margin.copyStructure(orig2copyMap);
 		result.margin.setParent(result);
 
 		// copy legend
@@ -780,12 +779,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Deep search layers to find the copy whoes range manager not been linked,
 	 * and set for them.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @param orig2copyMap
 	 */
-	protected static void linkLayerAndRangeManager(PlotEx subplot,
+	protected static void linkLayerAndRangeManager(PlotEx plot,
 			Map<ElementEx, ElementEx> orig2copyMap) {
-		for (LayerEx layer : subplot.getLayers()) {
+		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXRangeManager() == null
 					&& layer.getXRangeManager() != null) {
@@ -800,14 +799,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 				layerCopy.setYRangeManager(ycopy);
 			}
 		}
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			linkLayerAndRangeManager(sp, orig2copyMap);
 		}
 	}
 
-	protected static void linkLegendAndLegendItem(PlotEx subplot,
+	protected static void linkLegendAndLegendItem(PlotEx plot,
 			Map<ElementEx, ElementEx> orig2copyMap) {
-		for (LayerEx layer : subplot.getLayers()) {
+		for (LayerEx layer : plot.getLayers()) {
 			for (GraphPlotterEx gp : layer.getGraphPlotters()) {
 				LegendItemEx li = gp.getLegendItem();
 				LegendItemEx liCopy = (LegendItemEx) orig2copyMap.get(li);
@@ -838,7 +837,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		 * but its thick depends on its internal status, such as tick height,
 		 * labels. The auto range must be re-calculated after all axes length
 		 * are set. So we cannot use deep-first validate tree. we must layout
-		 * all subplot, then calculate auto range, then calculate thickness of
+		 * all subplots, then calculate auto range, then calculate thickness of
 		 * all axes.
 		 */
 
@@ -919,18 +918,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * fill all AxisLockGroups in the given subplot to the set.
+	 * fill all AxisLockGroups in the given plot to the set.
 	 */
-	private void fillLockGroups(PlotEx subplot, Set<AxisLockGroupEx> algs) {
-		for (AxisEx axis : subplot.getXAxes()) {
+	private void fillLockGroups(PlotEx plot, Set<AxisLockGroupEx> algs) {
+		for (AxisEx axis : plot.getXAxes()) {
 			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
-		for (AxisEx axis : subplot.getYAxes()) {
+		for (AxisEx axis : plot.getYAxes()) {
 			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			fillLockGroups(sp, algs);
 		}
 	}
@@ -939,18 +938,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Calculate axis thickness according to its tick height, label font and
 	 * label orientation.
 	 */
-	private void calcAxesThickness(PlotEx subplot) {
-		for (AxisEx axis : subplot.getXAxes()) {
+	private void calcAxesThickness(PlotEx plot) {
+		for (AxisEx axis : plot.getXAxes()) {
 			if (axis.isVisible()) {
 				axis.calcThickness();
 			}
 		}
-		for (AxisEx axis : subplot.getYAxes()) {
+		for (AxisEx axis : plot.getYAxes()) {
 			if (axis.isVisible()) {
 				axis.calcThickness();
 			}
 		}
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			calcAxesThickness(sp);
 		}
 	}
@@ -958,14 +957,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
-	private void calcAxesTick(PlotEx subplot) {
-		for (AxisEx axis : subplot.getXAxes()) {
+	private void calcAxesTick(PlotEx plot) {
+		for (AxisEx axis : plot.getXAxes()) {
 			axis.calcTicks();
 		}
-		for (AxisEx axis : subplot.getYAxes()) {
+		for (AxisEx axis : plot.getYAxes()) {
 			axis.calcTicks();
 		}
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			calcAxesTick(sp);
 		}
 	}
@@ -974,11 +973,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Calculate legend size according to its length constraint, items and item
 	 * font.
 	 */
-	private void calcLegendSize(PlotEx subplot) {
-		if (subplot.getLegend().canContribute()) {
-			subplot.getLegend().calcSize();
+	private void calcLegendSize(PlotEx plot) {
+		if (plot.getLegend().canContribute()) {
+			plot.getLegend().calcSize();
 		}
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 			calcLegendSize(sp);
 		}
 	}

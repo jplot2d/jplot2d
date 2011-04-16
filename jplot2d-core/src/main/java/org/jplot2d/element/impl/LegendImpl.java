@@ -72,14 +72,14 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	private int visibleItemNum;
 
-	private static LegendEx getEnabledLegend(PlotEx subplot) {
-		if (subplot == null) {
+	private static LegendEx getEnabledLegend(PlotEx plot) {
+		if (plot == null) {
 			return null;
 		}
-		if (subplot.getLegend().isEnabled()) {
-			return subplot.getLegend();
+		if (plot.getLegend().isEnabled()) {
+			return plot.getLegend();
 		} else {
-			return getEnabledLegend(subplot.getParent());
+			return getEnabledLegend(plot.getParent());
 		}
 	}
 

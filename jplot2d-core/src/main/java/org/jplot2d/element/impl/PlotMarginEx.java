@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.SubplotMargin;
+import org.jplot2d.element.PlotMargin;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface SubplotMarginEx extends SubplotMargin, ElementEx {
+public interface PlotMarginEx extends PlotMargin, ElementEx {
 
 }

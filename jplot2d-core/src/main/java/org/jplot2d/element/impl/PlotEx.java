@@ -57,7 +57,7 @@ public interface PlotEx extends Plot, ContainerEx {
 	 */
 	public void commit();
 
-	public SubplotMarginEx getMargin();
+	public PlotMarginEx getMargin();
 
 	public LegendEx getLegend();
 
@@ -85,7 +85,7 @@ public interface PlotEx extends Plot, ContainerEx {
 
 	/**
 	 * Sets the rectangle of contents by layout director. All layers in this
-	 * subplot have the same viewport bounds.
+	 * plot have the same viewport bounds.
 	 * 
 	 * @param bounds
 	 *            the rectangle of viewport
@@ -93,14 +93,14 @@ public interface PlotEx extends Plot, ContainerEx {
 	public void setContentBounds(Rectangle2D bounds);
 
 	/**
-	 * Returns the contents constraint of this subplot.
+	 * Returns the contents constraint of this plot.
 	 * 
 	 * @return the contents constraint
 	 */
 	public Rectangle2D getContentConstrant();
 
 	/**
-	 * Impose contents constraint on this subplot
+	 * Impose contents constraint on this plot
 	 * 
 	 * @param constraint
 	 *            the contents constraint

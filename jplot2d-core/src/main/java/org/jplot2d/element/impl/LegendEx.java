@@ -67,7 +67,7 @@ public interface LegendEx extends Legend, ComponentEx {
 	/**
 	 * Called by layout director to calculate size of this legend. If the the
 	 * size changed and this legend is visible, it'll call invalidate() to
-	 * notify subplot its layout is invalid.
+	 * notify plot its layout is invalid.
 	 */
 	public void calcSize();
 

@@ -23,11 +23,11 @@ import java.awt.geom.Dimension2D;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * The interface for jplot2d to layout subplots. All methods of LayoutDirector
- * will be called inside the plot engine. User should never call them directly.
+ * The interface for jplot2d to layout plot. All methods of LayoutDirector will
+ * be called inside the plot engine. User should never call them directly.
  * <p>
- * A subplot's children subplots are laid out in the content area. All layers in
- * subplot are stacked over and have the same size of the content area.
+ * A plot's children subplots are laid out in the content area. All layers in
+ * plot are stacked over and have the same size of the content area.
  * <p>
  * The axis is a special component. Its length can be set when laid out, but its
  * height is fixed and derived from its internal status, such as tick height and
@@ -39,52 +39,52 @@ import org.jplot2d.element.impl.PlotEx;
 public interface LayoutDirector {
 
 	/**
-	 * Returns the constraint for the given subplot.
+	 * Returns the constraint for the given plot.
 	 * 
-	 * @param subplot
-	 *            The subplot
+	 * @param plot
+	 *            The plot
 	 * @return The constraint
 	 */
-	public Object getConstraint(PlotEx subplot);
+	public Object getConstraint(PlotEx plot);
 
 	/**
-	 * Sets the constraint for the given subplot.
+	 * Sets the constraint for the given plot.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 * @param constraint
 	 */
-	public void setConstraint(PlotEx subplot, Object constraint);
+	public void setConstraint(PlotEx plot, Object constraint);
 
 	/**
 	 * Removes the given child from this layout.
 	 * 
-	 * @param subplot
+	 * @param plot
 	 */
-	public void remove(PlotEx subplot);
+	public void remove(PlotEx plot);
 
 	/**
 	 * Invalidates the layout, indicating that if the layout manager has cached
 	 * information it should be discarded.
 	 * 
-	 * @param subplot
-	 *            the subplot has been invalidate.
+	 * @param plot
+	 *            the plot has been invalidate.
 	 */
-	public void invalidateLayout(PlotEx subplot);
+	public void invalidateLayout(PlotEx plot);
 
 	/**
-	 * Layout the subplot.
+	 * Layout the plot.
 	 */
-	public void layout(PlotEx subplot);
+	public void layout(PlotEx plot);
 
 	/**
-	 * Returns the preferred size of the given subplot.
+	 * Returns the preferred size of the given plot.
 	 * 
-	 * @param subplot
-	 *            The subplot
+	 * @param plot
+	 *            The plot
 	 * @return The preferred size
 	 */
-	public Dimension2D getPreferredSize(PlotEx subplot);
+	public Dimension2D getPreferredSize(PlotEx plot);
 
-	public Dimension2D getPreferredContentSize(PlotEx subplot);
+	public Dimension2D getPreferredContentSize(PlotEx plot);
 
 }

@@ -26,7 +26,7 @@ package org.jplot2d.element;
  * @author Jingjing Li
  * 
  */
-public interface SubplotMargin extends Element {
+public interface PlotMargin extends Element {
 
 	/**
 	 * Returns <code>true</code> if the margin is a auto chose nice value.

@@ -90,21 +90,21 @@ public interface Plot extends Container {
 	public void setSize(double width, double height);
 
 	/**
-	 * Returns the margin area of this subplot.
+	 * Returns the margin area of this plot.
 	 * 
 	 * @return
 	 */
-	public SubplotMargin getMargin();
+	public PlotMargin getMargin();
 
 	/**
-	 * Gets the layout director for this subplot.
+	 * Gets the layout director for this plot.
 	 * 
-	 * @return the layout director for this subplot.
+	 * @return the layout director for this plot.
 	 */
 	public LayoutDirector getLayoutDirector();
 
 	/**
-	 * Sets the layout director for this subplot.
+	 * Sets the layout director for this plot.
 	 * 
 	 * @param director
 	 *            the layout director
@@ -158,9 +158,9 @@ public interface Plot extends Container {
 	public Rectangle2D getContentBounds();
 
 	/**
-	 * Returns the legend of this subplot.
+	 * Returns the legend of this plot.
 	 * 
-	 * @return the legend of this subplot
+	 * @return the legend of this plot
 	 */
 	@Hierarchy(HierarchyOp.GET)
 	public Legend getLegend();
@@ -170,7 +170,7 @@ public interface Plot extends Container {
 	 * 
 	 * @param n
 	 *            the index of the title to get.
-	 * @return the nth title in this subplot
+	 * @return the nth title in this plot
 	 */
 	@Hierarchy(HierarchyOp.GET)
 	public Title getTitle(int index);
@@ -194,7 +194,7 @@ public interface Plot extends Container {
 	 * 
 	 * @param n
 	 *            the index of the layer to get.
-	 * @return the nth layer in this subplot
+	 * @return the nth layer in this plot
 	 */
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getLayer(int index);
@@ -233,21 +233,21 @@ public interface Plot extends Container {
 	public void addYAxis(Axis axis);
 
 	/**
-	 * Removes the specified X axis from this subplot if it is present.
+	 * Removes the specified X axis from this plot if it is present.
 	 * 
 	 * @param axis
 	 *            the X axis to be removed
-	 * @return <code>true</code> if this subplot contained the specified X axis
+	 * @return <code>true</code> if this plot contained the specified X axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeXAxis(Axis axis);
 
 	/**
-	 * Removes the specified Y axis from this subplot if it is present.
+	 * Removes the specified Y axis from this plot if it is present.
 	 * 
 	 * @param axis
 	 *            the Y axis to be removed
-	 * @return <code>true</code> if this subplot contained the specified Y axis
+	 * @return <code>true</code> if this plot contained the specified Y axis
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeYAxis(Axis axis);
@@ -273,6 +273,8 @@ public interface Plot extends Container {
 	public Plot[] getSubplots();
 
 	/**
+	 * Add a subplot with a constraint to this plot.
+	 * 
 	 * @param subplot
 	 * @param constraint
 	 */
@@ -280,6 +282,8 @@ public interface Plot extends Container {
 	void addSubplot(Plot subplot, Object constraint);
 
 	/**
+	 * remove the specified subplot from this plot.
+	 * 
 	 * @param subplot
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)

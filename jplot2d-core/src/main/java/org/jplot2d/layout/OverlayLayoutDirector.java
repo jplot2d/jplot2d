@@ -33,31 +33,31 @@ import org.jplot2d.util.Insets2D;
  */
 public class OverlayLayoutDirector extends SimpleLayoutDirector {
 
-	public void layout(PlotEx subplot) {
+	public void layout(PlotEx plot) {
 
-		super.layout(subplot);
+		super.layout(plot);
 
 		// layout overlay subplots
-		layoutSubplots(subplot);
+		layoutSubplots(plot);
 
 	}
 
 	/**
-	 * layout overlay subplots except the base.
+	 * layout overlay plots except the base.
 	 * 
-	 * @param subplots
+	 * @param plots
 	 */
-	private void layoutSubplots(PlotEx subplot) {
-		if (subplot.getSubplots().length == 0) {
+	private void layoutSubplots(PlotEx plot) {
+		if (plot.getSubplots().length == 0) {
 			return;
 		}
 
-		double baseX = subplot.getContentBounds().getX();
-		double baseY = subplot.getContentBounds().getY();
-		double baseW = subplot.getContentBounds().getWidth();
-		double baseH = subplot.getContentBounds().getHeight();
+		double baseX = plot.getContentBounds().getX();
+		double baseY = plot.getContentBounds().getY();
+		double baseW = plot.getContentBounds().getWidth();
+		double baseH = plot.getContentBounds().getHeight();
 
-		for (PlotEx sp : subplot.getSubplots()) {
+		for (PlotEx sp : plot.getSubplots()) {
 
 			double spacingL = 0;
 			double spacingR = 0;
@@ -79,7 +79,7 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 			double spbW = baseW - spacingL - spacingR;
 			double spbH = baseH - spacingT - spacingB;
 
-			// locate subplot
+			// locate plot
 			sp.setLocation(spbX, spbY);
 			sp.setSize(spbW, spbH);
 		}
