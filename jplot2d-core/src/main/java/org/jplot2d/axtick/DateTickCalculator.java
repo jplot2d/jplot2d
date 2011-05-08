@@ -295,6 +295,7 @@ public class DateTickCalculator extends LongTickCalculator implements
 			_lo -= halfXpand;
 			_hi += halfXpand;
 			_hi += odd;
+			_interval = new DateInterval(_hi - _lo);
 		} else {
 			_interval = calcInterval(_lo, _hi, tickNumber);
 			expandRangeByTickInterval();
@@ -535,8 +536,8 @@ public class DateTickCalculator extends LongTickCalculator implements
 		case SECOND:
 			if (cal.get(Calendar.MILLISECOND) > cal
 					.getMinimum(Calendar.MILLISECOND)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				return true;
 			} else {
 				return false;
@@ -546,8 +547,8 @@ public class DateTickCalculator extends LongTickCalculator implements
 					.getMinimum(Calendar.MILLISECOND)
 					|| cal.get(Calendar.SECOND) > cal
 							.getMinimum(Calendar.SECOND)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				return true;
 			} else {
@@ -560,8 +561,8 @@ public class DateTickCalculator extends LongTickCalculator implements
 							.getMinimum(Calendar.SECOND)
 					|| cal.get(Calendar.MINUTE) > cal
 							.getMinimum(Calendar.MINUTE)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
 				return true;
@@ -577,12 +578,12 @@ public class DateTickCalculator extends LongTickCalculator implements
 							.getMinimum(Calendar.MINUTE)
 					|| cal.get(Calendar.HOUR_OF_DAY) > cal
 							.getMinimum(Calendar.HOUR_OF_DAY)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal
-						.getMinimum(Calendar.HOUR_OF_DAY));
+				cal.set(Calendar.HOUR_OF_DAY,
+						cal.getMinimum(Calendar.HOUR_OF_DAY));
 				return true;
 			} else {
 				return false;
@@ -598,15 +599,15 @@ public class DateTickCalculator extends LongTickCalculator implements
 							.getMinimum(Calendar.HOUR_OF_DAY)
 					|| cal.get(Calendar.DAY_OF_WEEK) > cal
 							.getMinimum(Calendar.DAY_OF_WEEK)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal
-						.getMinimum(Calendar.HOUR_OF_DAY));
+				cal.set(Calendar.HOUR_OF_DAY,
+						cal.getMinimum(Calendar.HOUR_OF_DAY));
 				int woy = cal.get(Calendar.WEEK_OF_YEAR);
-				cal.set(Calendar.DAY_OF_WEEK, cal
-						.getMinimum(Calendar.DAY_OF_WEEK));
+				cal.set(Calendar.DAY_OF_WEEK,
+						cal.getMinimum(Calendar.DAY_OF_WEEK));
 				cal.set(Calendar.WEEK_OF_YEAR, woy);
 				return true;
 			} else {
@@ -623,14 +624,14 @@ public class DateTickCalculator extends LongTickCalculator implements
 							.getMinimum(Calendar.HOUR_OF_DAY)
 					|| cal.get(Calendar.DAY_OF_MONTH) > cal
 							.getMinimum(Calendar.DAY_OF_MONTH)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal
-						.getMinimum(Calendar.HOUR_OF_DAY));
-				cal.set(Calendar.DAY_OF_MONTH, cal
-						.getMinimum(Calendar.DAY_OF_MONTH));
+				cal.set(Calendar.HOUR_OF_DAY,
+						cal.getMinimum(Calendar.HOUR_OF_DAY));
+				cal.set(Calendar.DAY_OF_MONTH,
+						cal.getMinimum(Calendar.DAY_OF_MONTH));
 				return true;
 			} else {
 				return false;
@@ -646,14 +647,14 @@ public class DateTickCalculator extends LongTickCalculator implements
 							.getMinimum(Calendar.HOUR_OF_DAY)
 					|| cal.get(Calendar.DAY_OF_YEAR) > cal
 							.getMinimum(Calendar.DAY_OF_YEAR)) {
-				cal.set(Calendar.MILLISECOND, cal
-						.getMinimum(Calendar.MILLISECOND));
+				cal.set(Calendar.MILLISECOND,
+						cal.getMinimum(Calendar.MILLISECOND));
 				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
 				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal
-						.getMinimum(Calendar.HOUR_OF_DAY));
-				cal.set(Calendar.DAY_OF_YEAR, cal
-						.getMinimum(Calendar.DAY_OF_YEAR));
+				cal.set(Calendar.HOUR_OF_DAY,
+						cal.getMinimum(Calendar.HOUR_OF_DAY));
+				cal.set(Calendar.DAY_OF_YEAR,
+						cal.getMinimum(Calendar.DAY_OF_YEAR));
 				return true;
 			} else {
 				return false;
