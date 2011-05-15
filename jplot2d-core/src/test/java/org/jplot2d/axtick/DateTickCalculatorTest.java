@@ -103,112 +103,112 @@ public class DateTickCalculatorTest {
 
 		end.set(1975, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 15);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MILLISECOND, 2));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MILLISECOND);
 
 		end.set(1975, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 40);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MILLISECOND, 5));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MILLISECOND);
 
 		end.set(1975, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 80);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MILLISECOND, 10));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MILLISECOND);
 
 		end.set(1975, 5, 19, 7, 30, 1);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MILLISECOND, 100));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.SECOND);
 
 		end.set(1975, 5, 19, 7, 31, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.SECOND, 5));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MINUTE);
 
 		end.set(1975, 5, 19, 8, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MINUTE, 5));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.HOUR);
 
 		end.set(1975, 5, 19, 22, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.HOUR, 2));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.HOUR);
 
 		end.set(1975, 5, 20, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.HOUR, 3));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.DAY);
 
 		end.set(1975, 5, 21, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.HOUR, 6));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.DAY);
 
 		end.set(1975, 6, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 15);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 15);
 		assertEquals(di, new DateInterval(DateInterval.Unit.DAY, 2));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MONTH);
 
 		end.set(1975, 6, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.WEEK, 1));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.MONTH);
 
 		end.set(1976, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.MONTH, 1));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.YEAR);
 
 		end.set(1985, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.YEAR, 1));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.YEAR);
 
 		end.set(2000, 5, 19, 7, 30, 0);
 		end.set(Calendar.MILLISECOND, 0);
-		di = DateTickCalculator.calcInterval(start.getTimeInMillis(), end
-				.getTimeInMillis(), 11);
+		di = DateTickCalculator.calcInterval(start.getTimeInMillis(),
+				end.getTimeInMillis(), 11);
 		assertEquals(di, new DateInterval(DateInterval.Unit.YEAR, 2));
 		umax = DateTickCalculator.getFirsNonEqualField(start, end);
 		assertEquals(umax, Unit.YEAR);
@@ -303,20 +303,29 @@ public class DateTickCalculatorTest {
 		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis());
 		dateTC.expandRangeByTickNumber(11);
 		checkRange2D(dateTC.getRange(), startms - 5, startms + 5);
+		assertEquals((long) dateTC.getInterval(), 1l);
+
+		/* span 1ms */
+		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis() + 1);
+		dateTC.expandRangeByTickNumber(11);
+		checkRange2D(dateTC.getRange(), startms - 4, startms + 6);
+		assertEquals((long) dateTC.getInterval(), 1l);
 
 		/* span 1000ms */
 		dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
 		dateTC.expandRangeByTickNumber(11);
 		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		assertEquals((long) dateTC.getInterval(), 100l);
 
 		dateTC.setRange(start.getTimeInMillis() + 1, end.getTimeInMillis() - 1);
 		dateTC.expandRangeByTickNumber(11);
 		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		assertEquals((long) dateTC.getInterval(), 100l);
 
 		dateTC.setRange(start.getTimeInMillis() - 1, end.getTimeInMillis() + 1);
 		dateTC.expandRangeByTickNumber(11);
 		checkRange2D(dateTC.getRange(), startms - 100, startms + 1100);
-
+		assertEquals((long) dateTC.getInterval(), 100l);
 	}
 
 	/**

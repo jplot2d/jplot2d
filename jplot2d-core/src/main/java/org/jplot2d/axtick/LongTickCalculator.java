@@ -52,8 +52,11 @@ public abstract class LongTickCalculator implements TickCalculator {
 				throw new IllegalArgumentException(
 						"Range cannot start or end on NaN/Infinite value");
 			}
-
-			this.setRange(Math.round(start), Math.round(end));
+            if (start < end) {
+                this.setRange((long) Math.floor(start), (long) Math.ceil(end));
+            } else {
+                this.setRange((long) Math.ceil(start), (long) Math.floor(end));
+            }
 		}
 	}
 
