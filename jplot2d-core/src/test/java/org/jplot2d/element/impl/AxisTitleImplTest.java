@@ -46,7 +46,7 @@ public class AxisTitleImplTest {
 
 		title.setFontName("Lucida Bright");
 		title.setFontStyle(Font.PLAIN);
-		title.setFontSize(12.0f);
+		title.setFontSize(18.0f);
 		title.setColor(Color.BLACK);
 		title.setVAlign(VAlign.BOTTOM);
 		verify(axis, never()).invalidateThickness();
@@ -91,7 +91,7 @@ public class AxisTitleImplTest {
 		title.setFont(null);
 		verify(axis, times(8)).invalidateThickness();
 		verify(axis, times(10)).redraw();
-		title.setFontScale(1.5f);
+		title.setFontScale(1.6f);
 		verify(axis, times(9)).invalidateThickness();
 		verify(axis, times(11)).redraw();
 	}
