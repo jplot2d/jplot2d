@@ -24,6 +24,10 @@ package org.jplot2d.element.impl;
  */
 public class TitleImpl extends TextComponentImpl implements TitleEx {
 
+	private Position position = Position.TOPCENTER;
+
+	private double gapFactor = 0.25;
+
 	public String getSelfId() {
 		if (getParent() != null) {
 			return "Title" + getParent().indexOf(this);
@@ -37,14 +41,45 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		return (PlotEx) super.getParent();
 	}
 
+	public void thisEffectiveFontChanged() {
+		super.thisEffectiveFontChanged();
+		if (canContribute()) {
+			invalidatePlot();
+		}
+	}
+
 	public Position getPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return position;
 	}
 
 	public void setPosition(Position position) {
-		// TODO Auto-generated method stub
+		this.position = position;
+	}
 
+	public double getGapFactor() {
+		return gapFactor;
+	}
+
+	public void setGapFactor(double factor) {
+		this.gapFactor = factor;
+	}
+
+	/**
+	 * Invalidate the parent plot when its position is not null.
+	 */
+	private void invalidatePlot() {
+		if (getParent() != null && position != null) {
+			getParent().invalidate();
+		}
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		TitleImpl tc = (TitleImpl) src;
+		this.position = tc.position;
+		this.gapFactor = tc.gapFactor;
 	}
 
 }

@@ -69,11 +69,10 @@ public abstract class MathElement {
 	}
 
 	/**
-	 * The Null MathElement is a special MathElement which represent a null
-	 * element. Since the null value in engine properties architecture has a
-	 * special meaning, "default".
+	 * The Null MathElement is a special MathElement which represent a empty
+	 * element.
 	 */
-	public static final MathElement NULL = new MathElement() {
+	public static final MathElement EMPTY = new MathElement() {
 
 		public String toMathML() {
 			return "<mrow></mrow>";
@@ -558,9 +557,9 @@ public abstract class MathElement {
 
 	/** escape the special characters in the given string */
 	public static String escape(String s) {
-		return s.replace("\u005c\u005c", "\u005c\u005c\u005c\u005c").replace(
-				"$", "\u005c\u005c$").replace("{", "\u005c\u005c{").replace(
-				"}", "\u005c\u005c}");
+		return s.replace("\u005c\u005c", "\u005c\u005c\u005c\u005c")
+				.replace("$", "\u005c\u005c$").replace("{", "\u005c\u005c{")
+				.replace("}", "\u005c\u005c}");
 	}
 
 }

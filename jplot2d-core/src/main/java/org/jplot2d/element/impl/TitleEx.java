@@ -28,4 +28,6 @@ public interface TitleEx extends Title, ComponentEx {
 
 	public PlotEx getParent();
 
+	public void setLocation(double locX, double locY);
+
 }
