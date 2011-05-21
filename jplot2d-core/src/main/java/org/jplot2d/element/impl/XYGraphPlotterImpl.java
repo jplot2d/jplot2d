@@ -168,6 +168,14 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		}
 	}
 
+	public void thisEffectiveColorChanged() {
+		redraw();
+	}
+
+	public void thisEffectiveFontChanged() {
+		// font change has no effect
+	}
+
 	public BasicStroke getLineStroke() {
 		return lineStroke;
 	}

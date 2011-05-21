@@ -112,6 +112,16 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
+	public void thisEffectiveColorChanged() {
+		redraw();
+	}
+
+	public void thisEffectiveFontChanged() {
+		relayoutItemsNeeded = true;
+		invalidatePlotIfVisible();
+		redraw();
+	}
+
 	public Dimension2D getSize() {
 		calcSize();
 		return new DoubleDimension2D(width, height);
@@ -227,6 +237,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				maxItemSize = null;
 				relayoutItemsNeeded = true;
 				invalidatePlotIfVisible();
+				redraw();
 			}
 		} else {
 			LegendEx enabledLegend = getEnabledLegend(getParent());
@@ -247,6 +258,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				}
 				relayoutItemsNeeded = true;
 				invalidatePlotIfVisible();
+				redraw();
 			}
 		} else {
 			LegendEx enabledLegend = getEnabledLegend(getParent());
@@ -268,6 +280,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			maxItemSize = null;
 			relayoutItemsNeeded = true;
 			invalidatePlotIfVisible();
+			redraw();
 		}
 	}
 
@@ -282,6 +295,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 		relayoutItemsNeeded = true;
 		invalidatePlotIfVisible();
+		redraw();
 	}
 
 	@Override

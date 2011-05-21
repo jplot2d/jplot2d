@@ -48,7 +48,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	private float fontSize = Float.NaN;
 
-	private float fontScale = 1;
+	private float fontScale = 1.5f;
 
 	private VAlign vAlign;
 

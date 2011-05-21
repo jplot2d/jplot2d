@@ -135,7 +135,11 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void setColor(Color color) {
+		Color oldEC = getEffectiveColor();
 		this.color = color;
+		if (!getEffectiveColor().equals(oldEC)) {
+			thisEffectiveColorChanged();
+		}
 	}
 
 	public Color getEffectiveColor() {
@@ -153,34 +157,51 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void setFontName(String name) {
+		String oldEFN = getEffectiveFontName();
 		fontName = name;
+		if (!getEffectiveFontName().equals(oldEFN)) {
+			thisEffectiveFontChanged();
+		}
 	}
 
 	public int getFontStyle() {
 		return fontStyle;
 	}
 
-	public void setFontStyle(int style) {
+	public final void setFontStyle(int style) {
+		int oldEFS = getEffectiveFontStyle();
 		fontStyle = style;
+		if (getEffectiveFontStyle() != oldEFS) {
+			thisEffectiveFontChanged();
+		}
 	}
 
 	public float getFontSize() {
 		return fontSize;
 	}
 
-	public void setFontSize(float size) {
+	public final void setFontSize(float size) {
+		float oldEFS = getEffectiveFontSize();
 		fontSize = size;
+		if (getEffectiveFontSize() != oldEFS) {
+			thisEffectiveFontChanged();
+		}
 	}
 
 	public float getFontScale() {
 		return fontScale;
 	}
 
-	public void setFontScale(float scale) {
+	public final void setFontScale(float scale) {
+		float oldEFS = getEffectiveFontSize();
 		fontScale = scale;
+		if (getEffectiveFontSize() != oldEFS) {
+			thisEffectiveFontChanged();
+		}
 	}
 
-	public void setFont(Font font) {
+	public final void setFont(Font font) {
+		Font oldEF = getEffectiveFont();
 		if (font == null) {
 			fontName = null;
 			fontStyle = -1;
@@ -189,6 +210,9 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 			fontName = font.getName();
 			fontStyle = font.getStyle();
 			fontSize = font.getSize2D();
+		}
+		if (!getEffectiveFont().equals(oldEF)) {
+			thisEffectiveFontChanged();
 		}
 	}
 
@@ -226,6 +250,19 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		float size = getEffectiveFontSize();
 		return new Font(getEffectiveFontName(), getEffectiveFontStyle(),
 				(int) size).deriveFont(size);
+	}
+
+	public final void parentEffectiveColorChanged() {
+		if (color == null) {
+			this.thisEffectiveColorChanged();
+		}
+	}
+
+	public final void parentEffectiveFontChanged() {
+		if (fontName == null || (fontStyle & ~0x03) != 0
+				|| Float.isNaN(fontSize)) {
+			this.thisEffectiveFontChanged();
+		}
 	}
 
 	public boolean isRedrawNeeded() {

@@ -23,6 +23,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerImpl;
 
 /**
@@ -47,6 +48,18 @@ public class ContainerStub extends ContainerImpl {
 
 	public Rectangle2D getBounds() {
 		return null;
+	}
+
+	public int getComponentCount() {
+		return 0;
+	}
+
+	public ComponentEx getComponent(int index) {
+		return null;
+	}
+
+	public int getIndexOfComponent(ComponentEx comp) {
+		return -1;
 	}
 
 }

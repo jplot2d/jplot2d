@@ -42,7 +42,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
-	private AxisRangeManagerEx xaxis, yaxis;
+	private AxisRangeManagerEx xarm, yarm;
 
 	protected String getSelfId() {
 		if (getParent() != null) {
@@ -107,6 +107,18 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		redraw();
 	}
 
+	public int getComponentCount() {
+		return plotters.size();
+	}
+
+	public ComponentEx getComponent(int index) {
+		return plotters.get(index);
+	}
+
+	public int getIndexOfComponent(ComponentEx comp) {
+		return plotters.indexOf(comp);
+	}
+
 	public GraphPlotter getGraphPlotter(int index) {
 		return plotters.get(index);
 	}
@@ -132,11 +144,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 
 		if (gp.isVisible()) {
-			if (xaxis != null && xaxis.getLockGroup().isAutoRange()) {
-				xaxis.getLockGroup().reAutoRange();
+			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
+				xarm.getLockGroup().reAutoRange();
 			}
-			if (yaxis != null && yaxis.getLockGroup().isAutoRange()) {
-				yaxis.getLockGroup().reAutoRange();
+			if (yarm != null && yarm.getLockGroup().isAutoRange()) {
+				yarm.getLockGroup().reAutoRange();
 			}
 		}
 	}
@@ -158,11 +170,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 
 		if (gp.isVisible()) {
-			if (xaxis.getLockGroup().isAutoRange()) {
-				xaxis.getLockGroup().reAutoRange();
+			if (xarm.getLockGroup().isAutoRange()) {
+				xarm.getLockGroup().reAutoRange();
 			}
-			if (yaxis.getLockGroup().isAutoRange()) {
-				yaxis.getLockGroup().reAutoRange();
+			if (yarm.getLockGroup().isAutoRange()) {
+				yarm.getLockGroup().reAutoRange();
 			}
 		}
 	}
@@ -202,30 +214,30 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public AxisRangeManagerEx getXRangeManager() {
-		return xaxis;
+		return xarm;
 	}
 
 	public AxisRangeManagerEx getYRangeManager() {
-		return yaxis;
+		return yarm;
 	}
 
 	public void setXRangeManager(AxisRangeManager axis) {
-		if (this.xaxis != null) {
-			this.xaxis.removeLayer(this);
+		if (this.xarm != null) {
+			this.xarm.removeLayer(this);
 		}
-		this.xaxis = (AxisRangeManagerEx) axis;
-		if (this.xaxis != null) {
-			this.xaxis.addLayer(this);
+		this.xarm = (AxisRangeManagerEx) axis;
+		if (this.xarm != null) {
+			this.xarm.addLayer(this);
 		}
 	}
 
 	public void setYRangeManager(AxisRangeManager axis) {
-		if (this.yaxis != null) {
-			this.yaxis.removeLayer(this);
+		if (this.yarm != null) {
+			this.yarm.removeLayer(this);
 		}
-		this.yaxis = (AxisRangeManagerEx) axis;
-		if (this.yaxis != null) {
-			this.yaxis.addLayer(this);
+		this.yarm = (AxisRangeManagerEx) axis;
+		if (this.yarm != null) {
+			this.yarm.addLayer(this);
 		}
 	}
 

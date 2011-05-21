@@ -13,6 +13,16 @@ public class MarkerImpl extends ComponentImpl implements MarkerEx {
 		return (LayerEx) super.getParent();
 	}
 
+	public void thisEffectiveColorChanged() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void thisEffectiveFontChanged() {
+		// TODO Auto-generated method stub
+
+	}
+
 	public Dimension2D getSize() {
 		// TODO Auto-generated method stub
 		return null;

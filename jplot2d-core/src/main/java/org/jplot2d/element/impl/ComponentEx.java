@@ -77,6 +77,14 @@ public interface ComponentEx extends Component, ElementEx {
 	 */
 	public Font getEffectiveFont();
 
+	public void parentEffectiveColorChanged();
+
+	public void parentEffectiveFontChanged();
+
+	public void thisEffectiveColorChanged();
+
+	public void thisEffectiveFontChanged();
+
 	/**
 	 * Returns <code>true</code> when this component need to be redrawn. The
 	 * result only apply to cacheable component.
@@ -86,7 +94,7 @@ public interface ComponentEx extends Component, ElementEx {
 	public boolean isRedrawNeeded();
 
 	/**
-	 * Mark this component need to to redrawn. If this component is not
+	 * Mark this component need to be redrawn. If this component is not
 	 * cacheable, this method will called on its parent.
 	 */
 	public void redraw();
@@ -97,7 +105,8 @@ public interface ComponentEx extends Component, ElementEx {
 	public void clearRedrawNeeded();
 
 	/**
-	 * Mark the plot artifact need to be re-rendered.
+	 * Mark the plot artifact need to be re-rendered. This method is called on
+	 * its parent, until reach the top plot.
 	 */
 	public void rerender();
 

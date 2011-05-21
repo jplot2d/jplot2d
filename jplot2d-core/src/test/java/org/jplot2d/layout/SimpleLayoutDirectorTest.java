@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Legend;
+import org.jplot2d.element.Title;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisLockGroupEx;
@@ -94,10 +95,12 @@ public class SimpleLayoutDirectorTest {
 		when(title0.canContribute()).thenReturn(true);
 		when(title0.getPosition()).thenReturn(TitleEx.Position.TOPCENTER);
 		when(title0.getSize()).thenReturn(new DoubleDimension2D(20, 12));
+		when(title0.getGapFactor()).thenReturn(0.25);
 		TitleEx title1 = mock(TitleEx.class);
 		when(title1.canContribute()).thenReturn(true);
 		when(title1.getPosition()).thenReturn(TitleEx.Position.TOPCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(20, 8));
+		when(title1.getGapFactor()).thenReturn(0.25);
 		subplot.addTitle(title0);
 		subplot.addTitle(title1);
 		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
@@ -275,6 +278,112 @@ public class SimpleLayoutDirectorTest {
 		verify(legend).setLocation(300 - 12 - 30, 100);
 		verify(legend).setHAlign(HAlign.LEFT);
 		verify(legend).setVAlign(VAlign.MIDDLE);
+	}
+
+	@Test
+	public void testLayoutTitleBottomCenter() {
+		TitleEx title0 = mock(TitleEx.class);
+		when(title0.canContribute()).thenReturn(true);
+		when(title0.getPosition()).thenReturn(Title.Position.BOTTOMCENTER);
+		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title0.getGapFactor()).thenReturn(0.25);
+		TitleEx title1 = mock(TitleEx.class);
+		when(title1.canContribute()).thenReturn(true);
+		when(title1.getPosition()).thenReturn(Title.Position.BOTTOMCENTER);
+		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title1.getGapFactor()).thenReturn(0.25);
+
+		PlotEx plot = new PlotImpl() {
+		};
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
+		plot.addTitle(title0);
+		plot.addTitle(title1);
+
+		plot.validate();
+		double bottomMargin = 12 + 10 + 2.5 + 10 + 2.5;
+		checkRectangle2D(plot.getContentBounds(), 12, bottomMargin,
+				300 - 12 - 12, 200 - 12 - bottomMargin);
+		verify(title1).setLocation(150, 12 + 10);
+		verify(title1).setHAlign(HAlign.CENTER);
+		verify(title1).setVAlign(VAlign.TOP);
+		verify(title0).setLocation(150, 12 + 10 + 2.5 + 10);
+		verify(title0).setHAlign(HAlign.CENTER);
+		verify(title0).setVAlign(VAlign.TOP);
+	}
+
+	@Test
+	public void testLayoutTitleTopCenter() {
+		TitleEx title0 = mock(TitleEx.class);
+		when(title0.canContribute()).thenReturn(true);
+		when(title0.getPosition()).thenReturn(Title.Position.TOPCENTER);
+		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title0.getGapFactor()).thenReturn(0.25);
+		TitleEx title1 = mock(TitleEx.class);
+		when(title1.canContribute()).thenReturn(true);
+		when(title1.getPosition()).thenReturn(Title.Position.TOPCENTER);
+		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title1.getGapFactor()).thenReturn(0.25);
+
+		PlotEx plot = new PlotImpl() {
+		};
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
+		plot.addTitle(title0);
+		plot.addTitle(title1);
+
+		plot.validate();
+		double topMargin = 12 + 10 + 2.5 + 10 + 2.5;
+		checkRectangle2D(plot.getContentBounds(), 12, 12, 300 - 12 - 12,
+				200 - topMargin - 12);
+		verify(title0).setLocation(150, 200 - 12 - 10);
+		verify(title0).setHAlign(HAlign.CENTER);
+		verify(title0).setVAlign(VAlign.BOTTOM);
+		verify(title1).setLocation(150, 200 - 12 - 10 - 2.5 - 10);
+		verify(title1).setHAlign(HAlign.CENTER);
+		verify(title1).setVAlign(VAlign.BOTTOM);
+	}
+
+	@Test
+	public void testLayoutTitleTopBottomCenter() {
+		TitleEx title0 = mock(TitleEx.class);
+		when(title0.canContribute()).thenReturn(true);
+		when(title0.getPosition()).thenReturn(Title.Position.TOPCENTER);
+		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title0.getGapFactor()).thenReturn(0.25);
+		TitleEx title1 = mock(TitleEx.class);
+		when(title1.canContribute()).thenReturn(true);
+		when(title1.getPosition()).thenReturn(Title.Position.BOTTOMCENTER);
+		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
+		when(title1.getGapFactor()).thenReturn(0.25);
+
+		PlotEx plot = new PlotImpl() {
+		};
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
+		plot.addTitle(title0);
+		plot.addTitle(title1);
+
+		plot.validate();
+		double topMargin = 12 + 10 + 2.5;
+		double bottomMargin = 12 + 10 + 2.5;
+		checkRectangle2D(plot.getContentBounds(), 12, bottomMargin,
+				300 - 12 - 12, 200 - topMargin - bottomMargin);
+		verify(title0).setLocation(150, 200 - 12 - 10);
+		verify(title0).setHAlign(HAlign.CENTER);
+		verify(title0).setVAlign(VAlign.BOTTOM);
+		verify(title1).setLocation(150, 12 + 10);
+		verify(title1).setHAlign(HAlign.CENTER);
+		verify(title1).setVAlign(VAlign.TOP);
 	}
 
 }

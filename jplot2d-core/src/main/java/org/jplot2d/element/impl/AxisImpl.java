@@ -58,7 +58,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public class AxisImpl extends ContainerImpl implements AxisEx {
+public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	/**
 	 * the default physical width, 0.5 pt.
@@ -167,6 +167,15 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 		return result;
 	}
 
+	public void thisEffectiveColorChanged() {
+		redraw();
+	}
+
+	public void thisEffectiveFontChanged() {
+		invalidateThickness();
+		redraw();
+	}
+
 	public Point2D getLocation() {
 		return new Point2D.Double(locX, locY);
 	}
@@ -237,7 +246,7 @@ public class AxisImpl extends ContainerImpl implements AxisEx {
 	}
 
 	/**
-	 * Invalidate the subplot.
+	 * Invalidate the parent plot.
 	 */
 	private void invalidatePlot() {
 		if (getParent() != null) {

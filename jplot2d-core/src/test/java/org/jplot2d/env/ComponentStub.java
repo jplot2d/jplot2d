@@ -49,4 +49,12 @@ public class ComponentStub extends ComponentImpl {
 		// do nothing
 	}
 
+	public void thisEffectiveColorChanged() {
+		// do nothing
+	}
+
+	public void thisEffectiveFontChanged() {
+		// do nothing
+	}
+
 }

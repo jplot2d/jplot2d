@@ -2,14 +2,22 @@ package org.jplot2d.element.impl;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
+import org.jplot2d.element.PhysicalTransform;
 
-public interface AxisEx extends Axis, ContainerEx {
+public interface AxisEx extends Axis, ComponentEx {
 
 	public PlotEx getParent();
 
 	public AxisRangeManagerEx getRangeManager();
 
 	public AxisTickEx getTick();
+
+	/**
+	 * Returns the PhysicalTransform of this component.
+	 * 
+	 * @return
+	 */
+	public PhysicalTransform getPhysicalTransform();
 
 	/**
 	 * Moves this plot component to a new location. The origin of the new
@@ -53,8 +61,8 @@ public interface AxisEx extends Axis, ContainerEx {
 
 	/**
 	 * calculate asc and desc of this axis. If the the asc or desc changed, and
-	 * this axis is visible, it'll call invalidate() to notify plot its
-	 * layout is invalid.
+	 * this axis is visible, it'll call invalidate() to notify plot its layout
+	 * is invalid.
 	 */
 	public void calcThickness();
 
