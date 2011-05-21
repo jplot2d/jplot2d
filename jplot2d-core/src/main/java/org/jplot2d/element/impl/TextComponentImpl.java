@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -55,6 +54,10 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 		vAlign = VAlign.MIDDLE;
 	}
 
+	public boolean canContribute() {
+		return isVisible() && textModel != null;
+	}
+
 	public Point2D getLocation() {
 		return new Point2D.Double(locX, locY);
 	}
@@ -70,8 +73,13 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 		}
 	}
 
-	public void setFont(Font font) {
-		super.setFont(font);
+	public void thisEffectiveColorChanged() {
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public void thisEffectiveFontChanged() {
 		label = null;
 		if (isVisible()) {
 			redraw();
@@ -134,7 +142,7 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 	}
 
 	public Dimension2D getSize() {
-		Rectangle2D bounds = label.getBounds();
+		Rectangle2D bounds = getBounds();
 		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 

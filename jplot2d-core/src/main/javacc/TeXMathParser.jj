@@ -142,7 +142,7 @@ public MathElement parse() :
 	)* <EOF>
 
 	{
-		if (lines.size() == 0) return null;		if (lines.size() == 1) return lines.get(0);
+		if (lines.size() == 0) return MathElement.EMPTY;		if (lines.size() == 1) return lines.get(0);
 		return new MathElement.XLines(lines);
 	}
 }

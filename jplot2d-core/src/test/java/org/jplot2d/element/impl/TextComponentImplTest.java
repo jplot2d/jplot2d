@@ -31,6 +31,18 @@ import org.junit.Test;
 public class TextComponentImplTest {
 
 	@Test
+	public void testInitProperties() {
+		TextComponentImpl tc = new TextComponentImpl();
+		assertTrue(tc.isVisible());
+		assertNull(tc.getTextModel());
+		assertFalse(tc.canContribute());
+		
+		tc.setText("");
+		assertNotNull(tc.getTextModel());
+		assertTrue(tc.canContribute());
+	}
+
+	@Test
 	public void testSetFont() {
 		TextComponentImpl tc = new TextComponentImpl();
 		Font font = new Font("Serif", Font.PLAIN, 12);

@@ -385,6 +385,104 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	public int getComponentCount() {
+		return 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size()
+				+ subplots.size();
+	}
+
+	public ComponentEx getComponent(int index) {
+		if (index == 0) {
+			return legend;
+		} else {
+			index -= 1;
+		}
+		if (index < titles.size() - 1) {
+			return titles.get(index);
+		} else {
+			index -= titles.size();
+		}
+		if (index < xAxis.size()) {
+			return xAxis.get(index);
+		} else {
+			index -= xAxis.size();
+		}
+		if (index < yAxis.size()) {
+			return yAxis.get(index);
+		} else {
+			index -= yAxis.size();
+		}
+		if (index < layers.size()) {
+			return layers.get(index);
+		} else {
+			index -= layers.size();
+		}
+		if (index < subplots.size()) {
+			return subplots.get(index);
+		} else {
+			index -= subplots.size();
+		}
+		return null;
+	}
+
+	public int getIndexOfComponent(ComponentEx comp) {
+		int index = 0;
+		if (comp instanceof LegendEx) {
+			if (comp == legend) {
+				return index;
+			} else {
+				return -1;
+			}
+		} else {
+			index += 1;
+		}
+		if (comp instanceof TitleEx) {
+			int i = titles.indexOf(comp);
+			if (i != -1) {
+				return index + i;
+			} else {
+				return -1;
+			}
+		} else {
+			index += titles.size();
+		}
+		if (comp instanceof AxisEx) {
+			int ix = xAxis.indexOf(comp);
+			if (ix != -1) {
+				return index + ix;
+			}
+			int iy = yAxis.indexOf(comp);
+			if (iy != -1) {
+				return index + xAxis.size() + iy;
+			} else {
+				return -1;
+			}
+		} else {
+			index += xAxis.size() + yAxis.size();
+		}
+		if (comp instanceof LayerEx) {
+			int i = layers.indexOf(comp);
+			if (i != -1) {
+				return index + i;
+			} else {
+				return -1;
+			}
+		} else {
+			index += layers.size();
+		}
+		if (comp instanceof PlotEx) {
+			int i = subplots.indexOf(comp);
+			if (i != -1) {
+				return index + i;
+			} else {
+				return -1;
+			}
+		} else {
+			index += subplots.size();
+		}
+
+		return -1;
+	}
+
 	public LegendEx getLegend() {
 		return legend;
 	}
@@ -718,6 +816,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		result.legend = (LegendEx) legend.copyStructure(orig2copyMap);
 		result.legend.setParent(result);
 
+		// copy titles
+		for (TitleEx title : titles) {
+			TitleEx titleCopy = (TitleEx) title.copyStructure(orig2copyMap);
+			titleCopy.setParent(result);
+			result.titles.add(titleCopy);
+		}
+
 		// copy axes
 		for (AxisEx va : xAxis) {
 			AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
@@ -973,8 +1078,35 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Calculate legend size according to its length constraint, items and item
 	 * font.
 	 */
-	private void calcLegendSize(PlotEx plot) {
+	private static void calcLegendSize(PlotEx plot) {
 		if (plot.getLegend().canContribute()) {
+			switch (plot.getLegend().getPosition()) {
+			case TOPLEFT:
+			case TOPCENTER:
+			case TOPRIGHT:
+			case BOTTOMLEFT:
+			case BOTTOMCENTER:
+			case BOTTOMRIGHT: {
+				double legendWidth = plot.getSize().getWidth()
+						- plot.getMargin().getExtraLeft()
+						- plot.getMargin().getExtraRight();
+				plot.getLegend().setLengthConstraint(legendWidth);
+				break;
+			}
+			}
+			switch (plot.getLegend().getPosition()) {
+			case LEFTTOP:
+			case LEFTMIDDLE:
+			case LEFTBOTTOM:
+			case RIGHTTOP:
+			case RIGHTMIDDLE:
+			case RIGHTBOTTOM: {
+				double contentHeight = plot.getContainerSize().getHeight();
+				plot.getLegend().setLengthConstraint(contentHeight);
+				break;
+			}
+			}
+
 			plot.getLegend().calcSize();
 		}
 		for (PlotEx sp : plot.getSubplots()) {

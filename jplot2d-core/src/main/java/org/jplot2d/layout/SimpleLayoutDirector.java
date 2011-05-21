@@ -54,8 +54,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		final ArrayList<AxisEx> bottomAxes = new ArrayList<AxisEx>();
 	}
 
-	private static final double TITLE_GAP_RATIO = 0.25;
-
 	static double LEGEND_GAP = 8.0;
 
 	/** The layout constraints */
@@ -100,6 +98,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					- margin.getRight();
 			double contentHeight = plot.getSize().getHeight() - margin.getTop()
 					- margin.getBottom();
+			System.out.println("********* " + contentHeight);
 			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
 				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
 			}
@@ -247,7 +246,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				case TOPLEFT:
 				case TOPCENTER:
 				case TOPRIGHT: {
-					mTop += (1 + TITLE_GAP_RATIO) * titleHeight;
+					mTop += (1 + title.getGapFactor()) * titleHeight;
 					break;
 				}
 				}
@@ -292,7 +291,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				case BOTTOMLEFT:
 				case BOTTOMCENTER:
 				case BOTTOMRIGHT: {
-					mBottom += (1 + TITLE_GAP_RATIO) * titleHeight;
+					mBottom += (1 + title.getGapFactor()) * titleHeight;
 					break;
 				}
 				}
@@ -314,44 +313,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mLeft, mRight, mTop, mBottom;
 
-		LegendEx legend = plot.getLegend();
-
-		if (legend.canContribute()) {
-			switch (legend.getPosition()) {
-			case TOPLEFT:
-			case TOPCENTER:
-			case TOPRIGHT:
-			case BOTTOMLEFT:
-			case BOTTOMCENTER:
-			case BOTTOMRIGHT: {
-				double legendWidth = plot.getSize().getWidth()
-						- plot.getMargin().getExtraLeft()
-						- plot.getMargin().getExtraRight();
-				legend.setLengthConstraint(legendWidth);
-				break;
-			}
-			}
-		}
-
 		mTop = calcTopMargin(plot, ais);
 		mBottom = calcBottomMargin(plot, ais);
-
-		if (legend.canContribute()) {
-			switch (legend.getPosition()) {
-			case LEFTTOP:
-			case LEFTMIDDLE:
-			case LEFTBOTTOM:
-			case RIGHTTOP:
-			case RIGHTMIDDLE:
-			case RIGHTBOTTOM: {
-				double contentHeight = plot.getSize().getHeight() - mTop
-						- mBottom;
-				legend.setLengthConstraint(contentHeight);
-				break;
-			}
-			}
-		}
-
 		mLeft = calcLeftMargin(plot, ais);
 		mRight = calcRightMargin(plot, ais);
 
@@ -389,28 +352,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		/* locate legend */
 		if (legend.canContribute()) {
-			xloc -= LEGEND_GAP;
-			double y;
-			VAlign valign;
 			switch (legend.getPosition()) {
 			case LEFTTOP:
-				y = contentBox.getMaxY();
-				valign = VAlign.TOP;
+				xloc -= LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getMaxY());
+				legend.setHAlign(HAlign.RIGHT);
+				legend.setVAlign(VAlign.TOP);
 				break;
 			case LEFTMIDDLE:
-				y = contentBox.getCenterY();
-				valign = VAlign.MIDDLE;
+				xloc -= LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getCenterY());
+				legend.setHAlign(HAlign.RIGHT);
+				legend.setVAlign(VAlign.MIDDLE);
 				break;
 			case LEFTBOTTOM:
-				y = contentBox.getMinY();
-				valign = VAlign.BOTTOM;
+				xloc -= LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getMinY());
+				legend.setHAlign(HAlign.RIGHT);
+				legend.setVAlign(VAlign.BOTTOM);
 				break;
-			default:
-				return;
 			}
-			legend.setLocation(xloc, y);
-			legend.setHAlign(HAlign.RIGHT);
-			legend.setVAlign(valign);
 		}
 
 	}
@@ -445,28 +406,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		/* locate legend */
 		LegendEx legend = sp.getLegend();
 		if (legend.canContribute()) {
-			xloc += LEGEND_GAP;
-			double y;
-			VAlign valign;
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
-				y = contentBox.getMaxY();
-				valign = VAlign.TOP;
+				xloc += LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getMaxY());
+				legend.setHAlign(HAlign.LEFT);
+				legend.setVAlign(VAlign.TOP);
 				break;
 			case RIGHTMIDDLE:
-				y = contentBox.getCenterY();
-				valign = VAlign.MIDDLE;
+				xloc += LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getCenterY());
+				legend.setHAlign(HAlign.LEFT);
+				legend.setVAlign(VAlign.MIDDLE);
 				break;
 			case RIGHTBOTTOM:
-				y = contentBox.getMinY();
-				valign = VAlign.BOTTOM;
+				xloc += LEGEND_GAP;
+				legend.setLocation(xloc, contentBox.getMinY());
+				legend.setHAlign(HAlign.LEFT);
+				legend.setVAlign(VAlign.BOTTOM);
 				break;
-			default:
-				return;
 			}
-			legend.setLocation(xloc, y);
-			legend.setHAlign(HAlign.LEFT);
-			legend.setVAlign(valign);
 		}
 
 	}
@@ -501,28 +460,63 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		// locate legend
 		LegendEx legend = sp.getLegend();
 		if (legend.canContribute()) {
-			yloc += LEGEND_GAP;
-			double x;
-			HAlign halign;
 			switch (legend.getPosition()) {
 			case TOPLEFT:
-				x = contentBox.getMinX();
-				halign = HAlign.LEFT;
+				yloc += LEGEND_GAP;
+				legend.setLocation(contentBox.getMinX(), yloc);
+				legend.setHAlign(HAlign.LEFT);
+				legend.setVAlign(VAlign.BOTTOM);
+				yloc += legend.getSize().getHeight();
 				break;
 			case TOPCENTER:
-				x = contentBox.getCenterX();
-				halign = HAlign.CENTER;
+				yloc += LEGEND_GAP;
+				legend.setLocation(contentBox.getCenterX(), yloc);
+				legend.setHAlign(HAlign.CENTER);
+				legend.setVAlign(VAlign.BOTTOM);
+				yloc += legend.getSize().getHeight();
 				break;
 			case TOPRIGHT:
-				x = contentBox.getMaxX();
-				halign = HAlign.RIGHT;
+				yloc += LEGEND_GAP;
+				legend.setLocation(contentBox.getMaxX(), yloc);
+				legend.setHAlign(HAlign.RIGHT);
+				legend.setVAlign(VAlign.BOTTOM);
+				yloc += legend.getSize().getHeight();
 				break;
-			default:
-				return;
 			}
-			legend.setLocation(x, yloc);
-			legend.setHAlign(halign);
-			legend.setVAlign(VAlign.BOTTOM);
+		}
+
+		// locate titles
+		TitleEx[] titles = sp.getTitles();
+		for (int i = titles.length - 1; i >= 0; i--) {
+			TitleEx title = titles[i];
+			if (title.canContribute()) {
+				double titleHeight = title.getSize().getHeight();
+				switch (title.getPosition()) {
+				case TOPLEFT:
+					yloc += title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getMinX(), yloc);
+					title.setHAlign(HAlign.LEFT);
+					title.setVAlign(VAlign.BOTTOM);
+					yloc += titleHeight;
+					break;
+				case TOPCENTER:
+					yloc += title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getCenterX(), yloc);
+					title.setHAlign(HAlign.CENTER);
+					title.setVAlign(VAlign.BOTTOM);
+					yloc += titleHeight;
+					break;
+				case TOPRIGHT: {
+					yloc += title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getMaxX(), yloc);
+					title.setHAlign(HAlign.RIGHT);
+					title.setVAlign(VAlign.BOTTOM);
+					yloc += titleHeight;
+					break;
+				}
+				}
+			}
+
 		}
 	}
 
@@ -556,28 +550,61 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		// locate legend
 		LegendEx legend = sp.getLegend();
 		if (legend.canContribute()) {
-			yloc -= LEGEND_GAP;
-			double x;
-			HAlign halign;
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
-				x = contentBox.getMinX();
-				halign = HAlign.LEFT;
+				yloc -= LEGEND_GAP;
+				legend.setLocation(contentBox.getMinX(), yloc);
+				legend.setHAlign(HAlign.LEFT);
+				legend.setVAlign(VAlign.TOP);
+				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMCENTER:
-				x = contentBox.getCenterX();
-				halign = HAlign.CENTER;
+				yloc -= LEGEND_GAP;
+				legend.setLocation(contentBox.getCenterX(), yloc);
+				legend.setHAlign(HAlign.CENTER);
+				legend.setVAlign(VAlign.TOP);
+				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMRIGHT:
-				x = contentBox.getMaxX();
-				halign = HAlign.RIGHT;
+				yloc -= LEGEND_GAP;
+				legend.setLocation(contentBox.getMaxX(), yloc);
+				legend.setHAlign(HAlign.RIGHT);
+				legend.setVAlign(VAlign.TOP);
+				yloc -= legend.getSize().getHeight();
 				break;
-			default:
-				return;
 			}
-			legend.setLocation(x, yloc);
-			legend.setHAlign(halign);
-			legend.setVAlign(VAlign.TOP);
+		}
+
+		// locate titles
+		for (TitleEx title : sp.getTitles()) {
+			if (title.canContribute()) {
+				double titleHeight = title.getSize().getHeight();
+				switch (title.getPosition()) {
+				case BOTTOMLEFT:
+					yloc -= title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getMinX(), yloc);
+					title.setHAlign(HAlign.LEFT);
+					title.setVAlign(VAlign.TOP);
+					yloc -= titleHeight;
+					break;
+				case BOTTOMCENTER:
+					yloc -= title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getCenterX(), yloc);
+					title.setHAlign(HAlign.CENTER);
+					title.setVAlign(VAlign.TOP);
+					yloc -= titleHeight;
+					break;
+				case BOTTOMRIGHT: {
+					yloc -= title.getGapFactor() * titleHeight;
+					title.setLocation(contentBox.getMaxX(), yloc);
+					title.setHAlign(HAlign.RIGHT);
+					title.setVAlign(VAlign.TOP);
+					yloc -= titleHeight;
+					break;
+				}
+				}
+			}
+
 		}
 	}
 

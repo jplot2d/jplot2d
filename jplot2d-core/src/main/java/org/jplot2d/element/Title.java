@@ -21,7 +21,8 @@ package org.jplot2d.element;
 import java.awt.geom.Point2D;
 
 /**
- * A text title of plot.
+ * A text title of plot. A plot may has multiple title. They are always in
+ * top-down order.
  * 
  * @author Jingjing Li
  * 
@@ -61,5 +62,19 @@ public interface Title extends TextComponent {
 	 *            the location of the title's base point.
 	 */
 	public void setLocation(Point2D loc);
+
+	/**
+	 * Returns the ratio of gap to its height.
+	 * 
+	 * @return the gap factor
+	 */
+	public double getGapFactor();
+
+	/**
+	 * Sets the ratio of gap to its height. The gap is under the title when its
+	 * position is TOPLEFT, TOPCENTER, TOPRIGHT. The gap is above the title when
+	 * its position is BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT.
+	 */
+	public void setGapFactor(double factor);
 
 }

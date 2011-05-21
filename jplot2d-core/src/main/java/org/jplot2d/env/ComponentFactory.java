@@ -37,6 +37,7 @@ import org.jplot2d.element.AxisLockGroup;
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.Title;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisLockGroupImpl;
@@ -50,7 +51,9 @@ import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisRangeManagerImpl;
+import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
+import org.jplot2d.util.MathElement;
 
 /**
  * A factory to produce all kind of plot components.
@@ -181,8 +184,8 @@ public class ComponentFactory {
 
 		PlotMarginEx margin = subplot.getMargin();
 		applyProfile(margin);
-		ElementIH<PlotMargin> marginIH = new ElementIH<PlotMargin>(
-				margin, PlotMargin.class);
+		ElementIH<PlotMargin> marginIH = new ElementIH<PlotMargin>(margin,
+				PlotMargin.class);
 		PlotMargin marginProxy = (PlotMargin) Proxy.newProxyInstance(
 				PlotMargin.class.getClassLoader(), new Class[] {
 						PlotMargin.class, ElementAddition.class }, marginIH);
@@ -199,6 +202,34 @@ public class ComponentFactory {
 		env.registerElement(margin, marginProxy);
 
 		return subplotProxy;
+	}
+
+	public Title createTitle() {
+		TitleImpl impl = new TitleImpl();
+		return wrap(impl);
+	}
+
+	public Title createTitle(MathElement model) {
+		TitleImpl impl = new TitleImpl();
+		impl.setTextModel(model);
+		return wrap(impl);
+	}
+
+	public Title createTitle(String text) {
+		TitleImpl impl = new TitleImpl();
+		impl.setText(text);
+		return wrap(impl);
+	}
+
+	private Title wrap(TitleImpl impl) {
+		applyProfile(impl);
+		ElementIH<Title> ih = new ElementIH<Title>(impl, Title.class);
+		Title proxy = (Title) Proxy.newProxyInstance(
+				Title.class.getClassLoader(), new Class[] { Title.class,
+						ElementAddition.class }, ih);
+
+		assignDummyEnv(impl, proxy);
+		return proxy;
 	}
 
 	public Layer createLayer(double[] xarray, double[] yarray) {
