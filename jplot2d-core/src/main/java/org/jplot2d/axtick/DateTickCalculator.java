@@ -82,8 +82,14 @@ public class DateTickCalculator extends LongTickCalculator implements
 		DateInterval itvA, itvB;
 		double rough = (double) (hi - lo) / (tickNumber - 1);
 		if (rough < 1000) {
-			int expn = (int) Math.floor(Math.log10(rough));
-			int scale = (int) Math.pow(10, expn);
+			int scale;
+			if (rough < 10) {
+				scale = 1;
+			} else if (rough < 100) {
+				scale = 10;
+			} else {
+				scale = 100;
+			}
 			/* 1 <= rough/scale < 10 */
 			double coeff = rough / scale;
 			if (coeff < 2) {
@@ -288,14 +294,18 @@ public class DateTickCalculator extends LongTickCalculator implements
 		}
 
 		long span = _hi - _lo;
-		if (span < tickNumber) {
+		if (span < tickNumber - 1) {
 			/* expand range to tick number */
-			long halfXpand = (tickNumber - span) / 2;
+			long halfXpand = (tickNumber - 1 - span) / 2;
 			long odd = (tickNumber - 1 - span) % 2;
 			_lo -= halfXpand;
 			_hi += halfXpand;
 			_hi += odd;
-			_interval = new DateInterval(_hi - _lo);
+			if (_lo < 0) {
+				_lo = 0;
+				_hi -= _lo;
+			}
+			_interval = new DateInterval(1);
 		} else {
 			_interval = calcInterval(_lo, _hi, tickNumber);
 			expandRangeByTickInterval();
