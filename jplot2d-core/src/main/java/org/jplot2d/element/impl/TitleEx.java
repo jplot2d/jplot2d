@@ -30,4 +30,9 @@ public interface TitleEx extends Title, ComponentEx {
 
 	public void setLocation(double locX, double locY);
 
+	/**
+	 * Called by plot to calculate size of this title.
+	 */
+	public void calcSize();
+
 }

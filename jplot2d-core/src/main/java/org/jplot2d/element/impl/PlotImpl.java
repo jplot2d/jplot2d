@@ -951,6 +951,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		 * as it contains 1 item. In most case, this assumption is correct.
 		 */
 
+		/* calculate size may invalidate plot */
+
+		calcAxesThickness(this);
+		calcLegendSize(this);
+		calcTitleSize(this);
+
 		while (true) {
 
 			// auto pack the plot size
@@ -1045,17 +1051,29 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private void calcAxesThickness(PlotEx plot) {
 		for (AxisEx axis : plot.getXAxes()) {
-			if (axis.isVisible()) {
-				axis.calcThickness();
+			if (axis.canContribute()) {
+				calcAxisThickness(axis);
 			}
 		}
 		for (AxisEx axis : plot.getYAxes()) {
-			if (axis.isVisible()) {
-				axis.calcThickness();
+			if (axis.canContribute()) {
+				calcAxisThickness(axis);
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
 			calcAxesThickness(sp);
+		}
+	}
+
+	private void calcAxisThickness(AxisEx axis) {
+		double asc = axis.getAsc();
+		double desc = axis.getDesc();
+
+		axis.calcThickness();
+
+		if (Math.abs(asc - axis.getAsc()) > Math.abs(asc) * 1e-12
+				|| Math.abs(desc - axis.getDesc()) > Math.abs(desc) * 1e-12) {
+			invalidate();
 		}
 	}
 
@@ -1075,39 +1093,37 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
+	 * Calculate axis ticks according to its length, range and tick properties.
+	 */
+	private void calcTitleSize(PlotEx plot) {
+		for (TitleEx title : plot.getTitles()) {
+			if (title.canContribute()) {
+				double oldThickness = title.getSize().getHeight();
+				title.calcSize();
+				if (Math.abs(oldThickness - title.getSize().getHeight()) > Math
+						.abs(oldThickness) * 1e-12) {
+					invalidate();
+				}
+			}
+		}
+		for (PlotEx sp : plot.getSubplots()) {
+			calcTitleSize(sp);
+		}
+	}
+
+	/**
 	 * Calculate legend size according to its length constraint, items and item
 	 * font.
 	 */
-	private static void calcLegendSize(PlotEx plot) {
-		if (plot.getLegend().canContribute()) {
-			switch (plot.getLegend().getPosition()) {
-			case TOPLEFT:
-			case TOPCENTER:
-			case TOPRIGHT:
-			case BOTTOMLEFT:
-			case BOTTOMCENTER:
-			case BOTTOMRIGHT: {
-				double legendWidth = plot.getSize().getWidth()
-						- plot.getMargin().getExtraLeft()
-						- plot.getMargin().getExtraRight();
-				plot.getLegend().setLengthConstraint(legendWidth);
-				break;
-			}
-			}
-			switch (plot.getLegend().getPosition()) {
-			case LEFTTOP:
-			case LEFTMIDDLE:
-			case LEFTBOTTOM:
-			case RIGHTTOP:
-			case RIGHTMIDDLE:
-			case RIGHTBOTTOM: {
-				double contentHeight = plot.getContainerSize().getHeight();
-				plot.getLegend().setLengthConstraint(contentHeight);
-				break;
-			}
-			}
-
+	private void calcLegendSize(PlotEx plot) {
+		LegendEx legend = plot.getLegend();
+		if (legend.canContribute()) {
+			double oldThickness = legend.getThickness();
 			plot.getLegend().calcSize();
+			if (Math.abs(oldThickness - legend.getThickness()) > Math
+					.abs(oldThickness) * 1e-12) {
+				invalidate();
+			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
 			calcLegendSize(sp);

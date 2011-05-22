@@ -58,16 +58,16 @@ public interface LegendEx extends Legend, ComponentEx {
 	public void itemVisibleChanged(LegendItemImpl item);
 
 	/**
-	 * Called by layout director to set the constraint of length
+	 * Returns the thickness of this legend. When position is on top or bottom,
+	 * thickness is its height. When position is on left or right, thickness is
+	 * its width.
 	 * 
-	 * @param length
+	 * @return the thickness of this legend
 	 */
-	public void setLengthConstraint(double length);
+	public double getThickness();
 
 	/**
-	 * Called by layout director to calculate size of this legend. If the the
-	 * size changed and this legend is visible, it'll call invalidate() to
-	 * notify plot its layout is invalid.
+	 * Called by plot to calculate size of this legend.
 	 */
 	public void calcSize();
 

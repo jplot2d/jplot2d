@@ -66,7 +66,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	private double lengthConstraint = Double.NaN;
 
-	private boolean relayoutItemsNeeded;
+	private boolean sizeCalculationNeeded;
 
 	private final Collection<LegendItemEx> items = new ArrayList<LegendItemEx>();
 
@@ -117,13 +117,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void thisEffectiveFontChanged() {
-		relayoutItemsNeeded = true;
-		invalidatePlotIfVisible();
+		sizeCalculationNeeded = true;
 		redraw();
 	}
 
 	public Dimension2D getSize() {
-		calcSize();
 		return new DoubleDimension2D(width, height);
 	}
 
@@ -235,8 +233,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			if (item.isVisible()) {
 				visibleItemNum++;
 				maxItemSize = null;
-				relayoutItemsNeeded = true;
-				invalidatePlotIfVisible();
+				sizeCalculationNeeded = true;
 				redraw();
 			}
 		} else {
@@ -256,8 +253,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				if (item.getSize().equals(maxItemSize)) {
 					maxItemSize = null;
 				}
-				relayoutItemsNeeded = true;
-				invalidatePlotIfVisible();
+				sizeCalculationNeeded = true;
 				redraw();
 			}
 		} else {
@@ -268,18 +264,17 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
-	public void setLengthConstraint(double length) {
+	private void setLengthConstraint(double length) {
 		if (lengthConstraint != length) {
 			lengthConstraint = length;
-			relayoutItemsNeeded = true;
+			sizeCalculationNeeded = true;
 		}
 	}
 
 	public void itemSizeChanged(LegendItemEx item) {
 		if (item.getSize().equals(maxItemSize)) {
 			maxItemSize = null;
-			relayoutItemsNeeded = true;
-			invalidatePlotIfVisible();
+			sizeCalculationNeeded = true;
 			redraw();
 		}
 	}
@@ -293,8 +288,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		} else {
 			visibleItemNum--;
 		}
-		relayoutItemsNeeded = true;
-		invalidatePlotIfVisible();
+		sizeCalculationNeeded = true;
 		redraw();
 	}
 
@@ -315,7 +309,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		rows = legend.rows;
 		columns = legend.columns;
 		lengthConstraint = legend.lengthConstraint;
-		relayoutItemsNeeded = legend.relayoutItemsNeeded;
+		sizeCalculationNeeded = legend.sizeCalculationNeeded;
 	}
 
 	/**
@@ -327,11 +321,59 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
+	public double getThickness() {
+		switch (getPosition()) {
+		case TOPLEFT:
+		case TOPCENTER:
+		case TOPRIGHT:
+		case BOTTOMLEFT:
+		case BOTTOMCENTER:
+		case BOTTOMRIGHT:
+			return getSize().getHeight();
+		case LEFTTOP:
+		case LEFTMIDDLE:
+		case LEFTBOTTOM:
+		case RIGHTTOP:
+		case RIGHTMIDDLE:
+		case RIGHTBOTTOM:
+			return getSize().getWidth();
+		default:
+			return 0;
+		}
+	}
+
 	public void calcSize() {
-		if (!relayoutItemsNeeded) {
+
+		PlotEx plot = getParent();
+		switch (getPosition()) {
+		case TOPLEFT:
+		case TOPCENTER:
+		case TOPRIGHT:
+		case BOTTOMLEFT:
+		case BOTTOMCENTER:
+		case BOTTOMRIGHT: {
+			double legendWidth = plot.getSize().getWidth()
+					- plot.getMargin().getExtraLeft()
+					- plot.getMargin().getExtraRight();
+			setLengthConstraint(legendWidth);
+			break;
+		}
+		case LEFTTOP:
+		case LEFTMIDDLE:
+		case LEFTBOTTOM:
+		case RIGHTTOP:
+		case RIGHTMIDDLE:
+		case RIGHTBOTTOM: {
+			double contentHeight = plot.getContainerSize().getHeight();
+			setLengthConstraint(contentHeight);
+			break;
+		}
+		}
+
+		if (!sizeCalculationNeeded) {
 			return;
 		}
-		relayoutItemsNeeded = false;
+		sizeCalculationNeeded = false;
 
 		switch (getPosition()) {
 		case TOPLEFT:
@@ -341,15 +383,10 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case BOTTOMCENTER:
 		case BOTTOMRIGHT: {
 			fitColumnsToWidth(lengthConstraint);
-			double width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
+			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
 					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
-			double height = (maxItemSize.getHeight() + ROW_SPACE) * rows
-					- ROW_SPACE + 2 * VERTICAL_BORDER;
-			this.width = width;
-			if (this.height != height) {
-				this.height = height;
-				invalidatePlotIfVisible();
-			}
+			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE
+					+ 2 * VERTICAL_BORDER;
 			break;
 		}
 		case LEFTTOP:
@@ -359,15 +396,10 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case RIGHTMIDDLE:
 		case RIGHTBOTTOM: {
 			fitRowsToHeight(lengthConstraint);
-			double width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
+			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
 					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
-			double height = (maxItemSize.getHeight() + ROW_SPACE) * rows
-					- ROW_SPACE + 2 * VERTICAL_BORDER;
-			if (this.width != width) {
-				this.width = width;
-				invalidatePlotIfVisible();
-			}
-			this.height = height;
+			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE
+					+ 2 * VERTICAL_BORDER;
 			break;
 		}
 		}
