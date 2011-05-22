@@ -60,9 +60,7 @@ public interface AxisEx extends Axis, ComponentEx {
 	public void invalidateThickness();
 
 	/**
-	 * calculate asc and desc of this axis. If the the asc or desc changed, and
-	 * this axis is visible, it'll call invalidate() to notify plot its layout
-	 * is invalid.
+	 * calculate asc and desc of this axis.
 	 */
 	public void calcThickness();
 

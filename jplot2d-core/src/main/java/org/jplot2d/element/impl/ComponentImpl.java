@@ -168,7 +168,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return fontStyle;
 	}
 
-	public final void setFontStyle(int style) {
+	public void setFontStyle(int style) {
 		int oldEFS = getEffectiveFontStyle();
 		fontStyle = style;
 		if (getEffectiveFontStyle() != oldEFS) {
@@ -180,7 +180,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return fontSize;
 	}
 
-	public final void setFontSize(float size) {
+	public void setFontSize(float size) {
 		float oldEFS = getEffectiveFontSize();
 		fontSize = size;
 		if (getEffectiveFontSize() != oldEFS) {
@@ -192,7 +192,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return fontScale;
 	}
 
-	public final void setFontScale(float scale) {
+	public void setFontScale(float scale) {
 		float oldEFS = getEffectiveFontSize();
 		fontScale = scale;
 		if (getEffectiveFontSize() != oldEFS) {
@@ -200,7 +200,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		}
 	}
 
-	public final void setFont(Font font) {
+	public void setFont(Font font) {
 		Font oldEF = getEffectiveFont();
 		if (font == null) {
 			fontName = null;

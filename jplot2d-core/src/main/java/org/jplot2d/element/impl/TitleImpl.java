@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.geom.Rectangle2D;
+
 /**
  * @author Jingjing Li
  * 
@@ -27,6 +29,12 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 	private Position position = Position.TOPCENTER;
 
 	private double gapFactor = 0.25;
+
+	/**
+	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in
+	 * PlotImpl
+	 */
+	private Rectangle2D bounds = new Rectangle2D.Double();
 
 	public String getSelfId() {
 		if (getParent() != null) {
@@ -39,13 +47,6 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 
 	public PlotEx getParent() {
 		return (PlotEx) super.getParent();
-	}
-
-	public void thisEffectiveFontChanged() {
-		super.thisEffectiveFontChanged();
-		if (canContribute()) {
-			invalidatePlot();
-		}
 	}
 
 	public Position getPosition() {
@@ -62,6 +63,9 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 
 	public void setGapFactor(double factor) {
 		this.gapFactor = factor;
+		if (canContribute()) {
+			invalidatePlot();
+		}
 	}
 
 	/**
@@ -71,6 +75,14 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		if (getParent() != null && position != null) {
 			getParent().invalidate();
 		}
+	}
+
+	public Rectangle2D getBounds() {
+		return bounds;
+	}
+
+	public void calcSize() {
+		bounds = super.getBounds();
 	}
 
 	@Override

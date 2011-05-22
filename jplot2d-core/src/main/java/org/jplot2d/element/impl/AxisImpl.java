@@ -432,12 +432,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	public double getThickness() {
-		calcThickness();
 		return asc + desc;
 	}
 
 	public double getAsc() {
-		calcThickness();
 		return asc;
 	}
 
@@ -445,7 +443,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * always negative
 	 */
 	public double getDesc() {
-		calcThickness();
 		return desc;
 	}
 
@@ -464,44 +461,44 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		}
 		thicknessCalculationNeeded = false;
 
-		double ba = 0;
-		double bd = 0;
-		double labelOffset = 0;
-		VAlign labelVAlign = null;
-		HAlign labelHAlign = null;
-		double titleOffset = 0;
-		VAlign titleVAlign = null;
+		asc = 0;
+		desc = 0;
+		labelOffset = 0;
+		labelVAlign = null;
+		labelHAlign = null;
+		titleOffset = 0;
+		titleVAlign = null;
 
 		if (isTickVisible()) {
 			if (isTickBothSide() || isTickAscSide()) {
-				ba += getTickHeight();
+				asc += getTickHeight();
 			}
 			if (isTickBothSide() || !isTickAscSide()) {
-				bd += getTickHeight();
+				desc += getTickHeight();
 			}
 		}
 
 		if (isLabelVisible()) {
 			double labelHeight = getLabelHeight();
 			if (isLabelAscSide()) {
-				labelOffset = ba + labelHeight * LABEL_GAP_RATIO;
+				labelOffset = asc + labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
-					ba = labelOffset + labelHeight;
+					asc = labelOffset + labelHeight;
 					labelVAlign = VAlign.BOTTOM;
 					labelHAlign = HAlign.CENTER;
 				} else {
-					ba = labelOffset + getLabelsMaxNormalPhysicalWidth();
+					asc = labelOffset + getLabelsMaxNormalPhysicalWidth();
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.RIGHT;
 				}
 			} else {
-				labelOffset = -bd - labelHeight * LABEL_GAP_RATIO;
+				labelOffset = -desc - labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
-					bd = -labelOffset + labelHeight;
+					desc = -labelOffset + labelHeight;
 					labelVAlign = VAlign.TOP;
 					labelHAlign = HAlign.CENTER;
 				} else {
-					bd = -labelOffset + getLabelsMaxNormalPhysicalWidth();
+					desc = -labelOffset + getLabelsMaxNormalPhysicalWidth();
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.LEFT;
 				}
@@ -513,29 +510,14 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 				titleVAlign = VAlign.BOTTOM;
 				getTitle().setVAlign(titleVAlign);
 				double titleHeight = getTitle().getSize().getHeight();
-				titleOffset = ba + titleHeight * TITLE_GAP_RATIO;
-				ba = titleOffset + titleHeight;
+				titleOffset = asc + titleHeight * TITLE_GAP_RATIO;
+				asc = titleOffset + titleHeight;
 			} else {
 				titleVAlign = VAlign.TOP;
 				getTitle().setVAlign(titleVAlign);
 				double titleHeight = getTitle().getSize().getHeight();
-				titleOffset = -bd - titleHeight * TITLE_GAP_RATIO;
-				bd = -titleOffset + titleHeight;
-			}
-		}
-
-		this.labelOffset = labelOffset;
-		this.labelHAlign = labelHAlign;
-		this.labelVAlign = labelVAlign;
-		this.titleOffset = titleOffset;
-		this.titleVAlign = titleVAlign;
-
-		if (Math.abs(asc - ba) > Math.abs(asc) * 1e-12
-				|| Math.abs(desc - bd) > Math.abs(desc) * 1e-12) {
-			asc = ba;
-			desc = bd;
-			if (isVisible()) {
-				invalidatePlot();
+				titleOffset = -desc - titleHeight * TITLE_GAP_RATIO;
+				desc = -titleOffset + titleHeight;
 			}
 		}
 

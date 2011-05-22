@@ -98,7 +98,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 					- margin.getRight();
 			double contentHeight = plot.getSize().getHeight() - margin.getTop()
 					- margin.getBottom();
-			System.out.println("********* " + contentHeight);
 			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
 				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
 			}
