@@ -26,9 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.renderer.Exporter;
 import org.jplot2d.renderer.Renderer;
 
 /**
@@ -60,24 +57,47 @@ public class RenderEnvironment extends PlotEnvironment {
 		return rendererList.remove(renderer);
 	}
 
-	public void exportPlot(Exporter exporter) {
+	public void exportPlot(Renderer<?> renderer) {
+		begin();
+		Object[] res = getUnmodifiedCacheableComps();
+		Map<ComponentEx, ComponentEx> cacheableCompMap = (Map<ComponentEx, ComponentEx>) res[0];
+		List<ComponentEx> umCachableComps = (List<ComponentEx>) res[1];
 
+		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
+
+		end();
+
+		renderer.render(plotImpl, cacheableCompMap, umCachableComps,
+				subcompsMap);
 	}
 
 	@Override
-	protected void renderOnCommit(PlotEx plot, Map<ElementEx, ElementEx> copyMap) {
+	protected void renderOnCommit() {
 
+		Object[] res = getUnmodifiedCacheableComps();
+		Map<ComponentEx, ComponentEx> cacheableCompMap = (Map<ComponentEx, ComponentEx>) res[0];
+		List<ComponentEx> umCachableComps = (List<ComponentEx>) res[1];
+
+		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
+
+		for (Renderer<?> r : getRenderers()) {
+			r.render(plotImpl, cacheableCompMap, umCachableComps, subcompsMap);
+		}
+
+	}
+
+	private Object[] getUnmodifiedCacheableComps() {
 		/*
 		 * when adding a cacheable component, the requireRedraw is not called on
 		 * it. So we must figure out what components are unmodified.
 		 */
 
 		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
-		Map<ComponentEx, ComponentEx> compMap = new LinkedHashMap<ComponentEx, ComponentEx>();
+		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 		for (ComponentEx comp : cacheableComponentList) {
-			ComponentEx copy = (ComponentEx) copyMap.get(comp);
+			ComponentEx copy = (ComponentEx) getCopyMap().get(comp);
 			assert (copy != null) : "Null copy of Component " + comp;
-			compMap.put(comp, copy);
+			cacheableCompMap.put(comp, copy);
 			// unmodified components
 			if (!((ComponentEx) comp).isRedrawNeeded()) {
 				umCachableComps.add(comp);
@@ -85,6 +105,10 @@ public class RenderEnvironment extends PlotEnvironment {
 			((ComponentEx) comp).clearRedrawNeeded();
 		}
 
+		return new Object[] { cacheableCompMap, umCachableComps };
+	}
+
+	private Map<ComponentEx, ComponentEx[]> getSubcompsMap() {
 		// build sub-component map
 		Map<ComponentEx, ComponentEx[]> subcompsMap = new HashMap<ComponentEx, ComponentEx[]>();
 		for (Map.Entry<ComponentEx, List<ComponentEx>> me : subComponentMap
@@ -94,7 +118,8 @@ public class RenderEnvironment extends PlotEnvironment {
 			int size = sublist.size();
 			ComponentEx[] copys = new ComponentEx[size];
 			for (int i = 0; i < size; i++) {
-				ComponentEx copy = (ComponentEx) copyMap.get(sublist.get(i));
+				ComponentEx copy = (ComponentEx) getCopyMap().get(
+						sublist.get(i));
 				assert (copy != null) : "Null copy of Component "
 						+ sublist.get(i);
 				copys[i] = copy;
@@ -102,9 +127,7 @@ public class RenderEnvironment extends PlotEnvironment {
 			subcompsMap.put(key, copys);
 		}
 
-		for (Renderer<?> r : getRenderers()) {
-			r.render(plot, compMap, umCachableComps, subcompsMap);
-		}
-
+		return subcompsMap;
 	}
+
 }
