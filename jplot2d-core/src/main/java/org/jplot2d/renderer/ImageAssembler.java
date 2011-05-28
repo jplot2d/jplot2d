@@ -30,12 +30,13 @@ import java.util.concurrent.Future;
 import org.jplot2d.element.impl.ComponentEx;
 
 /**
- * This assembler can produce a BufferedImage.
+ * Assembler is a service in rendering. It can create CompRenderCallable to a
+ * renderer, and assemble rendered component into a final BufferedImage.
  * 
  * @author Jingjing Li
  * 
  */
-public class ImageAssembler extends Assembler<BufferedImage> {
+public class ImageAssembler {
 
 	private final int imageType;
 
@@ -50,6 +51,12 @@ public class ImageAssembler extends Assembler<BufferedImage> {
 		this.bgColor = bgColor;
 	}
 
+	/**
+	 * Create a CompRenderCallable for the given component. The
+	 * CompRenderCallable is used by component renderer.
+	 * 
+	 * @return a CompRenderCallable
+	 */
 	public CompRenderCallable<BufferedImage> createCompRenderCallable(
 			Rectangle bounds, ComponentEx[] comps) {
 		BufferedImage image = new BufferedImage(bounds.width, bounds.height,
@@ -60,8 +67,16 @@ public class ImageAssembler extends Assembler<BufferedImage> {
 		return new CompRenderCallable<BufferedImage>(comps, g, image, bounds);
 	}
 
-	public BufferedImage assembleResult(Dimension size,
-			AssemblyInfo<BufferedImage> ainfo) {
+	/**
+	 * Assemble the rendered component given in AssemblyInfo into a result.
+	 * 
+	 * @param size
+	 *            the result size
+	 * @param ainfo
+	 *            the AssemblyInfo
+	 * @return the assembled result
+	 */
+	public BufferedImage assembleResult(Dimension size, ImageAssemblyInfo ainfo) {
 		int width = size.width;
 		int height = size.height;
 		BufferedImage image = new BufferedImage(width, height, imageType);
