@@ -19,6 +19,7 @@
 package org.jplot2d.renderer;
 
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -43,33 +44,33 @@ import org.jplot2d.element.impl.PlotEx;
  * @param <T>
  *            the render result class type
  */
-public class AsyncRenderer<T> extends Renderer<T> {
+public class AsyncImageRenderer extends ImageRenderer {
 
-	private class RenderCallable implements Callable<T> {
+	private class RenderCallable implements Callable<BufferedImage> {
 
 		private Dimension size;
 
-		private AssemblyInfo<T> ainfo;
+		private ImageAssemblyInfo ainfo;
 
-		private RenderCallable(Dimension size, AssemblyInfo<T> ainfo) {
+		private RenderCallable(Dimension size, ImageAssemblyInfo ainfo) {
 			this.size = size;
 			this.ainfo = ainfo;
 		}
 
-		public T call() throws Exception {
+		public BufferedImage call() throws Exception {
 			return assembler.assembleResult(size, ainfo);
 		}
 
 	}
 
-	protected class RenderTask extends FutureTask<T> {
+	protected class RenderTask extends FutureTask<BufferedImage> {
 
 		protected final long fsn;
 
 		/**
 		 * @param callable
 		 */
-		public RenderTask(long fsn, Callable<T> callable) {
+		public RenderTask(long fsn, Callable<BufferedImage> callable) {
 			super(callable);
 			this.fsn = fsn;
 		}
@@ -86,7 +87,7 @@ public class AsyncRenderer<T> extends Renderer<T> {
 				return;
 			}
 
-			T result = null;
+			BufferedImage result = null;
 			try {
 				result = get();
 			} catch (InterruptedException e) {
@@ -152,11 +153,9 @@ public class AsyncRenderer<T> extends Renderer<T> {
 	/** synchronized area for fsn and renderer task queue */
 	private Object renderLock = new Object();
 
-	private int fsn;
-
 	private final Queue<RenderTask> renderTaskQueue = new LinkedList<RenderTask>();
 
-	public AsyncRenderer(Assembler<T> assembler) {
+	public AsyncImageRenderer(ImageAssembler assembler) {
 		super(assembler);
 	}
 
@@ -165,11 +164,11 @@ public class AsyncRenderer<T> extends Renderer<T> {
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
-		AssemblyInfo<T> ainfo = runCompRender(cacheableCompMap,
+		ImageAssemblyInfo ainfo = runCompRender(cacheableCompMap,
 				unmodifiedCacheableComps, subcompsMap);
 
 		Dimension size = getDeviceBounds(plot).getSize();
-		Callable<T> callable = new RenderCallable(size, ainfo);
+		Callable<BufferedImage> callable = new RenderCallable(size, ainfo);
 		RenderTask task = new RenderTask(fsn++, callable);
 
 		synchronized (renderLock) {

@@ -19,6 +19,7 @@
 package org.jplot2d.renderer;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,22 +34,22 @@ import org.jplot2d.element.impl.ComponentEx;
  * @author Jingjing Li
  * 
  */
-public class AssemblyInfo<T> {
+public class ImageAssemblyInfo {
 
-	private static class InfoItem<T> {
+	private static class InfoItem {
 
 		private Rectangle bounds;
-		private Future<T> future;
+		private Future<BufferedImage> future;
 
-		private InfoItem(Rectangle bounds, Future<T> future) {
+		private InfoItem(Rectangle bounds, Future<BufferedImage> future) {
 			this.bounds = bounds;
 			this.future = future;
 		}
 	}
 
-	private Map<ComponentEx, InfoItem<T>> map = new LinkedHashMap<ComponentEx, InfoItem<T>>();
+	private Map<ComponentEx, InfoItem> map = new LinkedHashMap<ComponentEx, InfoItem>();
 
-	public AssemblyInfo() {
+	public ImageAssemblyInfo() {
 
 	}
 
@@ -75,7 +76,7 @@ public class AssemblyInfo<T> {
 		return map.get(comp).bounds;
 	}
 
-	public Future<T> getFuture(ComponentEx comp) {
+	public Future<BufferedImage> getFuture(ComponentEx comp) {
 		return map.get(comp).future;
 	}
 
@@ -86,8 +87,9 @@ public class AssemblyInfo<T> {
 	 * @param bounds
 	 * @param future
 	 */
-	public void put(ComponentEx comp, Rectangle bounds, Future<T> future) {
-		map.put(comp, new InfoItem<T>(bounds, future));
+	public void put(ComponentEx comp, Rectangle bounds,
+			Future<BufferedImage> future) {
+		map.put(comp, new InfoItem(bounds, future));
 	}
 
 }

@@ -59,6 +59,8 @@ public abstract class PlotEnvironment extends Environment {
 
 	protected PlotEx plotImpl;
 
+	private Map<ElementEx, ElementEx> copyMap;
+
 	public Plot getPlot() {
 		synchronized (getGlobalLock()) {
 			begin();
@@ -139,16 +141,20 @@ public abstract class PlotEnvironment extends Environment {
 		endCommand();
 	}
 
+	protected Map<ElementEx, ElementEx> getCopyMap() {
+		return copyMap;
+	}
+
 	@Override
 	protected void commit() {
 
 		plotImpl.commit();
 
-		Map<ElementEx, ElementEx> copyMap = makeUndoMemento();
+		copyMap = makeUndoMemento();
 
 		if (plotImpl.isRerenderNeeded()) {
 			plotImpl.clearRerenderNeeded();
-			renderOnCommit(plotImpl, copyMap);
+			renderOnCommit();
 		}
 
 	}
@@ -201,9 +207,9 @@ public abstract class PlotEnvironment extends Environment {
 			throw new RuntimeException("Cannot undo");
 		}
 
-		Map<ElementEx, ElementEx> copyMap = restore(memento);
+		copyMap = restore(memento);
 
-		renderOnCommit(plotImpl, copyMap);
+		renderOnCommit();
 
 		end();
 	}
@@ -222,9 +228,9 @@ public abstract class PlotEnvironment extends Environment {
 			throw new RuntimeException("Cannot redo");
 		}
 
-		Map<ElementEx, ElementEx> copyMap = restore(memento);
+		copyMap = restore(memento);
 
-		renderOnCommit(plotImpl, copyMap);
+		renderOnCommit();
 
 		end();
 	}
@@ -304,8 +310,7 @@ public abstract class PlotEnvironment extends Environment {
 	 *            the key contains all components in the plot. The values are
 	 *            the thread safe copies of keys.
 	 */
-	protected abstract void renderOnCommit(PlotEx plot,
-			Map<ElementEx, ElementEx> copyMap);
+	protected abstract void renderOnCommit();
 
 	/* --- JPlot2DChangeListener --- */
 
