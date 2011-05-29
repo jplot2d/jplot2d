@@ -57,12 +57,16 @@ public class RenderEnvironment extends PlotEnvironment {
 		return rendererList.remove(renderer);
 	}
 
+	/**
+	 * Export plot to the given renderer.
+	 * 
+	 * @param renderer
+	 */
 	public void exportPlot(Renderer<?> renderer) {
 		begin();
-		Object[] res = getUnmodifiedCacheableComps();
-		Map<ComponentEx, ComponentEx> cacheableCompMap = (Map<ComponentEx, ComponentEx>) res[0];
-		List<ComponentEx> umCachableComps = (List<ComponentEx>) res[1];
 
+		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
+		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		end();
@@ -73,27 +77,28 @@ public class RenderEnvironment extends PlotEnvironment {
 
 	@Override
 	protected void renderOnCommit() {
-
-		Object[] res = getUnmodifiedCacheableComps();
-		Map<ComponentEx, ComponentEx> cacheableCompMap = (Map<ComponentEx, ComponentEx>) res[0];
-		List<ComponentEx> umCachableComps = (List<ComponentEx>) res[1];
-
+		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
+		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		for (Renderer<?> r : getRenderers()) {
 			r.render(plotImpl, cacheableCompMap, umCachableComps, subcompsMap);
 		}
-
 	}
 
-	private Object[] getUnmodifiedCacheableComps() {
+	/**
+	 * @param umCachableComps
+	 *            unmodified comps
+	 * @return a map key comp value saft copy of keys
+	 */
+	private Map<ComponentEx, ComponentEx> getCacheableCompMap(
+			List<ComponentEx> umCachableComps) {
 		/*
 		 * when adding a cacheable component, the requireRedraw is not called on
 		 * it. So we must figure out what components are unmodified.
 		 */
-
-		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
 		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
+
 		for (ComponentEx comp : cacheableComponentList) {
 			ComponentEx copy = (ComponentEx) getCopyMap().get(comp);
 			assert (copy != null) : "Null copy of Component " + comp;
@@ -105,7 +110,7 @@ public class RenderEnvironment extends PlotEnvironment {
 			((ComponentEx) comp).clearRedrawNeeded();
 		}
 
-		return new Object[] { cacheableCompMap, umCachableComps };
+		return cacheableCompMap;
 	}
 
 	private Map<ComponentEx, ComponentEx[]> getSubcompsMap() {

@@ -21,13 +21,13 @@ package org.jplot2d.renderer;
 import java.util.concurrent.Executor;
 
 /**
- * This renderer execute component rendering and assembling in a single thread,
- * suite for servlet.
+ * This renderer execute component rendering and assembling them in a single
+ * thread, suite for servlet.
  * 
  * @author Jingjing Li
  * 
  */
-public class CallerRunRenderer<T> extends ImageRenderer {
+public class CallerRunImageRenderer extends ImageRenderer {
 
 	private static Executor callerRunsExecutor = new Executor() {
 
@@ -37,7 +37,7 @@ public class CallerRunRenderer<T> extends ImageRenderer {
 
 	};
 
-	public CallerRunRenderer(ImageAssembler assembler) {
+	public CallerRunImageRenderer(ImageFactory assembler) {
 		super(assembler, callerRunsExecutor);
 	}
 

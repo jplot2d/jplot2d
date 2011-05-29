@@ -18,9 +18,6 @@
  */
 package org.jplot2d.renderer;
 
-import java.awt.Rectangle;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,7 +50,7 @@ import org.jplot2d.element.impl.PlotEx;
  * @author Jingjing Li
  * 
  */
-public class Renderer<T> {
+public abstract class Renderer<T> {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.renderer");
 
@@ -74,26 +71,10 @@ public class Renderer<T> {
 	 *            the key is cacheable component, the value is safe-copy of all
 	 *            its sub-component in z-order.
 	 */
-	public void render(PlotEx plot,
+	public abstract void render(PlotEx plot,
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
-		//TODO: sync rendere
-		
-	}
-
-	protected Rectangle getDeviceBounds(ComponentEx comp) {
-		if (comp instanceof PlotEx) {
-			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
-			Dimension2D size = ((PlotEx) comp).getSize();
-			return new Rectangle2D.Double(0, 0, size.getWidth() * scale,
-					size.getHeight() * scale).getBounds();
-		} else {
-			Rectangle2D pbounds = comp.getBounds();
-			return comp.getParent().getPhysicalTransform().getPtoD(pbounds)
-					.getBounds();
-		}
-	}
+			Map<ComponentEx, ComponentEx[]> subcompsMap);
 
 	/**
 	 * @param fsn

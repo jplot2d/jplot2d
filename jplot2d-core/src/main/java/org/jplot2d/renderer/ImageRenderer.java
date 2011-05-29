@@ -19,19 +19,18 @@
 package org.jplot2d.renderer;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Logger;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
@@ -57,9 +56,7 @@ import org.jplot2d.element.impl.PlotEx;
  * @author Jingjing Li
  * 
  */
-public abstract class ImageRenderer {
-
-	static Logger logger = Logger.getLogger("org.jplot2d.renderer");
+public abstract class ImageRenderer extends Renderer<BufferedImage> {
 
 	/**
 	 * Component renderer execute service
@@ -72,6 +69,8 @@ public abstract class ImageRenderer {
 	 */
 	private final Executor crExecutor;
 
+	protected final ImageFactory assembler;
+
 	/**
 	 * The map contains the component cache future in the latest status. They
 	 * will be assembled into a renderer result later.
@@ -80,42 +79,22 @@ public abstract class ImageRenderer {
 	 */
 	private ImageAssemblyInfo compCachedFutureMap = new ImageAssemblyInfo();
 
-	protected ImageAssembler assembler;
-
 	protected int fsn;
-
-	private final List<RenderingFinishedListener> renderingFinishedListenerList = Collections
-			.synchronizedList(new ArrayList<RenderingFinishedListener>());
 
 	/**
 	 * Create a Renderer with the given assembler.
 	 * 
 	 * @param assembler
 	 */
-	public ImageRenderer(ImageAssembler assembler) {
-		this.crExecutor = COMPONENT_RENDERING_POOL_EXECUTOR;
-		this.assembler = assembler;
+	public ImageRenderer(ImageFactory assembler) {
+		this(assembler, COMPONENT_RENDERING_POOL_EXECUTOR);
 	}
 
-	public ImageRenderer(ImageAssembler assembler, Executor executor) {
+	public ImageRenderer(ImageFactory assembler, Executor executor) {
+		this.assembler = assembler;
 		this.crExecutor = executor;
-		this.assembler = assembler;
 	}
 
-	/**
-	 * This method is protected by environment lock.
-	 * 
-	 * @param plot
-	 *            the plot impl
-	 * @param cacheableCompMap
-	 *            A map contains all cacheable components to their safe copy.
-	 *            The iteration order is z-order.
-	 * @param unmodifiedCacheableComps
-	 *            unmodified cacheable components
-	 * @param subcompOrderMap
-	 *            the key is cacheable component, the value is safe-copy of all
-	 *            its sub-component in z-order.
-	 */
 	public void render(PlotEx plot,
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
@@ -125,7 +104,9 @@ public abstract class ImageRenderer {
 				unmodifiedCacheableComps, subcompsMap);
 
 		Dimension size = getDeviceBounds(plot).getSize();
-		BufferedImage result = assembler.assembleResult(size, ainfo);
+		BufferedImage result = assembler.createImage(size.width, size.height);
+
+		assembleResult(result, ainfo);
 		fireRenderingFinished(fsn++, result);
 
 	}
@@ -134,10 +115,10 @@ public abstract class ImageRenderer {
 	 * Execute component renderer on every modified cacheable component. This
 	 * method must be called from render.
 	 * 
-	 * @param compMap
+	 * @param cacheableCompMap
 	 *            cacheable component map in Z-order, the key is component, the
 	 *            value is components' thread safe copy.
-	 * @param unmodifiedComps
+	 * @param umCacheableComps
 	 *            unmodified cacheable components
 	 * @param subcompOrderMap
 	 *            the key is cacheable component, the value is the safe copies
@@ -145,19 +126,20 @@ public abstract class ImageRenderer {
 	 * @return
 	 */
 	protected ImageAssemblyInfo runCompRender(
-			Map<ComponentEx, ComponentEx> compMap,
-			Collection<ComponentEx> unmodifiedComps,
+			Map<ComponentEx, ComponentEx> cacheableCompMap,
+			Collection<ComponentEx> umCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompOrderMap) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
-		for (Map.Entry<ComponentEx, ComponentEx> me : compMap.entrySet()) {
+		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap
+				.entrySet()) {
 			ComponentEx comp = me.getKey();
 			ComponentEx ccopy = me.getValue();
 
 			/*
 			 * the component may be set to cacheable, while stay unmodified
 			 */
-			if (unmodifiedComps.contains(comp)
+			if (umCacheableComps.contains(comp)
 					&& compCachedFutureMap.contains(comp)) {
 				ainfo.put(comp, compCachedFutureMap.getBounds(comp),
 						compCachedFutureMap.getFuture(comp));
@@ -165,8 +147,10 @@ public abstract class ImageRenderer {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
 				ComponentEx[] sublist = subcompOrderMap.get(comp);
-				CompRenderCallable<BufferedImage> compRenderCallable = assembler
-						.createCompRenderCallable(bounds, sublist);
+				BufferedImage image = assembler.createTransparentImage(
+						bounds.width, bounds.height);
+				CompRenderCallable compRenderCallable = new CompRenderCallable(
+						sublist, image, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(
 						compRenderCallable);
 
@@ -179,6 +163,12 @@ public abstract class ImageRenderer {
 		return ainfo;
 	}
 
+	/**
+	 * Returns a rectangle that completely enclose the given component.
+	 * 
+	 * @param comp
+	 * @return
+	 */
 	protected Rectangle getDeviceBounds(ComponentEx comp) {
 		if (comp instanceof PlotEx) {
 			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
@@ -193,25 +183,35 @@ public abstract class ImageRenderer {
 	}
 
 	/**
-	 * @param fsn
-	 * @param t
+	 * Assemble the rendered component given in AssemblyInfo into a result.
+	 * 
+	 * @param size
+	 *            the result size
+	 * @param ainfo
+	 *            the AssemblyInfo
+	 * @return the assembled result
 	 */
-	protected void fireRenderingFinished(long fsn, BufferedImage image) {
-		RenderingFinishedListener[] ls = renderingFinishedListenerList
-				.toArray(new RenderingFinishedListener[0]);
-		for (RenderingFinishedListener lsnr : ls) {
-			lsnr.renderingFinished(new RenderingFinishedEvent(fsn, image));
+	protected BufferedImage assembleResult(BufferedImage image,
+			ImageAssemblyInfo ainfo) {
+		Graphics2D g = (Graphics2D) image.getGraphics();
+
+		for (ComponentEx c : ainfo.componentSet()) {
+			Rectangle bounds = ainfo.getBounds(c);
+			Future<BufferedImage> f = ainfo.getFuture(c);
+			try {
+				BufferedImage bi = f.get();
+				g.drawImage(bi, bounds.x, bounds.y, null);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-	}
-
-	public void addRenderingFinishedListener(RenderingFinishedListener listener) {
-		renderingFinishedListenerList.add(listener);
-	}
-
-	public void removeRenderingFinishedListener(
-			RenderingFinishedListener listener) {
-		renderingFinishedListenerList.remove(listener);
+		g.dispose();
+		return image;
 	}
 
 }

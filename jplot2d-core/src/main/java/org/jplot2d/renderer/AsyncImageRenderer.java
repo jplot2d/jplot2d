@@ -36,8 +36,7 @@ import org.jplot2d.element.impl.PlotEx;
 
 /**
  * This renderer assemble all cached component and render uncacheable component
- * asynchronously. The method {@link #renderingComplete(long, Object)} will be
- * called once a result is ready.
+ * asynchronously.
  * 
  * @author Jingjing Li
  * 
@@ -48,17 +47,17 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 	private class RenderCallable implements Callable<BufferedImage> {
 
-		private Dimension size;
+		private BufferedImage result;
 
 		private ImageAssemblyInfo ainfo;
 
-		private RenderCallable(Dimension size, ImageAssemblyInfo ainfo) {
-			this.size = size;
+		private RenderCallable(BufferedImage size, ImageAssemblyInfo ainfo) {
+			this.result = size;
 			this.ainfo = ainfo;
 		}
 
 		public BufferedImage call() throws Exception {
-			return assembler.assembleResult(size, ainfo);
+			return assembleResult(result, ainfo);
 		}
 
 	}
@@ -155,7 +154,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 	private final Queue<RenderTask> renderTaskQueue = new LinkedList<RenderTask>();
 
-	public AsyncImageRenderer(ImageAssembler assembler) {
+	public AsyncImageRenderer(ImageFactory assembler) {
 		super(assembler);
 	}
 
@@ -164,11 +163,13 @@ public class AsyncImageRenderer extends ImageRenderer {
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+
 		ImageAssemblyInfo ainfo = runCompRender(cacheableCompMap,
 				unmodifiedCacheableComps, subcompsMap);
 
 		Dimension size = getDeviceBounds(plot).getSize();
-		Callable<BufferedImage> callable = new RenderCallable(size, ainfo);
+		BufferedImage result = assembler.createImage(size.width, size.height);
+		Callable<BufferedImage> callable = new RenderCallable(result, ainfo);
 		RenderTask task = new RenderTask(fsn++, callable);
 
 		synchronized (renderLock) {
