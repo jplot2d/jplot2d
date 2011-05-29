@@ -21,6 +21,8 @@ package org.jplot2d.swing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 
@@ -28,8 +30,9 @@ import javax.swing.JComponent;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.renderer.AsyncRenderer;
-import org.jplot2d.renderer.ImageAssembler;
+import org.jplot2d.renderer.AsyncImageRenderer;
+import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;
+import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 
@@ -40,7 +43,7 @@ import org.jplot2d.renderer.RenderingFinishedListener;
  * @author Jingjing Li
  * 
  */
-public class JPlot2DComponent extends JComponent {
+public class JPlot2DComponent extends JComponent implements HierarchyListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,47 +53,24 @@ public class JPlot2DComponent extends JComponent {
 
 	private final RenderEnvironment env;
 
-	private final AsyncRenderer<BufferedImage> r;
+	private ImageRenderer r;
 
 	private volatile BufferedImage image;
 
 	public JPlot2DComponent(Plot plot) {
-		setBackground(Color.GRAY);
-
 		this.plot = plot;
 		env = new RenderEnvironment();
 		env.setPlot(plot);
 
 		setBackground(Color.GRAY);
 		setOpaque(true);
-
-		r = new AsyncRenderer<BufferedImage>(new ImageAssembler(
-				BufferedImage.TYPE_INT_RGB, getPlotBackground()));
-
-		r.addPlotPaintListener(new RenderingFinishedListener() {
-			private long ifsn;
-
-			public void renderingFinished(RenderingFinishedEvent event) {
-				long fsn = event.getFsn();
-				if (fsn < ifsn) {
-					logger.info("[R] Rendering finished in wrong order, drop F."
-							+ fsn + " Current frame is " + ifsn);
-					return;
-				}
-				ifsn = fsn;
-
-				image = (BufferedImage) event.getResult();
-				repaint();
-			}
-
-		});
-		env.addRenderer(r);
+		addHierarchyListener(this);
 	}
 
 	/**
 	 * @return
 	 */
-	private Color getPlotBackground() {
+	protected Color getPlotBackground() {
 		return Color.WHITE;
 	}
 
@@ -110,6 +90,41 @@ public class JPlot2DComponent extends JComponent {
 			int y = (getHeight() - height) / 2;
 			g.drawImage(image, x, y, this);
 		}
+	}
+
+	public void hierarchyChanged(HierarchyEvent event) {
+		if ((event.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+			if (this.isDisplayable()) {
+				r = createImageRenderer();
+
+				r.addRenderingFinishedListener(new RenderingFinishedListener() {
+					private long ifsn;
+
+					public void renderingFinished(RenderingFinishedEvent event) {
+						long fsn = event.getFsn();
+						if (fsn < ifsn) {
+							logger.info("[R] Rendering finished in wrong order, drop F."
+									+ fsn + " Current frame is " + ifsn);
+							return;
+						}
+						ifsn = fsn;
+
+						image = (BufferedImage) event.getResult();
+						repaint();
+					}
+
+				});
+				env.addRenderer(r);
+			} else {
+				env.removeRenderer(r);
+			}
+		}
+	}
+
+	protected ImageRenderer createImageRenderer() {
+		return new AsyncImageRenderer(
+				new GraphicsConfigurationCompatibleImageFactory(
+						this.getGraphicsConfiguration(), getPlotBackground()));
 	}
 
 }

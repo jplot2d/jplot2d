@@ -20,48 +20,41 @@ package org.jplot2d.renderer;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.Callable;
 
 import org.jplot2d.element.impl.ComponentEx;
 
-public class CompRenderCallable<T> implements Callable<T> {
+public class CompRenderCallable implements Callable<BufferedImage> {
 
 	private ComponentEx[] comps;
 
 	private Graphics2D g;
 
-	private T result;
-
-	private Rectangle bounds;
+	private BufferedImage result;
 
 	/**
 	 * @param comps
 	 *            the components in z-order
 	 * @param g
+	 *            the Graphics2D has been translated to bounds
 	 * @param result
 	 * @param bounds
 	 */
-	public CompRenderCallable(ComponentEx[] comps, Graphics2D g, T result,
+	public CompRenderCallable(ComponentEx[] comps, BufferedImage image,
 			Rectangle bounds) {
 		this.comps = comps;
-		this.g = g;
-		this.result = result;
-		this.bounds = bounds;
+		this.result = image;
+		g = image.createGraphics();
+		g.translate(-bounds.x, -bounds.y);
 	}
 
-	public T call() throws Exception {
+	public BufferedImage call() throws Exception {
 		for (ComponentEx comp : comps) {
 			comp.draw(g);
 		}
 		g.dispose();
 		return result;
-	}
-
-	/**
-	 * @return
-	 */
-	public Rectangle getBounds() {
-		return bounds;
 	}
 
 }

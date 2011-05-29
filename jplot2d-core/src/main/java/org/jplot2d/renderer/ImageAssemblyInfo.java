@@ -47,7 +47,7 @@ public class ImageAssemblyInfo {
 		}
 	}
 
-	private Map<ComponentEx, InfoItem> map = new LinkedHashMap<ComponentEx, InfoItem>();
+	private final Map<ComponentEx, InfoItem> map = new LinkedHashMap<ComponentEx, InfoItem>();
 
 	public ImageAssemblyInfo() {
 
