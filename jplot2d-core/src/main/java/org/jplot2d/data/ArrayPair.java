@@ -27,70 +27,115 @@ import java.lang.reflect.Array;
  */
 public class ArrayPair implements Cloneable {
 
-    private final Object _p, _q;
+	private final Object p, q;
 
-    final Class<?> _pct, _qct;
+	private final Class<?> pctype, qctype;
 
-    private final int _size;
+	private final int size;
 
-    public ArrayPair(Object p, Object q) {
-        int plen = Array.getLength(p);
-        int qlen = Array.getLength(q);
-        if (plen != qlen) {
-            throw new IllegalArgumentException(
-                    "The length of the pair of arrays must be equal.");
-        }
-        _pct = p.getClass().getComponentType();
-        _qct = q.getClass().getComponentType();
-        _p = p;
-        _q = q;
-        _size = plen;
-    }
+	/**
+	 * Create a ArrayPair instance with the given p/q array. The length of the
+	 * p/q array must be same.
+	 * 
+	 * @param p
+	 * @param q
+	 */
+	public ArrayPair(Object p, Object q) {
+		int plen = Array.getLength(p);
+		int qlen = Array.getLength(q);
+		if (plen != qlen) {
+			throw new IllegalArgumentException(
+					"The length of the pair of arrays must be equal.");
+		}
+		pctype = p.getClass().getComponentType();
+		qctype = q.getClass().getComponentType();
+		this.p = p;
+		this.q = q;
+		size = plen;
+	}
 
-    public int size() {
-        return _size;
-    }
+	/**
+	 * Create a ArrayPair instance with the given p/q array and length. The
+	 * length of the p/q array must be same or longer than the given length.
+	 * 
+	 * @param p
+	 * @param q
+	 * @param length
+	 *            the length to be used in this ArrayPair
+	 */
+	public ArrayPair(Object p, Object q, int length) {
+		int plen = Array.getLength(p);
+		int qlen = Array.getLength(q);
+		if (plen < length) {
+			throw new IllegalArgumentException(
+					"The length of the p arrays must be equal or longer than the given length.");
+		}
+		if (qlen < length) {
+			throw new IllegalArgumentException(
+					"The length of the q arrays must be equal or longer than the given length.");
+		}
+		pctype = p.getClass().getComponentType();
+		qctype = q.getClass().getComponentType();
+		this.p = p;
+		this.q = q;
+		size = length;
+	}
 
-    public Class<?> getPComponentType() {
-        return _pct.getComponentType();
-    }
+	public int size() {
+		return size;
+	}
 
-    public Class<?> getQComponentType() {
-        return _qct.getComponentType();
-    }
+	public Class<?> getPComponentType() {
+		return pctype.getComponentType();
+	}
 
-    public Object getPArray() {
-        return _p;
-    }
+	public Class<?> getQComponentType() {
+		return qctype.getComponentType();
+	}
 
-    public Object getQArray() {
-        return _q;
-    }
+	public Object getPArray() {
+		return p;
+	}
 
-    public double getPDouble(int idx) {
-        return Array.getDouble(_p, idx);
-    }
+	public Object getQArray() {
+		return q;
+	}
 
-    public double getQDouble(int idx) {
-        return Array.getDouble(_q, idx);
-    }
+	public double getPDouble(int idx) {
+		return Array.getDouble(p, idx);
+	}
 
-    public ArrayPair append(ArrayPair arrayPair) {
-        Object newp = Array.newInstance(_pct, _size + arrayPair._size);
-        System.arraycopy(_p, 0, newp, 0, _size);
-        System.arraycopy(arrayPair._p, 0, newp, _size, arrayPair._size);
-        Object newq = Array.newInstance(_qct, _size + arrayPair._size);
-        System.arraycopy(_q, 0, newq, 0, _size);
-        System.arraycopy(arrayPair._q, 0, newq, _size, arrayPair._size);
+	public double getQDouble(int idx) {
+		return Array.getDouble(q, idx);
+	}
 
-        return new ArrayPair(newp, newq);
-    }
+	public ArrayPair append(ArrayPair arrayPair) {
+		Object newp = Array.newInstance(pctype, size + arrayPair.size);
+		System.arraycopy(p, 0, newp, 0, size);
+		System.arraycopy(arrayPair.p, 0, newp, size, arrayPair.size);
+		Object newq = Array.newInstance(qctype, size + arrayPair.size);
+		System.arraycopy(q, 0, newq, 0, size);
+		System.arraycopy(arrayPair.q, 0, newq, size, arrayPair.size);
 
-    public ArrayPair copy() {
-        try {
-            return (ArrayPair) this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new InternalError();
-        }
-    }
+		return new ArrayPair(newp, newq);
+	}
+
+	public ArrayPair append(Object ap, Object aq, int length) {
+		Object newp = Array.newInstance(pctype, size + length);
+		System.arraycopy(p, 0, newp, 0, size);
+		System.arraycopy(ap, 0, newp, size, length);
+		Object newq = Array.newInstance(qctype, size + length);
+		System.arraycopy(q, 0, newq, 0, size);
+		System.arraycopy(aq, 0, newq, size, length);
+
+		return new ArrayPair(newp, newq);
+	}
+
+	public ArrayPair copy() {
+		try {
+			return (ArrayPair) this.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new InternalError();
+		}
+	}
 }
