@@ -81,8 +81,16 @@ public interface ComponentEx extends Component, ElementEx {
 
 	public void parentEffectiveFontChanged();
 
+	/**
+	 * Called when setColor() or parentEffectiveColorChanged() change the
+	 * effective color of this component.
+	 */
 	public void thisEffectiveColorChanged();
 
+	/**
+	 * Called when setFontXxx() or parentEffectiveFontChanged() change the
+	 * effective font of this component.
+	 */
 	public void thisEffectiveFontChanged();
 
 	/**
