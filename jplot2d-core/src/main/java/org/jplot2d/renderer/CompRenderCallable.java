@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -27,34 +27,41 @@ import org.jplot2d.element.impl.ComponentEx;
 
 public class CompRenderCallable implements Callable<BufferedImage> {
 
-	private ComponentEx[] comps;
+	private final ComponentEx[] comps;
 
-	private Graphics2D g;
+	private final ImageFactory imageFactory;
 
-	private BufferedImage result;
+	private final Rectangle bounds;
 
 	/**
 	 * @param comps
 	 *            the components in z-order
-	 * @param g
-	 *            the Graphics2D has been translated to bounds
-	 * @param result
+	 * @param imageFactory
 	 * @param bounds
 	 */
-	public CompRenderCallable(ComponentEx[] comps, BufferedImage image,
+	public CompRenderCallable(ComponentEx[] comps, ImageFactory imageFactory,
 			Rectangle bounds) {
 		this.comps = comps;
-		this.result = image;
-		g = image.createGraphics();
-		g.translate(-bounds.x, -bounds.y);
+		this.imageFactory = imageFactory;
+		this.bounds = bounds;
 	}
 
 	public BufferedImage call() throws Exception {
+		BufferedImage image = imageFactory.createTransparentImage(bounds.width,
+				bounds.height);
+
+		Graphics2D g = image.createGraphics();
+		g.translate(-bounds.x, -bounds.y);
+
 		for (ComponentEx comp : comps) {
+			if (Thread.interrupted()) {
+				break;
+			}
 			comp.draw(g);
 		}
 		g.dispose();
-		return result;
+
+		return image;
 	}
 
 }

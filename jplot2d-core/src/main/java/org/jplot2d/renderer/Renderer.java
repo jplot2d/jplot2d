@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -30,22 +30,8 @@ import org.jplot2d.element.impl.PlotEx;
 
 /**
  * A renderer can be added to {@link RenderEnvironment} to generate a result for
- * plot. When a command is commited, the
+ * plot. When a command is committed, the
  * {@link #render(PlotEx, Map, Collection, Map)} method is called.
- * <p>
- * The rendering steps:
- * <ol>
- * <li>Rendering modified cacheable components</li>
- * <li>Assembling result of 1st setp into a final result</li>
- * <li>notify all registered RenderingFinishedListener</li>
- * </ol>
- * A renderer maintains a cache for all cacheable components. The cache is a
- * map, the key is impl components, the value is components future. The
- * environment must offer those values when calling a renderer
- * <ol>
- * <li>all self-cache components impl in assembly order</li>
- * <li>all unmodified self-cache components and their safe copy</li>
- * </ol>
  * 
  * @author Jingjing Li
  * 
@@ -61,15 +47,18 @@ public abstract class Renderer<T> {
 	 * This method is protected by environment lock.
 	 * 
 	 * @param plot
-	 *            the plot impl
+	 *            the plot to be rendered
 	 * @param cacheableCompMap
-	 *            A map contains all cacheable components to their safe copy.
-	 *            The iteration order is z-order.
+	 *            A map contains all cacheable components with iteration in
+	 *            z-order. The value is cacheable component will be rendered.
+	 *            The key is unique identifier for every value
 	 * @param unmodifiedCacheableComps
-	 *            unmodified cacheable components
-	 * @param subcompOrderMap
-	 *            the key is cacheable component, the value is safe-copy of all
-	 *            its sub-component in z-order.
+	 *            A collection of unique identifier of unmodified cacheable
+	 *            components
+	 * @param subcompsMap
+	 *            the key is cacheable component, include uncacheable top plot.
+	 *            the value is all key's sub-components in z-order, include the
+	 *            key itself.
 	 */
 	public abstract void render(PlotEx plot,
 			Map<ComponentEx, ComponentEx> cacheableCompMap,

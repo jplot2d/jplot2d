@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.Renderer;
 
 /**
@@ -82,14 +83,14 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		for (Renderer<?> r : getRenderers()) {
-			r.render(plotImpl, cacheableCompMap, umCachableComps, subcompsMap);
+			r.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
 		}
 	}
 
 	/**
 	 * @param umCachableComps
-	 *            unmodified comps
-	 * @return a map key comp value saft copy of keys
+	 *            a list will be filled with unmodified comps
+	 * @return a map key comp value safe copy of keys
 	 */
 	private Map<ComponentEx, ComponentEx> getCacheableCompMap(
 			List<ComponentEx> umCachableComps) {
@@ -113,6 +114,10 @@ public class RenderEnvironment extends PlotEnvironment {
 		return cacheableCompMap;
 	}
 
+	/**
+	 * @return a map key is safe copy of cacheable components and values is safe
+	 *         copies of key's subcomponents.
+	 */
 	private Map<ComponentEx, ComponentEx[]> getSubcompsMap() {
 		// build sub-component map
 		Map<ComponentEx, ComponentEx[]> subcompsMap = new HashMap<ComponentEx, ComponentEx[]>();
@@ -129,7 +134,7 @@ public class RenderEnvironment extends PlotEnvironment {
 						+ sublist.get(i);
 				copys[i] = copy;
 			}
-			subcompsMap.put(key, copys);
+			subcompsMap.put((ComponentEx) getCopyMap().get(key), copys);
 		}
 
 		return subcompsMap;

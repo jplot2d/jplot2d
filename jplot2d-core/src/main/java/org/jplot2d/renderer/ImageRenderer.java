@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -46,11 +46,11 @@ import org.jplot2d.element.impl.PlotEx;
  * <li>notify all registered RenderingFinishedListener</li>
  * </ol>
  * A renderer maintains a cache for all cacheable components. The cache is a
- * map, the key is impl components, the value is components future. The
+ * map, the key is uid of components, the value is components future. The
  * environment must offer those values when calling a renderer
  * <ol>
- * <li>all self-cache components impl in assembly order</li>
- * <li>all unmodified self-cache components and their safe copy</li>
+ * <li>all cacheable components and their uid in assembly order</li>
+ * <li>all uid of unmodified cacheable components</li>
  * </ol>
  * 
  * @author Jingjing Li
@@ -61,15 +61,23 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	/**
 	 * Component renderer execute service
 	 */
-	private static Executor COMPONENT_RENDERING_POOL_EXECUTOR = Executors
+	protected static Executor COMPONENT_RENDERING_POOL_EXECUTOR = Executors
 			.newCachedThreadPool();
+
+	protected static Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
+
+		public void execute(Runnable command) {
+			command.run();
+		}
+
+	};
 
 	/**
 	 * The Executor to run component rendering tasks.
 	 */
-	private final Executor crExecutor;
+	protected final Executor executor;
 
-	protected final ImageFactory assembler;
+	protected final ImageFactory imageFactory;
 
 	/**
 	 * The map contains the component cache future in the latest status. They
@@ -82,17 +90,17 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	protected int fsn;
 
 	/**
-	 * Create a Renderer with the given assembler.
+	 * Create a Renderer with the given image factory.
 	 * 
-	 * @param assembler
+	 * @param imageFactory
 	 */
-	public ImageRenderer(ImageFactory assembler) {
-		this(assembler, COMPONENT_RENDERING_POOL_EXECUTOR);
+	protected ImageRenderer(ImageFactory imageFactory) {
+		this(imageFactory, COMPONENT_RENDERING_POOL_EXECUTOR);
 	}
 
-	public ImageRenderer(ImageFactory assembler, Executor executor) {
-		this.assembler = assembler;
-		this.crExecutor = executor;
+	public ImageRenderer(ImageFactory imageFactory, Executor executor) {
+		this.imageFactory = imageFactory;
+		this.executor = executor;
 	}
 
 	public void render(PlotEx plot,
@@ -100,15 +108,46 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
-		ImageAssemblyInfo ainfo = runCompRender(cacheableCompMap,
-				unmodifiedCacheableComps, subcompsMap);
-
 		Dimension size = getDeviceBounds(plot).getSize();
-		BufferedImage result = assembler.createImage(size.width, size.height);
 
-		assembleResult(result, ainfo);
+		BufferedImage result;
+		// If the plot has no cacheable component, run renderer directly
+		if (subcompsMap.size() == 1) {
+			result = runSingleRender(size, subcompsMap.get(plot));
+		} else {
+			ImageAssemblyInfo ainfo;
+			if (cacheableCompMap.size() - unmodifiedCacheableComps.size() == 1) {
+				/*
+				 * avoid pooled thread when there is only one modified cacheable
+				 * component
+				 */
+				ainfo = runCompRender(COMPONENT_RENDERING_CALLER_RUN_EXECUTOR,
+						cacheableCompMap, unmodifiedCacheableComps, subcompsMap);
+			} else {
+				ainfo = runCompRender(executor, cacheableCompMap,
+						unmodifiedCacheableComps, subcompsMap);
+			}
+
+			result = assembleResult(size, ainfo);
+		}
+
 		fireRenderingFinished(fsn++, result);
+	}
 
+	protected final BufferedImage runSingleRender(Dimension size,
+			ComponentEx[] sublist) {
+		BufferedImage result = imageFactory
+				.createImage(size.width, size.height);
+		Graphics2D g = result.createGraphics();
+		for (ComponentEx subcomp : sublist) {
+			if (Thread.interrupted()) {
+				break;
+			}
+			subcomp.draw(g);
+		}
+		g.dispose();
+
+		return result;
 	}
 
 	/**
@@ -121,11 +160,11 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	 * @param umCacheableComps
 	 *            unmodified cacheable components
 	 * @param subcompOrderMap
-	 *            the key is cacheable component, the value is the safe copies
-	 *            of all its sub-components in Z-order.
+	 *            the key is safe copy of cacheable component, the value is the
+	 *            safe copies of all its sub-components in Z-order.
 	 * @return
 	 */
-	protected ImageAssemblyInfo runCompRender(
+	protected final ImageAssemblyInfo runCompRender(Executor executor,
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> umCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompOrderMap) {
@@ -146,15 +185,13 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
-				ComponentEx[] sublist = subcompOrderMap.get(comp);
-				BufferedImage image = assembler.createTransparentImage(
-						bounds.width, bounds.height);
+				ComponentEx[] sublist = subcompOrderMap.get(ccopy);
 				CompRenderCallable compRenderCallable = new CompRenderCallable(
-						sublist, image, bounds);
+						sublist, imageFactory, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(
 						compRenderCallable);
 
-				crExecutor.execute(crtask);
+				executor.execute(crtask);
 				ainfo.put(comp, bounds, crtask);
 			}
 		}
@@ -191,8 +228,10 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	 *            the AssemblyInfo
 	 * @return the assembled result
 	 */
-	protected BufferedImage assembleResult(BufferedImage image,
+	protected BufferedImage assembleResult(Dimension size,
 			ImageAssemblyInfo ainfo) {
+		BufferedImage image = imageFactory.createImage(size.width, size.height);
+
 		Graphics2D g = (Graphics2D) image.getGraphics();
 
 		for (ComponentEx c : ainfo.componentSet()) {
