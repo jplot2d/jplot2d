@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import org.jplot2d.element.Component;
 import org.jplot2d.element.Element;
@@ -46,6 +47,8 @@ import org.jplot2d.util.WarningMessage;
  * 
  */
 public abstract class Environment {
+
+	static Logger logger = Logger.getLogger("org.jplot2d.env");
 
 	/**
 	 * The global locking object for get/set environment.
@@ -547,7 +550,7 @@ public abstract class Environment {
 		batchDepth++;
 		batchSND[batchDepth] = 0;
 
-		Log.env.fine("[>] " + Integer.toHexString(hashCode())
+		logger.fine("[>] " + Integer.toHexString(hashCode())
 				+ getBatchString() + " :" + msg);
 	}
 
@@ -558,7 +561,7 @@ public abstract class Environment {
 	 *             if warning message is sent out.
 	 */
 	final void endCommand() {
-		Log.env.fine("[<] " + Integer.toHexString(hashCode())
+		logger.fine("[<] " + Integer.toHexString(hashCode())
 				+ getBatchString());
 
 		try {
