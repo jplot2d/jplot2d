@@ -59,17 +59,15 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	private ChartType chartType = ChartType.LINECHART;
 
-	private SymbolShape symbolShape;
+	private SymbolShape symbolShape = SymbolShape.DOT;
 
-	private float symbolSize;
+	private float symbolSize = 8.0f;
 
 	private Color symbolColor;
 
 	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
 
 	private BasicStroke lineStroke = new BasicStroke(0.5f);
-
-	private Color lineColor;
 
 	private boolean fillEnabled;
 
@@ -87,6 +85,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setGraph(XYGraph graph) {
 		this.graph = graph;
+		redraw();
 	}
 
 	public boolean isSymbolsVisible() {
@@ -95,6 +94,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setSymbolsVisible(boolean symbolsVisible) {
 		this.symbolVisible = symbolsVisible;
+		redraw();
 	}
 
 	public boolean isLinesVisible() {
@@ -103,6 +103,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setLinesVisible(boolean linesVisible) {
 		this.lineVisible = linesVisible;
+		redraw();
 	}
 
 	/**
@@ -120,6 +121,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 */
 	public void setChartType(ChartType chartType) {
 		this.chartType = chartType;
+		redraw();
 	}
 
 	public SymbolShape getSymbolShape() {
@@ -128,6 +130,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setSymbolShape(SymbolShape symbolShape) {
 		this.symbolShape = symbolShape;
+		redraw();
 	}
 
 	public float getSymbolSize() {
@@ -136,6 +139,10 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setSymbolSize(float size) {
 		this.symbolSize = size;
+		// size does no effect on SymbolShape.DOT
+		if (symbolShape != SymbolShape.DOT) {
+			redraw();
+		}
 	}
 
 	public Color getSymbolColor() {
@@ -144,6 +151,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setSymbolColor(Color color) {
 		symbolColor = color;
+		redraw();
 	}
 
 	public Color getEffectiveSymbolColor() {
@@ -169,7 +177,10 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	public void thisEffectiveColorChanged() {
-		redraw();
+		if (isLinesVisible()
+				|| (isSymbolsVisible() && getSymbolColor() == null)) {
+			redraw();
+		}
 	}
 
 	public void thisEffectiveFontChanged() {
@@ -182,6 +193,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setLineStroke(BasicStroke stroke) {
 		this.lineStroke = stroke;
+		redraw();
 	}
 
 	public boolean isFillEnabled() {
@@ -190,6 +202,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setFillEnabled(boolean fillEnabled) {
 		this.fillEnabled = fillEnabled;
+		redraw();
 	}
 
 	public Paint getFillPaint() {
@@ -198,6 +211,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setFillPaint(Paint paint) {
 		this.fillPaint = paint;
+		redraw();
 	}
 
 	public FillClosureType getFillClosureType() {
@@ -206,6 +220,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	public void setFillClosureType(FillClosureType type) {
 		this.fillClosureType = type;
+		redraw();
 	}
 
 	@Override
@@ -222,7 +237,6 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		this.symbolSize = dp.symbolSize;
 		this.symbolColor = dp.symbolColor;
 		this.lineStroke = dp.lineStroke;
-		this.lineColor = dp.lineColor;
 	}
 
 	public void draw(Graphics2D graphics) {
