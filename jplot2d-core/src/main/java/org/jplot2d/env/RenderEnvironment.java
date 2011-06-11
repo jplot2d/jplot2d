@@ -70,10 +70,10 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
-		end();
+		renderer.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap,
+				umCachableComps, subcompsMap);
 
-		renderer.render(plotImpl, cacheableCompMap, umCachableComps,
-				subcompsMap);
+		end();
 	}
 
 	@Override
@@ -83,14 +83,19 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		for (Renderer<?> r : getRenderers()) {
-			r.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
+			r.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap,
+					umCachableComps, subcompsMap);
 		}
 	}
 
 	/**
+	 * Returns a cacheable component map with unmodified components' uid filled
+	 * in the given list. The returned map contains the top plot, even if the
+	 * plot is uncacheable.
+	 * 
 	 * @param umCachableComps
-	 *            a list will be filled with unmodified comps
-	 * @return a map key comp value safe copy of keys
+	 *            a list will be filled with unmodified components' uid
+	 * @return a map that key is uid of value and value is cacheable components
 	 */
 	private Map<ComponentEx, ComponentEx> getCacheableCompMap(
 			List<ComponentEx> umCachableComps) {
@@ -100,15 +105,23 @@ public class RenderEnvironment extends PlotEnvironment {
 		 */
 		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 
-		for (ComponentEx comp : cacheableComponentList) {
+		/* add top plot even it's uncacheable */
+		List<ComponentEx> ccl = cacheableComponentList;
+		if (!plotImpl.isCacheable()) {
+			ccl = new ArrayList<ComponentEx>(cacheableComponentList);
+			ccl.add(plotImpl);
+		}
+
+		for (ComponentEx comp : ccl) {
 			ComponentEx copy = (ComponentEx) getCopyMap().get(comp);
 			assert (copy != null) : "Null copy of Component " + comp;
 			cacheableCompMap.put(comp, copy);
 			// unmodified components
-			if (!((ComponentEx) comp).isRedrawNeeded()) {
+			if (((ComponentEx) comp).isRedrawNeeded()) {
+				((ComponentEx) comp).clearRedrawNeeded();
+			} else {
 				umCachableComps.add(comp);
 			}
-			((ComponentEx) comp).clearRedrawNeeded();
 		}
 
 		return cacheableCompMap;

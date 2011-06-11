@@ -47,14 +47,15 @@ public abstract class Renderer<T> {
 			.synchronizedList(new ArrayList<RenderingFinishedListener>());
 
 	/**
-	 * This method is protected by environment lock.
+	 * Render the given plot. This method is protected by environment lock.
 	 * 
 	 * @param plot
 	 *            the plot to be rendered
 	 * @param cacheableCompMap
-	 *            A map contains all cacheable components with iteration in
+	 *            A map contains all cacheable components which can iterate in
 	 *            z-order. The value is cacheable component will be rendered.
-	 *            The key is unique identifier for every value
+	 *            The key is unique identifier of every value. The map contains
+	 *            the top plot, even if the plot is uncacheable.
 	 * @param unmodifiedCacheableComps
 	 *            A collection of unique identifier of unmodified cacheable
 	 *            components
