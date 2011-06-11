@@ -146,7 +146,11 @@ public class AsyncImageRenderer extends ImageRenderer {
 				logger.log(Level.FINE, "", e);
 			}
 			if (result != null) {
-				fireRenderingFinished(fsn, result);
+				try {
+					fireRenderingFinished(fsn, result);
+				} catch (Exception e) {
+					logger.log(Level.FINE, "RenderingFinishedListener Error", e);
+				}
 			}
 
 			/*
