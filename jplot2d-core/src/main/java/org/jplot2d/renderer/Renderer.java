@@ -18,6 +18,9 @@
  */
 package org.jplot2d.renderer;
 
+import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,6 +67,25 @@ public abstract class Renderer<T> {
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap);
+
+	/**
+	 * Returns a rectangle that completely enclose the given component.
+	 * 
+	 * @param comp
+	 * @return
+	 */
+	protected Rectangle getDeviceBounds(ComponentEx comp) {
+		if (comp instanceof PlotEx) {
+			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
+			Dimension2D size = ((PlotEx) comp).getSize();
+			return new Rectangle2D.Double(0, 0, size.getWidth() * scale,
+					size.getHeight() * scale).getBounds();
+		} else {
+			Rectangle2D pbounds = comp.getBounds();
+			return comp.getParent().getPhysicalTransform().getPtoD(pbounds)
+					.getBounds();
+		}
+	}
 
 	/**
 	 * @param fsn

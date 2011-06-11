@@ -21,8 +21,6 @@ package org.jplot2d.renderer;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Map;
@@ -159,7 +157,7 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	 *            value is components' thread safe copy.
 	 * @param umCacheableComps
 	 *            unmodified cacheable components
-	 * @param subcompOrderMap
+	 * @param subcompsMap
 	 *            the key is safe copy of cacheable component, the value is the
 	 *            safe copies of all its sub-components in Z-order.
 	 * @return
@@ -167,7 +165,7 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	protected final ImageAssemblyInfo runCompRender(Executor executor,
 			Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> umCacheableComps,
-			Map<ComponentEx, ComponentEx[]> subcompOrderMap) {
+			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
 		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap
@@ -185,7 +183,7 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
-				ComponentEx[] sublist = subcompOrderMap.get(ccopy);
+				ComponentEx[] sublist = subcompsMap.get(ccopy);
 				CompRenderCallable compRenderCallable = new CompRenderCallable(
 						sublist, imageFactory, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(
@@ -198,25 +196,6 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 
 		compCachedFutureMap = ainfo;
 		return ainfo;
-	}
-
-	/**
-	 * Returns a rectangle that completely enclose the given component.
-	 * 
-	 * @param comp
-	 * @return
-	 */
-	protected Rectangle getDeviceBounds(ComponentEx comp) {
-		if (comp instanceof PlotEx) {
-			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
-			Dimension2D size = ((PlotEx) comp).getSize();
-			return new Rectangle2D.Double(0, 0, size.getWidth() * scale,
-					size.getHeight() * scale).getBounds();
-		} else {
-			Rectangle2D pbounds = comp.getBounds();
-			return comp.getParent().getPhysicalTransform().getPtoD(pbounds)
-					.getBounds();
-		}
 	}
 
 	/**
