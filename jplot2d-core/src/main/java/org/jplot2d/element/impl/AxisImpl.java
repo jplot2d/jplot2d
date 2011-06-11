@@ -308,19 +308,23 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public Range2D getRange() {
 		Range2D range = rangeManager.getRange();
-		if (tickTransform != null) {
+		if (tickTransform == null) {
+			return range;
+		} else {
 			double start = tickTransform.transformUser2Tick(range.getStart());
 			double end = tickTransform.transformUser2Tick(range.getEnd());
 			return new Range2D.Double(start, end);
-		} else {
-			return range;
 		}
 	}
 
 	public void setRange(Range2D range) {
-		double ustart = tickTransform.transformTick2User(range.getStart());
-		double uend = tickTransform.transformTick2User(range.getEnd());
-		rangeManager.setRange(new Range2D.Double(ustart, uend));
+		if (tickTransform == null) {
+			rangeManager.setRange(range);
+		} else {
+			double ustart = tickTransform.transformTick2User(range.getStart());
+			double uend = tickTransform.transformTick2User(range.getEnd());
+			rangeManager.setRange(new Range2D.Double(ustart, uend));
+		}
 	}
 
 	public boolean isGridLines() {
