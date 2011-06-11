@@ -237,9 +237,15 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		g.setClip(clip);
 
 		if (isFillEnabled()) {
+			if (Thread.interrupted()) {
+				return;
+			}
 			fillLineAera((Graphics2D) g);
 		}
 
+		if (Thread.interrupted()) {
+			return;
+		}
 		drawLineAndSymbol((Graphics2D) g);
 
 	}
@@ -272,7 +278,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 		for (ChunkData data : chunker) {
 			if (Thread.interrupted()) {
-				throw new PlottingAbortException();
+				return;
 			}
 
 			// draw lines

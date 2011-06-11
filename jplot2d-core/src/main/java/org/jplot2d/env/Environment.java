@@ -135,8 +135,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A component has been added to this environment, after setting the parent.
-	 * The added component either is cacheable, or has a cacheable parent.
+	 * Called after a component has been added to this environment, and its
+	 * parent has been set.
 	 * 
 	 * @param element
 	 *            the added element
@@ -157,8 +157,10 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A component has been added to this environment, after setting the parent.
-	 * The added component either is cacheable, or has a cacheable parent.
+	 * Called after a component has been added to this environment, and its
+	 * parent has been set. Or called when adding a top plot to a plot
+	 * environment. The added component either is cacheable, or has a cacheable
+	 * parent.
 	 * 
 	 * @param comp
 	 *            the added ComponentEx
