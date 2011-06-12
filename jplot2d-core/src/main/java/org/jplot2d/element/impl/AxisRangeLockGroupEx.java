@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,14 +21,15 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.axtrans.NormalTransform;
-import org.jplot2d.element.AxisLockGroup;
+import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface AxisLockGroupEx extends AxisLockGroup, ElementEx, Joinable {
+public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx,
+		Joinable {
 
 	public AxisRangeManagerEx getParent();
 

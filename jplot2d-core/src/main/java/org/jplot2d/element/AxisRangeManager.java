@@ -26,8 +26,7 @@ import org.jplot2d.util.Range2D;
 
 /**
  * A AxisRangeManager define a X or Y transformation of a viewport. It can be
- * shared by a group of axes, which represent the same user range with different
- * ticks.
+ * shared by a group of axes, which represent the same user range.
  * 
  * @author Jingjing Li
  * 
@@ -165,7 +164,7 @@ public interface AxisRangeManager extends Element {
 	 * @return
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public AxisLockGroup getLockGroup();
+	public AxisRangeLockGroup getLockGroup();
 
 	/**
 	 * Join an axis lock group. The lock group must exist in the same
@@ -175,7 +174,7 @@ public interface AxisRangeManager extends Element {
 	 *            the lock group to join to.
 	 */
 	@Hierarchy(HierarchyOp.JOIN)
-	public void setLockGroup(AxisLockGroup group);
+	public void setLockGroup(AxisRangeLockGroup group);
 
 	/**
 	 * Returns all axes belongs to this group.

@@ -20,7 +20,7 @@ package org.jplot2d.element;
 
 import static org.junit.Assert.*;
 
-import org.jplot2d.env.ComponentFactory;
+import org.jplot2d.ComponentFactory;
 import org.junit.Test;
 
 /**

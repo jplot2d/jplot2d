@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,10 +22,13 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
+ * A group of axes who are pinned together. When one axis changes its range, all
+ * axes follow the change together.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface AxisLockGroup extends Element {
+public interface AxisRangeLockGroup extends Element {
 
 	/**
 	 * Return the autorange status of this axis group.

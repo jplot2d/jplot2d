@@ -104,7 +104,15 @@ public abstract class Environment {
 		return proxyMap.get(impl);
 	}
 
-	void registerElement(ElementEx element, Element proxy) {
+	/**
+	 * Register new created element to this environment. The proxy object will
+	 * associate with this environment.
+	 * 
+	 * @param element
+	 * @param proxy
+	 */
+	public void registerElement(ElementEx element, Element proxy) {
+		((ElementAddition) proxy).setEnvironment(this);
 		proxyMap.put(element, proxy);
 	}
 
@@ -550,8 +558,8 @@ public abstract class Environment {
 		batchDepth++;
 		batchSND[batchDepth] = 0;
 
-		logger.fine("[>] " + Integer.toHexString(hashCode())
-				+ getBatchString() + " :" + msg);
+		logger.fine("[>] " + Integer.toHexString(hashCode()) + getBatchString()
+				+ " :" + msg);
 	}
 
 	/**
@@ -561,8 +569,7 @@ public abstract class Environment {
 	 *             if warning message is sent out.
 	 */
 	final void endCommand() {
-		logger.fine("[<] " + Integer.toHexString(hashCode())
-				+ getBatchString());
+		logger.fine("[<] " + Integer.toHexString(hashCode()) + getBatchString());
 
 		try {
 			if (batchDepth == 1) {

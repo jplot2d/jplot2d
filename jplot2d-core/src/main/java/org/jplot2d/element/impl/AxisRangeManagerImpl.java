@@ -29,7 +29,7 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisLockGroup;
+import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.Range2D;
 import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
@@ -53,7 +53,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	private NormalTransform ntf;
 
-	private AxisLockGroupEx group;
+	private AxisRangeLockGroupEx group;
 
 	private final List<AxisEx> axes = new ArrayList<AxisEx>();
 
@@ -192,15 +192,15 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	}
 
-	public AxisLockGroupEx getLockGroup() {
+	public AxisRangeLockGroupEx getLockGroup() {
 		return group;
 	}
 
-	public void setLockGroup(AxisLockGroup group) {
+	public void setLockGroup(AxisRangeLockGroup group) {
 		if (this.group != null) {
 			this.group.removeRangeManager(this);
 		}
-		this.group = (AxisLockGroupEx) group;
+		this.group = (AxisRangeLockGroupEx) group;
 		if (this.group != null) {
 			this.group.addRangeManager(this);
 		}
@@ -394,9 +394,9 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		}
 
 		// copy or link group
-		AxisLockGroupEx algCopy = (AxisLockGroupEx) orig2copyMap.get(group);
+		AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap.get(group);
 		if (algCopy == null) {
-			algCopy = (AxisLockGroupEx) group.copyStructure(orig2copyMap);
+			algCopy = (AxisRangeLockGroupEx) group.copyStructure(orig2copyMap);
 		}
 		result.group = algCopy;
 		algCopy.addRangeManager(result);

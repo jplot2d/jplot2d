@@ -54,7 +54,7 @@ public class SubplotImplTest {
 
 		}
 
-		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(arm.getLockGroup()).thenReturn(alg);
 		sp.addXAxis(axis);
 	}
@@ -81,7 +81,7 @@ public class SubplotImplTest {
 
 		}
 
-		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(arm.getLockGroup()).thenReturn(alg);
 		sp.addYAxis(axis);
 	}
@@ -108,7 +108,7 @@ public class SubplotImplTest {
 
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx xalg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.canContributeToParent()).thenReturn(true);
 		when(xaxis.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
@@ -118,7 +118,7 @@ public class SubplotImplTest {
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx yalg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.canContributeToParent()).thenReturn(true);
 		when(yaxis.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
@@ -166,7 +166,7 @@ public class SubplotImplTest {
 		// add or remove invisible axis does not invalid
 		AxisEx xaxis0 = mock(AxisEx.class);
 		AxisRangeManagerEx xarm0 = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx xalg0 = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx xalg0 = mock(AxisRangeLockGroupEx.class);
 		when(xaxis0.getRangeManager()).thenReturn(xarm0);
 		when(xarm0.getLockGroup()).thenReturn(xalg0);
 		sp.addXAxis(xaxis0);
@@ -176,7 +176,7 @@ public class SubplotImplTest {
 
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx xalg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		when(xaxis.isVisible()).thenReturn(true);
@@ -190,7 +190,7 @@ public class SubplotImplTest {
 
 		AxisEx yaxis0 = mock(AxisEx.class);
 		AxisRangeManagerEx yarm0 = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx yalg0 = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx yalg0 = mock(AxisRangeLockGroupEx.class);
 		when(yaxis0.getRangeManager()).thenReturn(yarm0);
 		when(yarm0.getLockGroup()).thenReturn(yalg0);
 		sp.addYAxis(yaxis0);
@@ -201,7 +201,7 @@ public class SubplotImplTest {
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
-		AxisLockGroupEx yalg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		when(yaxis.isVisible()).thenReturn(true);

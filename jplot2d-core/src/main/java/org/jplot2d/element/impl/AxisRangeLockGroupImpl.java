@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -30,7 +30,8 @@ import org.jplot2d.util.Range2D;
 import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
 import org.jplot2d.util.RangeSelectionWarning;
 
-public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
+public class AxisRangeLockGroupImpl extends ElementImpl implements
+		AxisRangeLockGroupEx {
 
 	private static Range2D NORM_PHYSICAL_RANGE = new Range2D.Double(0.0, 1.0);
 
@@ -68,7 +69,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		AxisLockGroupImpl alg = (AxisLockGroupImpl) src;
+		AxisRangeLockGroupImpl alg = (AxisRangeLockGroupImpl) src;
 		this.type = alg.type;
 		this.prim = alg.prim;
 		this.autoRange = alg.autoRange;
@@ -327,7 +328,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 	public void zoomVirtualRange(Range2D range,
 			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
-		HashSet<AxisLockGroupEx> orthset = new HashSet<AxisLockGroupEx>();
+		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
 
 		for (AxisRangeManagerEx axis : arms) {
 			NormalTransform vt = vtMap.get(axis);
@@ -347,7 +348,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 		autoRange = false;
 
-		for (AxisLockGroupEx malg : orthset) {
+		for (AxisRangeLockGroupEx malg : orthset) {
 			if (malg.isAutoRange()) {
 				malg.reAutoRange();
 			}
@@ -387,7 +388,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 	 * @param pRange
 	 */
 	public void zoomNormalRange(Range2D npRange) {
-		HashSet<AxisLockGroupEx> orthset = new HashSet<AxisLockGroupEx>();
+		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
 
 		for (AxisRangeManagerEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform();
@@ -407,7 +408,7 @@ public class AxisLockGroupImpl extends ElementImpl implements AxisLockGroupEx {
 
 		autoRange = false;
 
-		for (AxisLockGroupEx malg : orthset) {
+		for (AxisRangeLockGroupEx malg : orthset) {
 			if (malg.isAutoRange()) {
 				malg.reAutoRange();
 			}

@@ -47,7 +47,7 @@ public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
 	 */
 	public void setNormalTransfrom(NormalTransform ntf);
 
-	public AxisLockGroupEx getLockGroup();
+	public AxisRangeLockGroupEx getLockGroup();
 
 	public AxisEx[] getAxes();
 

@@ -20,7 +20,7 @@ package org.jplot2d.element;
 
 import static org.junit.Assert.*;
 
-import org.jplot2d.env.ComponentFactory;
+import org.jplot2d.ComponentFactory;
 import org.jplot2d.env.ElementAddition;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class AxisTest {
 		AxisTick tick = axis.getTick();
 		AxisTitle title = axis.getTitle();
 		AxisRangeManager arm = axis.getRangeManager();
-		AxisLockGroup group = arm.getLockGroup();
+		AxisRangeLockGroup group = arm.getLockGroup();
 		assertTrue(axis instanceof ElementAddition);
 		assertTrue(tick instanceof ElementAddition);
 		assertTrue(title instanceof ElementAddition);
@@ -77,8 +77,8 @@ public class AxisTest {
 		Axis yaxis = factory.createAxis();
 		AxisRangeManager xva = xaxis.getRangeManager();
 		AxisRangeManager yva = yaxis.getRangeManager();
-		AxisLockGroup xag = xva.getLockGroup();
-		AxisLockGroup yag = yva.getLockGroup();
+		AxisRangeLockGroup xag = xva.getLockGroup();
+		AxisRangeLockGroup yag = yva.getLockGroup();
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
@@ -172,8 +172,8 @@ public class AxisTest {
 		Axis yaxis = factory.createAxis();
 		AxisRangeManager xva = xaxis.getRangeManager();
 		AxisRangeManager yva = yaxis.getRangeManager();
-		AxisLockGroup xag = xva.getLockGroup();
-		AxisLockGroup yag = yva.getLockGroup();
+		AxisRangeLockGroup xag = xva.getLockGroup();
+		AxisRangeLockGroup yag = yva.getLockGroup();
 
 		// set before adding into the same environment
 		try {
@@ -214,7 +214,7 @@ public class AxisTest {
 		}
 
 		// set xaxis a new group
-		AxisLockGroup xnag = factory.createAxisLockGroup();
+		AxisRangeLockGroup xnag = factory.createAxisRangeLockGroup();
 		xva.setLockGroup(xnag);
 		assertSame(xva.getLockGroup(), xnag);
 		assertArrayEquals(xnag.getRangeManagers(),

@@ -127,7 +127,7 @@ public class AxisImplTest {
 	public void testSetLength() {
 		AxisEx axis = new AxisImpl();
 		AxisRangeManagerEx arm = new AxisRangeManagerImpl();
-		AxisLockGroupEx alg = mock(AxisLockGroupEx.class);
+		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(alg.isAutoRange()).thenReturn(true);
 		axis.setRangeManager(arm);
 		arm.setLockGroup(alg);
