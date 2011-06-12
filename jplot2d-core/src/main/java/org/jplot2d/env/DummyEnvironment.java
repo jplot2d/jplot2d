@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -32,8 +32,8 @@ import org.jplot2d.element.impl.ElementEx;
  */
 public class DummyEnvironment extends Environment {
 
-	public DummyEnvironment() {
-
+	public DummyEnvironment(boolean threadSafe) {
+		super(threadSafe);
 	}
 
 	/**

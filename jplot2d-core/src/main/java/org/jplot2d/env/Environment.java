@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import org.jplot2d.element.Component;
@@ -56,6 +57,8 @@ public abstract class Environment {
 	private static final Object LOCK = new Object();
 
 	private static final int MAX_BATCH_DEPTH = 64;
+
+	private final ReentrantLock lock;
 
 	/**
 	 * batch SN in every depth. batchSND[n], n is batch depth -1. the value is
@@ -90,8 +93,12 @@ public abstract class Environment {
 		return LOCK;
 	}
 
-	protected Environment() {
-
+	protected Environment(boolean threadSafe) {
+		if (threadSafe) {
+			lock = new ReentrantLock();
+		} else {
+			lock = null;
+		}
 	}
 
 	/**
@@ -128,7 +135,7 @@ public abstract class Environment {
 			}
 		}
 
-		DummyEnvironment result = new DummyEnvironment();
+		DummyEnvironment result = createDummyEnvironment();
 		result.proxyMap.putAll(removedProxyMap);
 		return result;
 	}
@@ -263,7 +270,7 @@ public abstract class Environment {
 			}
 		}
 
-		DummyEnvironment result = new DummyEnvironment();
+		DummyEnvironment result = createDummyEnvironment();
 		result.proxyMap.putAll(removedProxyMap);
 		result.cacheableComponentList.addAll(removedCacheableComponentList);
 		result.subComponentMap.putAll(removedSubComponentMap);
@@ -477,8 +484,8 @@ public abstract class Environment {
 	 * 
 	 * @return a dummy environment
 	 */
-	protected Environment createDummyEnvironment() {
-		return new DummyEnvironment();
+	protected DummyEnvironment createDummyEnvironment() {
+		return new DummyEnvironment((lock != null));
 	}
 
 	private String getBatchString() {
@@ -573,14 +580,18 @@ public abstract class Environment {
 	 * The begin of a block wrapper, to synchronize calling.
 	 */
 	void begin() {
-
+		if (lock != null) {
+			lock.lock();
+		}
 	}
 
 	/**
 	 * The end of a block wrapper, to synchronize calling.
 	 */
 	void end() {
-
+		if (lock != null) {
+			lock.unlock();
+		}
 	}
 
 	/**

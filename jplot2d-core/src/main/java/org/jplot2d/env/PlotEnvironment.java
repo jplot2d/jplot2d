@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -55,28 +55,21 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * The plot proxy
 	 */
-	protected Plot plot;
+	protected final Plot plot;
 
 	protected PlotEx plotImpl;
 
 	private Map<ElementEx, ElementEx> copyMap;
 
-	public Plot getPlot() {
-		synchronized (getGlobalLock()) {
-			begin();
-		}
-		Plot result = plot;
-		end();
-		return result;
-	}
-
 	/**
-	 * Sets a plot to this environment. The plot to be added must hosted by a
-	 * dummy environment.
+	 * Construct a plot environment with the given plot. The plot must hosted by
+	 * a dummy environment.
 	 * 
 	 * @param plot
 	 */
-	public void setPlot(Plot plot) {
+	protected PlotEnvironment(Plot plot, boolean threadSafe) {
+		super(threadSafe);
+
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
@@ -113,32 +106,8 @@ public abstract class PlotEnvironment extends Environment {
 		oldEnv.endCommand();
 	}
 
-	/**
-	 * Remove a plot from this environment. A dummy environment will be created
-	 * to host the removed plot.
-	 * 
-	 * @param plot
-	 * @throws WarningException
-	 */
-	public void removePlot() {
-
-		synchronized (getGlobalLock()) {
-			beginCommand("removePlot");
-
-			// assign a dummy environment to the removed plot
-			this.componentRemoving(plotImpl);
-
-			plot = null;
-			plotImpl = null;
-
-			Environment nenv = componentRemoved(plotImpl, plotImpl);
-			// update environment for the removing component
-			for (Element proxy : nenv.proxyMap.values()) {
-				((ElementAddition) proxy).setEnvironment(nenv);
-			}
-		}
-
-		endCommand();
+	public Plot getPlot() {
+		return plot;
 	}
 
 	protected Map<ElementEx, ElementEx> getCopyMap() {
