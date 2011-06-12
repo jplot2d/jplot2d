@@ -1020,10 +1020,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Re-autorange on all AxisLockGroups whoes autorange are true.
 	 */
 	private void calcPendingLockGroupAutoRange() {
-		Set<AxisLockGroupEx> algs = new HashSet<AxisLockGroupEx>();
+		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		fillLockGroups(this, algs);
 
-		for (AxisLockGroupEx alg : algs) {
+		for (AxisRangeLockGroupEx alg : algs) {
 			alg.calcAutoRange();
 		}
 	}
@@ -1031,13 +1031,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * fill all AxisLockGroups in the given plot to the set.
 	 */
-	private void fillLockGroups(PlotEx plot, Set<AxisLockGroupEx> algs) {
+	private void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
-			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
+			AxisRangeLockGroupEx alg = axis.getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
 		for (AxisEx axis : plot.getYAxes()) {
-			AxisLockGroupEx alg = axis.getRangeManager().getLockGroup();
+			AxisRangeLockGroupEx alg = axis.getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
 		for (PlotEx sp : plot.getSubplots()) {
