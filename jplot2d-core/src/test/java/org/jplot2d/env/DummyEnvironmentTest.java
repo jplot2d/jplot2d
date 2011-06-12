@@ -21,6 +21,9 @@ package org.jplot2d.env;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.jplot2d.ComponentFactory;
+import org.jplot2d.element.Component;
+import org.jplot2d.element.Container;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
 import org.junit.Test;
@@ -30,6 +33,8 @@ import org.junit.Test;
  * 
  */
 public class DummyEnvironmentTest {
+
+	private static final ComponentFactory cf = ComponentFactory.getInstance();
 
 	/**
 	 * Test method for
@@ -43,7 +48,7 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment();
 			ComponentEx compA = mock(ComponentEx.class);
-			ComponentEx proxyA = mock(ComponentEx.class);
+			Component proxyA = cf.proxy(compA, Component.class);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 0);
@@ -56,9 +61,8 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment();
 			ComponentEx compA = mock(ComponentEx.class);
-			ComponentEx proxyA = mock(ComponentEx.class);
+			Component proxyA = cf.proxy(compA, Component.class);
 			when(compA.isCacheable()).thenReturn(true);
-			when(proxyA.isCacheable()).thenReturn(true);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 1);
@@ -71,13 +75,11 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment();
 			ContainerEx compA = mock(ContainerEx.class);
-			ContainerEx proxyA = mock(ContainerEx.class);
+			Container proxyA = cf.proxy(compA, Container.class);
 			when(compA.isCacheable()).thenReturn(true);
-			when(proxyA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			ComponentEx proxyAA = mock(ComponentEx.class);
+			Component proxyAA = cf.proxy(compAA, Component.class);
 			when(compAA.getParent()).thenReturn(compA);
-			when(proxyAA.getParent()).thenReturn(proxyA);
 			assertEquals(compAA.getParent(), compA);
 			denv.registerComponent(compA, proxyA);
 			denv.registerComponent(compAA, proxyAA);
@@ -93,15 +95,12 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment();
 			ContainerEx compA = mock(ContainerEx.class);
-			ContainerEx proxyA = mock(ContainerEx.class);
+			Container proxyA = cf.proxy(compA, Container.class);
 			when(compA.isCacheable()).thenReturn(true);
-			when(proxyA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			ComponentEx proxyAA = mock(ComponentEx.class);
+			Component proxyAA = cf.proxy(compAA, Component.class);
 			when(compAA.getParent()).thenReturn(compA);
-			when(proxyAA.getParent()).thenReturn(proxyA);
 			when(compAA.isCacheable()).thenReturn(true);
-			when(proxyAA.isCacheable()).thenReturn(true);
 			denv.registerComponent(compA, proxyA);
 			denv.registerComponent(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);

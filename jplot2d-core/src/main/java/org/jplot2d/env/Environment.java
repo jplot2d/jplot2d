@@ -86,7 +86,7 @@ public abstract class Environment {
 
 	private final List<WarningMessage> warnings = new ArrayList<WarningMessage>();
 
-	public static Object getGlobalLock() {
+	protected static Object getGlobalLock() {
 		return LOCK;
 	}
 
@@ -102,18 +102,6 @@ public abstract class Environment {
 	 */
 	final Element getProxy(ElementEx impl) {
 		return proxyMap.get(impl);
-	}
-
-	/**
-	 * Register new created element to this environment. The proxy object will
-	 * associate with this environment.
-	 * 
-	 * @param element
-	 * @param proxy
-	 */
-	public void registerElement(ElementEx element, Element proxy) {
-		((ElementAddition) proxy).setEnvironment(this);
-		proxyMap.put(element, proxy);
 	}
 
 	/**

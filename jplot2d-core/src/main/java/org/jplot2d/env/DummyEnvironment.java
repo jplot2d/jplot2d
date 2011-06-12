@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.element.Component;
+import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
 
 /**
  * @author Jingjing Li
@@ -35,6 +37,20 @@ public class DummyEnvironment extends Environment {
 	}
 
 	/**
+	 * Register new created element to this environment. The proxy object will
+	 * associate with this environment.
+	 * 
+	 * @param element
+	 * @param proxy
+	 */
+	public void registerElement(ElementEx element, Element proxy) {
+		synchronized (getGlobalLock()) {
+			((ElementAddition) proxy).setEnvironment(this);
+		}
+		proxyMap.put(element, proxy);
+	}
+
+	/**
 	 * This method is called when component factory create a component proxy.
 	 * Every new created component has an associated environment. The
 	 * environment must be initialized by this method.
@@ -43,7 +59,7 @@ public class DummyEnvironment extends Environment {
 	 * @param proxy
 	 */
 	public void registerComponent(ComponentEx comp, Component proxy) {
-		proxyMap.put(comp, proxy);
+		registerElement(comp, proxy);
 
 		if (comp.isCacheable()) {
 			addOrder(cacheableComponentList, comp);
