@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import org.jplot2d.element.Plot;
+import org.jplot2d.env.RenderEnvironment;
 
 /**
  * A dedicated JFrame to display a plot.
@@ -33,11 +34,44 @@ public class JPlot2DFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Construct a JFrame to display the given plot in its center. The plot
+	 * properties can be safely by multiple threads.
+	 * 
+	 * @param plot
+	 *            the plot to be display
+	 */
 	public JPlot2DFrame(Plot plot) {
+		this(plot, true);
+	}
+
+	/**
+	 * Construct a JFrame to display the given plot in its center.
+	 * 
+	 * @param plot
+	 *            the plot to be display
+	 * @param threadSafe
+	 *            if <code>false</code>, all plot properties can only be changed
+	 *            within a single thread. if <code>true</code>, all plot
+	 *            properties can be safely changed by multiple threads.
+	 */
+	public JPlot2DFrame(Plot plot, boolean threadSafe) {
 		super();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		getContentPane().add(new JPlot2DComponent(plot));
+		getContentPane().add(new JPlot2DComponent(plot, threadSafe));
+	}
 
+	/**
+	 * Construct a JFrame to display a plot in its center. The plot has been
+	 * assigned to the given RenderEnvironment.
+	 * 
+	 * @param env
+	 *            the RenderEnvironment
+	 */
+	public JPlot2DFrame(RenderEnvironment env) {
+		super();
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		getContentPane().add(new JPlot2DComponent(env));
 	}
 
 }

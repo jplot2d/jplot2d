@@ -55,7 +55,6 @@ import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
 import org.jplot2d.env.Profile;
-import org.jplot2d.env.ThreadSafeDummyEnvironment;
 
 /**
  * A factory to produce all kind of plot components.
@@ -187,8 +186,7 @@ public class ComponentFactory {
 		applyProfile(margin);
 		PlotMargin marginProxy = proxy(margin, PlotMargin.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(subplot, subplotProxy);
 		env.registerComponent(legend, legendProxy);
 		env.registerElement(margin, marginProxy);
@@ -212,8 +210,7 @@ public class ComponentFactory {
 		applyProfile(impl);
 		Title proxy = proxy(impl, Title.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(impl, proxy);
 		return proxy;
 	}
@@ -250,8 +247,7 @@ public class ComponentFactory {
 		applyProfile(impl);
 		Layer proxy = proxy(impl, Layer.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(impl, proxy);
 		return proxy;
 	}
@@ -289,8 +285,7 @@ public class ComponentFactory {
 		}
 		LegendItem liProxy = proxy(li, LegendItem.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(gp, gpProxy);
 		env.registerElement(li, liProxy);
 		return gpProxy;
@@ -306,8 +301,7 @@ public class ComponentFactory {
 		applyProfile(impl);
 		AxisRangeLockGroup proxy = proxy(impl, AxisRangeLockGroup.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerElement(impl, proxy);
 
 		return proxy;
@@ -328,8 +322,7 @@ public class ComponentFactory {
 		AxisRangeManager vaProxy = proxy(va, AxisRangeManager.class);
 		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
 
-		DummyEnvironment env = (threadSafe) ? new ThreadSafeDummyEnvironment()
-				: new DummyEnvironment();
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
 
 		env.registerElement(va, vaProxy);
 		env.registerElement(group, groupProxy);

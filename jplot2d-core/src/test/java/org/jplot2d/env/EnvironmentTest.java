@@ -44,6 +44,11 @@ public class EnvironmentTest {
 
 	private class EnvironmentStub extends Environment {
 
+		protected EnvironmentStub() {
+			super(false);
+			// TODO Auto-generated constructor stub
+		}
+
 		protected void commit() {
 			// nothing to do
 		}
@@ -197,7 +202,7 @@ public class EnvironmentTest {
 		Environment env = new EnvironmentStub();
 
 		// add uncacheable component
-		DummyEnvironment denv = new DummyEnvironment();
+		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
 		Container proxyA = cf.proxy(containerA, Container.class);
 		denv.registerComponent(containerA, proxyA);
@@ -219,7 +224,7 @@ public class EnvironmentTest {
 		Environment env = new EnvironmentStub();
 
 		// add cacheable component
-		DummyEnvironment denv = new DummyEnvironment();
+		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
 		Container proxyA = cf.proxy(containerA, Container.class);
 		containerA.setCacheable(true);
@@ -232,7 +237,7 @@ public class EnvironmentTest {
 		assertEquals(env.subComponentMap.get(containerA).get(0), containerA);
 
 		// add uncacheable component which has a cacheable parent
-		DummyEnvironment denvAA = new DummyEnvironment();
+		DummyEnvironment denvAA = new DummyEnvironment(false);
 		ComponentEx compAA = new ComponentStub();
 		Component proxyAA = cf.proxy(compAA, Component.class);
 		denvAA.registerComponent(compAA, proxyAA);
@@ -247,7 +252,7 @@ public class EnvironmentTest {
 		assertEquals(env.subComponentMap.get(containerA).get(1), compAA);
 
 		// add cacheable component with uncacheable sub-component
-		DummyEnvironment denvB = new DummyEnvironment();
+		DummyEnvironment denvB = new DummyEnvironment(false);
 		ContainerEx containerB = new ContainerStub();
 		Container proxyB = cf.proxy(containerB, Container.class);
 		ComponentEx compBA = new ComponentStub();

@@ -25,14 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.Renderer;
 
 /**
  * This environment extends plot environment to add ability to render a plot.
- * This class is not thread-safe, and can only be used within a single thread,
- * such as servlet.
  * 
  * @author Jingjing Li
  * 
@@ -42,8 +41,18 @@ public class RenderEnvironment extends PlotEnvironment {
 	private List<Renderer<?>> rendererList = Collections
 			.synchronizedList(new ArrayList<Renderer<?>>());
 
-	public RenderEnvironment() {
-
+	/**
+	 * Construct a environment to render the given plot.
+	 * 
+	 * @param plot
+	 *            the plot to be rendered or exported
+	 * @param threadSafe
+	 *            if <code>false</code>, all plot properties can only be changed
+	 *            within a single thread, such as servlet. if <code>true</code>,
+	 *            all plot properties can be safely changed by multiple threads.
+	 */
+	public RenderEnvironment(Plot plot, boolean threadSafe) {
+		super(plot, threadSafe);
 	}
 
 	public Renderer<?>[] getRenderers() {

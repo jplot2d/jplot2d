@@ -46,7 +46,7 @@ public class DummyEnvironmentTest {
 
 		// register uncacheable component
 		{
-			DummyEnvironment denv = new DummyEnvironment();
+			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
 			Component proxyA = cf.proxy(compA, Component.class);
 			denv.registerComponent(compA, proxyA);
@@ -59,7 +59,7 @@ public class DummyEnvironmentTest {
 
 		// register cacheable component
 		{
-			DummyEnvironment denv = new DummyEnvironment();
+			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
 			Component proxyA = cf.proxy(compA, Component.class);
 			when(compA.isCacheable()).thenReturn(true);
@@ -73,7 +73,7 @@ public class DummyEnvironmentTest {
 
 		// register cacheable component with uncacheable child
 		{
-			DummyEnvironment denv = new DummyEnvironment();
+			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
 			Container proxyA = cf.proxy(compA, Container.class);
 			when(compA.isCacheable()).thenReturn(true);
@@ -93,7 +93,7 @@ public class DummyEnvironmentTest {
 
 		// register cacheable component which has a cacheable child
 		{
-			DummyEnvironment denv = new DummyEnvironment();
+			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
 			Container proxyA = cf.proxy(compA, Container.class);
 			when(compA.isCacheable()).thenReturn(true);

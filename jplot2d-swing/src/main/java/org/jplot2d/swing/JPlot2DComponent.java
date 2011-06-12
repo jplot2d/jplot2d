@@ -37,8 +37,7 @@ import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 
 /**
- * A JComponent display a plot in its center. The plot is rendered in
- * asynchronous renderer.
+ * A JComponent that display a plot in its center.
  * 
  * @author Jingjing Li
  * 
@@ -49,18 +48,46 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.swing");
 
-	private final Plot plot;
-
 	private final RenderEnvironment env;
 
 	private ImageRenderer r;
 
 	private volatile BufferedImage image;
 
+	/**
+	 * Construct a JComponent to display the given plot in its center. The plot
+	 * properties can be safely by multiple threads.
+	 * 
+	 * @param plot
+	 *            the plot to be display
+	 */
 	public JPlot2DComponent(Plot plot) {
-		this.plot = plot;
-		env = new RenderEnvironment();
-		env.setPlot(plot);
+		this(new RenderEnvironment(plot, true));
+	}
+
+	/**
+	 * Construct a JComponent to display the given plot in its center.
+	 * 
+	 * @param plot
+	 *            the plot to be display
+	 * @param threadSafe
+	 *            if <code>false</code>, all plot properties can only be changed
+	 *            within a single thread. if <code>true</code>, all plot
+	 *            properties can be safely changed by multiple threads.
+	 */
+	public JPlot2DComponent(Plot plot, boolean threadSafe) {
+		this(new RenderEnvironment(plot, threadSafe));
+	}
+
+	/**
+	 * Construct a JComponent to display a plot in its center. The plot has been
+	 * assigned to the given RenderEnvironment.
+	 * 
+	 * @param env
+	 *            the RenderEnvironment
+	 */
+	public JPlot2DComponent(RenderEnvironment env) {
+		this.env = env;
 
 		setBackground(Color.GRAY);
 		setOpaque(true);
@@ -76,7 +103,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
-		plot.setContainerSize(new Dimension(width, height));
+		env.getPlot().setContainerSize(new Dimension(width, height));
 	}
 
 	public void paintComponent(Graphics g) {
