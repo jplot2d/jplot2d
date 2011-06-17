@@ -154,9 +154,9 @@ public class TeXMathParserTest {
 	@Test
 	public void testUnicode() throws ParseException {
 		checkParse("\u2299", "\u2299", "<mtext>\u2299</mtext>");
-		checkParse("\\u2299", "\u2299", "<mtext>\u2299</mtext>");
+		checkException("\\u2299");
 		checkParse("$\u2299$", "$\u2299$", "<mi>\u2299</mi>");
-		checkParse("$\\u2299$", "$\u2299$", "<mi>\u2299</mi>");
+		checkException("$\\u2299$");
 	}
 
 	@Test
