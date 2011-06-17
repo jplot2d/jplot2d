@@ -28,7 +28,7 @@ import org.jplot2d.element.AxisLabelSide;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTickSide;
-import org.jplot2d.util.MathElement;
+import org.jplot2d.tex.MathElement;
 import org.junit.Test;
 
 /**

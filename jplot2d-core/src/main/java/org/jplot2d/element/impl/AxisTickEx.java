@@ -22,7 +22,7 @@ import java.awt.Font;
 
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTick;
-import org.jplot2d.util.MathElement;
+import org.jplot2d.tex.MathElement;
 import org.jplot2d.util.Range2D;
 
 /**

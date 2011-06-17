@@ -11,7 +11,7 @@ options {
   STATIC = false;
 }
 PARSER_BEGIN(SymbolShapeParser)
-package org.jplot2d.util;
+package org.jplot2d.javacc;
 
 import java.awt.Shape;
 import java.awt.geom.Arc2D;

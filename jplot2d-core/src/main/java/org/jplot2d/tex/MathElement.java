@@ -19,7 +19,7 @@
 /*
  * 
  */
-package org.jplot2d.util;
+package org.jplot2d.tex;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -136,9 +136,8 @@ public abstract class MathElement {
 			return pl.size();
 		}
 
-		public PElement[] getElements() {
-			PElement[] pa = new PElement[pl.size()];
-			return pl.toArray(pa);
+		public List<PElement> getElementList() {
+			return pl;
 		}
 
 		public PElement get(int index) {

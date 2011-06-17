@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.util;
+package org.jplot2d.tex;
 
 import java.awt.Font;
 import java.awt.Graphics2D;

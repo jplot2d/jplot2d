@@ -24,6 +24,6 @@ package org.jplot2d.element;
  * @author Jingjing Li
  * 
  */
-public class ImageMarker {
+public interface ImageMarker {
 
 }

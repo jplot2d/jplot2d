@@ -24,8 +24,8 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.jplot2d.util.MathElement;
-import org.jplot2d.util.TeXMathUtils;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.TeXMathUtils;
 
 /**
  * Static methods to format tick labels.

@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.ComponentFactory;
 import org.jplot2d.element.Component;
+import org.jplot2d.element.ComponentFactory;
 import org.jplot2d.element.Container;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;

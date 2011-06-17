@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import org.jplot2d.annotation.Property;
-import org.jplot2d.util.MathElement;
+import org.jplot2d.tex.MathElement;
 
 /**
  * A component who represent a text string. The text string can be a math
