@@ -34,10 +34,10 @@ import org.jplot2d.axtick.TickUtils;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTickTransform;
-import org.jplot2d.util.MathElement;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.util.TeXMathUtils;
 
 /**
  * This class has some internal cache for its parent's properties to trace the

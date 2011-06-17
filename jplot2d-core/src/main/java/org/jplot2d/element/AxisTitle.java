@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.jplot2d.annotation.Property;
-import org.jplot2d.util.MathElement;
+import org.jplot2d.tex.MathElement;
 
 /**
  * A component who represent a text string. The text string can be a math

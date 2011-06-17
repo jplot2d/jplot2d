@@ -25,6 +25,9 @@ import static org.junit.Assert.*;
 
 import java.io.StringReader;
 
+import org.jplot2d.javacc.ParseException;
+import org.jplot2d.javacc.TeXMathParser;
+import org.jplot2d.tex.MathElement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

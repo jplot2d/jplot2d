@@ -49,9 +49,9 @@ import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.MathLabel;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.MathElement;
-import org.jplot2d.util.MathLabel;
 import org.jplot2d.util.Range2D;
 
 /**

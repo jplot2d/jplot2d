@@ -2,15 +2,17 @@
 options {
 	DEBUG_PARSER = false;
 	DEBUG_TOKEN_MANAGER = false;
-	JAVA_UNICODE_ESCAPE = true;
+	JAVA_UNICODE_ESCAPE = false;
 	JDK_VERSION = "1.5";
 	STATIC = false;
 }
 PARSER_BEGIN(TeXMathParser)
-package org.jplot2d.util;
+package org.jplot2d.javacc;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jplot2d.tex.MathElement;
 
 /*
  * The purpose of this tex parser is maximum compatible with plain text and LaTex math mode. 
@@ -155,7 +157,7 @@ private MathElement.PElement composite() :
 }
 {	(
 		me = block()
-		{			if (me instanceof MathElement.Mrow) {				pc.addAll(((MathElement.Mrow) me).pl);
+		{			if (me instanceof MathElement.Mrow) {				pc.addAll(((MathElement.Mrow) me).getElementList());
 			} else if (me != null) {				pc.add(me);
 			}
 		}

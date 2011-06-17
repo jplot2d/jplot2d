@@ -24,6 +24,6 @@ package org.jplot2d.element;
  * @author Jingjing Li
  * 
  */
-public class SymbolMarker {
+public interface SymbolMarker {
 
 }

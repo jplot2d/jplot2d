@@ -31,9 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.util.ParseException;
-import org.jplot2d.util.SymbolShapeParser;
-import org.jplot2d.util.TokenMgrError;
+import org.jplot2d.javacc.ParseException;
+import org.jplot2d.javacc.SymbolShapeParser;
+import org.jplot2d.javacc.TokenMgrError;
 
 /**
  * SymbolShape has a unique id, a name and data to direct how to paint it.

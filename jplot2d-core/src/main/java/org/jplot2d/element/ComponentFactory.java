@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d;
+package org.jplot2d.element;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -24,20 +24,6 @@ import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraph;
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisPosition;
-import org.jplot2d.element.AxisTick;
-import org.jplot2d.element.AxisTitle;
-import org.jplot2d.element.Element;
-import org.jplot2d.element.Legend;
-import org.jplot2d.element.LegendItem;
-import org.jplot2d.element.PlotMargin;
-import org.jplot2d.element.AxisRangeManager;
-import org.jplot2d.element.AxisRangeLockGroup;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.Title;
-import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
