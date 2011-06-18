@@ -20,6 +20,7 @@ package org.jplot2d.element.impl;
 
 import java.awt.Font;
 
+import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTick;
 import org.jplot2d.tex.MathElement;
@@ -32,6 +33,10 @@ import org.jplot2d.util.Range2D;
 public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public AxisEx getParent();
+
+	public TickAlgorithm getTickAlgorithm();
+
+	public void setTickAlgorithm(TickAlgorithm algorithm);
 
 	public MathElement[] getLabelModels();
 
