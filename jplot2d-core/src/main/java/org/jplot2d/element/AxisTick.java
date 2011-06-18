@@ -20,8 +20,6 @@ package org.jplot2d.element;
 
 import java.text.Format;
 
-import org.jplot2d.axtick.TickAlgorithm;
-
 /**
  * Manage ticks of an axis.
  * <p>
@@ -43,10 +41,6 @@ public interface AxisTick extends Element {
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
 	public Axis getParent();
-
-	public TickAlgorithm getTickAlgorithm();
-
-	public void setTickAlgorithm(TickAlgorithm algorithm);
 
 	/**
 	 * Returns true if the tick number is allowed to be automatically reduced to

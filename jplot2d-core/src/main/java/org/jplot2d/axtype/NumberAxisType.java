@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -27,6 +27,9 @@ import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.util.Range2D;
 
 /**
+ * An axis for displaying numerical data. It support both LinearTransformType
+ * and LogarithmicTransformType.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -48,7 +51,7 @@ public class NumberAxisType extends AxisType {
 	}
 
 	private NumberAxisType() {
-		super("LINEAR");
+		super("NUMBER");
 	}
 
 	public boolean canSupport(TransformType txfType) {
