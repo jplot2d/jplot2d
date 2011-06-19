@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,9 +26,7 @@ import java.util.Map;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
-import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisRangeLockGroup;
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.util.Range2D;
 import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
 import org.jplot2d.util.RangeSelectionWarning;
@@ -55,7 +51,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	private AxisRangeLockGroupEx group;
 
-	private final List<AxisEx> axes = new ArrayList<AxisEx>();
+	private final List<AxisTickManagerEx> tickManagers = new ArrayList<AxisTickManagerEx>();
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
@@ -77,36 +73,12 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		}
 	}
 
-	public AxisEx getParent() {
-		return (AxisEx) super.getParent();
+	public AxisTickManagerEx getParent() {
+		return (AxisTickManagerEx) super.getParent();
 	}
 
 	public boolean isReferenced() {
-		return axes.size() > 0;
-	}
-
-	public Dimension2D getSize() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return getParent().getSize();
-		}
-	}
-
-	public Rectangle2D getBounds() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return getParent().getBounds();
-		}
-	}
-
-	public PhysicalTransform getPhysicalTransform() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return getParent().getPhysicalTransform();
-		}
+		return tickManagers.size() > 0;
 	}
 
 	public boolean isInverted() {
@@ -166,8 +138,8 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 			txfType = type.getDefaultTransformType();
 		}
 
-		for (AxisEx axis : axes) {
-			axis.getTick().setTickAlgorithm(type.getTickAlgorithm(txfType));
+		for (AxisTickManagerEx axis : tickManagers) {
+			axis.setTickAlgorithm(type.getTickAlgorithm(txfType));
 		}
 
 		group.validateAxesRange();
@@ -214,31 +186,31 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		this.ntf = ntf;
 	}
 
-	public Axis getAxis(int index) {
-		return axes.get(index);
+	// public Axis getTickManagers(int index) {
+	// return axes.get(index);
+	// }
+
+	// public int indexOfAxis(AxisEx axis) {
+	// return axes.indexOf(axis);
+	// }
+
+	public AxisTickManagerEx[] getTickManagers() {
+		return tickManagers.toArray(new AxisTickManagerEx[tickManagers.size()]);
 	}
 
-	public int indexOfAxis(AxisEx axis) {
-		return axes.indexOf(axis);
-	}
-
-	public AxisEx[] getAxes() {
-		return axes.toArray(new AxisEx[axes.size()]);
-	}
-
-	public void addAxis(AxisEx axis) {
-		axes.add((AxisEx) axis);
-		if (axes.size() == 1) {
-			parent = axes.get(0);
+	public void addTickManager(AxisTickManagerEx tickManager) {
+		tickManagers.add(tickManager);
+		if (tickManagers.size() == 1) {
+			parent = tickManagers.get(0);
 		} else {
 			parent = null;
 		}
 	}
 
-	public void removeAxis(AxisEx axis) {
-		axes.remove(axis);
-		if (axes.size() == 1) {
-			parent = axes.get(0);
+	public void removeTickManager(AxisTickManagerEx tickManager) {
+		tickManagers.remove(tickManager);
+		if (tickManagers.size() == 1) {
+			parent = tickManagers.get(0);
 		} else {
 			parent = null;
 		}
@@ -375,26 +347,25 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 	}
 
 	public Range2D expandRangeToTick(Range2D ur) {
-		if (axes.size() > 0) {
-			return axes
-					.get(0)
-					.getTick()
-					.expandRangeToTick(getTransformType(),
-							axes.get(0).getLength(), ur);
+		if (tickManagers.size() > 0) {
+			return tickManagers.get(0)
+					.expandRangeToTick(getTransformType(), ur);
 		}
 		return null;
 	}
 
 	@Override
-	public AxisRangeManagerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+	public AxisRangeManagerEx copyStructure(
+			Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisRangeManagerImpl result = new AxisRangeManagerImpl();
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
 
-		// copy or link group
-		AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap.get(group);
+		// copy or link lock group
+		AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap
+				.get(group);
 		if (algCopy == null) {
 			algCopy = (AxisRangeLockGroupEx) group.copyStructure(orig2copyMap);
 		}

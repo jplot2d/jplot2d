@@ -33,6 +33,7 @@ import org.jplot2d.axtick.TickCalculator;
 import org.jplot2d.axtick.TickUtils;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
+import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
@@ -46,11 +47,16 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
+public class AxisTickManagerImpl extends ElementImpl implements
+		AxisTickManagerEx, Cloneable {
 
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
 	public static final int AUTO_TICKS_MIN = 4;
+
+	private AxisRangeManagerEx rangeManager;
+
+	private final List<AxisEx> axes = new ArrayList<AxisEx>();
 
 	private boolean autoAdjustNumber = true;
 
@@ -151,6 +157,9 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	private boolean _trfChanged;
 
+	/**
+	 * The tick range for calculation 
+	 */
 	private Range2D range;
 
 	private AxisTickTransform tickTransform;
@@ -165,6 +174,63 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 
 	public AxisEx getParent() {
 		return (AxisImpl) parent;
+	}
+
+	public AxisRangeManagerEx getRangeManager() {
+		return rangeManager;
+	}
+
+	public void setRangeManager(AxisRangeManager rangeManager) {
+		if (this.rangeManager != null) {
+			this.rangeManager.removeTickManager(this);
+		}
+		this.rangeManager = (AxisRangeManagerEx) rangeManager;
+		if (this.rangeManager != null) {
+			this.rangeManager.addTickManager(this);
+		}
+	}
+
+	public AxisEx[] getAxes() {
+		return axes.toArray(new AxisEx[axes.size()]);
+	}
+
+	public void addAxis(AxisEx axis) {
+		axes.add((AxisEx) axis);
+		if (axes.size() == 1) {
+			parent = axes.get(0);
+		} else {
+			parent = null;
+		}
+	}
+
+	public void removeAxis(AxisEx axis) {
+		axes.remove(axis);
+		if (axes.size() == 1) {
+			parent = axes.get(0);
+		} else {
+			parent = null;
+		}
+	}
+
+	public Range2D getRange() {
+		Range2D range = getRangeManager().getRange();
+		if (tickTransform == null) {
+			return range;
+		} else {
+			double start = tickTransform.transformUser2Tick(range.getStart());
+			double end = tickTransform.transformUser2Tick(range.getEnd());
+			return new Range2D.Double(start, end);
+		}
+	}
+
+	public void setRange(Range2D range) {
+		if (tickTransform == null) {
+			getRangeManager().setRange(range);
+		} else {
+			double ustart = tickTransform.transformTick2User(range.getStart());
+			double uend = tickTransform.transformTick2User(range.getEnd());
+			getRangeManager().setRange(new Range2D.Double(ustart, uend));
+		}
 	}
 
 	public boolean getAutoAdjustNumber() {
@@ -340,15 +406,15 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		return result;
 	}
 
-	public boolean calcTicks() {
+	public void calcTicks() {
 
 		AxisEx ax = getParent();
-		AxisRangeManagerEx va = getParent().getRangeManager();
+		AxisRangeManagerEx va = getRangeManager();
 		AxisTickTransform txf = getParent().getTickTransform();
 
-		if (!ax.getRange().equals(this.range)) {
+		if (!getRange().equals(this.range)) {
 			_rangeChanged = true;
-			this.range = ax.getRange();
+			this.range = getRange();
 			tickCalculator.setRange(range);
 		}
 		if (txf != this.tickTransform
@@ -480,20 +546,24 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		}
 		_propLabelFontChanged = _trfChanged = _axisTypeChanged = false;
 
-		boolean result = false;
+		boolean tickChanged = false;
 
 		if (labelsChanged || _labelIntervalChanged || _labelOrientationChanged
 				|| actualLabelFontChanged) {
-			result = true;
+			tickChanged = true;
 			_labelIntervalChanged = _labelOrientationChanged = false;
 		}
 
 		if (_valuesChanged || _minorValuesChanged) {
-			result = true;
+			tickChanged = true;
 			_valuesChanged = _minorValuesChanged = _trfChanged = false;
 		}
 
-		return result;
+		if (tickChanged) {
+			for (AxisEx axis : axes) {
+				axis.invalidateThickness();
+			}
+		}
 	}
 
 	/**
@@ -837,25 +907,13 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 		}
 	}
 
-	/**
-	 * This method not change internal status of TickManager. Only get those
-	 * values: tickCalculator, tickNumber, labelFormat, labelInterval
-	 * 
-	 * @param txfType
-	 *            transform type
-	 * @param axisLength
-	 * @param range
-	 *            the core range
-	 * @return the expanded range
-	 */
-	public Range2D expandRangeToTick(TransformType txfType, double axisLength,
-			Range2D range) {
+	public Range2D expandRangeToTick(TransformType txfType, Range2D range) {
 		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
 		rav.setRange(range);
 		if (autoValues) {
 			if (autoInterval) {
 				if (autoAdjustNumber) {
-					expandRangeToAutoAdjustedTick(txfType, axisLength, range);
+					expandRangeToAutoAdjustedTick(txfType, range);
 				} else {
 					rav.expandRangeByTickNumber(tickNumber);
 				}
@@ -870,7 +928,15 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	 * expand range on autoAdjustNumber axis.
 	 */
 	private Range2D expandRangeToAutoAdjustedTick(TransformType txfType,
-			double axisLength, Range2D range) {
+			Range2D range) {
+		// find the shortest axis length
+		double axisLength = Double.MAX_VALUE;
+		for (AxisEx axis : axes) {
+			if (axisLength > axis.getLength()) {
+				axisLength = axis.getLength();
+			}
+		}
+
 		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
 		int tickNumber = this.tickNumber;
 		while (true) {
@@ -909,16 +975,28 @@ public class AxisTickImpl extends ElementImpl implements AxisTickEx, Cloneable {
 	}
 
 	@Override
-	public AxisTickImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		AxisTickImpl result = null;
+	public AxisTickManagerImpl copyStructure(
+			Map<ElementEx, ElementEx> orig2copyMap) {
+		AxisTickManagerImpl result = null;
 		try {
-			result = (AxisTickImpl) this.clone();
+			result = (AxisTickManagerImpl) this.clone();
 		} catch (CloneNotSupportedException e) {
 		}
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
+
+		// copy or link range manager
+		AxisRangeManagerEx armCopy = (AxisRangeManagerEx) orig2copyMap
+				.get(rangeManager);
+		if (armCopy == null) {
+			armCopy = (AxisRangeManagerEx) rangeManager
+					.copyStructure(orig2copyMap);
+		}
+		result.rangeManager = armCopy;
+		armCopy.addTickManager(result);
+
 		return result;
 	}
 

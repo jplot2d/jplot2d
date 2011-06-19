@@ -42,17 +42,16 @@ import org.jplot2d.axtick.LinearTickAlgorithm;
 import org.jplot2d.element.AxisLabelSide;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.AxisPosition;
+import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.AxisTickSide;
 import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
-import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
@@ -71,17 +70,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	/* the gap between title and label */
 	private static final double TITLE_GAP_RATIO = 1.0 / 4;
 
-	private final AxisTickEx tick;
-
 	private final AxisTitleEx title;
+
+	private AxisTickManagerEx tickManager;
 
 	private double locX, locY;
 
 	private boolean titleVisible = true;
 
 	private AxisOrientation orientation;
-
-	private AxisRangeManagerEx rangeManager;
 
 	private double length;
 
@@ -124,16 +121,11 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	private boolean thicknessCalculationNeeded = true;
 
 	public AxisImpl() {
-		tick = new AxisTickImpl();
-		tick.setParent(this);
-		tick.setTickAlgorithm(LinearTickAlgorithm.getInstance());
-
 		title = new AxisTitleImpl();
 		title.setParent(this);
 	}
 
-	protected AxisImpl(AxisTickEx tick, AxisTitleEx title) {
-		this.tick = tick;
+	protected AxisImpl(AxisTitleEx title) {
 		this.title = title;
 	}
 
@@ -158,9 +150,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public Map<Element, Element> getMooringMap() {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
-		if (rangeManager.getParent() == this) {
-			for (LayerEx layer : rangeManager.getLayers()) {
-				result.put(rangeManager, layer);
+		if (tickManager.getParent() == this) {
+			AxisRangeManagerEx rman = tickManager.getRangeManager();
+			if (rman.getParent() == tickManager) {
+				for (LayerEx layer : rman.getLayers()) {
+					result.put(rman, layer);
+				}
 			}
 		}
 
@@ -254,17 +249,17 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		}
 	}
 
-	public AxisRangeManagerEx getRangeManager() {
-		return rangeManager;
+	public AxisTickManagerEx getTickManager() {
+		return tickManager;
 	}
 
-	public void setRangeManager(AxisRangeManager rangeManager) {
-		if (this.rangeManager != null) {
-			this.rangeManager.removeAxis(this);
+	public void setTickManager(AxisTickManager tickManager) {
+		if (this.tickManager != null) {
+			this.tickManager.removeAxis(this);
 		}
-		this.rangeManager = (AxisRangeManagerEx) rangeManager;
-		if (this.rangeManager != null) {
-			this.rangeManager.addAxis(this);
+		this.tickManager = (AxisTickManagerEx) tickManager;
+		if (this.tickManager != null) {
+			this.tickManager.addAxis(this);
 		}
 	}
 
@@ -275,8 +270,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLength(double length) {
 		if (this.length != length) {
 			this.length = length;
-			if (rangeManager.getLockGroup().isAutoRange()) {
-				rangeManager.getLockGroup().reAutoRange();
+			if (tickManager.getRangeManager().getLockGroup().isAutoRange()) {
+				tickManager.getRangeManager().getLockGroup().reAutoRange();
 			}
 		}
 	}
@@ -291,40 +286,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		invalidatePlot();
 	}
 
-	public void calcTicks() {
-		boolean tickChanged = tick.calcTicks();
-		if (tickChanged) {
-			invalidateThickness();
-		}
-	}
-
 	public AxisTickTransform getTickTransform() {
 		return tickTransform;
 	}
 
 	public void setTickTransform(AxisTickTransform transform) {
 		this.tickTransform = transform;
-	}
-
-	public Range2D getRange() {
-		Range2D range = rangeManager.getRange();
-		if (tickTransform == null) {
-			return range;
-		} else {
-			double start = tickTransform.transformUser2Tick(range.getStart());
-			double end = tickTransform.transformUser2Tick(range.getEnd());
-			return new Range2D.Double(start, end);
-		}
-	}
-
-	public void setRange(Range2D range) {
-		if (tickTransform == null) {
-			rangeManager.setRange(range);
-		} else {
-			double ustart = tickTransform.transformTick2User(range.getStart());
-			double uend = tickTransform.transformTick2User(range.getEnd());
-			rangeManager.setRange(new Range2D.Double(ustart, uend));
-		}
 	}
 
 	public boolean isGridLines() {
@@ -415,10 +382,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLabelColor(Color color) {
 		this.labelColor = color;
 		redraw();
-	}
-
-	public AxisTickEx getTick() {
-		return tick;
 	}
 
 	public AxisTitleEx getTitle() {
@@ -567,8 +530,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * @return the maximum normal width.
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
-		Dimension2D[] labelsSize = getLabelsPhySize(getTick().getLabelModels(),
-				getTick().getActualLabelFont());
+		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager()
+				.getLabelModels(), getTickManager().getActualLabelFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -604,23 +567,22 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	@Override
 	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisImpl result = new AxisImpl(
-				((AxisTickEx) tick.copyStructure(orig2copyMap)),
 				(AxisTitleEx) title.copyStructure(orig2copyMap));
-		result.tick.setParent(result);
 		result.title.setParent(result);
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
 		}
 
-		AxisRangeManagerEx armCopy = (AxisRangeManagerEx) orig2copyMap
-				.get(rangeManager);
-		if (armCopy == null) {
-			armCopy = (AxisRangeManagerEx) rangeManager
+		// copy or link axis tick manager
+		AxisTickManagerEx atmCopy = (AxisTickManagerEx) orig2copyMap
+				.get(tickManager);
+		if (atmCopy == null) {
+			atmCopy = (AxisTickManagerEx) tickManager
 					.copyStructure(orig2copyMap);
 		}
-		result.rangeManager = armCopy;
-		armCopy.addAxis(result);
+		result.tickManager = atmCopy;
+		atmCopy.addAxis(result);
 
 		return result;
 
@@ -682,8 +644,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private void drawTicks(Graphics2D g) {
 
-		Object tvs = getTick().getValues();
-		Object mvs = getTick().getMinorValues();
+		Object tvs = getTickManager().getValues();
+		Object mvs = getTickManager().getMinorValues();
 		int tvslen = Array.getLength(tvs);
 		int mvslen = Array.getLength(mvs);
 
@@ -745,16 +707,17 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private void drawLabels(Graphics2D g, VAlign vertalign, HAlign horzalign) {
 
-		Object tvs = getTick().getValues();
-		MathElement[] labels = getTick().getLabelModels();
+		Object tvs = getTickManager().getValues();
+		MathElement[] labels = getTickManager().getLabelModels();
 
 		AffineTransform oldTransform = g.getTransform();
 
 		for (int i = 0; i < labels.length; i++) {
-			double x = Array.getDouble(tvs, i * getTick().getLabelInterval());
+			double x = Array.getDouble(tvs, i
+					* getTickManager().getLabelInterval());
 			double xt = transTickToPaper(x);
 
-			MathLabel label = new MathLabel(labels[i], getTick()
+			MathLabel label = new MathLabel(labels[i], getTickManager()
 					.getActualLabelFont(), vertalign, horzalign);
 
 			Color color = getLabelColor();
@@ -885,7 +848,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		} else {
 			uv = tickValue;
 		}
-		return rangeManager.getNormalTransform().getTransP(uv) * length;
+		return tickManager.getRangeManager().getNormalTransform().getTransP(uv)
+				* length;
 	}
 
 }

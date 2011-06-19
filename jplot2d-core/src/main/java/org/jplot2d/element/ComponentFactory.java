@@ -27,7 +27,8 @@ import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
-import org.jplot2d.element.impl.AxisTickEx;
+import org.jplot2d.element.impl.AxisTickManagerEx;
+import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
@@ -129,7 +130,7 @@ public class ComponentFactory {
 	 * @return the proxy
 	 */
 	@SuppressWarnings("unchecked")
-	public final <T extends Element> T proxy(T impl, Class<T> clazz) {
+	public static final <T extends Element> T proxy(T impl, Class<T> clazz) {
 		ElementIH<T> ih = new ElementIH<T>(impl, clazz);
 		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {
 				clazz, ElementAddition.class }, ih);
@@ -317,6 +318,28 @@ public class ComponentFactory {
 	}
 
 	/**
+	 * Create an AxisRangeManager, which contains an axis range lock group.
+	 * 
+	 * @return an AxisRangeManager
+	 */
+	public AxisTickManager createAxisTickManager() {
+		AxisRangeManager rm = createAxisRangeManager();
+		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
+		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm)
+				.getImpl();
+
+		AxisTickManagerImpl tm = new AxisTickManagerImpl();
+		applyProfile(tm);
+		tm.setRangeManager(rme);
+
+		AxisTickManager vaProxy = proxy(tm, AxisTickManager.class);
+
+		env.registerElement(tm, vaProxy);
+
+		return vaProxy;
+	}
+
+	/**
 	 * Create an Axis. The default position is
 	 * {@link AxisPosition#NEGATIVE_SIDE}
 	 * 
@@ -327,17 +350,17 @@ public class ComponentFactory {
 	}
 
 	/**
-	 * Create n Axes which share the same range manager. The position of the
-	 * axis on index 0 is {@link AxisPosition#NEGATIVE_SIDE}, the position of
-	 * the axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}
+	 * Create n Axes which share the same tick manager. The position of the axis
+	 * on index 0 is {@link AxisPosition#NEGATIVE_SIDE}, the position of the
+	 * axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}
 	 * 
 	 * @return axes in an array
 	 */
 	public Axis[] createAxes(int n) {
 
-		AxisRangeManager rm = createAxisRangeManager();
-		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
-		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm)
+		AxisTickManager tm = createAxisTickManager();
+		DummyEnvironment env = (DummyEnvironment) tm.getEnvironment();
+		AxisTickManagerEx tme = (AxisTickManagerEx) ((ElementAddition) tm)
 				.getImpl();
 
 		Axis[] result = new Axis[n];
@@ -346,12 +369,9 @@ public class ComponentFactory {
 		for (int i = 0; i < n; i++) {
 			// this create tick and title inside
 			AxisImpl axis = new AxisImpl();
-			axis.setRangeManager(rme);
+			axis.setTickManager(tme);
 
 			Axis axisProxy = proxy(axis, Axis.class);
-
-			AxisTickEx tick = axis.getTick();
-			AxisTick tickProxy = proxy(tick, AxisTick.class);
 
 			AxisTitleEx title = axis.getTitle();
 			AxisTitle titleProxy = proxy(title, AxisTitle.class);
@@ -361,7 +381,6 @@ public class ComponentFactory {
 			}
 
 			env.registerComponent(axis, axisProxy);
-			env.registerElement(tick, tickProxy);
 			env.registerElement(title, titleProxy);
 
 			result[i] = axisProxy;

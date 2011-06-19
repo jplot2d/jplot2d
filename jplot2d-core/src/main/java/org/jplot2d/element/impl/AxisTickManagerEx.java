@@ -22,7 +22,7 @@ import java.awt.Font;
 
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtrans.TransformType;
-import org.jplot2d.element.AxisTick;
+import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.util.Range2D;
 
@@ -30,9 +30,17 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface AxisTickEx extends AxisTick, ElementEx {
+public interface AxisTickManagerEx extends AxisTickManager, ElementEx {
 
 	public AxisEx getParent();
+
+	public AxisEx[] getAxes();
+
+	public AxisRangeManagerEx getRangeManager();
+
+	public void addAxis(AxisEx axis);
+
+	public void removeAxis(AxisEx axis);
 
 	public TickAlgorithm getTickAlgorithm();
 
@@ -42,7 +50,10 @@ public interface AxisTickEx extends AxisTick, ElementEx {
 
 	public Font getActualLabelFont();
 
-	public boolean calcTicks();
+	/**
+	 * Calculate ticks when tick calculation is needed.
+	 */
+	public void calcTicks();
 
 	/**
 	 * This method not change internal status of TickManager. Only get those
@@ -50,12 +61,10 @@ public interface AxisTickEx extends AxisTick, ElementEx {
 	 * 
 	 * @param txfType
 	 *            transform type
-	 * @param axisLength
 	 * @param range
 	 *            the core range
 	 * @return the expanded range
 	 */
-	public Range2D expandRangeToTick(TransformType txfType, double axisLength,
-			Range2D range);
+	public Range2D expandRangeToTick(TransformType txfType, Range2D range);
 
 }
