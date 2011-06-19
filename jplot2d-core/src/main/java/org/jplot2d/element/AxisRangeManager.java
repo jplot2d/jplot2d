@@ -177,12 +177,12 @@ public interface AxisRangeManager extends Element {
 	public void setLockGroup(AxisRangeLockGroup group);
 
 	/**
-	 * Returns all axes belongs to this group.
+	 * Returns all axis tick managers belongs to this range manager.
 	 * 
-	 * @return all axes belongs to this group
+	 * @return all axes tick managers belongs to this range manager.
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Axis[] getAxes();
+	public AxisTickManager[] getTickManagers();
 
 	/**
 	 * Returns all layers attaching to this axis group.

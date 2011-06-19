@@ -40,31 +40,47 @@ public class AxisTest {
 	@Test
 	public void testCreateAxis() {
 		Axis axis = factory.createAxis();
-		AxisTick tick = axis.getTick();
+		AxisTickManager tick = axis.getTick();
 		AxisTitle title = axis.getTitle();
-		AxisRangeManager arm = axis.getRangeManager();
+		AxisTickManager tm = axis.getTickManager();
+		AxisRangeManager arm = tm.getRangeManager();
 		AxisRangeLockGroup group = arm.getLockGroup();
 		assertTrue(axis instanceof ElementAddition);
 		assertTrue(tick instanceof ElementAddition);
 		assertTrue(title instanceof ElementAddition);
+		assertTrue(tm instanceof ElementAddition);
 		assertTrue(arm instanceof ElementAddition);
 		assertTrue(group instanceof ElementAddition);
+
+		assertSame(tm.getEnvironment(), axis.getEnvironment());
 		assertSame(arm.getEnvironment(), axis.getEnvironment());
 		assertSame(group.getEnvironment(), axis.getEnvironment());
-		assertSame(arm.getParent(), axis);
-		assertArrayEquals(arm.getAxes(), new Axis[] { axis });
+
+		assertSame(tm.getParent(), axis);
+		assertSame(arm.getParent(), tm);
 		assertSame(group.getParent(), arm);
+
+		assertArrayEquals(tm.getAxes(), new Axis[] { axis });
+		assertArrayEquals(arm.getTickManagers(), new AxisTickManager[] { tm });
 		assertArrayEquals(group.getRangeManagers(),
 				new AxisRangeManager[] { arm });
 
+		// set the same tick manager again
+		axis.setTickManager(tm);
+		assertSame(tm.getEnvironment(), axis.getEnvironment());
+		assertSame(tm.getParent(), axis);
+		assertArrayEquals(tm.getAxes(), new Axis[] { axis });
+
 		// set the same range manager again
-		axis.setRangeManager(arm);
+		tm.setRangeManager(arm);
 		assertSame(arm.getEnvironment(), axis.getEnvironment());
-		assertArrayEquals(arm.getAxes(), new Axis[] { axis });
+		assertSame(arm.getParent(), tm);
+		assertArrayEquals(arm.getTickManagers(), new AxisTickManager[] { tm });
 
 		// set the same group again
 		arm.setLockGroup(group);
 		assertSame(group.getEnvironment(), arm.getEnvironment());
+		assertSame(group.getParent(), arm);
 		assertArrayEquals(group.getRangeManagers(),
 				new AxisRangeManager[] { arm });
 	}

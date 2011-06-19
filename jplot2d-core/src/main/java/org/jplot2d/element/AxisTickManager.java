@@ -20,8 +20,13 @@ package org.jplot2d.element;
 
 import java.text.Format;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.util.Range2D;
+
 /**
- * Manage ticks of an axis.
+ * Manage ticks of axes. Axes may have the same tick manager. Their ticks are
+ * exactly same.
  * <p>
  * The tick decision rules
  * <ol>
@@ -36,11 +41,40 @@ import java.text.Format;
  * @author Jingjing Li
  * 
  */
-public interface AxisTick extends Element {
+public interface AxisTickManager extends Element {
 
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
 	public Axis getParent();
+
+	@Hierarchy(HierarchyOp.GET)
+	public AxisRangeManager getRangeManager();
+
+	@Hierarchy(HierarchyOp.JOIN)
+	public void setRangeManager(AxisRangeManager rangeManager);
+
+	/**
+	 * Returns all axes whose ticks are controlled by this tick manager.
+	 * 
+	 * @return all axes whose ticks are controlled by this tick manager
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Axis[] getAxes();
+
+	/**
+	 * Returns the tick range of this axis.
+	 * 
+	 * @return the tick range of this axis.
+	 */
+	public Range2D getRange();
+
+	/**
+	 * Set the tick range of the axis.
+	 * 
+	 * @param range
+	 *            the new tick range of the axis
+	 */
+	public void setRange(Range2D range);
 
 	/**
 	 * Returns true if the tick number is allowed to be automatically reduced to

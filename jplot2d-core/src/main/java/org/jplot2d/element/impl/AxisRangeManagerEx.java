@@ -30,7 +30,11 @@ import org.jplot2d.util.Range2D;
 public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
 		Joinable {
 
-	public AxisEx getParent();
+	public AxisTickManagerEx getParent();
+
+	public AxisTickManagerEx[] getTickManagers();
+
+	public AxisRangeLockGroupEx getLockGroup();
 
 	/**
 	 * Returns the normal transform of this axis
@@ -47,15 +51,9 @@ public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
 	 */
 	public void setNormalTransfrom(NormalTransform ntf);
 
-	public AxisRangeLockGroupEx getLockGroup();
+	public void addTickManager(AxisTickManagerEx tickManager);
 
-	public AxisEx[] getAxes();
-
-	public int indexOfAxis(AxisEx axis);
-
-	public void addAxis(AxisEx axis);
-
-	public void removeAxis(AxisEx axis);
+	public void removeTickManager(AxisTickManagerEx tickManager);
 
 	public LayerEx[] getLayers();
 

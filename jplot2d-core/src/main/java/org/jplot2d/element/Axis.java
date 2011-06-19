@@ -22,7 +22,6 @@ import java.awt.Color;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.util.Range2D;
 
 /**
  * @author Jingjing Li
@@ -33,11 +32,16 @@ public interface Axis extends Component {
 	@Hierarchy(HierarchyOp.GET)
 	public Plot getParent();
 
+	/**
+	 * Returns the tick manager of this axis.
+	 * 
+	 * @return the tick manager of this axis
+	 */
 	@Hierarchy(HierarchyOp.GET)
-	public AxisRangeManager getRangeManager();
+	public AxisTickManager getTickManager();
 
 	@Hierarchy(HierarchyOp.JOIN)
-	public void setRangeManager(AxisRangeManager rangeManager);
+	public void setTickManager(AxisTickManager tickManager);
 
 	/**
 	 * Orientation is a read-only property. It just show the orientation of this
@@ -82,21 +86,6 @@ public interface Axis extends Component {
 	 *            the AxisTickTransform object.
 	 */
 	public void setTickTransform(AxisTickTransform transform);
-
-	/**
-	 * Returns the tick range of this axis.
-	 * 
-	 * @return the tick range of this axis.
-	 */
-	public Range2D getRange();
-
-	/**
-	 * Set the tick range of the axis.
-	 * 
-	 * @param range
-	 *            the new tick range of the axis
-	 */
-	public void setRange(Range2D range);
 
 	/**
 	 * Return if the grid line is displayed or not.
@@ -225,14 +214,6 @@ public interface Axis extends Component {
 	public void setLabelSide(AxisLabelSide side);
 
 	/**
-	 * Returns the tick of this axis.
-	 * 
-	 * @return the tick of this axis
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public AxisTick getTick();
-
-	/**
 	 * Returns the title of this axis.
 	 * 
 	 * @return the title of this axis
@@ -240,4 +221,7 @@ public interface Axis extends Component {
 	@Hierarchy(HierarchyOp.GET)
 	public AxisTitle getTitle();
 
+	public boolean isTitleVisible();
+
+	public void setTitleVisible(boolean visible);
 }

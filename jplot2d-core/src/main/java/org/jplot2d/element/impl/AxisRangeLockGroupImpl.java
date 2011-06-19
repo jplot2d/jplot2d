@@ -330,17 +330,17 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements
 			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
 		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
 
-		for (AxisRangeManagerEx axis : arms) {
-			NormalTransform vt = vtMap.get(axis);
+		for (AxisRangeManagerEx arm : arms) {
+			NormalTransform vt = vtMap.get(arm);
 			vt.zoom(range);
 			Range2D wrange = vt.getRangeW();
-			axis.setNormalTransfrom(axis.getTransformType()
+			arm.setNormalTransfrom(arm.getTransformType()
 					.createNormalTransform(wrange));
 
-			for (LayerEx layer : axis.getLayers()) {
-				if (layer.getXRangeManager() == axis) {
+			for (LayerEx layer : arm.getLayers()) {
+				if (layer.getXRangeManager() == arm) {
 					orthset.add(layer.getYRangeManager().getLockGroup());
-				} else if (layer.getXRangeManager() == axis) {
+				} else if (layer.getXRangeManager() == arm) {
 					orthset.add(layer.getXRangeManager().getLockGroup());
 				}
 			}

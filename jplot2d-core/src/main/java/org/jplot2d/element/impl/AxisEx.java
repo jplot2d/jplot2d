@@ -8,9 +8,7 @@ public interface AxisEx extends Axis, ComponentEx {
 
 	public PlotEx getParent();
 
-	public AxisRangeManagerEx getRangeManager();
-
-	public AxisTickEx getTick();
+	public AxisTickManagerEx getTickManager();
 
 	/**
 	 * Returns the PhysicalTransform of this component.
@@ -30,6 +28,13 @@ public interface AxisEx extends Axis, ComponentEx {
 	 */
 	public void setLocation(double locX, double locY);
 
+	/**
+	 * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)}
+	 * to set the orientation of this axis.
+	 * 
+	 * @param orientation
+	 *            the orientation
+	 */
 	public void setOrientation(AxisOrientation orientation);
 
 	/**
@@ -51,11 +56,6 @@ public interface AxisEx extends Axis, ComponentEx {
 	public double getAsc();
 
 	public double getDesc();
-
-	/**
-	 * Calculate ticks when tick calculation is needed.
-	 */
-	public void calcTicks();
 
 	public void invalidateThickness();
 
