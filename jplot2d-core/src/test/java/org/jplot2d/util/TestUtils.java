@@ -47,15 +47,15 @@ public class TestUtils {
 		assertEquals(a, ref, Math.abs(ref) * 1e-12);
 	}
 
-	public static void checkAxisRange(Axis axis, double b, double e) {
-		Range2D r = axis.getRange();
+	public static void checkAxisTickRange(Axis axis, double b, double e) {
+		Range2D r = axis.getTickManager().getRange();
 		assertEquals(r.getStart(), b, Math.abs(b) * 1e-12);
 		assertEquals(r.getEnd(), e, Math.abs(e) * 1e-12);
 	}
 
-	public static void checkAxisRange(Axis axis1, Axis axis2) {
-		Range2D xr1 = axis1.getRange();
-		Range2D xr2 = axis2.getRange();
+	public static void checkAxisTickRange(Axis axis1, Axis axis2) {
+		Range2D xr1 = axis1.getTickManager().getRange();
+		Range2D xr2 = axis2.getTickManager().getRange();
 		assertEquals(xr1.getStart(), xr2.getStart(),
 				Math.abs(xr2.getStart()) * 1e-12);
 		assertEquals(xr1.getStart(), xr2.getStart(),
@@ -143,15 +143,15 @@ public class TestUtils {
 	}
 
 	public static void checkAxisTicks(Axis axis, double... v) {
-		checkDoubleArray(axis.getTick().getValues(), v);
+		checkDoubleArray(axis.getTickManager().getValues(), v);
 	}
 
 	public static void checkAxisMinorTicks(Axis axis, double... v) {
-		checkDoubleArray(axis.getTick().getMinorValues(), v);
+		checkDoubleArray(axis.getTickManager().getMinorValues(), v);
 	}
 
 	public static void checkAxisLabels(Axis axis, String... v) {
-		String[] labels = axis.getTick().getLabelStrings();
+		String[] labels = axis.getTickManager().getLabelStrings();
 		assertEquals("length error", labels.length, v.length);
 		for (int i = 0; i < v.length; i++) {
 			assertEquals(labels[i], v[i]);

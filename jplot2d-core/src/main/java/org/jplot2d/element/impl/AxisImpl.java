@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -38,13 +38,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.axtick.LinearTickAlgorithm;
 import org.jplot2d.element.AxisLabelSide;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.AxisTickSide;
-import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
@@ -83,8 +81,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	private double length;
 
 	private AxisPosition position;
-
-	private AxisTickTransform tickTransform;
 
 	private boolean showGridLines;
 
@@ -284,14 +280,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.position = position;
 		invalidateThickness();
 		invalidatePlot();
-	}
-
-	public AxisTickTransform getTickTransform() {
-		return tickTransform;
-	}
-
-	public void setTickTransform(AxisTickTransform transform) {
-		this.tickTransform = transform;
 	}
 
 	public boolean isGridLines() {
@@ -531,7 +519,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
 		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager()
-				.getLabelModels(), getTickManager().getActualLabelFont());
+				.getLabelModels(), getTickManager().getActualLabelFont(this));
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -718,7 +706,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			double xt = transTickToPaper(x);
 
 			MathLabel label = new MathLabel(labels[i], getTickManager()
-					.getActualLabelFont(), vertalign, horzalign);
+					.getActualLabelFont(this), vertalign, horzalign);
 
 			Color color = getLabelColor();
 
@@ -843,8 +831,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private double transTickToPaper(double tickValue) {
 		double uv;
-		if (tickTransform != null) {
-			uv = tickTransform.transformTick2User(tickValue);
+		if (tickManager.getTickTransform() != null) {
+			uv = tickManager.getTickTransform().transformTick2User(tickValue);
 		} else {
 			uv = tickValue;
 		}

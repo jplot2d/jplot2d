@@ -45,8 +45,6 @@ public interface AxisTickManager extends Element {
 
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
-	public Axis getParent();
-
 	@Hierarchy(HierarchyOp.GET)
 	public AxisRangeManager getRangeManager();
 
@@ -60,6 +58,24 @@ public interface AxisTickManager extends Element {
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
 	public Axis[] getAxes();
+
+	/**
+	 * Returns the AxisTickTransform, which defines The relationship between
+	 * user value and tick value.
+	 * 
+	 * @return the AxisTickTransform.
+	 */
+	public AxisTickTransform getTickTransform();
+
+	/**
+	 * Sets the AxisTickTransform, which defines The relationship between user
+	 * value and tick value. The AuxTransform <em>must</em> be efficient
+	 * immutable.
+	 * 
+	 * @param transform
+	 *            the AxisTickTransform object.
+	 */
+	public void setTickTransform(AxisTickTransform transform);
 
 	/**
 	 * Returns the tick range of this axis.

@@ -110,7 +110,7 @@ public abstract class DoubleTickCalculator implements TickCalculator {
 		int[] m = new int[v.length];
 		int j = 0;
 		for (int i = 0; i < v.length; i++) {
-			if (expandLo < v[i] && v[i] < expandHi) {
+			if (expandLo <= v[i] && v[i] <= expandHi) {
 				m[j++] = i;
 			}
 		}

@@ -45,8 +45,17 @@ public class SubplotImplTest {
 
 		}
 
+		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
+		when(axis.getTickManager()).thenReturn(atm);
+		try {
+			sp.addXAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
 		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
-		when(axis.getRangeManager()).thenReturn(arm);
+		when(atm.getRangeManager()).thenReturn(arm);
 		try {
 			sp.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
@@ -72,8 +81,17 @@ public class SubplotImplTest {
 
 		}
 
+		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
+		when(axis.getTickManager()).thenReturn(atm);
+		try {
+			sp.addYAxis(axis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
 		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
-		when(axis.getRangeManager()).thenReturn(arm);
+		when(atm.getRangeManager()).thenReturn(arm);
 		try {
 			sp.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
@@ -107,20 +125,24 @@ public class SubplotImplTest {
 		sp.clearRedrawNeeded();
 
 		AxisEx xaxis = mock(AxisEx.class);
+		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.canContributeToParent()).thenReturn(true);
-		when(xaxis.getRangeManager()).thenReturn(xarm);
+		when(xaxis.getTickManager()).thenReturn(xatm);
+		when(xatm.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		sp.addXAxis(xaxis);
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
 		AxisEx yaxis = mock(AxisEx.class);
+		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.canContributeToParent()).thenReturn(true);
-		when(yaxis.getRangeManager()).thenReturn(yarm);
+		when(yaxis.getTickManager()).thenReturn(yatm);
+		when(yatm.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		sp.addYAxis(yaxis);
 		assertTrue(sp.isRedrawNeeded());
@@ -129,13 +151,15 @@ public class SubplotImplTest {
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
 		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		sp.addLayer(layer0, xaxis.getRangeManager(), yaxis.getRangeManager());
+		sp.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
+				.getTickManager().getRangeManager());
 		assertFalse(sp.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
 		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		sp.addLayer(layer1, xaxis.getRangeManager(), yaxis.getRangeManager());
+		sp.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
+				.getTickManager().getRangeManager());
 		assertTrue(sp.isRedrawNeeded());
 		sp.clearRedrawNeeded();
 
@@ -159,25 +183,30 @@ public class SubplotImplTest {
 	 * Test all methods which can trigger invalidate()
 	 */
 	@Test
-	public void testInvalidate() {
+	public void testInvalidateByXAxis() {
 		PlotImpl sp = new PlotImpl();
 		assertTrue(sp.isValid());
 
 		// add or remove invisible axis does not invalid
 		AxisEx xaxis0 = mock(AxisEx.class);
+		AxisTickManagerEx xatm0 = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx xarm0 = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx xalg0 = mock(AxisRangeLockGroupEx.class);
-		when(xaxis0.getRangeManager()).thenReturn(xarm0);
+		when(xaxis0.getTickManager()).thenReturn(xatm0);
+		when(xatm0.getRangeManager()).thenReturn(xarm0);
 		when(xarm0.getLockGroup()).thenReturn(xalg0);
 		sp.addXAxis(xaxis0);
 		assertTrue(sp.isValid());
 		sp.removeXAxis(xaxis0);
 		assertTrue(sp.isValid());
 
+		// add or remove visible axis does invalid
 		AxisEx xaxis = mock(AxisEx.class);
+		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
-		when(xaxis.getRangeManager()).thenReturn(xarm);
+		when(xaxis.getTickManager()).thenReturn(xatm);
+		when(xatm.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		when(xaxis.isVisible()).thenReturn(true);
 		when(xaxis.canContribute()).thenReturn(true);
@@ -187,11 +216,19 @@ public class SubplotImplTest {
 		sp.removeXAxis(xaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
+	}
+
+	@Test
+	public void testInvalidateByYAxis() {
+		PlotImpl sp = new PlotImpl();
+		assertTrue(sp.isValid());
 
 		AxisEx yaxis0 = mock(AxisEx.class);
+		AxisTickManagerEx yatm0 = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx yarm0 = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx yalg0 = mock(AxisRangeLockGroupEx.class);
-		when(yaxis0.getRangeManager()).thenReturn(yarm0);
+		when(yaxis0.getTickManager()).thenReturn(yatm0);
+		when(yatm0.getRangeManager()).thenReturn(yarm0);
 		when(yarm0.getLockGroup()).thenReturn(yalg0);
 		sp.addYAxis(yaxis0);
 		assertTrue(sp.isValid());
@@ -200,9 +237,11 @@ public class SubplotImplTest {
 		assertTrue(sp.isValid());
 
 		AxisEx yaxis = mock(AxisEx.class);
+		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
-		when(yaxis.getRangeManager()).thenReturn(yarm);
+		when(yaxis.getTickManager()).thenReturn(yatm);
+		when(yatm.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		when(yaxis.isVisible()).thenReturn(true);
 		when(yaxis.canContribute()).thenReturn(true);
@@ -212,6 +251,12 @@ public class SubplotImplTest {
 		sp.removeYAxis(yaxis);
 		assertFalse(sp.isValid());
 		sp.validate();
+	}
+
+	@Test
+	public void testInvalidateBySubplot() {
+		PlotImpl sp = new PlotImpl();
+		assertTrue(sp.isValid());
 
 		PlotImpl sp0 = new PlotImpl();
 		sp.addSubplot(sp0, null);
