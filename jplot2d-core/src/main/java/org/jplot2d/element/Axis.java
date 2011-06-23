@@ -70,24 +70,6 @@ public interface Axis extends Component {
 	public void setPosition(AxisPosition position);
 
 	/**
-	 * Returns the AxisTickTransform, which defines The relationship between
-	 * user value and tick value.
-	 * 
-	 * @return the AxisTickTransform.
-	 */
-	public AxisTickTransform getTickTransform();
-
-	/**
-	 * Sets the AxisTickTransform, which defines The relationship between user
-	 * value and tick value. The AuxTransform <em>must</em> be efficient
-	 * immutable.
-	 * 
-	 * @param transform
-	 *            the AxisTickTransform object.
-	 */
-	public void setTickTransform(AxisTickTransform transform);
-
-	/**
 	 * Return if the grid line is displayed or not.
 	 * 
 	 * @return true if the grid line is displayed

@@ -30,7 +30,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface AxisTickManagerEx extends AxisTickManager, ElementEx {
+public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable {
 
 	public AxisEx getParent();
 
@@ -48,7 +48,7 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx {
 
 	public MathElement[] getLabelModels();
 
-	public Font getActualLabelFont();
+	public Font getActualLabelFont(AxisEx axis);
 
 	/**
 	 * Calculate ticks when tick calculation is needed.

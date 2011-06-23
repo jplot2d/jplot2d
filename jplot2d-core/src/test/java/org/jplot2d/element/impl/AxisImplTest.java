@@ -39,11 +39,13 @@ public class AxisImplTest {
 
 	@Test
 	public void testTicknessX() {
-		AxisImpl axis = new AxisImpl(mock(AxisTickManagerEx.class),
-				new AxisTitleImpl());
+		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.HORIZONTAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
+
+		AxisTickManagerEx tickManager = mock(AxisTickManagerEx.class);
+		axis.setTickManager(tickManager);
 
 		PlotEx sp = mock(PlotEx.class);
 		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
@@ -51,13 +53,13 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
 		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
-		axis.setRangeManager(va);
+		axis.getTickManager().setRangeManager(va);
 
-		when(axis.getTick().getLabelModels()).thenReturn(
+		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"),
 						new MathElement.Mn("5"), new MathElement.Mn("10") });
 		Font font = axis.getEffectiveFont();
-		when(axis.getTick().getActualLabelFont()).thenReturn(font);
+		when(axis.getTickManager().getActualLabelFont(axis)).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
@@ -77,11 +79,13 @@ public class AxisImplTest {
 
 	@Test
 	public void testTicknessY() {
-		AxisImpl axis = new AxisImpl(mock(AxisTickManagerEx.class),
-				new AxisTitleImpl());
+		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.VERTICAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
+
+		AxisTickManagerEx tickManager = mock(AxisTickManagerEx.class);
+		axis.setTickManager(tickManager);
 
 		PlotEx sp = mock(PlotEx.class);
 		when(sp.getEffectiveFontName()).thenReturn("Lucida Bright");
@@ -89,13 +93,13 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
 		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
-		axis.setRangeManager(va);
+		axis.getTickManager().setRangeManager(va);
 
-		when(axis.getTick().getLabelModels()).thenReturn(
+		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"),
 						new MathElement.Mn("5"), new MathElement.Mn("10") });
 		Font font = axis.getEffectiveFont();
-		when(axis.getTick().getActualLabelFont()).thenReturn(font);
+		when(axis.getTickManager().getActualLabelFont(axis)).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
@@ -112,7 +116,7 @@ public class AxisImplTest {
 		checkDouble(axis.getAsc(), 8.0);
 		checkDouble(axis.getDesc(), 18.09375);
 
-		when(axis.getTick().getLabelModels())
+		when(axis.getTickManager().getLabelModels())
 				.thenReturn(
 						new MathElement[] { new MathElement.Mn("0.0"),
 								new MathElement.Mn("5.0"),
@@ -126,10 +130,12 @@ public class AxisImplTest {
 	@Test
 	public void testSetLength() {
 		AxisEx axis = new AxisImpl();
+		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
+		axis.setTickManager(tickManager);
 		AxisRangeManagerEx arm = new AxisRangeManagerImpl();
+		tickManager.setRangeManager(arm);
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(alg.isAutoRange()).thenReturn(true);
-		axis.setRangeManager(arm);
 		arm.setLockGroup(alg);
 
 		verify(alg, times(0)).reAutoRange();

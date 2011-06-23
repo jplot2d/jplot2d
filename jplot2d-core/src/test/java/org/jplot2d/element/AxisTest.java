@@ -40,13 +40,11 @@ public class AxisTest {
 	@Test
 	public void testCreateAxis() {
 		Axis axis = factory.createAxis();
-		AxisTickManager tick = axis.getTick();
 		AxisTitle title = axis.getTitle();
 		AxisTickManager tm = axis.getTickManager();
 		AxisRangeManager arm = tm.getRangeManager();
 		AxisRangeLockGroup group = arm.getLockGroup();
 		assertTrue(axis instanceof ElementAddition);
-		assertTrue(tick instanceof ElementAddition);
 		assertTrue(title instanceof ElementAddition);
 		assertTrue(tm instanceof ElementAddition);
 		assertTrue(arm instanceof ElementAddition);
@@ -90,35 +88,104 @@ public class AxisTest {
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
-		AxisRangeManager xva = xaxis.getRangeManager();
-		AxisRangeManager yva = yaxis.getRangeManager();
-		AxisRangeLockGroup xag = xva.getLockGroup();
-		AxisRangeLockGroup yag = yva.getLockGroup();
+		AxisTickManager xtm = xaxis.getTickManager();
+		AxisTickManager ytm = yaxis.getTickManager();
+		AxisRangeManager xarm = xtm.getRangeManager();
+		AxisRangeManager yarm = ytm.getRangeManager();
+		AxisRangeLockGroup xag = xarm.getLockGroup();
+		AxisRangeLockGroup yag = yarm.getLockGroup();
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
 
-		assertSame(xaxis.getRangeManager(), xva);
-		assertSame(yaxis.getRangeManager(), yva);
-		assertSame(xva.getLockGroup(), xag);
-		assertSame(yva.getLockGroup(), yag);
-		assertSame(xva.getEnvironment(), sp.getEnvironment());
-		assertSame(yva.getEnvironment(), sp.getEnvironment());
-		assertSame(xag.getEnvironment(), xva.getEnvironment());
-		assertSame(yag.getEnvironment(), yva.getEnvironment());
+		assertSame(xaxis.getTickManager(), xtm);
+		assertSame(yaxis.getTickManager(), ytm);
+		assertSame(xtm.getRangeManager(), xarm);
+		assertSame(ytm.getRangeManager(), yarm);
+		assertSame(xarm.getLockGroup(), xag);
+		assertSame(yarm.getLockGroup(), yag);
+		assertSame(xtm.getEnvironment(), sp.getEnvironment());
+		assertSame(ytm.getEnvironment(), sp.getEnvironment());
+		assertSame(xarm.getEnvironment(), sp.getEnvironment());
+		assertSame(yarm.getEnvironment(), sp.getEnvironment());
+		assertSame(xag.getEnvironment(), sp.getEnvironment());
+		assertSame(yag.getEnvironment(), sp.getEnvironment());
 
 		sp.removeXAxis(xaxis);
 		sp.removeYAxis(yaxis);
 
-		// the viewport axis and axis group should be removed together
-		assertSame(xaxis.getRangeManager(), xva);
-		assertSame(yaxis.getRangeManager(), yva);
-		assertSame(xva.getLockGroup(), xag);
-		assertSame(yva.getLockGroup(), yag);
-		assertNotSame(xva.getEnvironment(), sp.getEnvironment());
-		assertNotSame(yva.getEnvironment(), sp.getEnvironment());
-		assertSame(xag.getEnvironment(), xva.getEnvironment());
-		assertSame(yag.getEnvironment(), yva.getEnvironment());
+		// the axis range manager and axis lock group should be removed together
+		assertSame(xaxis.getTickManager(), xtm);
+		assertSame(yaxis.getTickManager(), ytm);
+		assertSame(xtm.getRangeManager(), xarm);
+		assertSame(ytm.getRangeManager(), yarm);
+		assertSame(xarm.getLockGroup(), xag);
+		assertSame(yarm.getLockGroup(), yag);
+		assertNotSame(xaxis.getEnvironment(), sp.getEnvironment());
+		assertNotSame(yaxis.getEnvironment(), sp.getEnvironment());
+		assertSame(xaxis.getEnvironment(), xtm.getEnvironment());
+		assertSame(yaxis.getEnvironment(), ytm.getEnvironment());
+		assertSame(xtm.getEnvironment(), xarm.getEnvironment());
+		assertSame(ytm.getEnvironment(), yarm.getEnvironment());
+		assertSame(xarm.getEnvironment(), xag.getEnvironment());
+		assertSame(yarm.getEnvironment(), yag.getEnvironment());
+	}
+
+	@Test
+	public void testSetAxisTickManager() {
+		Plot sp = factory.createSubplot();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
+
+		// set before adding into the same environment
+		try {
+			yaxis.setTickManager(xaxis.getTickManager());
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+			// The axis and group not in the save environment
+		}
+
+		// this is allowed if the viewport axis has no parent
+		yaxis.setTickManager(factory.createAxisTickManager());
+		AxisTickManager ytm = yaxis.getTickManager();
+
+		sp.addXAxis(xaxis);
+		sp.addYAxis(yaxis);
+		yaxis.setTickManager(xaxis.getTickManager());
+
+		// the old y viewport axis should be removed from the environment
+		assertNull(ytm.getParent());
+		assertArrayEquals(ytm.getAxes(), new AxisRangeManager[0]);
+		assertNotSame(ytm.getEnvironment(), sp.getEnvironment());
+
+		assertSame(yaxis.getTickManager(), xaxis.getTickManager());
+		assertArrayEquals(xaxis.getTickManager().getAxes(), new Axis[] { xaxis,
+				yaxis });
+		assertSame(xaxis.getTickManager().getEnvironment(), sp.getEnvironment());
+
+		// remove x axis
+		sp.removeXAxis(xaxis);
+		assertNull(xaxis.getTickManager());
+		assertArrayEquals(yaxis.getTickManager().getAxes(),
+				new Axis[] { yaxis });
+		assertSame(yaxis.getTickManager().getEnvironment(), sp.getEnvironment());
+
+		// adding an axis with null range manager throws exception
+		try {
+			sp.addXAxis(xaxis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
+		// set xaxis a new range manager
+		AxisTickManager xntm = factory.createAxisTickManager();
+		xaxis.setTickManager(xntm);
+
+		assertSame(xaxis.getTickManager(), xntm);
+		assertArrayEquals(xntm.getAxes(), new Axis[] { xaxis });
+		assertSame(xntm.getEnvironment(), xaxis.getEnvironment());
+
 	}
 
 	@Test
@@ -126,41 +193,43 @@ public class AxisTest {
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
+		AxisTickManager xtm = xaxis.getTickManager();
+		AxisTickManager ytm = yaxis.getTickManager();
 
 		// set before adding into the same environment
 		try {
-			yaxis.setRangeManager(xaxis.getRangeManager());
+			yaxis.getTickManager().setRangeManager(
+					xaxis.getTickManager().getRangeManager());
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 			// The axis and group not in the save environment
 		}
 
 		// this is allowed if the viewport axis has no parent
-		yaxis.setRangeManager(factory.createAxisRangeManager());
-		AxisRangeManager yva = yaxis.getRangeManager();
+		yaxis.getTickManager()
+				.setRangeManager(factory.createAxisRangeManager());
+		AxisRangeManager yva = yaxis.getTickManager().getRangeManager();
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
-		yaxis.setRangeManager(xaxis.getRangeManager());
+		ytm.setRangeManager(xtm.getRangeManager());
 
 		// the old y viewport axis should be removed from the environment
 		assertNull(yva.getParent());
-		assertArrayEquals(yva.getAxes(), new AxisRangeManager[0]);
+		assertArrayEquals(yva.getTickManagers(), new AxisTickManager[0]);
 		assertNotSame(yva.getEnvironment(), sp.getEnvironment());
 
-		assertSame(yaxis.getRangeManager(), xaxis.getRangeManager());
-		assertArrayEquals(xaxis.getRangeManager().getAxes(), new Axis[] {
-				xaxis, yaxis });
-		assertSame(xaxis.getRangeManager().getEnvironment(),
-				sp.getEnvironment());
+		assertSame(ytm.getRangeManager(), xtm.getRangeManager());
+		assertArrayEquals(xtm.getRangeManager().getTickManagers(),
+				new AxisTickManager[] { xtm, ytm });
+		assertSame(xtm.getRangeManager().getEnvironment(), sp.getEnvironment());
 
 		// remove x axis
 		sp.removeXAxis(xaxis);
-		assertNull(xaxis.getRangeManager());
-		assertArrayEquals(yaxis.getRangeManager().getAxes(),
-				new Axis[] { yaxis });
-		assertSame(yaxis.getRangeManager().getEnvironment(),
-				sp.getEnvironment());
+		assertNull(xtm.getRangeManager());
+		assertArrayEquals(ytm.getRangeManager().getTickManagers(),
+				new AxisTickManager[] { ytm });
+		assertSame(ytm.getRangeManager().getEnvironment(), sp.getEnvironment());
 
 		// adding an axis with null range manager throws exception
 		try {
@@ -172,10 +241,10 @@ public class AxisTest {
 
 		// set xaxis a new range manager
 		AxisRangeManager xnag = factory.createAxisRangeManager();
-		xaxis.setRangeManager(xnag);
+		xtm.setRangeManager(xnag);
 
-		assertSame(xaxis.getRangeManager(), xnag);
-		assertArrayEquals(xnag.getAxes(), new Axis[] { xaxis });
+		assertSame(xtm.getRangeManager(), xnag);
+		assertArrayEquals(xnag.getTickManagers(), new AxisTickManager[] { xtm });
 		assertSame(xnag.getEnvironment(), xaxis.getEnvironment());
 
 	}
@@ -185,8 +254,8 @@ public class AxisTest {
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
-		AxisRangeManager xva = xaxis.getRangeManager();
-		AxisRangeManager yva = yaxis.getRangeManager();
+		AxisRangeManager xva = xaxis.getTickManager().getRangeManager();
+		AxisRangeManager yva = yaxis.getTickManager().getRangeManager();
 		AxisRangeLockGroup xag = xva.getLockGroup();
 		AxisRangeLockGroup yag = yva.getLockGroup();
 

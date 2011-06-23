@@ -29,6 +29,7 @@ import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisRangeLockGroupEx;
 import org.jplot2d.element.impl.AxisRangeManagerEx;
+import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.element.impl.PlotImpl;
@@ -139,33 +140,35 @@ public class SimpleLayoutDirectorTest {
 		subplot.setSize(300, 200);
 
 		// add axes
+		AxisTickManagerEx tm = mock(AxisTickManagerEx.class);
 		AxisRangeManagerEx rm = mock(AxisRangeManagerEx.class);
 		AxisRangeLockGroupEx lg = mock(AxisRangeLockGroupEx.class);
+		when(tm.getRangeManager()).thenReturn(rm);
 		when(rm.getLockGroup()).thenReturn(lg);
 
 		AxisEx left = mock(AxisEx.class);
-		when(left.getRangeManager()).thenReturn(rm);
+		when(left.getTickManager()).thenReturn(tm);
 		when(left.canContribute()).thenReturn(true);
 		when(left.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(left.getAsc()).thenReturn(8.0);
 		when(left.getDesc()).thenReturn(2.0);
 
 		AxisEx right = mock(AxisEx.class);
-		when(right.getRangeManager()).thenReturn(rm);
+		when(right.getTickManager()).thenReturn(tm);
 		when(right.canContribute()).thenReturn(true);
 		when(right.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(right.getAsc()).thenReturn(2.0);
 		when(right.getDesc()).thenReturn(8.0);
 
 		AxisEx top = mock(AxisEx.class);
-		when(top.getRangeManager()).thenReturn(rm);
+		when(top.getTickManager()).thenReturn(tm);
 		when(top.canContribute()).thenReturn(true);
 		when(top.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(top.getAsc()).thenReturn(5.0);
 		when(top.getDesc()).thenReturn(2.5);
 
 		AxisEx bottom = mock(AxisEx.class);
-		when(bottom.getRangeManager()).thenReturn(rm);
+		when(bottom.getTickManager()).thenReturn(tm);
 		when(bottom.canContribute()).thenReturn(true);
 		when(bottom.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(bottom.getAsc()).thenReturn(2.5);
