@@ -318,9 +318,9 @@ public class ComponentFactory {
 	}
 
 	/**
-	 * Create an AxisRangeManager, which contains an axis range lock group.
+	 * Create an AxisTickManager, which contains an axis range manager.
 	 * 
-	 * @return an AxisRangeManager
+	 * @return an AxisTickManager
 	 */
 	public AxisTickManager createAxisTickManager() {
 		AxisRangeManager rm = createAxisRangeManager();

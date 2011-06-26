@@ -219,6 +219,10 @@ public class AxisTickManagerImpl extends ElementImpl implements
 
 	private Range2D circularRange;
 
+	public AxisTickManagerImpl() {
+
+	}
+
 	public AxisEx getParent() {
 		return (AxisImpl) parent;
 	}
@@ -239,6 +243,26 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		if (this.rangeManager != null) {
 			this.rangeManager.addTickManager(this);
 		}
+
+		updateTickAlgorithm();
+	}
+
+	public void transformTypeChanged() {
+		updateTickAlgorithm();
+	}
+
+	/**
+	 * update tick algorithm when axis type or tick transform changed.
+	 */
+	private void updateTickAlgorithm() {
+		TickAlgorithm ta = rangeManager.getType().getTickAlgorithm(
+				rangeManager.getTransformType(), getTickTransform());
+		if (ta == null) {
+			setTickTransform(null);
+			ta = rangeManager.getType().getTickAlgorithm(
+					rangeManager.getTransformType(), null);
+		}
+		setTickAlgorithm(ta);
 	}
 
 	public AxisEx[] getAxes() {
@@ -440,7 +464,7 @@ public class AxisTickManagerImpl extends ElementImpl implements
 	}
 
 	public Font getActualLabelFont(AxisEx axis) {
-		return axisStatusMap.get(axis).actualLabelFont;
+		return axisStatusMap.get(axis).getActualLabelFont();
 	}
 
 	public MathElement[] getLabelModels() {

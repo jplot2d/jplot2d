@@ -24,6 +24,7 @@ import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtick.LinearTickAlgorithm;
 import org.jplot2d.axtick.LogTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
+import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -88,7 +89,11 @@ public class NumberAxisType extends AxisType {
 		return LinearTransformType.getInstance();
 	}
 
-	public TickAlgorithm getTickAlgorithm(TransformType txfType) {
+	public TickAlgorithm getTickAlgorithm(TransformType txfType,
+			AxisTickTransform tickTransform) {
+		if (tickTransform != null) {
+			return null;
+		}
 		if (txfType == LinearTransformType.getInstance()) {
 			return LinearTickAlgorithm.getInstance();
 		}

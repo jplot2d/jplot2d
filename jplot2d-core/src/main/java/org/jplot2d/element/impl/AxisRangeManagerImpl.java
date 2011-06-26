@@ -138,8 +138,8 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 			txfType = type.getDefaultTransformType();
 		}
 
-		for (AxisTickManagerEx axis : tickManagers) {
-			axis.setTickAlgorithm(type.getTickAlgorithm(txfType));
+		for (AxisTickManagerEx atm : tickManagers) {
+			atm.transformTypeChanged();
 		}
 
 		group.validateAxesRange();
@@ -157,11 +157,17 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 		this.txfType = txfType;
 
+		for (AxisTickManagerEx atm : tickManagers) {
+			atm.transformTypeChanged();
+		}
 	}
 
 	public void changeTransformType(TransformType txfType) {
 		this.txfType = txfType;
 
+		for (AxisTickManagerEx atm : tickManagers) {
+			atm.transformTypeChanged();
+		}
 	}
 
 	public AxisRangeLockGroupEx getLockGroup() {
