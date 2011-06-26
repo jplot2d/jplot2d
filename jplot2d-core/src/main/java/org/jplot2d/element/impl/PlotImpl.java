@@ -535,55 +535,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public Layer getLayer(int index) {
-		return layers.get(index);
-	}
-
-	public int indexOf(LayerEx layer) {
-		return layers.indexOf(layer);
-	}
-
-	public LayerEx[] getLayers() {
-		return layers.toArray(new LayerEx[layers.size()]);
-	}
-
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
-			AxisRangeManager yRangeManager) {
-		LayerEx lx = (LayerEx) layer;
-		layers.add(lx);
-		lx.setParent(this);
-		lx.setRangeManager(xRangeManager, yRangeManager);
-
-		if (lx.canContributeToParent()) {
-			redraw();
-		} else if (lx.canContribute()) {
-			rerender();
-		}
-
-		// add legend items
-		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
-			getLegend().addLegendItem(gp.getLegendItem());
-		}
-	}
-
-	public void removeLayer(Layer layer) {
-		LayerEx lx = (LayerEx) layer;
-		layers.remove(lx);
-		lx.setParent(null);
-		lx.setRangeManager(null, null);
-
-		if (lx.canContributeToParent()) {
-			redraw();
-		} else if (lx.canContribute()) {
-			rerender();
-		}
-
-		// remove legend items
-		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
-			getLegend().removeLegendItem(gp.getLegendItem());
-		}
-	}
-
 	public AxisEx getXAxis(int index) {
 		return xAxis.get(index);
 	}
@@ -719,6 +670,60 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 		if (ax.canContribute()) {
 			invalidate();
+		}
+	}
+
+	public Layer getLayer(int index) {
+		return layers.get(index);
+	}
+
+	public int indexOf(LayerEx layer) {
+		return layers.indexOf(layer);
+	}
+
+	public LayerEx[] getLayers() {
+		return layers.toArray(new LayerEx[layers.size()]);
+	}
+
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
+			AxisRangeManager yRangeManager) {
+		LayerEx lx = (LayerEx) layer;
+		layers.add(lx);
+		lx.setParent(this);
+		lx.setRangeManager(xRangeManager, yRangeManager);
+
+		if (lx.canContributeToParent()) {
+			redraw();
+		} else if (lx.canContribute()) {
+			rerender();
+		}
+
+		// add legend items
+		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
+			getLegend().addLegendItem(gp.getLegendItem());
+		}
+	}
+
+	public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
+		this.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
+				.getTickManager().getRangeManager());
+	}
+
+	public void removeLayer(Layer layer) {
+		LayerEx lx = (LayerEx) layer;
+		layers.remove(lx);
+		lx.setParent(null);
+		lx.setRangeManager(null, null);
+
+		if (lx.canContributeToParent()) {
+			redraw();
+		} else if (lx.canContribute()) {
+			rerender();
+		}
+
+		// remove legend items
+		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
+			getLegend().removeLegendItem(gp.getLegendItem());
 		}
 	}
 

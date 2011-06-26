@@ -62,7 +62,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 *            the plot to be display
 	 */
 	public JPlot2DComponent(Plot plot) {
-		this(new RenderEnvironment(plot, true));
+		this(plot, true);
 	}
 
 	/**
@@ -76,7 +76,14 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 *            properties can be safely changed by multiple threads.
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
-		this(new RenderEnvironment(plot, threadSafe));
+		this(createRenderEnvironment(plot, threadSafe));
+	}
+
+	private static RenderEnvironment createRenderEnvironment(Plot plot,
+			boolean threadSafe) {
+		RenderEnvironment env = new RenderEnvironment(threadSafe);
+		env.setPlot(plot);
+		return env;
 	}
 
 	/**

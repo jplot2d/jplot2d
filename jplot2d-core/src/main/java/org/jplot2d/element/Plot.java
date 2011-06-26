@@ -189,31 +189,6 @@ public interface Plot extends Container {
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeTitle(Title title);
 
-	/**
-	 * Gets the nth layer in this plot.
-	 * 
-	 * @param n
-	 *            the index of the layer to get.
-	 * @return the nth layer in this plot
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Layer getLayer(int index);
-
-	/**
-	 * Returns all layers in the order of added.
-	 * 
-	 * @return all layers
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public Layer[] getLayers();
-
-	@Hierarchy(HierarchyOp.ADD_REF2)
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
-			AxisRangeManager yRangeManager);
-
-	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeLayer(Layer layer);
-
 	@Hierarchy(HierarchyOp.GET)
 	public Axis getXAxis(int index);
 
@@ -251,6 +226,60 @@ public interface Plot extends Container {
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	public void removeYAxis(Axis axis);
+
+	/**
+	 * Gets the nth layer in this plot.
+	 * 
+	 * @param n
+	 *            the index of the layer to get.
+	 * @return the nth layer in this plot
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public Layer getLayer(int index);
+
+	/**
+	 * Returns all layers in the order of added.
+	 * 
+	 * @return all layers
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Layer[] getLayers();
+
+	/**
+	 * Add a layer to this plot. The layer will associate with the given X/Y
+	 * axis range manager to control which part show in the plot viewport.
+	 * 
+	 * @param layer
+	 *            the layer to be add
+	 * @param xRangeManager
+	 *            the x axis range manager
+	 * @param yRangeManager
+	 *            the y axis range manager
+	 */
+	@Hierarchy(HierarchyOp.ADD_REF2)
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
+			AxisRangeManager yRangeManager);
+
+	/**
+	 * Add a layer to this plot. The layer will associate with the given X/Y
+	 * axis' range manager to control which part show in the plot viewport.
+	 * Equivalent to
+	 * {@link #addLayer(Layer, AxisRangeManager, AxisRangeManager)
+	 * addLayer(layer, xaxis.getTickManager().getRangeManager(),
+	 * yaxis.getTickManager().getRangeManager())}
+	 * 
+	 * @param layer
+	 *            the layer to be add
+	 * @param xaxis
+	 *            the x axis
+	 * @param yaxis
+	 *            the y axis
+	 */
+	@Hierarchy(HierarchyOp.ADD_REF2)
+	public void addLayer(Layer layer, Axis xaxis, Axis yaxis);
+
+	@Hierarchy(HierarchyOp.REMOVE)
+	public void removeLayer(Layer layer);
 
 	/**
 	 * Gets the nth subplot in this plot.
