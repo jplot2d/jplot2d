@@ -22,6 +22,7 @@ import org.jplot2d.axtrans.LinearTransformType;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
+import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -66,7 +67,12 @@ public class DateAxisType extends AxisType {
 	}
 
 	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType) {
+	public TickAlgorithm getTickAlgorithm(TransformType txfType,
+			AxisTickTransform tickTransform) {
+		if (tickTransform != null) {
+			return null;
+		}
+
 		return DateTickAlgorithm.getInstance();
 	}
 

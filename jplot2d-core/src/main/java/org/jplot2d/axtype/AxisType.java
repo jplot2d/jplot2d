@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtick.TickAlgorithm;
+import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.Range2D;
 
 /**
@@ -77,7 +78,18 @@ public abstract class AxisType {
 	 */
 	public abstract Range2D getDefaultWorldRange(TransformType txfType);
 
-	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType);
+	/**
+	 * Returns a TickAlgorithm by the given transform type and tick transform,
+	 * or false if the given tick transform is not allowed.
+	 * 
+	 * @param txfType
+	 *            the transform type
+	 * @param tickTransform
+	 *            the tick transform, can be <code>null</code>
+	 * @return a TickAlgorithm
+	 */
+	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType,
+			AxisTickTransform tickTransform);
 
 	/**
 	 * Some axis has a circular nature, such as angle. This range is a canonical
