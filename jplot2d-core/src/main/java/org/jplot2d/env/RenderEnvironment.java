@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.Renderer;
@@ -38,21 +37,19 @@ import org.jplot2d.renderer.Renderer;
  */
 public class RenderEnvironment extends PlotEnvironment {
 
-	private List<Renderer<?>> rendererList = Collections
+	private final List<Renderer<?>> rendererList = Collections
 			.synchronizedList(new ArrayList<Renderer<?>>());
 
 	/**
 	 * Construct a environment to render the given plot.
 	 * 
-	 * @param plot
-	 *            the plot to be rendered or exported
 	 * @param threadSafe
 	 *            if <code>false</code>, all plot properties can only be changed
 	 *            within a single thread, such as servlet. if <code>true</code>,
 	 *            all plot properties can be safely changed by multiple threads.
 	 */
-	public RenderEnvironment(Plot plot, boolean threadSafe) {
-		super(plot, threadSafe);
+	public RenderEnvironment(boolean threadSafe) {
+		super(threadSafe);
 	}
 
 	public Renderer<?>[] getRenderers() {

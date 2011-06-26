@@ -438,6 +438,16 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	}
 
+	/**
+	 * Called when setting a reference to a component. The referred component
+	 * must belong to the same environment. The referred component is the 1st
+	 * argument of the calling method.
+	 * 
+	 * @param method
+	 * @param args
+	 *            the arguments
+	 * @throws Throwable
+	 */
 	private void invokeSetRefElementMethod(Method method, Object[] args)
 			throws Throwable {
 		if (args[0] == null) {
@@ -506,12 +516,11 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when adding a child component. The child component is the 1st
-	 * argument of the calling method.
+	 * Called when adding a component and set n references at the same time.
 	 * 
 	 * @param method
 	 * @param args
-	 *            the arguments
+	 * @param nref
 	 * @throws Throwable
 	 */
 	private void invokeAddRefMethod(Method method, Object[] args, int nref)

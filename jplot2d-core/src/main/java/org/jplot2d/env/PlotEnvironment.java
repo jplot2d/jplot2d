@@ -55,21 +55,23 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * The plot proxy
 	 */
-	protected final Plot plot;
+	protected Plot plot;
 
 	protected PlotEx plotImpl;
 
 	private Map<ElementEx, ElementEx> copyMap;
 
+	protected PlotEnvironment(boolean threadSafe) {
+		super(threadSafe);
+	}
+
 	/**
-	 * Construct a plot environment with the given plot. The plot must hosted by
+	 * Sets a plot to this environment. The plot must hosted by
 	 * a dummy environment.
 	 * 
 	 * @param plot
 	 */
-	protected PlotEnvironment(Plot plot, boolean threadSafe) {
-		super(threadSafe);
-
+	public void setPlot(Plot plot) {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
