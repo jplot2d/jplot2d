@@ -58,46 +58,25 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		private double axisLength;
 		private boolean labelSameOrientation;
 		private Font labelFont;
-		private Font actualLabelFont;
 
 		public AxisStatus(double length, boolean labelSameOrientation, Font font) {
 			this.axisLength = length;
 			this.labelSameOrientation = labelSameOrientation;
 			this.labelFont = font;
-			this.actualLabelFont = font;
 		}
 
 		public double getAxisLength() {
 			return axisLength;
 		}
 
-		public void setAxisLength(double axisLength) {
-			this.axisLength = axisLength;
-		}
-
 		public boolean isLabelSameOrientation() {
 			return labelSameOrientation;
-		}
-
-		public void setLabelSameOrientation(boolean labelSameOrientation) {
-			this.labelSameOrientation = labelSameOrientation;
 		}
 
 		public Font getLabelFont() {
 			return labelFont;
 		}
 
-		public void setLabelFont(Font labelFont) {
-			this.labelFont = labelFont;
-		}
-
-		public Font getActualLabelFont() {
-			return actualLabelFont;
-		}
-
-		public void setActualLabelFont(Font actualLabelFont) {
-			this.actualLabelFont = actualLabelFont;
-		}
 	}
 
 	public static final int DEFAULT_TICKS_NUMBER = 11;
@@ -189,16 +168,14 @@ public class AxisTickManagerImpl extends ElementImpl implements
 
 	private boolean _labelFormatChanged;
 
-	private boolean _labelIntervalChanged;
-
 	/**
 	 * The label font cache for detect font changes
 	 */
 	private Map<AxisEx, AxisStatus> axisStatusMap = new HashMap<AxisEx, AxisStatus>();
 
-	private boolean _propLabelFontChanged;
+	private Map<AxisEx, Font> actualFontMap = new HashMap<AxisEx, Font>();
 
-	private boolean _labelOrientationChanged;
+	private boolean _labelDensityChanged;
 
 	private boolean _rangeChanged;
 
@@ -276,16 +253,23 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		} else {
 			parent = null;
 		}
+		AxisStatus axisStatus = new AxisStatus(axis.getLength(),
+				isLabelSameOrientation(axis), axis.getEffectiveFont());
+		axisStatusMap.put(axis, axisStatus);
+		actualFontMap.put(axis, axis.getEffectiveFont());
+		_labelDensityChanged = true;
 	}
 
 	public void removeAxis(AxisEx axis) {
 		axes.remove(axis);
-		axisStatusMap.clear();
 		if (axes.size() == 1) {
 			parent = axes.get(0);
 		} else {
 			parent = null;
 		}
+		axisStatusMap.remove(axis);
+		actualFontMap.remove(axis);
+		_labelDensityChanged = true;
 	}
 
 	public AxisTickTransform getTickTransform() {
@@ -464,7 +448,7 @@ public class AxisTickManagerImpl extends ElementImpl implements
 	}
 
 	public Font getActualLabelFont(AxisEx axis) {
-		return axisStatusMap.get(axis).getActualLabelFont();
+		return actualFontMap.get(axis);
 	}
 
 	public MathElement[] getLabelModels() {
@@ -512,27 +496,23 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		for (AxisEx ax : axes) {
 			AxisStatus axisStatus = axisStatusMap.get(ax);
 			boolean labelSameOrientation = isLabelSameOrientation(ax);
-			if (axisStatus == null) {
+			boolean newStatus = false;
+			if (ax.getLength() != axisStatus.getAxisLength()) {
+				_labelDensityChanged = true;
+				newStatus = true;
+			}
+			if (labelSameOrientation != axisStatus.isLabelSameOrientation()) {
+				_labelDensityChanged = true;
+				newStatus = true;
+			}
+			if (!ax.getEffectiveFont().equals(axisStatus.getLabelFont())) {
+				_labelDensityChanged = true;
+				newStatus = true;
+				actualFontMap.put(ax, ax.getEffectiveFont());
+			}
+			if (newStatus) {
 				axisStatus = new AxisStatus(ax.getLength(),
 						labelSameOrientation, ax.getEffectiveFont());
-				axisStatusMap.put(ax, axisStatus);
-				_trfChanged = true;
-				_labelOrientationChanged = true;
-				_propLabelFontChanged = true;
-			} else {
-				if (ax.getLength() != axisStatus.getAxisLength()) {
-					_trfChanged = true;
-					axisStatus.setAxisLength(ax.getLength());
-				}
-				if (labelSameOrientation != axisStatus.isLabelSameOrientation()) {
-					_labelOrientationChanged = true;
-					axisStatus.setLabelSameOrientation(labelSameOrientation);
-				}
-				if (!ax.getEffectiveFont().equals(axisStatus.getLabelFont())) {
-					_propLabelFontChanged = true;
-					axisStatus.setLabelFont(ax.getEffectiveFont());
-					axisStatus.setActualLabelFont(ax.getEffectiveFont());
-				}
 			}
 		}
 
@@ -626,19 +606,17 @@ public class AxisTickManagerImpl extends ElementImpl implements
 
 		/* shrink labels */
 		boolean actualLabelFontChanged = false;
-		if (_valuesChanged || labelsChanged || _labelIntervalChanged
-				|| _propLabelFontChanged || _labelOrientationChanged
+		if (_valuesChanged || labelsChanged || _labelDensityChanged
 				|| _axisTypeChanged || _trfChanged) {
 			actualLabelFontChanged = shrinkLabelFonts();
 		}
-		_propLabelFontChanged = _trfChanged = _axisTypeChanged = false;
+		_labelDensityChanged = _trfChanged = _axisTypeChanged = false;
 
 		boolean tickChanged = false;
 
-		if (labelsChanged || _labelIntervalChanged || _labelOrientationChanged
-				|| actualLabelFontChanged) {
+		if (labelsChanged || _labelDensityChanged || actualLabelFontChanged) {
 			tickChanged = true;
-			_labelIntervalChanged = _labelOrientationChanged = false;
+			_labelDensityChanged = false;
 		}
 
 		if (_valuesChanged || _minorValuesChanged) {
@@ -663,8 +641,7 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		if (!(autoValuesChanged || autoIntervalChanged
 				|| autoAdjustNumberChanged || _propNumberChanged
 				|| _minorNumberChanged || autoLabelFormatChanged
-				|| _labelFormatChanged || _labelIntervalChanged
-				|| _propLabelFontChanged || _labelOrientationChanged
+				|| _labelFormatChanged || _labelDensityChanged
 				|| _tickAlgorithmChanged || _trfChanged || _rangeChanged)) {
 			return;
 		}
@@ -672,8 +649,7 @@ public class AxisTickManagerImpl extends ElementImpl implements
 		autoValuesChanged = autoIntervalChanged = autoAdjustNumberChanged = false;
 		_propNumberChanged = _minorNumberChanged = false;
 		autoLabelFormatChanged = _labelFormatChanged = false;
-		_labelIntervalChanged = false;
-		_propLabelFontChanged = _labelOrientationChanged = false;
+		_labelDensityChanged = false;
 		_tickAlgorithmChanged = _trfChanged = false;
 		_rangeChanged = false;
 
@@ -736,10 +712,9 @@ public class AxisTickManagerImpl extends ElementImpl implements
 
 		boolean tickChanged = false;
 
-		if (labelsChanged || _labelIntervalChanged || _labelOrientationChanged
-				|| actualLabelFontChanged) {
+		if (labelsChanged || _labelDensityChanged || actualLabelFontChanged) {
 			tickChanged = true;
-			_labelIntervalChanged = _labelOrientationChanged = false;
+			_labelDensityChanged = false;
 		}
 
 		if (_valuesChanged || _minorValuesChanged) {
@@ -831,10 +806,11 @@ public class AxisTickManagerImpl extends ElementImpl implements
 	 */
 	private boolean shrinkLabelFonts() {
 		boolean changed = false;
-		for (AxisStatus axisStatus : axisStatusMap.values()) {
+		for (AxisEx axis : axes) {
+			AxisStatus axisStatus = axisStatusMap.get(axis);
 			Font sf = shrinkLabelFont(axisStatus);
-			if (!axisStatus.getActualLabelFont().equals(sf)) {
-				axisStatus.setActualLabelFont(sf);
+			if (!actualFontMap.get(axis).equals(sf)) {
+				actualFontMap.put(axis, sf);
 				changed = true;
 			}
 		}
@@ -882,7 +858,7 @@ public class AxisTickManagerImpl extends ElementImpl implements
 			MathElement[] labels) {
 		double maxDensity = 0;
 		for (AxisEx axis : axes) {
-			double density = getLabelsDensity(nxf, axis.getLength(), values,
+			double density = getLabelsDensity(nxf, axis.getLength(), tickValues,
 					labels, axis.getEffectiveFont(),
 					isLabelSameOrientation(axis));
 			if (maxDensity < density) {
