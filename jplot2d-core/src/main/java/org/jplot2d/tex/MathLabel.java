@@ -63,6 +63,9 @@ public class MathLabel {
 		if (font == null) {
 			throw new IllegalArgumentException("font cannot be null");
 		}
+		if (Float.isNaN(font.getSize2D())) {
+			throw new IllegalArgumentException("font size2D cannot be NaN");
+		}
 		if (valign == null) {
 			throw new IllegalArgumentException("valign cannot be null");
 		}
