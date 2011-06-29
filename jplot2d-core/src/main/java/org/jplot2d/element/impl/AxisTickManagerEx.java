@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Font;
-
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisTickManager;
@@ -47,8 +45,6 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable 
 	public void setTickAlgorithm(TickAlgorithm algorithm);
 
 	public MathElement[] getLabelModels();
-
-	public Font getActualLabelFont(AxisEx axis);
 
 	/**
 	 * Calculate ticks when tick calculation is needed.

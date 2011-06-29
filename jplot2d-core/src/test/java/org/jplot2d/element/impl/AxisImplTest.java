@@ -58,8 +58,6 @@ public class AxisImplTest {
 		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"),
 						new MathElement.Mn("5"), new MathElement.Mn("10") });
-		Font font = axis.getEffectiveFont();
-		when(axis.getTickManager().getActualLabelFont(axis)).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
@@ -98,8 +96,6 @@ public class AxisImplTest {
 		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"),
 						new MathElement.Mn("5"), new MathElement.Mn("10") });
-		Font font = axis.getEffectiveFont();
-		when(axis.getTickManager().getActualLabelFont(axis)).thenReturn(font);
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
