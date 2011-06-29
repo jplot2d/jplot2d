@@ -1,5 +1,7 @@
 package org.jplot2d.element.impl;
 
+import java.awt.Font;
+
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PhysicalTransform;
@@ -9,6 +11,14 @@ public interface AxisEx extends Axis, ComponentEx {
 	public PlotEx getParent();
 
 	public AxisTickManagerEx getTickManager();
+
+	/**
+	 * Set shrunk font for displaying by tick manager.
+	 * 
+	 * @param font
+	 *            the shrunk font
+	 */
+	public void setActualFont(Font font);
 
 	/**
 	 * Returns the PhysicalTransform of this component.

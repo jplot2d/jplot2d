@@ -116,6 +116,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private boolean thicknessCalculationNeeded = true;
 
+	private Font actualLabelFont;
+
 	public AxisImpl() {
 		title = new AxisTitleImpl();
 		title.setParent(this);
@@ -349,7 +351,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		redraw();
 	}
 
-	protected boolean isLabelSameOrientation() {
+	private boolean isLabelSameOrientation() {
 		return getOrientation() == getLabelOrientation();
 	}
 
@@ -370,6 +372,21 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLabelColor(Color color) {
 		this.labelColor = color;
 		redraw();
+	}
+
+	private Font getActualLabelFont() {
+		if (actualLabelFont != null) {
+			return actualLabelFont;
+		} else {
+			return getEffectiveFont();
+		}
+	}
+
+	public void setActualFont(Font font) {
+		if (!font.equals(this.actualLabelFont)) {
+			this.actualLabelFont = font;
+			redraw();
+		}
 	}
 
 	public AxisTitleEx getTitle() {
@@ -503,7 +520,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * @return the physical label height for proposed label font.
+	 * Returns the physical height label by axis effective font.
+	 * 
+	 * @return the physical label height
 	 */
 	private double getLabelHeight() {
 		FontRenderContext frc = new FontRenderContext(null, false, true);
@@ -513,13 +532,14 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * Traverse all labels to find the Maximum Normal Width.
+	 * Traverse all labels to find the Maximum Width. The width is calculated by
+	 * axis effective font, not shrunk actual font.
 	 * 
-	 * @return the maximum normal width.
+	 * @return the maximum label width.
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
 		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager()
-				.getLabelModels(), getTickManager().getActualLabelFont(this));
+				.getLabelModels(), getEffectiveFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -581,11 +601,23 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		super.copyFrom(src);
 
 		AxisImpl axis = (AxisImpl) src;
-		locX = axis.locX;
-		locY = axis.locY;
+
+		this.locX = axis.locX;
+		this.locY = axis.locY;
+		this.titleVisible = axis.titleVisible;
 		this.orientation = axis.orientation;
 		this.length = axis.length;
 		this.position = axis.position;
+		this.showGridLines = axis.showGridLines;
+		this.tickVisible = axis.tickVisible;
+		this.tickSide = axis.tickSide;
+		this.tickHeight = axis.tickHeight;
+		this.minorHeight = axis.minorHeight;
+		this.labelVisible = axis.labelVisible;
+		this.labelOrientation = axis.labelOrientation;
+		this.labelSide = axis.labelSide;
+		this.labelColor = axis.labelColor;
+
 		this.asc = axis.asc;
 		this.desc = axis.desc;
 		this.labelOffset = axis.labelOffset;
@@ -593,6 +625,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.labelVAlign = axis.labelVAlign;
 		this.titleOffset = axis.titleOffset;
 		this.titleVAlign = axis.titleVAlign;
+
+		this.actualLabelFont = axis.actualLabelFont;
 	}
 
 	public void draw(Graphics2D graphics) {
@@ -705,8 +739,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					* getTickManager().getLabelInterval());
 			double xt = transTickToPaper(x);
 
-			MathLabel label = new MathLabel(labels[i], getTickManager()
-					.getActualLabelFont(this), vertalign, horzalign);
+			MathLabel label = new MathLabel(labels[i], getActualLabelFont(),
+					vertalign, horzalign);
 
 			Color color = getLabelColor();
 
