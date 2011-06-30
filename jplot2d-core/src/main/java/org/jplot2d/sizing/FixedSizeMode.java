@@ -31,7 +31,7 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class FixedSizeMode extends AbstractSizeMode {
 
-	private static final Dimension2D DEFAULT_SIZE = new DoubleDimension2D(604,
+	private static final Dimension2D DEFAULT_SIZE = new DoubleDimension2D(640,
 			480);
 
 	/**

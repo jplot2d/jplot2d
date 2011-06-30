@@ -70,7 +70,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out.
 	 * This flag is set to false when the object size is changed. The initial
-	 * value is true, because the {@link #contentBounds} and size are both 0*0.
+	 * value is true, because the {@link #contentBounds} and size are same.
 	 * 
 	 * @see #isValid
 	 * @see #validate
@@ -173,6 +173,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public void setSizeMode(SizeMode sizeMode) {
 		this.sizeMode = sizeMode;
 		sizeMode.setPlot(this);
+		if (sizeMode.isAutoPack()) {
+			preferredSizeChanged = true;
+		}
 	}
 
 	public Point2D getLocation() {
