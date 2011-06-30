@@ -29,6 +29,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
@@ -220,11 +221,11 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 				BufferedImage bi = f.get();
 				g.drawImage(bi, bounds.x, bounds.y, null);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.WARNING, "[R] Renderer interrupted, drop F."
+						+ fsn, e);
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.WARNING, "[R] Renderer exception, drop F."
+						+ fsn, e);
 			}
 		}
 

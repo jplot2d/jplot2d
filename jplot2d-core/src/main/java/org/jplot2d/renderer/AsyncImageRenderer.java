@@ -142,14 +142,13 @@ public class AsyncImageRenderer extends ImageRenderer {
 				// should not happen. Normal cancellation will set the internal
 				// state to CANCELLED
 			} catch (ExecutionException e) {
-				logger.info("[R] Renderer exception, drop F." + fsn);
-				logger.log(Level.FINE, "", e);
+				logger.log(Level.WARNING, "[R] Renderer exception, drop F." + fsn, e);
 			}
 			if (result != null) {
 				try {
 					fireRenderingFinished(fsn, result);
 				} catch (Exception e) {
-					logger.log(Level.FINE, "RenderingFinishedListener Error", e);
+					logger.log(Level.WARNING, "RenderingFinishedListener Error", e);
 				}
 			}
 
