@@ -42,6 +42,7 @@ import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
 import org.jplot2d.env.Profile;
+import org.jplot2d.sizing.FillContainerSizeMode;
 
 /**
  * A factory to produce all kind of plot components.
@@ -137,7 +138,8 @@ public class ComponentFactory {
 	}
 
 	/**
-	 * Create a plot with setting the default color, font, and margin.
+	 * Create a plot with setting the default color, font, and margin. The
+	 * default size mode is FillContainerSizeMode(1).
 	 * 
 	 * @return
 	 */
@@ -151,6 +153,8 @@ public class ComponentFactory {
 		plot.getMargin().setExtraLeft(12);
 		plot.getMargin().setExtraBottom(12);
 		plot.getMargin().setExtraRight(12);
+
+		plot.setSizeMode(new FillContainerSizeMode(1));
 
 		return plot;
 	}
