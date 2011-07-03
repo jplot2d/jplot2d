@@ -28,7 +28,6 @@ import org.jplot2d.element.Title;
 import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.renderer.PdfExporter;
 import org.jplot2d.renderer.PngFileExporter;
-import org.jplot2d.sizing.FillContainerSizeMode;
 
 /**
  * Demo for exporting plot to pdf and png file.
@@ -43,7 +42,6 @@ public class ExportFileDemo {
 	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		Plot plot = ComponentFactory.getInstance().createPlot();
-		plot.setSizeMode(new FillContainerSizeMode(1));
 
 		Title title = ComponentFactory.getInstance().createTitle("Title");
 		title.setFontScale(2);
