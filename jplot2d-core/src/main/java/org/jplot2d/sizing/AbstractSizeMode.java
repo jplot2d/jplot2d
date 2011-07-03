@@ -20,7 +20,6 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -37,8 +36,6 @@ public abstract class AbstractSizeMode implements SizeMode {
 	protected double width, height;
 
 	protected double scale = 1;
-
-	private PhysicalTransform pxf;
 
 	public AbstractSizeMode() {
 
@@ -60,18 +57,8 @@ public abstract class AbstractSizeMode implements SizeMode {
 		return new DoubleDimension2D(width, height);
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
-		if (pxf == null) {
-			pxf = new PhysicalTransform(0.0, height, scale);
-		}
-		return pxf;
-	}
-
-	/**
-	 * Update the PhysicalTransform
-	 */
-	protected void updatePxf() {
-		pxf = null;
+	public double getScale() {
+		return scale;
 	}
 
 }

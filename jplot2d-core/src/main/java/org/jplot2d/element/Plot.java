@@ -62,8 +62,18 @@ public interface Plot extends Container {
 	 */
 	public void setContainerSize(Dimension2D size);
 
+	/**
+	 * Returns the size mode of this plot.
+	 * 
+	 * @return
+	 */
 	public SizeMode getSizeMode();
 
+	/**
+	 * Sets a size mode to manage the size and scale of this plot.
+	 * 
+	 * @param mode
+	 */
 	public void setSizeMode(SizeMode mode);
 
 	/**
@@ -80,14 +90,41 @@ public interface Plot extends Container {
 	public void setLocation(double locX, double locY);
 
 	/**
-	 * Sets the paper size of this container.
+	 * Sets the paper size of this plot. This method only take effect when size
+	 * mode is <code>null</code>. Otherwise the size is decided by size mode.
 	 * 
-	 * @param paper
-	 *            size
+	 * @param size
+	 *            the paper size
 	 */
 	public void setSize(Dimension2D size);
 
+	/**
+	 * Sets the paper size of this plot. This method only take effect when size
+	 * mode is <code>null</code>. Otherwise the size is decided by size mode.
+	 * 
+	 * @param width
+	 *            the paper width
+	 * @param height
+	 *            the paper height
+	 */
 	public void setSize(double width, double height);
+
+	/**
+	 * Returns the scale of this plot. The scale is ratio device sie to papaer
+	 * size.
+	 * 
+	 * @return the scale of this plot
+	 */
+	public double getScale();
+
+	/**
+	 * Sets scale of this plot. This method only take effect when size mode is
+	 * <code>null</code>. Otherwise the scale is decided by size mode.
+	 * 
+	 * @param scale
+	 *            the scale
+	 */
+	public void setScale(double scale);
 
 	/**
 	 * Returns the margin area of this plot.
