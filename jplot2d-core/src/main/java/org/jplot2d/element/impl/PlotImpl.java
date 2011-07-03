@@ -52,7 +52,8 @@ import org.jplot2d.util.WarningReceiver;
 public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	/**
-	 * The container size only take effect when this plot is top plot.
+	 * The container size only take effect when this plot is top plot and has a
+	 * size mode assigned.
 	 */
 	private Dimension2D containerSize = new Dimension(640, 480);
 
@@ -64,6 +65,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private double locX, locY;
 
 	private double width, height;
+
+	private double scale;
 
 	private PhysicalTransform pxf;
 
@@ -221,10 +224,25 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return new Rectangle2D.Double(locX, locY, width, height);
 	}
 
+	public double getScale() {
+		return getPhysicalTransform().getScale();
+	}
+
+	public void setScale(double scale) {
+		if (this.scale != scale) {
+			this.scale = scale;
+			pxf = null;
+		}
+	}
+
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null) {
-			pxf = getParent().getPhysicalTransform().translate(
-					getLocation().getX(), getLocation().getY());
+			if (getParent() == null) {
+				pxf = new PhysicalTransform(0.0, height, scale);
+			} else {
+				pxf = getParent().getPhysicalTransform().translate(
+						getLocation().getX(), getLocation().getY());
+			}
 		}
 		return pxf;
 	}
@@ -901,6 +919,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		locY = plot.locY;
 		width = plot.width;
 		height = plot.height;
+		scale = plot.scale;
 		valid = plot.valid;
 		layoutDirector = plot.layoutDirector;
 		pxf = plot.pxf;
@@ -963,8 +982,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void commit() {
 
-		// set the plot size if it is derived or fixed
-		if (!getSizeMode().isAutoPack()) {
+		// set the plot size if it is decided by size mode
+		if (getSizeMode() != null && !getSizeMode().isAutoPack()) {
 			getSizeMode().update();
 			setSize(getSizeMode().getSize());
 		}
@@ -992,7 +1011,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		while (true) {
 
 			// auto pack the plot size
-			if (getSizeMode().isAutoPack()) {
+			if (getSizeMode() != null && getSizeMode().isAutoPack()) {
 				autoPack();
 			}
 
@@ -1025,18 +1044,25 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			}
 		}
 
-		// update the size mode if the size if autoPacked
-		if (getSizeMode().isAutoPack()) {
+		// update the scale if the size is autoPacked
+		if (getSizeMode() != null && getSizeMode().isAutoPack()) {
 			getSizeMode().update();
 		}
 
-		// update physical transform of this plot
-		if (!getSizeMode().getPhysicalTransform().equals(this.pxf)) {
+		// invalidate pxf id scale changed
+		if (getSizeMode() != null) {
+			setScale(getSizeMode().getScale());
+		}
+
+		// invalidate pxf on all children
+		if (pxf == null) {
 			this.parentPhysicalTransformChanged();
-			pxf = getSizeMode().getPhysicalTransform();
 		}
 	}
 
+	/**
+	 * Sets the plot size according to its contents.
+	 */
 	private void autoPack() {
 		if (getLayoutDirector() != null) {
 			if (!isValid() || preferredSizeChanged) {

@@ -65,7 +65,6 @@ public class FixedSizeMode extends AbstractSizeMode {
 
 		if (this.scale != scale) {
 			this.scale = scale;
-			updatePxf();
 		}
 	}
 

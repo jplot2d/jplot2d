@@ -7,9 +7,8 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 	private final Dimension2D targetSize;
 
 	/**
-	 * The scale is kept. The chart size will automatically fit the container
-	 * size. The plot size is changed as well. The laying out is working on
-	 * outer-to-inner mode.
+	 * The scale is kept. The plot size will automatically fit the container
+	 * size. The plot content size is changed as well.
 	 */
 	public FillContainerSizeMode(double scale) {
 		targetSize = null;
@@ -47,7 +46,6 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 				this.width = width;
 				this.height = height;
 				this.scale = scale;
-				updatePxf();
 			}
 		} else {
 			double width = containerSize.getWidth() / scale;
@@ -56,7 +54,6 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 			if (this.width != width || this.height != height) {
 				this.width = width;
 				this.height = height;
-				updatePxf();
 			}
 		}
 

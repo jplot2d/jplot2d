@@ -20,7 +20,6 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
@@ -47,17 +46,17 @@ public interface SizeMode {
 	public void update();
 
 	/**
-	 * Returns the plot size that this size mode derived.
+	 * Returns the plot size derived from this size mode .
 	 * 
 	 * @return the plot size
 	 */
 	public Dimension2D getSize();
 
 	/**
-	 * Returns the PhysicalTransform that this size mode derived
+	 * Returns the scale derived from this size mode
 	 * 
-	 * @return the PhysicalTransform
+	 * @return the scale
 	 */
-	public PhysicalTransform getPhysicalTransform();
+	public double getScale();
 
 }
