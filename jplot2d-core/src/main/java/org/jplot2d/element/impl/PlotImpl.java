@@ -64,9 +64,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private double locX, locY;
 
-	private double width, height;
+	private double width = 640, height = 680;
 
-	private double scale;
+	private double scale = 1;
 
 	private PhysicalTransform pxf;
 

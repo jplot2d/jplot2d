@@ -26,6 +26,7 @@ import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.layout.BoundsConstraint;
 import org.jplot2d.layout.OverlayLayoutDirector;
+import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.util.Insets2D;
 
@@ -40,6 +41,7 @@ public class OverlayLayoutDemo {
 	 */
 	public static void main(String[] args) {
 		Plot plot = ComponentFactory.getInstance().createPlot();
+		plot.setSizeMode(new FillContainerSizeMode(1));
 		plot.setLayoutDirector(new OverlayLayoutDirector());
 
 		JFrame frame = new JPlot2DFrame(plot);
@@ -54,13 +56,15 @@ public class OverlayLayoutDemo {
 		plot.addYAxis(yaxis);
 
 		Layer layer = ComponentFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
+				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
+				"line A");
 		plot.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
 				.getTickManager().getRangeManager());
 
 		Plot sp1 = ComponentFactory.getInstance().createSubplot();
 		Layer nestLayer = ComponentFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
+				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
+				"line B");
 
 		plot.addSubplot(sp1, new BoundsConstraint(new Insets2D(0, 0, 0, 0),
 				new Insets2D(0.05, 0.05, 0.45, 0.45)));
