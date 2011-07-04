@@ -890,6 +890,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			LayerEx layerCopy = (LayerEx) layer.copyStructure(orig2copyMap);
 			layerCopy.setParent(result);
 			result.layers.add(layerCopy);
+
+			// link LegendItem to legend
+			for (GraphPlotterEx gp : layerCopy.getGraphPlotters()) {
+				LegendItemEx liCopy = gp.getLegendItem();
+				result.legend.addLegendItem(liCopy);
+			}
 		}
 
 		// copy subplots
@@ -899,12 +905,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			result.subplots.add(spCopy);
 		}
 
-		// only link elements on top level plot
+		// only link layer and axis range manager on top level plot
 		if (getParent() == null) {
-			// link layer and range manager
 			linkLayerAndRangeManager(this, orig2copyMap);
-			// link legend and LegendItem
-			linkLegendAndLegendItem(this, orig2copyMap);
 		}
 
 		return result;
@@ -957,21 +960,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 		for (PlotEx sp : plot.getSubplots()) {
 			linkLayerAndRangeManager(sp, orig2copyMap);
-		}
-	}
-
-	protected static void linkLegendAndLegendItem(PlotEx plot,
-			Map<ElementEx, ElementEx> orig2copyMap) {
-		for (LayerEx layer : plot.getLayers()) {
-			for (GraphPlotterEx gp : layer.getGraphPlotters()) {
-				LegendItemEx li = gp.getLegendItem();
-				LegendItemEx liCopy = (LegendItemEx) orig2copyMap.get(li);
-				if (liCopy.getLegend() == null) {
-					LegendEx legendCopy = (LegendEx) orig2copyMap.get(li
-							.getLegend());
-					legendCopy.addLegendItem(liCopy);
-				}
-			}
 		}
 	}
 
@@ -1191,14 +1179,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Calculate legend size according to its length constraint, items and item
 	 * font.
 	 */
-	private void calcLegendSize(PlotEx plot) {
+	private static void calcLegendSize(PlotEx plot) {
 		LegendEx legend = plot.getLegend();
 		if (legend.canContribute()) {
 			double oldThickness = legend.getThickness();
 			plot.getLegend().calcSize();
 			if (Math.abs(oldThickness - legend.getThickness()) > Math
 					.abs(oldThickness) * 1e-12) {
-				invalidate();
+				plot.invalidate();
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
