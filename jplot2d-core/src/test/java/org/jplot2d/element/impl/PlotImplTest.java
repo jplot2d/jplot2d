@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import static org.jplot2d.util.TestUtils.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -30,16 +31,22 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class SubplotImplTest {
+public class PlotImplTest {
+
+	public void testConstructor() {
+		PlotImpl p = new PlotImpl();
+		checkDimension2D(p.getSize(), 640, 480);
+		checkDouble(p.getScale(), 1);
+	}
 
 	@Test
 	public void testAddXAxis() {
-		PlotImpl sp = new PlotImpl();
+		PlotImpl p = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
 		when(axis.canContributeToParent()).thenReturn(true);
 
 		try {
-			sp.addXAxis(axis);
+			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -48,7 +55,7 @@ public class SubplotImplTest {
 		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
 		when(axis.getTickManager()).thenReturn(atm);
 		try {
-			sp.addXAxis(axis);
+			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -57,7 +64,7 @@ public class SubplotImplTest {
 		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
 		when(atm.getRangeManager()).thenReturn(arm);
 		try {
-			sp.addXAxis(axis);
+			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -65,17 +72,17 @@ public class SubplotImplTest {
 
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(arm.getLockGroup()).thenReturn(alg);
-		sp.addXAxis(axis);
+		p.addXAxis(axis);
 	}
 
 	@Test
 	public void testAddYAxis() {
-		PlotImpl sp = new PlotImpl();
+		PlotImpl p = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
 		when(axis.canContributeToParent()).thenReturn(true);
 
 		try {
-			sp.addYAxis(axis);
+			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -84,7 +91,7 @@ public class SubplotImplTest {
 		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
 		when(axis.getTickManager()).thenReturn(atm);
 		try {
-			sp.addYAxis(axis);
+			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -93,7 +100,7 @@ public class SubplotImplTest {
 		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
 		when(atm.getRangeManager()).thenReturn(arm);
 		try {
-			sp.addYAxis(axis);
+			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -101,7 +108,7 @@ public class SubplotImplTest {
 
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(arm.getLockGroup()).thenReturn(alg);
-		sp.addYAxis(axis);
+		p.addYAxis(axis);
 	}
 
 	/**
@@ -109,20 +116,20 @@ public class SubplotImplTest {
 	 */
 	@Test
 	public void testRedraw() {
-		PlotImpl sp = new PlotImpl();
-		sp.setCacheable(true);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		PlotImpl p = new PlotImpl();
+		p.setCacheable(true);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
-		sp.setLocation(0, 0);
-		assertFalse(sp.isRedrawNeeded());
-		sp.setLocation(1, 1);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.setLocation(0, 0);
+		assertFalse(p.isRedrawNeeded());
+		p.setLocation(1, 1);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
-		sp.parentPhysicalTransformChanged();
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.parentPhysicalTransformChanged();
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
@@ -132,9 +139,9 @@ public class SubplotImplTest {
 		when(xaxis.getTickManager()).thenReturn(xatm);
 		when(xatm.getRangeManager()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
-		sp.addXAxis(xaxis);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.addXAxis(xaxis);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
@@ -144,39 +151,39 @@ public class SubplotImplTest {
 		when(yaxis.getTickManager()).thenReturn(yatm);
 		when(yatm.getRangeManager()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
-		sp.addYAxis(yaxis);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.addYAxis(yaxis);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
 		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		sp.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
+		p.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
 				.getTickManager().getRangeManager());
-		assertFalse(sp.isRedrawNeeded());
+		assertFalse(p.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
 		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		sp.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
+		p.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
 				.getTickManager().getRangeManager());
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
-		sp.removeLayer(layer1);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.removeLayer(layer1);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
-		sp.removeLayer(layer0);
-		assertFalse(sp.isRedrawNeeded());
+		p.removeLayer(layer0);
+		assertFalse(p.isRedrawNeeded());
 
-		sp.removeXAxis(xaxis);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.removeXAxis(xaxis);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 
-		sp.removeYAxis(yaxis);
-		assertTrue(sp.isRedrawNeeded());
-		sp.clearRedrawNeeded();
+		p.removeYAxis(yaxis);
+		assertTrue(p.isRedrawNeeded());
+		p.clearRedrawNeeded();
 	}
 
 	/**
@@ -184,8 +191,8 @@ public class SubplotImplTest {
 	 */
 	@Test
 	public void testInvalidateByXAxis() {
-		PlotImpl sp = new PlotImpl();
-		assertTrue(sp.isValid());
+		PlotImpl p = new PlotImpl();
+		assertTrue(p.isValid());
 
 		// add or remove invisible axis does not invalid
 		AxisEx xaxis0 = mock(AxisEx.class);
@@ -195,10 +202,10 @@ public class SubplotImplTest {
 		when(xaxis0.getTickManager()).thenReturn(xatm0);
 		when(xatm0.getRangeManager()).thenReturn(xarm0);
 		when(xarm0.getLockGroup()).thenReturn(xalg0);
-		sp.addXAxis(xaxis0);
-		assertTrue(sp.isValid());
-		sp.removeXAxis(xaxis0);
-		assertTrue(sp.isValid());
+		p.addXAxis(xaxis0);
+		assertTrue(p.isValid());
+		p.removeXAxis(xaxis0);
+		assertTrue(p.isValid());
 
 		// add or remove visible axis does invalid
 		AxisEx xaxis = mock(AxisEx.class);
@@ -210,18 +217,18 @@ public class SubplotImplTest {
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		when(xaxis.isVisible()).thenReturn(true);
 		when(xaxis.canContribute()).thenReturn(true);
-		sp.addXAxis(xaxis);
-		assertFalse(sp.isValid());
-		sp.validate();
-		sp.removeXAxis(xaxis);
-		assertFalse(sp.isValid());
-		sp.validate();
+		p.addXAxis(xaxis);
+		assertFalse(p.isValid());
+		p.validate();
+		p.removeXAxis(xaxis);
+		assertFalse(p.isValid());
+		p.validate();
 	}
 
 	@Test
 	public void testInvalidateByYAxis() {
-		PlotImpl sp = new PlotImpl();
-		assertTrue(sp.isValid());
+		PlotImpl p = new PlotImpl();
+		assertTrue(p.isValid());
 
 		AxisEx yaxis0 = mock(AxisEx.class);
 		AxisTickManagerEx yatm0 = mock(AxisTickManagerEx.class);
@@ -230,11 +237,11 @@ public class SubplotImplTest {
 		when(yaxis0.getTickManager()).thenReturn(yatm0);
 		when(yatm0.getRangeManager()).thenReturn(yarm0);
 		when(yarm0.getLockGroup()).thenReturn(yalg0);
-		sp.addYAxis(yaxis0);
-		assertTrue(sp.isValid());
-		sp.validate();
-		sp.removeYAxis(yaxis0);
-		assertTrue(sp.isValid());
+		p.addYAxis(yaxis0);
+		assertTrue(p.isValid());
+		p.validate();
+		p.removeYAxis(yaxis0);
+		assertTrue(p.isValid());
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
@@ -245,45 +252,45 @@ public class SubplotImplTest {
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		when(yaxis.isVisible()).thenReturn(true);
 		when(yaxis.canContribute()).thenReturn(true);
-		sp.addYAxis(yaxis);
-		assertFalse(sp.isValid());
-		sp.validate();
-		sp.removeYAxis(yaxis);
-		assertFalse(sp.isValid());
-		sp.validate();
+		p.addYAxis(yaxis);
+		assertFalse(p.isValid());
+		p.validate();
+		p.removeYAxis(yaxis);
+		assertFalse(p.isValid());
+		p.validate();
 	}
 
 	@Test
 	public void testInvalidateBySubplot() {
-		PlotImpl sp = new PlotImpl();
-		assertTrue(sp.isValid());
+		PlotImpl p = new PlotImpl();
+		assertTrue(p.isValid());
 
 		PlotImpl sp0 = new PlotImpl();
-		sp.addSubplot(sp0, null);
-		assertFalse(sp.isValid());
-		sp.validate();
-		sp.removeSubplot(sp0);
-		assertFalse(sp.isValid());
-		sp.validate();
+		p.addSubplot(sp0, null);
+		assertFalse(p.isValid());
+		p.validate();
+		p.removeSubplot(sp0);
+		assertFalse(p.isValid());
+		p.validate();
 
 		PlotImpl spInvisble = new PlotImpl();
 		spInvisble.setVisible(false);
-		sp.addSubplot(spInvisble, null);
-		assertTrue(sp.isValid());
-		sp.removeSubplot(spInvisble);
-		assertTrue(sp.isValid());
-		sp.validate();
+		p.addSubplot(spInvisble, null);
+		assertTrue(p.isValid());
+		p.removeSubplot(spInvisble);
+		assertTrue(p.isValid());
+		p.validate();
 	}
 
 	@Test
 	public void testCopyStructure() {
-		PlotImpl sp = new PlotImpl();
+		PlotImpl p = new PlotImpl();
 		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
-		PlotImpl sp2 = sp.copyStructure(orig2copyMap);
+		PlotImpl p2 = p.copyStructure(orig2copyMap);
 		assertEquals(orig2copyMap.size(), 3);
-		assertSame(sp2, orig2copyMap.get(sp));
-		assertSame(sp2.getMargin(), orig2copyMap.get(sp.getMargin()));
-		assertSame(sp2.getLegend(), orig2copyMap.get(sp.getLegend()));
+		assertSame(p2, orig2copyMap.get(p));
+		assertSame(p2.getMargin(), orig2copyMap.get(p.getMargin()));
+		assertSame(p2.getLegend(), orig2copyMap.get(p.getLegend()));
 	}
 
 }
