@@ -235,8 +235,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				maxItemSize = null;
 				sizeCalculationNeeded = true;
 				if (isVisible()) {
-				getParent().invalidate();
-				redraw();
+					redraw();
 				}
 			}
 		} else {
