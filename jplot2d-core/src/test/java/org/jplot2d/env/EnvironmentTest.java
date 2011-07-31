@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.element.Component;
-import org.jplot2d.element.ComponentFactory;
+import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Container;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
@@ -55,7 +55,7 @@ public class EnvironmentTest {
 
 	};
 
-	private static final ComponentFactory cf = ComponentFactory.getInstance();
+	private static final ElementFactory cf = ElementFactory.getInstance();
 
 	private EnvironmentStub env;
 

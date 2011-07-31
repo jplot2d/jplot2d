@@ -49,11 +49,11 @@ import org.jplot2d.env.Profile;
  * @author Jingjing Li
  * 
  */
-public class ComponentFactory {
+public class ElementFactory {
 
-	private static ComponentFactory instance = new ComponentFactory(false, null);
+	private static ElementFactory instance = new ElementFactory(false, null);
 
-	private static ComponentFactory threadSafeInstance = new ComponentFactory(
+	private static ElementFactory threadSafeInstance = new ElementFactory(
 			true, null);
 
 	/**
@@ -62,7 +62,7 @@ public class ComponentFactory {
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
-	public static ComponentFactory getInstance() {
+	public static ElementFactory getInstance() {
 		return instance;
 	}
 
@@ -72,7 +72,7 @@ public class ComponentFactory {
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
-	public static ComponentFactory getThreadSafeInstance() {
+	public static ElementFactory getThreadSafeInstance() {
 		return threadSafeInstance;
 	}
 
@@ -83,8 +83,8 @@ public class ComponentFactory {
 	 * @param profile
 	 * @return an instance of ComponentFactory
 	 */
-	public static ComponentFactory getInstance(Profile profile) {
-		return new ComponentFactory(false, profile);
+	public static ElementFactory getInstance(Profile profile) {
+		return new ElementFactory(false, profile);
 	}
 
 	/**
@@ -94,15 +94,15 @@ public class ComponentFactory {
 	 * @param profile
 	 * @return an instance of ComponentFactory
 	 */
-	public static ComponentFactory getThreadSafeInstance(Profile profile) {
-		return new ComponentFactory(true, profile);
+	public static ElementFactory getThreadSafeInstance(Profile profile) {
+		return new ElementFactory(true, profile);
 	}
 
 	private final boolean threadSafe;
 
 	private final Profile profile;
 
-	protected ComponentFactory(boolean threadSafe, Profile profile) {
+	protected ElementFactory(boolean threadSafe, Profile profile) {
 		this.threadSafe = threadSafe;
 		this.profile = profile;
 	}

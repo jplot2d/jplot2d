@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.jplot2d.element.Component;
-import org.jplot2d.element.ComponentFactory;
+import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Container;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class DummyEnvironmentTest {
 
-	private static final ComponentFactory cf = ComponentFactory.getInstance();
+	private static final ElementFactory cf = ElementFactory.getInstance();
 
 	/**
 	 * Test method for
