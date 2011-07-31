@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class AxisTest {
 
-	private static final ComponentFactory factory = ComponentFactory
+	private static final ElementFactory factory = ElementFactory
 			.getInstance();
 
 	/**

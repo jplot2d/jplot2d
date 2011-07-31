@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class LayerAxisTest {
 
-	private static final ComponentFactory factory = ComponentFactory
+	private static final ElementFactory factory = ElementFactory
 			.getInstance();
 
 	/**

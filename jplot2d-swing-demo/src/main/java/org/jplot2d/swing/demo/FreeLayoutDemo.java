@@ -20,7 +20,7 @@ package org.jplot2d.swing.demo;
 
 import javax.swing.JFrame;
 
-import org.jplot2d.element.ComponentFactory;
+import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
@@ -37,28 +37,28 @@ public class FreeLayoutDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Plot plot = ComponentFactory.getInstance().createPlot();
+		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new FillContainerSizeMode(1));
 
 		JFrame frame = new JPlot2DFrame(plot);
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ComponentFactory.getInstance().createAxis();
-		Axis yaxis = ComponentFactory.getInstance().createAxis();
+		Axis xaxis = ElementFactory.getInstance().createAxis();
+		Axis yaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
 		yaxis.getTitle().setText("y axis");
 		plot.addXAxis(xaxis);
 		plot.addYAxis(yaxis);
 
-		Layer layer = ComponentFactory.getInstance().createLayer(
+		Layer layer = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
 				"line A");
 		plot.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
 				.getTickManager().getRangeManager());
 
-		Plot sp1 = ComponentFactory.getInstance().createSubplot();
-		Layer nestLayer = ComponentFactory.getInstance().createLayer(
+		Plot sp1 = ElementFactory.getInstance().createSubplot();
+		Layer nestLayer = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
 				"line B");
 

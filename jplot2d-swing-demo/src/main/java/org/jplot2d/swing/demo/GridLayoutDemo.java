@@ -20,7 +20,7 @@ package org.jplot2d.swing.demo;
 
 import javax.swing.JFrame;
 
-import org.jplot2d.element.ComponentFactory;
+import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
@@ -39,7 +39,7 @@ public class GridLayoutDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Plot plot = ComponentFactory.getInstance().createPlot();
+		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 		plot.setLayoutDirector(new GridLayoutDirector());
 
@@ -47,26 +47,26 @@ public class GridLayoutDemo {
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ComponentFactory.getInstance().createAxis();
-		Axis yaxis = ComponentFactory.getInstance().createAxis();
+		Axis xaxis = ElementFactory.getInstance().createAxis();
+		Axis yaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
 		yaxis.getTitle().setText("y axis");
 
-		Plot sp0 = ComponentFactory.getInstance().createSubplot();
-		Layer l0 = ComponentFactory.getInstance().createLayer(
+		Plot sp0 = ElementFactory.getInstance().createSubplot();
+		Layer l0 = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
 		sp0.addXAxis(xaxis);
 		sp0.addYAxis(yaxis);
 		sp0.addLayer(l0, xaxis.getTickManager().getRangeManager(), yaxis
 				.getTickManager().getRangeManager());
 
-		Axis xaxis1 = ComponentFactory.getInstance().createAxis();
-		Axis yaxis1 = ComponentFactory.getInstance().createAxis();
+		Axis xaxis1 = ElementFactory.getInstance().createAxis();
+		Axis yaxis1 = ElementFactory.getInstance().createAxis();
 		xaxis1.getTitle().setText("x axis");
 		yaxis1.getTitle().setText("y axis");
 
-		Plot sp1 = ComponentFactory.getInstance().createSubplot();
-		Layer nestLayer = ComponentFactory.getInstance().createLayer(
+		Plot sp1 = ElementFactory.getInstance().createSubplot();
+		Layer nestLayer = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
 		sp1.addXAxis(xaxis1);
 		sp1.addYAxis(yaxis1);
