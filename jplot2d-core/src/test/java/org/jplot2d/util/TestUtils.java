@@ -30,6 +30,9 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jplot2d.element.Axis;
 
@@ -155,6 +158,30 @@ public class TestUtils {
 		assertEquals("length error", labels.length, v.length);
 		for (int i = 0; i < v.length; i++) {
 			assertEquals(labels[i], v[i]);
+		}
+	}
+
+	public static <T> void checkSet(Set<T> set, T... strs) {
+		HashSet<T> extraSet = new HashSet<T>(set);
+		HashSet<T> omitSet = new HashSet<T>(Arrays.asList(strs));
+		extraSet.removeAll(omitSet);
+		omitSet.removeAll(set);
+
+		if (extraSet.size() > 0 || omitSet.size() > 0) {
+			StringBuilder msg = new StringBuilder("The set");
+			if (omitSet.size() != 0) {
+				msg.append(" dosn't contains ");
+				msg.append(omitSet);
+			}
+			if (extraSet.size() != 0) {
+				if (omitSet.size() != 0) {
+					msg.append(" and have extra items ");
+				} else {
+					msg.append(" have extra items ");
+				}
+				msg.append(extraSet);
+			}
+			fail(msg.toString());
 		}
 	}
 
