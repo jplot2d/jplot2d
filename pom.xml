@@ -8,9 +8,12 @@
 
 	<modules>
 		<module>jplot2d-core</module>
-		<module>jplot2d-swing</module>
 		<module>jplot2d-core-demo</module>
+		<!-- module>jplot2d-interaction</module -->
+		<module>jplot2d-swing</module>
 		<module>jplot2d-swing-demo</module>
+		<module>jplot2d-swt</module>
+		<module>jplot2d-swt-demo</module>
 	</modules>
 
 	<dependencies>
