@@ -31,6 +31,9 @@
 					<excludes>
 						<exclude>org/jplot2d/util/TestUtils.java</exclude>
 					</excludes>
+					<systemPropertyVariables>
+						<java.awt.headless>true</java.awt.headless>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 		</plugins>
