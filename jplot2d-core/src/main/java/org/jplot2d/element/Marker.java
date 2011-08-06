@@ -29,7 +29,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
-public interface Marker extends Component {
+public interface Marker extends PComponent {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();

@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
@@ -182,7 +182,7 @@ public abstract class Environment {
 
 		/* merge uncacheable component tree */
 		if (!comp.isCacheable()) {
-			Component cc = getCacheableAncestor(comp);
+			PComponent cc = getCacheableAncestor(comp);
 			if (cc != comp) {
 				/*
 				 * remove the added top uncacheable component and add it to the
@@ -197,7 +197,7 @@ public abstract class Environment {
 		env.subComponentMap.clear();
 		env.warnings.clear();
 
-		fireComponentAdded((Component) getProxy(comp));
+		fireComponentAdded((PComponent) getProxy(comp));
 	}
 
 	/**
@@ -208,7 +208,7 @@ public abstract class Environment {
 	 *            elements to be removed.
 	 */
 	void componentRemoving(ComponentEx comp) {
-		fireComponentRemoving((Component) getProxy(comp));
+		fireComponentRemoving((PComponent) getProxy(comp));
 	}
 
 	/**
@@ -296,7 +296,7 @@ public abstract class Environment {
 			updateOrder(cacheableComponentList);
 		} else {
 			// update order within its cacheable parent
-			Component cc = getCacheableAncestor(comp);
+			PComponent cc = getCacheableAncestor(comp);
 			List<ComponentEx> subComps = subComponentMap.get(cc);
 			updateOrder(subComps);
 		}
@@ -323,7 +323,7 @@ public abstract class Environment {
 
 				List<ComponentEx> descendant = new ArrayList<ComponentEx>();
 				// all the possible uncacheable descendants
-				Component cacheableParent = getCacheableAncestor(comp
+				PComponent cacheableParent = getCacheableAncestor(comp
 						.getParent());
 				List<ComponentEx> possibleDesList = subComponentMap
 						.get(cacheableParent);
@@ -348,7 +348,7 @@ public abstract class Environment {
 
 				cacheableComponentList.remove(comp);
 				List<ComponentEx> subcomps = subComponentMap.remove(comp);
-				Component newParent = getCacheableAncestor(comp);
+				PComponent newParent = getCacheableAncestor(comp);
 				List<ComponentEx> newSubcompList = subComponentMap
 						.get(newParent);
 				newSubcompList.addAll(subcomps);
@@ -412,9 +412,9 @@ public abstract class Environment {
 	private void updateOrder(List<ComponentEx> list) {
 
 		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
-		Comparator<Component> zComparator = new Comparator<Component>() {
+		Comparator<PComponent> zComparator = new Comparator<PComponent>() {
 
-			public int compare(Component o1, Component o2) {
+			public int compare(PComponent o1, PComponent o2) {
 				return o1.getZOrder() - o2.getZOrder();
 			}
 		};
@@ -428,7 +428,7 @@ public abstract class Environment {
 
 	/* --- JPlot2DChangeListener --- */
 
-	private void fireComponentAdded(Component engine) {
+	private void fireComponentAdded(PComponent engine) {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
 			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
@@ -439,7 +439,7 @@ public abstract class Environment {
 		}
 	}
 
-	private void fireComponentRemoving(Component engine) {
+	private void fireComponentRemoving(PComponent engine) {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
 			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,

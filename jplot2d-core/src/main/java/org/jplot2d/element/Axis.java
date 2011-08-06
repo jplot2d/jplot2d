@@ -27,7 +27,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
-public interface Axis extends Component {
+public interface Axis extends PComponent {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Plot getParent();

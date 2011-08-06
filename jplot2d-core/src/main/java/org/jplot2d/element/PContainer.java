@@ -25,7 +25,7 @@ package org.jplot2d.element;
  * @author Jingjing Li
  * 
  */
-public interface Container extends Component {
+public interface PContainer extends PComponent {
 
 	/**
 	 * Returns the PhysicalTransform of this component.

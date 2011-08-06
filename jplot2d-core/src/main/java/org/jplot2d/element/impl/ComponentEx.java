@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.Map;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 
 /**
@@ -15,7 +15,7 @@ import org.jplot2d.element.Element;
  * @author Jingjing Li
  * 
  */
-public interface ComponentEx extends Component, ElementEx {
+public interface ComponentEx extends PComponent, ElementEx {
 
 	public ContainerEx getParent();
 

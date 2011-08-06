@@ -27,7 +27,7 @@ import java.awt.geom.Point2D;
  * @author Jingjing Li
  * 
  */
-public interface Legend extends Component {
+public interface Legend extends PComponent {
 
 	public enum Position {
 		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
