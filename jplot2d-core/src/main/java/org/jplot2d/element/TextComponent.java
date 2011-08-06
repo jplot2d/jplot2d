@@ -27,7 +27,7 @@ import org.jplot2d.tex.MathElement;
  * 
  * @author Jingjing Li
  */
-public interface TextComponent extends Component {
+public interface TextComponent extends PComponent {
 
 	/**
 	 * Returns the text string.

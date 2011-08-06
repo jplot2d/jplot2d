@@ -28,7 +28,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
-public interface Layer extends Container {
+public interface Layer extends PContainer {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Plot getParent();

@@ -28,7 +28,7 @@ import org.jplot2d.data.Graph;
  * @author Jingjing Li
  * 
  */
-public interface GraphPlotter extends Component {
+public interface GraphPlotter extends PComponent {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();

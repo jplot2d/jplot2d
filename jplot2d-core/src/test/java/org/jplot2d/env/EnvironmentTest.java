@@ -23,9 +23,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.Container;
+import org.jplot2d.element.PContainer;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
@@ -61,11 +61,11 @@ public class EnvironmentTest {
 
 	private ContainerEx containerA, containerA1, containerA2;
 
-	private Container proxyA, proxyA1, proxyA2;
+	private PContainer proxyA, proxyA1, proxyA2;
 
 	private ComponentEx compA1a, compA1b, compA2a, compA2b;
 
-	private Component proxyA1a, proxyA1b, proxyA2a, proxyA2b;
+	private PComponent proxyA1a, proxyA1b, proxyA2a, proxyA2b;
 
 	private ElementEx elementA1c, elementA1c1, elementA2c, elementA2c1;
 
@@ -121,15 +121,15 @@ public class EnvironmentTest {
 		elementA2c.setParent(containerA2);
 		elementA2c1.setParent(elementA2c);
 
-		proxyA = cf.proxy(containerA, Container.class);
-		proxyA1 = cf.proxy(containerA1, Container.class);
-		proxyA2 = cf.proxy(containerA2, Container.class);
-		proxyA1a = cf.proxy(compA1a, Component.class);
-		proxyA1b = cf.proxy(compA1b, Component.class);
+		proxyA = cf.proxy(containerA, PContainer.class);
+		proxyA1 = cf.proxy(containerA1, PContainer.class);
+		proxyA2 = cf.proxy(containerA2, PContainer.class);
+		proxyA1a = cf.proxy(compA1a, PComponent.class);
+		proxyA1b = cf.proxy(compA1b, PComponent.class);
 		proxyA1c = cf.proxy(elementA1c, Element.class);
 		proxyA1c1 = cf.proxy(elementA1c1, Element.class);
-		proxyA2a = cf.proxy(compA2a, Component.class);
-		proxyA2b = cf.proxy(compA2b, Component.class);
+		proxyA2a = cf.proxy(compA2a, PComponent.class);
+		proxyA2b = cf.proxy(compA2b, PComponent.class);
 		proxyA2c = cf.proxy(elementA2c, Element.class);
 		proxyA2c1 = cf.proxy(elementA2c1, Element.class);
 
@@ -204,7 +204,7 @@ public class EnvironmentTest {
 		// add uncacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		Container proxyA = cf.proxy(containerA, Container.class);
+		PContainer proxyA = cf.proxy(containerA, PContainer.class);
 		denv.registerComponent(containerA, proxyA);
 		env.componentAdded(containerA, denv);
 		assertEquals(env.proxyMap.size(), 1);
@@ -226,7 +226,7 @@ public class EnvironmentTest {
 		// add cacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		Container proxyA = cf.proxy(containerA, Container.class);
+		PContainer proxyA = cf.proxy(containerA, PContainer.class);
 		containerA.setCacheable(true);
 		denv.registerComponent(containerA, proxyA);
 		env.componentAdded(containerA, denv);
@@ -239,7 +239,7 @@ public class EnvironmentTest {
 		// add uncacheable component which has a cacheable parent
 		DummyEnvironment denvAA = new DummyEnvironment(false);
 		ComponentEx compAA = new ComponentStub();
-		Component proxyAA = cf.proxy(compAA, Component.class);
+		PComponent proxyAA = cf.proxy(compAA, PComponent.class);
 		denvAA.registerComponent(compAA, proxyAA);
 		// link parent
 		compAA.setParent(containerA);
@@ -254,9 +254,9 @@ public class EnvironmentTest {
 		// add cacheable component with uncacheable sub-component
 		DummyEnvironment denvB = new DummyEnvironment(false);
 		ContainerEx containerB = new ContainerStub();
-		Container proxyB = cf.proxy(containerB, Container.class);
+		PContainer proxyB = cf.proxy(containerB, PContainer.class);
 		ComponentEx compBA = new ComponentStub();
-		Component proxyBA = cf.proxy(compBA, Component.class);
+		PComponent proxyBA = cf.proxy(compBA, PComponent.class);
 		containerB.setCacheable(true);
 		compBA.setParent(containerB);
 		denvB.registerComponent(containerB, proxyB);

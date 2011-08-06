@@ -21,7 +21,7 @@ package org.jplot2d.env;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.element.Component;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
@@ -58,7 +58,7 @@ public class DummyEnvironment extends Environment {
 	 * @param comp
 	 * @param proxy
 	 */
-	public void registerComponent(ComponentEx comp, Component proxy) {
+	public void registerComponent(ComponentEx comp, PComponent proxy) {
 		registerElement(comp, proxy);
 
 		if (comp.isCacheable()) {

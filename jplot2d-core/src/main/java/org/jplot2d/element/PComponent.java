@@ -34,7 +34,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
-public interface Component extends Element {
+public interface PComponent extends Element {
 
 	/**
 	 * Gets the parent of this component.
@@ -42,7 +42,7 @@ public interface Component extends Element {
 	 * @return the parent of this component
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public Container getParent();
+	public PContainer getParent();
 
 	/**
 	 * Determines whether this component should be visible when its parent is
