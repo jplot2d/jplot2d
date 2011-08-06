@@ -48,8 +48,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (getParent() != null) {
 			return "Layer" + getParent().indexOf(this);
 		} else {
-			return "Layer@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return "Layer@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -95,9 +94,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null && getParent() != null) {
-			Rectangle2D rect = getParent().getContentBounds();
-			pxf = getParent().getPhysicalTransform().translate(rect.getX(),
-					rect.getY());
+			pxf = super.getPhysicalTransform();
 		}
 		return pxf;
 	}
@@ -252,8 +249,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 		// copy plotter
 		for (GraphPlotterEx plotter : this.plotters) {
-			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter
-					.copyStructure(orig2copyMap);
+			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter.copyStructure(orig2copyMap);
 			plotterCopy.setParent(this);
 			result.plotters.add(plotterCopy);
 		}

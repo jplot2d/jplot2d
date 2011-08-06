@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.PContainer;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
@@ -46,7 +45,6 @@ public class EnvironmentTest {
 
 		protected EnvironmentStub() {
 			super(false);
-			// TODO Auto-generated constructor stub
 		}
 
 		protected void commit() {
@@ -55,13 +53,11 @@ public class EnvironmentTest {
 
 	};
 
-	private static final ElementFactory cf = ElementFactory.getInstance();
-
 	private EnvironmentStub env;
 
 	private ContainerEx containerA, containerA1, containerA2;
 
-	private PContainer proxyA, proxyA1, proxyA2;
+	private PComponent proxyA, proxyA1, proxyA2;
 
 	private ComponentEx compA1a, compA1b, compA2a, compA2b;
 
@@ -121,17 +117,17 @@ public class EnvironmentTest {
 		elementA2c.setParent(containerA2);
 		elementA2c1.setParent(elementA2c);
 
-		proxyA = cf.proxy(containerA, PContainer.class);
-		proxyA1 = cf.proxy(containerA1, PContainer.class);
-		proxyA2 = cf.proxy(containerA2, PContainer.class);
-		proxyA1a = cf.proxy(compA1a, PComponent.class);
-		proxyA1b = cf.proxy(compA1b, PComponent.class);
-		proxyA1c = cf.proxy(elementA1c, Element.class);
-		proxyA1c1 = cf.proxy(elementA1c1, Element.class);
-		proxyA2a = cf.proxy(compA2a, PComponent.class);
-		proxyA2b = cf.proxy(compA2b, PComponent.class);
-		proxyA2c = cf.proxy(elementA2c, Element.class);
-		proxyA2c1 = cf.proxy(elementA2c1, Element.class);
+		proxyA = ElementFactory.proxy(containerA, PComponent.class);
+		proxyA1 = ElementFactory.proxy(containerA1, PComponent.class);
+		proxyA2 = ElementFactory.proxy(containerA2, PComponent.class);
+		proxyA1a = ElementFactory.proxy(compA1a, PComponent.class);
+		proxyA1b = ElementFactory.proxy(compA1b, PComponent.class);
+		proxyA1c = ElementFactory.proxy(elementA1c, Element.class);
+		proxyA1c1 = ElementFactory.proxy(elementA1c1, Element.class);
+		proxyA2a = ElementFactory.proxy(compA2a, PComponent.class);
+		proxyA2b = ElementFactory.proxy(compA2b, PComponent.class);
+		proxyA2c = ElementFactory.proxy(elementA2c, Element.class);
+		proxyA2c1 = ElementFactory.proxy(elementA2c1, Element.class);
 
 		env.proxyMap.put(containerA, proxyA);
 		env.proxyMap.put(containerA1, proxyA1);
@@ -177,18 +173,18 @@ public class EnvironmentTest {
 		assertEquals(env.proxyMap.size(), 11);
 
 		assertEquals(env.cacheableComponentList.size(), 4);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, compA1b, containerA2, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				compA1b, containerA2, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
-		assertArrayEquals(env.subComponentMap.get(containerA).toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA).toArray(), new ComponentEx[] {
+				containerA, containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 	}
@@ -204,7 +200,7 @@ public class EnvironmentTest {
 		// add uncacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		PContainer proxyA = cf.proxy(containerA, PContainer.class);
+		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
 		denv.registerComponent(containerA, proxyA);
 		env.componentAdded(containerA, denv);
 		assertEquals(env.proxyMap.size(), 1);
@@ -226,7 +222,7 @@ public class EnvironmentTest {
 		// add cacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		PContainer proxyA = cf.proxy(containerA, PContainer.class);
+		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
 		containerA.setCacheable(true);
 		denv.registerComponent(containerA, proxyA);
 		env.componentAdded(containerA, denv);
@@ -239,7 +235,7 @@ public class EnvironmentTest {
 		// add uncacheable component which has a cacheable parent
 		DummyEnvironment denvAA = new DummyEnvironment(false);
 		ComponentEx compAA = new ComponentStub();
-		PComponent proxyAA = cf.proxy(compAA, PComponent.class);
+		PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
 		denvAA.registerComponent(compAA, proxyAA);
 		// link parent
 		compAA.setParent(containerA);
@@ -254,9 +250,9 @@ public class EnvironmentTest {
 		// add cacheable component with uncacheable sub-component
 		DummyEnvironment denvB = new DummyEnvironment(false);
 		ContainerEx containerB = new ContainerStub();
-		PContainer proxyB = cf.proxy(containerB, PContainer.class);
+		PComponent proxyB = ElementFactory.proxy(containerB, PComponent.class);
 		ComponentEx compBA = new ComponentStub();
-		PComponent proxyBA = cf.proxy(compBA, PComponent.class);
+		PComponent proxyBA = ElementFactory.proxy(compBA, PComponent.class);
 		containerB.setCacheable(true);
 		compBA.setParent(containerB);
 		denvB.registerComponent(containerB, proxyB);
@@ -337,18 +333,18 @@ public class EnvironmentTest {
 		assertEquals(env.proxyMap.size(), 11);
 
 		assertEquals(env.cacheableComponentList.size(), 4);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, compA1b, containerA2, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				compA1b, containerA2, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
-		assertArrayEquals(env.subComponentMap.get(containerA).toArray(),
-				new ComponentEx[] { containerA, compA1a, containerA1 });
+		assertArrayEquals(env.subComponentMap.get(containerA).toArray(), new ComponentEx[] {
+				containerA, compA1a, containerA1 });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 
@@ -365,18 +361,18 @@ public class EnvironmentTest {
 		assertEquals(env.proxyMap.size(), 11);
 
 		assertEquals(env.cacheableComponentList.size(), 4);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, compA1b, compA2b, containerA2 });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				compA1b, compA2b, containerA2 });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
-		assertArrayEquals(env.subComponentMap.get(containerA).toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA).toArray(), new ComponentEx[] {
+				containerA, containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 
@@ -391,21 +387,20 @@ public class EnvironmentTest {
 		env.componentCacheModeChanged(containerA1);
 
 		assertEquals(env.cacheableComponentList.size(), 5);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1b,
-						containerA2, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				containerA1, compA1b, containerA2, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 5);
 		assertEquals(env.subComponentMap.get(containerA).size(), 1);
 		assertEquals(env.subComponentMap.get(containerA).get(0), containerA);
 		assertEquals(env.subComponentMap.get(containerA1).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA1).toArray(),
-				new ComponentEx[] { containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA1).toArray(), new ComponentEx[] {
+				containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 
@@ -413,8 +408,8 @@ public class EnvironmentTest {
 		env.componentCacheModeChanged(containerA2);
 
 		assertEquals(env.cacheableComponentList.size(), 4);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1b, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				containerA1, compA1b, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
@@ -422,8 +417,8 @@ public class EnvironmentTest {
 		assertEquals(env.subComponentMap.get(containerA).get(1), containerA2);
 		assertEquals(env.subComponentMap.get(containerA).get(2), compA2a);
 		assertEquals(env.subComponentMap.get(containerA1).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA1).toArray(),
-				new ComponentEx[] { containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA1).toArray(), new ComponentEx[] {
+				containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
@@ -440,18 +435,18 @@ public class EnvironmentTest {
 		env.componentCacheModeChanged(containerA);
 
 		assertEquals(env.cacheableComponentList.size(), 3);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { compA1b, containerA2, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { compA1b,
+				containerA2, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
-		assertArrayEquals(env.subComponentMap.get(containerA).toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA).toArray(), new ComponentEx[] {
+				containerA, containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 
@@ -459,18 +454,18 @@ public class EnvironmentTest {
 		env.componentCacheModeChanged(containerA);
 
 		assertEquals(env.cacheableComponentList.size(), 4);
-		assertArrayEquals(env.cacheableComponentList.toArray(),
-				new ComponentEx[] { containerA, compA1b, containerA2, compA2b });
+		assertArrayEquals(env.cacheableComponentList.toArray(), new ComponentEx[] { containerA,
+				compA1b, containerA2, compA2b });
 
 		assertEquals(env.subComponentMap.size(), 4);
 		assertEquals(env.subComponentMap.get(containerA).size(), 3);
-		assertArrayEquals(env.subComponentMap.get(containerA).toArray(),
-				new ComponentEx[] { containerA, containerA1, compA1a });
+		assertArrayEquals(env.subComponentMap.get(containerA).toArray(), new ComponentEx[] {
+				containerA, containerA1, compA1a });
 		assertEquals(env.subComponentMap.get(compA1b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA1b).get(0), compA1b);
 		assertEquals(env.subComponentMap.get(containerA2).size(), 2);
-		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(),
-				new ComponentEx[] { containerA2, compA2a });
+		assertArrayEquals(env.subComponentMap.get(containerA2).toArray(), new ComponentEx[] {
+				containerA2, compA2a });
 		assertEquals(env.subComponentMap.get(compA2b).size(), 1);
 		assertEquals(env.subComponentMap.get(compA2b).get(0), compA2b);
 

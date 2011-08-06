@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.PContainer;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
 import org.junit.Test;
@@ -33,8 +32,6 @@ import org.junit.Test;
  * 
  */
 public class DummyEnvironmentTest {
-
-	private static final ElementFactory cf = ElementFactory.getInstance();
 
 	/**
 	 * Test method for
@@ -48,7 +45,7 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
-			PComponent proxyA = cf.proxy(compA, PComponent.class);
+			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 			assertEquals(denv.cacheableComponentList.size(), 0);
@@ -61,7 +58,7 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
-			PComponent proxyA = cf.proxy(compA, PComponent.class);
+			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
@@ -75,10 +72,10 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
-			PContainer proxyA = cf.proxy(compA, PContainer.class);
+			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			PComponent proxyAA = cf.proxy(compAA, PComponent.class);
+			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			assertEquals(compAA.getParent(), compA);
 			denv.registerComponent(compA, proxyA);
@@ -95,10 +92,10 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
-			PContainer proxyA = cf.proxy(compA, PContainer.class);
+			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			PComponent proxyAA = cf.proxy(compAA, PComponent.class);
+			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			when(compAA.isCacheable()).thenReturn(true);
 			denv.registerComponent(compA, proxyA);

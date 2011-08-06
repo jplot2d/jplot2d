@@ -40,7 +40,7 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
-public interface Plot extends PContainer {
+public interface Plot extends PComponent {
 
 	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8,
 			8);

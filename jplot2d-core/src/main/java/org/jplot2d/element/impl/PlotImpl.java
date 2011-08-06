@@ -208,8 +208,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setSize(double width, double height) {
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("paper size must be positive, "
-					+ width + "x" + height + " is invalid.");
+			throw new IllegalArgumentException("paper size must be positive, " + width + "x"
+					+ height + " is invalid.");
 		}
 
 		if (this.width != width || this.height != height) {
@@ -240,8 +240,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			if (getParent() == null) {
 				pxf = new PhysicalTransform(0.0, height, scale);
 			} else {
-				pxf = getParent().getPhysicalTransform().translate(
-						getLocation().getX(), getLocation().getY());
+				pxf = getParent().getPhysicalTransform().translate(locX, locY);
 			}
 		}
 		return pxf;
@@ -289,8 +288,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setContentConstrant(Rectangle2D bounds) {
 		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, "
-					+ width + "x" + height + " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
+					+ " is invalid.");
 		}
 		this.contentConstraint = bounds;
 	}
@@ -371,12 +370,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setPreferredContentSize(Dimension2D size) {
 		if (size == null) {
-			throw new IllegalArgumentException(
-					"Preferred content size cannpt be null.");
+			throw new IllegalArgumentException("Preferred content size cannpt be null.");
 		}
 		if (size.getWidth() <= 0 || size.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, "
-					+ width + "x" + height + " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
+					+ " is invalid.");
 		}
 		preferredContentSize = size;
 		childPreferredContentSizeChanged();
@@ -396,8 +394,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setContentBounds(Rectangle2D bounds) {
 		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, "
-					+ width + "x" + height + " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
+					+ " is invalid.");
 		}
 		if (bounds.equals(this.contentBounds)) {
 			return;
@@ -411,8 +409,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public int getComponentCount() {
-		return 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size()
-				+ subplots.size();
+		return 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
 	}
 
 	public ComponentEx getComponent(int index) {
@@ -587,12 +584,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			throw new IllegalArgumentException("The axis has no tick manager.");
 		}
 		if (ax.getTickManager().getRangeManager() == null) {
-			throw new IllegalArgumentException(
-					"The axis' tick manager has no range manager.");
+			throw new IllegalArgumentException("The axis' tick manager has no range manager.");
 		}
 		if (ax.getTickManager().getRangeManager().getLockGroup() == null) {
-			throw new IllegalArgumentException(
-					"The axis's range manager has no lock group.");
+			throw new IllegalArgumentException("The axis's range manager has no lock group.");
 		}
 
 		xAxis.add(ax);
@@ -616,12 +611,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			throw new IllegalArgumentException("The axis has no tick manager.");
 		}
 		if (ax.getTickManager().getRangeManager() == null) {
-			throw new IllegalArgumentException(
-					"The axis' tick manager has no range manager.");
+			throw new IllegalArgumentException("The axis' tick manager has no range manager.");
 		}
 		if (ax.getTickManager().getRangeManager().getLockGroup() == null) {
-			throw new IllegalArgumentException(
-					"The axis's range manager has no lock group.");
+			throw new IllegalArgumentException("The axis's range manager has no lock group.");
 		}
 
 		yAxis.add(ax);
@@ -649,8 +642,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		} else if (ax.getTickManager().getRangeManager().getParent() == null) {
 			// quit the range manager if tick manager is not its only member
 			ax.getTickManager().setRangeManager(null);
-		} else if (ax.getTickManager().getRangeManager().getLockGroup()
-				.getParent() == null) {
+		} else if (ax.getTickManager().getRangeManager().getLockGroup().getParent() == null) {
 			// quit the lock group if range manager is not the lock group's only
 			// member
 			ax.getTickManager().getRangeManager().setLockGroup(null);
@@ -677,8 +669,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		} else if (ax.getTickManager().getRangeManager().getParent() == null) {
 			// quit the range manager if tick manager is not its only member
 			ax.getTickManager().setRangeManager(null);
-		} else if (ax.getTickManager().getRangeManager().getLockGroup()
-				.getParent() == null) {
+		} else if (ax.getTickManager().getRangeManager().getLockGroup().getParent() == null) {
 			// quit the lock group if range manager is not the lock group's only
 			// member
 			ax.getTickManager().getRangeManager().setLockGroup(null);
@@ -706,8 +697,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
-			AxisRangeManager yRangeManager) {
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager, AxisRangeManager yRangeManager) {
 		LayerEx lx = (LayerEx) layer;
 		layers.add(lx);
 		lx.setParent(this);
@@ -726,8 +716,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
-		this.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		this.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis.getTickManager()
+				.getRangeManager());
 	}
 
 	public void removeLayer(Layer layer) {
@@ -945,16 +935,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
-			if (layerCopy.getXRangeManager() == null
-					&& layer.getXRangeManager() != null) {
-				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap
-						.get(layer.getXRangeManager());
+			if (layerCopy.getXRangeManager() == null && layer.getXRangeManager() != null) {
+				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap.get(layer
+						.getXRangeManager());
 				layerCopy.setXRangeManager(xcopy);
 			}
-			if (layerCopy.getYRangeManager() == null
-					&& layer.getYRangeManager() != null) {
-				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap
-						.get(layer.getYRangeManager());
+			if (layerCopy.getYRangeManager() == null && layer.getYRangeManager() != null) {
+				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap.get(layer
+						.getYRangeManager());
 				layerCopy.setYRangeManager(ycopy);
 			}
 		}
@@ -1054,8 +1042,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private void autoPack() {
 		if (getLayoutDirector() != null) {
 			if (!isValid() || preferredSizeChanged) {
-				Dimension2D prefSize = getLayoutDirector().getPreferredSize(
-						this);
+				Dimension2D prefSize = getLayoutDirector().getPreferredSize(this);
 				this.setSize(prefSize);
 				preferredSizeChanged = false;
 			}
@@ -1080,13 +1067,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
-			AxisRangeLockGroupEx alg = axis.getTickManager().getRangeManager()
-					.getLockGroup();
+			AxisRangeLockGroupEx alg = axis.getTickManager().getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
 		for (AxisEx axis : plot.getYAxes()) {
-			AxisRangeLockGroupEx alg = axis.getTickManager().getRangeManager()
-					.getLockGroup();
+			AxisRangeLockGroupEx alg = axis.getTickManager().getRangeManager().getLockGroup();
 			algs.add(alg);
 		}
 		for (PlotEx sp : plot.getSubplots()) {
@@ -1164,8 +1149,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			if (title.canContribute()) {
 				double oldThickness = title.getSize().getHeight();
 				title.calcSize();
-				if (Math.abs(oldThickness - title.getSize().getHeight()) > Math
-						.abs(oldThickness) * 1e-12) {
+				if (Math.abs(oldThickness - title.getSize().getHeight()) > Math.abs(oldThickness) * 1e-12) {
 					invalidate();
 				}
 			}
@@ -1184,8 +1168,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (legend.canContribute()) {
 			double oldThickness = legend.getThickness();
 			plot.getLegend().calcSize();
-			if (Math.abs(oldThickness - legend.getThickness()) > Math
-					.abs(oldThickness) * 1e-12) {
+			if (Math.abs(oldThickness - legend.getThickness()) > Math.abs(oldThickness) * 1e-12) {
 				plot.invalidate();
 			}
 		}
