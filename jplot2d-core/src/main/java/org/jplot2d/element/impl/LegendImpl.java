@@ -87,8 +87,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (getParent() != null) {
 			return "Legend";
 		} else {
-			return "Legend@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return "Legend@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -150,19 +149,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 
-	/**
-	 * The physical transform is for legend items. The original point is on
-	 * bottom-left corner.
-	 * 
-	 * @return
-	 */
-	private PhysicalTransform getPhysicalTransform() {
-		Rectangle2D bounds = getBounds();
-		PhysicalTransform pxf = getParent().getPhysicalTransform().translate(
-				bounds.getX(), bounds.getY());
-		return pxf;
-	}
-
 	public Point2D getLocation() {
 		return new Point2D.Double(locX, locY);
 	}
@@ -220,8 +206,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setColumns(int columns) {
 		if (columns < 1) {
-			throw new IllegalArgumentException(
-					"Columns number must great than 0.");
+			throw new IllegalArgumentException("Columns number must great than 0.");
 		}
 		this.columns = columns;
 	}
@@ -354,8 +339,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case BOTTOMLEFT:
 		case BOTTOMCENTER:
 		case BOTTOMRIGHT: {
-			double legendWidth = plot.getSize().getWidth()
-					- plot.getMargin().getExtraLeft()
+			double legendWidth = plot.getSize().getWidth() - plot.getMargin().getExtraLeft()
 					- plot.getMargin().getExtraRight();
 			setLengthConstraint(legendWidth);
 			break;
@@ -385,10 +369,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case BOTTOMCENTER:
 		case BOTTOMRIGHT: {
 			fitColumnsToWidth(lengthConstraint);
-			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
-					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
-			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE
-					+ 2 * VERTICAL_BORDER;
+			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns - COLUMN_SPACE + 2
+					* HORIZONTAL_BORDER;
+			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE + 2 * VERTICAL_BORDER;
 			break;
 		}
 		case LEFTTOP:
@@ -398,10 +381,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case RIGHTMIDDLE:
 		case RIGHTBOTTOM: {
 			fitRowsToHeight(lengthConstraint);
-			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns
-					- COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
-			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE
-					+ 2 * VERTICAL_BORDER;
+			width = (maxItemSize.getWidth() + COLUMN_SPACE) * columns - COLUMN_SPACE + 2
+					* HORIZONTAL_BORDER;
+			height = (maxItemSize.getHeight() + ROW_SPACE) * rows - ROW_SPACE + 2 * VERTICAL_BORDER;
 			break;
 		}
 		}
@@ -477,8 +459,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 					+ ((i > 0) ? i * COLUMN_SPACE : 0);
 		}
 		for (int i = 0; i < rows; i++) {
-			lipy[i] = VERTICAL_BORDER + (rows - i - 0.5)
-					* maxItemSize.getHeight()
+			lipy[i] = VERTICAL_BORDER + (rows - i - 0.5) * maxItemSize.getHeight()
 					+ ((rows - 1 - i > 0) ? (rows - 1 - i) * ROW_SPACE : 0);
 		}
 
@@ -533,8 +514,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		// transform to relative paper space
 		Graphics2D g = (Graphics2D) graphics.create();
 		g.transform(getPhysicalTransform().getTransform());
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setColor(BORDER_COLOR);
 		g.draw(new Rectangle2D.Double(0, 0, width, height));

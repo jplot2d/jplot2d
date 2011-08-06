@@ -22,12 +22,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
+import org.jplot2d.element.PhysicalTransform;
 
 public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
@@ -248,8 +251,8 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	public Font getEffectiveFont() {
 		float size = getEffectiveFontSize();
-		return new Font(getEffectiveFontName(), getEffectiveFontStyle(),
-				(int) size).deriveFont(size);
+		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size)
+				.deriveFont(size);
 	}
 
 	public final void parentEffectiveColorChanged() {
@@ -259,10 +262,14 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public final void parentEffectiveFontChanged() {
-		if (fontName == null || (fontStyle & ~0x03) != 0
-				|| Float.isNaN(fontSize)) {
+		if (fontName == null || (fontStyle & ~0x03) != 0 || Float.isNaN(fontSize)) {
 			this.thisEffectiveFontChanged();
 		}
+	}
+
+	public PhysicalTransform getPhysicalTransform() {
+		Rectangle2D bnds = getBounds();
+		return getParent().getPhysicalTransform().translate(bnds.getX(), bnds.getY());
 	}
 
 	public boolean isRedrawNeeded() {
@@ -316,15 +323,11 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 			return;
 		}
 		g.setColor(Color.BLACK);
-		Rectangle rect = getParent().getPhysicalTransform()
-				.getPtoD(getBounds()).getBounds();
+		Rectangle rect = getParent().getPhysicalTransform().getPtoD(getBounds()).getBounds();
 		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
-		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1,
-				(int) rect.getMaxY() - 1);
-		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1,
-				rect.y);
-		g.drawString(this.getClass().getSimpleName(), rect.x,
-				(int) (rect.getMaxY() - 1));
+		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1, (int) rect.getMaxY() - 1);
+		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1, rect.y);
+		g.drawString(this.getClass().getSimpleName(), rect.x, (int) (rect.getMaxY() - 1));
 	}
 
 }

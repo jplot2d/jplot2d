@@ -16,10 +16,9 @@ public class ComponentTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(PComponent.class);
-		checkSet(iinfo.getPropertyMap().keySet(), "fontName", "fontStyle",
-				"fontScale", "fontSize", "location", "size", "bounds",
-				"environment", "color", "selectable", "parent", "visible",
-				"cacheable", "ZOrder");
+		checkSet(iinfo.getPropertyMap().keySet(), "fontName", "fontStyle", "fontScale", "fontSize",
+				"location", "size", "bounds", "environment", "color", "selectable", "parent",
+				"visible", "cacheable", "ZOrder", "physicalTransform");
 	}
 
 }

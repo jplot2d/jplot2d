@@ -1,8 +1,6 @@
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.PContainer;
-
-public interface ContainerEx extends PContainer, ComponentEx {
+public interface ContainerEx extends ComponentEx {
 
 	/**
 	 * Returns the number of component of this container. Returns 0 if this
