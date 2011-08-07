@@ -18,6 +18,7 @@
  */
 package org.jplot2d.env;
 
+import java.awt.geom.Point2D;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
@@ -66,8 +68,7 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Sets a plot to this environment. The plot must hosted by
-	 * a dummy environment.
+	 * Sets a plot to this environment. The plot must hosted by a dummy environment.
 	 * 
 	 * @param plot
 	 */
@@ -86,8 +87,7 @@ public abstract class PlotEnvironment extends Environment {
 
 			if (this.plot != null) {
 				endCommand();
-				throw new IllegalArgumentException(
-						"This Environment has hosted a plot");
+				throw new IllegalArgumentException("This Environment has hosted a plot");
 			}
 
 			oldEnv.beginCommand("");
@@ -165,8 +165,7 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Undo the last change. If there is nothing to undo, an exception is
-	 * thrown.
+	 * Undo the last change. If there is nothing to undo, an exception is thrown.
 	 * 
 	 * @return
 	 */
@@ -186,8 +185,7 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Undo the last change. If there is nothing to undo, an exception is
-	 * thrown.
+	 * Undo the last change. If there is nothing to undo, an exception is thrown.
 	 * 
 	 * @return
 	 */
@@ -216,8 +214,8 @@ public abstract class PlotEnvironment extends Environment {
 		// the value is copy of element, the key is original element
 		Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 		/*
-		 * only when no history and all renderer is sync renderer and the
-		 * component renderer is caller run, the deepCopy can be omitted.
+		 * only when no history and all renderer is sync renderer and the component renderer is
+		 * caller run, the deepCopy can be omitted.
 		 */
 		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.copyStructure(copyMap);
 		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
@@ -258,8 +256,7 @@ public abstract class PlotEnvironment extends Environment {
 			ElementEx mmte = me.getKey();
 			Element proxy = me.getValue();
 			ElementEx impl = copyMap.get(mmte);
-			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy
-					.getInvocationHandler(proxy);
+			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy.getInvocationHandler(proxy);
 			ih.replaceImpl(impl);
 			this.proxyMap.put(impl, proxy);
 
@@ -278,8 +275,8 @@ public abstract class PlotEnvironment extends Environment {
 	 * @param plot
 	 *            the plot to be redrawn.
 	 * @param copyMap
-	 *            the key contains all components in the plot. The values are
-	 *            the thread safe copies of keys.
+	 *            the key contains all components in the plot. The values are the thread safe copies
+	 *            of keys.
 	 */
 	protected abstract void renderOnCommit();
 
@@ -313,11 +310,43 @@ public abstract class PlotEnvironment extends Environment {
 	 */
 	public WarningMessage[] removeWarnings() {
 		synchronized (warnings) {
-			WarningMessage[] result = warnings
-					.toArray(new WarningMessage[warnings.size()]);
+			WarningMessage[] result = warnings.toArray(new WarningMessage[warnings.size()]);
 			warnings.clear();
 			return result;
 		}
 	}
 
+	/**
+	 * Return the top selectable component at the given location.
+	 * 
+	 * @param dp the device point relative to top-left corner.
+	 * @return
+	 */
+	public PComponent getSelectableCompnentAt(Point2D dp) {
+		/* add top plot if it's uncacheable */
+		List<ComponentEx> ccl;
+		if (!plotImpl.isCacheable()) {
+			ccl = new ArrayList<ComponentEx>(cacheableComponentList);
+			addOrder(0, ccl, plotImpl);
+		} else {
+			ccl = cacheableComponentList;
+		}
+
+		for (int i = cacheableComponentList.size() - 1; i >= 0; i--) {
+			ComponentEx cacheableComp = cacheableComponentList.get(i);
+			List<ComponentEx> uccList = subComponentMap.get(cacheableComp);
+			for (int j = uccList.size() - 1; j <= 0; j--) {
+				ComponentEx ucc = uccList.get(j);
+				if (ucc.isSelectable()) {
+					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
+					if (p.getX() >= 0 && p.getY() >= 0 && p.getX() < ucc.getSize().getWidth()
+							&& p.getY() < ucc.getSize().getHeight()) {
+						return ucc;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
 }

@@ -37,12 +37,11 @@ import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.util.WarningMessage;
 
 /**
- * An environment that a plot can realization. Once a plot is put an
- * environment, changes on the plot can cause re-layout or redraw, according to
- * the changed property.
+ * An environment that a plot can realization. Once a plot is put an environment, changes on the
+ * plot can cause re-layout or redraw, according to the changed property.
  * <p>
- * Renderers can be added to an environment to get the rendered result
- * synchronously or asynchronously.
+ * Renderers can be added to an environment to get the rendered result synchronously or
+ * asynchronously.
  * 
  * @author Jingjing Li
  * 
@@ -61,8 +60,8 @@ public abstract class Environment {
 	private final ReentrantLock lock;
 
 	/**
-	 * batch SN in every depth. batchSND[n], n is batch depth -1. the value is
-	 * the SN for the batch depth
+	 * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch
+	 * depth
 	 */
 	private int[] batchSND = new int[MAX_BATCH_DEPTH];
 
@@ -74,13 +73,13 @@ public abstract class Environment {
 	protected final Map<ElementEx, Element> proxyMap = new HashMap<ElementEx, Element>();
 
 	/**
-	 * Contains all cacheable components in z-order
+	 * Contains all cacheable components in z-order.
 	 */
 	protected final List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
 
 	/**
-	 * The key is cacheable components or uncacheable top component; the value
-	 * is key's uncacheable descendants, include the key itself, in z-order.
+	 * The key is cacheable components or uncacheable top component; the value is key's uncacheable
+	 * descendants, include the key itself, in z-order.
 	 */
 	protected final Map<ComponentEx, List<ComponentEx>> subComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
@@ -112,8 +111,7 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Remove the orphan element from this environment, and create a dummy
-	 * environment for it.
+	 * Remove the orphan element from this environment, and create a dummy environment for it.
 	 * 
 	 * @param impl
 	 * @return
@@ -125,8 +123,7 @@ public abstract class Environment {
 		removedProxyMap.put(impl, proxyMap.remove(impl));
 
 		// remove the elements whoes parent has been removed
-		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet()
-				.iterator();
+		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
 		while (ite.hasNext()) {
 			Entry<ElementEx, Element> e = ite.next();
 			if (removedProxyMap.containsKey(e.getKey().getParent())) {
@@ -141,8 +138,7 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Called after a component has been added to this environment, and its
-	 * parent has been set.
+	 * Called after a component has been added to this environment, and its parent has been set.
 	 * 
 	 * @param element
 	 *            the added element
@@ -163,10 +159,9 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Called after a component has been added to this environment, and its
-	 * parent has been set. Or called when adding a top plot to a plot
-	 * environment. The added component either is cacheable, or has a cacheable
-	 * parent.
+	 * Called after a component has been added to this environment, and its parent has been set. Or
+	 * called when adding a top plot to a plot environment. The added component either is cacheable,
+	 * or has a cacheable parent.
 	 * 
 	 * @param comp
 	 *            the added ComponentEx
@@ -185,8 +180,7 @@ public abstract class Environment {
 			PComponent cc = getCacheableAncestor(comp);
 			if (cc != comp) {
 				/*
-				 * remove the added top uncacheable component and add it to the
-				 * list of its parent
+				 * remove the added top uncacheable component and add it to the list of its parent
 				 */
 				addOrder(subComponentMap.get(cc), subComponentMap.remove(comp));
 			}
@@ -243,8 +237,7 @@ public abstract class Environment {
 			List<ComponentEx> removedUncacheableComps = new ArrayList<ComponentEx>();
 			// all the possible uncacheable descendants
 			ComponentEx cacheableParent = getCacheableAncestor(oldParent);
-			List<ComponentEx> possibleDesList = subComponentMap
-					.get(cacheableParent);
+			List<ComponentEx> possibleDesList = subComponentMap.get(cacheableParent);
 
 			Iterator<ComponentEx> it = possibleDesList.iterator();
 			while (it.hasNext()) {
@@ -260,8 +253,7 @@ public abstract class Environment {
 		}
 
 		// remove all elements whoes parent has been removed
-		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet()
-				.iterator();
+		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
 		while (ite.hasNext()) {
 			Entry<ElementEx, Element> e = ite.next();
 			if (isAncestor(comp, e.getKey())) {
@@ -323,10 +315,8 @@ public abstract class Environment {
 
 				List<ComponentEx> descendant = new ArrayList<ComponentEx>();
 				// all the possible uncacheable descendants
-				PComponent cacheableParent = getCacheableAncestor(comp
-						.getParent());
-				List<ComponentEx> possibleDesList = subComponentMap
-						.get(cacheableParent);
+				PComponent cacheableParent = getCacheableAncestor(comp.getParent());
+				List<ComponentEx> possibleDesList = subComponentMap.get(cacheableParent);
 
 				Iterator<ComponentEx> it = possibleDesList.iterator();
 				while (it.hasNext()) {
@@ -349,8 +339,7 @@ public abstract class Environment {
 				cacheableComponentList.remove(comp);
 				List<ComponentEx> subcomps = subComponentMap.remove(comp);
 				PComponent newParent = getCacheableAncestor(comp);
-				List<ComponentEx> newSubcompList = subComponentMap
-						.get(newParent);
+				List<ComponentEx> newSubcompList = subComponentMap.get(newParent);
 				newSubcompList.addAll(subcomps);
 
 				updateOrder(newSubcompList);
@@ -363,8 +352,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Returns the first cacheable parent. If all its ancestor are not
-	 * cacheable, the top ancestor will be returned.
+	 * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor
+	 * will be returned.
 	 * 
 	 * @param comp
 	 * @return
@@ -383,25 +372,25 @@ public abstract class Environment {
 	}
 
 	/**
-	 * update the zOrderedComponents;
+	 * append the comp to the end of list, then sort by zorder
 	 */
-	protected final void addOrder(List<ComponentEx> list, ComponentEx comp) {
+	protected static void addOrder(List<ComponentEx> list, ComponentEx comp) {
 		list.add(comp);
 		updateOrder(list);
 	}
 
 	/**
-	 * update the zOrderedComponents;
+	 * Insert the comp to the position of the list, then sort by zorder
 	 */
-	private void addOrder(int index, List<ComponentEx> list, ComponentEx comp) {
+	protected static void addOrder(int index, List<ComponentEx> list, ComponentEx comp) {
 		list.add(index, comp);
 		updateOrder(list);
 	}
 
 	/**
-	 * update the zOrderedComponents;
+	 * append the comps to the end of list, then sort by zorder
 	 */
-	private void addOrder(List<ComponentEx> list, List<ComponentEx> comps) {
+	private static void addOrder(List<ComponentEx> list, List<ComponentEx> comps) {
 		list.addAll(comps);
 		updateOrder(list);
 	}
@@ -409,7 +398,7 @@ public abstract class Environment {
 	/**
 	 * update the list order;
 	 */
-	private void updateOrder(List<ComponentEx> list) {
+	private static void updateOrder(List<ComponentEx> list) {
 
 		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
 		Comparator<PComponent> zComparator = new Comparator<PComponent>() {
@@ -431,8 +420,7 @@ public abstract class Environment {
 	private void fireComponentAdded(PComponent engine) {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { engine });
+			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { engine });
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.componentCreated(evt);
 			}
@@ -442,8 +430,7 @@ public abstract class Environment {
 	private void fireComponentRemoving(PComponent engine) {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { engine });
+			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { engine });
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.componentRemoved(evt);
 			}
@@ -451,16 +438,15 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Notify all registered JPlot2DChangeListener that the properties of the
-	 * given element has been changed.
+	 * Notify all registered JPlot2DChangeListener that the properties of the given element has been
+	 * changed.
 	 * 
 	 * @param element
 	 */
 	private void fireElementPropertyChanged(Element element) {
 		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this,
-					new Element[] { element });
+			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { element });
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.enginePropertiesChanged(evt);
 			}
@@ -508,8 +494,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Begin a batch updating. In this mode, all update on environment will not
-	 * send redraw command to renderers, until endBatch is called.
+	 * Begin a batch updating. In this mode, all update on environment will not send redraw command
+	 * to renderers, until endBatch is called.
 	 * 
 	 * @param msg
 	 *            the short description about the batch
@@ -530,8 +516,7 @@ public abstract class Environment {
 		begin();
 
 		if (!verifyBatchToken(token)) {
-			throw new IllegalArgumentException("Batch token not match. "
-					+ token);
+			throw new IllegalArgumentException("Batch token not match. " + token);
 		}
 
 		try {
@@ -553,8 +538,7 @@ public abstract class Environment {
 		batchDepth++;
 		batchSND[batchDepth] = 0;
 
-		logger.fine("[>] " + Integer.toHexString(hashCode()) + getBatchString()
-				+ " :" + msg);
+		logger.fine("[>] " + Integer.toHexString(hashCode()) + getBatchString() + " :" + msg);
 	}
 
 	/**
@@ -595,9 +579,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Commit all pending processes in a batch. The isBatch() should remain
-	 * <code>true</code> while this method is called. This method can be called
-	 * many times.
+	 * Commit all pending processes in a batch. The isBatch() should remain <code>true</code> while
+	 * this method is called. This method can be called many times.
 	 * 
 	 * @throws WarningException
 	 */
