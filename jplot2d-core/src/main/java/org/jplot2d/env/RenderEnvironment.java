@@ -111,11 +111,13 @@ public class RenderEnvironment extends PlotEnvironment {
 		 */
 		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 
-		/* add top plot even it's uncacheable */
-		List<ComponentEx> ccl = cacheableComponentList;
+		/* add top plot if it's uncacheable */
+		List<ComponentEx> ccl;
 		if (!plotImpl.isCacheable()) {
 			ccl = new ArrayList<ComponentEx>(cacheableComponentList);
-			ccl.add(plotImpl);
+			addOrder(0, ccl, plotImpl);
+		} else {
+			ccl = cacheableComponentList;
 		}
 
 		for (ComponentEx comp : ccl) {
