@@ -221,7 +221,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(locX, locY, width, height);
+		return new Rectangle2D.Double(0, 0, width, height);
 	}
 
 	public double getScale() {
@@ -1142,7 +1142,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Calculate axis ticks according to its length, range and tick properties.
+	 * Calculate title size according to its contents
 	 */
 	private void calcTitleSize(PlotEx plot) {
 		for (TitleEx title : plot.getTitles()) {

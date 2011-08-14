@@ -31,8 +31,7 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 	private double gapFactor = 0.25;
 
 	/**
-	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in
-	 * PlotImpl
+	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in PlotImpl
 	 */
 	private Rectangle2D bounds = new Rectangle2D.Double();
 
@@ -40,8 +39,7 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		if (getParent() != null) {
 			return "Title" + getParent().indexOf(this);
 		} else {
-			return "Title@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return "Title@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 

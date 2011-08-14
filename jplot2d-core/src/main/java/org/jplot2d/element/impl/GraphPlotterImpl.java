@@ -20,7 +20,6 @@ package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 /**
@@ -60,15 +59,6 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 			return null;
 		} else {
 			return getParent().getSize();
-		}
-	}
-
-	public Rectangle2D getBounds() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return new Rectangle2D.Double(0, 0, getSize().getWidth(), getSize()
-					.getHeight());
 		}
 	}
 

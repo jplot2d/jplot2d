@@ -71,4 +71,9 @@ public interface LegendEx extends Legend, ComponentEx {
 	 */
 	public void calcSize();
 
+	/**
+	 * Locate all items of this legend.
+	 */
+	public void layoutItems();
+
 }

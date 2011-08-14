@@ -151,11 +151,7 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 			label = new MathLabel(getTextModel(), getEffectiveFont(),
 					getVAlign(), getHAlign());
 		}
-		Rectangle2D bounds = label.getBounds();
-
-		Point2D loc = getLocation();
-		return new Rectangle2D.Double(loc.getX() + bounds.getX(), loc.getY()
-				+ bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		return label.getBounds();
 	}
 
 	@Override

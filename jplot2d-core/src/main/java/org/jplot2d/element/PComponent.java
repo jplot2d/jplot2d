@@ -213,7 +213,7 @@ public interface PComponent extends Element {
 	public Dimension2D getSize();
 
 	/**
-	 * Returns the paper bounds relative to its container. The units of bounds is pt (1/72 inch)
+	 * Returns the paper bounds relative to its location. The units of bounds is pt (1/72 inch)
 	 * 
 	 * @return the paper bounds of this component.
 	 */
