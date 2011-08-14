@@ -84,14 +84,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public Rectangle2D getBounds() {
-		if (getParent() == null) {
-			return null;
-		} else {
-			return getParent().getContentBounds();
-		}
-	}
-
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null && getParent() != null) {
 			pxf = super.getPhysicalTransform();

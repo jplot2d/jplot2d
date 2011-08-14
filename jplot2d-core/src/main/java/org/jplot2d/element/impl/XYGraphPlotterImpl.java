@@ -246,7 +246,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		}
 
 		Graphics2D g = (Graphics2D) graphics.create();
-		Rectangle2D clip = getParent().getPhysicalTransform().getPtoD(
+		Shape clip = getPhysicalTransform().getPtoD(
 				getBounds());
 		g.setClip(clip);
 

@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeListener;
@@ -268,8 +269,13 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
-		Rectangle2D bnds = getBounds();
-		return getParent().getPhysicalTransform().translate(bnds.getX(), bnds.getY());
+		Point2D loc = getLocation();
+		return getParent().getPhysicalTransform().translate(loc.getX(), loc.getY());
+	}
+
+	public Rectangle2D getBounds() {
+		Dimension2D size = getSize();
+		return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
 	}
 
 	public boolean isRedrawNeeded() {
@@ -323,7 +329,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 			return;
 		}
 		g.setColor(Color.BLACK);
-		Rectangle rect = getParent().getPhysicalTransform().getPtoD(getBounds()).getBounds();
+		Rectangle rect = getPhysicalTransform().getPtoD(getBounds()).getBounds();
 		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1, (int) rect.getMaxY() - 1);
 		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1, rect.y);

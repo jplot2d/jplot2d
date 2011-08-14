@@ -319,7 +319,8 @@ public abstract class PlotEnvironment extends Environment {
 	/**
 	 * Return the top selectable component at the given location.
 	 * 
-	 * @param dp the device point relative to top-left corner.
+	 * @param dp
+	 *            the device point relative to top-left corner.
 	 * @return
 	 */
 	public PComponent getSelectableCompnentAt(Point2D dp) {
@@ -335,12 +336,11 @@ public abstract class PlotEnvironment extends Environment {
 		for (int i = cacheableComponentList.size() - 1; i >= 0; i--) {
 			ComponentEx cacheableComp = cacheableComponentList.get(i);
 			List<ComponentEx> uccList = subComponentMap.get(cacheableComp);
-			for (int j = uccList.size() - 1; j <= 0; j--) {
+			for (int j = uccList.size() - 1; j >= 0; j--) {
 				ComponentEx ucc = uccList.get(j);
 				if (ucc.isSelectable()) {
 					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
-					if (p.getX() >= 0 && p.getY() >= 0 && p.getX() < ucc.getSize().getWidth()
-							&& p.getY() < ucc.getSize().getHeight()) {
+					if (ucc.getBounds().contains(p)) {
 						return ucc;
 					}
 				}

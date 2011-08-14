@@ -3,19 +3,18 @@
  */
 package org.jplot2d.element;
 
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Defines the conversion between physical units and device units. Every plot
- * has its own physical coordinate system, and maintains a PhysicalTransform
- * object.
+ * Defines the conversion between physical units and device units. Every component has its own
+ * physical coordinate system, and maintains a PhysicalTransform object.
  * <p>
- * The transform is defined by 3 parameters. The xoff is the physical distance
- * between plot left bound to chart left bound. The yoff is the physical
- * distance between plot bottom bound to chart top bound. The scale is the
- * factor of device to physical.
+ * The transform is defined by 3 parameters. The xoff is the physical distance between component
+ * left bound to device left bound. The yoff is the physical distance between component bottom bound
+ * to device top bound. The scale is the factor of device to physical.
  * 
  * @author Jingjing Li
  * 
@@ -23,22 +22,15 @@ import java.awt.geom.Rectangle2D;
 public class PhysicalTransform implements Cloneable {
 
 	private final double xoff, yoff, scale;
-	private final double theta;
 
-	public PhysicalTransform(double xoff, double yoff, double scale,
-			double theta) {
+	public PhysicalTransform(double xoff, double yoff, double scale) {
 		this.xoff = xoff;
 		this.yoff = yoff;
 		this.scale = scale;
-		this.theta = theta;
-	}
-
-	public PhysicalTransform(double xoff, double yoff, double scale) {
-		this(xoff, yoff, scale, 0);
 	}
 
 	public PhysicalTransform(Point2D p, double scale) {
-		this(p.getX(), p.getY(), scale, 0);
+		this(p.getX(), p.getY(), scale);
 	}
 
 	public PhysicalTransform clone() {
@@ -62,18 +54,16 @@ public class PhysicalTransform implements Cloneable {
 	 * Concatenates this transform with a translation transformation.
 	 * 
 	 * @param tx
-	 *            the distance by which coordinates are translated in the X axis
-	 *            direction
+	 *            the distance by which coordinates are translated in the X axis direction
 	 * @param ty
-	 *            the distance by which coordinates are translated in the Y axis
-	 *            direction
+	 *            the distance by which coordinates are translated in the Y axis direction
 	 */
 	public PhysicalTransform translate(double tx, double ty) {
 		return new PhysicalTransform(xoff + tx, yoff - ty, scale);
 	}
 
 	public PhysicalTransform rotate(double theta) {
-		return new PhysicalTransform(xoff, yoff, scale, this.theta + theta);
+		return new RotatablePhysicalTransform(xoff, yoff, scale, theta);
 	}
 
 	public boolean equals(Object obj) {
@@ -130,19 +120,17 @@ public class PhysicalTransform implements Cloneable {
 		return new Point2D.Double(getXDtoP(d.getX()), getYDtoP(d.getY()));
 	}
 
-	public Rectangle2D getPtoD(Rectangle2D p) {
+	/**
+	 * Returns a shape in device coordinate system.
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public Shape getPtoD(Rectangle2D p) {
 		double x = getXPtoD(p.getX());
 		double y = getYPtoD(p.getMaxY());
 		double w = p.getWidth() * scale;
 		double h = p.getHeight() * scale;
-		return new Rectangle2D.Double(x, y, w, h);
-	}
-
-	public Rectangle2D getDtoP(Rectangle2D d) {
-		double x = getXDtoP(d.getX());
-		double y = getYDtoP(d.getMaxY());
-		double w = d.getWidth() / scale;
-		double h = d.getHeight() / scale;
 		return new Rectangle2D.Double(x, y, w, h);
 	}
 
@@ -153,19 +141,11 @@ public class PhysicalTransform implements Cloneable {
 		AffineTransform af = new AffineTransform();
 		af.scale(scale, -scale);
 		af.translate(xoff, -yoff);
-		if (theta != 0) {
-			af.rotate(theta);
-		}
 		return af;
 	}
 
 	public String toString() {
-		if (theta == 0) {
-			return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ")";
-		} else {
-			return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ","
-					+ theta + ")";
-		}
+		return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ")";
 	}
 
 }

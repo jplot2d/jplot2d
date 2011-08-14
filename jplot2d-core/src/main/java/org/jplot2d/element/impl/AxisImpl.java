@@ -119,6 +119,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	private Font actualLabelFont;
 
 	public AxisImpl() {
+		setSelectable(true);
+
 		title = new AxisTitleImpl();
 		title.setParent(this);
 	}
@@ -204,28 +206,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	public Rectangle2D getBounds() {
-		if (getOrientation() == null) {
-			return null;
-		} else {
-			switch (getOrientation()) {
-			case HORIZONTAL:
-				return new Rectangle2D.Double(locX, locY - desc, getLength(),
-						getThickness());
-			case VERTICAL:
-				return new Rectangle2D.Double(locX - asc, locY, getThickness(),
-						getLength());
-			default:
-				return null;
-			}
-		}
+		return new Rectangle2D.Double(0, -desc, getLength(), getThickness());
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
 		if (getParent() == null) {
 			return null;
 		} else {
-			PhysicalTransform pxf = getParent().getPhysicalTransform()
-					.translate(getLocation().getX(), getLocation().getY());
+			PhysicalTransform pxf = getParent().getPhysicalTransform().translate(
+					getLocation().getX(), getLocation().getY());
 			if (getOrientation() == AxisOrientation.VERTICAL) {
 				pxf = pxf.rotate(Math.PI / 2);
 			}
@@ -419,8 +408,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * Mark the thickness is invalid. Changing tick height, label strings label
-	 * font or orientation will call this method
+	 * Mark the thickness is invalid. Changing tick height, label strings label font or orientation
+	 * will call this method
 	 */
 	public void invalidateThickness() {
 		thicknessCalculationNeeded = true;
@@ -526,20 +515,19 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private double getLabelHeight() {
 		FontRenderContext frc = new FontRenderContext(null, false, true);
-		LineMetrics lm = getEffectiveFont().getLineMetrics("Can be any string",
-				frc);
+		LineMetrics lm = getEffectiveFont().getLineMetrics("Can be any string", frc);
 		return (lm.getAscent() + lm.getDescent());
 	}
 
 	/**
-	 * Traverse all labels to find the Maximum Width. The width is calculated by
-	 * axis effective font, not shrunk actual font.
+	 * Traverse all labels to find the Maximum Width. The width is calculated by axis effective
+	 * font, not shrunk actual font.
 	 * 
 	 * @return the maximum label width.
 	 */
 	private double getLabelsMaxNormalPhysicalWidth() {
-		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager()
-				.getLabelModels(), getEffectiveFont());
+		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager().getLabelModels(),
+				getEffectiveFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -558,13 +546,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * 
 	 * @return the labels normal size.
 	 */
-	public static Dimension2D[] getLabelsPhySize(MathElement[] labels,
-			Font labelFont) {
+	public static Dimension2D[] getLabelsPhySize(MathElement[] labels, Font labelFont) {
 		Dimension2D[] ss = new Dimension2D[labels.length];
 
 		for (int i = 0; i < labels.length; i++) {
-			MathLabel labelDrawer = new MathLabel(labels[i], labelFont,
-					VAlign.MIDDLE, HAlign.CENTER);
+			MathLabel labelDrawer = new MathLabel(labels[i], labelFont, VAlign.MIDDLE,
+					HAlign.CENTER);
 			Rectangle2D rect = labelDrawer.getBounds();
 			ss[i] = new DoubleDimension2D(rect.getWidth(), rect.getHeight());
 		}
@@ -574,8 +561,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	@Override
 	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		AxisImpl result = new AxisImpl(
-				(AxisTitleEx) title.copyStructure(orig2copyMap));
+		AxisImpl result = new AxisImpl((AxisTitleEx) title.copyStructure(orig2copyMap));
 		result.title.setParent(result);
 
 		if (orig2copyMap != null) {
@@ -583,11 +569,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		}
 
 		// copy or link axis tick manager
-		AxisTickManagerEx atmCopy = (AxisTickManagerEx) orig2copyMap
-				.get(tickManager);
+		AxisTickManagerEx atmCopy = (AxisTickManagerEx) orig2copyMap.get(tickManager);
 		if (atmCopy == null) {
-			atmCopy = (AxisTickManagerEx) tickManager
-					.copyStructure(orig2copyMap);
+			atmCopy = (AxisTickManagerEx) tickManager.copyStructure(orig2copyMap);
 		}
 		result.tickManager = atmCopy;
 		atmCopy.addAxis(result);
@@ -636,8 +620,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		g.transform(getPhysicalTransform().getTransform());
 
 		g.setColor(getEffectiveColor());
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setStroke(new BasicStroke(DEFAULT_AXISLINE_WIDTH));
 		drawAxisLine(g);
@@ -672,22 +655,20 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		int mvslen = Array.getLength(mvs);
 
 		/*
-		 * implement notes: grid lines must be drawn before ticks, otherwise the
-		 * tick may be overlapped.
+		 * implement notes: grid lines must be drawn before ticks, otherwise the tick may be
+		 * overlapped.
 		 */
 		if (isGridLines()) {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
-			Stroke gridLineStroke = new BasicStroke(
-					((BasicStroke) oldStroke).getLineWidth() / 2,
-					BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0.0f,
-					new float[] { 2.0f, 2.0f }, 0.0f);
+			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 2,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0.0f, new float[] { 2.0f, 2.0f },
+					0.0f);
 			g.setStroke(gridLineStroke);
 
 			Color c = getColor();
-			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c
-					.getAlpha() / 2));
+			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() / 2));
 
 			Rectangle2D plotRect = getParent().getContentBounds();
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
@@ -735,12 +716,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		AffineTransform oldTransform = g.getTransform();
 
 		for (int i = 0; i < labels.length; i++) {
-			double x = Array.getDouble(tvs, i
-					* getTickManager().getLabelInterval());
+			double x = Array.getDouble(tvs, i * getTickManager().getLabelInterval());
 			double xt = transTickToPaper(x);
 
-			MathLabel label = new MathLabel(labels[i], getActualLabelFont(),
-					vertalign, horzalign);
+			MathLabel label = new MathLabel(labels[i], getActualLabelFont(), vertalign, horzalign);
 
 			Color color = getLabelColor();
 
@@ -870,8 +849,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		} else {
 			uv = tickValue;
 		}
-		return tickManager.getRangeManager().getNormalTransform().getTransP(uv)
-				* length;
+		return tickManager.getRangeManager().getNormalTransform().getTransP(uv) * length;
 	}
 
 }

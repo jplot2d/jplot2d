@@ -28,11 +28,6 @@ public class MarkerImpl extends ComponentImpl implements MarkerEx {
 		return null;
 	}
 
-	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub
 

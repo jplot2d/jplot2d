@@ -9,8 +9,8 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 
 /**
- * Extended Component that all impl need to implements. Those additional methods
- * is required by environment.
+ * Extended Component that all impl need to implements. Those additional methods is required by
+ * environment.
  * 
  * @author Jingjing Li
  * 
@@ -20,8 +20,8 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public ContainerEx getParent();
 
 	/*
-	 * Returns <code>true</code> if the component is movable by mouse dragging.
-	 * Only selectable component can be movable.
+	 * Returns <code>true</code> if the component is movable by mouse dragging. Only selectable
+	 * component can be movable.
 	 * 
 	 * @return <code>true</code> if movable
 	 */
@@ -33,25 +33,24 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public void setMovable(boolean movable);
 
 	/**
-	 * Returns a map to tell why this component cannot be removed from its
-	 * container. The key is the moored element, required by its value.
+	 * Returns a map to tell why this component cannot be removed from its container. The key is the
+	 * moored element, required by its value.
 	 * 
 	 * @return a map. The key is the element required by its value.
 	 */
 	public Map<Element, Element> getMooringMap();
 
 	/**
-	 * Returns <code>true</code> if this component can contribute visible parts
-	 * to its parent. Notice cacheable component does not contribute to its
-	 * parent.
+	 * Returns <code>true</code> if this component can contribute visible parts to its parent.
+	 * Notice cacheable component does not contribute to its parent.
 	 * 
 	 * @return the indicator
 	 */
 	public boolean canContributeToParent();
 
 	/**
-	 * Returns <code>true</code> if this component can contribute visible parts
-	 * to plot rendering artifact.
+	 * Returns <code>true</code> if this component can contribute visible parts to plot rendering
+	 * artifact.
 	 * 
 	 * @return the indicator
 	 */
@@ -82,28 +81,28 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public void parentEffectiveFontChanged();
 
 	/**
-	 * Called when setColor() or parentEffectiveColorChanged() change the
-	 * effective color of this component.
+	 * Called when setColor() or parentEffectiveColorChanged() change the effective color of this
+	 * component.
 	 */
 	public void thisEffectiveColorChanged();
 
 	/**
-	 * Called when setFontXxx() or parentEffectiveFontChanged() change the
-	 * effective font of this component.
+	 * Called when setFontXxx() or parentEffectiveFontChanged() change the effective font of this
+	 * component.
 	 */
 	public void thisEffectiveFontChanged();
 
 	/**
-	 * Returns <code>true</code> when this component need to be redrawn. The
-	 * result only apply to cacheable component.
+	 * Returns <code>true</code> when this component need to be redrawn. The result only apply to
+	 * cacheable component.
 	 * 
 	 * @return the redraw status
 	 */
 	public boolean isRedrawNeeded();
 
 	/**
-	 * Mark this component need to be redrawn. If this component is not
-	 * cacheable, this method will called on its parent.
+	 * Mark this component need to be redrawn. If this component is not cacheable, this method will
+	 * called on its parent.
 	 */
 	public void redraw();
 
@@ -113,8 +112,8 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public void clearRedrawNeeded();
 
 	/**
-	 * Mark the plot artifact need to be re-rendered. This method is called on
-	 * its parent, until reach the top plot.
+	 * Mark the plot artifact need to be re-rendered. This method is called on its parent, until
+	 * reach the top plot.
 	 */
 	public void rerender();
 
@@ -122,8 +121,7 @@ public interface ComponentEx extends PComponent, ElementEx {
 	 * Draw this component only. All its children is not drawn.
 	 * 
 	 * @param g
-	 *            to the Graphics2D drawing. The transformation of this
-	 *            component is not applied.
+	 *            to the Graphics2D drawing. The transformation of this component is not applied.
 	 */
 	public void draw(Graphics2D g);
 

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jplot2d.element.HAlign;
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -128,23 +127,23 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		double x, y;
 		switch (getHAlign()) {
 		case RIGHT:
-			x = locX - width;
+			x = -width;
 			break;
 		case CENTER:
-			x = locX - width / 2;
+			x = -width / 2;
 			break;
 		default:
-			x = locX;
+			x = 0;
 		}
 		switch (getVAlign()) {
 		case TOP:
-			y = locY - height;
+			y = -height;
 			break;
 		case MIDDLE:
-			y = locY - height / 2;
+			y = -height / 2;
 			break;
 		default:
-			y = locY;
+			y = 0;
 		}
 		return new Rectangle2D.Double(x, y, width, height);
 	}
@@ -158,7 +157,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void setLocation(double locX, double locY) {
-		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+		if (this.locX != locX || this.locY != locY) {
 			this.locX = locX;
 			this.locY = locY;
 			redraw();
@@ -388,7 +387,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 		}
 
-		locateLegendItems();
 	}
 
 	/**
@@ -444,10 +442,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		rows = nrow;
 	}
 
-	/**
-	 * Locate all legend items
-	 */
-	private void locateLegendItems() {
+	public void layoutItems() {
 		if ((visibleItemNum == 0) || !isVisible()) {
 			return;
 		}
@@ -463,10 +458,13 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 					+ ((rows - 1 - i > 0) ? (rows - 1 - i) * ROW_SPACE : 0);
 		}
 
+		Rectangle2D bounds = getBounds();
+		double xoff = bounds.getX();
+		double yoff = bounds.getY();
 		int col = 0, row = 0;
 		for (LegendItemEx item : items) {
 			if (item.isVisible()) {
-				item.setLocation(lipx[col], lipy[row]);
+				item.setLocation(lipx[col] + xoff, lipy[row] + yoff);
 				col++;
 				if (col >= columns) {
 					col = 0;
@@ -517,7 +515,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setColor(BORDER_COLOR);
-		g.draw(new Rectangle2D.Double(0, 0, width, height));
+		g.draw(getBounds());
 
 		for (LegendItemEx item : items) {
 			if (item.isVisible()) {
