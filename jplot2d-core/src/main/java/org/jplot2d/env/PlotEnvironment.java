@@ -324,6 +324,10 @@ public abstract class PlotEnvironment extends Environment {
 	 * @return
 	 */
 	public PComponent getSelectableCompnentAt(Point2D dp) {
+		PComponent result = null;
+
+		begin();
+
 		/* add top plot if it's uncacheable */
 		List<ComponentEx> ccl;
 		if (!plotImpl.isCacheable()) {
@@ -341,12 +345,57 @@ public abstract class PlotEnvironment extends Environment {
 				if (ucc.isSelectable()) {
 					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
 					if (ucc.getBounds().contains(p)) {
-						return ucc;
+						result = (PComponent) proxyMap.get(ucc);
+						break;
 					}
 				}
 			}
 		}
 
-		return null;
+		end();
+
+		return result;
 	}
+
+	/**
+	 * Return the top plot at the given location.
+	 * 
+	 * @param dp
+	 *            the device point relative to top-left corner.
+	 * @return
+	 */
+	public Plot getPlotAt(Point2D dp) {
+		Plot result = null;
+
+		begin();
+
+		/* add top plot if it's uncacheable */
+		List<ComponentEx> ccl;
+		if (!plotImpl.isCacheable()) {
+			ccl = new ArrayList<ComponentEx>(cacheableComponentList);
+			addOrder(0, ccl, plotImpl);
+		} else {
+			ccl = cacheableComponentList;
+		}
+
+		for (int i = cacheableComponentList.size() - 1; i >= 0; i--) {
+			ComponentEx cacheableComp = cacheableComponentList.get(i);
+			List<ComponentEx> uccList = subComponentMap.get(cacheableComp);
+			for (int j = uccList.size() - 1; j >= 0; j--) {
+				ComponentEx ucc = uccList.get(j);
+				if (ucc instanceof PlotEx) {
+					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
+					if (ucc.getBounds().contains(p)) {
+						result = (Plot) proxyMap.get(ucc);
+						break;
+					}
+				}
+			}
+		}
+
+		end();
+
+		return result;
+	}
+
 }
