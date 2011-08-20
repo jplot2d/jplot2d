@@ -24,6 +24,8 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,9 @@ import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.Range2D;
+import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
+import org.jplot2d.util.RangeSelectionWarning;
 import org.jplot2d.util.WarningMessage;
 import org.jplot2d.util.WarningReceiver;
 
@@ -52,8 +57,7 @@ import org.jplot2d.util.WarningReceiver;
 public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	/**
-	 * The container size only take effect when this plot is top plot and has a
-	 * size mode assigned.
+	 * The container size only take effect when this plot is top plot and has a size mode assigned.
 	 */
 	private Dimension2D containerSize = new Dimension(640, 480);
 
@@ -71,9 +75,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private PhysicalTransform pxf;
 
 	/**
-	 * True when the object is valid. An invalid object needs to be laid out.
-	 * This flag is set to false when the object size is changed. The initial
-	 * value is true, because the {@link #contentBounds} and size are same.
+	 * True when the object is valid. An invalid object needs to be laid out. This flag is set to
+	 * false when the object size is changed. The initial value is true, because the
+	 * {@link #contentBounds} and size are same.
 	 * 
 	 * @see #isValid
 	 * @see #validate
@@ -295,12 +299,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Determines whether this component is valid. A component is valid when it
-	 * is correctly sized and positioned within its parent container and all its
-	 * children are also valid.
+	 * Determines whether this component is valid. A component is valid when it is correctly sized
+	 * and positioned within its parent container and all its children are also valid.
 	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code>
-	 *         otherwise
+	 * @return <code>true</code> if the component is valid, <code>false</code> otherwise
 	 * @see #validate
 	 * @see #invalidate
 	 */
@@ -925,8 +927,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Deep search layers to find the copy whoes range manager not been linked,
-	 * and set for them.
+	 * Deep search layers to find the copy whoes range manager not been linked, and set for them.
 	 * 
 	 * @param plot
 	 * @param orig2copyMap
@@ -965,17 +966,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		/*
-		 * Axis a special component. Its length can be set by layout manager,
-		 * but its thick depends on its internal status, such as tick height,
-		 * labels. The auto range must be re-calculated after all axes length
-		 * are set. So we cannot use deep-first validate tree. we must layout
-		 * all subplots, then calculate auto range, then calculate thickness of
-		 * all axes.
+		 * Axis a special component. Its length can be set by layout manager, but its thick depends
+		 * on its internal status, such as tick height, labels. The auto range must be re-calculated
+		 * after all axes length are set. So we cannot use deep-first validate tree. we must layout
+		 * all subplots, then calculate auto range, then calculate thickness of all axes.
 		 */
 
 		/*
-		 * The initial axis has 0 length and no label. The initial legend size
-		 * as it contains 1 item. In most case, this assumption is correct.
+		 * The initial axis has 0 length and no label. The initial legend size as it contains 1
+		 * item. In most case, this assumption is correct.
 		 */
 
 		/* calculate size may invalidate plot */
@@ -992,21 +991,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			}
 
 			/*
-			 * Laying out axes may register some axis that ticks need be
-			 * re-calculated
+			 * Laying out axes may register some axis that ticks need be re-calculated
 			 */
 			this.validate();
 
 			/*
-			 * Auto range axes MUST be executed after they are laid out. <br>
-			 * Auto range axes may register some axis that ticks need be
-			 * re-calculated
+			 * Auto range axes MUST be executed after they are laid out. <br> Auto range axes may
+			 * register some axis that ticks need be re-calculated
 			 */
 			calcPendingLockGroupAutoRange();
 
 			/*
-			 * Calculating axes tick may invalidate some axis. Their metrics
-			 * need be re-calculated
+			 * Calculating axes tick may invalidate some axis. Their metrics need be re-calculated
 			 */
 			calcAxesTick(this);
 
@@ -1062,8 +1058,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * find all AxisLockGroups in the given plot and fill them into the given
-	 * set.
+	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
 	private void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
@@ -1080,8 +1075,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Calculate axis thickness according to its tick height, label font and
-	 * label orientation.
+	 * Calculate axis thickness according to its tick height, label font and label orientation.
 	 */
 	private void calcAxesThickness(PlotEx plot) {
 		for (AxisEx axis : plot.getXAxes()) {
@@ -1124,8 +1118,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * find all AxisLockGroups in the given plot and fill them into the given
-	 * set.
+	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
 	private void fillTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
@@ -1160,8 +1153,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Calculate legend size according to its length constraint, items and item
-	 * font.
+	 * Calculate legend size according to its length constraint, items and item font.
 	 */
 	private static void calcLegendSize(PlotEx plot) {
 		LegendEx legend = plot.getLegend();
@@ -1174,6 +1166,67 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 		for (PlotEx sp : plot.getSubplots()) {
 			calcLegendSize(sp);
+		}
+	}
+
+	public void zoomXRange(double start, double end) {
+		Set<AxisRangeLockGroupEx> xarlgs = getXAxisRangeLockGroup();
+		zoomRange(xarlgs, start, end);
+	}
+
+	public void zoomYRange(double start, double end) {
+		Set<AxisRangeLockGroupEx> yarlgs = getYAxisRangeLockGroup();
+		zoomRange(yarlgs, start, end);
+	}
+
+	private Set<AxisRangeLockGroupEx> getXAxisRangeLockGroup() {
+		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
+		for (AxisEx axis : xAxis) {
+			algs.add(axis.getTickManager().getRangeManager().getLockGroup());
+		}
+		return algs;
+	}
+
+	private Set<AxisRangeLockGroupEx> getYAxisRangeLockGroup() {
+		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
+		for (AxisEx axis : yAxis) {
+			algs.add(axis.getTickManager().getRangeManager().getLockGroup());
+		}
+		return algs;
+	}
+
+	/**
+	 * Zoom the range on the given Axis Range Lock Groups
+	 * 
+	 * @param arlgs
+	 * @param start
+	 * @param end
+	 */
+	private void zoomRange(Collection<AxisRangeLockGroupEx> arlgs, double start, double end) {
+		Collection<AxisRangeManagerEx> arms = new ArrayList<AxisRangeManagerEx>();
+		for (AxisRangeLockGroupEx arlg : arlgs) {
+			arms.addAll(Arrays.asList(arlg.getRangeManagers()));
+		}
+
+		Range2D range = new Range2D.Double(start, end);
+
+		Range2D validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
+		if (!validRange.equals(range)) {
+			warning(new RangeAdjustedToValueBoundsWarning(
+					"Range exceed valid boundary, has been adjusted."));
+		}
+
+		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(validRange, arms);
+		if (rs.getStatus() != null) {
+			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+		}
+		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(rs, arms);
+		if (xrs.getStatus() != null) {
+			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+		}
+
+		for (AxisRangeLockGroupEx arm : arlgs) {
+			arm.zoomNormalRange(xrs);
 		}
 	}
 
