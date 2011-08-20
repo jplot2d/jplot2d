@@ -29,21 +29,19 @@ import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
- * Subplot has a content area in the center, surrounded by margin area. The
- * margin area holds axes, title and legend.
+ * Subplot has a content area in the center, surrounded by margin area. The margin area holds axes,
+ * title and legend.
  * <p>
- * Subplot can optionally contains a group of layers that stack over each other,
- * their viewports have the same bounds of the content area. <br/>
- * Subplot can also contains a group of subplots, which are laid out by
- * LayoutDirector.
+ * Subplot can optionally contains a group of layers that stack over each other, their viewports
+ * have the same bounds of the content area. <br/>
+ * Subplot can also contains a group of subplots, which are laid out by LayoutDirector.
  * 
  * @author Jingjing Li
  * 
  */
 public interface Plot extends PComponent {
 
-	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8,
-			8);
+	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8, 8);
 
 	@Hierarchy(HierarchyOp.GET)
 	public Plot getParent();
@@ -77,21 +75,21 @@ public interface Plot extends PComponent {
 	public void setSizeMode(SizeMode mode);
 
 	/**
-	 * Moves this plot component to a new location. The origin of the new
-	 * location is specified by point <code>p</code>. Point2D <code>p</code> is
-	 * given in the parent's physical coordinate space.
+	 * Moves this plot component to a new location. The origin of the new location is specified by
+	 * point <code>p</code>. Point2D <code>p</code> is given in the parent's physical coordinate
+	 * space.
 	 * 
 	 * @param p
-	 *            the point defining the origin of the new location, given in
-	 *            the coordinate space of this component's parent
+	 *            the point defining the origin of the new location, given in the coordinate space
+	 *            of this component's parent
 	 */
 	public void setLocation(Point2D loc);
 
 	public void setLocation(double locX, double locY);
 
 	/**
-	 * Sets the paper size of this plot. This method only take effect when size
-	 * mode is <code>null</code>. Otherwise the size is decided by size mode.
+	 * Sets the paper size of this plot. This method only take effect when size mode is
+	 * <code>null</code>. Otherwise the size is decided by size mode.
 	 * 
 	 * @param size
 	 *            the paper size
@@ -99,8 +97,8 @@ public interface Plot extends PComponent {
 	public void setSize(Dimension2D size);
 
 	/**
-	 * Sets the paper size of this plot. This method only take effect when size
-	 * mode is <code>null</code>. Otherwise the size is decided by size mode.
+	 * Sets the paper size of this plot. This method only take effect when size mode is
+	 * <code>null</code>. Otherwise the size is decided by size mode.
 	 * 
 	 * @param width
 	 *            the paper width
@@ -110,16 +108,15 @@ public interface Plot extends PComponent {
 	public void setSize(double width, double height);
 
 	/**
-	 * Returns the scale of this plot. The scale is ratio device sie to papaer
-	 * size.
+	 * Returns the scale of this plot. The scale is ratio device sie to papaer size.
 	 * 
 	 * @return the scale of this plot
 	 */
 	public double getScale();
 
 	/**
-	 * Sets scale of this plot. This method only take effect when size mode is
-	 * <code>null</code>. Otherwise the scale is decided by size mode.
+	 * Sets scale of this plot. This method only take effect when size mode is <code>null</code>.
+	 * Otherwise the scale is decided by size mode.
 	 * 
 	 * @param scale
 	 *            the scale
@@ -149,8 +146,7 @@ public interface Plot extends PComponent {
 	public void setLayoutDirector(LayoutDirector director);
 
 	/**
-	 * Returns the constraint of the specified subplot in the current
-	 * LayoutManager.
+	 * Returns the constraint of the specified subplot in the current LayoutManager.
 	 * 
 	 * @param subplot
 	 *            The subplot whose constraint is being set
@@ -161,8 +157,7 @@ public interface Plot extends PComponent {
 	public Object getConstraint(Plot subplot);
 
 	/**
-	 * Sets the constraint of the specified subplot in the current
-	 * LayoutManager.
+	 * Sets the constraint of the specified subplot in the current LayoutManager.
 	 * 
 	 * @param subplot
 	 *            The subplot whose constraint is being set
@@ -283,8 +278,8 @@ public interface Plot extends PComponent {
 	public Layer[] getLayers();
 
 	/**
-	 * Add a layer to this plot. The layer will associate with the given X/Y
-	 * axis range manager to control which part show in the plot viewport.
+	 * Add a layer to this plot. The layer will associate with the given X/Y axis range manager to
+	 * control which part show in the plot viewport.
 	 * 
 	 * @param layer
 	 *            the layer to be add
@@ -294,16 +289,13 @@ public interface Plot extends PComponent {
 	 *            the y axis range manager
 	 */
 	@Hierarchy(HierarchyOp.ADD_REF2)
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager,
-			AxisRangeManager yRangeManager);
+	public void addLayer(Layer layer, AxisRangeManager xRangeManager, AxisRangeManager yRangeManager);
 
 	/**
-	 * Add a layer to this plot. The layer will associate with the given X/Y
-	 * axis' range manager to control which part show in the plot viewport.
-	 * Equivalent to
-	 * {@link #addLayer(Layer, AxisRangeManager, AxisRangeManager)
-	 * addLayer(layer, xaxis.getTickManager().getRangeManager(),
-	 * yaxis.getTickManager().getRangeManager())}
+	 * Add a layer to this plot. The layer will associate with the given X/Y axis' range manager to
+	 * control which part show in the plot viewport. Equivalent to
+	 * {@link #addLayer(Layer, AxisRangeManager, AxisRangeManager) addLayer(layer,
+	 * xaxis.getTickManager().getRangeManager(), yaxis.getTickManager().getRangeManager())}
 	 * 
 	 * @param layer
 	 *            the layer to be add
@@ -354,5 +346,25 @@ public interface Plot extends PComponent {
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	void removeSubplot(Plot subplot);
+
+	/**
+	 * Zoom the given range to entire X axis
+	 * 
+	 * @param start
+	 *            the norm-physical start
+	 * @param end
+	 *            the norm-physical end
+	 */
+	public void zoomXRange(double start, double end);
+
+	/**
+	 * Zoom the given range to entire Y axis
+	 * 
+	 * @param start
+	 *            the norm-physical start
+	 * @param end
+	 *            the norm-physical end
+	 */
+	public void zoomYRange(double start, double end);
 
 }
