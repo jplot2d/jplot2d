@@ -28,8 +28,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx,
-		Joinable {
+public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joinable {
 
 	public AxisRangeManagerEx getParent();
 
@@ -44,9 +43,8 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx,
 	public AxisRangeManagerEx getPrimaryAxis();
 
 	/**
-	 * Force re-autorange this axis group. This method is called when layer data
-	 * set changes, layer attach/detach to an axis of this group, or axis type
-	 * change
+	 * Force re-autorange this axis group. This method is called when layer data set changes, layer
+	 * attach/detach to an axis of this group, or axis type change
 	 */
 	public void reAutoRange();
 
@@ -55,12 +53,19 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx,
 	 */
 	public void calcAutoRange();
 
-	public void zoomVirtualRange(Range2D range,
-			Map<AxisRangeManagerEx, NormalTransform> vtMap);
+	public void zoomVirtualRange(Range2D range, Map<AxisRangeManagerEx, NormalTransform> vtMap);
 
 	/**
 	 * Validate axes range after axis type or axis transform type changed.
 	 */
 	public void validateAxesRange();
 
+	/**
+	 * Zoom the given normalized range to entire axis. All axes in this lock group are changed. If
+	 * the orthogonal axes are autoRange, they need to be re-autoRange.
+	 * 
+	 * @param pRange
+	 *            the normalized range which has been validated
+	 */
+	public void zoomNormalRange(Range2D npRange);
 }
