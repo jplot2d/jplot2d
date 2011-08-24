@@ -367,4 +367,14 @@ public interface Plot extends PComponent {
 	 */
 	public void zoomYRange(double start, double end);
 
+	/**
+	 * Adaptive zoom the x range.
+	 */
+	public void adaptiveZoomX();
+
+	/**
+	 * Adaptive zoom the y range.
+	 */
+	public void adaptiveZoomY();
+
 }
