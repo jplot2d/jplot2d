@@ -29,14 +29,14 @@ public interface Graph {
 	public XYGraph setBoundary(Range2D xboundary, Range2D yboundary);
 
 	/**
-	 * Returns x range. If there is no valid data in x data, <code>null</code>
-	 * will be returned.
+	 * Returns x range. If there is no valid data in x data, the empty property of returned Range2D
+	 * will be set to <code>true</code>
 	 */
 	public Range2D getXRange();
 
 	/**
-	 * Returns y range. If there is no valid data in y data, <code>null</code>
-	 * will be returned.
+	 * Returns y range. If there is no valid data in y data, the empty property of returned Range2D
+	 * will be set to <code>true</code>
 	 */
 	public Range2D getYRange();
 

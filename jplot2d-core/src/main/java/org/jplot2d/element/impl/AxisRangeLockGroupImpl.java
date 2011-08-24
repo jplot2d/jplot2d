@@ -282,7 +282,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					}
 				}
 
-				if (wDRange != null) {
+				if (!wDRange.isEmpty() ) {
 					Range2D pDRange = vtMap.get(ax).getTransP(wDRange);
 					/* expand range by margin factor */
 					double pLo = pDRange.getMin();

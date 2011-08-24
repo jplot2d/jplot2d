@@ -21,8 +21,8 @@ package org.jplot2d.data;
 import org.jplot2d.util.Range2D;
 
 /**
- * Effectively Immutable. This class keep (x,y) data pairs and compute data
- * feature such as max/min, NaN indexes.
+ * Effectively Immutable. This class keep (x,y) data pairs and compute data feature such as max/min,
+ * NaN indexes.
  * 
  * @author Jingjing Li
  */
@@ -73,8 +73,8 @@ public final class XYGraph implements Graph {
 		this(xy, errorX, errorY, null, null);
 	}
 
-	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
-			Range2D xboundary, Range2D yboundary) {
+	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range2D xboundary,
+			Range2D yboundary) {
 		_xy = xy;
 		_errorX = errorX;
 		_errorY = errorY;
@@ -283,28 +283,12 @@ public final class XYGraph implements Graph {
 		return _xy.getQDouble(idx);
 	}
 
-	/**
-	 * Returns x range. If there is no valid data in x data, <code>null</code>
-	 * will be returned.
-	 */
 	public Range2D getXRange() {
-		if (Double.isNaN(_xmin) || Double.isNaN(_xmax)) {
-			return null;
-		} else {
-			return new Range2D.Double(_xmin, _xmax);
-		}
+		return new Range2D.Double(_xmin, _xmax);
 	}
 
-	/**
-	 * Returns y range. If there is no valid data in y data, <code>null</code>
-	 * will be returned.
-	 */
 	public Range2D getYRange() {
-		if (Double.isNaN(_ymin) || Double.isNaN(_ymax)) {
-			return null;
-		} else {
-			return new Range2D.Double(_ymin, _ymax);
-		}
+		return new Range2D.Double(_ymin, _ymax);
 	}
 
 	public boolean hasPointOutsideXBounds() {
