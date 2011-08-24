@@ -190,6 +190,15 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	public void setNormalTransfrom(NormalTransform ntf) {
 		this.ntf = ntf;
+		
+		for (AxisTickManagerEx atm : tickManagers) {
+			for (AxisEx axis : atm.getAxes()) {
+				axis.redraw();
+			}
+		}
+		for (LayerEx layer : layers) {
+			layer.redraw();
+		}
 	}
 
 	// public Axis getTickManagers(int index) {

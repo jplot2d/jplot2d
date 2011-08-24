@@ -1230,4 +1230,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	public void adaptiveZoomX() {
+		Set<AxisRangeLockGroupEx> xarlgs = getXAxisRangeLockGroup();
+		for (AxisRangeLockGroupEx arm : xarlgs) {
+			arm.reAutoRange();
+		}
+	}
+
+	public void adaptiveZoomY() {
+		Set<AxisRangeLockGroupEx> yarlgs = getYAxisRangeLockGroup();
+		for (AxisRangeLockGroupEx arm : yarlgs) {
+			arm.reAutoRange();
+		}
+	}
+
 }
