@@ -16,23 +16,22 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * $Id: RangeAdjustedToValueBoundsException.java,v 1.2 2010/02/02 10:16:46 hsclib Exp $
- */
-package org.jplot2d.util;
+package org.jplot2d.warning;
 
 /**
- * Thrown to indicate that the plot range contains negative values when axis is
- * in LOG mode.
- * 
  * @author Jingjing Li
+ * 
  */
-public class RangeAdjustedToValueBoundsWarning extends RangeSelectionWarning {
+public class WarningMessage {
 
-	static final long serialVersionUID = 1L;
+    private final String msg;
 
-	public RangeAdjustedToValueBoundsWarning(String message) {
-		super(message);
-	}
+    public WarningMessage(String message) {
+        this.msg = message;
+    }
+
+    public String getMessage() {
+        return msg;
+    }
 
 }

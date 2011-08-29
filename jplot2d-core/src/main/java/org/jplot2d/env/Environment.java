@@ -34,7 +34,6 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.util.WarningMessage;
 
 /**
  * An environment that a plot can realization. Once a plot is put an environment, changes on the
@@ -85,8 +84,6 @@ public abstract class Environment {
 
 	private final List<JPlot2DChangeListener> plotStructureListenerList = Collections
 			.synchronizedList(new ArrayList<JPlot2DChangeListener>());
-
-	private final List<WarningMessage> warnings = new ArrayList<WarningMessage>();
 
 	protected static Object getGlobalLock() {
 		return LOCK;
@@ -150,12 +147,10 @@ public abstract class Environment {
 		proxyMap.putAll(env.proxyMap);
 		addOrder(cacheableComponentList, env.cacheableComponentList);
 		subComponentMap.putAll(env.subComponentMap);
-		warnings.addAll(env.warnings);
 
 		env.proxyMap.clear();
 		env.cacheableComponentList.clear();
 		env.subComponentMap.clear();
-		env.warnings.clear();
 	}
 
 	/**
@@ -173,7 +168,6 @@ public abstract class Environment {
 		proxyMap.putAll(env.proxyMap);
 		addOrder(cacheableComponentList, env.cacheableComponentList);
 		subComponentMap.putAll(env.subComponentMap);
-		warnings.addAll(env.warnings);
 
 		/* merge uncacheable component tree */
 		if (!comp.isCacheable()) {
@@ -189,7 +183,6 @@ public abstract class Environment {
 		env.proxyMap.clear();
 		env.cacheableComponentList.clear();
 		env.subComponentMap.clear();
-		env.warnings.clear();
 
 		fireComponentAdded((PComponent) getProxy(comp));
 	}

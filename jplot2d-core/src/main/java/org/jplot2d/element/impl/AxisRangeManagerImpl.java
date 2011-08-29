@@ -28,8 +28,8 @@ import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.util.RangeSelectionWarning;
+import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
+import org.jplot2d.warning.RangeSelectionWarning;
 
 public class AxisRangeManagerImpl extends ElementImpl implements
 		AxisRangeManagerEx {

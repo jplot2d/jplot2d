@@ -31,8 +31,8 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.util.WarningMessage;
-import org.jplot2d.util.WarningReceiver;
+import org.jplot2d.warning.LogWarningManager;
+import org.jplot2d.warning.WarningManager;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -42,22 +42,12 @@ import org.jplot2d.util.WarningReceiver;
  */
 public abstract class PlotEnvironment extends Environment {
 
-	private WarningReceiver warningReceiver = new WarningReceiver() {
-
-		public void warning(WarningMessage msg) {
-			warnings.add(msg);
-		}
-
-	};
-
 	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>();
-
-	protected final List<WarningMessage> warnings = new ArrayList<WarningMessage>();
 
 	/**
 	 * The plot proxy
 	 */
-	protected Plot plot;
+	protected volatile Plot plot;
 
 	protected PlotEx plotImpl;
 
@@ -68,11 +58,23 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Sets a plot to this environment. The plot must hosted by a dummy environment.
+	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All warnings
+	 * are logged to java logging facilities.
 	 * 
 	 * @param plot
 	 */
 	public void setPlot(Plot plot) {
+		setPlot(plot, LogWarningManager.getInstance());
+	}
+
+	/**
+	 * Sets a plot to this environment. The plot must hosted by a dummy environment.
+	 * 
+	 * @param plot
+	 * @param warningReceiver
+	 *            the WarningManager to receive and process warnings
+	 */
+	public void setPlot(Plot plot, WarningManager warningReceiver) {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
@@ -102,7 +104,7 @@ public abstract class PlotEnvironment extends Environment {
 		this.plotImpl = (PlotEx) ((ElementAddition) plot).getImpl();
 
 		componentAdded(plotImpl, oldEnv);
-		plotImpl.setWarningReceiver(warningReceiver);
+		plotImpl.setWarningManager(warningReceiver);
 
 		endCommand();
 		oldEnv.endCommand();
@@ -110,6 +112,20 @@ public abstract class PlotEnvironment extends Environment {
 
 	public Plot getPlot() {
 		return plot;
+	}
+
+	public WarningManager getWarningManager() {
+		WarningManager result = null;
+		begin();
+		result = plotImpl.getWarningManager();
+		end();
+		return result;
+	}
+
+	public void setWarningManager(WarningManager warningReceiver) {
+		beginCommand("setWarningReceiver");
+		plotImpl.setWarningManager(warningReceiver);
+		endCommand();
 	}
 
 	protected Map<ElementEx, ElementEx> getCopyMap() {
@@ -289,30 +305,6 @@ public abstract class PlotEnvironment extends Environment {
 			for (JPlot2DChangeListener lsnr : ls) {
 				lsnr.batchModeChanged(evt);
 			}
-		}
-	}
-
-	/**
-	 * Returns all warnings
-	 * 
-	 * @return all warnings
-	 */
-	public WarningMessage[] getWarnings() {
-		synchronized (warnings) {
-			return warnings.toArray(new WarningMessage[warnings.size()]);
-		}
-	}
-
-	/**
-	 * Returns all warnings and clear the existent warnings.
-	 * 
-	 * @return all warnings
-	 */
-	public WarningMessage[] removeWarnings() {
-		synchronized (warnings) {
-			WarningMessage[] result = warnings.toArray(new WarningMessage[warnings.size()]);
-			warnings.clear();
-			return result;
 		}
 	}
 

@@ -27,8 +27,8 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.data.Graph;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.util.RangeSelectionWarning;
+import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
+import org.jplot2d.warning.RangeSelectionWarning;
 
 public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLockGroupEx {
 
