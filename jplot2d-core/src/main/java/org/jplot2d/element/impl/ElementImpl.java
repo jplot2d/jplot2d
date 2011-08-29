@@ -21,7 +21,7 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.env.Environment;
-import org.jplot2d.util.WarningMessage;
+import org.jplot2d.warning.WarningMessage;
 
 /**
  * @author Jingjing Li

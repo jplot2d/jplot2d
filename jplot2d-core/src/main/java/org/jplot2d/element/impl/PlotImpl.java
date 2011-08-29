@@ -45,10 +45,10 @@ import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.util.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.util.RangeSelectionWarning;
-import org.jplot2d.util.WarningMessage;
-import org.jplot2d.util.WarningReceiver;
+import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
+import org.jplot2d.warning.RangeSelectionWarning;
+import org.jplot2d.warning.WarningManager;
+import org.jplot2d.warning.WarningMessage;
 
 /**
  * @author Jingjing Li
@@ -87,7 +87,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private boolean rerenderNeeded = true;
 
-	private WarningReceiver warningReceiver;
+	private WarningManager warningReceiver;
 
 	private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
@@ -354,7 +354,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		rerenderNeeded = false;
 	}
 
-	public void setWarningReceiver(WarningReceiver warningReceiver) {
+	public WarningManager getWarningManager() {
+		return warningReceiver;
+	}
+
+	public void setWarningManager(WarningManager warningReceiver) {
 		this.warningReceiver = warningReceiver;
 	}
 
@@ -1030,6 +1034,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (pxf == null) {
 			this.parentPhysicalTransformChanged();
 		}
+
+		warningReceiver.commit();
 	}
 
 	/**
