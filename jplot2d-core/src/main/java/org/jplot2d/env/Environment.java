@@ -482,7 +482,7 @@ public abstract class Environment {
 		return new BatchToken(batchDepth, batchSND);
 	}
 
-	private boolean verifyBatchToken(BatchToken token) {
+	protected boolean verifyBatchToken(BatchToken token) {
 		return token.match(batchDepth, batchSND);
 	}
 

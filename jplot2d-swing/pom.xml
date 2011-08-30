@@ -48,10 +48,16 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jplot2d</groupId>
 			<artifactId>jplot2d-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jplot2d</groupId>
+			<artifactId>jplot2d-interaction</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
