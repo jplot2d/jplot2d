@@ -33,6 +33,7 @@ import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.warning.LogWarningManager;
 import org.jplot2d.warning.WarningManager;
+import org.jplot2d.warning.WarningType;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -126,6 +127,27 @@ public abstract class PlotEnvironment extends Environment {
 		beginCommand("setWarningReceiver");
 		plotImpl.setWarningManager(warningReceiver);
 		endCommand();
+	}
+
+	/**
+	 * End the batch. All pending update will be committed at once.
+	 * 
+	 * @param token
+	 *            the token gotten from beginBatch
+	 */
+	final public void endBatch(BatchToken token, WarningType type) {
+		begin();
+
+		if (!verifyBatchToken(token)) {
+			throw new IllegalArgumentException("Batch token not match. " + token);
+		}
+
+		try {
+			endCommand();
+		} finally {
+			plotImpl.getWarningManager().processWarnings(type);
+			end();
+		}
 	}
 
 	protected Map<ElementEx, ElementEx> getCopyMap() {
