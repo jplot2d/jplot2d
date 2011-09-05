@@ -32,10 +32,12 @@ import javax.imageio.ImageIO;
  * @author Jingjing Li
  * 
  */
-public class PngFileExporter extends ImageRenderer {
+public class PngFileExporter extends ImageRenderer implements RenderingFinishedListener {
 
 	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(
 			BufferedImage.TYPE_INT_RGB, Color.WHITE);
+
+	private final File file;
 
 	public PngFileExporter(String pathname) {
 		this(new File(pathname));
@@ -45,21 +47,18 @@ public class PngFileExporter extends ImageRenderer {
 		this(INT_RGB_IMAGEFACTORY, file);
 	}
 
-	public PngFileExporter(ImageFactory imageFactory, final File file) {
+	public PngFileExporter(ImageFactory imageFactory, File file) {
 		super(imageFactory);
+		this.file = file;
+		addRenderingFinishedListener(this);
+	}
 
-		addRenderingFinishedListener(new RenderingFinishedListener() {
-
-			public void renderingFinished(RenderingFinishedEvent event) {
-				try {
-					ImageIO.write((RenderedImage) event.getResult(), "PNG",
-							file);
-				} catch (IOException e) {
-					throw new RuntimeException("Png file I/O exception", e);
-				}
-
-			}
-		});
+	public void renderingFinished(RenderingFinishedEvent event) {
+		try {
+			ImageIO.write((RenderedImage) event.getResult(), "PNG", file);
+		} catch (IOException e) {
+			throw new RuntimeException("Png file I/O exception", e);
+		}
 	}
 
 }
