@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,11 +18,13 @@
  */
 package org.jplot2d.swing;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 
@@ -30,11 +32,16 @@ import javax.swing.JComponent;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.interaction.InteractionManager;
+import org.jplot2d.interaction.MousePreference;
+import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
+import org.jplot2d.swing.interaction.PlotDefaultMousePreference;
+import org.jplot2d.swing.interaction.PlotInteractionManager;
 
 /**
  * A JComponent that display a plot in its center.
@@ -54,9 +61,13 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 
 	private volatile BufferedImage image;
 
+	private InteractionManager imanager;
+
+	private final InteractionListener ial;
+
 	/**
-	 * Construct a JComponent to display the given plot in its center. The plot
-	 * properties can be safely by multiple threads.
+	 * Construct a JComponent to display the given plot in its center. The plot properties can be
+	 * safely by multiple threads.
 	 * 
 	 * @param plot
 	 *            the plot to be display
@@ -71,24 +82,23 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed
-	 *            within a single thread. if <code>true</code>, all plot
-	 *            properties can be safely changed by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within the Event
+	 *            Dispatcher Thread. if <code>true</code>, all plot properties can be safely changed
+	 *            by multiple threads.
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
 		this(createRenderEnvironment(plot, threadSafe));
 	}
 
-	private static RenderEnvironment createRenderEnvironment(Plot plot,
-			boolean threadSafe) {
+	private static RenderEnvironment createRenderEnvironment(Plot plot, boolean threadSafe) {
 		RenderEnvironment env = new RenderEnvironment(threadSafe);
 		env.setPlot(plot);
 		return env;
 	}
 
 	/**
-	 * Construct a JComponent to display a plot in its center. The plot has been
-	 * assigned to the given RenderEnvironment.
+	 * Construct a JComponent to display a plot in its center. The plot has been assigned to the
+	 * given RenderEnvironment.
 	 * 
 	 * @param env
 	 *            the RenderEnvironment
@@ -99,9 +109,18 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 		setBackground(Color.GRAY);
 		setOpaque(true);
 		addHierarchyListener(this);
+
+		imanager = getInteractionManager();
+
+		ial = new InteractionListener(this, imanager, env);
+		addMouseListener(ial);
+		addMouseMotionListener(ial);
+		addMouseWheelListener((MouseWheelListener) ial);
 	}
 
 	/**
+	 * Returns the background color of plot. The default color is Color.WHITE.
+	 * 
 	 * @return
 	 */
 	protected Color getPlotBackground() {
@@ -123,6 +142,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 			int x = (getWidth() - width) / 2;
 			int y = (getHeight() - height) / 2;
 			g.drawImage(image, x, y, this);
+
+			ial.plotPainted(new PlotPaintEvent(this, g));
 		}
 	}
 
@@ -137,8 +158,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 					public void renderingFinished(RenderingFinishedEvent event) {
 						long fsn = event.getFsn();
 						if (fsn < ifsn) {
-							logger.info("[R] Rendering finished in wrong order, drop F."
-									+ fsn + " Current frame is " + ifsn);
+							logger.info("[R] Rendering finished in wrong order, drop F." + fsn
+									+ " Current frame is " + ifsn);
 							return;
 						}
 						ifsn = fsn;
@@ -156,9 +177,22 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	}
 
 	protected ImageRenderer createImageRenderer() {
-		return new AsyncImageRenderer(
-				new GraphicsConfigurationCompatibleImageFactory(
-						this.getGraphicsConfiguration(), getPlotBackground()));
+		return new AsyncImageRenderer(new GraphicsConfigurationCompatibleImageFactory(
+				this.getGraphicsConfiguration(), getPlotBackground()));
 	}
 
+	/**
+	 * Subclass can return it's own InteractionManager, initiated with a MousePreference
+	 * 
+	 * @return an InteractionManager
+	 */
+	protected InteractionManager getInteractionManager() {
+		InteractionManager result = PlotInteractionManager.getInstance();
+		result.setMousePreference(PlotDefaultMousePreference.getInstance());
+		return result;
+	}
+
+	public void setMousePreference(MousePreference prefs) {
+		imanager.setMousePreference(prefs);
+	}
 }
