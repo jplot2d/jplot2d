@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,19 +20,13 @@ package org.jplot2d.element;
 
 import java.awt.geom.Point2D;
 
-import org.jplot2d.annotation.Hierarchy;
-import org.jplot2d.annotation.HierarchyOp;
-
 /**
- * A marker with a symbol and a text string.
+ * Defines some methods for movable component.
  * 
  * @author Jingjing Li
  * 
  */
-public interface Marker extends MovableComponent {
-
-	@Hierarchy(HierarchyOp.GET)
-	public Layer getParent();
+public interface MovableComponent extends PComponent {
 
 	/**
 	 * Returns <code>true</code> if the component is movable by mouse dragging. Only selectable
@@ -43,19 +37,29 @@ public interface Marker extends MovableComponent {
 	public boolean isMovable();
 
 	/**
-	 * Set the movable property.
+	 * Set if the component is movable by mouse dragging.
+	 * 
+	 * @param movable
+	 *            <code>true</code> if movable
 	 */
 	public void setMovable(boolean movable);
 
 	/**
-	 * Moves this plot component to a new location. The origin of the new location is specified by
-	 * point <code>p</code>. Point2D <code>p</code> is given in the parent's physical coordinate
-	 * space.
+	 * Moves this component to a new location.
 	 * 
-	 * @param p
-	 *            the point defining the origin of the new location, given in the coordinate space
-	 *            of this component's parent
+	 * @param loc
+	 *            the base point given in the physical coordinate space
 	 */
 	public void setLocation(Point2D loc);
+
+	/**
+	 * Moves this component to a new location.
+	 * 
+	 * @param x
+	 *            the x-coordinate of the new location
+	 * @param y
+	 *            the y-coordinate of the new location
+	 */
+	public void setLocation(double x, double y);
 
 }
