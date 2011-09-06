@@ -21,30 +21,27 @@ package org.jplot2d.element;
 import java.awt.geom.Point2D;
 
 /**
- * Legend display legend items. If there is no item in a legend, it will not
- * show.
+ * Legend display legend items. If there is no item in a legend, it will not show.
  * 
  * @author Jingjing Li
  * 
  */
-public interface Legend extends PComponent {
+public interface Legend extends MovableComponent {
 
 	public enum Position {
 		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
 	};
 
 	/**
-	 * Returns <code>true</code> if this legend is enabled. By default, the
-	 * legend is enabled.
+	 * Returns <code>true</code> if this legend is enabled. By default, the legend is enabled.
 	 * 
 	 * @return the enabled flag.
 	 */
 	public boolean isEnabled();
 
 	/**
-	 * Set to <code>true</code> to let this legend to host items. Otherwise the
-	 * items will be displayed in parent legend. The disabled legend will not
-	 * show.
+	 * Set to <code>true</code> to let this legend to host items. Otherwise the items will be
+	 * displayed in parent legend. The disabled legend will not show.
 	 * 
 	 * @param enabled
 	 */
@@ -58,9 +55,8 @@ public interface Legend extends PComponent {
 	public Position getPosition();
 
 	/**
-	 * Sets the position of this legend. Only when position is <code>null</code>
-	 * , the legend can be located by {@link #setLocation(Point2D)},
-	 * {@link #setHAlign()} , {@link #setVAlign()}.
+	 * Sets the position of this legend. Only when position is <code>null</code> , the legend can be
+	 * located by {@link #setLocation(Point2D)}, {@link #setHAlign()} , {@link #setVAlign()}.
 	 * 
 	 * @param position
 	 *            the position of this legend.
@@ -68,19 +64,19 @@ public interface Legend extends PComponent {
 	public void setPosition(Position position);
 
 	/**
-	 * Gets the location of this legend. The location will be relative to the
-	 * PlotXY's physical coordinate space.
+	 * Gets the location of this legend. The location will be relative to the PlotXY's physical
+	 * coordinate space.
 	 * 
-	 * @return an instance of <code>Point</code> representing the base point in
-	 *         the physical coordinate space of the PlotXY
+	 * @return an instance of <code>Point</code> representing the base point in the physical
+	 *         coordinate space of the PlotXY
 	 */
 	public Point2D getLocation();
 
 	/**
 	 * Moves this legend to a new location.
 	 * <p>
-	 * Notice: This method should be called when the position is
-	 * <code>null</code>, otherwise the behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
+	 * behavior is not defined.
 	 * 
 	 * @param loc
 	 *            the base point given in the physical coordinate space
@@ -90,8 +86,8 @@ public interface Legend extends PComponent {
 	/**
 	 * Moves this legend to a new location.
 	 * <p>
-	 * Notice: This method should be called when the position is
-	 * <code>null</code>, otherwise the behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
+	 * behavior is not defined.
 	 * 
 	 * @param x
 	 *            the x-coordinate of the new location
@@ -108,11 +104,11 @@ public interface Legend extends PComponent {
 	public HAlign getHAlign();
 
 	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or
-	 * RIGHT. eg, LEFT means the legend is on the left of the base point.
+	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the
+	 * legend is on the left of the base point.
 	 * <p>
-	 * Notice: This method should be called when the position is
-	 * <code>null</code>, otherwise the behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
+	 * behavior is not defined.
 	 * 
 	 * @param halign
 	 *            horizontal alignment.
@@ -127,11 +123,11 @@ public interface Legend extends PComponent {
 	public VAlign getVAlign();
 
 	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
-	 * eg, TOP means the legend is on the top of the base point
+	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the
+	 * legend is on the top of the base point
 	 * <p>
-	 * Notice: This method should be called when the position is
-	 * <code>null</code>, otherwise the behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
+	 * behavior is not defined.
 	 * 
 	 * @param valign
 	 *            The vertical alignment.

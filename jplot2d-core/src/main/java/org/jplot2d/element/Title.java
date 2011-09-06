@@ -27,7 +27,7 @@ import java.awt.geom.Point2D;
  * @author Jingjing Li
  * 
  */
-public interface Title extends TextComponent {
+public interface Title extends TextComponent, MovableComponent {
 
 	public static enum Position {
 		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT

@@ -199,9 +199,10 @@ public interface PComponent extends Element {
 	public void setFont(Font font);
 
 	/**
-	 * Returns the x,y origin of this plot component in its parent's physical coordinate.
+	 * Returns the location of this component.
 	 * 
-	 * @return the x,y origin of this plot component
+	 * @return an instance of <code>Point</code> representing the base point in its parent's paper
+	 *         coordinate space
 	 */
 	public Point2D getLocation();
 
