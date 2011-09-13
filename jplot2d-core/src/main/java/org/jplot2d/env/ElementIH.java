@@ -31,8 +31,8 @@ import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.Joinable;
 
 /**
- * This InvocationHandler intercept calls on proxy objects, and wrap the calls
- * with environment lock.
+ * This InvocationHandler intercept calls on proxy objects, and wrap the calls with environment
+ * lock.
  * 
  * @author Jingjing Li
  * 
@@ -63,8 +63,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * This method replace the impl with the given impl, when undoing or
-	 * redoing.
+	 * This method replace the impl with the given impl, when undoing or redoing.
 	 * <p>
 	 * <em>MUST</em> called within environment begin-end block.
 	 * 
@@ -74,8 +73,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		this.impl = impl;
 	}
 
-	public final Object invoke(Object proxy, Method method, Object[] args)
-			throws Throwable {
+	public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 		/* quick equals */
 		if (method.getName().equals("equals")) {
@@ -121,7 +119,11 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 		/* addComponent(Component comp) */
 		if (iinfo.isAddCompMethod(method)) {
-			invokeAddCompMethod(method, args);
+			if (args[0] instanceof Object[]) {
+				invokeAddCompArrayMethod(method, args);
+			} else {
+				invokeAddCompMethod(method, args);
+			}
 			return null;
 		}
 		/* removeComponent(Component comp) */
@@ -154,8 +156,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		try {
 
 			if (method.getName().equals("equals")) {
-				ElementIH<?> h = (ElementIH<?>) Proxy
-						.getInvocationHandler(args[0]);
+				ElementIH<?> h = (ElementIH<?>) Proxy.getInvocationHandler(args[0]);
 				if (ElementIH.this.getClass() == h.getClass()) {
 					return impl.equals(h.impl);
 				} else {
@@ -201,8 +202,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 	}
 
-	private Object invokeGetCompMethod(Method method, Object[] args)
-			throws Throwable {
+	private Object invokeGetCompMethod(Method method, Object[] args) throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
 			environment.begin();
 		}
@@ -216,19 +216,16 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	private Object invokeGetCompArrayMethod(Method method, Object[] args)
-			throws Throwable {
+	private Object invokeGetCompArrayMethod(Method method, Object[] args) throws Throwable {
 		synchronized (Environment.getGlobalLock()) {
 			environment.begin();
 		}
 		try {
 			Object compImpls = method.invoke(impl, args);
 			int length = Array.getLength(compImpls);
-			Object result = Array.newInstance(method.getReturnType()
-					.getComponentType(), length);
+			Object result = Array.newInstance(method.getReturnType().getComponentType(), length);
 			for (int i = 0; i < length; i++) {
-				Array.set(result, i, environment.getProxy((ElementEx) Array
-						.get(compImpls, i)));
+				Array.set(result, i, environment.getProxy((ElementEx) Array.get(compImpls, i)));
 			}
 			return result;
 		} catch (InvocationTargetException e) {
@@ -239,7 +236,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when adding a child component. The child component is the 1st
+	 * Called when adding a array of child components. The array of child components is the 1st
 	 * argument of the calling method.
 	 * 
 	 * @param method
@@ -247,8 +244,73 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 *            the arguments
 	 * @throws Throwable
 	 */
-	private void invokeAddCompMethod(Method method, Object[] args)
-			throws Throwable {
+	private void invokeAddCompArrayMethod(Method method, Object[] args) throws Throwable {
+
+		if (((Object[]) args[0]).length == 0) {
+			return;
+		}
+
+		Environment penv;
+		Environment cenv;
+		synchronized (Environment.getGlobalLock()) {
+			// local safe copy
+			penv = environment;
+			Object[] arg0 = (Object[]) args[0];
+			cenv = ((Element) arg0[0]).getEnvironment();
+			for (int i = 1; i < arg0.length; i++) {
+				if (cenv != ((Element) arg0[i]).getEnvironment()) {
+					throw new IllegalArgumentException(
+							"The components to be added must belong to the same envoriment.");
+				}
+			}
+
+			Class<?> arg0LcType = method.getParameterTypes()[0].getComponentType();
+			Object cimpls = Array.newInstance(arg0LcType, arg0.length);
+			cenv.beginCommand("");
+			for (int i = 0; i < arg0.length; i++) {
+				ComponentEx cimpl = (ComponentEx) ((ElementAddition) arg0[i]).getImpl();
+				if (cimpl.getParent() != null) {
+					cenv.end();
+					throw new IllegalArgumentException(
+							"At lease one of the components to be added already has a parent.");
+				}
+				Array.set(cimpls, i, cimpl);
+			}
+
+			penv.beginCommand("");
+			Object[] cargs = args.clone();
+			cargs[0] = cimpls;
+			try {
+				method.invoke(impl, cargs);
+			} catch (InvocationTargetException e) {
+				cenv.endCommand();
+				penv.endCommand();
+				throw e.getCause();
+			}
+
+			// update environment for all adding components
+			for (Element proxy : cenv.proxyMap.values()) {
+				((ElementAddition) proxy).setEnvironment(penv);
+			}
+			for (int i = 0; i < Array.getLength(cimpls); i++) {
+				penv.componentAdded((ComponentEx) Array.get(cimpls, i), cenv);
+			}
+		}
+
+		cenv.endCommand();
+		penv.endCommand();
+	}
+
+	/**
+	 * Called when adding a child component. The child component is the 1st argument of the calling
+	 * method.
+	 * 
+	 * @param method
+	 * @param args
+	 *            the arguments
+	 * @throws Throwable
+	 */
+	private void invokeAddCompMethod(Method method, Object[] args) throws Throwable {
 		ElementAddition cproxy = (ElementAddition) args[0];
 		ComponentEx cimpl;
 
@@ -294,8 +356,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 *            the component to added
 	 * @throws Throwable
 	 */
-	private void invokeRemoveCompMethod(Method method, Object[] args)
-			throws Throwable {
+	private void invokeRemoveCompMethod(Method method, Object[] args) throws Throwable {
 		ElementAddition cproxy = (ElementAddition) args[0];
 
 		Throwable throwable = null;
@@ -312,8 +373,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			if (mooringMap.size() > 0) {
 				String msg = "The removing is not allowed, because some element is required.\n";
 				for (Map.Entry<Element, Element> me : mooringMap.entrySet()) {
-					msg += "\t" + me.getKey() + " is required by "
-							+ me.getValue() + "\n";
+					msg += "\t" + me.getKey() + " is required by " + me.getValue() + "\n";
 				}
 				throwable = new IllegalStateException(msg);
 
@@ -358,8 +418,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 *            the component to added
 	 * @throws Throwable
 	 */
-	private void invokeJoinElementMethod(Method method, Object[] args)
-			throws Throwable {
+	private void invokeJoinElementMethod(Method method, Object[] args) throws Throwable {
 		if (args[0] == null) {
 			throw new IllegalArgumentException("Null is not a valid argument.");
 		}
@@ -384,8 +443,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 					}
 				} else {
 					cenv.end();
-					throw new IllegalArgumentException(
-							"The argument is not referencable.");
+					throw new IllegalArgumentException("The argument is not referencable.");
 				}
 				add = true;
 				env.beginCommand("");
@@ -439,17 +497,15 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when setting a reference to a component. The referred component
-	 * must belong to the same environment. The referred component is the 1st
-	 * argument of the calling method.
+	 * Called when setting a reference to a component. The referred component must belong to the
+	 * same environment. The referred component is the 1st argument of the calling method.
 	 * 
 	 * @param method
 	 * @param args
 	 *            the arguments
 	 * @throws Throwable
 	 */
-	private void invokeSetRefElementMethod(Method method, Object[] args)
-			throws Throwable {
+	private void invokeSetRefElementMethod(Method method, Object[] args) throws Throwable {
 		if (args[0] == null) {
 			throw new IllegalArgumentException("Null is not a valid argument.");
 		}
@@ -461,8 +517,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			env = environment;
 			Environment cenv = ((Element) args[0]).getEnvironment();
 			if (env != cenv) {
-				throw new IllegalArgumentException(
-						"Must belongd to the same environment");
+				throw new IllegalArgumentException("Must belongd to the same environment");
 			}
 			env.beginCommand("");
 			cimpl = ((ElementAddition) args[0]).getImpl();
@@ -478,8 +533,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	private void invokeSetRef2ElementMethod(Method method, Object[] args)
-			throws Throwable {
+	private void invokeSetRef2ElementMethod(Method method, Object[] args) throws Throwable {
 		if (args[0] == null || args[1] == null) {
 			throw new IllegalArgumentException("Null is not a valid argument.");
 		}
@@ -491,12 +545,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			env = environment;
 
 			if (((Element) args[0]).getEnvironment() != env) {
-				throw new IllegalArgumentException(
-						"Must belongd to the same environment");
+				throw new IllegalArgumentException("Must belongd to the same environment");
 			}
 			if (((Element) args[1]).getEnvironment() != env) {
-				throw new IllegalArgumentException(
-						"Must belongd to the same environment");
+				throw new IllegalArgumentException("Must belongd to the same environment");
 			}
 
 			env.beginCommand("");
@@ -523,8 +575,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * @param nref
 	 * @throws Throwable
 	 */
-	private void invokeAddRefMethod(Method method, Object[] args, int nref)
-			throws Throwable {
+	private void invokeAddRefMethod(Method method, Object[] args, int nref) throws Throwable {
 		ElementAddition cproxy = (ElementAddition) args[0];
 		ComponentEx cimpl;
 		Object[] cargs = args.clone();
@@ -551,8 +602,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 					throw new IllegalArgumentException(
 							"The reference argument must belong to the environment of the container to be added.");
 				}
-				cargs[i] = (args[i] == null) ? null
-						: ((ElementAddition) args[i]).getImpl();
+				cargs[i] = (args[i] == null) ? null : ((ElementAddition) args[i]).getImpl();
 			}
 		}
 		try {
@@ -576,8 +626,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * This method invoke reader 1st, only when the setting value is different,
-	 * the setter method is called.
+	 * This method invoke reader 1st, only when the setting value is different, the setter method is
+	 * called.
 	 * 
 	 * @param method
 	 *            the setter method
@@ -616,8 +666,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	protected Object invokeOther(Method method, Object... args)
-			throws Throwable {
+	protected Object invokeOther(Method method, Object... args) throws Throwable {
 		try {
 			return method.invoke(impl, args);
 		} catch (InvocationTargetException e) {

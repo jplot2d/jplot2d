@@ -637,6 +637,84 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	public void addXAxes(Axis[] axes) {
+		if (axes.length == 0) {
+			return;
+		}
+
+		AxisTickManagerEx atm = ((AxisEx) axes[0]).getTickManager();
+		for (int i = 1; i < axes.length; i++) {
+			if (atm != ((AxisEx) axes[i]).getTickManager()) {
+				throw new IllegalArgumentException("The axes must have the same tick manager.");
+			}
+		}
+
+		if (atm == null) {
+			throw new IllegalArgumentException("The axes have no tick manager.");
+		}
+		if (atm.getRangeManager() == null) {
+			throw new IllegalArgumentException("The axes' tick manager has no range manager.");
+		}
+		if (atm.getRangeManager().getLockGroup() == null) {
+			throw new IllegalArgumentException("The axes' range manager has no lock group.");
+		}
+
+		for (int i = 0; i < axes.length; i++) {
+			AxisEx ax = (AxisEx) axes[i];
+			xAxis.add(ax);
+			ax.setParent(this);
+			ax.setOrientation(AxisOrientation.HORIZONTAL);
+
+			if (ax.canContributeToParent()) {
+				redraw();
+			} else if (ax.canContribute()) {
+				rerender();
+			}
+			if (ax.canContribute()) {
+				invalidate();
+			}
+		}
+	}
+
+	public void addYAxes(Axis[] axes) {
+		if (axes.length == 0) {
+			return;
+		}
+
+		AxisTickManagerEx atm = ((AxisEx) axes[0]).getTickManager();
+		for (int i = 1; i < axes.length; i++) {
+			if (atm != ((AxisEx) axes[i]).getTickManager()) {
+				throw new IllegalArgumentException("The axes must have the same tick manager.");
+			}
+		}
+
+		if (atm == null) {
+			throw new IllegalArgumentException("The axes have no tick manager.");
+		}
+		if (atm.getRangeManager() == null) {
+			throw new IllegalArgumentException("The axes' tick manager has no range manager.");
+		}
+		if (atm.getRangeManager().getLockGroup() == null) {
+			throw new IllegalArgumentException("The axes' range manager has no lock group.");
+		}
+
+		for (int i = 0; i < axes.length; i++) {
+			AxisEx ax = (AxisEx) axes[i];
+			yAxis.add(ax);
+			ax.setParent(this);
+			ax.setOrientation(AxisOrientation.VERTICAL);
+
+			if (ax.canContributeToParent()) {
+				redraw();
+			} else if (ax.canContribute()) {
+				rerender();
+			}
+			if (ax.canContribute()) {
+				invalidate();
+			}
+		}
+	}
+
 	public void removeXAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
 		ax.setParent(null);

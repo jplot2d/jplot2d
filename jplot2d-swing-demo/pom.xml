@@ -14,7 +14,6 @@
 			<groupId>org.jplot2d</groupId>
 			<artifactId>jplot2d-swing</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
