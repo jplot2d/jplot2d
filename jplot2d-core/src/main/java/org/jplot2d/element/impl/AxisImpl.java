@@ -86,7 +86,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private boolean tickVisible = true;
 
-	private AxisTickSide tickSide = AxisTickSide.OUTWARD;
+	private AxisTickSide tickSide = AxisTickSide.INWARD;
 
 	private double tickHeight = 8.0;
 
