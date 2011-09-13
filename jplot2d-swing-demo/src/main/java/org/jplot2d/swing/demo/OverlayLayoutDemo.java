@@ -48,30 +48,36 @@ public class OverlayLayoutDemo {
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
-		xaxis.getTitle().setText("x axis");
-		yaxis.getTitle().setText("y axis");
-		plot.addXAxis(xaxis);
-		plot.addYAxis(yaxis);
+		Axis[] xaxes = ElementFactory.getInstance().createAxes(2);
+		Axis[] yaxes = ElementFactory.getInstance().createAxes(2);
+		xaxes[0].getTitle().setText("x axis");
+		yaxes[0].getTitle().setText("y axis");
+		plot.addXAxes(xaxes);
+		plot.addYAxes(yaxes);
 
-		Layer layer = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
-				"line A");
-		plot.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		Layer layer = ElementFactory.getInstance().createLayer(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }, "line A");
+		plot.addLayer(layer, xaxes[0], yaxes[0]);
 
 		Plot sp1 = ElementFactory.getInstance().createSubplot();
-		Layer nestLayer = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
-				"line B");
+		Layer nestLayer = ElementFactory.getInstance().createLayer(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }, "line B");
 
-		plot.addSubplot(sp1, new BoundsConstraint(new Insets2D(0, 0, 0, 0),
-				new Insets2D(0.05, 0.05, 0.45, 0.45)));
+		plot.addSubplot(sp1, new BoundsConstraint(new Insets2D(0, 0, 0, 0), new Insets2D(0.05,
+				0.05, 0.45, 0.45)));
 		sp1.setLocation(80, 250);
 		sp1.setSize(300, 200);
-		sp1.addLayer(nestLayer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		Axis[] p1x = ElementFactory.getInstance().createAxes(2);
+		Axis[] p1y = ElementFactory.getInstance().createAxes(2);
+		p1x[0].getTitle().setText("x axis");
+		p1y[0].getTitle().setText("y axis");
+		p1x[1].setTickVisible(false);
+		p1x[1].setLabelVisible(false);
+		p1y[1].setTickVisible(false);
+		p1y[1].setLabelVisible(false);
+		sp1.addXAxes(p1x);
+		sp1.addYAxes(p1y);
+		sp1.addLayer(nestLayer, p1x[0], p1y[0]);
 
 	}
 

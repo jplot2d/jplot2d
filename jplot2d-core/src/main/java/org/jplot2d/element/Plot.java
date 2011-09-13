@@ -240,6 +240,24 @@ public interface Plot extends PComponent {
 	public void addYAxis(Axis axis);
 
 	/**
+	 * Add the given axes created by {@link ElementFactory#createAxes(int)} as x-axes
+	 * 
+	 * @param axes
+	 *            the axes to be added
+	 */
+	@Hierarchy(HierarchyOp.ADD)
+	public void addXAxes(Axis[] axes);
+
+	/**
+	 * Add the given axes created by {@link ElementFactory#createAxes(int)} as y-axes
+	 * 
+	 * @param axes
+	 *            the axes to be added
+	 */
+	@Hierarchy(HierarchyOp.ADD)
+	public void addYAxes(Axis[] axes);
+
+	/**
 	 * Removes the specified X axis from this plot if it is present.
 	 * 
 	 * @param axis
