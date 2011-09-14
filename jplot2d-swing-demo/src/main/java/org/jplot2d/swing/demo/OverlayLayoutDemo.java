@@ -18,12 +18,15 @@
  */
 package org.jplot2d.swing.demo;
 
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.layout.BoundsConstraint;
 import org.jplot2d.layout.OverlayLayoutDirector;
 import org.jplot2d.sizing.FillContainerSizeMode;
@@ -79,6 +82,12 @@ public class OverlayLayoutDemo {
 		sp1.addYAxes(p1y);
 		sp1.addLayer(nestLayer, p1x[0], p1y[0]);
 
+		try {
+			((RenderEnvironment) plot.getEnvironment()).saveAsPNG("OverlayLayoutDemo.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
