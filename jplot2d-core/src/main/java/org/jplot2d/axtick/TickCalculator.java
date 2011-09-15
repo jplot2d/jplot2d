@@ -121,4 +121,11 @@ public interface TickCalculator {
 	 */
 	public String getLabelFormate();
 
+    /**
+     * Returns true if the given format is valid for this tick calculator
+     * 
+     * @param format
+     */
+    public boolean isValidFormat(String format);
+
 }

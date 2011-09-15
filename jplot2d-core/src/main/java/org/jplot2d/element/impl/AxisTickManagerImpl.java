@@ -44,9 +44,8 @@ import org.jplot2d.util.Range2D;
 /**
  * Manage tick values and labels of multiple axes.
  * <p>
- * Implementation Notes: This class has some internal cache for properties of
- * its axes to trace the values valid conditions. The {@link #calcTicks()} can
- * detect if ticks need to be recalculated.
+ * Implementation Notes: This class has some internal cache for properties of its axes to trace the
+ * values valid conditions. The {@link #calcTicks()} can detect if ticks need to be recalculated.
  * 
  * @author Jingjing Li
  * 
@@ -401,7 +400,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setLabelFormat(String format) {
-		this.labelFormat = format;
+		if (tickCalculator.isValidFormat(format)) {
+			this.labelFormat = format;
+		} else {
+			throw new IllegalArgumentException("The label format is invalid");
+		}
 	}
 
 	public String[] getFixedLabelStrings() {
@@ -620,8 +623,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	/**
-	 * calculate interval from given range, tick number, label height and label
-	 * format. This will set the interval, the values and the label density.
+	 * calculate interval from given range, tick number, label height and label format. This will
+	 * set the interval, the values and the label density.
 	 */
 	private void calcAutoTicks() {
 
@@ -722,8 +725,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * Combine the user assigned labels with auto labels.
 	 * 
 	 * @param fixedLabels
-	 *            user labels for every major tick, no label interval
-	 *            considered.
+	 *            user labels for every major tick, no label interval considered.
 	 * @param autoLabels
 	 *            labels for every major tick, no label interval considered.
 	 * @param labelInterval
@@ -839,8 +841,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	/**
-	 * Calculate label density by the given values. density > 1 means labels
-	 * overlapped.
+	 * Calculate label density by the given values. density > 1 means labels overlapped.
 	 * 
 	 * @param nxf
 	 * @param axisLength
@@ -912,8 +913,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	/**
-	 * Calculate the canonical values of the given values. The canonical values
-	 * will be used to produce labels.
+	 * Calculate the canonical values of the given values. The canonical values will be used to
+	 * produce labels.
 	 * 
 	 * @param values
 	 *            the tick values

@@ -1,6 +1,6 @@
 /*
  * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+ * Copyright 2001-2011 Herschel Science Ground Segment Consortium
  *
  * HCSS is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -352,38 +352,32 @@ public class DateTickCalculator extends LongTickCalculator implements
 
 	}
 
-	public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
-		_interval = calcInterval(_lo, _hi, tickNumber);
-		if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
-			if (_interval.getValue() == 1) {
-				_minorNumber = 0;
-			} else {
-				_minorNumber = TickUtils.calcMinorNumber(_interval.getValue(),
-						3);
-			}
-		} else {
-			_minorNumber = minorTickNumber;
-		}
-		calcValues();
-	}
+    public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
+        DateInterval interval = calcInterval(_lo, _hi, tickNumber);
+        calcValuesByTickInterval(interval, 0, minorTickNumber);
+    }
 
-	@Override
-	public void calcValuesByTickInterval(long interval, long offset,
-			int minorTickNumber) {
-		_interval = new DateInterval(interval);
+    public void calcValuesByTickInterval(long interval, long offset,
+            int minorTickNumber) {
+        calcValuesByTickInterval(new DateInterval(interval), offset,
+                minorTickNumber);
+    }
 
-		if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
-			if (_interval.getValue() == 1) {
-				_minorNumber = 0;
-			} else {
-				_minorNumber = TickUtils.calcMinorNumber(_interval.getValue(),
-						3);
-			}
-		} else {
-			_minorNumber = minorTickNumber;
-		}
-		calcValues();
-	}
+    private void calcValuesByTickInterval(DateInterval interval, long offset,
+            int minorTickNumber) {
+        _interval = interval;
+
+        if (_interval.getValue() == 1) {
+            _minorNumber = 0;
+        } else {
+            if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+                minorTickNumber = 3;
+            }
+            _minorNumber = TickUtils.calcMinorNumber(_interval.getValue(),
+                    minorTickNumber);
+        }
+        calcValues();
+    }
 
 	public double getInterval() {
 		return _interval.getTime();
@@ -445,6 +439,15 @@ public class DateTickCalculator extends LongTickCalculator implements
 
 		return calcLabelFormat(umin, umax);
 	}
+
+    public boolean isValidFormat(String format) {
+        try {
+            String.format(format, 1L);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
 	protected static String calcLabelFormat(Unit uprec, Unit umdiff) {
 		if (uprec.time > umdiff.time) {
