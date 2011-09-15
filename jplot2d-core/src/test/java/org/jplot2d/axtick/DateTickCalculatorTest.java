@@ -1,6 +1,6 @@
 /*
  * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+ * Copyright 2001-2011 Herschel Science Ground Segment Consortium
  *
  * HCSS is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -239,8 +239,9 @@ public class DateTickCalculatorTest {
 		}
 
 		dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
-		dateTC.calcValuesByTickNumber(11, 0);
+        dateTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINORTICK_NUMBER);
 		checkDouble(dateTC.getInterval(), 100);
+        assertEquals(dateTC.getMinorNumber(), 4);
 		checkLongArray(dateTC.getValues(), startms, startms + 100,
 				startms + 200, startms + 300, startms + 400, startms + 500,
 				startms + 600, startms + 700, startms + 800, startms + 900,
@@ -282,6 +283,43 @@ public class DateTickCalculatorTest {
 		assertEquals(dateTC.getMinorNumber(), 0);
 		assertEquals(dateTC.getLabelFormate(), "%tF");
 		assertEquals(dateTC.calcAutoLabelFormat(dateTC.getValues()), "%tF");
+
+        // non AUTO_MINORTICK_NUMBER
+        end.set(1975, 5, 19, 7, 30, 1);
+        end.set(Calendar.MILLISECOND, 0);
+        dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
+        dateTC.calcValuesByTickNumber(11, 0);
+        checkDouble(dateTC.getInterval(), 100);
+        assertEquals(dateTC.getMinorNumber(), 0);
+        assertEquals(dateTC.getLabelFormate(), "%tT.%<tL");
+        assertEquals(dateTC.calcAutoLabelFormat(dateTC.getValues()), "%tT.%<tL");
+
+        end.set(1975, 5, 19, 7, 30, 1);
+        end.set(Calendar.MILLISECOND, 0);
+        dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
+        dateTC.calcValuesByTickNumber(11, 2);
+        checkDouble(dateTC.getInterval(), 100);
+        assertEquals(dateTC.getMinorNumber(), 1);
+        assertEquals(dateTC.getLabelFormate(), "%tT.%<tL");
+        assertEquals(dateTC.calcAutoLabelFormat(dateTC.getValues()), "%tT.%<tL");
+
+        end.set(1975, 5, 19, 7, 30, 1);
+        end.set(Calendar.MILLISECOND, 0);
+        dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
+        dateTC.calcValuesByTickNumber(11, 8);
+        checkDouble(dateTC.getInterval(), 100);
+        assertEquals(dateTC.getMinorNumber(), 9);
+        assertEquals(dateTC.getLabelFormate(), "%tT.%<tL");
+        assertEquals(dateTC.calcAutoLabelFormat(dateTC.getValues()), "%tT.%<tL");
+
+        end.set(1975, 5, 19, 7, 31, 0);
+        end.set(Calendar.MILLISECOND, 0);
+        dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
+        dateTC.calcValuesByTickNumber(11, 10);
+        checkDouble(dateTC.getInterval(), 5 * 1000);
+        assertEquals(dateTC.getMinorNumber(), 4);
+        assertEquals(dateTC.getLabelFormate(), "%tT");
+        assertEquals(dateTC.calcAutoLabelFormat(dateTC.getValues()), "%tT");
 	}
 
 	/**

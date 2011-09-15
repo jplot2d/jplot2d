@@ -47,18 +47,18 @@ public abstract class DoubleTickCalculator implements TickCalculator {
 	}
 
 	/**
-	 * Calculate the tick values by the given interval and minor ticks number.
-	 * The minor ticks number is a proposed value, and may be different from
-	 * actual minor ticks number returned by {@link #getMinorNumber()}.
+	 * Calculate the tick values by the given interval and minor ticks number. The minor ticks
+	 * number is a proposed value, and may be different from actual minor ticks number returned by
+	 * {@link #getMinorNumber()}.
 	 * 
 	 * @param interval
 	 * @param offset
 	 * @param minorTickNumber
-	 *            if the given number is {@link #AUTO_MINORTICK_NUMBER}, the
-	 *            tick number is derived from interval.
+	 *            if the given number is {@link #AUTO_MINORTICK_NUMBER}, the tick number is derived
+	 *            from interval.
 	 */
-	public abstract void calcValuesByTickInterval(double interval,
-			double offset, int minorTickNumber);
+	public abstract void calcValuesByTickInterval(double interval, double offset,
+			int minorTickNumber);
 
 	/**
 	 * @return the tick interval.
@@ -122,6 +122,16 @@ public abstract class DoubleTickCalculator implements TickCalculator {
 			int[] result = new int[j];
 			System.arraycopy(m, 0, result, 0, j);
 			return result;
+		}
+	}
+
+	public boolean isValidFormat(String format) {
+		format = TickUtils.convFCm2e(format);
+		try {
+			String.format(format, 1d);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
 		}
 	}
 
