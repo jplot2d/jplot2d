@@ -31,10 +31,11 @@ import java.util.Map;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Export plot image to a png file.
@@ -70,22 +71,20 @@ public class PdfExporter extends Renderer<File> {
 	}
 
 	@Override
-	public void render(PlotEx plot,
-			Map<ComponentEx, ComponentEx> cacheableCompMap,
+	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
-		Document document = new Document(new com.itextpdf.text.Rectangle(
-				size.width, size.height), 0, 0, 0, 0);
+		Document document = new Document(new Rectangle(size.width, size.height), 0, 0, 0, 0);
 		PdfWriter writer = null;
 		try {
 			writer = PdfWriter.getInstance(document, os);
 		} catch (DocumentException e) {
 			/*
-			 * should not happen but if it happens it should be notified to the
-			 * integration instead of leaving it half-done and tell nothing.
+			 * should not happen but if it happens it should be notified to the integration instead
+			 * of leaving it half-done and tell nothing.
 			 */
 			throw new RuntimeException("Error creating PDF document", e);
 		}
@@ -97,8 +96,7 @@ public class PdfExporter extends Renderer<File> {
 		PdfContentByte cb = writer.getDirectContent();
 		Graphics2D g = cb.createGraphicsShapes(size.width, size.height);
 
-		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap
-				.entrySet()) {
+		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
 			ComponentEx ccopy = me.getValue();
 
 			ComponentEx[] sublist = subcompsMap.get(ccopy);
