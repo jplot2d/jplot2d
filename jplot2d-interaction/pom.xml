@@ -9,14 +9,12 @@
 
 	<artifactId>jplot2d-interaction</artifactId>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jplot2d</groupId>
-				<artifactId>jplot2d-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.jplot2d</groupId>
+			<artifactId>jplot2d-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 
 </project>
