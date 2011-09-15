@@ -41,7 +41,7 @@ public class AxisImplTest {
 	public void testTicknessX() {
 		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.HORIZONTAL);
-		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
+		assertEquals(axis.getTickSide(), AxisTickSide.INWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
 
 		AxisTickManagerEx tickManager = mock(AxisTickManagerEx.class);
@@ -56,19 +56,20 @@ public class AxisImplTest {
 		axis.getTickManager().setRangeManager(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
-				new MathElement[] { new MathElement.Mn("0"),
-						new MathElement.Mn("5"), new MathElement.Mn("10") });
+				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
+						new MathElement.Mn("10") });
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
+		axis.calcThickness();
+		checkDouble(axis.getAsc(), 8.0);
+		checkDouble(axis.getDesc(), 17.4609375);
+
+		axis.setTickSide(AxisTickSide.OUTWARD);
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 0);
 		checkDouble(axis.getDesc(), 25.4609375);
 
 		axis.setTickSide(AxisTickSide.INWARD);
-		axis.calcThickness();
-		checkDouble(axis.getAsc(), 8.0);
-		checkDouble(axis.getDesc(), 17.4609375);
-
 		axis.setPosition(AxisPosition.POSITIVE_SIDE);
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 17.4609375);
@@ -79,7 +80,7 @@ public class AxisImplTest {
 	public void testTicknessY() {
 		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.VERTICAL);
-		assertEquals(axis.getTickSide(), AxisTickSide.OUTWARD);
+		assertEquals(axis.getTickSide(), AxisTickSide.INWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
 
 		AxisTickManagerEx tickManager = mock(AxisTickManagerEx.class);
@@ -94,29 +95,28 @@ public class AxisImplTest {
 		axis.getTickManager().setRangeManager(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
-				new MathElement[] { new MathElement.Mn("0"),
-						new MathElement.Mn("5"), new MathElement.Mn("10") });
+				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
+						new MathElement.Mn("10") });
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
+		axis.calcThickness();
+		checkDouble(axis.getAsc(), 18.09375);
+		checkDouble(axis.getDesc(), 8.0);
+
+		axis.setTickSide(AxisTickSide.OUTWARD);
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 26.09375);
 		checkDouble(axis.getDesc(), 0);
 
 		axis.setTickSide(AxisTickSide.INWARD);
-		axis.calcThickness();
-		checkDouble(axis.getAsc(), 18.09375);
-		checkDouble(axis.getDesc(), 8.0);
-
 		axis.setPosition(AxisPosition.POSITIVE_SIDE);
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 8.0);
 		checkDouble(axis.getDesc(), 18.09375);
 
-		when(axis.getTickManager().getLabelModels())
-				.thenReturn(
-						new MathElement[] { new MathElement.Mn("0.0"),
-								new MathElement.Mn("5.0"),
-								new MathElement.Mn("10.0") });
+		when(axis.getTickManager().getLabelModels()).thenReturn(
+				new MathElement[] { new MathElement.Mn("0.0"), new MathElement.Mn("5.0"),
+						new MathElement.Mn("10.0") });
 		axis.invalidateThickness();
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 8.0);
