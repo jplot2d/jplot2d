@@ -19,10 +19,10 @@
 package org.jplot2d.axtick;
 
 import java.text.Format;
-import java.util.ArrayList;
 import java.util.Formatter;
-import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
@@ -36,8 +36,8 @@ import org.jplot2d.tex.TeXMathUtils;
 public class TickUtils {
 
 	/**
-	 * Find a proper minor tick number according to the given major interval and
-	 * proposal minor tick number.
+	 * Find a proper minor tick number according to the given major interval and proposal minor tick
+	 * number.
 	 * 
 	 * @param majorInterval
 	 * @param minorNumber
@@ -190,8 +190,8 @@ public class TickUtils {
 	}
 
 	/**
-	 * Convert Format Conversion 'm' to 'e'. If the the input format is not 'm'
-	 * conversion, the string is return untouched.
+	 * Convert Format Conversion 'm' to 'e'. If the the input format is not 'm' conversion, the
+	 * string is return untouched.
 	 * 
 	 * @param format
 	 *            the format string.
@@ -207,19 +207,15 @@ public class TickUtils {
 		return format;
 	}
 
-	public static boolean isValidFormat(String format) {
-		format = convFCm2e(format);
-		try {
-			String.format(format, 1d);
-			return true;
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
-	}
+	// %[argument_index$][flags][width][.precision]m_conversion
+	private static Pattern formatPattern = Pattern
+			.compile("(%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?)(m)");
+
+	private static Pattern eResultPattern = Pattern
+			.compile("-->>([+-]?[1-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");
 
 	/**
-	 * Returns a formatted string using the specified format string on the given
-	 * value.
+	 * Returns a formatted string using the specified format string on the given value.
 	 * 
 	 * @param format
 	 *            A format string
@@ -228,49 +224,64 @@ public class TickUtils {
 	 * @return A formatted string.
 	 */
 	public static MathElement format(String format, Object v) {
-		int mathConversionIdx = format.indexOf("m", 1);
-		if (mathConversionIdx == -1) {
-			String s = new Formatter(Locale.US).format(format, v).toString();
-			return new MathElement.Mtext(s);
+
+		boolean hasMConversion = false;
+		StringBuffer convFormatBuffer = new StringBuffer();
+		Matcher formatMatcher = formatPattern.matcher(format);
+		while (formatMatcher.find()) {
+			hasMConversion = true;
+			formatMatcher.appendReplacement(convFormatBuffer, "-->>$1e<<--");
+		}
+		formatMatcher.appendTail(convFormatBuffer);
+
+		String texString;
+		if (!hasMConversion) {
+			texString = new Formatter(Locale.US).format(format, v).toString();
 		} else {
-			StringBuffer newFormat = new StringBuffer(format);
-			newFormat.setCharAt(mathConversionIdx, 'e');
-			format = newFormat.toString();
+			format = convFormatBuffer.toString();
+			String intermediatResult = new Formatter(Locale.US).format(format, v).toString();
 
-			String s = new Formatter(Locale.US).format(format, v).toString();
+			int lastEnd = 0;
+			Matcher resultMatcher = eResultPattern.matcher(intermediatResult);
+			StringBuffer finalResultBuffer = new StringBuffer();
+			while (resultMatcher.find()) {
+				String s = intermediatResult.substring(lastEnd, resultMatcher.start());
+				String a = resultMatcher.group(1);
+				String m = resultMatcher.group(2);
 
-			int eIdx = s.indexOf("e");
-			String a = s.substring(0, eIdx);
-			String m = s.substring(eIdx + 1);
-			if (m.startsWith("+")) {
-				if (m.startsWith("+0")) {
-					m = m.substring(2);
-				} else {
+				finalResultBuffer.append(s);
+
+				boolean mathPart = false;
+				if (m.startsWith("+")) {
 					m = m.substring(1);
 				}
-			} else if (m.startsWith("-0")) {
-				m = "-" + m.substring(2);
+				int mv = Integer.parseInt(m);
+				if (mv != 0) {
+					mathPart = true;
+				}
+
+				if (!mathPart) {
+					finalResultBuffer.append(a);
+				} else {
+					if (!a.equals("1")) {
+						finalResultBuffer.append(a);
+						finalResultBuffer.append(" ");
+					}
+					finalResultBuffer.append("$10^{");
+					finalResultBuffer.append(mv);
+					finalResultBuffer.append("}$");
+				}
+
+				lastEnd = resultMatcher.end();
 			}
 
-			MathElement.PElement mathPart;
-			int mv = Integer.parseInt(m);
-			if (mv == 0) {
-				mathPart = null;
-			} else {
-				mathPart = new MathElement.Msup(new MathElement.Mn("10"),
-						new MathElement.Mn(m));
-			}
+			texString = finalResultBuffer.toString();
+		}
 
-			if (mathPart == null) {
-				return new MathElement.Mtext(a);
-			} else if (a.equals("1")) {
-				return mathPart;
-			} else {
-				List<MathElement.PElement> pc = new ArrayList<MathElement.PElement>();
-				pc.add(new MathElement.Mtext(a + " "));
-				pc.add(mathPart);
-				return new MathElement.Mrow(pc);
-			}
+		if (texString.indexOf('$') == -1) {
+			return new MathElement.Mtext(texString);
+		} else {
+			return TeXMathUtils.parseText(texString);
 		}
 	}
 

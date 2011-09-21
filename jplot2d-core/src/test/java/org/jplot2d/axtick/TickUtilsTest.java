@@ -64,64 +64,61 @@ public class TickUtilsTest {
 
 	@Test
 	public void testCalcLabelFormatStrForLinear() {
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1000,
-				2000, 3000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1200,
-				1200, 1300 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 10000,
-				20000, 30000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] {
-				110000, 120000, 130000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] {
-				123000, 124000, 125000 }));
-		assertEquals("%.4m", TickUtils.calcLabelFormatStr(new double[] {
-				1234500, 1234600, 1234700 }));
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1000, 2000, 3000 }));
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1200, 1200, 1300 }));
+		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 10000, 20000, 30000 }));
+		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] { 110000, 120000, 130000 }));
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 123000, 124000, 125000 }));
+		assertEquals("%.4m",
+				TickUtils.calcLabelFormatStr(new double[] { 1234500, 1234600, 1234700 }));
 
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1000,
-				2000, 3000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1200,
-				1200, 1300 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 10000,
-				20000, 30000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new long[] { 110000,
-				120000, 130000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 123000,
-				124000, 125000 }));
-		assertEquals("%.4m", TickUtils.calcLabelFormatStr(new long[] { 1234500,
-				1234600, 1234700 }));
+		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1000, 2000, 3000 }));
+		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1200, 1200, 1300 }));
+		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 10000, 20000, 30000 }));
+		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new long[] { 110000, 120000, 130000 }));
+		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 123000, 124000, 125000 }));
+		assertEquals("%.4m", TickUtils.calcLabelFormatStr(new long[] { 1234500, 1234600, 1234700 }));
 
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1, 10,
-				100, 1000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 12,
-				120, 1200, 12000 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 1, 10,
-				100, 1000, 10000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] { 12,
-				120, 1200, 12000, 120000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 12,
-				123, 1200, 12000, 120000 }));
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1, 10, 100, 1000 }));
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 12, 120, 1200, 12000 }));
+		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 1, 10, 100, 1000, 10000 }));
+		assertEquals("%.1m",
+				TickUtils.calcLabelFormatStr(new double[] { 12, 120, 1200, 12000, 120000 }));
+		assertEquals("%.0f",
+				TickUtils.calcLabelFormatStr(new double[] { 12, 123, 1200, 12000, 120000 }));
 
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1, 10,
-				100, 1000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 12, 120,
-				1200, 12000 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 1, 10,
-				100, 1000, 10000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new long[] { 12, 120,
-				1200, 12000, 120000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 12, 123,
-				1200, 12000, 120000 }));
+		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1, 10, 100, 1000 }));
+		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 12, 120, 1200, 12000 }));
+		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 1, 10, 100, 1000, 10000 }));
+		assertEquals("%.1m",
+				TickUtils.calcLabelFormatStr(new long[] { 12, 120, 1200, 12000, 120000 }));
+		assertEquals("%d",
+				TickUtils.calcLabelFormatStr(new long[] { 12, 123, 1200, 12000, 120000 }));
 
-		assertEquals("%.2f", TickUtils.calcLabelFormatStr(new double[] { 0.11,
-				1.1, 11, 110 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 0.1,
-				10, 1000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] { 0.11,
-				1.1, 11, 110, 1100 }));
+		assertEquals("%.2f", TickUtils.calcLabelFormatStr(new double[] { 0.11, 1.1, 11, 110 }));
+		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 0.1, 10, 1000 }));
+		assertEquals("%.1m",
+				TickUtils.calcLabelFormatStr(new double[] { 0.11, 1.1, 11, 110, 1100 }));
 
-		assertEquals("%.1f", TickUtils.calcLabelFormatStr(new double[] { -0.2,
-				0, 0.2, 0.4, 0.6, 0.8, 1.0 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 2, 4,
-				6, 8, 10, 12, 14, 16, 18, 20 }));
+		assertEquals("%.1f",
+				TickUtils.calcLabelFormatStr(new double[] { -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0 }));
+		assertEquals("%.0f",
+				TickUtils.calcLabelFormatStr(new double[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }));
 	}
+
+	@Test
+	public void testFormat() {
+		assertEquals("3.14 $10^2$", TickUtils.format("%.2m", 314.159).toString());
+		assertEquals("3.1 $10^64$", TickUtils.format("%.1m", 3.14159e64).toString());
+		assertEquals("-3.1 $10^64$", TickUtils.format("%.1m", -3.14159e64).toString());
+		assertEquals("-3.1 $10^{-64}$", TickUtils.format("%.1m", -3.14159e-64).toString());
+		assertEquals("$10^64$", TickUtils.format("%.0m", 1e64).toString());
+		assertEquals("+1 $10^64$", TickUtils.format("%+.0m", 1e64).toString());
+		assertEquals("-1 $10^64$", TickUtils.format("%+.0m", -1e64).toString());
+		assertEquals("3.142", TickUtils.format("%.3m", 3.14159).toString());
+
+		assertEquals("01/01/70", TickUtils.format("%tm/%<td/%<ty", 1L).toString());
+		assertEquals("01-01-70", TickUtils.format("%tm-%<td-%<ty", 1L).toString());
+	}
+
 }
