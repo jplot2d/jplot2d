@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * $Id: TeXMathParserTest.java,v 1.8 2010/08/11 09:36:23 jli Exp $
- */
 package org.jplot2d.util;
 
 import static org.junit.Assert.*;
@@ -44,8 +41,7 @@ public class TeXMathParserTest {
 		parser = new TeXMathParser(new StringReader(""));
 	}
 
-	private void checkParse(String src, String roundTrip, String mathml)
-			throws ParseException {
+	private void checkParse(String src, String roundTrip, String mathml) throws ParseException {
 		parser.ReInit(new StringReader(src));
 		MathElement me = parser.parse();
 		assertEquals(me.toString(), roundTrip);
@@ -87,10 +83,8 @@ public class TeXMathParserTest {
 
 		checkParse("ab\\noncommand{}", "ab\\noncommand",
 				"<xlines><mtext>ab</mtext><mtext>oncommand</mtext></xlines>");
-		checkParse("abc\\nd", "abc\\nd",
-				"<xlines><mtext>abc</mtext><mtext>d</mtext></xlines>");
-		checkParse("abc\nd", "abc\\nd",
-				"<xlines><mtext>abc</mtext><mtext>d</mtext></xlines>");
+		checkParse("abc\\nd", "abc\\nd", "<xlines><mtext>abc</mtext><mtext>d</mtext></xlines>");
+		checkParse("abc\nd", "abc\\nd", "<xlines><mtext>abc</mtext><mtext>d</mtext></xlines>");
 		checkParse("abc\\n$d$\\ne", "abc\\n$d$\\ne",
 				"<xlines><mtext>abc</mtext><mi>d</mi><mtext>e</mtext></xlines>");
 		checkParse("abc\n$d$\ne", "abc\\n$d$\\ne",
@@ -108,28 +102,20 @@ public class TeXMathParserTest {
 		checkParse("abc\\\\de", "abc\\\\de", "<mtext>abc\\de</mtext>");
 
 		// group
-		checkParse("ab{cde}", "abcde",
-				"<mrow><mtext>ab</mtext><mtext>cde</mtext></mrow>");
-		checkParse("{abc}de", "abcde",
-				"<mrow><mtext>abc</mtext><mtext>de</mtext></mrow>");
+		checkParse("ab{cde}", "abcde", "<mrow><mtext>ab</mtext><mtext>cde</mtext></mrow>");
+		checkParse("{abc}de", "abcde", "<mrow><mtext>abc</mtext><mtext>de</mtext></mrow>");
 		// nested group
-		checkParse(
-				"ab{c{d}e}",
-				"abcde",
+		checkParse("ab{c{d}e}", "abcde",
 				"<mrow><mtext>ab</mtext><mtext>c</mtext><mtext>d</mtext><mtext>e</mtext></mrow>");
 
 		checkParse("abc$$", "abc", "<mtext>abc</mtext>");
-		checkParse("abc$d$", "abc$d$",
-				"<mrow><mtext>abc</mtext><mi>d</mi></mrow>");
-		checkParse("abc$de$", "abc$de$",
-				"<mrow><mtext>abc</mtext><mi>d</mi><mi>e</mi></mrow>");
+		checkParse("abc$d$", "abc$d$", "<mrow><mtext>abc</mtext><mi>d</mi></mrow>");
+		checkParse("abc$de$", "abc$de$", "<mrow><mtext>abc</mtext><mi>d</mi><mi>e</mi></mrow>");
 		checkParse("$$abc", "abc", "<mtext>abc</mtext>");
 		checkParse("$abc$d", "$abc$d",
 				"<mrow><mi>a</mi><mi>b</mi><mi>c</mi><mtext>d</mtext></mrow>");
-		checkParse("$$a$$b", "ab",
-				"<mrow><mtext>a</mtext><mtext>b</mtext></mrow>");
-		checkParse("$$a$$$$b", "ab",
-				"<mrow><mtext>a</mtext><mtext>b</mtext></mrow>");
+		checkParse("$$a$$b", "ab", "<mrow><mtext>a</mtext><mtext>b</mtext></mrow>");
+		checkParse("$$a$$$$b", "ab", "<mrow><mtext>a</mtext><mtext>b</mtext></mrow>");
 		checkParse("$a$$c$d$e$f", "$ac$d$e$f",
 				"<mrow><mi>a</mi><mi>c</mi><mtext>d</mtext><mi>e</mi><mtext>f</mtext></mrow>");
 
@@ -139,13 +125,9 @@ public class TeXMathParserTest {
 
 	@Test
 	public void testFont() throws ParseException {
-		checkParse(
-				"ab\\textbf{cde}",
-				"ab\\textbf{cde}",
+		checkParse("ab\\textbf{cde}", "ab\\textbf{cde}",
 				"<mrow><mtext>ab</mtext><mstyle mathvariant=BOLD><mtext>cde</mtext></mstyle></mrow>");
-		checkParse(
-				"ab\\textbf {cde}",
-				"ab\\textbf{cde}",
+		checkParse("ab\\textbf {cde}", "ab\\textbf{cde}",
 				"<mrow><mtext>ab</mtext><mstyle mathvariant=BOLD><mtext>cde</mtext></mstyle></mrow>");
 
 		checkException("ab\\textbf cde");
@@ -164,28 +146,18 @@ public class TeXMathParserTest {
 		checkParse("$a$", "$a$", "<mi>a</mi>");
 		checkParse("$ab$", "$ab$", "<mrow><mi>a</mi><mi>b</mi></mrow>");
 		checkParse("$a b$", "$ab$", "<mrow><mi>a</mi><mi>b</mi></mrow>");
-		checkParse("$a\\$b$", "$a\\$b$",
-				"<mrow><mi>a</mi><mi>$</mi><mi>b</mi></mrow>");
-		checkParse("$a\\\\b$", "$a\\\\b$",
-				"<mrow><mi>a</mi><mi>\\</mi><mi>b</mi></mrow>");
+		checkParse("$a\\$b$", "$a\\$b$", "<mrow><mi>a</mi><mi>$</mi><mi>b</mi></mrow>");
+		checkParse("$a\\\\b$", "$a\\\\b$", "<mrow><mi>a</mi><mi>\\</mi><mi>b</mi></mrow>");
 		checkParse("$(ab)$", "$({ab})$",
 				"<mrow><mo>(</mo><mrow><mi>a</mi><mi>b</mi></mrow><mo>)</mo></mrow>");
-		checkParse("$a+b$", "$a+b$",
-				"<mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow>");
-		checkParse("$a-b$", "$a\u2212b$",
-				"<mrow><mi>a</mi><mo>\u2212</mo><mi>b</mi></mrow>");
-		checkParse("$a>b$", "$a>b$",
-				"<mrow><mi>a</mi><mo>></mo><mi>b</mi></mrow>");
-		checkParse("$a>=b$", "$a>=b$",
-				"<mrow><mi>a</mi><mo>>=</mo><mi>b</mi></mrow>");
-		checkParse("$a<b$", "$a<b$",
-				"<mrow><mi>a</mi><mo><</mo><mi>b</mi></mrow>");
-		checkParse("$a<=b$", "$a<=b$",
-				"<mrow><mi>a</mi><mo><=</mo><mi>b</mi></mrow>");
-		checkParse("$a=b$", "$a=b$",
-				"<mrow><mi>a</mi><mo>=</mo><mi>b</mi></mrow>");
-		checkParse("$a==b$", "$a==b$",
-				"<mrow><mi>a</mi><mo>==</mo><mi>b</mi></mrow>");
+		checkParse("$a+b$", "$a+b$", "<mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow>");
+		checkParse("$a-b$", "$a\u2212b$", "<mrow><mi>a</mi><mo>\u2212</mo><mi>b</mi></mrow>");
+		checkParse("$a>b$", "$a>b$", "<mrow><mi>a</mi><mo>></mo><mi>b</mi></mrow>");
+		checkParse("$a>=b$", "$a>=b$", "<mrow><mi>a</mi><mo>>=</mo><mi>b</mi></mrow>");
+		checkParse("$a<b$", "$a<b$", "<mrow><mi>a</mi><mo><</mo><mi>b</mi></mrow>");
+		checkParse("$a<=b$", "$a<=b$", "<mrow><mi>a</mi><mo><=</mo><mi>b</mi></mrow>");
+		checkParse("$a=b$", "$a=b$", "<mrow><mi>a</mi><mo>=</mo><mi>b</mi></mrow>");
+		checkParse("$a==b$", "$a==b$", "<mrow><mi>a</mi><mo>==</mo><mi>b</mi></mrow>");
 		checkParse(
 				"$f(x,y)$",
 				"$f{({x,y})}$",
@@ -198,8 +170,7 @@ public class TeXMathParserTest {
 	@Test
 	public void testMathGreek() throws ParseException {
 		checkParse("$\\alpha$", "$\u03b1$", "<mi>\u03b1</mi>");
-		checkParse("$a\\betac$", "$a\u03b2c$",
-				"<mrow><mi>a</mi><mi>\u03b2</mi><mi>c</mi></mrow>");
+		checkParse("$a\\betac$", "$a\u03b2c$", "<mrow><mi>a</mi><mi>\u03b2</mi><mi>c</mi></mrow>");
 	}
 
 	@Test
@@ -212,26 +183,23 @@ public class TeXMathParserTest {
 				"<mrow><mn>-2</mn><mo>\u2212</mo><mn>13</mn><mo>=</mo><mn>-15</mn></mrow>");
 		checkParse("$3*10^{-2}$", "$3\u221710^{-2}$",
 				"<mrow><mn>3</mn><mo>\u2217</mo><msup><mn>10</mn><mn>-2</mn></msup></mrow>");
-		checkParse(
-				"$3*10^-2$",
-				"$3\u221710^\u22122$",
+		checkParse("$3*10^-2$", "$3\u221710^\u22122$",
 				"<mrow><mn>3</mn><mo>\u2217</mo><msup><mn>10</mn><mo>\u2212</mo></msup><mn>2</mn></mrow>");
 	}
 
 	@Test
 	public void testMathScrpit() throws ParseException {
-		checkParse("$10^{-2}$", "$10^{-2}$",
-				"<msup><mn>10</mn><mn>-2</mn></msup>");
+		checkParse("$10^23$", "$10^23$", "<msup><mn>10</mn><mn>23</mn></msup>");
+		checkParse("$10^{23}$", "$10^23$", "<msup><mn>10</mn><mn>23</mn></msup>");
+		checkParse("$10^-23$", "$10^\u221223$",
+				"<mrow><msup><mn>10</mn><mo>\u2212</mo></msup><mn>23</mn></mrow>");
+		checkParse("$10^{-23}$", "$10^{-23}$", "<msup><mn>10</mn><mn>-23</mn></msup>");
+		checkParse("$10^{-2}$", "$10^{-2}$", "<msup><mn>10</mn><mn>-2</mn></msup>");
 		checkParse("$F_2$", "$F_2$", "<msub><mi>F</mi><mn>2</mn></msub>");
-		checkParse("$F_2^a$", "$F_2^a$",
-				"<msubsup><mi>F</mi><mn>2</mn><mi>a</mi></msubsup>");
-		checkParse(
-				"$_aF_a$",
-				"${}_aF_a$",
+		checkParse("$F_2^a$", "$F_2^a$", "<msubsup><mi>F</mi><mn>2</mn><mi>a</mi></msubsup>");
+		checkParse("$_aF_a$", "${}_aF_a$",
 				"<mrow><msub><mrow></mrow><mi>a</mi></msub><msub><mi>F</mi><mi>a</mi></msub></mrow>");
-		checkParse(
-				"$^2F^2$",
-				"${}^2F^2$",
+		checkParse("$^2F^2$", "${}^2F^2$",
 				"<mrow><msup><mrow></mrow><mn>2</mn></msup><msup><mi>F</mi><mn>2</mn></msup></mrow>");
 		checkParse(
 				"$_a^2F_a^2$",
