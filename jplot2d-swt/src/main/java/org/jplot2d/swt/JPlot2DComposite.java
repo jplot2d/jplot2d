@@ -42,6 +42,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private volatile Image image;
 
+	private final InteractionListener ial;
+
 	private Runnable redrawRunner = new Runnable() {
 		public void run() {
 			redraw();
@@ -49,8 +51,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	};
 
 	/**
-	 * Construct a Composite to display the given plot in its center. The plot
-	 * properties can be safely by multiple threads.
+	 * Construct a Composite to display the given plot in its center. The plot properties can be
+	 * safely modified by multiple threads.
 	 * 
 	 * @param plot
 	 *            the plot to be display
@@ -65,9 +67,9 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed
-	 *            within the Event Dispatcher Thread. if <code>true</code>, all
-	 *            plot properties can be safely changed by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within the Event
+	 *            Dispatcher Thread. if <code>true</code>, all plot properties can be safely changed
+	 *            by multiple threads.
 	 */
 	public JPlot2DComposite(Composite parent, Plot plot, boolean threadSafe) {
 		this(parent, createRenderEnvironment(plot, threadSafe));
@@ -80,8 +82,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	/**
-	 * Construct a Composite to display a plot in its center. The plot has been
-	 * assigned to the given RenderEnvironment.
+	 * Construct a Composite to display a plot in its center. The plot has been assigned to the
+	 * given RenderEnvironment.
 	 * 
 	 * @param env
 	 *            the RenderEnvironment
@@ -95,8 +97,13 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		addDisposeListener(this);
 		addPaintListener(this);
 
-		r = createImageRenderer();
+		addMenuDetectListener(ial);
+		addMouseListener(ial);
+		addMouseMoveListener(ial);
+		addMouseTrackListener(ial);
+		addMouseWheelListener(ial);
 
+		r = createImageRenderer();
 		r.addRenderingFinishedListener(new RenderingFinishedListener() {
 			private long ifsn;
 
