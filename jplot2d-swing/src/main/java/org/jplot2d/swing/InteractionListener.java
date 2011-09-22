@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swing;
 
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -33,6 +32,8 @@ import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.interaction.PlotPaintListener;
 
 /**
+ * The interaction listener will be set as MouseListener, MouseMotionListener and MouseWheelListener
+ * 
  * @author Jingjing Li
  * 
  */
@@ -56,23 +57,19 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	}
 
 	public void mousePressed(MouseEvent e) {
-		System.out.println("[] " + e);
 		ihandler.mousePressed(getGenericMouseEvent(e));
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		System.out.println("[] " + e);
 		ihandler.mouseReleased(getGenericMouseEvent(e));
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	public void mouseMoved(MouseEvent e) {
@@ -93,8 +90,21 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 		ihandler.plotPainted(evt);
 	}
 
+	/**
+	 * convert the awt mouse event to GenericMouseEvent
+	 * 
+	 * @param e
+	 *            the awt mouse event
+	 * @return GenericMouseEvent
+	 */
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
-		return new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(),
+		int eid;
+		if (e.isPopupTrigger()) {
+			eid = GenericMouseEvent.MOUSE_MENU;
+		} else {
+			eid = e.getID();
+		}
+		return new GenericMouseEvent(eid, e.getModifiersEx(), e.getX(), e.getY(),
 				e.getClickCount(), e.getButton());
 	}
 }
