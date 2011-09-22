@@ -35,8 +35,8 @@ public class JPlot2DFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Construct a JFrame to display the given plot in its center. The plot
-	 * properties can be safely by multiple threads.
+	 * Construct a JFrame to display the given plot in its center. The plot properties can be safely
+	 * modified by multiple threads.
 	 * 
 	 * @param plot
 	 *            the plot to be display
@@ -51,9 +51,9 @@ public class JPlot2DFrame extends JFrame {
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed
-	 *            within a single thread. if <code>true</code>, all plot
-	 *            properties can be safely changed by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single
+	 *            thread. if <code>true</code>, all plot properties can be safely changed by
+	 *            multiple threads.
 	 */
 	public JPlot2DFrame(Plot plot, boolean threadSafe) {
 		super();
@@ -62,8 +62,8 @@ public class JPlot2DFrame extends JFrame {
 	}
 
 	/**
-	 * Construct a JFrame to display a plot in its center. The plot has been
-	 * assigned to the given RenderEnvironment.
+	 * Construct a JFrame to display a plot in its center. The plot has been assigned to the given
+	 * RenderEnvironment.
 	 * 
 	 * @param env
 	 *            the RenderEnvironment
