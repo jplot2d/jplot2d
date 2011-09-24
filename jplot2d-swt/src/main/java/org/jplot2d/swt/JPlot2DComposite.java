@@ -1,7 +1,11 @@
 package org.jplot2d.swt;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -19,20 +23,28 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.gui.interaction.PlotDefaultMousePreference;
+import org.jplot2d.gui.interaction.PlotInteractionManager;
+import org.jplot2d.interaction.InteractionManager;
+import org.jplot2d.interaction.MousePreference;
+import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.BufferedImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
+import org.jplot2d.swt.interaction.InteractionListener;
+import org.jplot2d.swt.interaction.MenuHandler;
 
 /**
  * @author Jingjing Li
  * 
  */
 public class JPlot2DComposite extends Composite implements ControlListener, DisposeListener,
-		PaintListener {
+		PaintListener, RenderingFinishedListener {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.swt");
 
@@ -40,7 +52,11 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private ImageRenderer r;
 
-	private volatile Image image;
+	private long ifsn;
+
+	private volatile java.awt.image.BufferedImage bi;
+
+	private InteractionManager imanager;
 
 	private final InteractionListener ial;
 
@@ -97,46 +113,40 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		addDisposeListener(this);
 		addPaintListener(this);
 
-		addMenuDetectListener(ial);
+		setMenu(buildMenu());
+
+		ial = buildInteractionListener();
 		addMouseListener(ial);
 		addMouseMoveListener(ial);
 		addMouseTrackListener(ial);
 		addMouseWheelListener(ial);
 
 		r = createImageRenderer();
-		r.addRenderingFinishedListener(new RenderingFinishedListener() {
-			private long ifsn;
-
-			public void renderingFinished(RenderingFinishedEvent event) {
-				long fsn = event.getFsn();
-				if (fsn < ifsn) {
-					logger.info("[R] Rendering finished in wrong order, drop F." + fsn
-							+ " Current frame is " + ifsn);
-					return;
-				}
-				ifsn = fsn;
-
-				Image oldImg = image;
-				BufferedImage bi = (BufferedImage) event.getResult();
-				image = new Image(getDisplay(), convertToSWT(bi));
-
-				getDisplay().syncExec(redrawRunner);
-
-				if (oldImg != null) {
-					oldImg.dispose();
-				}
-			}
-
-		});
+		r.addRenderingFinishedListener(this);
 		env.addRenderer(r);
+
+	}
+
+	public void renderingFinished(RenderingFinishedEvent event) {
+		long fsn = event.getFsn();
+		if (fsn < ifsn) {
+			logger.info("[R] Rendering finished in wrong order, drop F." + fsn
+					+ " Current frame is " + ifsn);
+			return;
+		}
+		ifsn = fsn;
+
+		bi = (BufferedImage) event.getResult();
+
+		getDisplay().syncExec(redrawRunner);
 
 	}
 
 	/**
 	 * @return
 	 */
-	protected java.awt.Color getPlotBackground() {
-		return java.awt.Color.WHITE;
+	public Color getPlotBackground() {
+		return Color.WHITE;
 	}
 
 	protected ImageRenderer createImageRenderer() {
@@ -153,19 +163,30 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	public void paintControl(PaintEvent e) {
-		if (image != null) {
-			int width = image.getImageData().width;
-			int height = image.getImageData().height;
-			int x = (getSize().x - width) / 2;
-			int y = (getSize().y - height) / 2;
 
-			e.gc.drawImage(image, x, y);
+		if (bi == null) {
+			return;
 		}
+
+		ColorModel cm = bi.getColorModel();
+		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		WritableRaster raster = bi.copyData(null);
+		BufferedImage bimg = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+
+		Graphics g = bimg.createGraphics();
+		ial.plotPainted(new PlotPaintEvent(this, (Graphics2D) g));
+
+		Image swtImage = new Image(getDisplay(), convertToSWT(bimg));
+		int width = swtImage.getImageData().width;
+		int height = swtImage.getImageData().height;
+		int x = (getSize().x - width) / 2;
+		int y = (getSize().y - height) / 2;
+		e.gc.drawImage(swtImage, x, y);
+		swtImage.dispose();
 	}
 
 	public void widgetDisposed(DisposeEvent e) {
-		// TODO Auto-generated method stub
-		image.dispose();
+		// nothing to dispose
 	}
 
 	protected static ImageData convertToSWT(BufferedImage bufferedImage) {
@@ -217,4 +238,27 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		return null;
 	}
 
+	/**
+	 * Subclass can return it's own menu
+	 * 
+	 * @return an InteractionManager
+	 */
+	protected Menu buildMenu() {
+		return new MenuHandler(this, env).getMenu();
+	}
+
+	/**
+	 * Subclass can return it's own InteractionManager, initiated with a MousePreference
+	 * 
+	 * @return an InteractionListener
+	 */
+	protected InteractionListener buildInteractionListener() {
+		imanager = PlotInteractionManager.getInstance();
+		imanager.setMousePreference(PlotDefaultMousePreference.getInstance());
+		return new InteractionListener(this, imanager, env);
+	}
+
+	public void setMousePreference(MousePreference prefs) {
+		imanager.setMousePreference(prefs);
+	}
 }
