@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
-import java.awt.Component;
-import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
+import org.jplot2d.interaction.InteractiveComp;
+import org.jplot2d.interaction.InteractiveComp.CursorStyle;
 import org.jplot2d.interaction.ValueChangeHandler;
-
 
 /**
  * @author Jingjing Li
@@ -38,20 +37,20 @@ public class CursorFeedbackHandler extends ValueChangeHandler<CursorFeedbackBeha
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		Component comp = (Component) handler.getValue(InteractionHandler.COMPONENT_KEY);
+		InteractiveComp icomp = handler.getInteractiveComp();
 		if (evt.getPropertyName().equals(InteractionHandler.ACTIVE_COMPONENT_MOVABLE_KEY)) {
 			Boolean movable = (Boolean) evt.getNewValue();
 			if (movable != null && movable) {
-				comp.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+				icomp.setCursor(CursorStyle.MOVE_CURSOR);
 			} else {
-				comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
 			}
 		} else if (evt.getPropertyName().equals(InteractionModeHandler.MODE_ENTERED_KEY)) {
 			Boolean entered = (Boolean) evt.getNewValue();
 			if (entered != null && entered) {
-				comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
 			} else {
-				comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
 			}
 		}
 	}

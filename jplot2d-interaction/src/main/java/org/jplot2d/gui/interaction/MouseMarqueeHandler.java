@@ -16,75 +16,76 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
-
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
+import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.interaction.MouseDragBehavior;
 import org.jplot2d.interaction.MouseDragBehaviorHandler;
+import org.jplot2d.interaction.PlotPaintEvent;
+import org.jplot2d.interaction.PlotPaintListener;
 
 public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
-		MouseDragBehaviorHandler<B> {
+		MouseDragBehaviorHandler<B> implements PlotPaintListener {
 
 	private Point marqueeStart;
 
-	private Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
+	private Point marqueeEnd;
 
-	private Component comp;
+	private InteractiveComp icomp;
 
 	public MouseMarqueeHandler(B behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
-		comp = (Component) handler.getValue(InteractionHandler.COMPONENT_KEY);
+		icomp = handler.getInteractiveComp();
 	}
 
 	@Override
 	public void draggingStarted(int x, int y) {
 		marqueeStart = new Point(x, y);
-		marqueeRect.x = x;
-		marqueeRect.y = y;
-		marqueeRect.width = 0;
-		marqueeRect.height = 0;
-		Graphics2D g = (Graphics2D) comp.getGraphics();
-		g.setColor(comp.getForeground());
-		g.setXORMode(comp.getBackground());
-		g.draw(marqueeRect);
-		g.setPaintMode();
 	}
 
 	@Override
 	public void draggingTo(int x, int y) {
-		Graphics2D g = (Graphics2D) comp.getGraphics();
-		g.setColor(comp.getForeground());
-		g.setXORMode(comp.getBackground());
-		g.draw(marqueeRect);
-		marqueeRect.setFrameFromDiagonal(marqueeStart.x, marqueeStart.y, x, y);
-		g.draw(marqueeRect);
-		g.setPaintMode();
+		marqueeEnd = new Point(x, y);
+		icomp.repaint();
 	}
 
 	@Override
 	public void draggingFinished(int x, int y) {
-		Graphics2D g = (Graphics2D) comp.getGraphics();
-		g.setColor(comp.getForeground());
-		g.setXORMode(comp.getBackground());
-		g.draw(marqueeRect);
+		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
+		marqueeRect.setFrameFromDiagonal(marqueeStart.x, marqueeStart.y, x, y);
+
 		if (marqueeRect.width > 1 || marqueeRect.height > 1) {
 			handleMarquee(marqueeStart, new Point(x, y));
 		}
+
+		marqueeStart = null;
+		icomp.repaint();
 	}
 
 	@Override
 	public void draggingCancelled() {
-		Graphics2D g = (Graphics2D) comp.getGraphics();
-		g.setColor(comp.getForeground());
-		g.setXORMode(comp.getBackground());
+		marqueeStart = null;
+		icomp.repaint();
+	}
+
+	public void plotPainted(PlotPaintEvent evt) {
+		if (marqueeStart == null) {
+			return;
+		}
+
+		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
+		marqueeRect.setFrameFromDiagonal(marqueeStart, marqueeEnd);
+
+		Graphics2D g = evt.getGraphics();
+		g.setColor(icomp.getForeground());
+		g.setXORMode(icomp.getBackground());
 		g.draw(marqueeRect);
+		g.setPaintMode();
 	}
 
 	/**

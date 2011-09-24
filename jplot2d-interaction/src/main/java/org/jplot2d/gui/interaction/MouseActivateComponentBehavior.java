@@ -16,39 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing;
+package org.jplot2d.gui.interaction;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.util.EventObject;
+import org.jplot2d.interaction.InteractionModeHandler;
+import org.jplot2d.interaction.MouseMoveBehavior;
 
 /**
+ * This behavior defines the destination modes when mouse moving.
+ * 
  * @author Jingjing Li
  * 
  */
-public class PlotPaintEvent extends EventObject {
+public class MouseActivateComponentBehavior extends MouseMoveBehavior {
 
-	private static final long serialVersionUID = 7168676901312678175L;
+    public MouseActivateComponentBehavior(String name) {
+        super(name);
+    }
 
-	private final Graphics g;
-
-	public PlotPaintEvent(Component source, Graphics g) {
-		super(source);
-		this.g = g;
-	}
-
-	/**
-	 * Returns the originator of the event.
-	 * 
-	 * @return the <code>Component</code> object that originated the event, or <code>null</code> if
-	 *         the object is not a <code>Component</code>.
-	 */
-	public Component getComponent() {
-		return (source instanceof Component) ? (Component) source : null;
-	}
-
-	public Graphics getGraphics() {
-		return g;
-	}
+    @Override
+    public MouseActivateComponentHandler createMouseBehaviorHandler(
+            InteractionModeHandler ihandler) {
+        return new MouseActivateComponentHandler(this, ihandler);
+    }
 
 }

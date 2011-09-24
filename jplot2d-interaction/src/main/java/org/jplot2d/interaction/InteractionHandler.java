@@ -38,19 +38,15 @@ import java.util.Map;
  */
 public class InteractionHandler implements PlotPaintListener {
 
-	public static final String PLOT_KEY = "PLOT";
-
 	public static final String PLOT_ENV_KEY = "PLOT_ENV";
-
-	public static final String COMPONENT_KEY = "COMPONENET";
 
 	public static final String ACTIVE_COMPONENT_KEY = "ACTIVE_COMPONENT";
 
 	public static final String ACTIVE_COMPONENT_MOVABLE_KEY = "ACTIVE_COMPONENT_MOVABLE";
 
-	public static final String PLOT_BACKGROUND_KEY = "PLOT_BACKGROUND";
-
 	private final InteractionManager imanager;
+
+	private final InteractiveComp icomp;
 
 	private InteractionModeHandler modeHandler;
 
@@ -75,12 +71,17 @@ public class InteractionHandler implements PlotPaintListener {
 	 */
 	private Point lastPoint;
 
-	public InteractionHandler(InteractionManager imanager) {
+	public InteractionHandler(InteractionManager imanager, InteractiveComp icomp) {
 		this.imanager = imanager;
+		this.icomp = icomp;
 	}
 
-	public InteractionManager getInteractionManager() {
+	protected final InteractionManager getInteractionManager() {
 		return imanager;
+	}
+
+	protected final InteractiveComp getInteractiveComp() {
+		return icomp;
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class InteractionHandler implements PlotPaintListener {
 	 */
 	public void init() {
 		for (InteractionMode mode : imanager.getModes()) {
-			InteractionModeHandler mhandler = new InteractionModeHandler(mode, this);
+			InteractionModeHandler mhandler = new InteractionModeHandler(this, mode);
 			mhandler.valueMap.putAll(valueMap);
 			modeHandlerMap.put(mode, mhandler);
 
@@ -113,12 +114,8 @@ public class InteractionHandler implements PlotPaintListener {
 	 * 
 	 * @param p
 	 */
-	public void menuDetected(Point p) {
-		modeHandler.menuDetected(p);
-	}
-
-	private void mouseClicked(GenericMouseEvent e) {
-		modeHandler.mouseClicked(e);
+	public void menuDetected(int x, int y) {
+		modeHandler.menuDetected(x, y);
 	}
 
 	public void mouseEntered(GenericMouseEvent e) {
@@ -147,6 +144,10 @@ public class InteractionHandler implements PlotPaintListener {
 
 		mouseSigDragState &= ~e.getButton();
 		mouseTrivialDragState &= ~e.getButton();
+	}
+
+	private void mouseClicked(GenericMouseEvent e) {
+		modeHandler.mouseClicked(e);
 	}
 
 	public void mouseDragged(GenericMouseEvent e) {
@@ -196,10 +197,6 @@ public class InteractionHandler implements PlotPaintListener {
 		}
 		modeHandler = newhandler;
 		modeHandler.modeEntered();
-	}
-
-	public InteractionModeHandler getInteractionModeHandler() {
-		return modeHandler;
 	}
 
 	public InteractionModeHandler getInteractionModeHandler(String modeName) {

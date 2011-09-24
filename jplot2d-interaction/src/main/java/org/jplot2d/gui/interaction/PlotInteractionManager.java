@@ -16,16 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
-import org.jplot2d.gui.interaction.MouseAdaptiveZoomBehavior;
-import org.jplot2d.gui.interaction.MouseAxisAdaptiveZoomBehavior;
-import org.jplot2d.gui.interaction.MouseAxisPanBehavior;
-import org.jplot2d.gui.interaction.MouseAxisWheelFinerZoomBehavior;
-import org.jplot2d.gui.interaction.MouseAxisWheelZoomBehavior;
-import org.jplot2d.gui.interaction.MousePanBehavior;
-import org.jplot2d.gui.interaction.MouseWheelFinerZoomBehavior;
-import org.jplot2d.gui.interaction.MouseWheelZoomBehavior;
 import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.InteractionMode;
 import org.jplot2d.interaction.MouseBehavior;

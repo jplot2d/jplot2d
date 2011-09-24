@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing;
+package org.jplot2d.swing.interaction;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,12 +24,13 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import org.jplot2d.env.PlotEnvironment;
+import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.interaction.GenericMouseEvent;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.interaction.PlotPaintListener;
+import org.jplot2d.swing.JPlot2DComponent;
 
 /**
  * The interaction listener will be set as MouseListener, MouseMotionListener and MouseWheelListener
@@ -43,12 +44,9 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	private final InteractionHandler ihandler;
 
 	public InteractionListener(JPlot2DComponent comp, InteractionManager imanager,
-			PlotEnvironment env) {
-		ihandler = new InteractionHandler(imanager);
-		ihandler.putValue(InteractionHandler.PLOT_KEY, env.getPlot());
+			RenderEnvironment env) {
+		ihandler = new InteractionHandler(imanager, new SwingInteractiveComp(comp, env));
 		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
-		ihandler.putValue(InteractionHandler.COMPONENT_KEY, comp);
-		ihandler.putValue(InteractionHandler.PLOT_BACKGROUND_KEY, comp.getPlotBackground());
 		ihandler.init();
 	}
 
@@ -57,11 +55,19 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	}
 
 	public void mousePressed(MouseEvent e) {
-		ihandler.mousePressed(getGenericMouseEvent(e));
+		if (e.isPopupTrigger()) {
+			ihandler.menuDetected(e.getX(), e.getY());
+		} else {
+			ihandler.mousePressed(getGenericMouseEvent(e));
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		ihandler.mouseReleased(getGenericMouseEvent(e));
+		if (e.isPopupTrigger()) {
+			ihandler.menuDetected(e.getX(), e.getY());
+		} else {
+			ihandler.mouseReleased(getGenericMouseEvent(e));
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -98,13 +104,7 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	 * @return GenericMouseEvent
 	 */
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
-		int eid;
-		if (e.isPopupTrigger()) {
-			eid = GenericMouseEvent.MOUSE_MENU;
-		} else {
-			eid = e.getID();
-		}
-		return new GenericMouseEvent(eid, e.getModifiersEx(), e.getX(), e.getY(),
+		return new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(),
 				e.getClickCount(), e.getButton());
 	}
 }

@@ -16,27 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
 import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseMoveBehavior;
+import org.jplot2d.interaction.InteractiveComp;
+import org.jplot2d.interaction.MousePopupBehaviorHandler;
 
-/**
- * This behavior defines the destination modes when mouse moving.
- * 
- * @author Jingjing Li
- * 
- */
-public class MouseActivateComponentBehavior extends MouseMoveBehavior {
+public class MousePopupMenuHandler extends MousePopupBehaviorHandler<MousePopupMenuBehavior> {
 
-    public MouseActivateComponentBehavior(String name) {
-        super(name);
-    }
+	public MousePopupMenuHandler(MousePopupMenuBehavior behavior, InteractionModeHandler handler) {
+		super(behavior, handler);
+	}
 
-    @Override
-    public MouseActivateComponentHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
-        return new MouseActivateComponentHandler(this, ihandler);
-    }
+	@Override
+	public void behaviorPerformed(int x, int y) {
+		InteractiveComp icomp = handler.getInteractiveComp();
+		icomp.popupMenu(x, y);
+	}
 
 }

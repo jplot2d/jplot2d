@@ -18,10 +18,10 @@
  */
 package org.jplot2d.swing;
 
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.MouseWheelListener;
@@ -32,6 +32,8 @@ import javax.swing.JComponent;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.gui.interaction.PlotDefaultMousePreference;
+import org.jplot2d.gui.interaction.PlotInteractionManager;
 import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
 import org.jplot2d.interaction.PlotPaintEvent;
@@ -40,8 +42,7 @@ import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
-import org.jplot2d.swing.interaction.PlotDefaultMousePreference;
-import org.jplot2d.swing.interaction.PlotInteractionManager;
+import org.jplot2d.swing.interaction.InteractionListener;
 
 /**
  * A JComponent that display a plot in its center.
@@ -123,7 +124,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 * 
 	 * @return
 	 */
-	protected Color getPlotBackground() {
+	public Color getPlotBackground() {
 		return Color.WHITE;
 	}
 
@@ -143,7 +144,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 			int y = (getHeight() - height) / 2;
 			g.drawImage(image, x, y, this);
 
-			ial.plotPainted(new PlotPaintEvent(this, g));
+			ial.plotPainted(new PlotPaintEvent(this, (Graphics2D) g));
 		}
 	}
 

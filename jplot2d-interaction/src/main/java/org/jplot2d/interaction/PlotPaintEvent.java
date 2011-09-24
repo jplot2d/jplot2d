@@ -18,7 +18,7 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.EventObject;
 
 /**
@@ -29,14 +29,14 @@ public class PlotPaintEvent extends EventObject {
 
 	private static final long serialVersionUID = 7168676901312678175L;
 
-	private final Graphics g;
+	private final Graphics2D g;
 
-	public PlotPaintEvent(Object source, Graphics g) {
+	public PlotPaintEvent(Object source, Graphics2D graphics) {
 		super(source);
-		this.g = g;
+		this.g = graphics;
 	}
 
-	public Graphics getGraphics() {
+	public Graphics2D getGraphics() {
 		return g;
 	}
 
