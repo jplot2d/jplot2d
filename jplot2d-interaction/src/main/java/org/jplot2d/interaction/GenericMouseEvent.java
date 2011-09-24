@@ -44,7 +44,25 @@ public class GenericMouseEvent {
 
 	public static final int MOUSE_WHEEL = MouseEvent.MOUSE_WHEEL;
 
-	public static final int MOUSE_MENU = MouseEvent.MOUSE_WHEEL + 1;
+	public static final int BUTTON1 = MouseEvent.BUTTON1;
+
+	public static final int BUTTON2 = MouseEvent.BUTTON2;
+
+	public static final int BUTTON3 = MouseEvent.BUTTON3;
+
+	public static final int BUTTON1_DOWN_MASK = MouseEvent.BUTTON1_DOWN_MASK;
+
+	public static final int BUTTON2_DOWN_MASK = MouseEvent.BUTTON2_DOWN_MASK;
+
+	public static final int BUTTON3_DOWN_MASK = MouseEvent.BUTTON3_DOWN_MASK;
+
+	public static final int SHIFT_DOWN_MASK = MouseEvent.SHIFT_DOWN_MASK;
+
+	public static final int CTRL_DOWN_MASK = MouseEvent.CTRL_DOWN_MASK;
+
+	public static final int META_DOWN_MASK = MouseEvent.META_DOWN_MASK;
+
+	public static final int ALT_DOWN_MASK = MouseEvent.ALT_DOWN_MASK;
 
 	private final int type;
 	private final int modifiers;

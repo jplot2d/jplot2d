@@ -45,16 +45,6 @@ public interface InteractiveComp {
 	 */
 	public void setCursor(CursorStyle cursorStyle);
 
-	/**
-	 * Show a popup menu at the given location.
-	 * 
-	 * @param x
-	 *            the x coordinate of the location
-	 * @param y
-	 *            the y coordinate of the location
-	 */
-	public void popupMenu(int x, int y);
-
 	public Color getPlotBackground();
 
 	public Color getForeground();

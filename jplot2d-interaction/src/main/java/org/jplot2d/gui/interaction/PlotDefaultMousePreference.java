@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.jplot2d.interaction.InteractionMode;
 import org.jplot2d.interaction.MouseBehavior;
-import org.jplot2d.interaction.MouseButtonCombination;
 import org.jplot2d.interaction.MouseButtonCombinationEnablity;
 import org.jplot2d.interaction.MousePreference;
 
@@ -70,8 +69,6 @@ public class PlotDefaultMousePreference implements MousePreference {
                 MouseEvent.CTRL_DOWN_MASK, 1, MouseEvent.BUTTON1);
         MouseButtonCombinationEnablity metaClickBA = new MouseButtonCombinationEnablity(
                 MouseEvent.META_DOWN_MASK, 1, MouseEvent.BUTTON1);
-        MouseButtonCombinationEnablity popupBA = new MouseButtonCombinationEnablity(
-                0, 1, MouseButtonCombination.ANY_BUTTON);
         MouseButtonCombinationEnablity dragBA = new MouseButtonCombinationEnablity(
                 MouseEvent.BUTTON1_DOWN_MASK, 1, MouseEvent.BUTTON1);
         MouseButtonCombinationEnablity middleDragBA = new MouseButtonCombinationEnablity(
@@ -85,7 +82,6 @@ public class PlotDefaultMousePreference implements MousePreference {
 
         addBinding(manager._defaultMode, manager._activeComponentBehavior,
                 moveBA);
-        addBinding(manager._defaultMode, manager._popupBehavior, popupBA);
         addBinding(manager._defaultMode, manager._moveComponentBehavior, dragBA);
         addBinding(manager._defaultMode, manager._marqueeZoomBehavior, dragBA);
         addBinding(manager._defaultMode, manager._wheelZoomBehavior, wheelBA);

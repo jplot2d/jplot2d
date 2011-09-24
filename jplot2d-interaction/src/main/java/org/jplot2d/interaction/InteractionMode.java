@@ -135,20 +135,6 @@ public class InteractionMode {
     /**
      * Binds the given behavior with the MouseButtonCombination.
      */
-    public void bindPopupBehavior(MousePopupBehavior behavior,
-            MouseButtonCombination mbc) {
-        if (mbc == null) {
-            pressMap.remove(behavior);
-            releaseMap.remove(behavior);
-        } else {
-            pressMap.put(behavior, mbc);
-            releaseMap.put(behavior, mbc);
-        }
-    }
-
-    /**
-     * Binds the given behavior with the MouseButtonCombination.
-     */
     public void bindWheelBehavior(MouseWheelBehavior behavior,
             MouseButtonCombination mbc) {
         if (mbc == null) {
