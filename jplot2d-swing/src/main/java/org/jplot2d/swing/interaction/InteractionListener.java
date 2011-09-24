@@ -41,10 +41,16 @@ import org.jplot2d.swing.JPlot2DComponent;
 public class InteractionListener implements MouseListener, MouseMotionListener, MouseWheelListener,
 		PlotPaintListener {
 
+	private final JPlot2DComponent comp;
+
+	private final PopupMenu popup;
+
 	private final InteractionHandler ihandler;
 
 	public InteractionListener(JPlot2DComponent comp, InteractionManager imanager,
 			RenderEnvironment env) {
+		this.comp = comp;
+		popup = new PopupMenu(env);
 		ihandler = new InteractionHandler(imanager, new SwingInteractiveComp(comp, env));
 		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
 		ihandler.init();
@@ -56,7 +62,7 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 
 	public void mousePressed(MouseEvent e) {
 		if (e.isPopupTrigger()) {
-			ihandler.menuDetected(e.getX(), e.getY());
+			popupMenu(e.getX(), e.getY());
 		} else {
 			ihandler.mousePressed(getGenericMouseEvent(e));
 		}
@@ -64,7 +70,7 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 
 	public void mouseReleased(MouseEvent e) {
 		if (e.isPopupTrigger()) {
-			ihandler.menuDetected(e.getX(), e.getY());
+			popupMenu(e.getX(), e.getY());
 		} else {
 			ihandler.mouseReleased(getGenericMouseEvent(e));
 		}
@@ -107,4 +113,10 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 		return new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(),
 				e.getClickCount(), e.getButton());
 	}
+
+	private void popupMenu(int x, int y) {
+		popup.updateStatus(x, y);
+		popup.show(comp, x, y);
+	}
+
 }

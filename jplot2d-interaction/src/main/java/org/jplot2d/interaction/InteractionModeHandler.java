@@ -18,7 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -78,10 +77,6 @@ public class InteractionModeHandler {
 		// do nothing
 	}
 
-	public void menuDetected(int x, int y) {
-
-	}
-
 	public void mouseClicked(GenericMouseEvent e) {
 		handleMouseEvent(e, imode.clickMap);
 	}
@@ -120,15 +115,7 @@ public class InteractionModeHandler {
 		for (Map.Entry<MouseBehavior, MouseButtonCombination> me : behaviorMap.entrySet()) {
 			MouseBehavior behavior = me.getKey();
 			MouseButtonCombination mbc = me.getValue();
-			if (behavior instanceof MousePopupBehavior
-					&& e.getType() == GenericMouseEvent.MOUSE_MENU) {
-				if (mbc.match(0, e.getCount(), e.getButton())) {
-					MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-					if (handler.processMouseEvent(e)) {
-						break;
-					}
-				}
-			} else if (mbc.match(e)) {
+			if (mbc.match(e)) {
 				MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
 				if (handler.processMouseEvent(e)) {
 					break;

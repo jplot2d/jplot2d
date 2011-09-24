@@ -33,11 +33,8 @@ public class SwingInteractiveComp implements InteractiveComp {
 
 	private final JPlot2DComponent comp;
 
-	private PopupMenu popup;
-
 	public SwingInteractiveComp(JPlot2DComponent comp, RenderEnvironment env) {
 		this.comp = comp;
-		popup = new PopupMenu(env);
 	}
 
 	public void repaint() {
@@ -54,11 +51,6 @@ public class SwingInteractiveComp implements InteractiveComp {
 			break;
 		}
 
-	}
-
-	public void popupMenu(int x, int y) {
-		popup.updateStatus(x, y);
-		popup.show(comp, x, y);
 	}
 
 	public Color getPlotBackground() {

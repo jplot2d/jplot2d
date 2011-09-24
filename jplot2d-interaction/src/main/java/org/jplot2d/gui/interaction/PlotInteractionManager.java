@@ -22,7 +22,6 @@ import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.InteractionMode;
 import org.jplot2d.interaction.MouseBehavior;
 
-
 /**
  * The interaction manager for PlotXY. Other applications that using plot as their renderer engine
  * should not extends this manager, they should write their own interaction manager.
@@ -33,8 +32,6 @@ import org.jplot2d.interaction.MouseBehavior;
 public final class PlotInteractionManager extends InteractionManager {
 
 	private static final PlotInteractionManager _instance = new PlotInteractionManager();
-
-	protected final MouseBehavior _popupBehavior;
 
 	protected final MouseBehavior _activeComponentBehavior;
 
@@ -73,7 +70,6 @@ public final class PlotInteractionManager extends InteractionManager {
 
 		// define behaviors
 		_activeComponentBehavior = new MouseActivateComponentBehavior("ActivateComponent");
-		_popupBehavior = new MousePopupMenuBehavior("Popup");
 		_moveComponentBehavior = new MouseMoveComponentBehavior("MoveComponent");
 
 		_axisPanBehavior = new MouseAxisPanBehavior("Pan on axis");
@@ -91,11 +87,10 @@ public final class PlotInteractionManager extends InteractionManager {
 		_wheelFinerZoomBehavior = new MouseWheelFinerZoomBehavior("WheelFinerZoom");
 
 		// set available behaviors for mode
-		_defaultMode.setAvailableMouseBehaviors(_popupBehavior, _activeComponentBehavior,
-				_moveComponentBehavior, _axisPanBehavior, _panBehavior, _axisAdaptiveZoomBehavior,
-				_adaptiveZoomBehavior, _axisRangeZoomBehavior, _marqueeZoomBehavior,
-				_axisWheelZoomBehavior, _wheelZoomBehavior, _axisWheelFinerZoomBehavior,
-				_wheelFinerZoomBehavior);
+		_defaultMode.setAvailableMouseBehaviors(_activeComponentBehavior, _moveComponentBehavior,
+				_axisPanBehavior, _panBehavior, _axisAdaptiveZoomBehavior, _adaptiveZoomBehavior,
+				_axisRangeZoomBehavior, _marqueeZoomBehavior, _axisWheelZoomBehavior,
+				_wheelZoomBehavior, _axisWheelFinerZoomBehavior, _wheelFinerZoomBehavior);
 		_defaultMode.setValueChangeBehaviors(new CursorFeedbackBehavior());
 		registerMode(_defaultMode);
 

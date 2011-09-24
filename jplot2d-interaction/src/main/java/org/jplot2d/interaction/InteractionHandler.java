@@ -109,15 +109,6 @@ public class InteractionHandler implements PlotPaintListener {
 		setMode(imanager.getDefaultMode());
 	}
 
-	/**
-	 * SWT send menu event independent from mouse event.
-	 * 
-	 * @param p
-	 */
-	public void menuDetected(int x, int y) {
-		modeHandler.menuDetected(x, y);
-	}
-
 	public void mouseEntered(GenericMouseEvent e) {
 		modeHandler.mouseEntered(e);
 	}
