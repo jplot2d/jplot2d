@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
-
+package org.jplot2d.gui.interaction;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -29,6 +27,7 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
+import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.interaction.MouseMoveBehaviorHandler;
 import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.interaction.PlotPaintListener;
@@ -60,9 +59,9 @@ public class MouseActivateComponentHandler extends
 	@Override
 	public void behaviorPerformed(int x, int y) {
 
-		Component ccomp = (Component) handler.getValue(InteractionHandler.COMPONENT_KEY);
+		InteractiveComp icomp = handler.getInteractiveComp();
 
-		background = (Color) handler.getValue(InteractionHandler.PLOT_BACKGROUND_KEY);
+		background = icomp.getPlotBackground();
 
 		if (activeComponent != null && activeBounds.contains(x, y)) {
 			return;
@@ -72,53 +71,37 @@ public class MouseActivateComponentHandler extends
 		PlotEnvironment penv = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
 		PComponent newComp = penv.getSelectableCompnentAt(new Point(x, y));
 
-		if (activeComponent != null) {
-			if (activeComponent == newComp) {
-				return;
-			}
-			deactivate((Graphics2D) ccomp.getGraphics());
-			activeComponent = null;
+		if (activeComponent == newComp) {
+			return;
 		}
 
 		if (newComp != null) {
 			activeComponent = newComp;
 			activeBounds = getDeviceBounds(activeComponent);
-			activate((Graphics2D) ccomp.getGraphics());
+			// activate((Graphics2D) ccomp.getGraphics());
 			handler.putValue(InteractionHandler.ACTIVE_COMPONENT_KEY, activeComponent);
 		} else {
+			activeComponent = null;
+			activeBounds = null;
 			handler.putValue(InteractionHandler.ACTIVE_COMPONENT_KEY, null);
 		}
+
+		icomp.repaint();
+
 	}
 
 	public void plotPainted(PlotPaintEvent evt) {
 		/*
-		 * Painting plot will lost the active bounds (a blue rectangle). However, The current active
-		 * component may has been removed or invisible before plot painted. We must re-add the
-		 * active bounds.
+		 * Draw bounding box for the active component
 		 */
 		if (activeComponent != null) {
-			activate((Graphics2D) evt.getGraphics());
+			activeBounds = getDeviceBounds(activeComponent);
+			Graphics2D g = (Graphics2D) evt.getGraphics();
+			g.setColor(Color.BLUE);
+			g.setXORMode(background);
+			g.draw(activeBounds);
+			g.setPaintMode();
 		}
-	}
-
-	/**
-	 * Draw bounding box for the active component
-	 */
-	private void activate(Graphics2D g) {
-		g.setColor(Color.BLUE);
-		g.setXORMode(background);
-		g.draw(getDeviceBounds(activeComponent));
-		g.setPaintMode();
-	}
-
-	/**
-	 * Clear the bounding box for the active component
-	 */
-	private void deactivate(Graphics2D g) {
-		g.setColor(Color.BLUE);
-		g.setXORMode(background);
-		g.draw(activeBounds);
-		g.setPaintMode();
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {

@@ -34,9 +34,9 @@ public class InteractionModeHandler {
 
 	public static final String MODE_ENTERED_KEY = "MODE_ENTERED";
 
-	private final InteractionMode imode;
-
 	private final InteractionHandler ihandler;
+
+	private final InteractionMode imode;
 
 	final Map<String, Object> valueMap = new HashMap<String, Object>();
 
@@ -44,9 +44,13 @@ public class InteractionModeHandler {
 
 	private final Map<ValueChangeBehavior, ValueChangeHandler<?>> vcHandlerMap = new HashMap<ValueChangeBehavior, ValueChangeHandler<?>>();
 
-	public InteractionModeHandler(InteractionMode imode, InteractionHandler ihandler) {
+	public InteractionModeHandler(InteractionHandler ihandler, InteractionMode imode) {
 		this.imode = imode;
 		this.ihandler = ihandler;
+	}
+
+	public final InteractiveComp getInteractiveComp() {
+		return ihandler.getInteractiveComp();
 	}
 
 	/**
@@ -54,7 +58,7 @@ public class InteractionModeHandler {
 	 * 
 	 * @return the mode name
 	 */
-	public InteractionMode getInteractionMode() {
+	public final InteractionMode getInteractionMode() {
 		return imode;
 	}
 
@@ -74,7 +78,7 @@ public class InteractionModeHandler {
 		// do nothing
 	}
 
-	public void menuDetected(Point p) {
+	public void menuDetected(int x, int y) {
 
 	}
 

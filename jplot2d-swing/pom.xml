@@ -36,6 +36,9 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<includeDependencySources>true</includeDependencySources>
+					<dependencySourceIncludes>
+						<dependencySourceInclude>org.jplot2d:*</dependencySourceInclude>
+					</dependencySourceIncludes>
 				</configuration>
 				<executions>
 					<execution>

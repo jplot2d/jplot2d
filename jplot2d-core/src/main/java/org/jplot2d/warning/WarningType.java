@@ -24,7 +24,7 @@ package org.jplot2d.warning;
  */
 public class WarningType {
 
-	public final WarningType UI_WARNING_TYPE = new WarningType("UI");
+	public static final WarningType UI_WARNING_TYPE = new WarningType("UI");
 
 	private final String type;
 

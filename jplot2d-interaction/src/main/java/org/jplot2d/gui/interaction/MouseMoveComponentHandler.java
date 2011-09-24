@@ -16,10 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
@@ -33,27 +32,31 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
+import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.interaction.MouseDragBehaviorHandler;
+import org.jplot2d.interaction.PlotPaintEvent;
+import org.jplot2d.interaction.PlotPaintListener;
 
 public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior>
-		implements PropertyChangeListener {
+		implements PropertyChangeListener, PlotPaintListener {
 
-	private MovableComponent comp;
+	private InteractiveComp icomp;
+
+	private MovableComponent pcomp;
 
 	/**
-	 * Indicate a buffered component has been moved by mouse dragging
+	 * The bounds of component at original location
 	 */
-	private boolean moved = false;
-
-	private Point movingRefPoint;
-
 	private Shape boundsShape;
 
 	private Point startPoint;
 
+	private Point toPoint;
+
 	public MouseMoveComponentHandler(MouseMoveComponentBehavior behavior,
 			InteractionModeHandler handler) {
 		super(behavior, handler);
+		icomp = handler.getInteractiveComp();
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -80,55 +83,60 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 	@Override
 	public void draggingStarted(int x, int y) {
-		comp = (MovableComponent) handler.getValue(InteractionHandler.ACTIVE_COMPONENT_KEY);
+		pcomp = (MovableComponent) handler.getValue(InteractionHandler.ACTIVE_COMPONENT_KEY);
 		/* object selected start move operation */
-		moved = false;
 		startPoint = new Point(x, y);
-		movingRefPoint = new Point(x, y);
-		boundsShape = getDeviceBounds(comp);
+		boundsShape = getDeviceBounds(pcomp);
 	}
 
 	@Override
 	public void draggingTo(int x, int y) {
-		Component ccomp = (Component) handler.getValue(InteractionHandler.COMPONENT_KEY);
-
-		double xoff = x - movingRefPoint.x;
-		double yoff = y - movingRefPoint.y;
-		movingRefPoint.x = x;
-		movingRefPoint.y = y;
-		moved = true;
-
-		Graphics2D g = (Graphics2D) ccomp.getGraphics();
-		g.setColor(Color.red);
-		g.setXORMode(ccomp.getBackground());
-		g.draw(boundsShape);
-
-		boundsShape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(
-				boundsShape);
-		g.draw(boundsShape);
-		g.setPaintMode();
-
-		movingRefPoint = new Point(x, y);
+		toPoint = new Point(x, y);
+		icomp.repaint();
 	}
 
 	@Override
 	public void draggingFinished(int x, int y) {
 		/* finish move */
-		if (moved) {
-			double xoff = x - startPoint.x;
-			double yoff = y - startPoint.y;
-			PhysicalTransform pxf = comp.getParent().getPhysicalTransform();
-			Point2D dloc = pxf.getPtoD(comp.getLocation());
-			dloc.setLocation(dloc.getX() + xoff, dloc.getY() + yoff);
-			Point2D newLoc = pxf.getDtoP(dloc);
-			comp.setLocation(newLoc);
-			moved = false;
+		if (startPoint.equals(toPoint)) {
+			return;
 		}
+
+		double xoff = x - startPoint.x;
+		double yoff = y - startPoint.y;
+		PhysicalTransform pxf = pcomp.getParent().getPhysicalTransform();
+		Point2D dloc = pxf.getPtoD(pcomp.getLocation());
+		dloc.setLocation(dloc.getX() + xoff, dloc.getY() + yoff);
+		Point2D newLoc = pxf.getDtoP(dloc);
+		pcomp.setLocation(newLoc);
+
+		startPoint = null;
+		toPoint = null;
+		icomp.repaint();
 	}
 
 	@Override
 	public void draggingCancelled() {
 
+	}
+
+	public void plotPainted(PlotPaintEvent evt) {
+
+		if (startPoint == null || toPoint == null) {
+			return;
+		}
+
+		double xoff = toPoint.x - startPoint.x;
+		double yoff = toPoint.y - startPoint.y;
+
+		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(
+				boundsShape);
+
+		Graphics2D g = evt.getGraphics();
+		g.setColor(Color.red);
+		g.setXORMode(icomp.getPlotBackground());
+		g.draw(shape);
+		g.setPaintMode();
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {

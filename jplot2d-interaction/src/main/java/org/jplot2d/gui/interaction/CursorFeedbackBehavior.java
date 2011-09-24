@@ -16,21 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.swing.interaction;
+package org.jplot2d.gui.interaction;
 
 import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseDragBehavior;
+import org.jplot2d.interaction.ValueChangeBehavior;
+import org.jplot2d.interaction.ValueChangeHandler;
 
-public class MouseAxisRangeZoomBehavior extends MouseDragBehavior {
-
-    public MouseAxisRangeZoomBehavior(String name) {
-        super(name);
-    }
+/**
+ * @author Jingjing Li
+ * 
+ */
+public class CursorFeedbackBehavior extends ValueChangeBehavior {
 
     @Override
-    public MouseAxisRangeZoomHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
-        return new MouseAxisRangeZoomHandler(this, ihandler);
+    public ValueChangeHandler<?> createValueChangeHandler(
+            InteractionModeHandler mhandler) {
+        return new CursorFeedbackHandler(this, mhandler);
     }
 
 }
