@@ -18,6 +18,7 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -102,6 +103,51 @@ public class GenericMouseEvent {
 
 	public int getY() {
 		return y;
+	}
+
+	public String toString() {
+		StringBuffer str = new StringBuffer(80);
+
+		switch (type) {
+		case MOUSE_PRESSED:
+			str.append("MOUSE_PRESSED");
+			break;
+		case MOUSE_RELEASED:
+			str.append("MOUSE_RELEASED");
+			break;
+		case MOUSE_CLICKED:
+			str.append("MOUSE_CLICKED");
+			break;
+		case MOUSE_ENTERED:
+			str.append("MOUSE_ENTERED");
+			break;
+		case MOUSE_EXITED:
+			str.append("MOUSE_EXITED");
+			break;
+		case MOUSE_MOVED:
+			str.append("MOUSE_MOVED");
+			break;
+		case MOUSE_DRAGGED:
+			str.append("MOUSE_DRAGGED");
+			break;
+		case MOUSE_WHEEL:
+			str.append("MOUSE_WHEEL");
+			break;
+		default:
+			str.append("unknown type");
+		}
+
+		str.append(",(").append(x).append(",").append(y).append(")");
+
+		str.append(",button=").append(getButton());
+
+		if (modifiers != 0) {
+			str.append(",modifiers=").append(InputEvent.getModifiersExText(modifiers));
+		}
+
+		str.append(",count=").append(count);
+
+		return str.toString();
 	}
 
 }

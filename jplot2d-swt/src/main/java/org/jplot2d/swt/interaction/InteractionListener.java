@@ -76,16 +76,14 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 	}
 
 	public void mouseMove(MouseEvent e) {
-		ihandler.mouseMoved(getGenericMouseEvent(GenericMouseEvent.MOUSE_MOVED, e));
-	}
-
-	public void mouseDragged(MouseEvent e) {
-		System.out.println("[] " + e);
-		ihandler.mouseDragged(getGenericMouseEvent(GenericMouseEvent.MOUSE_DRAGGED, e));
+		if ((e.stateMask & SWT.BUTTON_MASK) != 0) {
+			ihandler.mouseDragged(getGenericMouseEvent(GenericMouseEvent.MOUSE_DRAGGED, e));
+		} else {
+			ihandler.mouseMoved(getGenericMouseEvent(GenericMouseEvent.MOUSE_MOVED, e));
+		}
 	}
 
 	public void mouseScrolled(MouseEvent e) {
-		System.out.println("[] " + e);
 		ihandler.mouseWheelMoved(getGenericMouseEvent(GenericMouseEvent.MOUSE_WHEEL, e));
 	}
 
@@ -138,7 +136,9 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 			break;
 		}
 
-		return new GenericMouseEvent(eid, modifiers, e.x, e.y, e.count, button);
+		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x, e.y, e.count, button);
+		System.out.println(gme);
+		return gme;
 	}
 
 }

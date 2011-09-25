@@ -93,7 +93,6 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		System.out.println("[] " + e);
 		ihandler.mouseWheelMoved(new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e
 				.getY(), e.getWheelRotation(), e.getButton()));
 	}
@@ -110,8 +109,10 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	 * @return GenericMouseEvent
 	 */
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
-		return new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(),
-				e.getClickCount(), e.getButton());
+		GenericMouseEvent gme = new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(),
+				e.getY(), e.getClickCount(), e.getButton());
+		System.out.println(gme);
+		return gme;
 	}
 
 	private void popupMenu(int x, int y) {
