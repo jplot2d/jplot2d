@@ -43,6 +43,7 @@ import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 import org.jplot2d.swing.interaction.InteractionListener;
+import org.jplot2d.warning.DefaultWarningManager;
 
 /**
  * A JComponent that display a plot in its center.
@@ -89,11 +90,18 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
 		this(createRenderEnvironment(plot, threadSafe));
+		env.setPlot(plot, new DefaultWarningManager(this));
 	}
 
+	/**
+	 * create a RenderEnvironment with the given plot.
+	 * 
+	 * @param plot
+	 * @param threadSafe
+	 * @return
+	 */
 	private static RenderEnvironment createRenderEnvironment(Plot plot, boolean threadSafe) {
 		RenderEnvironment env = new RenderEnvironment(threadSafe);
-		env.setPlot(plot);
 		return env;
 	}
 

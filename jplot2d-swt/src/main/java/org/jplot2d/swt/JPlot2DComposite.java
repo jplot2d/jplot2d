@@ -38,6 +38,7 @@ import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 import org.jplot2d.swt.interaction.InteractionListener;
 import org.jplot2d.swt.interaction.MenuHandler;
+import org.jplot2d.warning.DefaultWarningManager;
 
 /**
  * @author Jingjing Li
@@ -89,8 +90,16 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 */
 	public JPlot2DComposite(Composite parent, Plot plot, boolean threadSafe) {
 		this(parent, createRenderEnvironment(plot, threadSafe));
+		env.setWarningManager(new DefaultWarningManager(this));
 	}
 
+	/**
+	 * create a RenderEnvironment with the given plot.
+	 * 
+	 * @param plot
+	 * @param threadSafe
+	 * @return
+	 */
 	private static RenderEnvironment createRenderEnvironment(Plot plot, boolean threadSafe) {
 		RenderEnvironment env = new RenderEnvironment(threadSafe);
 		env.setPlot(plot);
