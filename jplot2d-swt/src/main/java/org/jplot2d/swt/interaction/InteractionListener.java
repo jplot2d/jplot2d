@@ -18,6 +18,8 @@
  */
 package org.jplot2d.swt.interaction;
 
+import java.awt.Graphics2D;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -28,8 +30,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.GenericMouseEvent;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionManager;
-import org.jplot2d.interaction.PlotPaintEvent;
-import org.jplot2d.interaction.PlotPaintListener;
+import org.jplot2d.interaction.VisualFeedbackDrawer;
 import org.jplot2d.swt.JPlot2DComposite;
 
 /**
@@ -40,7 +41,7 @@ import org.jplot2d.swt.JPlot2DComposite;
  * 
  */
 public class InteractionListener implements MouseListener, MouseMoveListener, MouseTrackListener,
-		MouseWheelListener, PlotPaintListener {
+		MouseWheelListener, VisualFeedbackDrawer {
 
 	private final InteractionHandler ihandler;
 
@@ -87,8 +88,8 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 		ihandler.mouseWheelMoved(getGenericMouseEvent(GenericMouseEvent.MOUSE_WHEEL, e));
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
-		ihandler.plotPainted(evt);
+	public void draw(Graphics2D graphics) {
+		ihandler.draw(graphics);
 	}
 
 	/**

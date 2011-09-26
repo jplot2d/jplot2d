@@ -18,6 +18,7 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -36,7 +37,7 @@ import java.util.Map;
  * @author Jingjing Li
  * 
  */
-public class InteractionHandler implements PlotPaintListener {
+public class InteractionHandler implements VisualFeedbackDrawer {
 
 	public static final String PLOT_ENV_KEY = "PLOT_ENV";
 
@@ -169,8 +170,8 @@ public class InteractionHandler implements PlotPaintListener {
 		modeHandler.mouseWheelMoved(e);
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
-		modeHandler.plotPainted(evt);
+	public void draw(Graphics2D graphics) {
+		modeHandler.plotPainted(graphics);
 	}
 
 	public InteractionMode getMode() {
