@@ -30,7 +30,6 @@ import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
 import org.jplot2d.interaction.PlotDefaultMousePreference;
 import org.jplot2d.interaction.PlotInteractionManager;
-import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.BufferedImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
@@ -183,7 +182,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		BufferedImage bimg = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 
 		Graphics g = bimg.createGraphics();
-		ial.plotPainted(new PlotPaintEvent(this, (Graphics2D) g));
+		ial.draw((Graphics2D) g);
 
 		Image swtImage = new Image(getDisplay(), convertToSWT(bimg));
 		int width = swtImage.getImageData().width;

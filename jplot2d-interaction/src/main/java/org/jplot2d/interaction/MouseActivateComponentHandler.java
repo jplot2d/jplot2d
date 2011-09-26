@@ -25,12 +25,6 @@ import java.awt.Shape;
 
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.InteractiveComp;
-import org.jplot2d.interaction.MouseMoveBehaviorHandler;
-import org.jplot2d.interaction.PlotPaintEvent;
-import org.jplot2d.interaction.PlotPaintListener;
 
 /**
  * This handler activate / deactivate component while mouse moving. It set the interaction handler's
@@ -40,7 +34,7 @@ import org.jplot2d.interaction.PlotPaintListener;
  * 
  */
 public class MouseActivateComponentHandler extends
-		MouseMoveBehaviorHandler<MouseActivateComponentBehavior> implements PlotPaintListener {
+		MouseMoveBehaviorHandler<MouseActivateComponentBehavior> implements VisualFeedbackDrawer {
 
 	/**
 	 * The selectable component that mouse over
@@ -90,13 +84,12 @@ public class MouseActivateComponentHandler extends
 
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
+	public void draw(Graphics2D g) {
 		/*
 		 * Draw bounding box for the active component
 		 */
 		if (activeComponent != null) {
 			activeBounds = getDeviceBounds(activeComponent);
-			Graphics2D g = (Graphics2D) evt.getGraphics();
 			g.setColor(Color.BLUE);
 			g.setXORMode(background);
 			g.draw(activeBounds);

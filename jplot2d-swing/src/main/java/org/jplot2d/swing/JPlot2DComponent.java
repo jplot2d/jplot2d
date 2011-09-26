@@ -36,7 +36,6 @@ import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
 import org.jplot2d.interaction.PlotDefaultMousePreference;
 import org.jplot2d.interaction.PlotInteractionManager;
-import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
@@ -152,7 +151,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 			int y = (getHeight() - height) / 2;
 			g.drawImage(image, x, y, this);
 
-			ial.plotPainted(new PlotPaintEvent(this, (Graphics2D) g));
+			ial.draw((Graphics2D) g);
 		}
 	}
 

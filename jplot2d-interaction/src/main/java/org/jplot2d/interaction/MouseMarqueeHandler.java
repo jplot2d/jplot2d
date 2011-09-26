@@ -22,15 +22,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.InteractiveComp;
-import org.jplot2d.interaction.MouseDragBehavior;
-import org.jplot2d.interaction.MouseDragBehaviorHandler;
-import org.jplot2d.interaction.PlotPaintEvent;
-import org.jplot2d.interaction.PlotPaintListener;
-
 public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
-		MouseDragBehaviorHandler<B> implements PlotPaintListener {
+		MouseDragBehaviorHandler<B> implements VisualFeedbackDrawer {
 
 	private Point marqueeStart;
 
@@ -73,7 +66,7 @@ public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
 		icomp.repaint();
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
+	public void draw(Graphics2D g) {
 		if (marqueeStart == null) {
 			return;
 		}
@@ -81,7 +74,6 @@ public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
 		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
 		marqueeRect.setFrameFromDiagonal(marqueeStart, marqueeEnd);
 
-		Graphics2D g = evt.getGraphics();
 		g.setColor(icomp.getForeground());
 		g.setXORMode(icomp.getBackground());
 		g.draw(marqueeRect);

@@ -19,25 +19,20 @@
 package org.jplot2d.interaction;
 
 import java.awt.Graphics2D;
-import java.util.EventObject;
 
 /**
+ * This interface define a method to draw visual feedback while processing interactive actions.
+ * 
  * @author Jingjing Li
  * 
  */
-public class PlotPaintEvent extends EventObject {
+public interface VisualFeedbackDrawer {
 
-	private static final long serialVersionUID = 7168676901312678175L;
-
-	private final Graphics2D g;
-
-	public PlotPaintEvent(Object source, Graphics2D graphics) {
-		super(source);
-		this.g = graphics;
-	}
-
-	public Graphics2D getGraphics() {
-		return g;
-	}
+	/**
+	 * Draws visual feedback on the given graphics.
+	 * 
+	 * @param graphics
+	 */
+	public void draw(Graphics2D graphics);
 
 }

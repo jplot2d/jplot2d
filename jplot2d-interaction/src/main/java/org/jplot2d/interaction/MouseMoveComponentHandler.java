@@ -30,15 +30,9 @@ import java.beans.PropertyChangeListener;
 import org.jplot2d.element.MovableComponent;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.PhysicalTransform;
-import org.jplot2d.interaction.InteractionHandler;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.InteractiveComp;
-import org.jplot2d.interaction.MouseDragBehaviorHandler;
-import org.jplot2d.interaction.PlotPaintEvent;
-import org.jplot2d.interaction.PlotPaintListener;
 
 public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior>
-		implements PropertyChangeListener, PlotPaintListener {
+		implements PropertyChangeListener, VisualFeedbackDrawer {
 
 	private InteractiveComp icomp;
 
@@ -120,7 +114,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
+	public void draw(Graphics2D g) {
 
 		if (startPoint == null || toPoint == null) {
 			return;
@@ -132,7 +126,6 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(
 				boundsShape);
 
-		Graphics2D g = evt.getGraphics();
 		g.setColor(Color.red);
 		g.setXORMode(icomp.getPlotBackground());
 		g.draw(shape);

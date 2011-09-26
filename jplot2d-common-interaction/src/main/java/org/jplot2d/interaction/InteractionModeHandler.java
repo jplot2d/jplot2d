@@ -18,6 +18,7 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.Graphics2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -124,15 +125,15 @@ public class InteractionModeHandler {
 		}
 	}
 
-	public void plotPainted(PlotPaintEvent evt) {
+	public void plotPainted(Graphics2D graphics) {
 		for (MouseBehaviorHandler<?> handler : handlerMap.values()) {
-			if (handler instanceof PlotPaintListener) {
-				((PlotPaintListener) handler).plotPainted(evt);
+			if (handler instanceof VisualFeedbackDrawer) {
+				((VisualFeedbackDrawer) handler).draw(graphics);
 			}
 		}
 		for (ValueChangeHandler<?> handler : vcHandlerMap.values()) {
-			if (handler instanceof PlotPaintListener) {
-				((PlotPaintListener) handler).plotPainted(evt);
+			if (handler instanceof VisualFeedbackDrawer) {
+				((VisualFeedbackDrawer) handler).draw(graphics);
 			}
 		}
 	}
