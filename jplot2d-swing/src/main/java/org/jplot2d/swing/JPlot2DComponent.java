@@ -32,10 +32,10 @@ import javax.swing.JComponent;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.gui.interaction.PlotDefaultMousePreference;
-import org.jplot2d.gui.interaction.PlotInteractionManager;
 import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
+import org.jplot2d.interaction.PlotDefaultMousePreference;
+import org.jplot2d.interaction.PlotInteractionManager;
 import org.jplot2d.interaction.PlotPaintEvent;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;

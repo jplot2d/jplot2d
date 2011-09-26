@@ -7,6 +7,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>jplot2d-common-interaction</module>
 		<module>jplot2d-core</module>
 		<module>jplot2d-core-demo</module>
 		<module>jplot2d-interaction</module>
