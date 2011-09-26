@@ -124,20 +124,30 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 		}
 
 		int button = 0;
+		int buttomMask = 0;
 		switch (e.button) {
 		case 1:
 			button = GenericMouseEvent.BUTTON1;
+			buttomMask = GenericMouseEvent.BUTTON1_DOWN_MASK;
 			break;
 		case 2:
 			button = GenericMouseEvent.BUTTON2;
+			buttomMask = GenericMouseEvent.BUTTON2_DOWN_MASK;
 			break;
 		case 3:
 			button = GenericMouseEvent.BUTTON3;
+			buttomMask = GenericMouseEvent.BUTTON3_DOWN_MASK;
 			break;
 		}
 
+		if (eid == GenericMouseEvent.MOUSE_PRESSED) {
+			modifiers |= buttomMask;
+		} else if (eid == GenericMouseEvent.MOUSE_RELEASED) {
+			modifiers &= ~buttomMask;
+		}
+
 		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x, e.y, e.count, button);
-		System.out.println(gme);
+		// System.out.println(gme);
 		return gme;
 	}
 
