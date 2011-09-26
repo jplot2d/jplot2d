@@ -20,6 +20,8 @@ package org.jplot2d.swt.interaction;
 
 import java.awt.Color;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.swt.JPlot2DComposite;
@@ -31,9 +33,15 @@ import org.jplot2d.swt.JPlot2DComposite;
 public class SwtInteractiveComp implements InteractiveComp {
 
 	private final JPlot2DComposite comp;
-	
+
+	private final Cursor defaultCursor;
+
+	private final Cursor moveCursor;
+
 	public SwtInteractiveComp(JPlot2DComposite comp, PlotEnvironment env) {
 		this.comp = comp;
+		defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
+		moveCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
 	}
 
 	public void repaint() {
@@ -41,28 +49,28 @@ public class SwtInteractiveComp implements InteractiveComp {
 	}
 
 	public void setCursor(CursorStyle cursorStyle) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void popupMenu(int x, int y) {
-		// TODO Auto-generated method stub
-		
+		switch (cursorStyle) {
+		case DEFAULT_CURSOR:
+			comp.setCursor(defaultCursor);
+			break;
+		case MOVE_CURSOR:
+			comp.setCursor(moveCursor);
+			break;
+		}
 	}
 
 	public Color getPlotBackground() {
-		// TODO Auto-generated method stub
 		return comp.getPlotBackground();
 	}
 
 	public Color getForeground() {
-		// TODO Auto-generated method stub
-		return null;
+		org.eclipse.swt.graphics.Color swtColor = comp.getForeground();
+		return new Color(swtColor.getRed(), swtColor.getGreen(), swtColor.getBlue());
 	}
 
 	public Color getBackground() {
-		// TODO Auto-generated method stub
-		return null;
+		org.eclipse.swt.graphics.Color swtColor = comp.getBackground();
+		return new Color(swtColor.getRed(), swtColor.getGreen(), swtColor.getBlue());
 	}
 
 }

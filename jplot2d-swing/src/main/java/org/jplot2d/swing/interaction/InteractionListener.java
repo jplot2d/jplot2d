@@ -111,7 +111,7 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
 		GenericMouseEvent gme = new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(),
 				e.getY(), e.getClickCount(), e.getButton());
-		System.out.println(gme);
+		// System.out.println(gme);
 		return gme;
 	}
 
