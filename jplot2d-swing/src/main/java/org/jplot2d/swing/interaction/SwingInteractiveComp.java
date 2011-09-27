@@ -20,6 +20,8 @@ package org.jplot2d.swing.interaction;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
@@ -53,16 +55,22 @@ public class SwingInteractiveComp implements InteractiveComp {
 
 	}
 
-	public Color getPlotBackground() {
-		return comp.getPlotBackground();
+	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height) {
+		Graphics2D g2 = (Graphics2D) g;
+		Color c = new Color(rgb);
+		g2.setColor(c);
+		g2.setXORMode(comp.getPlotBackground());
+		g2.drawRect(x, y, width, height);
+		g2.setPaintMode();
 	}
 
-	public Color getForeground() {
-		return comp.getForeground();
-	}
-
-	public Color getBackground() {
-		return comp.getBackground();
+	public void drawShape(Object g, int rgb, Shape shape) {
+		Graphics2D g2 = (Graphics2D) g;
+		Color c = new Color(rgb);
+		g2.setColor(c);
+		g2.setXORMode(comp.getPlotBackground());
+		g2.draw(shape);
+		g2.setPaintMode();
 	}
 
 }

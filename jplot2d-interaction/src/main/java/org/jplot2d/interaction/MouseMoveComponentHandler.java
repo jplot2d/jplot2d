@@ -19,7 +19,6 @@
 package org.jplot2d.interaction;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -114,7 +113,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Object g) {
 
 		if (startPoint == null || toPoint == null) {
 			return;
@@ -126,10 +125,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(
 				boundsShape);
 
-		g.setColor(Color.red);
-		g.setXORMode(icomp.getPlotBackground());
-		g.draw(shape);
-		g.setPaintMode();
+		icomp.drawShape(g, Color.RED.getRGB(), shape);
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {

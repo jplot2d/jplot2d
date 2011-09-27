@@ -18,10 +18,14 @@
  */
 package org.jplot2d.swt.interaction;
 
-import java.awt.Color;
+import java.awt.Shape;
+import java.awt.geom.PathIterator;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Path;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.swt.JPlot2DComposite;
@@ -38,10 +42,16 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	private final Cursor moveCursor;
 
+	private final Color plotBackground;
+
 	public SwtInteractiveComp(JPlot2DComposite comp, PlotEnvironment env) {
 		this.comp = comp;
 		defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
 		moveCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
+		int r = comp.getPlotBackground().getRed();
+		int g = comp.getPlotBackground().getGreen();
+		int b = comp.getPlotBackground().getBlue();
+		plotBackground = new Color(comp.getDisplay(), r, g, b);
 	}
 
 	public void repaint() {
@@ -59,18 +69,79 @@ public class SwtInteractiveComp implements InteractiveComp {
 		}
 	}
 
-	public Color getPlotBackground() {
-		return comp.getPlotBackground();
+	@SuppressWarnings("deprecation")
+	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height) {
+		GC gc = (GC) g;
+		int cr = (rgb & 0x00ff0000) >> 16;
+		int cg = (rgb & 0x0000ff00) >> 8;
+		int cb = (rgb & 0x000000ff);
+		Color c = new Color(comp.getDisplay(), cr, cg, cb);
+
+		gc.setForeground(c);
+		gc.setBackground(plotBackground);
+		gc.setXORMode(true);
+		gc.drawRectangle(x, y, width, height);
+		gc.setXORMode(false);
+
+		c.dispose();
 	}
 
-	public Color getForeground() {
-		org.eclipse.swt.graphics.Color swtColor = comp.getForeground();
-		return new Color(swtColor.getRed(), swtColor.getGreen(), swtColor.getBlue());
+	@SuppressWarnings("deprecation")
+	public void drawShape(Object g, int rgb, Shape shape) {
+		Path path = toSwtPath(shape);
+
+		GC gc = (GC) g;
+		int cr = (rgb & 0x00ff0000) >> 16;
+		int cg = (rgb & 0x0000ff00) >> 8;
+		int cb = (rgb & 0x000000ff);
+		Color c = new Color(comp.getDisplay(), cr, cg, cb);
+
+		gc.setForeground(c);
+		gc.setBackground(plotBackground);
+		gc.setXORMode(true);
+		gc.drawPath(path);
+		gc.setXORMode(false);
+
+		c.dispose();
+		path.dispose();
 	}
 
-	public Color getBackground() {
-		org.eclipse.swt.graphics.Color swtColor = comp.getBackground();
-		return new Color(swtColor.getRed(), swtColor.getGreen(), swtColor.getBlue());
+	/**
+	 * Converts an AWT <code>Shape</code> to a SWT <code>Path</code>.
+	 * 
+	 * @param shape
+	 *            the shape to be converted.
+	 * 
+	 * @return The path
+	 */
+	private Path toSwtPath(Shape shape) {
+		float[] coords = new float[6];
+		Path path = new Path(comp.getDisplay());
+		PathIterator pit = shape.getPathIterator(null);
+		while (!pit.isDone()) {
+			int type = pit.currentSegment(coords);
+			switch (type) {
+			case (PathIterator.SEG_MOVETO):
+				path.moveTo(coords[0], coords[1]);
+				break;
+			case (PathIterator.SEG_LINETO):
+				path.lineTo(coords[0], coords[1]);
+				break;
+			case (PathIterator.SEG_QUADTO):
+				path.quadTo(coords[0], coords[1], coords[2], coords[3]);
+				break;
+			case (PathIterator.SEG_CUBICTO):
+				path.cubicTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				break;
+			case (PathIterator.SEG_CLOSE):
+				path.close();
+				break;
+			default:
+				break;
+			}
+			pit.next();
+		}
+		return path;
 	}
 
 }
