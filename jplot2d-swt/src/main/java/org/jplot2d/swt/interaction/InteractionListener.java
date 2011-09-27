@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swt.interaction;
 
-import java.awt.Graphics2D;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -88,7 +87,7 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 		ihandler.mouseWheelMoved(getGenericMouseEvent(GenericMouseEvent.MOUSE_WHEEL, e));
 	}
 
-	public void draw(Graphics2D graphics) {
+	public void draw(Object graphics) {
 		ihandler.draw(graphics);
 	}
 

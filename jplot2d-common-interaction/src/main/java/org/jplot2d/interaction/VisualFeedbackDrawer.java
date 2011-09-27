@@ -18,7 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Graphics2D;
 
 /**
  * This interface define a method to draw visual feedback while processing interactive actions.
@@ -33,6 +32,6 @@ public interface VisualFeedbackDrawer {
 	 * 
 	 * @param graphics
 	 */
-	public void draw(Graphics2D graphics);
+	public void draw(Object graphics);
 
 }

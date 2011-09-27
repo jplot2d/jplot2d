@@ -54,7 +54,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private long ifsn;
 
-	private volatile java.awt.image.BufferedImage bi;
+	private volatile Image image;
 
 	private InteractionManager imanager;
 
@@ -144,10 +144,15 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		}
 		ifsn = fsn;
 
-		bi = (BufferedImage) event.getResult();
+		Image oldImg = image;
+		BufferedImage bi = (BufferedImage) event.getResult();
+		image = new Image(getDisplay(), convertToSWT(bi));
 
 		getDisplay().syncExec(redrawRunner);
 
+		if (oldImg != null) {
+			oldImg.dispose();
+		}
 	}
 
 	/**
@@ -171,26 +176,16 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	public void paintControl(PaintEvent e) {
+		if (image != null) {
+			int width = image.getImageData().width;
+			int height = image.getImageData().height;
+			int x = (getSize().x - width) / 2;
+			int y = (getSize().y - height) / 2;
 
-		if (bi == null) {
-			return;
+			e.gc.drawImage(image, x, y);
 		}
 
-		ColorModel cm = bi.getColorModel();
-		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-		WritableRaster raster = bi.copyData(null);
-		BufferedImage bimg = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-
-		Graphics g = bimg.createGraphics();
-		ial.draw((Graphics2D) g);
-
-		Image swtImage = new Image(getDisplay(), convertToSWT(bimg));
-		int width = swtImage.getImageData().width;
-		int height = swtImage.getImageData().height;
-		int x = (getSize().x - width) / 2;
-		int y = (getSize().y - height) / 2;
-		e.gc.drawImage(swtImage, x, y);
-		swtImage.dispose();
+		ial.draw(e.gc);
 	}
 
 	public void widgetDisposed(DisposeEvent e) {

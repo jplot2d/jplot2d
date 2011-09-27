@@ -19,7 +19,6 @@
 package org.jplot2d.interaction;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Shape;
 
@@ -36,6 +35,8 @@ import org.jplot2d.env.PlotEnvironment;
 public class MouseActivateComponentHandler extends
 		MouseMoveBehaviorHandler<MouseActivateComponentBehavior> implements VisualFeedbackDrawer {
 
+	private final InteractiveComp icomp;
+
 	/**
 	 * The selectable component that mouse over
 	 */
@@ -43,19 +44,14 @@ public class MouseActivateComponentHandler extends
 
 	private Shape activeBounds;
 
-	private Color background;
-
 	public MouseActivateComponentHandler(MouseActivateComponentBehavior behavior,
 			InteractionModeHandler handler) {
 		super(behavior, handler);
+		icomp = handler.getInteractiveComp();
 	}
 
 	@Override
 	public void behaviorPerformed(int x, int y) {
-
-		InteractiveComp icomp = handler.getInteractiveComp();
-
-		background = icomp.getPlotBackground();
 
 		if (activeComponent != null && activeBounds.contains(x, y)) {
 			return;
@@ -84,16 +80,13 @@ public class MouseActivateComponentHandler extends
 
 	}
 
-	public void draw(Graphics2D g) {
+	public void draw(Object g) {
 		/*
 		 * Draw bounding box for the active component
 		 */
 		if (activeComponent != null) {
 			activeBounds = getDeviceBounds(activeComponent);
-			g.setColor(Color.BLUE);
-			g.setXORMode(background);
-			g.draw(activeBounds);
-			g.setPaintMode();
+			icomp.drawShape(g, Color.BLUE.getRGB(), activeBounds);
 		}
 	}
 

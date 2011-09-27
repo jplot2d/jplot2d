@@ -18,7 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -170,8 +169,8 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 		modeHandler.mouseWheelMoved(e);
 	}
 
-	public void draw(Graphics2D graphics) {
-		modeHandler.plotPainted(graphics);
+	public void draw(Object graphics) {
+		modeHandler.draw(graphics);
 	}
 
 	public InteractionMode getMode() {

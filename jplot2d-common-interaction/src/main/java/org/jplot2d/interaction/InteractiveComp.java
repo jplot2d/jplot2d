@@ -18,10 +18,10 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Color;
+import java.awt.Shape;
 
 /**
- * A generic interface for awt component and swt composite, to provide a repaint() method.
+ * A generic interface for awt component and swt composite, to provide visual feedback.
  * 
  * @author Jingjing Li
  * 
@@ -45,10 +45,30 @@ public interface InteractiveComp {
 	 */
 	public void setCursor(CursorStyle cursorStyle);
 
-	public Color getPlotBackground();
+	/**
+	 * Draws a rectangle with the given graphics object and rgb color.
+	 * 
+	 * @param g
+	 *            the graphics object
+	 * @param rgb
+	 *            the color value
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height);
 
-	public Color getForeground();
-
-	public Color getBackground();
+	/**
+	 * Draws a shape with the given graphics object and rgb color.
+	 * 
+	 * @param g
+	 *            the graphics object
+	 * @param rgb
+	 *            the color value
+	 * @param shape
+	 *            the shape to draw
+	 */
+	public void drawShape(Object g, int rgb, Shape shape);
 
 }

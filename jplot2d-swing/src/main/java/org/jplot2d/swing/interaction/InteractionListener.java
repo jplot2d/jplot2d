@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swing.interaction;
 
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -97,7 +96,7 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 				.getY(), e.getWheelRotation(), e.getButton()));
 	}
 
-	public void draw(Graphics2D graphics) {
+	public void draw(Object graphics) {
 		ihandler.draw(graphics);
 	}
 
