@@ -2,10 +2,7 @@ package org.jplot2d.swt;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -54,7 +51,9 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private long ifsn;
 
-	private volatile Image image;
+	private volatile BufferedImage bi;
+
+	private Image image;
 
 	private InteractionManager imanager;
 
@@ -144,15 +143,9 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		}
 		ifsn = fsn;
 
-		Image oldImg = image;
-		BufferedImage bi = (BufferedImage) event.getResult();
-		image = new Image(getDisplay(), convertToSWT(bi));
+		bi = (BufferedImage) event.getResult();
 
 		getDisplay().syncExec(redrawRunner);
-
-		if (oldImg != null) {
-			oldImg.dispose();
-		}
 	}
 
 	/**
@@ -176,6 +169,17 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	public void paintControl(PaintEvent e) {
+
+		if (bi != null) {
+			// dispose old image
+			if (image != null) {
+				image.dispose();
+			}
+			// create new image
+			image = new Image(getDisplay(), convertToSWT(bi));
+			bi = null;
+		}
+
 		if (image != null) {
 			int width = image.getImageData().width;
 			int height = image.getImageData().height;
