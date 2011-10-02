@@ -77,7 +77,17 @@ public class XYGraphPlotterFiller {
 	}
 
 	public Shape getShape() {
-		fill();
+		switch (plotter.getChartType()) {
+		case LINECHART:
+			fill();
+			break;
+		case HISTOGRAM:
+			fillHistogram();
+			break;
+		case HISTOGRAM_EDGE:
+			fillEdgeHistogram();
+			break;
+		}
 		closeLine();
 
 		return path;
@@ -98,14 +108,8 @@ public class XYGraphPlotterFiller {
 				continue;
 			}
 
-			double x = layer.getPhysicalTransform().getXPtoD(
-					layer.getXRangeManager().getNormalTransform()
-							.getTransP(graph.getX(i))
-							* layer.getSize().getWidth());
-			double y = layer.getPhysicalTransform().getYPtoD(
-					layer.getYRangeManager().getNormalTransform()
-							.getTransP(graph.getY(i))
-							* layer.getSize().getHeight());
+			double x = getDeviceX(i);
+			double y = getDeviceY(i);
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -124,6 +128,101 @@ public class XYGraphPlotterFiller {
 			endx = ix;
 			endy = iy;
 		}
+	}
+
+	/**
+     * 
+     */
+	private void fillHistogram() {
+
+		boolean hasPre = false;
+		// the x coordinate of preIdx
+		double preDotX = 0;
+
+		for (int i = 0; i < graph.size(); i++) {
+
+			/* ignore NaN value */
+			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+				continue;
+			}
+
+			double x = getDeviceX(i);
+			double y = getDeviceY(i);
+			int iy = (int) (y + 0.5);
+
+			if (hasPre) {
+				// the middle x
+				int imx = (int) (preDotX + x + 1) / 2;
+				if (endx != imx || endy != iy) {
+					path.lineTo(imx, endy);
+					path.lineTo(imx, iy);
+					endx = imx;
+					endy = iy;
+				}
+			} else {
+				int ix = (int) (x + 0.5);
+				path.moveTo(ix, iy);
+				startx = ix;
+				starty = iy;
+				hasPre = true;
+				endx = ix;
+				endy = iy;
+			}
+
+			preDotX = x;
+		}
+
+		// the preDotX is the last x point
+		if (hasPre) {
+			path.lineTo(preDotX, endy);
+		}
+	}
+
+	private void fillEdgeHistogram() {
+
+		boolean hasPre = false;
+
+		for (int i = 0; i < graph.size(); i++) {
+
+			/* ignore NaN value */
+			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+				continue;
+			}
+
+			double x = getDeviceX(i);
+			double y = getDeviceY(i);
+
+			int ix = (int) (x + 0.5);
+			int iy = (int) (y + 0.5);
+
+			if (hasPre) {
+				if (endx != ix || endy != iy) {
+					path.lineTo(ix, endy);
+					path.lineTo(ix, iy);
+				}
+			} else {
+				path.moveTo(ix, iy);
+				startx = ix;
+				starty = iy;
+				hasPre = true;
+			}
+
+			endx = ix;
+			endy = iy;
+		}
+
+	}
+
+	private double getDeviceX(int i) {
+		return layer.getPhysicalTransform().getXPtoD(
+				layer.getXRangeManager().getNormalTransform().getTransP(graph.getX(i))
+						* layer.getSize().getWidth());
+	}
+
+	private double getDeviceY(int i) {
+		return layer.getPhysicalTransform().getYPtoD(
+				layer.getYRangeManager().getNormalTransform().getTransP(graph.getY(i))
+						* layer.getSize().getHeight());
 	}
 
 	private void closeLine() {
@@ -162,8 +261,7 @@ public class XYGraphPlotterFiller {
 	 */
 	public Paint createHatchPaint(LineHatchPaint hp) {
 		double scale = layer.getPhysicalTransform().getScale();
-		Dimension size = new Dimension((int) clip.getMaxX(),
-				(int) clip.getMaxY());
+		Dimension size = new Dimension((int) clip.getMaxX(), (int) clip.getMaxY());
 
 		if (hatchImg != null && size.width <= hatchImg.getWidth()
 				&& size.height <= hatchImg.getHeight()) {
@@ -172,13 +270,11 @@ public class XYGraphPlotterFiller {
 			}
 		} else {
 			/*
-			 * re-create the hatch image. The image is 64px larger than required
-			 * size.
+			 * re-create the hatch image. The image is 64px larger than required size.
 			 */
 			int imgWidth = size.width + 64;
 			int imgHeight = size.height + 64;
-			hatchImg = new BufferedImage(imgWidth, imgHeight,
-					BufferedImage.TYPE_INT_ARGB);
+			hatchImg = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		lastHatchScale = scale;
@@ -186,8 +282,7 @@ public class XYGraphPlotterFiller {
 		return hatchPaint;
 	}
 
-	public static XYGraphPlotterFiller getInstance(XYGraphPlotterImpl dp,
-			Rectangle clip) {
+	public static XYGraphPlotterFiller getInstance(XYGraphPlotterImpl dp, Rectangle clip) {
 		XYGraphPlotterFiller builder = _threadLocalBuilder.get();
 		if (builder == null) {
 			builder = new XYGraphPlotterFiller();
