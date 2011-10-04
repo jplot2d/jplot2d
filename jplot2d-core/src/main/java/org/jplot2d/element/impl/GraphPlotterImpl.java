@@ -38,6 +38,14 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 		legendItem.setParent(this);
 	}
 
+	protected String getSelfId() {
+		if (getParent() != null) {
+			return "Graph" + getParent().indexOf(this);
+		} else {
+			return "Graph@" + Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
 	public LayerEx getParent() {
 		return (LayerEx) super.getParent();
 	}
