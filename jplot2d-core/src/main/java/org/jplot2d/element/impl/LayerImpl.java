@@ -246,7 +246,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		// copy plotter
 		for (GraphPlotterEx plotter : this.plotters) {
 			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter.copyStructure(orig2copyMap);
-			plotterCopy.setParent(this);
+			plotterCopy.setParent(result);
 			result.plotters.add(plotterCopy);
 		}
 
