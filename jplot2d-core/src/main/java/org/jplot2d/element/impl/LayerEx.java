@@ -12,6 +12,8 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public GraphPlotterEx[] getGraphPlotters();
 
+	public int indexOf(GraphPlotterEx plotter);
+
 	public void parentPhysicalTransformChanged();
 
 	/**

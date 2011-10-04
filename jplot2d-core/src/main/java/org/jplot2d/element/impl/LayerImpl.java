@@ -168,6 +168,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
+	public int indexOf(GraphPlotterEx plotter) {
+		return plotters.indexOf(plotter);
+	}
+
 	public Marker getMarker(int idx) {
 		// TODO Auto-generated method stub
 		return null;

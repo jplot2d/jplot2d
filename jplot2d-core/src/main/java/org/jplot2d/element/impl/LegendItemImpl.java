@@ -26,8 +26,7 @@ import java.awt.geom.Rectangle2D;
  * @author Jingjing Li
  * 
  */
-public abstract class LegendItemImpl extends ElementImpl implements
-		LegendItemEx {
+public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx {
 
 	private boolean visible = true;
 
@@ -37,6 +36,10 @@ public abstract class LegendItemImpl extends ElementImpl implements
 
 	public LegendItemImpl() {
 
+	}
+
+	protected String getSelfId() {
+		return "LegendItem";
 	}
 
 	public GraphPlotterEx getParent() {
@@ -62,8 +65,7 @@ public abstract class LegendItemImpl extends ElementImpl implements
 
 	public Rectangle2D getBounds() {
 		Dimension2D size = getSize();
-		return new Rectangle2D.Double(locX, locY, size.getWidth(),
-				size.getHeight());
+		return new Rectangle2D.Double(locX, locY, size.getWidth(), size.getHeight());
 	}
 
 	public boolean isVisible() {
