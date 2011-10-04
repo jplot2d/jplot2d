@@ -975,7 +975,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		// copy subplots
 		for (PlotEx sp : subplots) {
 			PlotEx spCopy = (PlotEx) sp.copyStructure(orig2copyMap);
-			((ComponentEx) spCopy).setParent(this);
+			((ComponentEx) spCopy).setParent(result);
 			result.subplots.add(spCopy);
 		}
 

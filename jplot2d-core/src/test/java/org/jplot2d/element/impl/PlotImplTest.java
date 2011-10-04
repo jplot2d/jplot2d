@@ -158,15 +158,15 @@ public class PlotImplTest {
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
 		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		p.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		p.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis.getTickManager()
+				.getRangeManager());
 		assertFalse(p.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
 		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		p.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		p.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis.getTickManager()
+				.getRangeManager());
 		assertTrue(p.isRedrawNeeded());
 		p.clearRedrawNeeded();
 
@@ -282,15 +282,84 @@ public class PlotImplTest {
 		p.validate();
 	}
 
+	/**
+	 * Test the copy map and parent relationship in copied plot
+	 */
 	@Test
 	public void testCopyStructure() {
 		PlotImpl p = new PlotImpl();
+		PlotImpl sp = new PlotImpl();
+
+		p.addSubplot(sp, null);
+
+		AxisRangeLockGroupImpl xgroup = new AxisRangeLockGroupImpl();
+		AxisRangeManagerImpl xrm = new AxisRangeManagerImpl();
+		xrm.setLockGroup(xgroup);
+		AxisTickManagerImpl xtm = new AxisTickManagerImpl();
+		xtm.setRangeManager(xrm);
+		AxisImpl x = new AxisImpl();
+		x.setTickManager(xtm);
+
+		AxisRangeLockGroupImpl ygroup = new AxisRangeLockGroupImpl();
+		AxisRangeManagerImpl yrm = new AxisRangeManagerImpl();
+		yrm.setLockGroup(ygroup);
+		AxisTickManagerImpl ytm = new AxisTickManagerImpl();
+		ytm.setRangeManager(yrm);
+		AxisImpl y = new AxisImpl();
+		y.setTickManager(ytm);
+
+		p.addXAxis(x);
+		p.addYAxis(y);
+		LayerImpl layer = new LayerImpl();
+		p.addLayer(layer, x, y);
+		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
+		layer.addGraphPlotter(gp);
+
 		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
 		PlotImpl p2 = p.copyStructure(orig2copyMap);
-		assertEquals(orig2copyMap.size(), 3);
+		// copy properties
+		for (Map.Entry<ElementEx, ElementEx> me : orig2copyMap.entrySet()) {
+			me.getValue().copyFrom(me.getKey());
+		}
+
+		// check copy map
+		assertEquals(orig2copyMap.size(), 19);
 		assertSame(p2, orig2copyMap.get(p));
 		assertSame(p2.getMargin(), orig2copyMap.get(p.getMargin()));
 		assertSame(p2.getLegend(), orig2copyMap.get(p.getLegend()));
+		assertSame(p2.getSubplot(0), orig2copyMap.get(p.getSubplot(0)));
+		assertSame(p2.getXAxis(0), orig2copyMap.get(p.getXAxis(0)));
+		assertSame(p2.getXAxis(0).getTickManager(),
+				orig2copyMap.get(p.getXAxis(0).getTickManager()));
+		assertSame(p2.getXAxis(0).getTickManager().getRangeManager(),
+				orig2copyMap.get(p.getXAxis(0).getTickManager().getRangeManager()));
+		assertSame(p2.getXAxis(0).getTickManager().getRangeManager().getLockGroup(),
+				orig2copyMap.get(p.getXAxis(0).getTickManager().getRangeManager().getLockGroup()));
+		assertSame(p2.getYAxis(0), orig2copyMap.get(p.getYAxis(0)));
+		assertSame(p2.getYAxis(0).getTickManager(),
+				orig2copyMap.get(p.getYAxis(0).getTickManager()));
+		assertSame(p2.getYAxis(0).getTickManager().getRangeManager(),
+				orig2copyMap.get(p.getYAxis(0).getTickManager().getRangeManager()));
+		assertSame(p2.getYAxis(0).getTickManager().getRangeManager().getLockGroup(),
+				orig2copyMap.get(p.getYAxis(0).getTickManager().getRangeManager().getLockGroup()));
+		assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
+		assertSame(p2.getLayer(0).getGraphPlotter(0),
+				orig2copyMap.get(p.getLayer(0).getGraphPlotter(0)));
+
+		// check parent
+		assertSame(p2, p2.getMargin().getParent());
+		assertSame(p2, p2.getLegend().getParent());
+		assertSame(p2, p2.getSubplot(0).getParent());
+		assertSame(p2, p2.getXAxis(0).getParent());
+		assertSame(p2.getXAxis(0), p2.getXAxis(0).getTickManager().getParent());
+		assertSame(p2.getXAxis(0).getTickManager(), p2.getXAxis(0).getTickManager()
+				.getRangeManager().getParent());
+		assertSame(p2.getXAxis(0).getTickManager().getRangeManager(), p2.getXAxis(0)
+				.getTickManager().getRangeManager().getLockGroup().getParent());
+		assertSame(p2, p2.getYAxis(0).getParent());
+		assertSame(p2, p2.getLayer(0).getParent());
+		assertSame(p2.getLayer(0), p2.getLayer(0).getGraphPlotter(0).getParent());
+
 	}
 
 }
