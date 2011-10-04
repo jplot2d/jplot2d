@@ -60,6 +60,10 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	}
 
+	protected String getSelfId() {
+		return this.getClass().getSimpleName();
+	}
+
 	public AxisEx getParent() {
 		return (AxisEx) parent;
 	}
@@ -200,8 +204,8 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	private Font getEffectiveFont() {
 		float size = getEffectiveFontSize();
-		return new Font(getEffectiveFontName(), getEffectiveFontStyle(),
-				(int) size).deriveFont(size);
+		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size)
+				.deriveFont(size);
 	}
 
 	public String getText() {
@@ -249,8 +253,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	public Dimension2D getSize() {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign,
-					HAlign.CENTER);
+			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
 		}
 		Rectangle2D bounds = label.getBounds();
 
@@ -259,8 +262,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	public void draw(Graphics2D g, double x, double y) {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign,
-					HAlign.CENTER);
+			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
 		}
 
 		AffineTransform oldTransform = g.getTransform();

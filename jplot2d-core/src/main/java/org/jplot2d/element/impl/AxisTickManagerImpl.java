@@ -199,6 +199,15 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	}
 
+	public String getId() {
+		if (rangeManager != null) {
+			int xidx = rangeManager.indexOfTickManager(this);
+			return "Tick" + xidx + "." + rangeManager.getId();
+		} else {
+			return super.getSelfId();
+		}
+	}
+
 	public AxisEx getParent() {
 		return (AxisImpl) parent;
 	}

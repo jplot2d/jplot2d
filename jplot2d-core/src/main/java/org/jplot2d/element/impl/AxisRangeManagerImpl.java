@@ -31,8 +31,7 @@ import org.jplot2d.util.Range2D;
 import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
 import org.jplot2d.warning.RangeSelectionWarning;
 
-public class AxisRangeManagerImpl extends ElementImpl implements
-		AxisRangeManagerEx {
+public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManagerEx {
 
 	/** The default margin factor (used for both lower and upper margins) */
 	public static final double DEFAULT_MARGIN_FACTOR = 1.0 / 32; // 0.03125
@@ -66,10 +65,9 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 	public String getId() {
 		if (group != null) {
 			int xidx = group.indexOfRangeManager(this);
-			return "RM" + xidx + "." + group.getId();
+			return "Range" + xidx + "." + group.getId();
 		} else {
-			return "AxisRangeManager@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return super.getSelfId();
 		}
 	}
 
@@ -190,7 +188,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	public void setNormalTransfrom(NormalTransform ntf) {
 		this.ntf = ntf;
-		
+
 		for (AxisTickManagerEx atm : tickManagers) {
 			for (AxisEx axis : atm.getAxes()) {
 				axis.redraw();
@@ -229,6 +227,10 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		} else {
 			parent = null;
 		}
+	}
+
+	public int indexOfTickManager(AxisTickManagerEx tickManager) {
+		return tickManagers.indexOf(tickManager);
 	}
 
 	public LayerEx[] getLayers() {
@@ -293,20 +295,18 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 	 * @param urange
 	 *            the range to be set
 	 * @param appendMargin
-	 *            true to indicate a margin should be appended to the given
-	 *            range, to derive a actual range.
+	 *            true to indicate a margin should be appended to the given range, to derive a
+	 *            actual range.
 	 * @throws WarningException
 	 */
 	private void setRange(Range2D urange, boolean appendMargin) {
 
 		if (Double.isNaN(urange.getStart()) || Double.isNaN(urange.getEnd())) {
-			throw new IllegalArgumentException(
-					"Range cannot start or end at NaN.");
+			throw new IllegalArgumentException("Range cannot start or end at NaN.");
 		}
 
 		Map<AxisRangeManagerEx, NormalTransform> vtMap = AxisRangeUtils
-				.createVirtualTransformMap(Arrays.asList(group
-						.getRangeManagers()));
+				.createVirtualTransformMap(Arrays.asList(group.getRangeManagers()));
 
 		NormalTransform vnt = vtMap.get(this);
 		Range2D pr = vnt.getTransP(urange);
@@ -320,24 +320,20 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		Range2D pRange = AxisRangeUtils.validateNormalRange(pr, vtMap, false);
 		if (pRange == null) {
 			// no intersect at all
-			throw new IllegalArgumentException(getId()
-					+ ": The given range is not valid.");
+			throw new IllegalArgumentException(getId() + ": The given range is not valid.");
 		}
 
 		double pLo = pRange.getMin();
 		double pHi = pRange.getMax();
 
 		if (!pRange.equals(pr)) {
-			warning(new RangeAdjustedToValueBoundsWarning(
-					getId()
-							+ ": the given range contains invalid value, range adjusted to ["
-							+ ntf.getTransU(pLo) + ", " + ntf.getTransU(pHi)
-							+ "]"));
+			warning(new RangeAdjustedToValueBoundsWarning(getId()
+					+ ": the given range contains invalid value, range adjusted to ["
+					+ ntf.getTransU(pLo) + ", " + ntf.getTransU(pHi) + "]"));
 		}
 
 		/* ensurePrecision */
-		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pRange,
-				vtMap);
+		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pRange, vtMap);
 		if (rs.getStatus() != null) {
 			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
 		}
@@ -352,8 +348,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 			extRange = rs;
 		}
 
-		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(
-				extRange, vtMap);
+		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(extRange, vtMap);
 		if (xrs.getStatus() != null) {
 			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
 		}
@@ -363,15 +358,13 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 
 	public Range2D expandRangeToTick(Range2D ur) {
 		if (tickManagers.size() > 0) {
-			return tickManagers.get(0)
-					.expandRangeToTick(getTransformType(), ur);
+			return tickManagers.get(0).expandRangeToTick(getTransformType(), ur);
 		}
 		return null;
 	}
 
 	@Override
-	public AxisRangeManagerEx copyStructure(
-			Map<ElementEx, ElementEx> orig2copyMap) {
+	public AxisRangeManagerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		AxisRangeManagerImpl result = new AxisRangeManagerImpl();
 
 		if (orig2copyMap != null) {
@@ -379,8 +372,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements
 		}
 
 		// copy or link lock group
-		AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap
-				.get(group);
+		AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap.get(group);
 		if (algCopy == null) {
 			algCopy = (AxisRangeLockGroupEx) group.copyStructure(orig2copyMap);
 		}

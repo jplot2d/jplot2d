@@ -36,6 +36,8 @@ public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
 
 	public AxisRangeLockGroupEx getLockGroup();
 
+	public int indexOfTickManager(AxisTickManagerEx tickManager);
+
 	/**
 	 * Returns the normal transform of this axis
 	 * 
