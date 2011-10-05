@@ -53,12 +53,11 @@ public class ElementFactory {
 
 	private static ElementFactory instance = new ElementFactory(false, null);
 
-	private static ElementFactory threadSafeInstance = new ElementFactory(
-			true, null);
+	private static ElementFactory threadSafeInstance = new ElementFactory(true, null);
 
 	/**
-	 * Returns an instance of ComponentFactory. All component created by this
-	 * factory are not thread-safe.
+	 * Returns an instance of ComponentFactory. All component created by this factory are not
+	 * thread-safe.
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
@@ -67,8 +66,8 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory. All component created by this
-	 * factory are thread-safe.
+	 * Returns an instance of ComponentFactory. All component created by this factory are
+	 * thread-safe.
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
@@ -77,8 +76,8 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory which is configured by profile.
-	 * All component created by this factory are not thread-safe.
+	 * Returns an instance of ComponentFactory which is configured by profile. All component created
+	 * by this factory are not thread-safe.
 	 * 
 	 * @param profile
 	 * @return an instance of ComponentFactory
@@ -88,8 +87,8 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory which is configured by profile.
-	 * All component created by this factory are thread-safe.
+	 * Returns an instance of ComponentFactory which is configured by profile. All component created
+	 * by this factory are thread-safe.
 	 * 
 	 * @param profile
 	 * @return an instance of ComponentFactory
@@ -132,13 +131,13 @@ public class ElementFactory {
 	@SuppressWarnings("unchecked")
 	public static final <T extends Element> T proxy(T impl, Class<T> clazz) {
 		ElementIH<T> ih = new ElementIH<T>(impl, clazz);
-		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {
-				clazz, ElementAddition.class }, ih);
+		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz,
+				ElementAddition.class }, ih);
 	}
 
 	/**
-	 * Create a plot with setting the default color, font, and margin. The
-	 * default size mode is FillContainerSizeMode(1).
+	 * Create a plot with setting the default color, font, and margin. The default size mode is
+	 * FillContainerSizeMode(1).
 	 * 
 	 * @return
 	 */
@@ -244,8 +243,7 @@ public class ElementFactory {
 		return createXYGraphPlotter(new ArrayPair(xarray, yarray));
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray,
-			double[] yarray, String name) {
+	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray, String name) {
 		return createXYGraphPlotter(new ArrayPair(xarray, yarray), name);
 	}
 
@@ -301,18 +299,18 @@ public class ElementFactory {
 	 * @return an AxisRangeManager
 	 */
 	public AxisRangeManager createAxisRangeManager() {
-		AxisRangeManagerImpl va = new AxisRangeManagerImpl();
+		AxisRangeManagerImpl rm = new AxisRangeManagerImpl();
 		AxisRangeLockGroupImpl group = new AxisRangeLockGroupImpl();
-		applyProfile(va);
+		applyProfile(rm);
 		applyProfile(group);
-		va.setLockGroup(group);
+		rm.setLockGroup(group);
 
-		AxisRangeManager vaProxy = proxy(va, AxisRangeManager.class);
+		AxisRangeManager vaProxy = proxy(rm, AxisRangeManager.class);
 		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 
-		env.registerElement(va, vaProxy);
+		env.registerElement(rm, vaProxy);
 		env.registerElement(group, groupProxy);
 
 		return vaProxy;
@@ -326,8 +324,7 @@ public class ElementFactory {
 	public AxisTickManager createAxisTickManager() {
 		AxisRangeManager rm = createAxisRangeManager();
 		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
-		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm)
-				.getImpl();
+		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm).getImpl();
 
 		AxisTickManagerImpl tm = new AxisTickManagerImpl();
 		applyProfile(tm);
@@ -341,8 +338,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create an Axis. The default position is
-	 * {@link AxisPosition#NEGATIVE_SIDE}
+	 * Create an Axis. The default position is {@link AxisPosition#NEGATIVE_SIDE}
 	 * 
 	 * @return a axis
 	 */
@@ -351,9 +347,9 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create n Axes which share the same tick manager. The position of the axis
-	 * on index 0 is {@link AxisPosition#NEGATIVE_SIDE}, the position of the
-	 * axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}
+	 * Create n Axes which share the same tick manager. The position of the axis on index 0 is
+	 * {@link AxisPosition#NEGATIVE_SIDE}, the position of the axis on index 1 is
+	 * {@link AxisPosition#POSITIVE_SIDE}
 	 * 
 	 * @return axes in an array
 	 */
@@ -361,8 +357,7 @@ public class ElementFactory {
 
 		AxisTickManager tm = createAxisTickManager();
 		DummyEnvironment env = (DummyEnvironment) tm.getEnvironment();
-		AxisTickManagerEx tme = (AxisTickManagerEx) ((ElementAddition) tm)
-				.getImpl();
+		AxisTickManagerEx tme = (AxisTickManagerEx) ((ElementAddition) tm).getImpl();
 
 		Axis[] result = new Axis[n];
 
