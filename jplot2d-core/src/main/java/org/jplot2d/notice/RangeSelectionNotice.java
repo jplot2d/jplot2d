@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
 
 /**
- * Thrown to indicate that the plot range contains negative values when axis is
- * in LOG mode.
+ * Thrown to indicate that the axis range has been adjusted by some special
+ * reason.
  * 
- * @author Jingjing Li
+ * @author Jingjing li
  */
-public class RangeAdjustedToValueBoundsWarning extends RangeSelectionWarning {
+public class RangeSelectionNotice extends Notice {
 
-	static final long serialVersionUID = 1L;
-
-	public RangeAdjustedToValueBoundsWarning(String message) {
+	public RangeSelectionNotice(String message) {
 		super(message);
 	}
 

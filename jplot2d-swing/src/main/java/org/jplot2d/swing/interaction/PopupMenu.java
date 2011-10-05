@@ -138,7 +138,7 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 		String command = event.getActionCommand();
 
 		if (command.equals(PROPERTIES_ACTION_COMMAND)) {
-			// TODO: show properties panel
+			JOptionPane.showMessageDialog(getInvoker(), "Will be avaliable in next version.");
 			return;
 		}
 		if (command.equals(UNDO_ACTION_COMMAND)) {

@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A group of axes who are pinned together. When one axis changes its range, all
- * axes follow the change together.
+ * A group of axes who are pinned together. When one axis changes its range, all axes follow the
+ * change together.
  * 
  * @author Jingjing Li
  * 
@@ -38,15 +38,11 @@ public interface AxisRangeLockGroup extends Element {
 	public boolean isAutoRange();
 
 	/**
-	 * If true set the range of the axis group to allow to display the minimum
-	 * and maximum value of the Layer.
+	 * If true set the range of the axis group to allow to display the minimum and maximum value of
+	 * the Layer.
 	 * 
 	 * @param isAutoRange
 	 *            the flag.
-	 * @throws WarningException
-	 *             This WarningException can be a NegativeValueInLogException or
-	 *             multiple NegativeValueInLogException in a MultiException.
-	 *             Might only be thrown when isAutoRange=<code>true</code>.
 	 */
 	public void setAutoRange(boolean autoRange);
 

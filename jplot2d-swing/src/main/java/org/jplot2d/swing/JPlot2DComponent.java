@@ -36,13 +36,13 @@ import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
 import org.jplot2d.interaction.PlotDefaultMousePreference;
 import org.jplot2d.interaction.PlotInteractionManager;
+import org.jplot2d.notice.DefaultNotifier;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.GraphicsConfigurationCompatibleImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 import org.jplot2d.swing.interaction.InteractionListener;
-import org.jplot2d.warning.DefaultWarningManager;
 
 /**
  * A JComponent that display a plot in its center.
@@ -89,7 +89,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
 		this(createRenderEnvironment(plot, threadSafe));
-		env.setPlot(plot, new DefaultWarningManager(this));
+		env.setPlot(plot, new DefaultNotifier(this));
 	}
 
 	/**

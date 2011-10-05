@@ -34,6 +34,8 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.notice.Notifier;
+import org.jplot2d.notice.NoticeType;
 
 /**
  * An environment that a plot can realization. Once a plot is put an environment, changes on the
@@ -65,6 +67,8 @@ public abstract class Environment {
 	private int[] batchSND = new int[MAX_BATCH_DEPTH];
 
 	private int batchDepth;
+
+	protected Notifier notifier;
 
 	/**
 	 * A impl to proxy map that contains all element in this environment.
@@ -513,6 +517,18 @@ public abstract class Environment {
 	 *            the token gotten from beginBatch
 	 */
 	final public void endBatch(BatchToken token) {
+		endBatch(token, null);
+	}
+
+	/**
+	 * End the batch. All pending update will be committed at once.
+	 * 
+	 * @param token
+	 *            the token gotten from beginBatch
+	 * @param type
+	 *            the type for notice processor
+	 */
+	final public void endBatch(BatchToken token, NoticeType type) {
 		begin();
 
 		if (!verifyBatchToken(token)) {
@@ -520,7 +536,7 @@ public abstract class Environment {
 		}
 
 		try {
-			endCommand();
+			endCommand(type);
 		} finally {
 			end();
 		}
@@ -530,6 +546,7 @@ public abstract class Environment {
 	 * A light weight version of beginBatch, without creating the batch token.
 	 * 
 	 * @param msg
+	 *            the message for logging
 	 */
 	final void beginCommand(String msg) {
 		begin();
@@ -542,12 +559,20 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A light weight version of beginBatch, without verifying a batch token.
-	 * 
-	 * @throws WarningException
-	 *             if warning message is sent out.
+	 * A light weight version of beginBatch, without verifying a batch token. This method is called
+	 * from element proxy invocation handler every time a method of the proxy is called.
 	 */
 	final void endCommand() {
+		endCommand(null);
+	}
+
+	/**
+	 * A light weight version of beginBatch, without verifying a batch token.
+	 * 
+	 * @param type
+	 *            the type for notice processor
+	 */
+	private void endCommand(NoticeType type) {
 		logger.fine("[<] " + Integer.toHexString(hashCode()) + getBatchString());
 
 		try {
@@ -556,6 +581,9 @@ public abstract class Environment {
 			}
 		} finally {
 			batchDepth--;
+			if (notifier != null) {
+				notifier.processNotices(type);
+			}
 			end();
 		}
 	}
@@ -581,8 +609,6 @@ public abstract class Environment {
 	/**
 	 * Commit all pending processes in a batch. The isBatch() should remain <code>true</code> while
 	 * this method is called. This method can be called many times.
-	 * 
-	 * @throws WarningException
 	 */
 	protected abstract void commit();
 

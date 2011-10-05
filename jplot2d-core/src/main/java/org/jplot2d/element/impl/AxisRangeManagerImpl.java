@@ -27,9 +27,9 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
+import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
+import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.warning.RangeSelectionWarning;
 
 public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManagerEx {
 
@@ -297,7 +297,6 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 	 * @param appendMargin
 	 *            true to indicate a margin should be appended to the given range, to derive a
 	 *            actual range.
-	 * @throws WarningException
 	 */
 	private void setRange(Range2D urange, boolean appendMargin) {
 
@@ -327,7 +326,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		double pHi = pRange.getMax();
 
 		if (!pRange.equals(pr)) {
-			warning(new RangeAdjustedToValueBoundsWarning(getId()
+			notify(new RangeAdjustedToValueBoundsNotice(getId()
 					+ ": the given range contains invalid value, range adjusted to ["
 					+ ntf.getTransU(pLo) + ", " + ntf.getTransU(pHi) + "]"));
 		}
@@ -335,7 +334,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		/* ensurePrecision */
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pRange, vtMap);
 		if (rs.getStatus() != null) {
-			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 		}
 
 		/* extend range to tick */
@@ -350,7 +349,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 
 		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(extRange, vtMap);
 		if (xrs.getStatus() != null) {
-			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
 		}
 		group.zoomVirtualRange(xrs, vtMap);
 
@@ -393,6 +392,16 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		this.marginFactor = arm.marginFactor;
 		this.coreRange = arm.coreRange;
 		this.ntf = arm.ntf;
+	}
+
+	private AxisEx[] getAxes() {
+		List<AxisEx> axes = new ArrayList<AxisEx>();
+		for (AxisTickManagerEx tm : tickManagers) {
+			for (AxisEx axis : tm.getAxes()) {
+				axes.add(axis);
+			}
+		}
+		return axes.toArray(new AxisEx[axes.size()]);
 	}
 
 }

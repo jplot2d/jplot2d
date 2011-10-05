@@ -16,50 +16,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
 import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
+import org.jplot2d.notice.Notifier;
+import org.jplot2d.notice.Notice;
+import org.jplot2d.notice.NoticeType;
 
 /**
- * The default waning manager for plot. Warnings generated from mouse
- * interaction will show in a dialog. Others will log to java log.
- * 
  * @author Jingjing Li
  * 
  */
-public class DefaultWarningManager extends WarningManager {
+public class DialogNotifier extends Notifier {
 
 	private final Component plotComp;
 
-	public DefaultWarningManager(Component plotComp) {
+	public DialogNotifier(Component plotComp) {
 		this.plotComp = plotComp;
 	}
 
 	@Override
-	protected void showWarnings(WarningType type) {
-		if (warnings.size() == 0) {
-			return;
-		}
-
-		if (type instanceof UIWarningType) {
+	protected void showNotices(NoticeType type) {
+		if (notices.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (WarningMessage wm : warnings) {
+			for (Notice wm : notices) {
 				sb.append(wm.getMessage());
 				sb.append("\n");
 			}
-			JOptionPane.showMessageDialog(plotComp, sb, "Warning",
-					JOptionPane.WARNING_MESSAGE);
-		} else {
-			StringBuilder sb = new StringBuilder("Multiple warnings:\n");
-			for (WarningMessage wm : warnings) {
-				sb.append("\t");
-				sb.append(wm.getMessage());
-				sb.append("\n");
-			}
-			LogWarningManager.LOGGER.warning(sb.toString());
+			JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 

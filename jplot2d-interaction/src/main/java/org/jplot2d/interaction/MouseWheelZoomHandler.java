@@ -27,7 +27,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseWheelBehaviorHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseWheelZoomHandler extends MouseWheelBehaviorHandler<MouseWheelZoomBehavior> {
 
@@ -64,7 +64,7 @@ public class MouseWheelZoomHandler extends MouseWheelBehaviorHandler<MouseWheelZ
 		plot.zoomXRange(startx, endx);
 		plot.zoomYRange(starty, endy);
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 		return true;
 	}
 

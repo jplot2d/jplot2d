@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -16,22 +16,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
 /**
- * This interface receive plot waning messages.
- * 
  * @author Jingjing Li
  * 
  */
-public interface WarningReceiver {
+public class NoticeType {
 
-	/**
-	 * Plot call this method to add warnings.
-	 * 
-	 * @param msg
-	 *            the warning message
-	 */
-	public void warning(WarningMessage msg);
+	private final String type;
+
+	protected NoticeType(String type) {
+		this.type = type;
+	}
+
+	public final boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	public final int hashCode() {
+		return super.hashCode();
+	}
+
+	public String toString() {
+		return "NoticeType " + type;
+	}
 
 }
