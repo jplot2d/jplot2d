@@ -262,13 +262,20 @@ public abstract class Environment {
 		return result;
 	}
 
-	private boolean isAncestor(Element ancestor, Element c) {
+	/**
+	 * Returns <code>true</code> if the given element a is ancestor of element c
+	 * 
+	 * @param a
+	 * @param c
+	 * @return
+	 */
+	protected static boolean isAncestor(Element a, Element c) {
 		if (c == null) {
 			return false;
-		} else if (c == ancestor) {
+		} else if (c == a) {
 			return true;
 		} else {
-			return isAncestor(ancestor, c.getParent());
+			return isAncestor(a, c.getParent());
 		}
 	}
 
@@ -391,7 +398,7 @@ public abstract class Environment {
 	/**
 	 * update the list order;
 	 */
-	private static void updateOrder(List<ComponentEx> list) {
+	protected static void updateOrder(List<ComponentEx> list) {
 
 		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
 		Comparator<PComponent> zComparator = new Comparator<PComponent>() {

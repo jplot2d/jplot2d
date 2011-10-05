@@ -67,25 +67,16 @@ public class EnvironmentTest {
 
 	private Element proxyA1c, proxyA1c1, proxyA2c, proxyA2c1;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		env = new EnvironmentStub();
 
 		containerA = new ContainerStub();
@@ -161,11 +152,8 @@ public class EnvironmentTest {
 		env.subComponentMap.put(compA2b, listA2b);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 	}
 
 	@Test
