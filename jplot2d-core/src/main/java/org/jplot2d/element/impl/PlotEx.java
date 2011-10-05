@@ -3,7 +3,7 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.Plot;
-import org.jplot2d.warning.WarningManager;
+import org.jplot2d.notice.Notifier;
 
 public interface PlotEx extends Plot, ContainerEx {
 
@@ -44,14 +44,14 @@ public interface PlotEx extends Plot, ContainerEx {
 
 	public void clearRerenderNeeded();
 
-	public WarningManager getWarningManager();
+	public Notifier getNotifier();
 
 	/**
-	 * Sets a WarningReceiver to receive all warning messages.
+	 * Sets a notifier to receive all notice messages.
 	 * 
-	 * @param warningManager
+	 * @param notifier
 	 */
-	public void setWarningManager(WarningManager warningManager);
+	public void setNotifier(Notifier notifier);
 
 	/**
 	 * Apply all pending changes on this plot. After this method is called, all

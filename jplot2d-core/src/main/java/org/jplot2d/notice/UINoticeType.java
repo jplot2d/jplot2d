@@ -16,19 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
 
-/**
- * Thrown to indicate that the axis range has been adjusted by some special
- * reason.
- * 
- * @author Jingjing li
- */
-public class RangeSelectionWarning extends WarningMessage {
+public class UINoticeType extends NoticeType {
 
-	public RangeSelectionWarning(String message) {
-		super(message);
+	private static final UINoticeType instance = new UINoticeType();
+
+	private UINoticeType() {
+		super("UI");
 	}
 
+	public static UINoticeType getInstance() {
+		return instance;
+	}
 }

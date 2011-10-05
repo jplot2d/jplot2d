@@ -42,13 +42,13 @@ import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.Title;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
+import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
+import org.jplot2d.notice.RangeSelectionNotice;
+import org.jplot2d.notice.Notifier;
+import org.jplot2d.notice.Notice;
 import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.warning.RangeSelectionWarning;
-import org.jplot2d.warning.WarningManager;
-import org.jplot2d.warning.WarningMessage;
 
 /**
  * @author Jingjing Li
@@ -87,7 +87,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private boolean rerenderNeeded = true;
 
-	private WarningManager warningReceiver;
+	private Notifier notifier;
 
 	private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
@@ -358,19 +358,19 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		rerenderNeeded = false;
 	}
 
-	public WarningManager getWarningManager() {
-		return warningReceiver;
+	public Notifier getNotifier() {
+		return notifier;
 	}
 
-	public void setWarningManager(WarningManager warningReceiver) {
-		this.warningReceiver = warningReceiver;
+	public void setNotifier(Notifier notifier) {
+		this.notifier = notifier;
 	}
 
-	public void warning(WarningMessage msg) {
+	public void notify(Notice msg) {
 		if ((getParent() != null)) {
-			getParent().warning(msg);
-		} else if (warningReceiver != null) {
-			warningReceiver.warning(msg);
+			getParent().notify(msg);
+		} else if (notifier != null) {
+			notifier.notify(msg);
 		}
 	}
 
@@ -1117,7 +1117,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			this.parentPhysicalTransformChanged();
 		}
 
-		warningReceiver.commit();
 	}
 
 	/**
@@ -1300,17 +1299,17 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		Range2D validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
 		if (!validRange.equals(range)) {
-			warning(new RangeAdjustedToValueBoundsWarning(
+			notify(new RangeAdjustedToValueBoundsNotice(
 					"Range exceed valid boundary, has been adjusted."));
 		}
 
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(validRange, arms);
 		if (rs.getStatus() != null) {
-			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 		}
 		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(rs, arms);
 		if (xrs.getStatus() != null) {
-			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
 		}
 
 		for (AxisRangeLockGroupEx arm : arlgs) {

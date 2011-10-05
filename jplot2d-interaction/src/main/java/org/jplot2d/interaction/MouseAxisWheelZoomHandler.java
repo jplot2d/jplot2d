@@ -28,7 +28,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseWheelBehaviorHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseAxisWheelZoomHandler extends
 		MouseWheelBehaviorHandler<MouseAxisWheelZoomBehavior> {
@@ -75,7 +75,7 @@ public class MouseAxisWheelZoomHandler extends
 
 		axis.getTickManager().getRangeManager().getLockGroup().zoomRange(start, end);
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 		return true;
 	}
 

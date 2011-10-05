@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
@@ -37,7 +39,7 @@ import org.jplot2d.env.RenderEnvironment;
  * 
  * @author Jingjing Li
  */
-public class MenuHandler implements SelectionListener {
+public class MenuHandler implements MenuListener, SelectionListener {
 
 	protected final Control control;
 
@@ -76,6 +78,7 @@ public class MenuHandler implements SelectionListener {
 		this.control = control;
 		this.env = env;
 		menu = new Menu(control);
+		menu.addMenuListener(this);
 
 		boolean separator = false;
 
@@ -128,6 +131,21 @@ public class MenuHandler implements SelectionListener {
 		return menu;
 	}
 
+	public void menuHidden(MenuEvent e) {
+
+	}
+
+	public void menuShown(MenuEvent e) {
+		/*
+		 * Update the internal status according to the point where the menu popup.
+		 */
+
+		// undo/redo
+		undoItem.setEnabled(env.canUndo());
+		redoItem.setEnabled(env.canRedo());
+
+	}
+
 	public void widgetDefaultSelected(SelectionEvent e) {
 
 	}
@@ -137,7 +155,10 @@ public class MenuHandler implements SelectionListener {
 		Object source = event.getSource();
 
 		if (source == propertiesItem) {
-			// TODO: show properties panel
+			MessageBox msgbox = new MessageBox(control.getShell(), SWT.OK | SWT.ICON_INFORMATION
+					| SWT.APPLICATION_MODAL);
+			msgbox.setMessage("Will be avaliable in next version.");
+			msgbox.open();
 			return;
 		}
 		if (source == undoItem) {
@@ -169,18 +190,6 @@ public class MenuHandler implements SelectionListener {
 			return;
 		}
 
-	}
-
-	/**
-	 * Update the internal status according to the point where the menu popup.
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	public void updateStatus(int x, int y) {
-		/* undo/redo */
-		undoItem.setEnabled(env.canUndo());
-		redoItem.setEnabled(env.canRedo());
 	}
 
 	private static FileDialog _saveFileChooser;
@@ -249,4 +258,5 @@ public class MenuHandler implements SelectionListener {
 		_saveFileChooser.setFilterIndex(0);
 		_saveFileChooser.setOverwrite(true);
 	}
+
 }

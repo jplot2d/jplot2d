@@ -21,7 +21,7 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.warning.WarningMessage;
+import org.jplot2d.notice.Notice;
 
 /**
  * @author Jingjing Li
@@ -54,12 +54,12 @@ public interface ElementEx extends Element {
 	public String getShortId();
 
 	/**
-	 * Element call this method to notify warning to its parent.
+	 * Element call this method to notify message to its parent.
 	 * 
 	 * @param msg
-	 *            the warning message
+	 *            the notice message
 	 */
-	public void warning(WarningMessage msg);
+	public void notify(Notice msg);
 
 	/**
 	 * Create a structural copy of this element and put them into orig2copyMap. All properties are

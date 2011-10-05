@@ -16,34 +16,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
-import java.awt.Component;
-
-import javax.swing.JOptionPane;
 
 /**
- * @author Jingjing Li
+ * Thrown to indicate that the plot range contains negative values when axis is
+ * in LOG mode.
  * 
+ * @author Jingjing Li
  */
-public class DialogWarningManager extends WarningManager {
+public class RangeAdjustedToValueBoundsNotice extends RangeSelectionNotice {
 
-	private final Component plotComp;
+	static final long serialVersionUID = 1L;
 
-	public DialogWarningManager(Component plotComp) {
-		this.plotComp = plotComp;
-	}
-
-	@Override
-	protected void showWarnings(WarningType type) {
-		if (warnings.size() > 0) {
-			StringBuilder sb = new StringBuilder();
-			for (WarningMessage wm : warnings) {
-				sb.append(wm.getMessage());
-				sb.append("\n");
-			}
-			JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
-		}
+	public RangeAdjustedToValueBoundsNotice(String message) {
+		super(message);
 	}
 
 }

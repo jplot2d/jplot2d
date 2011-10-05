@@ -31,9 +31,8 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.warning.LogWarningManager;
-import org.jplot2d.warning.WarningManager;
-import org.jplot2d.warning.WarningType;
+import org.jplot2d.notice.LoggingNotifier;
+import org.jplot2d.notice.Notifier;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -53,8 +52,6 @@ public abstract class PlotEnvironment extends Environment {
 
 	protected PlotEx plotImpl;
 
-	private WarningManager warningManager;
-
 	/**
 	 * the key is impl element, the value is copy of element (for renderer thread safe)
 	 */
@@ -65,23 +62,23 @@ public abstract class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All warnings
-	 * are logged to java logging facilities.
+	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All notices are
+	 * logged to java logging facilities.
 	 * 
 	 * @param plot
 	 */
 	public void setPlot(Plot plot) {
-		setPlot(plot, LogWarningManager.getInstance());
+		setPlot(plot, LoggingNotifier.getInstance());
 	}
 
 	/**
 	 * Sets a plot to this environment. The plot must hosted by a dummy environment.
 	 * 
 	 * @param plot
-	 * @param warningManager
-	 *            the WarningManager to receive and process warnings
+	 * @param notifier
+	 *            the notifier to receive and process notices
 	 */
-	public void setPlot(Plot plot, WarningManager warningManager) {
+	public void setPlot(Plot plot, Notifier notifier) {
 		Environment oldEnv;
 		synchronized (getGlobalLock()) {
 			// remove the env of the given plot
@@ -112,8 +109,8 @@ public abstract class PlotEnvironment extends Environment {
 
 		componentAdded(plotImpl, oldEnv);
 
-		this.warningManager = warningManager;
-		plotImpl.setWarningManager(warningManager);
+		this.notifier = notifier;
+		plotImpl.setNotifier(notifier);
 
 		endCommand();
 		oldEnv.endCommand();
@@ -123,40 +120,19 @@ public abstract class PlotEnvironment extends Environment {
 		return plot;
 	}
 
-	public WarningManager getWarningManager() {
-		WarningManager result = null;
+	public Notifier getNotifier() {
+		Notifier result = null;
 		begin();
-		result = warningManager;
+		result = notifier;
 		end();
 		return result;
 	}
 
-	public void setWarningManager(WarningManager warningManager) {
-		beginCommand("setWarningReceiver");
-		this.warningManager = warningManager;
-		plotImpl.setWarningManager(warningManager);
+	public void setNotifier(Notifier notifier) {
+		beginCommand("setNotifier");
+		this.notifier = notifier;
+		plotImpl.setNotifier(notifier);
 		endCommand();
-	}
-
-	/**
-	 * End the batch. All pending update will be committed at once.
-	 * 
-	 * @param token
-	 *            the token gotten from beginBatch
-	 */
-	final public void endBatch(BatchToken token, WarningType type) {
-		begin();
-
-		if (!verifyBatchToken(token)) {
-			throw new IllegalArgumentException("Batch token not match. " + token);
-		}
-
-		try {
-			endCommand();
-		} finally {
-			plotImpl.getWarningManager().processWarnings(type);
-			end();
-		}
 	}
 
 	protected Map<ElementEx, ElementEx> getCopyMap() {
@@ -296,7 +272,7 @@ public abstract class PlotEnvironment extends Environment {
 
 		// copy the memento as implements
 		plotImpl = (PlotEx) memento.getPlot().copyStructure(rcopyMap);
-		plotImpl.setWarningManager(warningManager);
+		plotImpl.setNotifier(notifier);
 
 		copyMap.clear();
 		proxyMap.clear();

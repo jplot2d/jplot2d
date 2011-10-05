@@ -27,6 +27,7 @@ import org.jplot2d.interaction.InteractionManager;
 import org.jplot2d.interaction.MousePreference;
 import org.jplot2d.interaction.PlotDefaultMousePreference;
 import org.jplot2d.interaction.PlotInteractionManager;
+import org.jplot2d.notice.DefaultNotifier;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.BufferedImageFactory;
 import org.jplot2d.renderer.ImageRenderer;
@@ -34,7 +35,6 @@ import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 import org.jplot2d.swt.interaction.InteractionListener;
 import org.jplot2d.swt.interaction.MenuHandler;
-import org.jplot2d.warning.DefaultWarningManager;
 
 /**
  * @author Jingjing Li
@@ -88,7 +88,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 */
 	public JPlot2DComposite(Composite parent, Plot plot, boolean threadSafe) {
 		this(parent, createRenderEnvironment(plot, threadSafe));
-		env.setWarningManager(new DefaultWarningManager(this));
+		env.setNotifier(new DefaultNotifier(this));
 	}
 
 	/**

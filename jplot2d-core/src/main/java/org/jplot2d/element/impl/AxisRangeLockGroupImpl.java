@@ -26,9 +26,9 @@ import java.util.Map;
 import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.data.Graph;
+import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
+import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.util.Range2D;
-import org.jplot2d.warning.RangeAdjustedToValueBoundsWarning;
-import org.jplot2d.warning.RangeSelectionWarning;
 
 public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLockGroupEx {
 
@@ -165,9 +165,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	 * 
 	 * @param arms
 	 *            the axes that global auto-range take place
-	 * @throws WarningException
-	 *             This WarningException can be a NegativeValueInLogException or multiple
-	 *             NegativeValueInLogException in a MultiException.
 	 */
 	private void autoRange() {
 
@@ -178,12 +175,14 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		if (pRange == null) {
 			/* all axis is LOG and contain no positive data, do nothing */
-			warning(new RangeSelectionWarning("Axes contain no valide data, auto range ignored."));
+
+			notify(new RangeSelectionNotice("Axes [" + getAxesShortId()
+					+ "] contain no valide data, auto range ignored."));
 			return;
 		}
 
 		if (pRange.getStatus()) {
-			warning(new RangeAdjustedToValueBoundsWarning("AutoRange only on valid data of axes."));
+			notify(new RangeAdjustedToValueBoundsNotice("AutoRange only on valid data of axes."));
 			/* The detailed info can be gotten from pLogRange.getStatus() */
 		}
 
@@ -194,7 +193,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		if (rs.getStatus() != null) {
 			/* the PrecisionException should not be thrown from autoRange(). */
-			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 		}
 
 		/* extend master range to tick */
@@ -210,7 +209,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(extRange, vtMap);
 		if (xrs.getStatus() != null) {
-			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
 		}
 		zoomVirtualRange(xrs, vtMap);
 
@@ -282,7 +281,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					}
 				}
 
-				if (!wDRange.isEmpty() ) {
+				if (!wDRange.isEmpty()) {
 					Range2D pDRange = vtMap.get(ax).getTransP(wDRange);
 					/* expand range by margin factor */
 					double pLo = pDRange.getMin();
@@ -339,17 +338,17 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		Range2D validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
 		if (!validRange.equals(range)) {
-			warning(new RangeAdjustedToValueBoundsWarning(
+			notify(new RangeAdjustedToValueBoundsNotice(
 					"Range exceed valid boundary, has been adjusted."));
 		}
 
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(validRange, arms);
 		if (rs.getStatus() != null) {
-			warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 		}
 		RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(rs, arms);
 		if (xrs.getStatus() != null) {
-			warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+			notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
 		}
 
 		zoomNormalRange(xrs);
@@ -419,7 +418,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				ax.setNormalTransfrom(ax.getTransformType().createNormalTransform(nwr));
 			}
 
-			warning(new RangeAdjustedToValueBoundsWarning(
+			notify(new RangeAdjustedToValueBoundsNotice(
 					"All axes contain no valid data, range set to default range."));
 			return;
 		}
@@ -441,7 +440,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(expr, arms);
 			zoomNormalRange(xrs);
 
-			warning(new RangeSelectionWarning("The axis contains only one valid date."));
+			notify(new RangeSelectionNotice("The axis contains only one valid date."));
 			return;
 		}
 
@@ -471,18 +470,18 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				coreAxis.setCoreRange(coreRange);
 			} else {
 				if (!pRange.equals(NORM_PHYSICAL_RANGE)) {
-					warning(new RangeAdjustedToValueBoundsWarning(
+					notify(new RangeAdjustedToValueBoundsNotice(
 							"Some axes contain invalid value, range adjusted."));
 				}
 
 				RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(
 						NORM_PHYSICAL_RANGE, arms);
 				if (rs.getStatus() != null) {
-					warning(new RangeSelectionWarning(rs.getStatus().getMessage()));
+					notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 				}
 				RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(rs, arms);
 				if (xrs.getStatus() != null) {
-					warning(new RangeSelectionWarning(xrs.getStatus().getMessage()));
+					notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
 				}
 
 				zoomNormalRange(xrs);
@@ -495,4 +494,18 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		return AxisRangeUtils.validateNormalRange(range, arms, true);
 	}
 
+	private String getAxesShortId() {
+		StringBuilder sb = new StringBuilder();
+		List<AxisEx> axes = new ArrayList<AxisEx>();
+		for (AxisRangeManagerEx rm : arms) {
+			for (AxisTickManagerEx tm : rm.getTickManagers()) {
+				for (AxisEx axis : tm.getAxes()) {
+					sb.append(axis.getShortId());
+					sb.append(", ");
+				}
+			}
+		}
+		sb.setLength(sb.length() - 2);
+		return sb.toString();
+	}
 }

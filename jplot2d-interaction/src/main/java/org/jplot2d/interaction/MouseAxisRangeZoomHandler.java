@@ -28,7 +28,7 @@ import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRangeZoomBehavior> {
 
@@ -97,7 +97,7 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 			axis.getTickManager().getRangeManager().getLockGroup().zoomRange(npyStart, npyEnd);
 		}
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 
 	}
 

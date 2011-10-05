@@ -16,41 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.warning;
+package org.jplot2d.notice;
 
-import java.util.logging.Logger;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
+import org.jplot2d.notice.Notifier;
+import org.jplot2d.notice.Notice;
+import org.jplot2d.notice.NoticeType;
 
 /**
- * This manage write all plot waning messages to java log.
- * 
  * @author Jingjing Li
  * 
  */
-public class LogWarningManager extends WarningManager {
+public class DialogNotifier extends Notifier {
 
-	private static final LogWarningManager instance = new LogWarningManager();
+	private final MessageBox msgbox;
 
-	public static Logger LOGGER = Logger.getLogger("org.jplot2d.env");
-
-	private LogWarningManager() {
-
-	}
-
-	public static LogWarningManager getInstance() {
-		return instance;
+	public DialogNotifier(Composite plotComp) {
+		msgbox = new MessageBox(plotComp.getShell(), SWT.OK | SWT.ICON_WARNING
+				| SWT.APPLICATION_MODAL);
 	}
 
 	@Override
-	protected void showWarnings(WarningType type) {
-		if (warnings.size() > 0) {
-			StringBuilder sb = new StringBuilder("Multiple warnings:\n");
-			for (WarningMessage wm : warnings) {
-				sb.append("\t");
+	protected void showNotices(NoticeType type) {
+		if (notices.size() > 0) {
+			StringBuilder sb = new StringBuilder();
+			for (Notice wm : notices) {
 				sb.append(wm.getMessage());
 				sb.append("\n");
 			}
-			LOGGER.warning(sb.toString());
+			msgbox.setMessage(sb.toString());
+			msgbox.open();
 		}
 	}
 

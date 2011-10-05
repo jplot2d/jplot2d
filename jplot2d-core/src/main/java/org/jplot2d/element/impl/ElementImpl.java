@@ -21,7 +21,7 @@ package org.jplot2d.element.impl;
 import java.util.Map;
 
 import org.jplot2d.env.Environment;
-import org.jplot2d.warning.WarningMessage;
+import org.jplot2d.notice.Notice;
 
 /**
  * @author Jingjing Li
@@ -73,9 +73,9 @@ public abstract class ElementImpl implements ElementEx {
 		return getId();
 	}
 
-	public void warning(WarningMessage msg) {
+	public void notify(Notice msg) {
 		if ((getParent() != null)) {
-			getParent().warning(msg);
+			getParent().notify(msg);
 		}
 	}
 

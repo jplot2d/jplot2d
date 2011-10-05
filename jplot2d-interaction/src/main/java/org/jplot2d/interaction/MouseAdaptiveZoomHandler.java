@@ -26,7 +26,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseClickBehaviorHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseAdaptiveZoomHandler extends MouseClickBehaviorHandler<MouseAdaptiveZoomBehavior> {
 
@@ -52,7 +52,7 @@ public class MouseAdaptiveZoomHandler extends MouseClickBehaviorHandler<MouseAda
 		plot.adaptiveZoomX();
 		plot.adaptiveZoomY();
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 
 		return true;
 	}

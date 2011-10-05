@@ -28,7 +28,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseDragBehaviorHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBehavior> {
 
@@ -88,7 +88,7 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 		double npxEnd = 1 + npxStart;
 		axis.getTickManager().getRangeManager().getLockGroup().zoomRange(npxStart, npxEnd);
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 	}
 
 	@Override

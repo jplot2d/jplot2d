@@ -28,7 +28,7 @@ import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.warning.UIWarningType;
+import org.jplot2d.notice.UINoticeType;
 
 public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoomBehavior> {
 
@@ -77,7 +77,7 @@ public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoo
 		double npyEnd = 1 - (zrect.getMinY() - plotRect.getY()) / plotRect.getHeight();
 		plot.zoomYRange(npyStart, npyEnd);
 
-		env.endBatch(token, UIWarningType.getInstance());
+		env.endBatch(token, UINoticeType.getInstance());
 	}
 
 }
