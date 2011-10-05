@@ -49,9 +49,9 @@ public interface PlotEx extends Plot, ContainerEx {
 	/**
 	 * Sets a WarningReceiver to receive all warning messages.
 	 * 
-	 * @param warningReceiver
+	 * @param warningManager
 	 */
-	public void setWarningManager(WarningManager warningReceiver);
+	public void setWarningManager(WarningManager warningManager);
 
 	/**
 	 * Apply all pending changes on this plot. After this method is called, all
