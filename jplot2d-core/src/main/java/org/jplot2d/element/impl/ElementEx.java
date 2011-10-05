@@ -39,7 +39,19 @@ public interface ElementEx extends Element {
 	 */
 	public void setParent(ElementEx parent);
 
+	/**
+	 * Returns the id of this component
+	 * 
+	 * @return the id of this component
+	 */
 	public String getId();
+
+	/**
+	 * Returns the short id of this component. The short id is like id, without the ending Plot@000000
+	 * 
+	 * @return the short id of this component.
+	 */
+	public String getShortId();
 
 	/**
 	 * Element call this method to notify warning to its parent.
@@ -50,9 +62,8 @@ public interface ElementEx extends Element {
 	public void warning(WarningMessage msg);
 
 	/**
-	 * Create a structural copy of this element and put them into orig2copyMap.
-	 * All properties are not copied. The parent of the copy are not set by this
-	 * method.
+	 * Create a structural copy of this element and put them into orig2copyMap. All properties are
+	 * not copied. The parent of the copy are not set by this method.
 	 * 
 	 * @param orig2copyMap
 	 *            original element to copy map
@@ -61,8 +72,8 @@ public interface ElementEx extends Element {
 	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap);
 
 	/**
-	 * Copies all properties from given src to this element. Notice properties
-	 * of sub-elements are not copied over.
+	 * Copies all properties from given src to this element. Notice properties of sub-elements are
+	 * not copied over.
 	 * 
 	 * @param src
 	 *            the src

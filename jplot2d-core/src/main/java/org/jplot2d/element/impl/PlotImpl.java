@@ -130,6 +130,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		legend.setParent(this);
 	}
 
+	public String getShortId() {
+		return null;
+	}
+
 	public String getSelfId() {
 		if (getParent() != null) {
 			return "Plot" + getParent().indexOf(this);

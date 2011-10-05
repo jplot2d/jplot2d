@@ -51,6 +51,19 @@ public abstract class ElementImpl implements ElementEx {
 		}
 	}
 
+	public String getShortId() {
+		if (parent != null) {
+			String pid = parent.getShortId();
+			if (pid == null) {
+				return getSelfId();
+			} else {
+				return getSelfId() + "." + pid;
+			}
+		} else {
+			return getSelfId();
+		}
+	}
+
 	protected String getSelfId() {
 		return this.getClass().getSimpleName() + "@"
 				+ Integer.toHexString(System.identityHashCode(this));
