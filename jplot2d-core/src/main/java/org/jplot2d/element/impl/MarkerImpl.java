@@ -4,10 +4,27 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
+
+import org.jplot2d.element.Plot;
 
 public class MarkerImpl extends ComponentImpl implements MarkerEx {
 
 	private double locX, locY;
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getMarker");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
+	}
 
 	public LayerEx getParent() {
 		return (LayerEx) super.getParent();

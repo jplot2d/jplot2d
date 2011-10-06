@@ -24,10 +24,12 @@ import java.awt.RenderingHints;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jplot2d.element.HAlign;
+import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -88,6 +90,20 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		} else {
 			return "Legend@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getLegend");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
 	}
 
 	public PlotEx getParent() {

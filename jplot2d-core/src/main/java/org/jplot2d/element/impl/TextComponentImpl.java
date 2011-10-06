@@ -35,7 +35,7 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
-public class TextComponentImpl extends ComponentImpl implements TextComponentEx {
+public abstract class TextComponentImpl extends ComponentImpl implements TextComponentEx {
 
 	private double locX, locY;
 
@@ -148,8 +148,7 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	public Rectangle2D getBounds() {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(),
-					getVAlign(), getHAlign());
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
 		return label.getBounds();
 	}
@@ -170,8 +169,7 @@ public class TextComponentImpl extends ComponentImpl implements TextComponentEx 
 
 	public void draw(Graphics2D g) {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(),
-					getVAlign(), getHAlign());
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
 
 		AffineTransform oldTransform = g.getTransform();

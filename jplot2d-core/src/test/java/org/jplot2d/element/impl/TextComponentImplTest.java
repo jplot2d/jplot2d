@@ -30,13 +30,21 @@ import org.junit.Test;
  */
 public class TextComponentImplTest {
 
+	private static class TextComponentImplStub extends TextComponentImpl {
+
+		public InvokeStep getInvokeStepFormParent() {
+			return null;
+		}
+
+	}
+
 	@Test
 	public void testInitProperties() {
-		TextComponentImpl tc = new TextComponentImpl();
+		TextComponentImpl tc = new TextComponentImplStub();
 		assertTrue(tc.isVisible());
 		assertNull(tc.getTextModel());
 		assertFalse(tc.canContribute());
-		
+
 		tc.setText("");
 		assertNotNull(tc.getTextModel());
 		assertTrue(tc.canContribute());
@@ -44,7 +52,7 @@ public class TextComponentImplTest {
 
 	@Test
 	public void testSetFont() {
-		TextComponentImpl tc = new TextComponentImpl();
+		TextComponentImpl tc = new TextComponentImplStub();
 		Font font = new Font("Serif", Font.PLAIN, 12);
 		tc.setFont(font);
 		assertEquals(tc.getEffectiveFont(), font);

@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.element.Plot;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -50,6 +52,20 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		} else {
 			return "Layer@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getLayer", Integer.TYPE);
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
 	public PlotEx getParent() {

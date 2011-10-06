@@ -19,6 +19,9 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
+
+import org.jplot2d.element.Plot;
 
 /**
  * @author Jingjing Li
@@ -41,6 +44,20 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		} else {
 			return "Title@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getTitle", Integer.TYPE);
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
 	public PlotEx getParent() {

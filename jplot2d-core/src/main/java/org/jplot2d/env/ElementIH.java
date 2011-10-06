@@ -28,6 +28,7 @@ import java.util.Map;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.element.impl.InvokeStep;
 import org.jplot2d.element.impl.Joinable;
 
 /**
@@ -40,6 +41,8 @@ import org.jplot2d.element.impl.Joinable;
  *            the element type
  */
 public class ElementIH<T extends Element> implements InvocationHandler {
+
+	private static CommandLogger cmdLogger = SystemOutCommandLogger.getInstance();
 
 	private final InterfaceInfo iinfo;
 
@@ -86,7 +89,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 
 		/* listener methods */
-		if (isListenerMethod(method)) {
+		if (iinfo.isListenerMethod(method)) {
 			try {
 				return method.invoke(impl, args);
 			} catch (InvocationTargetException ex) {
@@ -102,7 +105,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 		if (method.getName().equals("setEnvironment")) {
 			assert Thread.holdsLock(Environment.getGlobalLock());
-			setEnvironment((Environment) args[0]);
+			environment = (Environment) args[0];
 			return null;
 		}
 		if (method.getName().equals("getImpl")) {
@@ -131,17 +134,17 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			invokeRemoveCompMethod(method, args);
 			return null;
 		}
-		/* set(Element) as a join reference */
+		/* set(Element) as a join reference. For example, axis join an axis tick manager */
 		if (iinfo.isJoinElementMethod(method)) {
 			invokeJoinElementMethod(method, args);
 			return null;
 		}
-		/* set(Element element) as a reference */
+		/* set(Element element) as a reference. For example, layer reference an axis range manager */
 		if (iinfo.isRefElementMethod(method)) {
 			invokeSetRefElementMethod(method, args);
 			return null;
 		}
-		/* set(Element, Element) as a references */
+		/* set(Element, Element) as references. For example, layer reference 2 axis range managers */
 		if (iinfo.isRef2ElementMethod(method)) {
 			invokeSetRef2ElementMethod(method, args);
 			return null;
@@ -167,7 +170,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				return impl.hashCode();
 			}
 			if (method.getName().equals("toString")) {
-				return "Proxy(" + impl.toString() + ")";
+				return "Proxy@" + System.identityHashCode(proxy) + "(" + impl.toString() + ")";
 			}
 
 			/* property getter */
@@ -182,7 +185,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		try {
 			if (iinfo.isPropWriteMethod(method)) {
 				/* property setter method */
-				boolean propChanged = invokeSetter(method, args[0]);
+				boolean propChanged = invokeSetter(method, args);
 				if (!propChanged) {
 					return null;
 				}
@@ -278,6 +281,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 
 			penv.beginCommand("");
+
+			logCommand(method, args);
+
 			Object[] cargs = args.clone();
 			cargs[0] = cimpls;
 			try {
@@ -328,6 +334,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 						"The component to be added already has a parent.");
 			}
 			penv.beginCommand("");
+
+			logCommand(method, args);
+
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
 			try {
@@ -350,7 +359,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * @param proxy
 	 * @param method
 	 * @param object
 	 *            the component to added
@@ -378,6 +386,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				throwable = new IllegalStateException(msg);
 
 			} else {
+
+				logCommand(method, args);
 
 				// notify environment a component is going to be removed
 				penv.componentRemoving(cimpl);
@@ -407,12 +417,12 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		if (throwable != null) {
 			throw throwable;
 		}
-
-		// FIXME: to remove orphan viewport axis after layer is removed
 	}
 
 	/**
-	 * @param proxy
+	 * Sets args[0] as a join reference. Such as axis join a axis tick manager, or axis tick manager
+	 * join a axis range manager, or axis range manager join a axis lock group.
+	 * 
 	 * @param method
 	 * @param object
 	 *            the component to added
@@ -431,12 +441,11 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			env = environment;
 			cenv = ((Element) args[0]).getEnvironment();
 
-			cenv = ((Element) args[0]).getEnvironment();
 			cenv.beginCommand("");
 			cimpl = ((ElementAddition) args[0]).getImpl();
 			if (env != cenv) {
 				if (cimpl instanceof Joinable) {
-					if (((Joinable) cimpl).isReferenced()) {
+					if (((Joinable) cimpl).getPrim() != null) {
 						cenv.end();
 						throw new IllegalArgumentException(
 								"The element to be referenced has been referenced by element from another environment.");
@@ -459,6 +468,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				return;
 			}
 
+			logCommand(method, args);
+
 			// join the new child
 			Object[] cargs = args.clone();
 			cargs[0] = cimpl;
@@ -480,7 +491,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				env.elementAdded(cimpl, cenv);
 			}
 			// remove the old child if it's orphan
-			if (oldRef != null && !((Joinable) oldRef).isReferenced()) {
+			if (oldRef != null && ((Joinable) oldRef).getPrim() == null) {
 				Environment nenv = env.removeOrphan((ElementEx) oldRef);
 				// update environment for the removing component
 				for (Element proxy : nenv.proxyMap.values()) {
@@ -497,8 +508,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when setting a reference to a component. The referred component must belong to the
-	 * same environment. The referred component is the 1st argument of the calling method.
+	 * Called when setting a reference to the element args[0]. The referred component must belong to
+	 * the same environment. For example, layer refer to x axis range manager.
 	 * 
 	 * @param method
 	 * @param args
@@ -522,9 +533,12 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			env.beginCommand("");
 			cimpl = ((ElementAddition) args[0]).getImpl();
 		}
+
+		logCommand(method, args);
+
+		Object[] cargs = args.clone();
+		cargs[0] = cimpl;
 		try {
-			Object[] cargs = args.clone();
-			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
@@ -533,6 +547,16 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
+	/**
+	 * Called when setting a reference to the element args[0] and args[1]. The referred component
+	 * must belong to the same environment. For example, layer refer to x axis range manager and y
+	 * axis range manager.
+	 * 
+	 * @param method
+	 * @param args
+	 *            the arguments
+	 * @throws Throwable
+	 */
 	private void invokeSetRef2ElementMethod(Method method, Object[] args) throws Throwable {
 		if (args[0] == null || args[1] == null) {
 			throw new IllegalArgumentException("Null is not a valid argument.");
@@ -555,10 +579,13 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cimpl0 = ((ElementAddition) args[0]).getImpl();
 			cimpl1 = ((ElementAddition) args[1]).getImpl();
 		}
+
+		logCommand(method, args);
+
+		Object[] cargs = args.clone();
+		cargs[0] = cimpl0;
+		cargs[1] = cimpl1;
 		try {
-			Object[] cargs = args.clone();
-			cargs[0] = cimpl0;
-			cargs[1] = cimpl1;
 			method.invoke(impl, cargs);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
@@ -593,6 +620,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				throw new IllegalArgumentException("");
 			}
 			penv.beginCommand("");
+
+			logCommand(method, args);
+
 			// update environment for all adding components
 			for (Element proxy : cenv.proxyMap.values()) {
 				((ElementAddition) proxy).setEnvironment(penv);
@@ -605,8 +635,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				cargs[i] = (args[i] == null) ? null : ((ElementAddition) args[i]).getImpl();
 			}
 		}
+
+		cargs[0] = cimpl;
 		try {
-			cargs[0] = cimpl;
 			method.invoke(impl, cargs);
 			penv.componentAdded(cimpl, cenv);
 		} catch (InvocationTargetException e) {
@@ -631,26 +662,28 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * 
 	 * @param method
 	 *            the setter method
-	 * @param arg
+	 * @param args
 	 *            arguments
 	 * @return <code>true</code> if the setter method is called.
 	 * @throws Throwable
 	 */
-	protected boolean invokeSetter(Method method, Object arg) throws Throwable {
+	protected boolean invokeSetter(Method method, Object[] args) throws Throwable {
 		// the old value is retrieved from concrete engine
 		Object oldValue = null;
 		Method reader = iinfo.getPropReadMethodByWriteMethod(method);
 		oldValue = invokeGetter(reader);
 
-		if (arg == oldValue) {
+		if (args[0] == oldValue) {
 			return false;
 		}
-		if (arg != null && arg.equals(oldValue)) {
+		if (args[0] != null && args[0].equals(oldValue)) {
 			return false;
 		}
 
+		logCommand(method, args);
+
 		try {
-			method.invoke(impl, arg);
+			method.invoke(impl, args[0]);
 			return true;
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
@@ -666,7 +699,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	protected Object invokeOther(Method method, Object... args) throws Throwable {
+	protected Object invokeOther(Method method, Object[] args) throws Throwable {
+
+		logCommand(method, args);
+
 		try {
 			return method.invoke(impl, args);
 		} catch (InvocationTargetException e) {
@@ -674,15 +710,100 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 	}
 
-	protected boolean isListenerMethod(Method method) {
-		return iinfo.isListenerMethod(method);
+	/**
+	 * @param method
+	 *            the command method
+	 * @param args
+	 *            plain java object or Element proxy object
+	 */
+	private void logCommand(Method method, Object[] args) {
+		StringBuilder sb = new StringBuilder();
+
+		fillElementExpString(sb, environment, impl);
+		sb.append(".");
+		sb.append(method.getName());
+		sb.append("(");
+		if (args != null && args.length > 0) {
+			fillArgString(sb, args[0]);
+			for (int i = 1; i < args.length; i++) {
+				sb.append(", ");
+				fillArgString(sb, args[i]);
+			}
+		}
+		sb.append(")");
+
+		cmdLogger.log(sb.toString());
 	}
 
 	/**
-	 * Set the Environment to this element and all of its sub-elements.
+	 * Fills the argument object into the given stringBuilder
+	 * 
+	 * @param sb
+	 *            the string builder to fill in
+	 * @param arg
+	 *            the argument object
 	 */
-	protected void setEnvironment(Environment env) {
-		environment = env;
+	private static void fillArgString(StringBuilder sb, Object arg) {
+		if (arg instanceof Element) {
+			fillElementExpString(sb, ((Element) arg).getEnvironment(),
+					((ElementAddition) arg).getImpl());
+		} else if (arg instanceof Element[]) {
+			sb.append("[");
+			if (((Element[]) arg).length > 0) {
+				fillArgString(sb, ((Element[]) arg)[0]);
+				for (int i = 1; i < ((Element[]) arg).length; i++) {
+					sb.append(", ");
+					fillArgString(sb, ((Element[]) arg)[i]);
+				}
+			}
+			sb.append("]");
+		} else if (arg instanceof String) {
+			sb.append("\"");
+			sb.append(arg);
+			sb.append("\"");
+		} else {
+			sb.append(arg);
+		}
 	}
 
+	/**
+	 * Fills into a string builder to represent how to get the object from it's ancestor proxy.
+	 * 
+	 * @param sb
+	 *            the string builder to fill in
+	 * @param env
+	 *            the environment that contains the giving obj
+	 * @param obj
+	 *            the object unpacked from proxy
+	 */
+	private static void fillElementExpString(StringBuilder sb, Environment env, Object obj) {
+
+		if (obj instanceof ElementEx) {
+			ElementEx parent;
+			if (obj instanceof Joinable) {
+				parent = ((Joinable) obj).getPrim();
+			} else {
+				parent = ((ElementEx) obj).getParent();
+			}
+
+			InvokeStep ivs = null;
+			if (parent != null) {
+				ivs = ((ElementEx) obj).getInvokeStepFormParent();
+			}
+
+			if (ivs != null) {
+				fillElementExpString(sb, env, parent);
+				sb.append(".");
+				sb.append(ivs.getMethod().getName());
+				sb.append("()");
+				return;
+			} else {
+				sb.append(String.valueOf(env.getProxy((ElementEx) obj)));
+				return;
+			}
+		} else {
+			sb.append(obj.toString());
+			return;
+		}
+	}
 }

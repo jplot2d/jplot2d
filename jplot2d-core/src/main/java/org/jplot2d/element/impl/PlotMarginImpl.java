@@ -18,17 +18,19 @@
  */
 package org.jplot2d.element.impl;
 
+import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.jplot2d.element.Plot;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class PlotMarginImpl extends ElementImpl implements PlotMarginEx,
-		Cloneable {
+public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneable {
 
-	private boolean autoMarginTop = true, autoMarginLeft = true,
-			autoMarginBottom = true, autoMarginRight = true;
+	private boolean autoMarginTop = true, autoMarginLeft = true, autoMarginBottom = true,
+			autoMarginRight = true;
 
 	private double marginTop, marginLeft, marginBottom, marginRight;
 
@@ -38,9 +40,22 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx,
 		if (getParent() != null) {
 			return "Margin";
 		} else {
-			return "Margin@"
-					+ Integer.toHexString(System.identityHashCode(this));
+			return "Margin@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getMargin");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
 	}
 
 	public boolean isAutoMarginTop() {
@@ -140,8 +155,7 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx,
 	}
 
 	@Override
-	public PlotMarginImpl copyStructure(
-			Map<ElementEx, ElementEx> orig2copyMap) {
+	public PlotMarginImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		PlotMarginImpl result = null;
 		try {
 			result = (PlotMarginImpl) this.clone();

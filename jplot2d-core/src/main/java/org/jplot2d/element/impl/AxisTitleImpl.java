@@ -24,8 +24,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 
 import org.jplot2d.element.HAlign;
+import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
@@ -62,6 +64,20 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	protected String getSelfId() {
 		return "Title";
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = Plot.class.getMethod("getTitle", Integer.TYPE);
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
 	}
 
 	public AxisEx getParent() {

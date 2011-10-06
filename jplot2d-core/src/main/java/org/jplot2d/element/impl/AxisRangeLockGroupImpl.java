@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -54,12 +55,26 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		return "AxisLockGroup@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
+	public InvokeStep getInvokeStepFormParent() {
+		if (arms.size() == 0) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = AxisRangeManagerEx.class.getMethod("getLockGroup");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
+	}
+
 	public AxisRangeManagerEx getParent() {
 		return (AxisRangeManagerEx) super.getParent();
 	}
 
-	public boolean isReferenced() {
-		return arms.size() > 0;
+	public ElementEx getPrim() {
+		return prim;
 	}
 
 	@Override
@@ -102,7 +117,11 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		autoRange = false;
 
-		if (arms.size() == 1) {
+		if (arms.size() == 0) {
+			parent = null;
+			prim = null;
+			type = null;
+		} else if (arms.size() == 1) {
 			parent = arms.get(0);
 			prim = arms.get(0);
 			type = prim.getTransformType();
@@ -111,10 +130,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 			/* find a new primary axis */
 			if (prim == axis) {
-				for (AxisRangeManagerEx a : arms) {
-					prim = a;
-					break;
-				}
+				prim = arms.get(0);
 			}
 
 			// try to find unique type
@@ -496,7 +512,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	private String getAxesShortId() {
 		StringBuilder sb = new StringBuilder();
-		List<AxisEx> axes = new ArrayList<AxisEx>();
 		for (AxisRangeManagerEx rm : arms) {
 			for (AxisTickManagerEx tm : rm.getTickManagers()) {
 				for (AxisEx axis : tm.getAxes()) {

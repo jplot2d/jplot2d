@@ -33,6 +33,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ import org.jplot2d.element.AxisTickSide;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
@@ -141,6 +143,27 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 		return "Axis@" + Integer.toHexString(System.identityHashCode(this));
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		try {
+			switch (getOrientation()) {
+			case HORIZONTAL:
+				Method xmethod = Plot.class.getMethod("getXAxis", Integer.TYPE);
+				return new InvokeStep(xmethod, getParent().indexOfXAxis(this));
+			case VERTICAL:
+				Method ymethod = Plot.class.getMethod("getYAxis", Integer.TYPE);
+				return new InvokeStep(ymethod, getParent().indexOfYAxis(this));
+			default:
+				return null;
+			}
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
 	}
 
 	public PlotEx getParent() {

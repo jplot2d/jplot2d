@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 
 /**
  * @author Jingjing Li
@@ -40,6 +41,20 @@ public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx
 
 	protected String getSelfId() {
 		return "LegendItem";
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = GraphPlotterEx.class.getMethod("getLegendItem");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
 	}
 
 	public GraphPlotterEx getParent() {
