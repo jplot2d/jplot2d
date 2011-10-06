@@ -795,7 +795,11 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				fillElementExpString(sb, env, parent);
 				sb.append(".");
 				sb.append(ivs.getMethod().getName());
-				sb.append("()");
+				sb.append("(");
+				if (ivs.getIndex() >= 0) {
+					sb.append(ivs.getIndex());
+				}
+				sb.append(")");
 				return;
 			} else {
 				sb.append(String.valueOf(env.getProxy((ElementEx) obj)));
