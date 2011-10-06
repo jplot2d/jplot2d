@@ -25,6 +25,7 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerImpl;
+import org.jplot2d.element.impl.InvokeStep;
 
 /**
  * Stub for ContainerImpl
@@ -60,6 +61,10 @@ public class ContainerStub extends ContainerImpl {
 
 	public int getIndexOfComponent(ComponentEx comp) {
 		return -1;
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		return null;
 	}
 
 }

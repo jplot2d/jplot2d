@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,48 +18,24 @@
  */
 package org.jplot2d.env;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
-import org.jplot2d.element.impl.ComponentImpl;
-import org.jplot2d.element.impl.InvokeStep;
-
 /**
- * Stub for ComponentImpl
- * 
  * @author Jingjing Li
  * 
  */
-public class ComponentStub extends ComponentImpl {
+public class SystemOutCommandLogger implements CommandLogger {
 
-	public Point2D getLocation() {
-		return null;
+	private static SystemOutCommandLogger instance = new SystemOutCommandLogger();
+
+	public static SystemOutCommandLogger getInstance() {
+		return instance;
 	}
 
-	public Dimension2D getSize() {
-		return null;
+	private SystemOutCommandLogger() {
+
 	}
 
-	public Rectangle2D getBounds() {
-		return null;
-	}
-
-	public void draw(Graphics2D g) {
-		// do nothing
-	}
-
-	public void thisEffectiveColorChanged() {
-		// do nothing
-	}
-
-	public void thisEffectiveFontChanged() {
-		// do nothing
-	}
-
-	public InvokeStep getInvokeStepFormParent() {
-		return null;
+	public void log(String cmd) {
+		System.out.println(cmd);
 	}
 
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.ElementImpl;
+import org.jplot2d.element.impl.InvokeStep;
 
 /**
  * @author Jingjing Li
@@ -31,6 +32,10 @@ public class ElementStub extends ElementImpl {
 
 	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		return this;
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		return null;
 	}
 
 }

@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -140,6 +141,20 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		} else {
 			return "Plot@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = PlotEx.class.getMethod("getSubplot", Integer.TYPE);
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
 	public PlotEx getParent() {

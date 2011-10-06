@@ -64,13 +64,14 @@ public abstract class ElementImpl implements ElementEx {
 		}
 	}
 
+	/**
+	 * Returns the self segment of id string
+	 * 
+	 * @return the self segment of id string
+	 */
 	protected String getSelfId() {
 		return this.getClass().getSimpleName() + "@"
 				+ Integer.toHexString(System.identityHashCode(this));
-	}
-
-	public String toString() {
-		return getId();
 	}
 
 	public void notify(Notice msg) {
@@ -97,6 +98,10 @@ public abstract class ElementImpl implements ElementEx {
 
 	public void copyFrom(ElementEx src) {
 		// copy nothing
+	}
+
+	public String toString() {
+		return getId();
 	}
 
 }

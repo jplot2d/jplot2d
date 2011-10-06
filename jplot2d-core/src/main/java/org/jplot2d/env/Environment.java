@@ -49,7 +49,7 @@ import org.jplot2d.notice.NoticeType;
  */
 public abstract class Environment {
 
-	static Logger logger = Logger.getLogger("org.jplot2d.env");
+	private static Logger logger = Logger.getLogger("org.jplot2d.env");
 
 	/**
 	 * The global locking object for get/set environment.

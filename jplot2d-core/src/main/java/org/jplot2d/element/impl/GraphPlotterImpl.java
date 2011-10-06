@@ -20,14 +20,14 @@ package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
  * @author Jingjing Li
  * 
  */
-public abstract class GraphPlotterImpl extends ComponentImpl implements
-		GraphPlotterEx {
+public abstract class GraphPlotterImpl extends ComponentImpl implements GraphPlotterEx {
 
 	private static Point2D LOCATION = new Point2D.Double();
 
@@ -44,6 +44,20 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 		} else {
 			return "Graph@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public InvokeStep getInvokeStepFormParent() {
+		if (parent == null) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = LayerEx.class.getMethod("getGraphPlotter", Integer.TYPE);
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
 	public LayerEx getParent() {
@@ -72,8 +86,7 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements
 
 	@Override
 	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		GraphPlotterImpl result = (GraphPlotterImpl) super
-				.copyStructure(orig2copyMap);
+		GraphPlotterImpl result = (GraphPlotterImpl) super.copyStructure(orig2copyMap);
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(getLegendItem(), result.getLegendItem());

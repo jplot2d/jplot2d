@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
+import org.jplot2d.element.Plot;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.util.Range2D;
@@ -71,12 +73,30 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		}
 	}
 
+	public InvokeStep getInvokeStepFormParent() {
+		if (tickManagers.size() == 0) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = AxisTickManagerEx.class.getMethod("getRangeManager");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
+	}
+
 	public AxisTickManagerEx getParent() {
 		return (AxisTickManagerEx) super.getParent();
 	}
 
-	public boolean isReferenced() {
-		return tickManagers.size() > 0;
+	public ElementEx getPrim() {
+		if (tickManagers.size() == 0) {
+			return null;
+		} else {
+			return tickManagers.get(0);
+		}
 	}
 
 	public boolean isInverted() {

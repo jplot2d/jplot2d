@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.Font;
 import java.awt.geom.Dimension2D;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisTickTransform;
+import org.jplot2d.element.Plot;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.NumberArrayUtils;
@@ -208,12 +210,30 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
+	public InvokeStep getInvokeStepFormParent() {
+		if (axes.size() == 0) {
+			return null;
+		}
+
+		Method method;
+		try {
+			method = AxisEx.class.getMethod("getTickManager");
+		} catch (NoSuchMethodException e) {
+			throw new Error(e);
+		}
+		return new InvokeStep(method);
+	}
+
 	public AxisEx getParent() {
 		return (AxisImpl) parent;
 	}
 
-	public boolean isReferenced() {
-		return axes.size() > 0;
+	public ElementEx getPrim() {
+		if (axes.size() == 0) {
+			return null;
+		} else {
+			return axes.get(0);
+		}
 	}
 
 	public AxisRangeManagerEx getRangeManager() {

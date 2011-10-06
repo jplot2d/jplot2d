@@ -54,6 +54,13 @@ public interface ElementEx extends Element {
 	public String getShortId();
 
 	/**
+	 * Return the invoke step to get this object from its parent.
+	 * 
+	 * @return the invoke step
+	 */
+	public InvokeStep getInvokeStepFormParent();
+
+	/**
 	 * Element call this method to notify message to its parent.
 	 * 
 	 * @param msg

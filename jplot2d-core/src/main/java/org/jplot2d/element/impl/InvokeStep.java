@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,21 +18,46 @@
  */
 package org.jplot2d.element.impl;
 
+import java.lang.reflect.Method;
+
 /**
- * The getParent() will returns the only parent of this element. If this element has multiple
- * referencer, getParent() returns <code>null</code>. This make a referenceable element can be
- * removed together with its only referencer.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Joinable {
+public class InvokeStep {
+
+	private final Method method;
+	private final int index;
 
 	/**
-	 * Returns the primary referencer.
+	 * Create a invoke step with a method
 	 * 
-	 * @return the primary referencer
+	 * @param method
+	 *            the method to invoke
 	 */
-	public ElementEx getPrim();
+	public InvokeStep(Method method) {
+		this.method = method;
+		index = -1;
+	}
 
+	/**
+	 * Create a invoke step with a method and an int argument
+	 * 
+	 * @param method
+	 *            the method to invoke
+	 * @param index
+	 *            the argument
+	 */
+	public InvokeStep(Method method, int index) {
+		this.method = method;
+		this.index = index;
+	}
+
+	public Method getMethod() {
+		return method;
+	}
+
+	public int getIndex() {
+		return index;
+	}
 }
