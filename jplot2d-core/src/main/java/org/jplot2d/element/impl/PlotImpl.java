@@ -135,7 +135,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return null;
 	}
 
-	public String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Plot" + getParent().indexOf(this);
 		} else {

@@ -29,6 +29,13 @@ import org.jplot2d.env.Environment;
 public interface Element {
 
 	/**
+	 * Returns the id string of this element
+	 * 
+	 * @return the id string
+	 */
+	public String getId();
+
+	/**
 	 * Gets the parent of this component.
 	 * 
 	 * @return the parent of this component

@@ -44,10 +44,15 @@ public abstract class ElementImpl implements ElementEx {
 	}
 
 	public String getId() {
+		return this.getClass().getSimpleName() + "@"
+				+ Integer.toHexString(System.identityHashCode(this));
+	}
+
+	public String getFullId() {
 		if (parent != null) {
-			return getSelfId() + "." + parent.getId();
+			return getId() + "." + parent.getFullId();
 		} else {
-			return getSelfId();
+			return getId();
 		}
 	}
 
@@ -55,23 +60,13 @@ public abstract class ElementImpl implements ElementEx {
 		if (parent != null) {
 			String pid = parent.getShortId();
 			if (pid == null) {
-				return getSelfId();
+				return getId();
 			} else {
-				return getSelfId() + "." + pid;
+				return getId() + "." + pid;
 			}
 		} else {
-			return getSelfId();
+			return getId();
 		}
-	}
-
-	/**
-	 * Returns the self segment of id string
-	 * 
-	 * @return the self segment of id string
-	 */
-	protected String getSelfId() {
-		return this.getClass().getSimpleName() + "@"
-				+ Integer.toHexString(System.identityHashCode(this));
 	}
 
 	public void notify(Notice msg) {
@@ -101,7 +96,7 @@ public abstract class ElementImpl implements ElementEx {
 	}
 
 	public String toString() {
-		return getId();
+		return getFullId();
 	}
 
 }

@@ -406,7 +406,7 @@ class AxisRangeUtils {
 			double r = vt.getMinPSpan4PrecisionLimit(pLo, pHi, precisionLimit);
 			if (minRange < r) {
 				minRange = r;
-				minRangeId = axis.getId();
+				minRangeId = axis.getFullId();
 			}
 		}
 
@@ -489,7 +489,7 @@ class AxisRangeUtils {
 						/ ascale;
 				if (maxRange > pcircle) {
 					maxRange = pcircle;
-					maxRangeId = axis.getId();
+					maxRangeId = axis.getFullId();
 				}
 			}
 		}

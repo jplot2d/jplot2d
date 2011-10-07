@@ -36,7 +36,7 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneab
 
 	private double extraTop, extraLeft, extraBottom, extraRight;
 
-	public String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Margin";
 		} else {

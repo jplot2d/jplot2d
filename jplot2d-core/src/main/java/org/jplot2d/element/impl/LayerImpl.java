@@ -46,7 +46,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private AxisRangeManagerEx xarm, yarm;
 
-	protected String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Layer" + getParent().indexOf(this);
 		} else {

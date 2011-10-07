@@ -201,12 +201,12 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	}
 
-	public String getId() {
+	public String getFullId() {
 		if (rangeManager != null) {
 			int xidx = rangeManager.indexOfTickManager(this);
-			return "Tick" + xidx + "." + rangeManager.getId();
+			return "Tick" + xidx + "." + rangeManager.getFullId();
 		} else {
-			return super.getSelfId();
+			return super.getId();
 		}
 	}
 

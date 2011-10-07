@@ -38,7 +38,7 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 	 */
 	private Rectangle2D bounds = new Rectangle2D.Double();
 
-	public String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Title" + getParent().indexOf(this);
 		} else {
