@@ -38,7 +38,7 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements GraphPlo
 		legendItem.setParent(this);
 	}
 
-	protected String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Graph" + getParent().indexOf(this);
 		} else {

@@ -64,12 +64,12 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		ntf = txfType.createNormalTransform(type.getDefaultWorldRange(txfType));
 	}
 
-	public String getId() {
+	public String getFullId() {
 		if (group != null) {
 			int xidx = group.indexOfRangeManager(this);
-			return "Range" + xidx + "." + group.getId();
+			return "Range" + xidx + "." + group.getFullId();
 		} else {
-			return super.getSelfId();
+			return super.getId();
 		}
 	}
 
@@ -339,14 +339,14 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		Range2D pRange = AxisRangeUtils.validateNormalRange(pr, vtMap, false);
 		if (pRange == null) {
 			// no intersect at all
-			throw new IllegalArgumentException(getId() + ": The given range is not valid.");
+			throw new IllegalArgumentException(getFullId() + ": The given range is not valid.");
 		}
 
 		double pLo = pRange.getMin();
 		double pHi = pRange.getMax();
 
 		if (!pRange.equals(pr)) {
-			notify(new RangeAdjustedToValueBoundsNotice(getId()
+			notify(new RangeAdjustedToValueBoundsNotice(getFullId()
 					+ ": the given range contains invalid value, range adjusted to ["
 					+ ntf.getTransU(pLo) + ", " + ntf.getTransU(pHi) + "]"));
 		}

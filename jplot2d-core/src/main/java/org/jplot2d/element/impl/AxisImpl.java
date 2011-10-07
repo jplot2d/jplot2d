@@ -131,7 +131,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.title = title;
 	}
 
-	protected String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			switch (getOrientation()) {
 			case HORIZONTAL:

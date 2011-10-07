@@ -51,7 +51,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	private boolean autoRangeNeeded = true;
 
-	public String getId() {
+	public String getFullId() {
 		return "AxisLockGroup@" + Integer.toHexString(System.identityHashCode(this));
 	}
 

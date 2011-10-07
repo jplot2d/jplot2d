@@ -62,7 +62,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	}
 
-	protected String getSelfId() {
+	public String getId() {
 		return "Title";
 	}
 

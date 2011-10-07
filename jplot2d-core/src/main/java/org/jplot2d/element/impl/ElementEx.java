@@ -40,14 +40,16 @@ public interface ElementEx extends Element {
 	public void setParent(ElementEx parent);
 
 	/**
-	 * Returns the id of this component
+	 * Returns the full id of this component. The full id is composed of series of ids concatenated
+	 * with dots. The 1st id is the id of this element, the 2nd id is the id of the parent of this
+	 * element, etc, until the root plot.
 	 * 
-	 * @return the id of this component
+	 * @return the full id of this component
 	 */
-	public String getId();
+	public String getFullId();
 
 	/**
-	 * Returns the short id of this component. The short id is like id, without the ending Plot@000000
+	 * Returns the short id of this component. The short id is like full id, without the root Plot
 	 * 
 	 * @return the short id of this component.
 	 */

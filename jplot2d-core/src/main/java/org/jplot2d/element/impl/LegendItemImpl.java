@@ -39,7 +39,7 @@ public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx
 
 	}
 
-	protected String getSelfId() {
+	public String getId() {
 		return "LegendItem";
 	}
 

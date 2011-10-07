@@ -84,7 +84,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
-	public String getSelfId() {
+	public String getId() {
 		if (getParent() != null) {
 			return "Legend";
 		} else {
