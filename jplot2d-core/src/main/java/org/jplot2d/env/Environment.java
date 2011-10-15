@@ -86,8 +86,8 @@ public abstract class Environment {
 	 */
 	protected final Map<ComponentEx, List<ComponentEx>> subComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
-	private final List<JPlot2DChangeListener> plotStructureListenerList = Collections
-			.synchronizedList(new ArrayList<JPlot2DChangeListener>());
+	private final List<ElementChangeListener> plotStructureListenerList = Collections
+			.synchronizedList(new ArrayList<ElementChangeListener>());
 
 	protected static Object getGlobalLock() {
 		return LOCK;
@@ -421,21 +421,21 @@ public abstract class Environment {
 
 	/* --- JPlot2DChangeListener --- */
 
-	private void fireComponentAdded(PComponent engine) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
+	private void fireComponentAdded(PComponent element) {
+		ElementChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { engine });
-			for (JPlot2DChangeListener lsnr : ls) {
+			ElementChangeEvent evt = new ElementChangeEvent(this, element);
+			for (ElementChangeListener lsnr : ls) {
 				lsnr.componentCreated(evt);
 			}
 		}
 	}
 
-	private void fireComponentRemoving(PComponent engine) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
+	private void fireComponentRemoving(PComponent element) {
+		ElementChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { engine });
-			for (JPlot2DChangeListener lsnr : ls) {
+			ElementChangeEvent evt = new ElementChangeEvent(this, element);
+			for (ElementChangeListener lsnr : ls) {
 				lsnr.componentRemoved(evt);
 			}
 		}
@@ -448,24 +448,24 @@ public abstract class Environment {
 	 * @param element
 	 */
 	private void fireElementPropertyChanged(Element element) {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, new Element[] { element });
-			for (JPlot2DChangeListener lsnr : ls) {
+			ElementChangeEvent evt = new ElementChangeEvent(this, element);
+			for (ElementChangeListener lsnr : ls) {
 				lsnr.enginePropertiesChanged(evt);
 			}
 		}
 	}
 
-	public JPlot2DChangeListener[] getPlotPropertyListeners() {
-		return plotStructureListenerList.toArray(new JPlot2DChangeListener[0]);
+	public ElementChangeListener[] getPlotPropertyListeners() {
+		return plotStructureListenerList.toArray(new ElementChangeListener[0]);
 	}
 
-	public void addPlotPropertyListener(JPlot2DChangeListener listener) {
+	public void addPlotPropertyListener(ElementChangeListener listener) {
 		plotStructureListenerList.add(listener);
 	}
 
-	public void removePlotPropertyListener(JPlot2DChangeListener listener) {
+	public void removePlotPropertyListener(ElementChangeListener listener) {
 		plotStructureListenerList.remove(listener);
 	}
 

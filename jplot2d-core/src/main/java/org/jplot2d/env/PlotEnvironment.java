@@ -337,10 +337,10 @@ public abstract class PlotEnvironment extends Environment {
 	/* --- JPlot2DChangeListener --- */
 
 	protected void fireChangeProcessed() {
-		JPlot2DChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getPlotPropertyListeners();
 		if (ls.length > 0) {
-			JPlot2DChangeEvent evt = new JPlot2DChangeEvent(this, null);
-			for (JPlot2DChangeListener lsnr : ls) {
+			ElementChangeEvent evt = new ElementChangeEvent(this, null);
+			for (ElementChangeListener lsnr : ls) {
 				lsnr.batchModeChanged(evt);
 			}
 		}
