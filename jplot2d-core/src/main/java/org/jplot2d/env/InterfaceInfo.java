@@ -19,20 +19,29 @@
 package org.jplot2d.env;
 
 import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 
+/**
+ * This class extract properties from method declaration, rather than using java introspector.
+ * 
+ * @author Jingjing Li
+ * 
+ */
 public class InterfaceInfo {
 
 	private static final String IS_PREFIX = "is";
@@ -50,12 +59,12 @@ public class InterfaceInfo {
 
 	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
 
-	private final Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
+	private Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<String, PropertyInfo[]>();
 
 	/**
-	 * Load interface info for the given interface and its parents.The subclass
-	 * may hide the info of its superclass. For example, if a sub-interface only
-	 * redeclare a getter, the info will report the property is read-only.
+	 * Load interface info for the given interface and its parents.The subclass may hide the info of
+	 * its superclass. For example, if a sub-interface only redeclare a getter, the info will report
+	 * the property is read-only.
 	 * 
 	 * @param interfaceClass
 	 */
@@ -63,10 +72,23 @@ public class InterfaceInfo {
 		InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
 		if (iinfo == null) {
 			iinfo = new InterfaceInfo();
+			iinfo.loadGroup(interfaceClass);
 			iinfo.load(interfaceClass);
 			interfaceInfoCache.put(interfaceClass, iinfo);
 		}
 		return iinfo;
+	}
+
+	private void loadGroup(Class<?> interfaceClass) {
+		// load parents
+		for (Class<?> superClass : interfaceClass.getInterfaces()) {
+			loadGroup(superClass);
+		}
+		// load this interface
+		PropertyGroup pg = interfaceClass.getAnnotation(PropertyGroup.class);
+		if (pg != null) {
+			pisGroupMap.put(pg.value(), null);
+		}
 	}
 
 	private void load(Class<?> beanClass) {
@@ -74,14 +96,16 @@ public class InterfaceInfo {
 		// get an array of all the public methods at all level
 		Method methods[] = beanClass.getMethods();
 
-		PropertyDescriptor[] pds = null;
+		PropertyInfo[] pds = null;
 		try {
 			pds = getPropertyInfo(methods);
 		} catch (IntrospectionException e) {
 			throw new Error(e);
 		}
 
-		for (PropertyDescriptor p : pds) {
+		Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<String, List<PropertyInfo>>();
+
+		for (PropertyInfo p : pds) {
 			if (p.getPropertyType() != null) {
 				Method readMethod = p.getReadMethod();
 				Method writeMethod = p.getWriteMethod();
@@ -94,8 +118,18 @@ public class InterfaceInfo {
 						if (pann.description().length() > 0) {
 							p.setShortDescription(pann.description());
 						}
+						p.setOrder(pann.order());
+						PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(
+								PropertyGroup.class);
+						if (pg != null) {
+							List<PropertyInfo> pis = pilGroupMap.get(pg.value());
+							if (pis == null) {
+								pis = new ArrayList<PropertyInfo>();
+								pilGroupMap.put(pg.value(), pis);
+							}
+							pis.add(p);
+						}
 					}
-					properties.put(p.getName(), p);
 
 					propReadMethods.add(readMethod);
 					if (writeMethod != null) {
@@ -105,24 +139,37 @@ public class InterfaceInfo {
 			}
 		}
 
+		// sort value array of pisGroupMap
+		Iterator<Map.Entry<String, PropertyInfo[]>> itr = pisGroupMap.entrySet().iterator();
+		while (itr.hasNext()) {
+			Map.Entry<String, PropertyInfo[]> me = itr.next();
+			List<PropertyInfo> gpdList = pilGroupMap.get(me.getKey());
+			if (gpdList != null) {
+				PropertyInfo[] gpds = gpdList.toArray(new PropertyInfo[gpdList.size()]);
+				Arrays.sort(gpds);
+				me.setValue(gpds);
+			} else {
+				itr.remove();
+			}
+		}
+
 		for (Method method : methods) {
 			Hierarchy hierAnn = method.getAnnotation(Hierarchy.class);
 			if (hierAnn != null) {
 				hierachyMethodMap.put(method, hierAnn.value());
 			}
 		}
-
 	}
 
-	public Map<String, PropertyDescriptor> getPropertyMap() {
-		return properties;
+	public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
+		return pisGroupMap;
 	}
 
 	/**
 	 * @param method
 	 * @return
 	 */
-	public boolean isPropReadMethod(Method method) {
+	protected boolean isPropReadMethod(Method method) {
 		return propReadMethods.contains(method);
 	}
 
@@ -130,15 +177,15 @@ public class InterfaceInfo {
 	 * @param method
 	 * @return
 	 */
-	public boolean isPropWriteMethod(Method method) {
+	protected boolean isPropWriteMethod(Method method) {
 		return propWriteReadMap.containsKey(method);
 	}
 
-	public Method getPropReadMethodByWriteMethod(Method method) {
+	protected Method getPropReadMethodByWriteMethod(Method method) {
 		return propWriteReadMap.get(method);
 	}
 
-	public boolean isListenerMethod(Method method) {
+	protected boolean isListenerMethod(Method method) {
 		return listenerGarMethods.contains(method);
 	}
 
@@ -211,13 +258,14 @@ public class InterfaceInfo {
 	}
 
 	/**
-	 * @return An array of PropertyDescriptors
+	 * Extract an array of PropertyDescriptor from the given methods.
+	 * 
+	 * @return An array of PropertyDescriptors, with the order of getter declared.
 	 * @throws IntrospectionException
 	 */
-	private PropertyDescriptor[] getPropertyInfo(Method[] methods)
-			throws IntrospectionException {
+	private PropertyInfo[] getPropertyInfo(Method[] methods) throws IntrospectionException {
 
-		Map<String, Method> pdReaderMap = new HashMap<String, Method>();
+		Map<String, Method> pdReaderMap = new LinkedHashMap<String, Method>();
 		Map<String, Method> pdWriterMap = new HashMap<String, Method>();
 
 		for (int i = 0; i < methods.length; i++) {
@@ -245,8 +293,7 @@ public class InterfaceInfo {
 				if (name.startsWith(GET_PREFIX)) {
 					// Simple getter
 					pname = decapitalize(name.substring(3));
-				} else if (resultType == boolean.class
-						&& name.startsWith(IS_PREFIX)) {
+				} else if (resultType == boolean.class && name.startsWith(IS_PREFIX)) {
 					// Boolean getter
 					pname = decapitalize(name.substring(2));
 				}
@@ -255,15 +302,12 @@ public class InterfaceInfo {
 					Method pre = pdReaderMap.get(pname);
 					if (pre == null) {
 						pdReaderMap.put(pname, method);
-					} else if (pre.getReturnType().isAssignableFrom(
-							method.getReturnType())) {
+					} else if (pre.getReturnType().isAssignableFrom(method.getReturnType())) {
 						pdReaderMap.put(pname, method);
-					} else if (method.getReturnType().isAssignableFrom(
-							pre.getReturnType())) {
+					} else if (method.getReturnType().isAssignableFrom(pre.getReturnType())) {
 						// the return type of exist getter is more precise
 					} else {
-						throw new IntrospectionException(
-								"getter name conflict: " + name);
+						throw new IntrospectionException("getter name conflict: " + name);
 					}
 				}
 			} else if (argCount == 1) {
@@ -271,36 +315,32 @@ public class InterfaceInfo {
 					// Simple setter
 					String pname = decapitalize(name.substring(3));
 					if (pdWriterMap.containsKey(pname)) {
-						throw new IntrospectionException(
-								"setter name conflict: " + name);
+						throw new IntrospectionException("setter name conflict: " + name);
 					}
 					pdWriterMap.put(pname, method);
 				}
 			}
 		}
 
-		List<PropertyDescriptor> pdList = new ArrayList<PropertyDescriptor>();
+		List<PropertyInfo> pdList = new ArrayList<PropertyInfo>();
 		for (Map.Entry<String, Method> me : pdReaderMap.entrySet()) {
 			String pname = me.getKey();
 			Method reader = me.getValue();
 			Method writer = pdWriterMap.get(pname);
-			PropertyDescriptor pd = new PropertyDescriptor(pname, reader,
-					writer);
+			PropertyInfo pd = new PropertyInfo(pname, reader, writer);
 			pdList.add(pd);
 		}
 
-		return pdList.toArray(new PropertyDescriptor[pdList.size()]);
+		return pdList.toArray(new PropertyInfo[pdList.size()]);
 	}
 
 	/**
-	 * Utility method to take a string and convert it to normal Java variable
-	 * name capitalization. This normally means converting the first character
-	 * from upper case to lower case, but in the (unusual) special case when
-	 * there is more than one character and both the first and second characters
-	 * are upper case, we leave it alone.
+	 * Utility method to take a string and convert it to normal Java variable name capitalization.
+	 * This normally means converting the first character from upper case to lower case, but in the
+	 * (unusual) special case when there is more than one character and both the first and second
+	 * characters are upper case, we leave it alone.
 	 * <p>
-	 * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as
-	 * "URL".
+	 * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as "URL".
 	 * 
 	 * @param name
 	 *            The string to be decapitalized.
