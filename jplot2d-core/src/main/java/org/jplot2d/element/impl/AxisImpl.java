@@ -76,8 +76,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private double locX, locY;
 
-	private boolean titleVisible = true;
-
 	private AxisOrientation orientation;
 
 	private double length;
@@ -405,16 +403,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return title;
 	}
 
-	public boolean isTitleVisible() {
-		return titleVisible;
-	}
-
-	public void setTitleVisible(boolean visible) {
-		this.titleVisible = visible;
-		invalidateThickness();
-		redraw();
-	}
-
 	public double getThickness() {
 		return asc + desc;
 	}
@@ -489,7 +477,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 
-		if (titleVisible && getTitle().getTextModel() != null) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
 			if (isTitleAscSide()) {
 				titleVAlign = VAlign.BOTTOM;
 				getTitle().setVAlign(titleVAlign);
@@ -611,7 +599,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		this.locX = axis.locX;
 		this.locY = axis.locY;
-		this.titleVisible = axis.titleVisible;
 		this.orientation = axis.orientation;
 		this.length = axis.length;
 		this.position = axis.position;
@@ -653,7 +640,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			drawLabels(g, labelVAlign, labelHAlign);
 		}
 
-		if (titleVisible && getTitle().getTextModel() != null) {
+		if (getTitle().isVisible() && getTitle().getTextModel() != null) {
 			drawTitle(graphics);
 		}
 
