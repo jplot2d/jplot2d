@@ -22,11 +22,14 @@ import java.awt.Color;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Axis")
 public interface Axis extends PComponent {
 
 	@Hierarchy(HierarchyOp.GET)
@@ -44,25 +47,27 @@ public interface Axis extends PComponent {
 	public void setTickManager(AxisTickManager tickManager);
 
 	/**
-	 * Orientation is a read-only property. It just show the orientation of this
-	 * axis after it has been add as a X/Y axis.
+	 * Orientation is a read-only property. It just show the orientation of this axis after it has
+	 * been add as a X/Y axis.
 	 * 
 	 * @return orientation of this axis
 	 */
+	@Property(order = 0)
 	public AxisOrientation getOrientation();
 
 	/**
-	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT
-	 * for y axis, PlotConstant.BOTTOM or PlotConstant.TOP for x axis.
+	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for y axis,
+	 * PlotConstant.BOTTOM or PlotConstant.TOP for x axis.
 	 * 
 	 * @return the position of the axis in the plot.
 	 */
+	@Property(order = 1)
 	public AxisPosition getPosition();
 
 	/**
-	 * Set the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for
-	 * y axis, PlotConstant.BOTTOM or PlotConstant.TOP for x axis. Only can be
-	 * set when autoPosition is not True.
+	 * Set the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for y axis,
+	 * PlotConstant.BOTTOM or PlotConstant.TOP for x axis. Only can be set when autoPosition is not
+	 * True.
 	 * 
 	 * @param position
 	 *            the position of the axis in the plot.
@@ -74,11 +79,11 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return true if the grid line is displayed
 	 */
+	@Property(order = 2, displayName = "Grid Lines")
 	public boolean isGridLines();
 
 	/**
-	 * Sets grid lines of grey lines in corresponding of major ticks of the
-	 * axis.
+	 * Sets grid lines of grey lines in corresponding of major ticks of the axis.
 	 * 
 	 * @param showGridLines
 	 *            if true show the grid lines.
@@ -90,6 +95,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
+	@Property(order = 3)
 	public boolean isTickVisible();
 
 	/**
@@ -100,25 +106,9 @@ public interface Axis extends PComponent {
 	public void setTickVisible(boolean visible);
 
 	/**
-	 * Get the Orientation of the labels.
-	 * 
-	 * @return label orientation:<br>
-	 *         0 HORIZONTAL<br>
-	 *         1 VERTICAL
-	 */
-	public AxisOrientation getLabelOrientation();
-
-	/**
-	 * Set the orientation of the labels of the ticks <br>
-	 * 
-	 * @param orientation
-	 *            HORIZONTAL/VERTICAL
-	 */
-	public void setLabelOrientation(AxisOrientation orientation);
-
-	/**
 	 * Return the direction of the ticks
 	 */
+	@Property(order = 4)
 	public AxisTickSide getTickSide();
 
 	/**
@@ -131,6 +121,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the height of the ticks
 	 */
+	@Property(order = 5)
 	public double getTickHeight();
 
 	/**
@@ -146,6 +137,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the physical height of the minor ticks.
 	 */
+	@Property(order = 6)
 	public double getMinorTickHeight();
 
 	/**
@@ -161,6 +153,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
+	@Property(order = 7)
 	public boolean isLabelVisible();
 
 	/**
@@ -171,10 +164,40 @@ public interface Axis extends PComponent {
 	public void setLabelVisible(boolean visible);
 
 	/**
+	 * Return the position of the label of the ticks
+	 */
+	@Property(order = 8)
+	public AxisLabelSide getLabelSide();
+
+	/**
+	 * Set the position of the label of the ticks respect of the axis
+	 */
+	public void setLabelSide(AxisLabelSide side);
+
+	/**
+	 * Get the Orientation of the labels.
+	 * 
+	 * @return label orientation:<br>
+	 *         0 HORIZONTAL<br>
+	 *         1 VERTICAL
+	 */
+	@Property(order = 9)
+	public AxisOrientation getLabelOrientation();
+
+	/**
+	 * Set the orientation of the labels of the ticks <br>
+	 * 
+	 * @param orientation
+	 *            HORIZONTAL/VERTICAL
+	 */
+	public void setLabelOrientation(AxisOrientation orientation);
+
+	/**
 	 * Return the color of the labels of the ticks
 	 * 
 	 * @return the color of the labels
 	 */
+	@Property(order = 10)
 	public Color getLabelColor();
 
 	/**
@@ -186,16 +209,6 @@ public interface Axis extends PComponent {
 	public void setLabelColor(Color color);
 
 	/**
-	 * Return the position of the label of the ticks
-	 */
-	public AxisLabelSide getLabelSide();
-
-	/**
-	 * Set the position of the label of the ticks respect of the axis
-	 */
-	public void setLabelSide(AxisLabelSide side);
-
-	/**
 	 * Returns the title of this axis.
 	 * 
 	 * @return the title of this axis
@@ -203,7 +216,4 @@ public interface Axis extends PComponent {
 	@Hierarchy(HierarchyOp.GET)
 	public AxisTitle getTitle();
 
-	public boolean isTitleVisible();
-
-	public void setTitleVisible(boolean visible);
 }

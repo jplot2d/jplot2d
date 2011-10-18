@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jplot2d.element.Axis;
+import org.jplot2d.env.PropertyInfo;
 
 /**
  * @author Jingjing Li
@@ -59,10 +60,8 @@ public class TestUtils {
 	public static void checkAxisTickRange(Axis axis1, Axis axis2) {
 		Range2D xr1 = axis1.getTickManager().getRange();
 		Range2D xr2 = axis2.getTickManager().getRange();
-		assertEquals(xr1.getStart(), xr2.getStart(),
-				Math.abs(xr2.getStart()) * 1e-12);
-		assertEquals(xr1.getStart(), xr2.getStart(),
-				Math.abs(xr2.getStart()) * 1e-12);
+		assertEquals(xr1.getStart(), xr2.getStart(), Math.abs(xr2.getStart()) * 1e-12);
+		assertEquals(xr1.getStart(), xr2.getStart(), Math.abs(xr2.getStart()) * 1e-12);
 	}
 
 	public static void checkLine(Line2D a, Line2D b) {
@@ -81,22 +80,20 @@ public class TestUtils {
 		checkDimension2D(d, v.getWidth(), v.getHeight());
 	}
 
-	public static void checkDimension2D(Dimension2D d, double width,
-			double height) {
+	public static void checkDimension2D(Dimension2D d, double width, double height) {
 		assertEquals(d.getWidth(), width, Math.abs(width) * 1e-12);
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
 
-	public static void checkRectangle2D(Rectangle2D d, double x, double y,
-			double width, double height) {
+	public static void checkRectangle2D(Rectangle2D d, double x, double y, double width,
+			double height) {
 		assertEquals(d.getX(), x, Math.abs(x) * 1e-12);
 		assertEquals(d.getY(), y, Math.abs(y) * 1e-12);
 		assertEquals(d.getWidth(), width, Math.abs(width) * 1e-12);
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
 
-	public static void checkRectangle2DSize(Rectangle2D d, double width,
-			double height) {
+	public static void checkRectangle2DSize(Rectangle2D d, double width, double height) {
 		assertEquals(d.getWidth(), width, Math.abs(width) * 1e-12);
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
@@ -123,8 +120,7 @@ public class TestUtils {
 		assertEquals("length error", Array.getLength(array), v.length);
 		int length = v.length;
 		for (int i = 0; i < length; i++) {
-			assertEquals(Array.getDouble(array, i), v[i],
-					Math.abs(v[i]) * 1e-12);
+			assertEquals(Array.getDouble(array, i), v[i], Math.abs(v[i]) * 1e-12);
 		}
 	}
 
@@ -136,8 +132,7 @@ public class TestUtils {
 		}
 	}
 
-	public static void checkFormat(Format format, double[] values,
-			String... strings) {
+	public static void checkFormat(Format format, double[] values, String... strings) {
 		assertEquals("length error", values.length, strings.length);
 		int length = values.length;
 		for (int i = 0; i < length; i++) {
@@ -185,9 +180,16 @@ public class TestUtils {
 		}
 	}
 
+	public static void checkPropertyInfoNames(PropertyInfo[] pis, String... names) {
+		assertEquals("length error", pis.length, names.length);
+		int length = pis.length;
+		for (int i = 0; i < length; i++) {
+			assertEquals(pis[i].getName(), names[i]);
+		}
+	}
+
 	@SuppressWarnings({ "rawtypes" })
-	public static Class[] getClassesInPackage(String pckgname)
-			throws ClassNotFoundException {
+	public static Class[] getClassesInPackage(String pckgname) throws ClassNotFoundException {
 		ArrayList<Class> classes = new ArrayList<Class>();
 		// Get a File object for the package
 		File directory = null;
@@ -218,8 +220,7 @@ public class TestUtils {
 				}
 			}
 		} else {
-			throw new ClassNotFoundException(pckgname
-					+ " does not appear to be a valid package");
+			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
 		}
 
 		return classes.toArray(new Class[classes.size()]);

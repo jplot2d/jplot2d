@@ -26,6 +26,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A <em>component</em> is an object having a graphical representation that can be drawn on the
@@ -34,6 +36,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Component")
 public interface PComponent extends Element {
 
 	/**
@@ -51,6 +54,7 @@ public interface PComponent extends Element {
 	 * @return <code>true</code> if the component is visible, <code>false</code> otherwise
 	 * @see #setVisible
 	 */
+	@Property(order = 0)
 	public boolean isVisible();
 
 	/**
@@ -67,6 +71,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the cache mode of this component
 	 */
+	@Property(order = 1)
 	public boolean isCacheable();
 
 	/**
@@ -83,6 +88,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return <code>true</code> if selectable
 	 */
+	@Property(order = 2)
 	public boolean isSelectable();
 
 	/**
@@ -98,6 +104,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the z-order of this component
 	 */
+	@Property(order = 3)
 	public int getZOrder();
 
 	/**
@@ -115,6 +122,7 @@ public interface PComponent extends Element {
 	 *         color, the foreground color of its parent is returned
 	 * @see #setColor
 	 */
+	@Property(order = 4)
 	public Color getColor();
 
 	/**
@@ -133,6 +141,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the name of the font.
 	 */
+	@Property(order = 5)
 	public String getFontName();
 
 	/**
@@ -149,6 +158,7 @@ public interface PComponent extends Element {
 	 * @return the style of the font
 	 * @see java.awt.Font
 	 */
+	@Property(order = 6)
 	public int getFontStyle();
 
 	/**
@@ -165,6 +175,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the font size.
 	 */
+	@Property(order = 7)
 	public float getFontSize();
 
 	/**
@@ -180,6 +191,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the font scale.
 	 */
+	@Property(order = 8)
 	public float getFontScale();
 
 	/**
@@ -204,6 +216,7 @@ public interface PComponent extends Element {
 	 * @return an instance of <code>Point</code> representing the base point in its parent's paper
 	 *         coordinate space
 	 */
+	@Property(order = 9)
 	public Point2D getLocation();
 
 	/**
@@ -211,6 +224,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return
 	 */
+	@Property(order = 10)
 	public Dimension2D getSize();
 
 	/**
@@ -218,6 +232,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the paper bounds of this component.
 	 */
+	@Property(order = 11)
 	public Rectangle2D getBounds();
 
 	/**
