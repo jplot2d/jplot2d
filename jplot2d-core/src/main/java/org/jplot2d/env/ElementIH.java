@@ -22,7 +22,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
@@ -159,12 +158,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		try {
 
 			if (method.getName().equals("equals")) {
-				ElementIH<?> h = (ElementIH<?>) Proxy.getInvocationHandler(args[0]);
-				if (ElementIH.this.getClass() == h.getClass()) {
-					return impl.equals(h.impl);
-				} else {
-					return Boolean.FALSE;
-				}
+				return proxy == args[0];
 			}
 			if (method.getName().equals("hashCode")) {
 				return impl.hashCode();
