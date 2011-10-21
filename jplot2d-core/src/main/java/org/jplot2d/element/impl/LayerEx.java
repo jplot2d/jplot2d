@@ -14,6 +14,10 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public int indexOf(GraphPlotterEx plotter);
 
+	public MarkerEx[] getMarkers();
+	
+	public int indexOf(MarkerEx marker);
+
 	public void parentPhysicalTransformChanged();
 
 	/**

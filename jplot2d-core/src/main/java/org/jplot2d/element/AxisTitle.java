@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.tex.MathElement;
 
 /**
@@ -29,6 +30,7 @@ import org.jplot2d.tex.MathElement;
  * 
  * @author Jingjing Li
  */
+@PropertyGroup("AxisTitle")
 public interface AxisTitle extends Element {
 
 	/**
@@ -57,6 +59,7 @@ public interface AxisTitle extends Element {
 	 *         color, the foreground color of its parent is returned
 	 * @see #setColor
 	 */
+	@Property(order = 1)
 	public Color getColor();
 
 	/**
@@ -75,6 +78,7 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return the name of the font.
 	 */
+	@Property(order = 2)
 	public String getFontName();
 
 	/**
@@ -91,6 +95,7 @@ public interface AxisTitle extends Element {
 	 * @return the style of the font
 	 * @see java.awt.Font
 	 */
+	@Property(order = 3)
 	public int getFontStyle();
 
 	/**
@@ -107,6 +112,7 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return the font size.
 	 */
+	@Property(order = 4)
 	public float getFontSize();
 
 	/**
@@ -122,6 +128,7 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return the font scale.
 	 */
+	@Property(order = 5)
 	public float getFontScale();
 
 	/**
@@ -145,6 +152,7 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return a String
 	 */
+	@Property(order = 6, displayName = "text", description = "Can be TeX math string")
 	public String getText();
 
 	/**
@@ -164,7 +172,6 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return the math model
 	 */
-	@Property(displayName = "text", description = "Can be TeX math string")
 	public MathElement getTextModel();
 
 	/**
