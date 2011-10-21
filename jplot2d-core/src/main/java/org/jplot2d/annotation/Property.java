@@ -22,5 +22,5 @@ public @interface Property {
 	/**
 	 * @return the order in its group
 	 */
-	int order() default 0;
+	int order();
 }
