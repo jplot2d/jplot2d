@@ -188,6 +188,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return plotters.indexOf(plotter);
 	}
 
+	public MarkerEx[] getMarkers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public Marker getMarker(int idx) {
 		// TODO Auto-generated method stub
 		return null;
@@ -196,6 +201,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public void addMarker(Marker marker) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public int indexOf(MarkerEx marker) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	public boolean canContributeToParent() {

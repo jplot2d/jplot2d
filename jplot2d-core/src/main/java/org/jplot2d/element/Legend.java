@@ -20,12 +20,16 @@ package org.jplot2d.element;
 
 import java.awt.geom.Point2D;
 
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
+
 /**
  * Legend display legend items. If there is no item in a legend, it will not show.
  * 
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Legend")
 public interface Legend extends MovableComponent {
 
 	public enum Position {
@@ -37,6 +41,7 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the enabled flag.
 	 */
+	@Property(order = 0)
 	public boolean isEnabled();
 
 	/**
@@ -52,6 +57,7 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the position.
 	 */
+	@Property(order = 1)
 	public Position getPosition();
 
 	/**
@@ -64,12 +70,11 @@ public interface Legend extends MovableComponent {
 	public void setPosition(Position position);
 
 	/**
-	 * Gets the location of this legend. The location will be relative to the PlotXY's physical
-	 * coordinate space.
+	 * Gets the location of this legend.
 	 * 
-	 * @return an instance of <code>Point</code> representing the base point in the physical
-	 *         coordinate space of the PlotXY
+	 * @return an instance of <code>Point</code> representing the base point of this legend
 	 */
+	@Property(order = 2)
 	public Point2D getLocation();
 
 	/**
@@ -79,7 +84,7 @@ public interface Legend extends MovableComponent {
 	 * behavior is not defined.
 	 * 
 	 * @param loc
-	 *            the base point given in the physical coordinate space
+	 *            the base point of this legend
 	 */
 	public void setLocation(Point2D loc);
 
@@ -101,11 +106,12 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the horizontal alignment.
 	 */
+	@Property(order = 3)
 	public HAlign getHAlign();
 
 	/**
 	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the
-	 * legend is on the left of the base point.
+	 * base point is on the left of this legend.
 	 * <p>
 	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
 	 * behavior is not defined.
@@ -120,11 +126,12 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the vertical alignment.
 	 */
+	@Property(order = 4)
 	public VAlign getVAlign();
 
 	/**
 	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the
-	 * legend is on the top of the base point
+	 * base point is on the top of this legend.
 	 * <p>
 	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
 	 * behavior is not defined.
@@ -139,6 +146,7 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the number of columns
 	 */
+	@Property(order = 5)
 	public int getColumns();
 
 	/**
@@ -149,4 +157,10 @@ public interface Legend extends MovableComponent {
 	 *            number of columns
 	 */
 	public void setColumns(int columns);
+
+	@Property(order = 6)
+	public boolean isMovable();
+
+	public void setMovable(boolean movable);
+
 }

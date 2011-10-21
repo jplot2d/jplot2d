@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -37,7 +37,10 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * This class extract properties from method declaration, rather than using java introspector.
+ * This class extract properties from method declaration, rather than using java introspector. The
+ * property annotation is defined on getter. if a sub-interface override a getter, the overriding
+ * method will take effect. The setter method type must match the getter return type. setter methods
+ * with same name but different argument type are not allowed.
  * 
  * @author Jingjing Li
  * 

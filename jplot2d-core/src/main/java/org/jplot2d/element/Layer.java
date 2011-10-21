@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains an dataset and optionally some markers. Every layer has
- * its own viewport to show data line and markers.
+ * A layer can contains an dataset and optionally some markers. Every layer has its own viewport to
+ * show data line and markers.
  * 
  * @author Jingjing Li
  * 
@@ -74,7 +74,16 @@ public interface Layer extends PComponent {
 	 *            the index of markers
 	 * @return the marker.
 	 */
+	@Hierarchy(HierarchyOp.GET)
 	public Marker getMarker(int idx);
+
+	/**
+	 * Returns all the markers in this layer.
+	 * 
+	 * @return all markers in an array
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public Marker[] getMarkers();
 
 	/**
 	 * Add a new marker to this layer.
@@ -82,6 +91,7 @@ public interface Layer extends PComponent {
 	 * @param marker
 	 *            the marker to be added
 	 */
+	@Hierarchy(HierarchyOp.ADD)
 	public void addMarker(Marker marker);
 
 	/**
@@ -101,9 +111,8 @@ public interface Layer extends PComponent {
 	public AxisRangeManager getYRangeManager();
 
 	/**
-	 * Attach this layer to the given X axis. When adding a layer to a plot, the
-	 * axis must exist in the destination environment, otherwise a exception
-	 * will be thrown.
+	 * Attach this layer to the given X axis. When adding a layer to a plot, the axis must exist in
+	 * the destination environment, otherwise a exception will be thrown.
 	 * 
 	 * @param axis
 	 */
@@ -111,9 +120,8 @@ public interface Layer extends PComponent {
 	public void setXRangeManager(AxisRangeManager rangeManager);
 
 	/**
-	 * Attach this layer to the given Y axis. When adding a layer to a plot, the
-	 * axis must exist in the destination environment, otherwise a exception
-	 * will be thrown.
+	 * Attach this layer to the given Y axis. When adding a layer to a plot, the axis must exist in
+	 * the destination environment, otherwise a exception will be thrown.
 	 * 
 	 * @param axis
 	 */
@@ -121,9 +129,8 @@ public interface Layer extends PComponent {
 	public void setYRangeManager(AxisRangeManager rangeManager);
 
 	/**
-	 * Attach this layer to the given X/Y axis pair. When adding a layer to a
-	 * plot, the X/Y axes must exist in the destination environment, otherwise a
-	 * exception will be thrown.
+	 * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes
+	 * must exist in the destination environment, otherwise a exception will be thrown.
 	 * 
 	 * @param xaxis
 	 *            the x axis
@@ -131,7 +138,6 @@ public interface Layer extends PComponent {
 	 *            the y axis
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setRangeManager(AxisRangeManager xRangeManager,
-			AxisRangeManager yRangeManager);
+	public void setRangeManager(AxisRangeManager xRangeManager, AxisRangeManager yRangeManager);
 
 }

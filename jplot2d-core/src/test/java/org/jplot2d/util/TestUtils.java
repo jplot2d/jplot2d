@@ -181,7 +181,9 @@ public class TestUtils {
 	}
 
 	public static void checkPropertyInfoNames(PropertyInfo[] pis, String... names) {
-		assertEquals("length error", pis.length, names.length);
+		if (pis.length != names.length) {
+			fail("length error [" + toString(pis) + "] [" + toString(names));
+		}
 		int length = pis.length;
 		for (int i = 0; i < length; i++) {
 			assertEquals(pis[i].getName(), names[i]);
@@ -224,6 +226,16 @@ public class TestUtils {
 		}
 
 		return classes.toArray(new Class[classes.size()]);
+	}
+
+	public static String toString(Object[] array) {
+		StringBuilder b = new StringBuilder();
+		if (array.length > 0) {
+			b.append(array[0]);
+		}
+		for (int i = 1; i < array.length; i++)
+			b.append(',').append(array[i]);
+		return b.toString();
 	}
 
 }
