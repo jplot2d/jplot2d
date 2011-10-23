@@ -58,67 +58,67 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneab
 		return new InvokeStep(method);
 	}
 
-	public boolean isAutoMarginTop() {
+	public boolean isAutoTop() {
 		return autoMarginTop;
 	}
 
-	public boolean isAutoMarginLeft() {
+	public boolean isAutoLeft() {
 		return autoMarginLeft;
 	}
 
-	public boolean isAutoMarginBottom() {
+	public boolean isAutoBottom() {
 		return autoMarginBottom;
 	}
 
-	public boolean isAutoMarginRight() {
+	public boolean isAutoRight() {
 		return autoMarginRight;
 	}
 
-	public void setAutoMarginTop(boolean auto) {
+	public void setAutoTop(boolean auto) {
 		autoMarginTop = auto;
 	}
 
-	public void setAutoMarginLeft(boolean auto) {
+	public void setAutoLeft(boolean auto) {
 		autoMarginLeft = auto;
 	}
 
-	public void setAutoMarginBottom(boolean auto) {
+	public void setAutoBottom(boolean auto) {
 		autoMarginBottom = auto;
 	}
 
-	public void setAutoMarginRight(boolean auto) {
+	public void setAutoRight(boolean auto) {
 		autoMarginRight = auto;
 	}
 
-	public double getMarginTop() {
+	public double getTop() {
 		return marginTop;
 	}
 
-	public double getMarginLeft() {
+	public double getLeft() {
 		return marginLeft;
 	}
 
-	public double getMarginBottom() {
+	public double getBottom() {
 		return marginBottom;
 	}
 
-	public double getMarginRight() {
+	public double getRight() {
 		return marginRight;
 	}
 
-	public void setMarginTop(double marginTop) {
+	public void setTop(double marginTop) {
 		this.marginTop = marginTop;
 	}
 
-	public void setMarginLeft(double marginLeft) {
+	public void setLeft(double marginLeft) {
 		this.marginLeft = marginLeft;
 	}
 
-	public void setMarginBottom(double marginBottom) {
+	public void setBottom(double marginBottom) {
 		this.marginBottom = marginBottom;
 	}
 
-	public void setMarginRight(double marginRight) {
+	public void setRight(double marginRight) {
 		this.marginRight = marginRight;
 	}
 
