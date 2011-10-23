@@ -24,6 +24,7 @@ import java.awt.geom.Point2D;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
@@ -39,6 +40,7 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Plot")
 public interface Plot extends PComponent {
 
 	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8, 8);
@@ -47,27 +49,11 @@ public interface Plot extends PComponent {
 	public Plot getParent();
 
 	/**
-	 * Returns the container size in device coordinate system.
-	 * 
-	 * @return the container size
-	 */
-	@Property(order = 0)
-	public Dimension2D getContainerSize();
-
-	/**
-	 * Sets the container size. The container size is given in device coordinate system and used by
-	 * size mode to derive paper size and scale. The default value is 640x480 pixels.
-	 * 
-	 * @param size
-	 */
-	public void setContainerSize(Dimension2D size);
-
-	/**
 	 * Returns the size mode of this plot.
 	 * 
 	 * @return
 	 */
-	@Property(order = 1)
+	@Property(order = 0)
 	public SizeMode getSizeMode();
 
 	/**
@@ -78,6 +64,24 @@ public interface Plot extends PComponent {
 	public void setSizeMode(SizeMode mode);
 
 	/**
+	 * Returns the container size in device coordinate system.
+	 * 
+	 * @return the container size
+	 */
+	@Property(order = 1)
+	public Dimension2D getContainerSize();
+
+	/**
+	 * Sets the container size. The container size is given in device coordinate system and used by
+	 * size mode to derive paper size and scale. The default value is 640x480 pixels.
+	 * <p>
+	 * When the size mode is <code>null</code>, the container size has no effect.
+	 * 
+	 * @param size
+	 */
+	public void setContainerSize(Dimension2D size);
+
+	/**
 	 * Returns the scale of this plot. The scale is ratio device size to paper size.
 	 * 
 	 * @return the scale of this plot
@@ -86,38 +90,14 @@ public interface Plot extends PComponent {
 	public double getScale();
 
 	/**
-	 * Sets scale of this plot. This method only take effect when size mode is <code>null</code>. In
-	 * this case, the container size has no effect. Otherwise the scale is decided by size mode.
+	 * Sets scale of this plot. This method only take effect when size mode is <code>null</code>.
+	 * Otherwise the scale is decided by size mode.
 	 * 
 	 * @param scale
 	 *            the scale
 	 */
-	public void setScale(double scale);
-
-	/**
-	 * Gets the location of this plot. The origin of a plot is the bottom-left corner of the content
-	 * box (the intersect point of left axis and bottom axis).
-	 * 
-	 * @return an instance of <code>Point</code> representing the base point of this plot
-	 */
 	@Property(order = 3)
-	public Point2D getLocation();
-
-	/**
-	 * Moves this plot to a new location. The new location is specified by point and is given in the
-	 * parent's paper coordinate space.
-	 * <p>
-	 * Notice: This method should be called when the parent plot's layout director is
-	 * <code>null</code>, otherwise the location will be derived by the layout director.
-	 * <p>
-	 * For root plot, this method has no effect.
-	 * 
-	 * @param p
-	 *            the point defining the origin of the new location
-	 */
-	public void setLocation(Point2D loc);
-
-	public void setLocation(double locX, double locY);
+	public void setScale(double scale);
 
 	/**
 	 * Sets the paper size of this plot. This method only take effect when size mode is
@@ -140,17 +120,11 @@ public interface Plot extends PComponent {
 	public void setSize(double width, double height);
 
 	/**
-	 * Returns the margin area of this plot.
-	 * 
-	 * @return
-	 */
-	public PlotMargin getMargin();
-
-	/**
 	 * Gets the layout director for this plot.
 	 * 
 	 * @return the layout director for this plot.
 	 */
+	@Property(order = 10)
 	public LayoutDirector getLayoutDirector();
 
 	/**
@@ -170,6 +144,7 @@ public interface Plot extends PComponent {
 	 * @throws IllegalArgumentException
 	 *             if the subplot is not contained by this plot
 	 */
+	@Property(order = 11)
 	public Object getConstraint(Plot subplot);
 
 	/**
@@ -189,6 +164,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return the the preferred content area size
 	 */
+	@Property(order = 12)
 	public Dimension2D getPreferredContentSize();
 
 	/**
@@ -199,11 +175,47 @@ public interface Plot extends PComponent {
 	public void setPreferredContentSize(Dimension2D size);
 
 	/**
+	 * Gets the location of this plot in its parent plot. The origin of a plot is the bottom-left
+	 * corner of the content box (the intersect point of left axis and bottom axis). For root plot,
+	 * the returned value is always (0,0)
+	 * 
+	 * @return an instance of <code>Point</code> representing the base point of this plot
+	 */
+	@Property(order = 13)
+	public Point2D getLocation();
+
+	/**
+	 * Moves this plot to a new location. The new location is specified by point and is given in the
+	 * parent's paper coordinate space.
+	 * <p>
+	 * Notice: This method should be called when the parent plot's layout director does not manage
+	 * subplots, such as <code>SimpleLayoutDirector</code>, otherwise the location will be overwrite
+	 * by the layout director.
+	 * <p>
+	 * For root plot, this method has no effect.
+	 * 
+	 * @param p
+	 *            the point defining the origin of the new location
+	 */
+	public void setLocation(Point2D loc);
+
+	public void setLocation(double locX, double locY);
+
+	/**
 	 * Returns the rectangle of content area.
 	 * 
 	 * @return the rectangle of content area.
 	 */
+	@Property(order = 14)
 	public Dimension2D getContentSize();
+
+	/**
+	 * Returns the margin area of this plot.
+	 * 
+	 * @return
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public PlotMargin getMargin();
 
 	/**
 	 * Returns the legend of this plot.
