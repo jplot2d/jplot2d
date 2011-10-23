@@ -20,18 +20,21 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
+import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * The plot paper size is fixed. Changing the container size will change the scale, while keep the
- * w/h ratio of plot.
+ * width/height ratio of plot.
  * 
  * @author Jingjing Li
  * 
  */
-public class FixedSizeMode extends AbstractSizeMode {
+public class FixedSizeMode extends SizeMode {
 
 	private static final Dimension2D DEFAULT_SIZE = new DoubleDimension2D(640, 480);
+
+	private final double width, height;
 
 	/**
 	 * The plot paper size is set to default size, 640x480.
@@ -41,19 +44,18 @@ public class FixedSizeMode extends AbstractSizeMode {
 	}
 
 	public FixedSizeMode(Dimension2D size) {
-		this.autoPack = false;
+		super(false);
 		this.width = size.getWidth();
 		this.height = size.getHeight();
 	}
 
 	public FixedSizeMode(double width, double height) {
-		this.autoPack = false;
+		super(false);
 		this.width = width;
 		this.height = height;
 	}
 
-	public void update() {
-
+	public Result update(PlotEx plot) {
 		Dimension2D containerSize = plot.getContainerSize();
 		/*
 		 * Calculate scale based on container size and physical size.
@@ -62,9 +64,7 @@ public class FixedSizeMode extends AbstractSizeMode {
 		double scaleY = containerSize.getHeight() / height;
 		double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-		if (this.scale != scale) {
-			this.scale = scale;
-		}
+		return new Result(width, height, scale);
 	}
 
 }

@@ -20,24 +20,26 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
+import org.jplot2d.element.impl.PlotEx;
+
 /**
  * The plot paper size is auto packed to its contents. The plot content size is assigned by
- * preferred content size. Changing the container size will change the scale, while keep the w/h
- * ratio of plot.
+ * preferred content size. Changing the container size will change the scale, while keep the
+ * width/height ratio of plot.
  * 
  * @author Jingjing Li
  * 
  */
-public class AutoPackSizeMode extends AbstractSizeMode {
+public class AutoPackSizeMode extends SizeMode {
 
 	/**
 	 * The plot paper size is auto packed according to its preferred content size.
 	 */
 	public AutoPackSizeMode() {
-		this.autoPack = true;
+		super(true);
 	}
 
-	public void update() {
+	public Result update(PlotEx plot) {
 
 		Dimension2D size = plot.getSize();
 		Dimension2D containerSize = plot.getContainerSize();
@@ -48,9 +50,8 @@ public class AutoPackSizeMode extends AbstractSizeMode {
 		double scaleY = containerSize.getHeight() / size.getHeight();
 		double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-		this.width = size.getWidth();
-		this.height = size.getHeight();
-		this.scale = scale;
+		return new Result(size.getWidth(), size.getHeight(), scale);
+
 	}
 
 }
