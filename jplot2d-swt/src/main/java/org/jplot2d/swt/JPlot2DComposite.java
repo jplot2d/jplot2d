@@ -55,6 +55,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private Image image;
 
+	private int xoff, yoff;
+
 	private InteractionManager imanager;
 
 	private final InteractionListener ial;
@@ -183,10 +185,10 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 		if (image != null) {
 			int width = image.getImageData().width;
 			int height = image.getImageData().height;
-			int x = (getSize().x - width) / 2;
-			int y = (getSize().y - height) / 2;
+			xoff = (getSize().x - width) / 2;
+			yoff = (getSize().y - height) / 2;
 
-			e.gc.drawImage(image, x, y);
+			e.gc.drawImage(image, xoff, yoff);
 		}
 
 		ial.draw(e.gc);
@@ -194,6 +196,24 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	public void widgetDisposed(DisposeEvent e) {
 		// nothing to dispose
+	}
+
+	/**
+	 * Returns the x offset where the plot image draw.
+	 * 
+	 * @return the x offset of the plot image
+	 */
+	public int getImageOffsetX() {
+		return xoff;
+	}
+
+	/**
+	 * Returns the y offset where the plot image draw.
+	 * 
+	 * @return the y offset of the plot image
+	 */
+	public int getImageOffsetY() {
+		return yoff;
 	}
 
 	protected static ImageData convertToSWT(BufferedImage bufferedImage) {

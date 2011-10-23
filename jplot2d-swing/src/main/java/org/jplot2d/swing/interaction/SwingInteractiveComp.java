@@ -60,17 +60,17 @@ public class SwingInteractiveComp implements InteractiveComp {
 		Color c = new Color(rgb);
 		g2.setColor(c);
 		g2.setXORMode(comp.getPlotBackground());
-		g2.drawRect(x, y, width, height);
+		g2.drawRect(x + comp.getImageOffsetX(), y + comp.getImageOffsetY(), width, height);
 		g2.setPaintMode();
 	}
 
 	public void drawShape(Object g, int rgb, Shape shape) {
 		Graphics2D g2 = (Graphics2D) g;
+		g2.translate(comp.getImageOffsetX(), comp.getImageOffsetY());
 		Color c = new Color(rgb);
 		g2.setColor(c);
 		g2.setXORMode(comp.getPlotBackground());
 		g2.draw(shape);
 		g2.setPaintMode();
 	}
-
 }

@@ -80,7 +80,7 @@ public class SwtInteractiveComp implements InteractiveComp {
 		gc.setForeground(c);
 		gc.setBackground(plotBackground);
 		gc.setXORMode(true);
-		gc.drawRectangle(x, y, width, height);
+		gc.drawRectangle(x + comp.getImageOffsetX(), y + comp.getImageOffsetY(), width, height);
 		gc.setXORMode(false);
 
 		c.dispose();
@@ -88,7 +88,7 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	@SuppressWarnings("deprecation")
 	public void drawShape(Object g, int rgb, Shape shape) {
-		Path path = toSwtPath(shape);
+		Path path = toSwtPath(shape, comp.getImageOffsetX(), comp.getImageOffsetY());
 
 		GC gc = (GC) g;
 		int cr = (rgb & 0x00ff0000) >> 16;
@@ -111,10 +111,14 @@ public class SwtInteractiveComp implements InteractiveComp {
 	 * 
 	 * @param shape
 	 *            the shape to be converted.
+	 * @param xoff
+	 *            the x offset to append to the shape
+	 * @param yoff
+	 *            the y offset to append to the shape
 	 * 
 	 * @return The path
 	 */
-	private Path toSwtPath(Shape shape) {
+	private Path toSwtPath(Shape shape, int xoff, int yoff) {
 		float[] coords = new float[6];
 		Path path = new Path(comp.getDisplay());
 		PathIterator pit = shape.getPathIterator(null);
@@ -122,16 +126,17 @@ public class SwtInteractiveComp implements InteractiveComp {
 			int type = pit.currentSegment(coords);
 			switch (type) {
 			case (PathIterator.SEG_MOVETO):
-				path.moveTo(coords[0], coords[1]);
+				path.moveTo(coords[0] + xoff, coords[1] + yoff);
 				break;
 			case (PathIterator.SEG_LINETO):
-				path.lineTo(coords[0], coords[1]);
+				path.lineTo(coords[0] + xoff, coords[1] + yoff);
 				break;
 			case (PathIterator.SEG_QUADTO):
-				path.quadTo(coords[0], coords[1], coords[2], coords[3]);
+				path.quadTo(coords[0] + xoff, coords[1] + yoff, coords[2] + xoff, coords[3] + yoff);
 				break;
 			case (PathIterator.SEG_CUBICTO):
-				path.cubicTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+				path.cubicTo(coords[0] + xoff, coords[1] + yoff, coords[2] + xoff,
+						coords[3] + yoff, coords[4] + xoff, coords[5] + yoff);
 				break;
 			case (PathIterator.SEG_CLOSE):
 				path.close();

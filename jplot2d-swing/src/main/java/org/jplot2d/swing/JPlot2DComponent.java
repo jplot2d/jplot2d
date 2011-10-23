@@ -62,6 +62,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 
 	private volatile BufferedImage image;
 
+	private int xoff, yoff;
+
 	private InteractionManager imanager;
 
 	private final InteractionListener ial;
@@ -147,12 +149,30 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 		if (image != null) {
 			int width = image.getWidth();
 			int height = image.getHeight();
-			int x = (getWidth() - width) / 2;
-			int y = (getHeight() - height) / 2;
-			g.drawImage(image, x, y, this);
+			xoff = (getWidth() - width) / 2;
+			yoff = (getHeight() - height) / 2;
+			g.drawImage(image, xoff, yoff, this);
 
 			ial.draw((Graphics2D) g);
 		}
+	}
+
+	/**
+	 * Returns the x offset where the plot image draw.
+	 * 
+	 * @return the x offset of the plot image
+	 */
+	public int getImageOffsetX() {
+		return xoff;
+	}
+
+	/**
+	 * Returns the y offset where the plot image draw.
+	 * 
+	 * @return the y offset of the plot image
+	 */
+	public int getImageOffsetY() {
+		return yoff;
 	}
 
 	public void hierarchyChanged(HierarchyEvent event) {

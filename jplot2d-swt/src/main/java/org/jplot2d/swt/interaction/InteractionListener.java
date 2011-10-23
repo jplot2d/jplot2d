@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swt.interaction;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -42,10 +41,13 @@ import org.jplot2d.swt.JPlot2DComposite;
 public class InteractionListener implements MouseListener, MouseMoveListener, MouseTrackListener,
 		MouseWheelListener, VisualFeedbackDrawer {
 
+	private final JPlot2DComposite comp;
+
 	private final InteractionHandler ihandler;
 
 	public InteractionListener(JPlot2DComposite comp, InteractionManager imanager,
 			PlotEnvironment env) {
+		this.comp = comp;
 		ihandler = new InteractionHandler(imanager, new SwtInteractiveComp(comp, env));
 		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
 		ihandler.init();
@@ -146,7 +148,8 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 			modifiers &= ~buttomMask;
 		}
 
-		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x, e.y, e.count, button);
+		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x - comp.getImageOffsetX(),
+				e.y - comp.getImageOffsetY(), e.count, button);
 		// System.out.println(gme);
 		return gme;
 	}
