@@ -644,4 +644,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 	}
 
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
 }
