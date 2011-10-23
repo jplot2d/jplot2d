@@ -2,16 +2,21 @@ package org.jplot2d.sizing;
 
 import java.awt.geom.Dimension2D;
 
+import org.jplot2d.element.impl.PlotEx;
+
 /**
  * The scale is kept. The plot size will automatically fit the container size. The plot content size
  * is changed as well.
  */
-public class FillContainerSizeMode extends AbstractSizeMode {
+public class FillContainerSizeMode extends SizeMode {
 
 	private final Dimension2D targetSize;
 
+	private final double scale;
+
 	public FillContainerSizeMode(double scale) {
-		targetSize = null;
+		super(false);
+		this.targetSize = null;
 		this.scale = scale;
 	}
 
@@ -21,15 +26,13 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 	 * mode.
 	 */
 	public FillContainerSizeMode(Dimension2D targetSize) {
+		super(false);
 		this.targetSize = targetSize;
+		this.scale = 1;
 	}
 
-	public void update() {
+	public Result update(PlotEx plot) {
 		Dimension2D containerSize = plot.getContainerSize();
-		setContainerSize(containerSize);
-	}
-
-	private void setContainerSize(Dimension2D containerSize) {
 
 		if (targetSize != null) {
 			Dimension2D tcSize = targetSize;
@@ -41,19 +44,13 @@ public class FillContainerSizeMode extends AbstractSizeMode {
 			double width = containerSize.getWidth() / scale;
 			double height = containerSize.getHeight() / scale;
 
-			if (this.width != width || this.height != height || this.scale != scale) {
-				this.width = width;
-				this.height = height;
-				this.scale = scale;
-			}
+			return new Result(width, height, scale);
+
 		} else {
 			double width = containerSize.getWidth() / scale;
 			double height = containerSize.getHeight() / scale;
 
-			if (this.width != width || this.height != height) {
-				this.width = width;
-				this.height = height;
-			}
+			return new Result(width, height, scale);
 		}
 
 	}

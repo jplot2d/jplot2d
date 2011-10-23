@@ -198,7 +198,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setSizeMode(SizeMode sizeMode) {
 		this.sizeMode = sizeMode;
-		sizeMode.setPlot(this);
 		if (sizeMode.isAutoPack()) {
 			preferredSizeChanged = true;
 		}
@@ -1061,11 +1060,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public void commit() {
 
 		PhysicalTransform oldPxf = pxf;
+		double scaleResult = 0;
 
 		// set the plot size if it is decided by size mode
 		if (getSizeMode() != null && !getSizeMode().isAutoPack()) {
-			getSizeMode().update();
-			setSize(getSizeMode().getSize());
+			SizeMode.Result sizeResult = getSizeMode().update(this);
+			setSize(sizeResult.getSize());
+			scaleResult = sizeResult.getScale();
 		}
 
 		/*
@@ -1121,12 +1122,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// update the scale if the size is autoPacked
 		if (getSizeMode() != null && getSizeMode().isAutoPack()) {
-			getSizeMode().update();
+			scaleResult = getSizeMode().update(this).getScale();
 		}
 
 		// invalidate pxf id scale changed
 		if (getSizeMode() != null) {
-			setScale(getSizeMode().getScale());
+			setScale(scaleResult);
 		}
 
 		// invalidate pxf on all children

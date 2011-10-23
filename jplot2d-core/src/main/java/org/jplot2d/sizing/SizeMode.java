@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,6 +21,7 @@ package org.jplot2d.sizing;
 import java.awt.geom.Dimension2D;
 
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * Defines how the plot size is decided. The plot container size is a common input for all size
@@ -28,39 +29,60 @@ import org.jplot2d.element.impl.PlotEx;
  * 
  * @author Jingjing Li
  */
-public interface SizeMode {
+public abstract class SizeMode {
 
-	/**
-	 * For Internal use only. User should never call this method.
-	 * 
-	 * @param plot
-	 */
-	public void setPlot(PlotEx plot);
+	public static class Result {
+
+		protected double width, height;
+
+		protected double scale = 1;
+
+		public Result(double width, double height, double scale) {
+			this.width = width;
+			this.height = height;
+			this.scale = scale;
+		}
+
+		/**
+		 * Returns the plot size derived from this size mode .
+		 * 
+		 * @return the plot size
+		 */
+		public Dimension2D getSize() {
+			return new DoubleDimension2D(width, height);
+		}
+
+		/**
+		 * Returns the scale derived from this size mode
+		 * 
+		 * @return the scale
+		 */
+		public double getScale() {
+			return scale;
+		}
+
+	}
+
+	protected final boolean autoPack;
+
+	protected SizeMode(boolean autoPack) {
+		this.autoPack = autoPack;
+	}
 
 	/**
 	 * Returns <code>true</code> if this size mode has auto pack feature.
 	 * 
 	 * @return <code>true</code> if this size mode has auto pack feature.
 	 */
-	public boolean isAutoPack();
+	public boolean isAutoPack() {
+		return autoPack;
+	}
 
 	/**
 	 * Update the internal status of this size mode.
+	 * <p>
+	 * For Internal use only. User should never call this method.
 	 */
-	public void update();
-
-	/**
-	 * Returns the plot size derived from this size mode .
-	 * 
-	 * @return the plot size
-	 */
-	public Dimension2D getSize();
-
-	/**
-	 * Returns the scale derived from this size mode
-	 * 
-	 * @return the scale
-	 */
-	public double getScale();
+	public abstract Result update(PlotEx plot);
 
 }
