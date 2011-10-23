@@ -23,20 +23,24 @@ import java.awt.geom.Dimension2D;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * Defines how the plot size is decided.
+ * Defines how the plot size is decided. The plot container size is a common input for all size
+ * mode. If a plot's size mode is <code>null</code>, the plot container size is useless.
  * 
  * @author Jingjing Li
  */
 public interface SizeMode {
 
-	public PlotEx getPlot();
-
+	/**
+	 * For Internal use only. User should never call this method.
+	 * 
+	 * @param plot
+	 */
 	public void setPlot(PlotEx plot);
 
 	/**
-	 * Returns <code>true</code> is this size mode has auto pack feature.
+	 * Returns <code>true</code> if this size mode has auto pack feature.
 	 * 
-	 * @return <code>true</code> is this size mode has auto pack feature.
+	 * @return <code>true</code> if this size mode has auto pack feature.
 	 */
 	public boolean isAutoPack();
 
