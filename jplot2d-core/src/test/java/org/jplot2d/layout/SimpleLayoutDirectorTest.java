@@ -21,6 +21,8 @@ package org.jplot2d.layout;
 import static org.jplot2d.util.TestUtils.*;
 import static org.mockito.Mockito.*;
 
+import java.awt.geom.Dimension2D;
+
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Legend;
@@ -47,13 +49,13 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testCalcMargin() {
 		LegendEx legend = mock(LegendEx.class);
-		PlotEx subplot = new PlotImpl(legend) {
-		};
+		PlotEx plot = new PlotImpl(legend);
+
 		AxesInPlot ais = new AxesInPlot();
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 0);
 
 		// add axes
 
@@ -77,19 +79,19 @@ public class SimpleLayoutDirectorTest {
 		ais.rightAxes.add(right);
 		ais.topAxes.add(top);
 		ais.bottomAxes.add(bottom);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 8.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 8.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 5.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 5.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 8.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 8.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 5.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 5.0);
 
-		subplot.getMargin().setExtraLeft(10.0);
-		subplot.getMargin().setExtraRight(9.0);
-		subplot.getMargin().setExtraTop(8.0);
-		subplot.getMargin().setExtraBottom(7.0);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 13.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 12.0);
+		plot.getMargin().setExtraLeft(10.0);
+		plot.getMargin().setExtraRight(9.0);
+		plot.getMargin().setExtraTop(8.0);
+		plot.getMargin().setExtraBottom(7.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 13.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 12.0);
 
 		// add title
 		TitleEx title0 = mock(TitleEx.class);
@@ -102,32 +104,36 @@ public class SimpleLayoutDirectorTest {
 		when(title1.getPosition()).thenReturn(TitleEx.Position.TOPCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(20, 8));
 		when(title1.getGapFactor()).thenReturn(0.25);
-		subplot.addTitle(title0);
-		subplot.addTitle(title1);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 38.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 12.0);
+		plot.addTitle(title0);
+		plot.addTitle(title1);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 12.0);
 
 		// add legend
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getPosition()).thenReturn(LegendEx.Position.BOTTOMCENTER);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(100, 40));
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 38.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais),
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais),
 				7.0 + 40.0 + SimpleLayoutDirector.LEGEND_GAP + 5.0);
 
 		// no auto margin
-		subplot.getMargin().setAutoMarginLeft(false);
-		subplot.getMargin().setAutoMarginRight(false);
-		subplot.getMargin().setAutoMarginTop(false);
-		subplot.getMargin().setAutoMarginBottom(false);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(subplot, ais), 10.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(subplot, ais), 9.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(subplot, ais), 8.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(subplot, ais), 7.0);
+		plot.getMargin().setAutoMarginLeft(false);
+		plot.getMargin().setMarginLeft(7);
+		plot.getMargin().setAutoMarginRight(false);
+		plot.getMargin().setMarginRight(7);
+		plot.getMargin().setAutoMarginTop(false);
+		plot.getMargin().setMarginTop(7);
+		plot.getMargin().setAutoMarginBottom(false);
+		plot.getMargin().setMarginBottom(7);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 7 + 10.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 7 + 9.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 7 + 8.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 7 + 7.0);
 	}
 
 	@Test
@@ -135,9 +141,8 @@ public class SimpleLayoutDirectorTest {
 		LegendEx legend = mock(LegendEx.class);
 		when(legend.canContribute()).thenReturn(false);
 
-		PlotEx subplot = new PlotImpl(legend) {
-		};
-		subplot.setSize(300, 200);
+		PlotEx plot = new PlotImpl(legend);
+		plot.setSize(300, 200);
 
 		// add axes
 		AxisTickManagerEx tm = mock(AxisTickManagerEx.class);
@@ -174,14 +179,20 @@ public class SimpleLayoutDirectorTest {
 		when(bottom.getAsc()).thenReturn(2.5);
 		when(bottom.getDesc()).thenReturn(5.0);
 
-		subplot.addYAxis(left);
-		subplot.addYAxis(right);
-		subplot.addXAxis(top);
-		subplot.addXAxis(bottom);
+		plot.addYAxis(left);
+		plot.addYAxis(right);
+		plot.addXAxis(top);
+		plot.addXAxis(bottom);
 
-		subplot.validate();
-		checkRectangle2D(subplot.getContentBounds(), 8.0, 5, 300 - 8 - 8,
-				200 - 5 - 5);
+		plot.validate();
+		checkDouble(plot.getMargin().getMarginLeft(), 8.0);
+		checkDouble(plot.getMargin().getMarginBottom(), 5.0);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 8 - 8, 200 - 5 - 5);
+		verify(left).setLocation(0, 0);
+		verify(bottom).setLocation(0, 0);
+		verify(top).setLocation(0, csize.getHeight());
+		verify(right).setLocation(csize.getWidth(), 0);
 		verify(legend, never()).setLocation(anyDouble(), anyDouble());
 		verify(legend, never()).setHAlign(any(HAlign.class));
 		verify(legend, never()).setVAlign(any(VAlign.class));
@@ -194,19 +205,22 @@ public class SimpleLayoutDirectorTest {
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(Legend.Position.BOTTOMCENTER);
 
-		PlotEx subplot = new PlotImpl(legend) {
-		};
-		subplot.setSize(300, 200);
-		subplot.getMargin().setExtraLeft(12.0);
-		subplot.getMargin().setExtraRight(12.0);
-		subplot.getMargin().setExtraTop(12.0);
-		subplot.getMargin().setExtraBottom(12.0);
+		PlotEx plot = new PlotImpl(legend);
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
 
-		subplot.validate();
+		plot.validate();
 		double bottomMargin = 12 + 10 + SimpleLayoutDirector.LEGEND_GAP;
-		checkRectangle2D(subplot.getContentBounds(), 12, bottomMargin,
-				300 - 12 - 12, 200 - 12 - bottomMargin);
-		verify(legend).setLocation(150, 12 + 10);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 10 + SimpleLayoutDirector.LEGEND_GAP);
+		checkDouble(plot.getMargin().getMarginTop(), 0);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - 12, 200 - 12 - bottomMargin);
+		verify(legend).setLocation(csize.getWidth() / 2, -SimpleLayoutDirector.LEGEND_GAP);
 		verify(legend).setHAlign(HAlign.CENTER);
 		verify(legend).setVAlign(VAlign.TOP);
 	}
@@ -218,19 +232,23 @@ public class SimpleLayoutDirectorTest {
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(Legend.Position.TOPCENTER);
 
-		PlotEx subplot = new PlotImpl(legend) {
-		};
-		subplot.setSize(300, 200);
-		subplot.getMargin().setExtraLeft(12.0);
-		subplot.getMargin().setExtraRight(12.0);
-		subplot.getMargin().setExtraTop(12.0);
-		subplot.getMargin().setExtraBottom(12.0);
+		PlotEx plot = new PlotImpl(legend);
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
 
-		subplot.validate();
+		plot.validate();
 		double topMargin = 12 + 10 + SimpleLayoutDirector.LEGEND_GAP;
-		checkRectangle2D(subplot.getContentBounds(), 12, 12, 300 - 12 - 12,
-				200 - topMargin - 12);
-		verify(legend).setLocation(150, 200 - 12 - 10);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 0);
+		checkDouble(plot.getMargin().getMarginTop(), 10 + SimpleLayoutDirector.LEGEND_GAP);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - 12, 200 - topMargin - 12);
+		verify(legend).setLocation(csize.getWidth() / 2,
+				csize.getHeight() + SimpleLayoutDirector.LEGEND_GAP);
 		verify(legend).setHAlign(HAlign.CENTER);
 		verify(legend).setVAlign(VAlign.BOTTOM);
 	}
@@ -242,19 +260,22 @@ public class SimpleLayoutDirectorTest {
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(Legend.Position.LEFTMIDDLE);
 
-		PlotEx subplot = new PlotImpl(legend) {
-		};
-		subplot.setSize(300, 200);
-		subplot.getMargin().setExtraLeft(12.0);
-		subplot.getMargin().setExtraRight(12.0);
-		subplot.getMargin().setExtraTop(12.0);
-		subplot.getMargin().setExtraBottom(12.0);
+		PlotEx plot = new PlotImpl(legend);
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
 
-		subplot.validate();
+		plot.validate();
 		double leftMargin = 12 + 30 + SimpleLayoutDirector.LEGEND_GAP;
-		checkRectangle2D(subplot.getContentBounds(), leftMargin, 12,
-				300 - leftMargin - 12, 200 - 12 - 12);
-		verify(legend).setLocation(12 + 30, 100);
+		checkDouble(plot.getMargin().getMarginLeft(), 30 + SimpleLayoutDirector.LEGEND_GAP);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 0);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - leftMargin - 12, 200 - 12 - 12);
+		verify(legend).setLocation(-SimpleLayoutDirector.LEGEND_GAP, csize.getHeight() / 2);
 		verify(legend).setHAlign(HAlign.RIGHT);
 		verify(legend).setVAlign(VAlign.MIDDLE);
 	}
@@ -266,19 +287,23 @@ public class SimpleLayoutDirectorTest {
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(Legend.Position.RIGHTMIDDLE);
 
-		PlotEx subplot = new PlotImpl(legend) {
-		};
-		subplot.setSize(300, 200);
-		subplot.getMargin().setExtraLeft(12.0);
-		subplot.getMargin().setExtraRight(12.0);
-		subplot.getMargin().setExtraTop(12.0);
-		subplot.getMargin().setExtraBottom(12.0);
+		PlotEx plot = new PlotImpl(legend);
+		plot.setSize(300, 200);
+		plot.getMargin().setExtraLeft(12.0);
+		plot.getMargin().setExtraRight(12.0);
+		plot.getMargin().setExtraTop(12.0);
+		plot.getMargin().setExtraBottom(12.0);
 
-		subplot.validate();
+		plot.validate();
 		double rightMargin = 12 + 30 + SimpleLayoutDirector.LEGEND_GAP;
-		checkRectangle2D(subplot.getContentBounds(), 12, 12,
-				300 - 12 - rightMargin, 200 - 12 - 12);
-		verify(legend).setLocation(300 - 12 - 30, 100);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 30 + SimpleLayoutDirector.LEGEND_GAP);
+		checkDouble(plot.getMargin().getMarginBottom(), 0);
+		checkDouble(plot.getMargin().getMarginTop(), 0);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - rightMargin, 200 - 12 - 12);
+		verify(legend).setLocation(csize.getWidth() + SimpleLayoutDirector.LEGEND_GAP,
+				csize.getHeight() / 2);
 		verify(legend).setHAlign(HAlign.LEFT);
 		verify(legend).setVAlign(VAlign.MIDDLE);
 	}
@@ -296,8 +321,7 @@ public class SimpleLayoutDirectorTest {
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title1.getGapFactor()).thenReturn(0.25);
 
-		PlotEx plot = new PlotImpl() {
-		};
+		PlotEx plot = new PlotImpl();
 		plot.setSize(300, 200);
 		plot.getMargin().setExtraLeft(12.0);
 		plot.getMargin().setExtraRight(12.0);
@@ -308,12 +332,16 @@ public class SimpleLayoutDirectorTest {
 
 		plot.validate();
 		double bottomMargin = 12 + 10 + 2.5 + 10 + 2.5;
-		checkRectangle2D(plot.getContentBounds(), 12, bottomMargin,
-				300 - 12 - 12, 200 - 12 - bottomMargin);
-		verify(title1).setLocation(150, 12 + 10);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 10 + 2.5 + 10 + 2.5);
+		checkDouble(plot.getMargin().getMarginTop(), 0);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - 12, 200 - 12 - bottomMargin);
+		verify(title1).setLocation(csize.getWidth() / 2, -2.5 - 10 - 2.5);
 		verify(title1).setHAlign(HAlign.CENTER);
 		verify(title1).setVAlign(VAlign.TOP);
-		verify(title0).setLocation(150, 12 + 10 + 2.5 + 10);
+		verify(title0).setLocation(csize.getWidth() / 2, -2.5);
 		verify(title0).setHAlign(HAlign.CENTER);
 		verify(title0).setVAlign(VAlign.TOP);
 	}
@@ -331,8 +359,7 @@ public class SimpleLayoutDirectorTest {
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title1.getGapFactor()).thenReturn(0.25);
 
-		PlotEx plot = new PlotImpl() {
-		};
+		PlotEx plot = new PlotImpl();
 		plot.setSize(300, 200);
 		plot.getMargin().setExtraLeft(12.0);
 		plot.getMargin().setExtraRight(12.0);
@@ -343,12 +370,16 @@ public class SimpleLayoutDirectorTest {
 
 		plot.validate();
 		double topMargin = 12 + 10 + 2.5 + 10 + 2.5;
-		checkRectangle2D(plot.getContentBounds(), 12, 12, 300 - 12 - 12,
-				200 - topMargin - 12);
-		verify(title0).setLocation(150, 200 - 12 - 10);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 0);
+		checkDouble(plot.getMargin().getMarginTop(), 10 + 2.5 + 10 + 2.5);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - 12, 200 - topMargin - 12);
+		verify(title0).setLocation(csize.getWidth() / 2, csize.getHeight() + 2.5 + 10 + 2.5);
 		verify(title0).setHAlign(HAlign.CENTER);
 		verify(title0).setVAlign(VAlign.BOTTOM);
-		verify(title1).setLocation(150, 200 - 12 - 10 - 2.5 - 10);
+		verify(title1).setLocation(csize.getWidth() / 2, csize.getHeight() + 2.5);
 		verify(title1).setHAlign(HAlign.CENTER);
 		verify(title1).setVAlign(VAlign.BOTTOM);
 	}
@@ -366,8 +397,7 @@ public class SimpleLayoutDirectorTest {
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title1.getGapFactor()).thenReturn(0.25);
 
-		PlotEx plot = new PlotImpl() {
-		};
+		PlotEx plot = new PlotImpl();
 		plot.setSize(300, 200);
 		plot.getMargin().setExtraLeft(12.0);
 		plot.getMargin().setExtraRight(12.0);
@@ -379,12 +409,16 @@ public class SimpleLayoutDirectorTest {
 		plot.validate();
 		double topMargin = 12 + 10 + 2.5;
 		double bottomMargin = 12 + 10 + 2.5;
-		checkRectangle2D(plot.getContentBounds(), 12, bottomMargin,
-				300 - 12 - 12, 200 - topMargin - bottomMargin);
-		verify(title0).setLocation(150, 200 - 12 - 10);
+		checkDouble(plot.getMargin().getMarginLeft(), 0);
+		checkDouble(plot.getMargin().getMarginRight(), 0);
+		checkDouble(plot.getMargin().getMarginBottom(), 10 + 2.5);
+		checkDouble(plot.getMargin().getMarginTop(), 10 + 2.5);
+		Dimension2D csize = plot.getContentSize();
+		checkDimension2D(csize, 300 - 12 - 12, 200 - topMargin - bottomMargin);
+		verify(title0).setLocation(csize.getWidth() / 2, csize.getHeight() + 2.5);
 		verify(title0).setHAlign(HAlign.CENTER);
 		verify(title0).setVAlign(VAlign.BOTTOM);
-		verify(title1).setLocation(150, 12 + 10);
+		verify(title1).setLocation(csize.getWidth() / 2, -2.5);
 		verify(title1).setHAlign(HAlign.CENTER);
 		verify(title1).setVAlign(VAlign.TOP);
 	}

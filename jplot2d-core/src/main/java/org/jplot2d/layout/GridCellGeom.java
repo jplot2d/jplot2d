@@ -27,8 +27,7 @@ public class GridCellGeom {
 
 	private final double sumWidth, sumHeight;
 
-	public GridCellGeom(Map<Integer, Double> colWidth,
-			Map<Integer, Double> rowHeight) {
+	public GridCellGeom(Map<Integer, Double> colWidth, Map<Integer, Double> rowHeight) {
 		this.colWidth = colWidth;
 		this.rowHeight = rowHeight;
 		double sw = 0, sh = 0;
@@ -52,6 +51,12 @@ public class GridCellGeom {
 		return v.doubleValue();
 	}
 
+	/**
+	 * Returns sum of width of all grid cells on left of the given column
+	 * 
+	 * @param col
+	 * @return the sum width
+	 */
 	public double getSumWidthLeft(int col) {
 		double sum = 0;
 		for (SortedMap.Entry<Integer, Double> me : colWidth.entrySet()) {
@@ -64,6 +69,12 @@ public class GridCellGeom {
 		return sum;
 	}
 
+	/**
+	 * Returns sum of height of all grid cells on left of the given column
+	 * 
+	 * @param col
+	 * @return the sum height
+	 */
 	public double getSumHeightTop(int row) {
 		double sum = 0;
 		for (SortedMap.Entry<Integer, Double> me : rowHeight.entrySet()) {
@@ -96,8 +107,7 @@ public class GridCellGeom {
 		if (getColNum() != b.getColNum() || getRowNum() != b.getRowNum()) {
 			return false;
 		}
-		if (getSumWidth() != b.getSumWidth()
-				|| getSumHeight() != b.getSumHeight()) {
+		if (getSumWidth() != b.getSumWidth() || getSumHeight() != b.getSumHeight()) {
 			return false;
 		}
 		for (Integer col : colWidth.keySet()) {

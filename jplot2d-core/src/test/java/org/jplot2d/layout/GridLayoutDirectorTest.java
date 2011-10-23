@@ -46,18 +46,6 @@ public class GridLayoutDirectorTest {
 		margin00.setMarginBottom(0);
 		margin00.setMarginRight(0);
 
-		PlotEx sp01 = new PlotImpl();
-		sp01.setPreferredContentSize(new DoubleDimension2D(320, 240));
-		PlotMarginEx margin01 = sp01.getMargin();
-		margin01.setAutoMarginTop(false);
-		margin01.setAutoMarginLeft(false);
-		margin01.setAutoMarginBottom(false);
-		margin01.setAutoMarginRight(false);
-		margin01.setMarginTop(0);
-		margin01.setMarginLeft(6);
-		margin01.setMarginBottom(6);
-		margin01.setMarginRight(0);
-
 		PlotEx sp10 = new PlotImpl();
 		sp10.setPreferredContentSize(new DoubleDimension2D(320, 240));
 		PlotMarginEx margin10 = sp10.getMargin();
@@ -69,6 +57,18 @@ public class GridLayoutDirectorTest {
 		margin10.setMarginLeft(0);
 		margin10.setMarginBottom(0);
 		margin10.setMarginRight(5);
+
+		PlotEx sp01 = new PlotImpl();
+		sp01.setPreferredContentSize(new DoubleDimension2D(320, 240));
+		PlotMarginEx margin01 = sp01.getMargin();
+		margin01.setAutoMarginTop(false);
+		margin01.setAutoMarginLeft(false);
+		margin01.setAutoMarginBottom(false);
+		margin01.setAutoMarginRight(false);
+		margin01.setMarginTop(0);
+		margin01.setMarginLeft(6);
+		margin01.setMarginBottom(6);
+		margin01.setMarginRight(0);
 
 		PlotEx sp11 = new PlotImpl();
 		sp11.setPreferredContentSize(new DoubleDimension2D(320, 240));
@@ -82,8 +82,8 @@ public class GridLayoutDirectorTest {
 		margin11.setMarginBottom(7);
 		margin11.setMarginRight(7);
 
-		PlotEx sp = new PlotImpl();
-		PlotMarginEx margin = sp.getMargin();
+		PlotEx plot = new PlotImpl();
+		PlotMarginEx margin = plot.getMargin();
 		margin.setAutoMarginTop(false);
 		margin.setAutoMarginLeft(false);
 		margin.setAutoMarginBottom(false);
@@ -93,41 +93,61 @@ public class GridLayoutDirectorTest {
 		margin.setMarginBottom(10);
 		margin.setMarginRight(10);
 		LayoutDirector ld = new GridLayoutDirector();
-		sp.setLayoutDirector(ld);
-		sp.addSubplot(sp00, new GridConstraint(0, 0));
-		sp.addSubplot(sp01, new GridConstraint(0, 1));
-		sp.addSubplot(sp10, new GridConstraint(1, 0));
-		sp.addSubplot(sp11, new GridConstraint(1, 1));
+		plot.setLayoutDirector(ld);
+		plot.addSubplot(sp00, new GridConstraint(0, 0));
+		plot.addSubplot(sp01, new GridConstraint(0, 1));
+		plot.addSubplot(sp10, new GridConstraint(1, 0));
+		plot.addSubplot(sp11, new GridConstraint(1, 1));
 
-		checkDimension2D(ld.getPreferredContentSize(sp), 6 + 640 + 320 + 7,
-				5 + 480 + 240 + 7);
-		checkDimension2D(ld.getPreferredSize(sp), 6 + 640 + 320 + 7 + 20, 5
-				+ 480 + 240 + 7 + 20);
+		checkDimension2D(ld.getPreferredContentSize(plot), 6 + 640 + 320 + 7, 5 + 480 + 240 + 7);
+		checkDimension2D(ld.getPreferredSize(plot), 6 + 640 + 320 + 7 + 20, 5 + 480 + 240 + 7 + 20);
 
-		sp.setSize(ld.getPreferredSize(sp));
-		sp.validate();
-		checkDimension2D(sp00.getSize(), 6 + 640, 480 + 5);
-		checkDimension2D(sp10.getSize(), 320 + 7, 480 + 5);
-		checkDimension2D(sp01.getSize(), 6 + 640, 7 + 240);
+		plot.setSize(ld.getPreferredSize(plot));
+		plot.validate();
+		checkDouble(sp00.getMargin().getMarginLeft(), 4);
+		checkDouble(sp00.getMargin().getMarginRight(), 0);
+		checkDouble(sp00.getMargin().getMarginTop(), 4);
+		checkDouble(sp00.getMargin().getMarginBottom(), 0);
+		checkPoint2D(sp00.getLocation(), 6, 247);
+		checkDimension2D(sp00.getContentConstrant(), 640, 480);
+		checkDimension2D(sp00.getSize(), 4 + 640, 480 + 4);
+
+		checkDouble(sp10.getMargin().getMarginLeft(), 0);
+		checkDouble(sp10.getMargin().getMarginRight(), 5);
+		checkDouble(sp10.getMargin().getMarginTop(), 5);
+		checkDouble(sp10.getMargin().getMarginBottom(), 0);
+		checkPoint2D(sp10.getLocation(), 646, 247);
+		checkDimension2D(sp10.getContentConstrant(), 320, 480);
+		checkDimension2D(sp10.getSize(), 320 + 5, 480 + 5);
+
+		checkDouble(sp01.getMargin().getMarginLeft(), 6);
+		checkDouble(sp01.getMargin().getMarginRight(), 0);
+		checkDouble(sp01.getMargin().getMarginTop(), 0);
+		checkDouble(sp01.getMargin().getMarginBottom(), 6);
+		checkPoint2D(sp01.getLocation(), 6, 7);
+		checkDimension2D(sp01.getContentConstrant(), 640, 240);
+		checkDimension2D(sp01.getSize(), 6 + 640, 6 + 240);
+
+		checkDouble(sp11.getMargin().getMarginLeft(), 0);
+		checkDouble(sp11.getMargin().getMarginRight(), 7);
+		checkDouble(sp11.getMargin().getMarginTop(), 0);
+		checkDouble(sp11.getMargin().getMarginBottom(), 7);
+		checkPoint2D(sp11.getLocation(), 646, 7);
+		checkDimension2D(sp11.getContentConstrant(), 320, 240);
 		checkDimension2D(sp11.getSize(), 320 + 7, 7 + 240);
-		checkRectangle2D(sp00.getContentConstrant(), 6, 0, 640, 480);
-		checkRectangle2D(sp10.getContentConstrant(), 0, 0, 320, 480);
-		checkRectangle2D(sp01.getContentConstrant(), 6, 7, 640, 240);
-		checkRectangle2D(sp11.getContentConstrant(), 0, 7, 320, 240);
 
-		sp.setPreferredContentSize(new DoubleDimension2D(1213, 912));
-		checkDimension2D(ld.getPreferredContentSize(sp), 1213, 912);
-		sp.setSize(ld.getPreferredSize(sp));
-		sp.validate();
-		checkDimension2D(sp00.getSize(), 6 + 800, 600 + 5);
-		checkDimension2D(sp10.getSize(), 400 + 7, 600 + 5);
-		checkDimension2D(sp01.getSize(), 6 + 800, 7 + 300);
+		plot.setPreferredContentSize(new DoubleDimension2D(1213, 912));
+		checkDimension2D(ld.getPreferredContentSize(plot), 1213, 912);
+		plot.setSize(ld.getPreferredSize(plot));
+		plot.validate();
+		checkPoint2D(sp00.getLocation(), 6, 307);
+		checkDimension2D(sp00.getSize(), 4 + 800, 600 + 4);
+		checkPoint2D(sp10.getLocation(), 806, 307);
+		checkDimension2D(sp10.getSize(), 400 + 5, 600 + 5);
+		checkPoint2D(sp01.getLocation(), 6, 7);
+		checkDimension2D(sp01.getSize(), 6 + 800, 6 + 300);
+		checkPoint2D(sp11.getLocation(), 806, 7);
 		checkDimension2D(sp11.getSize(), 400 + 7, 7 + 300);
-		checkRectangle2D(sp00.getContentConstrant(), 6, 0, 800, 600);
-		checkRectangle2D(sp10.getContentConstrant(), 0, 0, 400, 600);
-		checkRectangle2D(sp01.getContentConstrant(), 6, 7, 800, 300);
-		checkRectangle2D(sp11.getContentConstrant(), 0, 7, 400, 300);
-
 	}
 
 }

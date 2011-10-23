@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,15 +23,21 @@ import java.awt.geom.Dimension2D;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * The interface for jplot2d to layout plot. All methods of LayoutDirector will
- * be called inside the plot engine. User should never call them directly.
+ * The interface to layout a plot. All methods of LayoutDirector will be called inside the plot
+ * engine. User should never call them directly.
  * <p>
- * A plot's children subplots are laid out in the content area. All layers in
- * plot are stacked over and have the same size of the content area.
+ * A plot's subplots are laid out in the content area. All layers in a plot are stacked over and
+ * have the same size of the content area.
  * <p>
- * The axis is a special component. Its length can be set when laid out, but its
- * height is fixed and derived from its internal status, such as tick height and
- * labels.
+ * The axis is a special component. Its length can be set when laid out, but its height is fixed and
+ * derived from its internal status, such as tick height and labels.
+ * <p>
+ * The layout director has 2 working mode.
+ * <ul>
+ * <li>For root plot, the size is known, and the content size will be decided by layout director</li>
+ * <li>For subplot, the content constraint has been set by its container's layout director. The
+ * content size will be the constraint, and size is calculated by layout director</li>
+ * </ul>
  * 
  * @author Jingjing Li
  * 
@@ -63,8 +69,8 @@ public interface LayoutDirector {
 	public void remove(PlotEx plot);
 
 	/**
-	 * Invalidates the layout, indicating that if the layout manager has cached
-	 * information it should be discarded.
+	 * Invalidates the layout, indicating that if the layout manager has cached information it
+	 * should be discarded.
 	 * 
 	 * @param plot
 	 *            the plot has been invalidate.
@@ -72,7 +78,9 @@ public interface LayoutDirector {
 	public void invalidateLayout(PlotEx plot);
 
 	/**
-	 * Layout the plot.
+	 * Layout the plot. Normally the plot contents size is calculated by subtracting margin from
+	 * plot size. If the plot has contents size constraint, the plot size is calculated by adding
+	 * margin to plot content size.
 	 */
 	public void layout(PlotEx plot);
 

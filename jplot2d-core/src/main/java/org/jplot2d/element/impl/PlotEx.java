@@ -1,6 +1,6 @@
 package org.jplot2d.element.impl;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Dimension2D;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.notice.Notifier;
@@ -10,24 +10,19 @@ public interface PlotEx extends Plot, ContainerEx {
 	public PlotEx getParent();
 
 	/**
-	 * Determines whether this component is valid. A component is valid when it
-	 * is correctly sized and positioned within its parent container and all its
-	 * children are also valid. In order to account for peers' size
-	 * requirements, components are invalidated before they are first shown on
-	 * the screen. By the time the parent container is fully realized, all its
-	 * components will be valid.
+	 * Determines whether this plot is valid. A plot is valid when it is correctly sized and
+	 * positioned within its parent plot and all its axes, titles, legend and subplot are also
+	 * valid.
 	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code>
-	 *         otherwise
+	 * @return <code>true</code> if the component is valid, <code>false</code> otherwise
 	 * @see #validate
 	 * @see #invalidate
 	 */
 	public boolean isValid();
 
 	/**
-	 * Invalidates this component. This component and all parents above it are
-	 * marked as needing to be laid out. This method can be called often, so it
-	 * needs to execute quickly.
+	 * Invalidates this component. This component and all parents above it are marked as needing to
+	 * be laid out. This method can be called often, so it needs to execute quickly.
 	 * 
 	 * @see #validate
 	 */
@@ -54,8 +49,8 @@ public interface PlotEx extends Plot, ContainerEx {
 	public void setNotifier(Notifier notifier);
 
 	/**
-	 * Apply all pending changes on this plot. After this method is called, all
-	 * axis range and layout are valid.
+	 * Apply all pending changes on this plot. After this method is called, all axis range and
+	 * layout are valid.
 	 */
 	public void commit();
 
@@ -86,28 +81,32 @@ public interface PlotEx extends Plot, ContainerEx {
 	public void parentPhysicalTransformChanged();
 
 	/**
-	 * Sets the rectangle of contents by layout director. All layers in this
-	 * plot have the same viewport bounds.
+	 * Sets the content size by layout director. All layers in this plot have the same viewport
+	 * size.
+	 * <p>
+	 * The layout manager guarantee this method is called after setting plot margin, and no matter
+	 * if the content size is changed.
 	 * 
-	 * @param bounds
-	 *            the rectangle of viewport
+	 * @param csize
+	 *            the content size
 	 */
-	public void setContentBounds(Rectangle2D bounds);
+	public void setContentSize(Dimension2D csize);
 
 	/**
 	 * Returns the contents constraint of this plot.
 	 * 
 	 * @return the contents constraint
 	 */
-	public Rectangle2D getContentConstrant();
+	public Dimension2D getContentConstrant();
 
 	/**
-	 * Impose contents constraint on this plot
+	 * Impose contents constraint on this plot. This method is called by a plot's layout director,
+	 * when laying out subplots of the plot.
 	 * 
 	 * @param constraint
 	 *            the contents constraint
 	 */
-	public void setContentConstrant(Rectangle2D constraint);
+	public void setContentConstrant(Dimension2D constraint);
 
 	public void childPreferredContentSizeChanged();
 
