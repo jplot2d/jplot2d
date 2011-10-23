@@ -24,7 +24,9 @@ import org.jplot2d.element.impl.PlotEx;
 
 /**
  * The interface to layout a plot. All methods of LayoutDirector will be called inside the plot
- * engine. User should never call them directly.
+ * engine. User should never call them directly. Every plot should have its own LayoutDirector.
+ * Re-using a LayoutDirector among multiple plot is not recommended. Re-using a LayoutDirector by
+ * plots in different environment will fail due to thread problem.
  * <p>
  * A plot's subplots are laid out in the content area. All layers in a plot are stacked over and
  * have the same size of the content area.

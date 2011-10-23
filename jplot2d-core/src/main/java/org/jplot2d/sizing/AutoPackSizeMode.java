@@ -54,4 +54,8 @@ public class AutoPackSizeMode extends SizeMode {
 
 	}
 
+	public String toString() {
+		return "Auto pack to contents";
+	}
+
 }

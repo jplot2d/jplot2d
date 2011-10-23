@@ -67,4 +67,8 @@ public class FixedSizeMode extends SizeMode {
 		return new Result(width, height, scale);
 	}
 
+	public String toString() {
+		return "Fixed size " + width + "x" + height;
+	}
+
 }

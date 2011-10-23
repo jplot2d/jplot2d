@@ -55,4 +55,13 @@ public class FillContainerSizeMode extends SizeMode {
 
 	}
 
+	public String toString() {
+		if (targetSize == null) {
+			return "Fill container with scale " + scale;
+		} else {
+			return "Fill container with target size " + targetSize.getWidth() + "x"
+					+ targetSize.getHeight();
+		}
+	}
+
 }
