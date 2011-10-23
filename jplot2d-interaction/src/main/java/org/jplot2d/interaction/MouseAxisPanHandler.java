@@ -18,11 +18,13 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
+import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
@@ -81,8 +83,11 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("MarqueeZoom");
 
-		Rectangle2D plotRect = axis.getParent().getPhysicalTransform()
-				.getPtoD(axis.getParent().getContentBounds()).getBounds2D();
+		Plot plot = axis.getParent();
+
+		Dimension2D csize = plot.getContentSize();
+		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
 
 		double npxStart = -offset / plotRect.getWidth();
 		double npxEnd = 1 + npxStart;

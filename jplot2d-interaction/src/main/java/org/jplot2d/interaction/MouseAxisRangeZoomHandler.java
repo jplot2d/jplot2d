@@ -19,11 +19,13 @@
 package org.jplot2d.interaction;
 
 import java.awt.Point;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
+import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionHandler;
@@ -84,8 +86,11 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Axis Range Zoom");
 
-		Rectangle2D plotRect = axis.getParent().getPhysicalTransform()
-				.getPtoD(axis.getParent().getContentBounds()).getBounds2D();
+		Plot plot = axis.getParent();
+
+		Dimension2D csize = plot.getContentSize();
+		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
 
 		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
 			double npxStart = (start - plotRect.getX()) / plotRect.getWidth();
