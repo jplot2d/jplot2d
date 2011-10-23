@@ -21,9 +21,9 @@ package org.jplot2d.sizing;
 import java.awt.geom.Dimension2D;
 
 /**
- * The plot paper size is auto packed to its contents. Changing the container
- * size will change the scale. Changing the scale will set container size to
- * null.
+ * The plot paper size is auto packed to its contents. The plot content size is assigned by
+ * preferred content size. Changing the container size will change the scale, while keep the w/h
+ * ratio of plot.
  * 
  * @author Jingjing Li
  * 
@@ -31,8 +31,7 @@ import java.awt.geom.Dimension2D;
 public class AutoPackSizeMode extends AbstractSizeMode {
 
 	/**
-	 * The plot paper size is auto packed according to its preferred content
-	 * size.
+	 * The plot paper size is auto packed according to its preferred content size.
 	 */
 	public AutoPackSizeMode() {
 		this.autoPack = true;
