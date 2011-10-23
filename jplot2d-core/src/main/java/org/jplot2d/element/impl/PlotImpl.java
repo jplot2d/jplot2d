@@ -78,7 +78,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out. This flag is set to
 	 * false when the object size is changed. The initial value is true, because the
-	 * {@link #contentBounds} and size are same.
+	 * {@link #contentSize} and size are same.
 	 * 
 	 * @see #isValid
 	 * @see #validate
@@ -92,7 +92,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
-	private Rectangle2D contentConstraint;
+	private Dimension2D contentConstraint;
 
 	/**
 	 * Must be valid size (positive width and height)
@@ -101,7 +101,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private boolean preferredSizeChanged;
 
-	private Rectangle2D contentBounds;
+	private Dimension2D contentSize;
 
 	private PlotMarginEx margin;
 
@@ -124,7 +124,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		legend.setParent(this);
 	}
 
-	protected PlotImpl(LegendEx legend) {
+	public PlotImpl(LegendEx legend) {
 		margin = new PlotMarginImpl();
 		margin.setParent(this);
 		this.legend = legend;
@@ -238,7 +238,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (this.width != width || this.height != height) {
 			this.width = width;
 			this.height = height;
-			pxf = null;
 			invalidate();
 		}
 	}
@@ -261,7 +260,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null) {
 			if (getParent() == null) {
-				pxf = new PhysicalTransform(0.0, height, scale);
+				pxf = new PhysicalTransform(margin.getMarginLeft() + margin.getExtraLeft(),
+						contentSize.getHeight() + margin.getMarginTop() + margin.getExtraTop(),
+						scale);
 			} else {
 				pxf = getParent().getPhysicalTransform().translate(locX, locY);
 			}
@@ -305,16 +306,20 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		layoutDirector.setConstraint((PlotEx) subplot, constraint);
 	}
 
-	public Rectangle2D getContentConstrant() {
+	public Dimension2D getContentConstrant() {
 		return contentConstraint;
 	}
 
-	public void setContentConstrant(Rectangle2D bounds) {
-		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+	public void setContentConstrant(Dimension2D constraint) {
+		if (constraint.getWidth() <= 0 || constraint.getHeight() <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
 					+ " is invalid.");
 		}
-		this.contentConstraint = bounds;
+
+		if (!constraint.equals(this.contentConstraint)) {
+			this.contentConstraint = constraint;
+			invalidate();
+		}
 	}
 
 	/**
@@ -413,24 +418,19 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public Rectangle2D getContentBounds() {
-		return contentBounds;
+	public Dimension2D getContentSize() {
+		return contentSize;
 	}
 
-	public void setContentBounds(Rectangle2D bounds) {
-		if (bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+	public void setContentSize(Dimension2D csize) {
+		if (csize.getWidth() <= 0 || csize.getHeight() <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
 					+ " is invalid.");
 		}
-		if (bounds.equals(this.contentBounds)) {
-			return;
-		}
 
-		this.contentBounds = bounds;
+		this.contentSize = csize;
 
-		for (LayerEx layer : getLayers()) {
-			layer.updateLocation();
-		}
+		pxf = null;
 	}
 
 	public int getComponentCount() {
@@ -1020,7 +1020,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		layoutDirector = plot.layoutDirector;
 		pxf = plot.pxf;
 		preferredContentSize = plot.preferredContentSize;
-		contentBounds = plot.contentBounds;
+		contentSize = plot.contentSize;
 
 		containerSize = plot.containerSize;
 		sizeMode = plot.sizeMode;
@@ -1059,6 +1059,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public void commit() {
+
+		PhysicalTransform oldPxf = pxf;
 
 		// set the plot size if it is decided by size mode
 		if (getSizeMode() != null && !getSizeMode().isAutoPack()) {
@@ -1128,7 +1130,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		// invalidate pxf on all children
-		if (pxf == null) {
+		if (oldPxf == null || oldPxf.equals(pxf)) {
 			this.parentPhysicalTransformChanged();
 		}
 

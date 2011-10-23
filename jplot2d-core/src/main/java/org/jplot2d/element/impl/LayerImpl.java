@@ -20,7 +20,6 @@ package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +31,12 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.Plot;
-import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
  * 
  */
 public class LayerImpl extends ContainerImpl implements LayerEx {
-
-	private PhysicalTransform pxf;
 
 	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
@@ -81,34 +77,26 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (getParent() == null) {
 			return null;
 		} else {
-			Rectangle2D rect = getParent().getContentBounds();
-			return new Point2D.Double(rect.getX(), rect.getY());
+			return new Point2D.Double(0, 0);
 		}
-	}
-
-	public void updateLocation() {
-		pxf = null;
-		redraw();
 	}
 
 	public Dimension2D getSize() {
 		if (getParent() == null) {
 			return null;
 		} else {
-			Rectangle2D rect = getParent().getContentBounds();
-			return new DoubleDimension2D(rect.getWidth(), rect.getHeight());
+			return getParent().getContentSize();
 		}
 	}
 
 	public PhysicalTransform getPhysicalTransform() {
-		if (pxf == null && getParent() != null) {
-			pxf = super.getPhysicalTransform();
+		if (getParent() != null) {
+			return getParent().getPhysicalTransform();
 		}
-		return pxf;
+		return null;
 	}
 
 	public void parentPhysicalTransformChanged() {
-		pxf = null;
 		redraw();
 	}
 
@@ -277,12 +265,6 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 
 		return result;
-	}
-
-	@Override
-	public void copyFrom(ElementEx src) {
-		LayerImpl layer = (LayerImpl) src;
-		this.pxf = layer.pxf;
 	}
 
 }

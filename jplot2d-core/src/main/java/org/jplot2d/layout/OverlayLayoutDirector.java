@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,13 +19,13 @@
 package org.jplot2d.layout;
 
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 
 /**
- * This LayoutDirector overlay all subplots over the top of each other. The 1st
- * subplot is the base subplot, which fill all area of the subplot. All other
- * subplots are put inside the base subplot's content area. The bounds are
- * defined in {@link BoundsConstraint} .
+ * This LayoutDirector overlay all plots over the top of each other. All subplots are put inside the
+ * base subplot's content area. The content bounds of subplots are defined by
+ * {@link BoundsConstraint} .
  * 
  * 
  * @author Jingjing Li
@@ -52,10 +52,10 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 			return;
 		}
 
-		double baseX = plot.getContentBounds().getX();
-		double baseY = plot.getContentBounds().getY();
-		double baseW = plot.getContentBounds().getWidth();
-		double baseH = plot.getContentBounds().getHeight();
+		double baseX = 0;
+		double baseY = 0;
+		double baseW = plot.getContentSize().getWidth();
+		double baseH = plot.getContentSize().getHeight();
 
 		for (PlotEx sp : plot.getSubplots()) {
 
@@ -81,7 +81,7 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
 
 			// locate plot
 			sp.setLocation(spbX, spbY);
-			sp.setSize(spbW, spbH);
+			sp.setContentConstrant(new DoubleDimension2D(spbW, spbH));
 		}
 
 	}

@@ -365,7 +365,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		case RIGHTTOP:
 		case RIGHTMIDDLE:
 		case RIGHTBOTTOM: {
-			double contentHeight = plot.getContainerSize().getHeight();
+			double contentHeight = plot.getContentSize().getHeight();
 			setLengthConstraint(contentHeight);
 			break;
 		}

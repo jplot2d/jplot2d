@@ -680,16 +680,16 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			Color c = getColor();
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() / 2));
 
-			Rectangle2D plotRect = getParent().getContentBounds();
+			Dimension2D pcontentSize = getParent().getContentSize();
 			if (getOrientation() == AxisOrientation.HORIZONTAL) {
 				for (int i = 0; i < tvslen; i++) {
 					double xp = transTickToPaper(Array.getDouble(tvs, i));
-					drawXGridLine(g, xp, plotRect.getMinY(), plotRect.getMaxY());
+					drawXGridLine(g, xp, 0, pcontentSize.getHeight());
 				}
 			} else {
 				for (int i = 0; i < tvslen; i++) {
 					double yp = transTickToPaper(Array.getDouble(tvs, i));
-					drawYGridLine(g, yp, plotRect.getMinX(), plotRect.getMaxX());
+					drawYGridLine(g, yp, 0, pcontentSize.getWidth());
 				}
 			}
 

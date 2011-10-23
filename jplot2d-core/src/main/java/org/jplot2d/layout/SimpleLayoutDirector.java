@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,7 +19,6 @@
 package org.jplot2d.layout;
 
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,21 +80,18 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	public void layout(PlotEx plot) {
 
-		Rectangle2D contentRect;
+		Dimension2D contentSize;
 		AxesInPlot ais = getAllAxes(plot);
 
+		Insets2D margin = calcMargin(plot, ais);
+
 		if (plot.getContentConstrant() != null) {
-			contentRect = plot.getContentConstrant();
+			contentSize = plot.getContentConstrant();
+			double width = contentSize.getWidth() + margin.getLeft() + margin.getRight();
+			double height = contentSize.getHeight() + margin.getTop() + margin.getBottom();
+			plot.setSize(width, height);
 		} else {
-			Insets2D margin = calcMargin(plot, ais);
-
-			plot.getMargin().setMarginTop(margin.getTop());
-			plot.getMargin().setMarginLeft(margin.getLeft());
-			plot.getMargin().setMarginBottom(margin.getBottom());
-			plot.getMargin().setMarginRight(margin.getRight());
-
-			double contentWidth = plot.getSize().getWidth() - margin.getLeft()
-					- margin.getRight();
+			double contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
 			double contentHeight = plot.getSize().getHeight() - margin.getTop()
 					- margin.getBottom();
 			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
@@ -104,15 +100,14 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			if (contentHeight < PlotEx.MIN_CONTENT_SIZE.getHeight()) {
 				contentHeight = PlotEx.MIN_CONTENT_SIZE.getHeight();
 			}
-			contentRect = new Rectangle2D.Double(margin.getLeft(),
-					margin.getBottom(), contentWidth, contentHeight);
+			contentSize = new DoubleDimension2D(contentWidth, contentHeight);
 		}
 
-		plot.setContentBounds(contentRect);
-		layoutLeftMargin(plot, contentRect, ais);
-		layoutRightMargin(plot, contentRect, ais);
-		layoutTopMargin(plot, contentRect, ais);
-		layoutBottomMargin(plot, contentRect, ais);
+		plot.setContentSize(contentSize);
+		layoutLeftMargin(plot, contentSize, ais);
+		layoutRightMargin(plot, contentSize, ais);
+		layoutTopMargin(plot, contentSize, ais);
+		layoutBottomMargin(plot, contentSize, ais);
 	}
 
 	/**
@@ -153,7 +148,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			return margin.getMarginLeft() + margin.getExtraLeft();
 		}
 
-		double mLeft = margin.getExtraLeft();
+		double mLeft = 0;
 
 		if (ais.leftAxes.size() > 0) {
 			for (AxisEx am : ais.leftAxes) {
@@ -174,7 +169,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		return mLeft;
+		plot.getMargin().setMarginLeft(mLeft);
+
+		return mLeft + margin.getExtraLeft();
 	}
 
 	protected static double calcRightMargin(PlotEx plot, AxesInPlot ais) {
@@ -184,7 +181,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			return margin.getMarginRight() + margin.getExtraRight();
 		}
 
-		double mRight = margin.getExtraRight();
+		double mRight = 0;
 
 		if (ais.rightAxes.size() > 0) {
 			if (ais.rightAxes.size() > 0) {
@@ -207,7 +204,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		return mRight;
+		plot.getMargin().setMarginRight(mRight);
+
+		return mRight + margin.getExtraRight();
 	}
 
 	protected static double calcTopMargin(PlotEx plot, AxesInPlot ais) {
@@ -217,7 +216,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			return margin.getMarginTop() + margin.getExtraTop();
 		}
 
-		double mTop = margin.getExtraTop();
+		double mTop = 0;
 
 		if (ais.topAxes.size() > 0) {
 			for (AxisEx am : ais.topAxes) {
@@ -252,7 +251,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		return mTop;
+		plot.getMargin().setMarginTop(mTop);
+
+		return mTop + margin.getExtraTop();
 	}
 
 	protected static double calcBottomMargin(PlotEx plot, AxesInPlot ais) {
@@ -262,7 +263,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			return margin.getMarginBottom() + margin.getExtraBottom();
 		}
 
-		double mBottom = margin.getExtraBottom();
+		double mBottom = 0;
 
 		if (ais.bottomAxes.size() > 0) {
 			for (AxisEx am : ais.bottomAxes) {
@@ -297,18 +298,20 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		return mBottom;
+		plot.getMargin().setMarginBottom(mBottom);
+
+		return mBottom + margin.getExtraBottom();
 	}
 
 	/**
-	 * Calculate the margin of the given plot. The legend size can be calculated
-	 * by pre-setting its length constraint.
+	 * Calculate the margin of the given plot. The legend size can be calculated by pre-setting its
+	 * length constraint.
 	 * 
 	 * @param plot
 	 * @param ais
 	 * @return
 	 */
-	static Insets2D calcMargin(PlotEx plot, AxesInPlot ais) {
+	private static Insets2D calcMargin(PlotEx plot, AxesInPlot ais) {
 
 		double mLeft, mRight, mTop, mBottom;
 
@@ -320,27 +323,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return new Insets2D(mTop, mLeft, mBottom, mRight);
 	}
 
-	private static void layoutLeftMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInPlot ais) {
+	private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
 
 		// all left axes in inner-to-outer order
 		ArrayList<AxisEx> leftAxes = ais.leftAxes;
 
 		// viewport box
-		double iabLeft = contentBox.getMinX();
-		double iabBottom = contentBox.getMinY();
+		double iabLeft = 0;
+		double iabBottom = 0;
 
 		double xloc = iabLeft;
 
 		/* locate axes */
 		if (leftAxes.size() > 0) {
 			AxisEx am = leftAxes.get(0);
-			am.setLength(contentBox.getHeight());
+			am.setLength(contentSize.getHeight());
 			am.setLocation(xloc, iabBottom);
 			xloc -= am.getDesc();
 			for (int i = 1; i < leftAxes.size(); i++) {
 				am = leftAxes.get(i);
-				am.setLength(contentBox.getHeight());
+				am.setLength(contentSize.getHeight());
 				xloc -= am.getAsc();
 				am.setLocation(xloc, iabBottom);
 				xloc -= am.getDesc();
@@ -354,21 +356,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case LEFTTOP:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getMaxY());
+				legend.setLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
 				legend.layoutItems();
 				break;
 			case LEFTMIDDLE:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getCenterY());
+				legend.setLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.MIDDLE);
 				legend.layoutItems();
 				break;
 			case LEFTBOTTOM:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getMinY());
+				legend.setLocation(xloc, 0);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
 				legend.layoutItems();
@@ -378,27 +380,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutRightMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInPlot ais) {
+	private static void layoutRightMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
 
 		// all right axes in inner-to-outer order
 		ArrayList<AxisEx> rightAxes = ais.rightAxes;
 
 		// viewport box
-		double iabRight = contentBox.getMaxX();
-		double iabBottom = contentBox.getMinY();
+		double iabRight = contentSize.getWidth();
+		double iabBottom = 0;
 
 		double xloc = iabRight;
 
 		/* locate axes */
 		if (rightAxes.size() > 0) {
 			AxisEx am = rightAxes.get(0);
-			am.setLength(contentBox.getHeight());
+			am.setLength(contentSize.getHeight());
 			am.setLocation(xloc, iabBottom);
 			xloc += am.getAsc();
 			for (int i = 1; i < rightAxes.size(); i++) {
 				am = rightAxes.get(i);
-				am.setLength(contentBox.getHeight());
+				am.setLength(contentSize.getHeight());
 				xloc += am.getDesc();
 				am.setLocation(xloc, iabBottom);
 				xloc += am.getAsc();
@@ -411,21 +412,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getMaxY());
+				legend.setLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
 				legend.layoutItems();
 				break;
 			case RIGHTMIDDLE:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getCenterY());
+				legend.setLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.MIDDLE);
 				legend.layoutItems();
 				break;
 			case RIGHTBOTTOM:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, contentBox.getMinY());
+				legend.setLocation(xloc, 0);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
 				legend.layoutItems();
@@ -435,27 +436,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutTopMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInPlot ais) {
+	private static void layoutTopMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
 
 		// all left axes in inner-to-outer order
 		ArrayList<AxisEx> topAxes = ais.topAxes;
 
 		// viewport box
-		double iabLeft = contentBox.getMinX();
-		double iabTop = contentBox.getMaxY();
+		double iabLeft = 0;
+		double iabTop = contentSize.getHeight();
 
 		double yloc = iabTop;
 
 		// locate axes
 		if (topAxes.size() > 0) {
 			AxisEx am = topAxes.get(0);
-			am.setLength(contentBox.getWidth());
+			am.setLength(contentSize.getWidth());
 			am.setLocation(iabLeft, yloc);
 			yloc += am.getAsc();
 			for (int i = 1; i < topAxes.size(); i++) {
 				am = topAxes.get(i);
-				am.setLength(contentBox.getWidth());
+				am.setLength(contentSize.getWidth());
 				yloc += am.getDesc();
 				am.setLocation(iabLeft, yloc);
 				yloc += am.getAsc();
@@ -468,7 +468,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case TOPLEFT:
 				yloc += LEGEND_GAP;
-				legend.setLocation(contentBox.getMinX(), yloc);
+				legend.setLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
 				legend.layoutItems();
@@ -476,7 +476,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				break;
 			case TOPCENTER:
 				yloc += LEGEND_GAP;
-				legend.setLocation(contentBox.getCenterX(), yloc);
+				legend.setLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.BOTTOM);
 				legend.layoutItems();
@@ -484,7 +484,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				break;
 			case TOPRIGHT:
 				yloc += LEGEND_GAP;
-				legend.setLocation(contentBox.getMaxX(), yloc);
+				legend.setLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
 				legend.layoutItems();
@@ -502,21 +502,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				switch (title.getPosition()) {
 				case TOPLEFT:
 					yloc += title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getMinX(), yloc);
+					title.setLocation(0, yloc);
 					title.setHAlign(HAlign.LEFT);
 					title.setVAlign(VAlign.BOTTOM);
 					yloc += titleHeight;
 					break;
 				case TOPCENTER:
 					yloc += title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getCenterX(), yloc);
+					title.setLocation(contentSize.getWidth() / 2, yloc);
 					title.setHAlign(HAlign.CENTER);
 					title.setVAlign(VAlign.BOTTOM);
 					yloc += titleHeight;
 					break;
 				case TOPRIGHT: {
 					yloc += title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getMaxX(), yloc);
+					title.setLocation(contentSize.getWidth(), yloc);
 					title.setHAlign(HAlign.RIGHT);
 					title.setVAlign(VAlign.BOTTOM);
 					yloc += titleHeight;
@@ -528,27 +528,26 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 	}
 
-	private static void layoutBottomMargin(PlotEx sp, Rectangle2D contentBox,
-			AxesInPlot ais) {
+	private static void layoutBottomMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
 
 		// all bottom axes in inner-to-outer order
 		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
 
 		// viewport box
-		double iabLeft = contentBox.getMinX();
-		double iabBottom = contentBox.getMinY();
+		double iabLeft = 0;
+		double iabBottom = 0;
 
 		double yloc = iabBottom;
 
 		// locate axes
 		if (bottomAxes.size() > 0) {
 			AxisEx am = bottomAxes.get(0);
-			am.setLength(contentBox.getWidth());
+			am.setLength(contentSize.getWidth());
 			am.setLocation(iabLeft, yloc);
 			yloc -= am.getDesc();
 			for (int i = 1; i < bottomAxes.size(); i++) {
 				am = bottomAxes.get(i);
-				am.setLength(contentBox.getWidth());
+				am.setLength(contentSize.getWidth());
 				yloc -= am.getAsc();
 				am.setLocation(iabLeft, yloc);
 				yloc -= am.getDesc();
@@ -561,7 +560,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(contentBox.getMinX(), yloc);
+				legend.setLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
 				legend.layoutItems();
@@ -569,7 +568,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				break;
 			case BOTTOMCENTER:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(contentBox.getCenterX(), yloc);
+				legend.setLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.TOP);
 				legend.layoutItems();
@@ -577,7 +576,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				break;
 			case BOTTOMRIGHT:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(contentBox.getMaxX(), yloc);
+				legend.setLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
 				legend.layoutItems();
@@ -593,21 +592,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				switch (title.getPosition()) {
 				case BOTTOMLEFT:
 					yloc -= title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getMinX(), yloc);
+					title.setLocation(0, yloc);
 					title.setHAlign(HAlign.LEFT);
 					title.setVAlign(VAlign.TOP);
 					yloc -= titleHeight;
 					break;
 				case BOTTOMCENTER:
 					yloc -= title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getCenterX(), yloc);
+					title.setLocation(contentSize.getWidth() / 2, yloc);
 					title.setHAlign(HAlign.CENTER);
 					title.setVAlign(VAlign.TOP);
 					yloc -= titleHeight;
 					break;
 				case BOTTOMRIGHT: {
 					yloc -= title.getGapFactor() * titleHeight;
-					title.setLocation(contentBox.getMaxX(), yloc);
+					title.setLocation(contentSize.getWidth(), yloc);
 					title.setHAlign(HAlign.RIGHT);
 					title.setVAlign(VAlign.TOP);
 					yloc -= titleHeight;
@@ -620,10 +619,10 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	/**
-	 * Calculate the preferred content size of the given plot. The default
-	 * implementation returns the plot.getPreferredContentSize(), which can be
-	 * override by subclass to consider nested subplots. The returned size may
-	 * be <code>null</code> if there is no enough information to derive a value.
+	 * Calculate the preferred content size of the given plot. The default implementation returns
+	 * the plot.getPreferredContentSize(), which can be override by subclass to consider nested
+	 * subplots. The returned size may be <code>null</code> if there is no enough information to
+	 * derive a value.
 	 * 
 	 * @param plot
 	 * @return the preferred content size
@@ -639,10 +638,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		} else {
 			AxesInPlot ais = getAllAxes(plot);
 			Insets2D margin = calcMargin(plot, ais);
-			double w = prefContSize.getWidth() + margin.getLeft()
-					+ margin.getRight();
-			double h = prefContSize.getHeight() + margin.getTop()
-					+ margin.getBottom();
+			double w = prefContSize.getWidth() + margin.getLeft() + margin.getRight();
+			double h = prefContSize.getHeight() + margin.getTop() + margin.getBottom();
 			return new DoubleDimension2D(w, h);
 		}
 	}
