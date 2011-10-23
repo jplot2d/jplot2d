@@ -18,14 +18,18 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
+
 /**
- * Subplot has a content area in the center, surrounded by margin area. The
- * margin area holds axes, title and legend. Besides the margin, there are also
- * extra margins. The extra margin plus the margin will be the total margin.
+ * Subplot has a content area in the center, surrounded by margin area. The margin area holds axes,
+ * title and legend. Besides the margin, there are also extra margins. The extra margin plus the
+ * margin will be the total margin.
  * 
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Margin")
 public interface PlotMargin extends Element {
 
 	/**
@@ -33,164 +37,164 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	public boolean isAutoMarginTop();
+	@Property(order = 0)
+	public boolean isAutoLeft();
 
 	/**
 	 * Returns <code>true</code> if the margin is a auto chose nice value.
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	public boolean isAutoMarginLeft();
+	@Property(order = 1)
+	public boolean isAutoRight();
 
 	/**
 	 * Returns <code>true</code> if the margin is a auto chose nice value.
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	public boolean isAutoMarginBottom();
+	@Property(order = 2)
+	public boolean isAutoBottom();
 
 	/**
 	 * Returns <code>true</code> if the margin is a auto chose nice value.
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	public boolean isAutoMarginRight();
+	@Property(order = 3)
+	public boolean isAutoTop();
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value.
-	 * If set to
-	 * <code>false<code>, user must supply the margin value by {@link #setMarginTop(double)}.
+	 * Set to <code>true</code> to let layout director to choose a nice value. If set to
+	 * <code>false<code>, user must supply the margin value by {@link #setLeft(double)}.
 	 * 
 	 * @param auto
 	 *            the flag
 	 */
-	public void setAutoMarginTop(boolean auto);
+	public void setAutoLeft(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value.
-	 * If set to
-	 * <code>false<code>, user must supply the margin value by {@link #setMarginLeft(double)}.
+	 * Set to <code>true</code> to let layout director to choose a nice value. If set to
+	 * <code>false<code>, user must supply the margin value by {@link #setRight(double)}.
 	 * 
 	 * @param auto
 	 *            the flag
 	 */
-	public void setAutoMarginLeft(boolean auto);
+	public void setAutoRight(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value.
-	 * If set to
-	 * <code>false<code>, user must supply the margin value by {@link #setMarginBottom(double)}.
+	 * Set to <code>true</code> to let layout director to choose a nice value. If set to
+	 * <code>false<code>, user must supply the margin value by {@link #setBottom(double)}.
 	 * 
 	 * @param auto
 	 *            the flag
 	 */
-	public void setAutoMarginBottom(boolean auto);
+	public void setAutoBottom(boolean auto);
 
 	/**
-	 * Set to <code>true</code> to let layout director to choose a nice value.
-	 * If set to
-	 * <code>false<code>, user must supply the margin value by {@link #setMarginRight(double)}.
+	 * Set to <code>true</code> to let layout director to choose a nice value. If set to
+	 * <code>false<code>, user must supply the margin value by {@link #setTop(double)}.
 	 * 
 	 * @param auto
 	 *            the flag
 	 */
-	public void setAutoMarginRight(boolean auto);
+	public void setAutoTop(boolean auto);
 
 	/**
 	 * Returns the actual margin value.
 	 * 
 	 * @return the actual margin value
 	 */
-	public double getMarginTop();
+	@Property(order = 4)
+	public double getLeft();
 
 	/**
 	 * Returns the actual margin value.
 	 * 
 	 * @return the actual margin value
 	 */
-	public double getMarginLeft();
+	@Property(order = 5)
+	public double getRight();
 
 	/**
 	 * Returns the actual margin value.
 	 * 
 	 * @return the actual margin value
 	 */
-	public double getMarginBottom();
+	@Property(order = 6)
+	public double getBottom();
 
 	/**
 	 * Returns the actual margin value.
 	 * 
 	 * @return the actual margin value
 	 */
-	public double getMarginRight();
+	@Property(order = 7)
+	public double getTop();
 
 	/**
-	 * Sets the margin value. The value only take effect when
-	 * {@link #isAutoMarginTop()} is <code>false</code>.
-	 * 
-	 * @param marginTop
-	 */
-	public void setMarginTop(double marginTop);
-
-	/**
-	 * Sets the margin value. The value only take effect when
-	 * {@link #isAutoMarginLeft()} is <code>false</code>.
+	 * Sets the margin value. The value only take effect when {@link #isAutoLeft()} is
+	 * <code>false</code>.
 	 * 
 	 * @param marginLeft
 	 */
-	public void setMarginLeft(double marginLeft);
+	public void setLeft(double marginLeft);
 
 	/**
-	 * Sets the margin value. The value only take effect when
-	 * {@link #isAutoMarginBottom()} is <code>false</code>.
-	 * 
-	 * @param marginBottom
-	 */
-	public void setMarginBottom(double marginBottom);
-
-	/**
-	 * Sets the margin value. The value only take effect when
-	 * {@link #isAutoMarginRight()} is <code>false</code>.
+	 * Sets the margin value. The value only take effect when {@link #isAutoRight()} is
+	 * <code>false</code>.
 	 * 
 	 * @param marginRight
 	 */
-	public void setMarginRight(double marginRight);
+	public void setRight(double marginRight);
 
 	/**
-	 * Returns the extra top margin.
+	 * Sets the margin value. The value only take effect when {@link #isAutoBottom()} is
+	 * <code>false</code>.
 	 * 
-	 * @return the extra top margin
+	 * @param marginBottom
 	 */
-	public double getExtraTop();
+	public void setBottom(double marginBottom);
+
+	/**
+	 * Sets the margin value. The value only take effect when {@link #isAutoTop()} is
+	 * <code>false</code>.
+	 * 
+	 * @param marginTop
+	 */
+	public void setTop(double marginTop);
 
 	/**
 	 * Returns the extra left margin.
 	 * 
 	 * @return the extra left margin
 	 */
+	@Property(order = 8)
 	public double getExtraLeft();
-
-	/**
-	 * Returns the extra bottom margin.
-	 * 
-	 * @return the extra bottom margin
-	 */
-	public double getExtraBottom();
 
 	/**
 	 * Returns the extra right margin.
 	 * 
 	 * @return the extra right margin
 	 */
+	@Property(order = 9)
 	public double getExtraRight();
 
 	/**
-	 * Sets the extra top margin.
+	 * Returns the extra bottom margin.
 	 * 
-	 * @param marginTop
-	 *            the extra top margin
+	 * @return the extra bottom margin
 	 */
-	public void setExtraTop(double marginTop);
+	@Property(order = 10)
+	public double getExtraBottom();
+
+	/**
+	 * Returns the extra top margin.
+	 * 
+	 * @return the extra top margin
+	 */
+	@Property(order = 11)
+	public double getExtraTop();
 
 	/**
 	 * Sets the extra left margin.
@@ -201,6 +205,14 @@ public interface PlotMargin extends Element {
 	public void setExtraLeft(double marginLeft);
 
 	/**
+	 * Sets the extra right margin.
+	 * 
+	 * @param marginTop
+	 *            the extra right margin
+	 */
+	public void setExtraRight(double marginRight);
+
+	/**
 	 * Sets the extra bottom margin.
 	 * 
 	 * @param marginTop
@@ -209,11 +221,11 @@ public interface PlotMargin extends Element {
 	public void setExtraBottom(double marginBottom);
 
 	/**
-	 * Sets the extra right margin.
+	 * Sets the extra top margin.
 	 * 
 	 * @param marginTop
-	 *            the extra right margin
+	 *            the extra top margin
 	 */
-	public void setExtraRight(double marginRight);
+	public void setExtraTop(double marginTop);
 
 }

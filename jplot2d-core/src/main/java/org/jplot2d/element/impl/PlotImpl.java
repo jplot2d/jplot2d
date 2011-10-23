@@ -259,8 +259,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public PhysicalTransform getPhysicalTransform() {
 		if (pxf == null) {
 			if (getParent() == null) {
-				pxf = new PhysicalTransform(margin.getMarginLeft() + margin.getExtraLeft(),
-						contentSize.getHeight() + margin.getMarginTop() + margin.getExtraTop(),
+				pxf = new PhysicalTransform(margin.getLeft() + margin.getExtraLeft(),
+						contentSize.getHeight() + margin.getTop() + margin.getExtraTop(),
 						scale);
 			} else {
 				pxf = getParent().getPhysicalTransform().translate(locX, locY);

@@ -144,8 +144,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	protected static double calcLeftMargin(PlotEx plot, AxesInPlot ais) {
 		PlotMarginEx margin = plot.getMargin();
 
-		if (!margin.isAutoMarginLeft()) {
-			return margin.getMarginLeft() + margin.getExtraLeft();
+		if (!margin.isAutoLeft()) {
+			return margin.getLeft() + margin.getExtraLeft();
 		}
 
 		double mLeft = 0;
@@ -169,7 +169,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setMarginLeft(mLeft);
+		plot.getMargin().setLeft(mLeft);
 
 		return mLeft + margin.getExtraLeft();
 	}
@@ -177,8 +177,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	protected static double calcRightMargin(PlotEx plot, AxesInPlot ais) {
 		PlotMarginEx margin = plot.getMargin();
 
-		if (!margin.isAutoMarginRight()) {
-			return margin.getMarginRight() + margin.getExtraRight();
+		if (!margin.isAutoRight()) {
+			return margin.getRight() + margin.getExtraRight();
 		}
 
 		double mRight = 0;
@@ -204,7 +204,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setMarginRight(mRight);
+		plot.getMargin().setRight(mRight);
 
 		return mRight + margin.getExtraRight();
 	}
@@ -212,8 +212,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	protected static double calcTopMargin(PlotEx plot, AxesInPlot ais) {
 		PlotMarginEx margin = plot.getMargin();
 
-		if (!margin.isAutoMarginTop()) {
-			return margin.getMarginTop() + margin.getExtraTop();
+		if (!margin.isAutoTop()) {
+			return margin.getTop() + margin.getExtraTop();
 		}
 
 		double mTop = 0;
@@ -251,7 +251,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setMarginTop(mTop);
+		plot.getMargin().setTop(mTop);
 
 		return mTop + margin.getExtraTop();
 	}
@@ -259,8 +259,8 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	protected static double calcBottomMargin(PlotEx plot, AxesInPlot ais) {
 		PlotMarginEx margin = plot.getMargin();
 
-		if (!margin.isAutoMarginBottom()) {
-			return margin.getMarginBottom() + margin.getExtraBottom();
+		if (!margin.isAutoBottom()) {
+			return margin.getBottom() + margin.getExtraBottom();
 		}
 
 		double mBottom = 0;
@@ -298,7 +298,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setMarginBottom(mBottom);
+		plot.getMargin().setBottom(mBottom);
 
 		return mBottom + margin.getExtraBottom();
 	}
