@@ -19,6 +19,7 @@
 package org.jplot2d.interaction;
 
 import java.awt.Point;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.Plot;
@@ -65,8 +66,9 @@ public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> 
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Pan");
 
-		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(plot.getContentBounds())
-				.getBounds2D();
+		Dimension2D csize = plot.getContentSize();
+		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
 
 		double npxStart = -xoff / plotRect.getWidth();
 		double npxEnd = 1 + npxStart;

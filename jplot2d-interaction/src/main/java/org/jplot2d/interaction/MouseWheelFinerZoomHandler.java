@@ -19,6 +19,7 @@
 package org.jplot2d.interaction;
 
 import java.awt.Point;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.Plot;
@@ -54,8 +55,10 @@ public class MouseWheelFinerZoomHandler extends
 		}
 
 		BatchToken token = env.beginBatch("WheelZoom");
-		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(plot.getContentBounds())
-				.getBounds2D();
+
+		Dimension2D csize = plot.getContentSize();
+		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
 
 		double npx = (x - plotRect.getX()) / plotRect.getWidth();
 		double startx = npx * (1 - scale);
