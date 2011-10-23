@@ -24,6 +24,7 @@ import static junit.framework.TestCase.*;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.lang.reflect.Array;
@@ -101,6 +102,11 @@ public class TestUtils {
 	public static void checkRange2D(Range2D r, double start, double end) {
 		assertEquals(r.getStart(), start, Math.abs(start) * 1e-12);
 		assertEquals(r.getEnd(), end, Math.abs(end) * 1e-12);
+	}
+
+	public static void checkPoint2D(Point2D p, double x, double y) {
+		assertEquals(p.getX(), x, Math.abs(x) * 1e-12);
+		assertEquals(p.getY(), y, Math.abs(y) * 1e-12);
 	}
 
 	public static void checkDoubleArray(double[] da, double... v) {
