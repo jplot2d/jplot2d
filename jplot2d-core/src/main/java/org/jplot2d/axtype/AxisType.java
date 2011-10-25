@@ -28,8 +28,8 @@ import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.util.Range2D;
 
 /**
- * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a
- * preferred tick algorithm.
+ * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a preferred tick
+ * algorithm.
  * 
  * @author Jingjing Li
  * 
@@ -43,11 +43,9 @@ public abstract class AxisType {
 
 	public static final AxisType DATE = DateAxisType.getInstance();
 
-	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType
-			.getInstance();
+	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
 
-	public static final AxisType DECLINATION = DeclinationAxisType
-			.getInstance();
+	public static final AxisType DECLINATION = DeclinationAxisType.getInstance();
 
 	private final String name;
 
@@ -65,9 +63,8 @@ public abstract class AxisType {
 	public abstract TransformType getDefaultTransformType();
 
 	/**
-	 * The boundary of the axis nature. The returned boundary is never inverted.
-	 * For circular axis, this boundary is valid limit for data values, not for
-	 * displayed label values.
+	 * The boundary of the axis nature. The returned boundary is never inverted. For circular axis,
+	 * this boundary is valid limit for data values, not for displayed label values.
 	 * 
 	 * @return
 	 */
@@ -79,8 +76,8 @@ public abstract class AxisType {
 	public abstract Range2D getDefaultWorldRange(TransformType txfType);
 
 	/**
-	 * Returns a TickAlgorithm by the given transform type and tick transform,
-	 * or false if the given tick transform is not allowed.
+	 * Returns a TickAlgorithm by the given transform type and tick transform, or false if the given
+	 * tick transform is not allowed.
 	 * 
 	 * @param txfType
 	 *            the transform type
@@ -92,8 +89,8 @@ public abstract class AxisType {
 			AxisTickTransform tickTransform);
 
 	/**
-	 * Some axis has a circular nature, such as angle. This range is a canonical
-	 * range that all values should displayed in the range.
+	 * Some axis has a circular nature, such as angle. This range is a canonical range that all
+	 * values should displayed in the range.
 	 * 
 	 * @return <true> is this axis is circular nature.
 	 */
@@ -109,6 +106,11 @@ public abstract class AxisType {
 		return axisTypeMap.get(name);
 	}
 
+	/**
+	 * Returns all axis types in a array.
+	 * 
+	 * @return all axis types
+	 */
 	public static AxisType[] values() {
 		return axisTypeMap.values().toArray(new AxisType[0]);
 	}
