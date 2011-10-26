@@ -29,8 +29,8 @@ import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.Plot;
+import org.jplot2d.transfrom.PhysicalTransform;
 
 /**
  * @author Jingjing Li

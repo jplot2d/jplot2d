@@ -22,10 +22,10 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerImpl;
 import org.jplot2d.element.impl.InvokeStep;
+import org.jplot2d.transfrom.PhysicalTransform;
 
 /**
  * Stub for ContainerImpl

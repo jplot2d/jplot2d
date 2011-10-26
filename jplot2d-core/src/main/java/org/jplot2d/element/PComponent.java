@@ -28,6 +28,7 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.transfrom.PhysicalTransform;
 
 /**
  * A <em>component</em> is an object having a graphical representation that can be drawn on the

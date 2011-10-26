@@ -24,6 +24,7 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.util.Range2D;
 
 /**

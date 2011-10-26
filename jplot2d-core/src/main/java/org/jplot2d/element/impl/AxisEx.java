@@ -4,7 +4,7 @@ import java.awt.Font;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.element.PhysicalTransform;
+import org.jplot2d.transfrom.PhysicalTransform;
 
 public interface AxisEx extends Axis, ComponentEx {
 
