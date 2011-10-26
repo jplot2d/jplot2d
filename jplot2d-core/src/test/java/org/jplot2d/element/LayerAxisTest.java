@@ -43,13 +43,13 @@ public class LayerAxisTest {
 		Layer layer = factory.createLayer();
 
 		try {
-			layer.setXRangeManager(xaxis);
+			layer.setXAxisTransform(xaxis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
 		}
 		try {
-			layer.setYRangeManager(yaxis);
+			layer.setYAxisTransform(yaxis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
 
@@ -71,9 +71,9 @@ public class LayerAxisTest {
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
-		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
+		assertSame(layer.getXAxisTransform(), xaxis.getTickManager()
 				.getAxisTransform());
-		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
+		assertSame(layer.getYAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
@@ -81,15 +81,15 @@ public class LayerAxisTest {
 				new Object[] { layer });
 
 		// set axis again
-		layer.setRangeManager(xaxis.getTickManager().getAxisTransform(), yaxis
+		layer.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis
 				.getTickManager().getAxisTransform());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
-		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
+		assertSame(layer.getXAxisTransform(), xaxis.getTickManager()
 				.getAxisTransform());
-		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
+		assertSame(layer.getYAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
@@ -118,8 +118,8 @@ public class LayerAxisTest {
 
 		assertNotSame(layer.getEnvironment(), sp.getEnvironment());
 		assertNull(layer.getParent());
-		assertNull(layer.getXRangeManager());
-		assertNull(layer.getYRangeManager());
+		assertNull(layer.getXAxisTransform());
+		assertNull(layer.getYAxisTransform());
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[0]);
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
@@ -128,9 +128,9 @@ public class LayerAxisTest {
 		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
 				.getTickManager().getAxisTransform());
 
-		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
+		assertSame(layer.getXAxisTransform(), xaxis.getTickManager()
 				.getAxisTransform());
-		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
+		assertSame(layer.getYAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
@@ -162,8 +162,8 @@ public class LayerAxisTest {
 		assertSame(yaxis.getParent(), sp);
 		assertArrayEquals(sp.getXAxes(), new Axis[] { xaxis });
 		assertArrayEquals(sp.getYAxes(), new Axis[] { yaxis });
-		assertSame(layer.getXRangeManager(), xva);
-		assertSame(layer.getYRangeManager(), yva);
+		assertSame(layer.getXAxisTransform(), xva);
+		assertSame(layer.getYAxisTransform(), yva);
 		assertArrayEquals(xva.getLayers(), new Object[] { layer });
 		assertArrayEquals(yva.getLayers(), new Object[] { layer });
 
@@ -188,20 +188,20 @@ public class LayerAxisTest {
 		assertSame(yaxis.getParent(), sp);
 		assertArrayEquals(sp.getXAxes(), new Axis[] { xaxis });
 		assertArrayEquals(sp.getYAxes(), new Axis[] { yaxis });
-		assertSame(layer.getXRangeManager(), xva);
-		assertSame(layer.getYRangeManager(), yva);
+		assertSame(layer.getXAxisTransform(), xva);
+		assertSame(layer.getYAxisTransform(), yva);
 		assertArrayEquals(xva.getLayers(), new Object[] { layer });
 		assertArrayEquals(yva.getLayers(), new Object[] { layer });
 
 		// try to detach viewport axis
 		try {
-			layer.setXRangeManager(null);
+			layer.setXAxisTransform(null);
 			fail("IllegalArgumentException should be thrown");
 		} catch (IllegalArgumentException e) {
 
 		}
 		try {
-			layer.setYRangeManager(null);
+			layer.setYAxisTransform(null);
 			fail("IllegalArgumentException should be thrown");
 		} catch (IllegalArgumentException e) {
 
@@ -209,8 +209,8 @@ public class LayerAxisTest {
 
 		// remove layer will release viewport axes
 		sp.removeLayer(layer);
-		assertNull(layer.getXRangeManager());
-		assertNull(layer.getYRangeManager());
+		assertNull(layer.getXAxisTransform());
+		assertNull(layer.getYAxisTransform());
 
 		sp.removeXAxis(xaxis);
 		sp.removeYAxis(yaxis);
@@ -235,9 +235,9 @@ public class LayerAxisTest {
 
 		p.removeSubplot(sp);
 
-		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
+		assertSame(layer.getXAxisTransform(), xaxis.getTickManager()
 				.getAxisTransform());
-		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
+		assertSame(layer.getYAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });

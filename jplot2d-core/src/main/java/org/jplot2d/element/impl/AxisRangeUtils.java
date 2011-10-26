@@ -285,12 +285,12 @@ class AxisRangeUtils {
 					arm.getType()));
 			for (LayerEx layer : arm.getLayers()) {
 				Range2D wDRange = null;
-				if (layer.getXRangeManager() == arm) {
+				if (layer.getXAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						wDRange = dp.getGraph().setXBoundary(urange)
 								.getXRange().union(wDRange);
 					}
-				} else if (layer.getYRangeManager() == arm) {
+				} else if (layer.getYAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						wDRange = dp.getGraph().setYBoundary(urange)
 								.getYRange().union(wDRange);

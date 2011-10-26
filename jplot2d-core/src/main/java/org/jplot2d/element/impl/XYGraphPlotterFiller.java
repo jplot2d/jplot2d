@@ -215,13 +215,13 @@ public class XYGraphPlotterFiller {
 
 	private double getDeviceX(int i) {
 		return layer.getPhysicalTransform().getXPtoD(
-				layer.getXRangeManager().getNormalTransform().getTransP(graph.getX(i))
+				layer.getXAxisTransform().getNormalTransform().getTransP(graph.getX(i))
 						* layer.getSize().getWidth());
 	}
 
 	private double getDeviceY(int i) {
 		return layer.getPhysicalTransform().getYPtoD(
-				layer.getYRangeManager().getNormalTransform().getTransP(graph.getY(i))
+				layer.getYAxisTransform().getNormalTransform().getTransP(graph.getY(i))
 						* layer.getSize().getHeight());
 	}
 
