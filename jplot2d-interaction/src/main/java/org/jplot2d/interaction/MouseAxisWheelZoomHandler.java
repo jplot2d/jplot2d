@@ -78,7 +78,7 @@ public class MouseAxisWheelZoomHandler extends
 		double start = npv * (1 - scale);
 		double end = start + scale;
 
-		axis.getTickManager().getRangeManager().getLockGroup().zoomRange(start, end);
+		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start, end);
 
 		env.endBatch(token, UINoticeType.getInstance());
 		return true;

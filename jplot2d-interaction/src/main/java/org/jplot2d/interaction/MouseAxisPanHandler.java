@@ -91,7 +91,7 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 
 		double npxStart = -offset / plotRect.getWidth();
 		double npxEnd = 1 + npxStart;
-		axis.getTickManager().getRangeManager().getLockGroup().zoomRange(npxStart, npxEnd);
+		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
 
 		env.endBatch(token, UINoticeType.getInstance());
 	}

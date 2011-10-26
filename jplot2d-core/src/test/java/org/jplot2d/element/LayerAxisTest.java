@@ -65,35 +65,35 @@ public class LayerAxisTest {
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
-		sp.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
 		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+				.getAxisTransform());
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
 
 		// set axis again
-		layer.setRangeManager(xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		layer.setRangeManager(xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		assertSame(xaxis.getParent(), sp);
 		assertSame(yaxis.getParent(), sp);
 		assertSame(layer.getParent(), sp);
 		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+				.getAxisTransform());
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
 	}
 
@@ -111,8 +111,8 @@ public class LayerAxisTest {
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
-		sp.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		sp.removeLayer(layer);
 
@@ -120,21 +120,21 @@ public class LayerAxisTest {
 		assertNull(layer.getParent());
 		assertNull(layer.getXRangeManager());
 		assertNull(layer.getYRangeManager());
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[0]);
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[0]);
 
-		sp.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+				.getAxisTransform());
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
 	}
 
@@ -148,13 +148,13 @@ public class LayerAxisTest {
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
-		AxisTransform xva = xaxis.getTickManager().getRangeManager();
-		AxisTransform yva = yaxis.getTickManager().getRangeManager();
+		AxisTransform xva = xaxis.getTickManager().getAxisTransform();
+		AxisTransform yva = yaxis.getTickManager().getAxisTransform();
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
-		sp.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		assertSame(xaxis.getEnvironment(), sp.getEnvironment());
 		assertSame(yaxis.getEnvironment(), sp.getEnvironment());
@@ -230,18 +230,18 @@ public class LayerAxisTest {
 		p.addSubplot(sp, null);
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);
-		sp.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		p.removeSubplot(sp);
 
 		assertSame(layer.getXRangeManager(), xaxis.getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 		assertSame(layer.getYRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+				.getAxisTransform());
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
-		assertArrayEquals(xaxis.getTickManager().getRangeManager().getLayers(),
+		assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(),
 				new Object[] { layer });
 
 	}
@@ -260,10 +260,10 @@ public class LayerAxisTest {
 		p.addSubplot(sp1, null);
 		sp0.addXAxis(xaxis);
 		sp0.addYAxis(yaxis);
-		sp0.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
-		sp1.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp0.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
+		sp1.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		try {
 			p.removeSubplot(sp0);

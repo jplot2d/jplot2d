@@ -148,7 +148,7 @@ public class SimpleLayoutDirectorTest {
 		AxisTickManagerEx tm = mock(AxisTickManagerEx.class);
 		AxisTransformEx rm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx lg = mock(AxisRangeLockGroupEx.class);
-		when(tm.getRangeManager()).thenReturn(rm);
+		when(tm.getAxisTransform()).thenReturn(rm);
 		when(rm.getLockGroup()).thenReturn(lg);
 
 		AxisEx left = mock(AxisEx.class);

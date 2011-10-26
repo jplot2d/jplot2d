@@ -62,7 +62,7 @@ public class PlotImplTest {
 		}
 
 		AxisTransformEx arm = mock(AxisTransformEx.class);
-		when(atm.getRangeManager()).thenReturn(arm);
+		when(atm.getAxisTransform()).thenReturn(arm);
 		try {
 			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
@@ -98,7 +98,7 @@ public class PlotImplTest {
 		}
 
 		AxisTransformEx arm = mock(AxisTransformEx.class);
-		when(atm.getRangeManager()).thenReturn(arm);
+		when(atm.getAxisTransform()).thenReturn(arm);
 		try {
 			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
@@ -137,7 +137,7 @@ public class PlotImplTest {
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.canContributeToParent()).thenReturn(true);
 		when(xaxis.getTickManager()).thenReturn(xatm);
-		when(xatm.getRangeManager()).thenReturn(xarm);
+		when(xatm.getAxisTransform()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		p.addXAxis(xaxis);
 		assertTrue(p.isRedrawNeeded());
@@ -149,7 +149,7 @@ public class PlotImplTest {
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.canContributeToParent()).thenReturn(true);
 		when(yaxis.getTickManager()).thenReturn(yatm);
-		when(yatm.getRangeManager()).thenReturn(yarm);
+		when(yatm.getAxisTransform()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		p.addYAxis(yaxis);
 		assertTrue(p.isRedrawNeeded());
@@ -158,15 +158,15 @@ public class PlotImplTest {
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
 		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		p.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
+		p.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
+				.getAxisTransform());
 		assertFalse(p.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
 		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
-		p.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis.getTickManager()
-				.getRangeManager());
+		p.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
+				.getAxisTransform());
 		assertTrue(p.isRedrawNeeded());
 		p.clearRedrawNeeded();
 
@@ -200,7 +200,7 @@ public class PlotImplTest {
 		AxisTransformEx xarm0 = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg0 = mock(AxisRangeLockGroupEx.class);
 		when(xaxis0.getTickManager()).thenReturn(xatm0);
-		when(xatm0.getRangeManager()).thenReturn(xarm0);
+		when(xatm0.getAxisTransform()).thenReturn(xarm0);
 		when(xarm0.getLockGroup()).thenReturn(xalg0);
 		p.addXAxis(xaxis0);
 		assertTrue(p.isValid());
@@ -213,7 +213,7 @@ public class PlotImplTest {
 		AxisTransformEx xarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.getTickManager()).thenReturn(xatm);
-		when(xatm.getRangeManager()).thenReturn(xarm);
+		when(xatm.getAxisTransform()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
 		when(xaxis.isVisible()).thenReturn(true);
 		when(xaxis.canContribute()).thenReturn(true);
@@ -235,7 +235,7 @@ public class PlotImplTest {
 		AxisTransformEx yarm0 = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg0 = mock(AxisRangeLockGroupEx.class);
 		when(yaxis0.getTickManager()).thenReturn(yatm0);
-		when(yatm0.getRangeManager()).thenReturn(yarm0);
+		when(yatm0.getAxisTransform()).thenReturn(yarm0);
 		when(yarm0.getLockGroup()).thenReturn(yalg0);
 		p.addYAxis(yaxis0);
 		assertTrue(p.isValid());
@@ -248,7 +248,7 @@ public class PlotImplTest {
 		AxisTransformEx yarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.getTickManager()).thenReturn(yatm);
-		when(yatm.getRangeManager()).thenReturn(yarm);
+		when(yatm.getAxisTransform()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
 		when(yaxis.isVisible()).thenReturn(true);
 		when(yaxis.canContribute()).thenReturn(true);
@@ -296,7 +296,7 @@ public class PlotImplTest {
 		AxisTransformImpl xrm = new AxisTransformImpl();
 		xrm.setLockGroup(xgroup);
 		AxisTickManagerImpl xtm = new AxisTickManagerImpl();
-		xtm.setRangeManager(xrm);
+		xtm.setAxisTransform(xrm);
 		AxisImpl x = new AxisImpl();
 		x.setTickManager(xtm);
 
@@ -304,7 +304,7 @@ public class PlotImplTest {
 		AxisTransformImpl yrm = new AxisTransformImpl();
 		yrm.setLockGroup(ygroup);
 		AxisTickManagerImpl ytm = new AxisTickManagerImpl();
-		ytm.setRangeManager(yrm);
+		ytm.setAxisTransform(yrm);
 		AxisImpl y = new AxisImpl();
 		y.setTickManager(ytm);
 
@@ -331,17 +331,17 @@ public class PlotImplTest {
 		assertSame(p2.getXAxis(0), orig2copyMap.get(p.getXAxis(0)));
 		assertSame(p2.getXAxis(0).getTickManager(),
 				orig2copyMap.get(p.getXAxis(0).getTickManager()));
-		assertSame(p2.getXAxis(0).getTickManager().getRangeManager(),
-				orig2copyMap.get(p.getXAxis(0).getTickManager().getRangeManager()));
-		assertSame(p2.getXAxis(0).getTickManager().getRangeManager().getLockGroup(),
-				orig2copyMap.get(p.getXAxis(0).getTickManager().getRangeManager().getLockGroup()));
+		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(),
+				orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform()));
+		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform().getLockGroup(),
+				orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform().getLockGroup()));
 		assertSame(p2.getYAxis(0), orig2copyMap.get(p.getYAxis(0)));
 		assertSame(p2.getYAxis(0).getTickManager(),
 				orig2copyMap.get(p.getYAxis(0).getTickManager()));
-		assertSame(p2.getYAxis(0).getTickManager().getRangeManager(),
-				orig2copyMap.get(p.getYAxis(0).getTickManager().getRangeManager()));
-		assertSame(p2.getYAxis(0).getTickManager().getRangeManager().getLockGroup(),
-				orig2copyMap.get(p.getYAxis(0).getTickManager().getRangeManager().getLockGroup()));
+		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform(),
+				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform()));
+		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform().getLockGroup(),
+				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform().getLockGroup()));
 		assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
 		assertSame(p2.getLayer(0).getGraphPlotter(0),
 				orig2copyMap.get(p.getLayer(0).getGraphPlotter(0)));
@@ -353,17 +353,17 @@ public class PlotImplTest {
 		assertSame(p2, p2.getXAxis(0).getParent());
 		assertSame(p2.getXAxis(0), p2.getXAxis(0).getTickManager().getParent());
 		assertSame(p2.getXAxis(0).getTickManager(), p2.getXAxis(0).getTickManager()
-				.getRangeManager().getParent());
-		assertSame(p2.getXAxis(0).getTickManager().getRangeManager(), p2.getXAxis(0)
-				.getTickManager().getRangeManager().getLockGroup().getParent());
+				.getAxisTransform().getParent());
+		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(), p2.getXAxis(0)
+				.getTickManager().getAxisTransform().getLockGroup().getParent());
 		assertSame(p2, p2.getYAxis(0).getParent());
 		assertSame(p2, p2.getLayer(0).getParent());
 		assertSame(p2.getLayer(0), p2.getLayer(0).getGraphPlotter(0).getParent());
 		// check link
 		assertSame(p2.getLayer(0).getXRangeManager(), p2.getXAxis(0).getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 		assertSame(p2.getLayer(0).getYRangeManager(), p2.getYAxis(0).getTickManager()
-				.getRangeManager());
+				.getAxisTransform());
 
 	}
 
