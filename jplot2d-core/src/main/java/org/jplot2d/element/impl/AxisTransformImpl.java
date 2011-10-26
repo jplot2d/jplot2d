@@ -65,13 +65,18 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	public String getId() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Range(");
+		sb.append("Transform(");
 		for (AxisTickManagerEx tick : tickManagers) {
 			sb.append("(");
 			for (AxisEx axis : tick.getAxes()) {
 				sb.append(axis.getShortId()).append(',');
 			}
 			sb.replace(sb.length() - 1, sb.length(), ")");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append(")(");
+		for (LayerEx layer : layers) {
+			sb.append(layer.getShortId()).append(',');
 		}
 		sb.deleteCharAt(sb.length() - 1);
 		sb.append("))");
