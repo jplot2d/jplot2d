@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.axtrans;
+package org.jplot2d.transfrom;
 
 import org.jplot2d.util.Range2D;
 
@@ -36,20 +36,10 @@ public class LinearTransformType implements TransformType {
 
 	}
 
-	public AxisTransform createTransform(Range2D sourceRange, Range2D destRange) {
-		AxisTransform result = new LinearAxisTransform(sourceRange, destRange);
-		if (!result.isValid()) {
-			throw new IllegalArgumentException("Source " + sourceRange
-					+ " Dest " + destRange);
-		}
-		return result;
-	}
-
 	public NormalTransform createNormalTransform(Range2D wrange) {
 		NormalTransform result = new LinearNormalTransform(wrange);
 		if (!result.isValid()) {
-			throw new IllegalArgumentException("The given range is invalid: "
-					+ wrange);
+			throw new IllegalArgumentException("The given range is invalid: " + wrange);
 		}
 		return result;
 

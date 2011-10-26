@@ -24,12 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.axtrans.NormalTransform;
-import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
+import org.jplot2d.transfrom.NormalTransform;
+import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManagerEx {

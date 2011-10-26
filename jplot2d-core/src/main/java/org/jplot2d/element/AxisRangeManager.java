@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
+import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 /**
