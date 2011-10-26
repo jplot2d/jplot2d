@@ -52,7 +52,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	private boolean autoRangeNeeded = true;
 
 	public String getId() {
-		return getFullId();
+		return "LockGroup@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
 	public String getShortId() {
@@ -60,7 +60,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	}
 
 	public String getFullId() {
-		return "AxisLockGroup@" + Integer.toHexString(System.identityHashCode(this));
+		return "AxisRangeLockGroup@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
 	public InvokeStep getInvokeStepFormParent() {
@@ -114,7 +114,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			parent = null;
 		}
 
-		if (type != axis.getAxisType()) {
+		if (type != axis.getType()) {
 			type = null;
 		}
 
@@ -262,8 +262,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		/* find the physical intersected range of valid world range among layers */
 		Range2D pbnds = new Range2D.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		for (AxisTransformEx ax : arms) {
-			Range2D aprange = vtMap.get(ax).getTransP(
-					ax.getAxisType().getBoundary(ax.getType()));
+			Range2D aprange = vtMap.get(ax).getTransP(ax.getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 
@@ -282,8 +281,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				if (layer.getXRangeManager() == ax) {
 					boolean yar = layer.getYRangeManager().getLockGroup().isAutoRange();
 					Range2D yRange = (yar) ? layer.getYRangeManager().getAxisType()
-							.getBoundary(ax.getType()) : layer.getYRangeManager()
-							.getRange();
+							.getBoundary(ax.getType()) : layer.getYRangeManager().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
@@ -294,8 +292,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				} else if (layer.getYRangeManager() == ax) {
 					boolean xar = layer.getXRangeManager().getLockGroup().isAutoRange();
 					Range2D xRange = (xar) ? layer.getXRangeManager().getAxisType()
-							.getBoundary(ax.getType()) : layer.getXRangeManager()
-							.getRange();
+							.getBoundary(ax.getType()) : layer.getXRangeManager().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
