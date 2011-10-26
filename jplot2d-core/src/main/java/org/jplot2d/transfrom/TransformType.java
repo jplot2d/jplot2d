@@ -20,8 +20,30 @@ package org.jplot2d.transfrom;
 
 import org.jplot2d.util.Range2D;
 
-public interface TransformType {
+public enum TransformType {
 
-	public NormalTransform createNormalTransform(Range2D wrange);
+	LINEAR {
+		@Override
+		public NormalTransform createNormalTransform(Range2D wrange) {
+			NormalTransform result = new LinearNormalTransform(wrange);
+			if (!result.isValid()) {
+				throw new IllegalArgumentException("The given range is invalid: " + wrange);
+			}
+			return result;
+		}
+	},
+	LOGARITHMIC {
+
+		@Override
+		public NormalTransform createNormalTransform(Range2D wrange) {
+			NormalTransform result = new LogarithmicNormalTransform(wrange);
+			if (!result.isValid()) {
+				throw new IllegalArgumentException("The given range is invalid: " + wrange);
+			}
+			return result;
+		}
+	};
+
+	public abstract NormalTransform createNormalTransform(Range2D wrange);
 
 }

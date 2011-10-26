@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,21 +21,20 @@ package org.jplot2d.axtype;
 import org.jplot2d.axtick.RightAscensionTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.element.AxisTickTransform;
-import org.jplot2d.transfrom.LinearTransformType;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 /**
- * RIGHT_ASCENSION axis type. The input data unit is decimal degree. The display
- * tick label format is hh:mm:ss.ms
+ * RIGHT_ASCENSION axis type. The input data unit is decimal degree. The display tick label format
+ * is hh:mm:ss.ms
  * 
  * @author Jingjing Li
  * 
  */
 public class RightAscensionAxisType extends AxisType {
 
-	private static final Range2D BOUNDARY = new Range2D.Double(
-			-Double.MAX_VALUE / 2, Double.MAX_VALUE / 2);
+	private static final Range2D BOUNDARY = new Range2D.Double(-Double.MAX_VALUE / 2,
+			Double.MAX_VALUE / 2);
 
 	private static final Range2D CIRCULAR_RANGE = new Range2D.Double(0, 360);
 
@@ -51,7 +50,7 @@ public class RightAscensionAxisType extends AxisType {
 
 	@Override
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return true;
 		}
 		return false;
@@ -59,7 +58,7 @@ public class RightAscensionAxisType extends AxisType {
 
 	@Override
 	public TransformType getDefaultTransformType() {
-		return LinearTransformType.getInstance();
+		return TransformType.LINEAR;
 	}
 
 	@Override
@@ -73,8 +72,7 @@ public class RightAscensionAxisType extends AxisType {
 	}
 
 	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType,
-			AxisTickTransform tickTransform) {
+	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
 		if (tickTransform != null) {
 			return null;
 		}

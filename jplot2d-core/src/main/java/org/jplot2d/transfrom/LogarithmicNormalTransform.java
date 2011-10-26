@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,19 +21,18 @@ package org.jplot2d.transfrom;
 import org.jplot2d.util.Range2D;
 
 /**
- * Performs a log transformation on Cartesian axes. The equation is
- * <code>worldvalue =
+ * Performs a log transformation on Cartesian axes. The equation is <code>worldvalue =
  * 10^(a * np + b)<code>
  */
 public class LogarithmicNormalTransform extends NormalTransform {
 
 	public LogarithmicNormalTransform(double u1, double u2) {
-		super(LogarithmicTransformType.getInstance());
+		super(TransformType.LOGARITHMIC);
 		computeTransform(u1, u2);
 	}
 
 	public LogarithmicNormalTransform(Range2D ur) {
-		super(LogarithmicTransformType.getInstance());
+		super(TransformType.LOGARITHMIC);
 		computeTransform(ur.getStart(), ur.getEnd());
 	}
 
@@ -108,8 +107,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 *         dP &gt; log10(1-t)/abs(_a)
 	 * </pre>
 	 */
-	public double getMinPSpan4PrecisionLimit(double pLo, double pHi,
-			double precisionLimit) {
+	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
 		return Math.log10(1 - precisionLimit) / Math.abs(_a);
 	}
 

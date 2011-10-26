@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,7 +21,6 @@ package org.jplot2d.axtype;
 import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.element.AxisTickTransform;
-import org.jplot2d.transfrom.LinearTransformType;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
@@ -31,8 +30,7 @@ import org.jplot2d.util.Range2D;
  */
 public class DateAxisType extends AxisType {
 
-	private static final Range2D DATE_BOUNDARY = new Range2D.Long(0,
-			Long.MAX_VALUE);
+	private static final Range2D DATE_BOUNDARY = new Range2D.Long(0, Long.MAX_VALUE);
 
 	public static DateAxisType getInstance() {
 		return new DateAxisType();
@@ -44,7 +42,7 @@ public class DateAxisType extends AxisType {
 
 	@Override
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return true;
 		}
 		return false;
@@ -52,7 +50,7 @@ public class DateAxisType extends AxisType {
 
 	@Override
 	public TransformType getDefaultTransformType() {
-		return LinearTransformType.getInstance();
+		return TransformType.LINEAR;
 	}
 
 	@Override
@@ -67,8 +65,7 @@ public class DateAxisType extends AxisType {
 	}
 
 	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType,
-			AxisTickTransform tickTransform) {
+	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
 		if (tickTransform != null) {
 			return null;
 		}

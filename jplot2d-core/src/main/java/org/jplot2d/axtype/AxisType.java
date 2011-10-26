@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -92,7 +92,8 @@ public abstract class AxisType {
 	 * Some axis has a circular nature, such as angle. This range is a canonical range that all
 	 * values should displayed in the range.
 	 * 
-	 * @return <true> is this axis is circular nature.
+	 * @return a range to represent this axis' circular nature, or
+	 *         <code>null<code> if this axis is not circular
 	 */
 	public Range2D getCircularRange() {
 		return null;

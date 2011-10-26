@@ -22,28 +22,25 @@ import org.jplot2d.axtick.LinearTickAlgorithm;
 import org.jplot2d.axtick.LogTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.element.AxisTickTransform;
-import org.jplot2d.transfrom.LinearTransformType;
-import org.jplot2d.transfrom.LogarithmicTransformType;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 /**
- * An axis for displaying numerical data. It support both LinearTransformType
- * and LogarithmicTransformType.
+ * An axis for displaying numerical data. It support both LinearTransformType and
+ * LogarithmicTransformType.
  * 
  * @author Jingjing Li
  * 
  */
 public class NumberAxisType extends AxisType {
 
-	private static final Range2D LINEAR_BOUNDARY = new Range2D.Double(
-			-Double.MAX_VALUE / 2, Double.MAX_VALUE / 2);
+	private static final Range2D LINEAR_BOUNDARY = new Range2D.Double(-Double.MAX_VALUE / 2,
+			Double.MAX_VALUE / 2);
 
-	private static final Range2D LINEAR_DEFAULT_RANGE = new Range2D.Double(-1,
-			1);
+	private static final Range2D LINEAR_DEFAULT_RANGE = new Range2D.Double(-1, 1);
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(
-			Double.MIN_VALUE, true, Double.MAX_VALUE / 2, true);
+	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(Double.MIN_VALUE, true,
+			Double.MAX_VALUE / 2, true);
 
 	private static final Range2D LOG_DEFAULT_RANGE = new Range2D.Double(0.1, 10);
 
@@ -56,48 +53,47 @@ public class NumberAxisType extends AxisType {
 	}
 
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return true;
 		}
-		if (txfType == LogarithmicTransformType.getInstance()) {
+		if (txfType == TransformType.LOGARITHMIC) {
 			return true;
 		}
 		return false;
 	}
 
 	public Range2D getBoundary(TransformType txfType) {
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return LINEAR_BOUNDARY;
 		}
-		if (txfType == LogarithmicTransformType.getInstance()) {
+		if (txfType == TransformType.LOGARITHMIC) {
 			return POSITIVE_BOUNDARY;
 		}
 		return null;
 	}
 
 	public Range2D getDefaultWorldRange(TransformType txfType) {
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return LINEAR_DEFAULT_RANGE;
 		}
-		if (txfType == LogarithmicTransformType.getInstance()) {
+		if (txfType == TransformType.LOGARITHMIC) {
 			return LOG_DEFAULT_RANGE;
 		}
 		return null;
 	}
 
 	public TransformType getDefaultTransformType() {
-		return LinearTransformType.getInstance();
+		return TransformType.LINEAR;
 	}
 
-	public TickAlgorithm getTickAlgorithm(TransformType txfType,
-			AxisTickTransform tickTransform) {
+	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
 		if (tickTransform != null) {
 			return null;
 		}
-		if (txfType == LinearTransformType.getInstance()) {
+		if (txfType == TransformType.LINEAR) {
 			return LinearTickAlgorithm.getInstance();
 		}
-		if (txfType == LogarithmicTransformType.getInstance()) {
+		if (txfType == TransformType.LOGARITHMIC) {
 			return LogTickAlgorithm.getInstance();
 		}
 		return null;
