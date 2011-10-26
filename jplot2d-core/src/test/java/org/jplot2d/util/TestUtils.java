@@ -53,14 +53,14 @@ public class TestUtils {
 	}
 
 	public static void checkAxisTickRange(Axis axis, double b, double e) {
-		Range2D r = axis.getTickManager().getRange();
+		Range r = axis.getTickManager().getRange();
 		assertEquals(r.getStart(), b, Math.abs(b) * 1e-12);
 		assertEquals(r.getEnd(), e, Math.abs(e) * 1e-12);
 	}
 
 	public static void checkAxisTickRange(Axis axis1, Axis axis2) {
-		Range2D xr1 = axis1.getTickManager().getRange();
-		Range2D xr2 = axis2.getTickManager().getRange();
+		Range xr1 = axis1.getTickManager().getRange();
+		Range xr2 = axis2.getTickManager().getRange();
 		assertEquals(xr1.getStart(), xr2.getStart(), Math.abs(xr2.getStart()) * 1e-12);
 		assertEquals(xr1.getStart(), xr2.getStart(), Math.abs(xr2.getStart()) * 1e-12);
 	}
@@ -99,7 +99,7 @@ public class TestUtils {
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
 
-	public static void checkRange2D(Range2D r, double start, double end) {
+	public static void checkRange2D(Range r, double start, double end) {
 		assertEquals(r.getStart(), start, Math.abs(start) * 1e-12);
 		assertEquals(r.getEnd(), end, Math.abs(end) * 1e-12);
 	}

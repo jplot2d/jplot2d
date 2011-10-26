@@ -18,14 +18,14 @@
  */
 package org.jplot2d.transfrom;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Transform between world coordinate and normal coordinate.
  */
 public abstract class NormalTransform implements Cloneable {
 
-	public static final Range2D NORMAL_RANGE = new Range2D.Double(0.0, 1.0);
+	public static final Range NORMAL_RANGE = new Range.Double(0.0, 1.0);
 
 	private TransformType type;
 
@@ -108,19 +108,19 @@ public abstract class NormalTransform implements Cloneable {
 	 */
 	public abstract double getTransU(double p);
 
-	public Range2D getTransP(Range2D wrange) {
-		return new Range2D.Double(getTransP(wrange.getStart()),
+	public Range getTransP(Range wrange) {
+		return new Range.Double(getTransP(wrange.getStart()),
 				wrange.isStartIncluded(), getTransP(wrange.getEnd()),
 				wrange.isEndIncluded());
 	}
 
-	public Range2D getTransU(Range2D prange) {
-		return new Range2D.Double(getTransU(prange.getStart()),
+	public Range getTransU(Range prange) {
+		return new Range.Double(getTransU(prange.getStart()),
 				prange.isStartIncluded(), getTransU(prange.getEnd()),
 				prange.isEndIncluded());
 	}
 
-	public void zoom(Range2D npr) {
+	public void zoom(Range npr) {
 		_b = _b + _a * npr.getStart();
 		_a = _a * npr.getSpan();
 		// prevent overflow
@@ -136,7 +136,7 @@ public abstract class NormalTransform implements Cloneable {
 		_a = -_a;
 	}
 
-	public abstract Range2D getRangeW();
+	public abstract Range getRangeW();
 
 	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi,
 			double precisionLimit);

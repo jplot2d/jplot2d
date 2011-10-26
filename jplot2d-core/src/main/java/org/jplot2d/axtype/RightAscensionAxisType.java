@@ -22,7 +22,7 @@ import org.jplot2d.axtick.RightAscensionTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * RIGHT_ASCENSION axis type. The input data unit is decimal degree. The display tick label format
@@ -33,12 +33,12 @@ import org.jplot2d.util.Range2D;
  */
 public class RightAscensionAxisType extends AxisType {
 
-	private static final Range2D BOUNDARY = new Range2D.Double(-Double.MAX_VALUE / 2,
+	private static final Range BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
 			Double.MAX_VALUE / 2);
 
-	private static final Range2D CIRCULAR_RANGE = new Range2D.Double(0, 360);
+	private static final Range CIRCULAR_RANGE = new Range.Double(0, 360);
 
-	private static final Range2D DEFAULT_RANGE = new Range2D.Double(360, 0);
+	private static final Range DEFAULT_RANGE = new Range.Double(360, 0);
 
 	public static RightAscensionAxisType getInstance() {
 		return new RightAscensionAxisType();
@@ -62,12 +62,12 @@ public class RightAscensionAxisType extends AxisType {
 	}
 
 	@Override
-	public Range2D getBoundary(TransformType txfType) {
+	public Range getBoundary(TransformType txfType) {
 		return BOUNDARY;
 	}
 
 	@Override
-	public Range2D getDefaultWorldRange(TransformType txfType) {
+	public Range getDefaultWorldRange(TransformType txfType) {
 		return DEFAULT_RANGE;
 	}
 
@@ -81,7 +81,7 @@ public class RightAscensionAxisType extends AxisType {
 	}
 
 	@Override
-	public Range2D getCircularRange() {
+	public Range getCircularRange() {
 		return CIRCULAR_RANGE;
 	}
 

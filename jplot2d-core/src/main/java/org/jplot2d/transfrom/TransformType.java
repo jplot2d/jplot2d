@@ -18,13 +18,13 @@
  */
 package org.jplot2d.transfrom;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 public enum TransformType {
 
 	LINEAR {
 		@Override
-		public NormalTransform createNormalTransform(Range2D wrange) {
+		public NormalTransform createNormalTransform(Range wrange) {
 			NormalTransform result = new LinearNormalTransform(wrange);
 			if (!result.isValid()) {
 				throw new IllegalArgumentException("The given range is invalid: " + wrange);
@@ -35,7 +35,7 @@ public enum TransformType {
 	LOGARITHMIC {
 
 		@Override
-		public NormalTransform createNormalTransform(Range2D wrange) {
+		public NormalTransform createNormalTransform(Range wrange) {
 			NormalTransform result = new LogarithmicNormalTransform(wrange);
 			if (!result.isValid()) {
 				throw new IllegalArgumentException("The given range is invalid: " + wrange);
@@ -44,6 +44,6 @@ public enum TransformType {
 		}
 	};
 
-	public abstract NormalTransform createNormalTransform(Range2D wrange);
+	public abstract NormalTransform createNormalTransform(Range wrange);
 
 }

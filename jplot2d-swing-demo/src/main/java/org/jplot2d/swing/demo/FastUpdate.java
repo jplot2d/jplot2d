@@ -29,7 +29,7 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 import org.jplot2d.util.SymbolShape;
 
 public class FastUpdate {
@@ -50,10 +50,10 @@ public class FastUpdate {
 		Axis xaxis = ElementFactory.getInstance().createAxis();
 		Axis yaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
-		xaxis.getTickManager().setRange(new Range2D.Double(0, n));
+		xaxis.getTickManager().setRange(new Range.Double(0, n));
 		plot.addXAxis(xaxis);
 		yaxis.getTitle().setText("y axis");
-		yaxis.getTickManager().setRange(new Range2D.Double(0, n));
+		yaxis.getTickManager().setRange(new Range.Double(0, n));
 		plot.addYAxis(yaxis);
 
 		ArrayPair ap0 = new ArrayPair(new double[] { 0 }, new double[] { 0 });

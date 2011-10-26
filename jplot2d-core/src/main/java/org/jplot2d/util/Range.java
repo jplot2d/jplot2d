@@ -25,9 +25,9 @@ import java.io.Serializable;
  * 
  * @author Jingjing Li
  */
-public abstract class Range2D implements Cloneable {
+public abstract class Range implements Cloneable {
 
-	public static class Double extends Range2D implements Serializable {
+	public static class Double extends Range implements Serializable {
 
 		private static final long serialVersionUID = 2L;
 
@@ -75,7 +75,7 @@ public abstract class Range2D implements Cloneable {
 			}
 		}
 
-		public Double(Range2D range) {
+		public Double(Range range) {
 			this(range.getStart(), range.isStartIncluded(), range.getEnd(), range.isEndIncluded());
 		}
 
@@ -145,7 +145,7 @@ public abstract class Range2D implements Cloneable {
 		}
 
 		@Override
-		public Range2D intersect(Range2D range) {
+		public Range intersect(Range range) {
 			if (range.isEmpty()) {
 				return new Double();
 			}
@@ -187,7 +187,7 @@ public abstract class Range2D implements Cloneable {
 			}
 		}
 
-		public Range2D union(Range2D range) {
+		public Range union(Range range) {
 			if (isEmpty()) {
 				return range;
 			}
@@ -238,7 +238,7 @@ public abstract class Range2D implements Cloneable {
 
 	}
 
-	public static class Long extends Range2D implements Serializable {
+	public static class Long extends Range implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
@@ -271,7 +271,7 @@ public abstract class Range2D implements Cloneable {
 			empty = false;
 		}
 
-		public Long(Range2D range) {
+		public Long(Range range) {
 			if (!range.isInverted()) {
 				long start = (long) Math.ceil(range.getStart());
 				long end = (long) Math.floor(range.getEnd());
@@ -379,7 +379,7 @@ public abstract class Range2D implements Cloneable {
 			return new Long(end, start);
 		}
 
-		public Range2D intersect(Range2D range) {
+		public Range intersect(Range range) {
 			if (range.isEmpty()) {
 				return new Long();
 			}
@@ -410,7 +410,7 @@ public abstract class Range2D implements Cloneable {
 			}
 		}
 
-		public Range2D union(Range2D range) {
+		public Range union(Range range) {
 			if (isEmpty()) {
 				return range;
 			}
@@ -482,11 +482,11 @@ public abstract class Range2D implements Cloneable {
 
 	public abstract boolean isInverted();
 
-	public abstract Range2D intersect(Range2D range);
+	public abstract Range intersect(Range range);
 
-	public abstract Range2D union(Range2D range);
+	public abstract Range union(Range range);
 
-	public abstract Range2D invert();
+	public abstract Range invert();
 
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -495,9 +495,9 @@ public abstract class Range2D implements Cloneable {
 	/**
 	 * Create a copy of <code>Range2D</code> object.
 	 */
-	public Range2D copy() {
+	public Range copy() {
 		try {
-			return (Range2D) clone();
+			return (Range) clone();
 		} catch (CloneNotSupportedException e) {
 			throw new Error("Clone Not Supported");
 		}

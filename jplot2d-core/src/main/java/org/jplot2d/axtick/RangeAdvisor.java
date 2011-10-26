@@ -18,7 +18,7 @@
  */
 package org.jplot2d.axtick;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Calculate a proper range to arrange major ticks falling on the edge.
@@ -28,9 +28,9 @@ import org.jplot2d.util.Range2D;
  */
 public interface RangeAdvisor {
 
-	public Range2D getRange();
+	public Range getRange();
 
-	public void setRange(Range2D range);
+	public void setRange(Range range);
 
 	/**
 	 * The interval will be 1,2,5 * 10^n

@@ -40,7 +40,7 @@ import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.NumberArrayUtils;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Manage tick values and labels of multiple axes.
@@ -188,13 +188,13 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	/**
 	 * The tick range for calculation
 	 */
-	private Range2D range;
+	private Range range;
 
 	private AxisTickTransform tickTransform;
 
 	private NormalTransform axisNormalTransform;
 
-	private Range2D circularRange;
+	private Range circularRange;
 
 	public AxisTickManagerImpl() {
 
@@ -318,24 +318,24 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		_trfChanged = true;
 	}
 
-	public Range2D getRange() {
-		Range2D range = getAxisTransform().getRange();
+	public Range getRange() {
+		Range range = getAxisTransform().getRange();
 		if (tickTransform == null) {
 			return range;
 		} else {
 			double start = tickTransform.transformUser2Tick(range.getStart());
 			double end = tickTransform.transformUser2Tick(range.getEnd());
-			return new Range2D.Double(start, end);
+			return new Range.Double(start, end);
 		}
 	}
 
-	public void setRange(Range2D range) {
+	public void setRange(Range range) {
 		if (tickTransform == null) {
 			getAxisTransform().setRange(range);
 		} else {
 			double ustart = tickTransform.transformTick2User(range.getStart());
 			double uend = tickTransform.transformTick2User(range.getEnd());
-			getAxisTransform().setRange(new Range2D.Double(ustart, uend));
+			getAxisTransform().setRange(new Range.Double(ustart, uend));
 		}
 	}
 
@@ -1021,7 +1021,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
-	public Range2D expandRangeToTick(TransformType txfType, Range2D range) {
+	public Range expandRangeToTick(TransformType txfType, Range range) {
 		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
 		rav.setRange(range);
 		if (autoValues) {
@@ -1041,14 +1041,14 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	/**
 	 * expand range on autoAdjustNumber axis.
 	 */
-	private Range2D expandRangeToAutoAdjustedTick(TransformType txfType, Range2D range) {
+	private Range expandRangeToAutoAdjustedTick(TransformType txfType, Range range) {
 
 		RangeAdvisor rav = (RangeAdvisor) tickCalculator;
 		int tickNumber = this.tickNumber;
 		while (true) {
 			rav.setRange(range);
 			rav.expandRangeByTickNumber(tickNumber);
-			Range2D r = rav.getRange();
+			Range r = rav.getRange();
 			tickCalculator.calcValuesByTickInterval(rav.getInterval(), 0, 0);
 			Object values = tickCalculator.getValues();
 			Format labelTextFormat;

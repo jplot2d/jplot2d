@@ -21,7 +21,7 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Extends the Range2D to supply a status object. Immutable.
@@ -31,7 +31,7 @@ import org.jplot2d.util.Range2D;
  * @param <T>
  *            the status type
  */
-class RangeStatus<T> extends Range2D.Double {
+class RangeStatus<T> extends Range.Double {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ class RangeStatus<T> extends Range2D.Double {
         this._status = status;
     }
 
-    public RangeStatus(Range2D range, T status) {
+    public RangeStatus(Range range, T status) {
         super(range);
         this._status = status;
     }

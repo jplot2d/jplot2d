@@ -18,7 +18,7 @@
  */
 package org.jplot2d.transfrom;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Performs a log transformation on Cartesian axes. The equation is <code>worldvalue =
@@ -31,7 +31,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		computeTransform(u1, u2);
 	}
 
-	public LogarithmicNormalTransform(Range2D ur) {
+	public LogarithmicNormalTransform(Range ur) {
 		super(TransformType.LOGARITHMIC);
 		computeTransform(ur.getStart(), ur.getEnd());
 	}
@@ -111,7 +111,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		return Math.log10(1 - precisionLimit) / Math.abs(_a);
 	}
 
-	public Range2D getRange4PrecisionLimit(Range2D range, double precisionLimit) {
+	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
 		double pcsHFactor = precisionLimit / (2 - precisionLimit);
 		double mid = (range.getStart() + range.getEnd()) / 2;
 		// precision half span
@@ -119,13 +119,13 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		if (range.getSpan() >= pcsHSpan * 2) {
 			return range;
 		} else {
-			return new Range2D.Double(mid - pcsHSpan, mid + pcsHSpan);
+			return new Range.Double(mid - pcsHSpan, mid + pcsHSpan);
 		}
 	}
 
 	@Override
-	public Range2D getRangeW() {
-		return new Range2D.Double(Math.pow(10, _b), Math.pow(10, _a + _b));
+	public Range getRangeW() {
+		return new Range.Double(Math.pow(10, _b), Math.pow(10, _a + _b));
 	}
 
 }

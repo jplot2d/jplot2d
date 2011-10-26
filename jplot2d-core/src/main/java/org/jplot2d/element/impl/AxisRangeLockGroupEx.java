@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.transfrom.NormalTransform;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -53,7 +53,7 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joi
 	 */
 	public void calcAutoRange();
 
-	public void zoomVirtualRange(Range2D range, Map<AxisTransformEx, NormalTransform> vtMap);
+	public void zoomVirtualRange(Range range, Map<AxisTransformEx, NormalTransform> vtMap);
 
 	/**
 	 * Validate axes range after axis type or axis transform type changed.
@@ -67,5 +67,5 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joi
 	 * @param pRange
 	 *            the normalized range which has been validated
 	 */
-	public void zoomNormalRange(Range2D npRange);
+	public void zoomNormalRange(Range npRange);
 }

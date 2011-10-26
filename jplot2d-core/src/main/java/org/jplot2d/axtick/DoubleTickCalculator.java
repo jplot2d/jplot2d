@@ -18,7 +18,7 @@
  */
 package org.jplot2d.axtick;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * A calculator to calculate tick values and minor tick values
@@ -29,11 +29,11 @@ public abstract class DoubleTickCalculator implements TickCalculator {
 
 	protected double _start, _end;
 
-	public final Range2D getRange() {
-		return new Range2D.Double(_start, _end);
+	public final Range getRange() {
+		return new Range.Double(_start, _end);
 	}
 
-	public final void setRange(Range2D range) {
+	public final void setRange(Range range) {
 		this.setRange(range.getStart(), range.getEnd());
 	}
 
