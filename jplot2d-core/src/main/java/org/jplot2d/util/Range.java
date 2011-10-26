@@ -40,14 +40,14 @@ public abstract class Range implements Cloneable {
 		public final boolean empty;
 
 		/**
-		 * Create a Range2D.Double with empty range.
+		 * Create a Range.Double with empty range.
 		 */
 		public Double() {
 			this(java.lang.Double.NaN, false, java.lang.Double.NaN, false);
 		}
 
 		/**
-		 * Construct Range2D.Double with start and end.
+		 * Construct Range.Double with start and end.
 		 * 
 		 * @param start
 		 *            first value
@@ -125,9 +125,9 @@ public abstract class Range implements Cloneable {
 		}
 
 		/**
-		 * Returns the hash code for this <code>Range2D</code>.
+		 * Returns the hash code for this <code>Range</code>.
 		 * 
-		 * @return a hash code for this <code>Range2D</code>.
+		 * @return a hash code for this <code>Range</code>.
 		 */
 		public int hashCode() {
 			long bits = java.lang.Double.doubleToLongBits(start);
@@ -136,7 +136,7 @@ public abstract class Range implements Cloneable {
 		}
 
 		public String toString() {
-			return "Range2D.Double" + ((startIncl) ? "[" : "(") + start + ", " + end
+			return "Range.Double" + ((startIncl) ? "[" : "(") + start + ", " + end
 					+ ((endIncl) ? "]" : ")");
 		}
 
@@ -249,7 +249,7 @@ public abstract class Range implements Cloneable {
 		public final boolean empty;
 
 		/**
-		 * Create a Range2D.Long with empty range.
+		 * Create a Range.Long with empty range.
 		 */
 		public Long() {
 			this.start = 0;
@@ -258,7 +258,7 @@ public abstract class Range implements Cloneable {
 		}
 
 		/**
-		 * Construct Range2D.Long with start and end.
+		 * Construct Range.Long with start and end.
 		 * 
 		 * @param start
 		 *            first value
@@ -360,9 +360,9 @@ public abstract class Range implements Cloneable {
 		}
 
 		/**
-		 * Returns the hash code for this <code>Range2D.Long</code>.
+		 * Returns the hash code for this <code>Range.Long</code>.
 		 * 
-		 * @return a hash code for this <code>Range2D.Long</code>.
+		 * @return a hash code for this <code>Range.Long</code>.
 		 */
 		public int hashCode() {
 			long bits = start;
@@ -371,7 +371,7 @@ public abstract class Range implements Cloneable {
 		}
 
 		public String toString() {
-			return "Range2D.Long" + "[" + start + ", " + end + "]";
+			return "Range.Long" + "[" + start + ", " + end + "]";
 		}
 
 		@Override
@@ -493,7 +493,7 @@ public abstract class Range implements Cloneable {
 	}
 
 	/**
-	 * Create a copy of <code>Range2D</code> object.
+	 * Create a copy of <code>Range</code> object.
 	 */
 	public Range copy() {
 		try {

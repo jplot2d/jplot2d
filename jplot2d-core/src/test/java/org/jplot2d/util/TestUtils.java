@@ -99,7 +99,7 @@ public class TestUtils {
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
 
-	public static void checkRange2D(Range r, double start, double end) {
+	public static void checkRange(Range r, double start, double end) {
 		assertEquals(r.getStart(), start, Math.abs(start) * 1e-12);
 		assertEquals(r.getEnd(), end, Math.abs(end) * 1e-12);
 	}

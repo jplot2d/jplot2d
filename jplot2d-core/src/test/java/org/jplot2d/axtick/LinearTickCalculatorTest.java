@@ -47,19 +47,19 @@ public class LinearTickCalculatorTest {
 	public void testExpandLinearTicks() {
 		linearTC.setRange(0, 6);
 		linearTC.expandRangeByTickNumber(5);
-		checkRange2D(linearTC.getRange(), 0, 6);
+		checkRange(linearTC.getRange(), 0, 6);
 		linearTC.calcValuesByTickNumber(5, 0);
 		checkDoubleArray(linearTC.getValues(), 0, 2, 4, 6);
 
 		linearTC.setRange(0, 5.5);
 		linearTC.expandRangeByTickNumber(5);
-		checkRange2D(linearTC.getRange(), 0, 6);
+		checkRange(linearTC.getRange(), 0, 6);
 		linearTC.calcValuesByTickNumber(5, 0);
 		checkDoubleArray(linearTC.getValues(), 0, 2, 4, 6);
 
 		linearTC.setRange(0, 6);
 		linearTC.expandRangeByTickNumber(6);
-		checkRange2D(linearTC.getRange(), 0, 6);
+		checkRange(linearTC.getRange(), 0, 6);
 		linearTC.calcValuesByTickNumber(6, 0);
 		checkDoubleArray(linearTC.getValues(), 0, 1, 2, 3, 4, 5, 6);
 

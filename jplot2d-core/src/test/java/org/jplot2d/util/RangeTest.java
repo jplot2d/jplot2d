@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * $Id: Range2DTest.java,v 1.3 2010/10/28 04:32:45 jli Exp $
- */
 package org.jplot2d.util;
 
 import static org.junit.Assert.*;
@@ -151,7 +148,7 @@ public class RangeTest {
 
         assertEquals(new Range.Long(), new Range.Long());
 
-        // test create from a Range2D
+        // test create from a Range
         assertEquals(new Range.Long(new Range.Double(1.0, 1.0)),
                 new Range.Long(1, 1));
         assertEquals(new Range.Long(new Range.Double(0.9, 1.1)),

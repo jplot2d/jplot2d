@@ -340,29 +340,29 @@ public class DateTickCalculatorTest {
 		/* span zero */
 		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis());
 		dateTC.expandRangeByTickNumber(11);
-		checkRange2D(dateTC.getRange(), startms - 5, startms + 5);
+		checkRange(dateTC.getRange(), startms - 5, startms + 5);
 		assertEquals((long) dateTC.getInterval(), 1l);
 
 		/* span 1ms */
 		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis() + 1);
 		dateTC.expandRangeByTickNumber(11);
-		checkRange2D(dateTC.getRange(), startms - 4, startms + 6);
+		checkRange(dateTC.getRange(), startms - 4, startms + 6);
 		assertEquals((long) dateTC.getInterval(), 1l);
 
 		/* span 1000ms */
 		dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
 		dateTC.expandRangeByTickNumber(11);
-		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		checkRange(dateTC.getRange(), startms, startms + 1000);
 		assertEquals((long) dateTC.getInterval(), 100l);
 
 		dateTC.setRange(start.getTimeInMillis() + 1, end.getTimeInMillis() - 1);
 		dateTC.expandRangeByTickNumber(11);
-		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		checkRange(dateTC.getRange(), startms, startms + 1000);
 		assertEquals((long) dateTC.getInterval(), 100l);
 
 		dateTC.setRange(start.getTimeInMillis() - 1, end.getTimeInMillis() + 1);
 		dateTC.expandRangeByTickNumber(11);
-		checkRange2D(dateTC.getRange(), startms - 100, startms + 1100);
+		checkRange(dateTC.getRange(), startms - 100, startms + 1100);
 		assertEquals((long) dateTC.getInterval(), 100l);
 	}
 
@@ -384,25 +384,25 @@ public class DateTickCalculatorTest {
 		/* span zero */
 		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis());
 		dateTC.expandRangeByTickInterval(100);
-		checkRange2D(dateTC.getRange(), startms, startms + 100);
+		checkRange(dateTC.getRange(), startms, startms + 100);
 
 		/* span less than interval */
 		dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis() + 1);
 		dateTC.expandRangeByTickInterval(100);
-		checkRange2D(dateTC.getRange(), startms, startms + 100);
+		checkRange(dateTC.getRange(), startms, startms + 100);
 
 		/* span 1000ms */
 		dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
 		dateTC.expandRangeByTickInterval(100);
-		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		checkRange(dateTC.getRange(), startms, startms + 1000);
 
 		dateTC.setRange(start.getTimeInMillis() + 1, end.getTimeInMillis() - 1);
 		dateTC.expandRangeByTickInterval(100);
-		checkRange2D(dateTC.getRange(), startms, startms + 1000);
+		checkRange(dateTC.getRange(), startms, startms + 1000);
 
 		dateTC.setRange(start.getTimeInMillis() - 1, end.getTimeInMillis() + 1);
 		dateTC.expandRangeByTickInterval(100);
-		checkRange2D(dateTC.getRange(), startms - 100, startms + 1100);
+		checkRange(dateTC.getRange(), startms - 100, startms + 1100);
 
 	}
 
