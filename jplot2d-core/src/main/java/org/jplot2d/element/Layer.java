@@ -100,7 +100,7 @@ public interface Layer extends PComponent {
 	 * @return
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public AxisRangeManager getXRangeManager();
+	public AxisTransform getXRangeManager();
 
 	/**
 	 * Returns the Y axis to this layer attaching.
@@ -108,7 +108,7 @@ public interface Layer extends PComponent {
 	 * @return
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public AxisRangeManager getYRangeManager();
+	public AxisTransform getYRangeManager();
 
 	/**
 	 * Attach this layer to the given X axis. When adding a layer to a plot, the axis must exist in
@@ -117,7 +117,7 @@ public interface Layer extends PComponent {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setXRangeManager(AxisRangeManager rangeManager);
+	public void setXRangeManager(AxisTransform rangeManager);
 
 	/**
 	 * Attach this layer to the given Y axis. When adding a layer to a plot, the axis must exist in
@@ -126,7 +126,7 @@ public interface Layer extends PComponent {
 	 * @param axis
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setYRangeManager(AxisRangeManager rangeManager);
+	public void setYRangeManager(AxisTransform rangeManager);
 
 	/**
 	 * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes
@@ -138,6 +138,6 @@ public interface Layer extends PComponent {
 	 *            the y axis
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setRangeManager(AxisRangeManager xRangeManager, AxisRangeManager yRangeManager);
+	public void setRangeManager(AxisTransform xRangeManager, AxisTransform yRangeManager);
 
 }

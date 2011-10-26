@@ -30,17 +30,17 @@ import org.jplot2d.util.Range2D;
  */
 public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joinable {
 
-	public AxisRangeManagerEx getParent();
+	public AxisTransformEx getParent();
 
-	public AxisRangeManagerEx[] getRangeManagers();
+	public AxisTransformEx[] getRangeManagers();
 
-	public int indexOfRangeManager(AxisRangeManagerEx rangeManager);
+	public int indexOfRangeManager(AxisTransformEx rangeManager);
 
-	public void addRangeManager(AxisRangeManagerEx rangeManager);
+	public void addRangeManager(AxisTransformEx rangeManager);
 
-	public void removeRangeManager(AxisRangeManagerEx rangeManager);
+	public void removeRangeManager(AxisTransformEx rangeManager);
 
-	public AxisRangeManagerEx getPrimaryAxis();
+	public AxisTransformEx getPrimaryAxis();
 
 	/**
 	 * Force re-autorange this axis group. This method is called when layer data set changes, layer
@@ -53,7 +53,7 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joi
 	 */
 	public void calcAutoRange();
 
-	public void zoomVirtualRange(Range2D range, Map<AxisRangeManagerEx, NormalTransform> vtMap);
+	public void zoomVirtualRange(Range2D range, Map<AxisTransformEx, NormalTransform> vtMap);
 
 	/**
 	 * Validate axes range after axis type or axis transform type changed.

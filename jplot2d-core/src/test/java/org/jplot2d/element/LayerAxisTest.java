@@ -38,8 +38,8 @@ public class LayerAxisTest {
 	 */
 	@Test
 	public void testLayerAttachAxis() {
-		AxisRangeManager xaxis = factory.createAxisRangeManager();
-		AxisRangeManager yaxis = factory.createAxisRangeManager();
+		AxisTransform xaxis = factory.createAxisRangeManager();
+		AxisTransform yaxis = factory.createAxisRangeManager();
 		Layer layer = factory.createLayer();
 
 		try {
@@ -148,8 +148,8 @@ public class LayerAxisTest {
 		Axis xaxis = factory.createAxis();
 		Axis yaxis = factory.createAxis();
 		Layer layer = factory.createLayer();
-		AxisRangeManager xva = xaxis.getTickManager().getRangeManager();
-		AxisRangeManager yva = yaxis.getTickManager().getRangeManager();
+		AxisTransform xva = xaxis.getTickManager().getRangeManager();
+		AxisTransform yva = yaxis.getTickManager().getRangeManager();
 
 		sp.addXAxis(xaxis);
 		sp.addYAxis(yaxis);

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.GraphPlotter;
-import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.PhysicalTransform;
@@ -40,7 +40,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
 
-	private AxisRangeManagerEx xarm, yarm;
+	private AxisTransformEx xarm, yarm;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -220,35 +220,35 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return false;
 	}
 
-	public AxisRangeManagerEx getXRangeManager() {
+	public AxisTransformEx getXRangeManager() {
 		return xarm;
 	}
 
-	public AxisRangeManagerEx getYRangeManager() {
+	public AxisTransformEx getYRangeManager() {
 		return yarm;
 	}
 
-	public void setXRangeManager(AxisRangeManager axis) {
+	public void setXRangeManager(AxisTransform axis) {
 		if (this.xarm != null) {
 			this.xarm.removeLayer(this);
 		}
-		this.xarm = (AxisRangeManagerEx) axis;
+		this.xarm = (AxisTransformEx) axis;
 		if (this.xarm != null) {
 			this.xarm.addLayer(this);
 		}
 	}
 
-	public void setYRangeManager(AxisRangeManager axis) {
+	public void setYRangeManager(AxisTransform axis) {
 		if (this.yarm != null) {
 			this.yarm.removeLayer(this);
 		}
-		this.yarm = (AxisRangeManagerEx) axis;
+		this.yarm = (AxisTransformEx) axis;
 		if (this.yarm != null) {
 			this.yarm.addLayer(this);
 		}
 	}
 
-	public void setRangeManager(AxisRangeManager xaxis, AxisRangeManager yaxis) {
+	public void setRangeManager(AxisTransform xaxis, AxisTransform yaxis) {
 		setXRangeManager(xaxis);
 		setYRangeManager(yaxis);
 	}

@@ -66,6 +66,6 @@ public interface AxisRangeLockGroup extends Element {
 	 * @return all axes belongs to this group
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public AxisRangeManager[] getRangeManagers();
+	public AxisTransform[] getRangeManagers();
 
 }

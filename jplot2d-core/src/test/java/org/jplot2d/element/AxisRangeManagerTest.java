@@ -34,9 +34,9 @@ public class AxisRangeManagerTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisRangeManager.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Range");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Range"), "type",
-				"transformType", "inverted", "autoMargin", "marginFactor", "coreRange", "range");
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTransform.class);
+		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Transform");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Transform"), "axisType",
+				"type", "inverted", "autoMargin", "marginFactor", "coreRange", "range");
 	}
 }

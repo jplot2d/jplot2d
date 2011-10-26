@@ -61,7 +61,7 @@ public class PlotImplTest {
 
 		}
 
-		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx arm = mock(AxisTransformEx.class);
 		when(atm.getRangeManager()).thenReturn(arm);
 		try {
 			p.addXAxis(axis);
@@ -97,7 +97,7 @@ public class PlotImplTest {
 
 		}
 
-		AxisRangeManagerEx arm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx arm = mock(AxisTransformEx.class);
 		when(atm.getRangeManager()).thenReturn(arm);
 		try {
 			p.addYAxis(axis);
@@ -133,7 +133,7 @@ public class PlotImplTest {
 
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx xarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.canContributeToParent()).thenReturn(true);
 		when(xaxis.getTickManager()).thenReturn(xatm);
@@ -145,7 +145,7 @@ public class PlotImplTest {
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx yarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.canContributeToParent()).thenReturn(true);
 		when(yaxis.getTickManager()).thenReturn(yatm);
@@ -197,7 +197,7 @@ public class PlotImplTest {
 		// add or remove invisible axis does not invalid
 		AxisEx xaxis0 = mock(AxisEx.class);
 		AxisTickManagerEx xatm0 = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx xarm0 = mock(AxisRangeManagerEx.class);
+		AxisTransformEx xarm0 = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg0 = mock(AxisRangeLockGroupEx.class);
 		when(xaxis0.getTickManager()).thenReturn(xatm0);
 		when(xatm0.getRangeManager()).thenReturn(xarm0);
@@ -210,7 +210,7 @@ public class PlotImplTest {
 		// add or remove visible axis does invalid
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx xarm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx xarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
 		when(xaxis.getTickManager()).thenReturn(xatm);
 		when(xatm.getRangeManager()).thenReturn(xarm);
@@ -232,7 +232,7 @@ public class PlotImplTest {
 
 		AxisEx yaxis0 = mock(AxisEx.class);
 		AxisTickManagerEx yatm0 = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx yarm0 = mock(AxisRangeManagerEx.class);
+		AxisTransformEx yarm0 = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg0 = mock(AxisRangeLockGroupEx.class);
 		when(yaxis0.getTickManager()).thenReturn(yatm0);
 		when(yatm0.getRangeManager()).thenReturn(yarm0);
@@ -245,7 +245,7 @@ public class PlotImplTest {
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx yarm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx yarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
 		when(yaxis.getTickManager()).thenReturn(yatm);
 		when(yatm.getRangeManager()).thenReturn(yarm);
@@ -293,7 +293,7 @@ public class PlotImplTest {
 		p.addSubplot(sp, null);
 
 		AxisRangeLockGroupImpl xgroup = new AxisRangeLockGroupImpl();
-		AxisRangeManagerImpl xrm = new AxisRangeManagerImpl();
+		AxisTransformImpl xrm = new AxisTransformImpl();
 		xrm.setLockGroup(xgroup);
 		AxisTickManagerImpl xtm = new AxisTickManagerImpl();
 		xtm.setRangeManager(xrm);
@@ -301,7 +301,7 @@ public class PlotImplTest {
 		x.setTickManager(xtm);
 
 		AxisRangeLockGroupImpl ygroup = new AxisRangeLockGroupImpl();
-		AxisRangeManagerImpl yrm = new AxisRangeManagerImpl();
+		AxisTransformImpl yrm = new AxisTransformImpl();
 		yrm.setLockGroup(ygroup);
 		AxisTickManagerImpl ytm = new AxisTickManagerImpl();
 		ytm.setRangeManager(yrm);

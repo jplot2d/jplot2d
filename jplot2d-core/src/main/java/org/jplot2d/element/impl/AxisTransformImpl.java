@@ -32,7 +32,7 @@ import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
-public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManagerEx {
+public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	/** The default margin factor (used for both lower and upper margins) */
 	public static final double DEFAULT_MARGIN_FACTOR = 1.0 / 32; // 0.03125
@@ -55,7 +55,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 
 	private final List<LayerEx> layers = new ArrayList<LayerEx>();
 
-	public AxisRangeManagerImpl() {
+	public AxisTransformImpl() {
 		super();
 
 		type = AxisType.NUMBER;
@@ -159,11 +159,11 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		}
 	}
 
-	public AxisType getType() {
+	public AxisType getAxisType() {
 		return type;
 	}
 
-	public void setType(AxisType type) {
+	public void setAxisType(AxisType type) {
 		if (group.getRangeManagers().length > 1) {
 			throw new IllegalStateException(
 					"The axis type can only be changed when the axis doses not lock with other axes.");
@@ -181,11 +181,11 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		group.validateAxesRange();
 	}
 
-	public TransformType getTransformType() {
+	public TransformType getType() {
 		return txfType;
 	}
 
-	public void setTransformType(TransformType txfType) {
+	public void setType(TransformType txfType) {
 		if (group.getRangeManagers().length > 1) {
 			throw new IllegalStateException(
 					"The axis type can only be changed when the axis doses not lock with other axes.");
@@ -342,7 +342,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 			throw new IllegalArgumentException("Range cannot start or end at NaN.");
 		}
 
-		Map<AxisRangeManagerEx, NormalTransform> vtMap = AxisRangeUtils
+		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils
 				.createVirtualTransformMap(Arrays.asList(group.getRangeManagers()));
 
 		NormalTransform vnt = vtMap.get(this);
@@ -395,14 +395,14 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 
 	public Range2D expandRangeToTick(Range2D ur) {
 		if (tickManagers.size() > 0) {
-			return tickManagers.get(0).expandRangeToTick(getTransformType(), ur);
+			return tickManagers.get(0).expandRangeToTick(getType(), ur);
 		}
 		return null;
 	}
 
 	@Override
-	public AxisRangeManagerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		AxisRangeManagerImpl result = new AxisRangeManagerImpl();
+	public AxisTransformEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		AxisTransformImpl result = new AxisTransformImpl();
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(this, result);
@@ -423,7 +423,7 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		AxisRangeManagerImpl arm = (AxisRangeManagerImpl) src;
+		AxisTransformImpl arm = (AxisTransformImpl) src;
 		this.type = arm.type;
 		this.txfType = arm.txfType;
 		this.autoMargin = arm.autoMargin;
