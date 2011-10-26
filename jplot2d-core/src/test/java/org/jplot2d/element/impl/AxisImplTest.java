@@ -53,7 +53,7 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
 		AxisTransformEx va = mock(AxisTransformEx.class);
-		axis.getTickManager().setRangeManager(va);
+		axis.getTickManager().setAxisTransform(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
@@ -92,7 +92,7 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
 		AxisTransformEx va = mock(AxisTransformEx.class);
-		axis.getTickManager().setRangeManager(va);
+		axis.getTickManager().setAxisTransform(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
 				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
@@ -129,7 +129,7 @@ public class AxisImplTest {
 		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
 		axis.setTickManager(tickManager);
 		AxisTransformEx arm = new AxisTransformImpl();
-		tickManager.setRangeManager(arm);
+		tickManager.setAxisTransform(arm);
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(alg.isAutoRange()).thenReturn(true);
 		arm.setLockGroup(alg);
