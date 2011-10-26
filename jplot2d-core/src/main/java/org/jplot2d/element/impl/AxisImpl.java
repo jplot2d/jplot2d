@@ -172,7 +172,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
 		if (tickManager.getParent() == this) {
-			AxisRangeManagerEx rman = tickManager.getRangeManager();
+			AxisTransformEx rman = tickManager.getRangeManager();
 			if (rman.getParent() == tickManager) {
 				for (LayerEx layer : rman.getLayers()) {
 					result.put(rman, layer);

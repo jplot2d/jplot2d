@@ -30,7 +30,7 @@ import org.jplot2d.element.Title;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.element.impl.AxisEx;
 import org.jplot2d.element.impl.AxisRangeLockGroupEx;
-import org.jplot2d.element.impl.AxisRangeManagerEx;
+import org.jplot2d.element.impl.AxisTransformEx;
 import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.PlotEx;
@@ -146,7 +146,7 @@ public class SimpleLayoutDirectorTest {
 
 		// add axes
 		AxisTickManagerEx tm = mock(AxisTickManagerEx.class);
-		AxisRangeManagerEx rm = mock(AxisRangeManagerEx.class);
+		AxisTransformEx rm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx lg = mock(AxisRangeLockGroupEx.class);
 		when(tm.getRangeManager()).thenReturn(rm);
 		when(rm.getLockGroup()).thenReturn(lg);

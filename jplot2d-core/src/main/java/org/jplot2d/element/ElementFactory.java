@@ -26,7 +26,7 @@ import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
-import org.jplot2d.element.impl.AxisRangeManagerEx;
+import org.jplot2d.element.impl.AxisTransformEx;
 import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
@@ -35,7 +35,7 @@ import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
-import org.jplot2d.element.impl.AxisRangeManagerImpl;
+import org.jplot2d.element.impl.AxisTransformImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
@@ -298,14 +298,14 @@ public class ElementFactory {
 	 * 
 	 * @return an AxisRangeManager
 	 */
-	public AxisRangeManager createAxisRangeManager() {
-		AxisRangeManagerImpl rm = new AxisRangeManagerImpl();
+	public AxisTransform createAxisRangeManager() {
+		AxisTransformImpl rm = new AxisTransformImpl();
 		AxisRangeLockGroupImpl group = new AxisRangeLockGroupImpl();
 		applyProfile(rm);
 		applyProfile(group);
 		rm.setLockGroup(group);
 
-		AxisRangeManager vaProxy = proxy(rm, AxisRangeManager.class);
+		AxisTransform vaProxy = proxy(rm, AxisTransform.class);
 		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
@@ -322,9 +322,9 @@ public class ElementFactory {
 	 * @return an AxisTickManager
 	 */
 	public AxisTickManager createAxisTickManager() {
-		AxisRangeManager rm = createAxisRangeManager();
+		AxisTransform rm = createAxisRangeManager();
 		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
-		AxisRangeManagerEx rme = (AxisRangeManagerEx) ((ElementAddition) rm).getImpl();
+		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) rm).getImpl();
 
 		AxisTickManagerImpl tm = new AxisTickManagerImpl();
 		applyProfile(tm);

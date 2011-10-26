@@ -61,14 +61,14 @@ class AxisRangeUtils {
 	 * @return
 	 */
 	private static Range2D getBounds(
-			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
+			Map<AxisTransformEx, NormalTransform> vtMap) {
 		Range2D pbnds = new Range2D.Double(Double.NEGATIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : vtMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
 				.entrySet()) {
-			AxisRangeManagerEx ax = me.getKey();
+			AxisTransformEx ax = me.getKey();
 			Range2D aprange = me.getValue().getTransP(
-					ax.getType().getBoundary(ax.getTransformType()));
+					ax.getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 		return pbnds;
@@ -82,18 +82,18 @@ class AxisRangeUtils {
 	 * @param axes
 	 * @return
 	 */
-	static Map<AxisRangeManagerEx, NormalTransform> createVirtualTransformMap(
-			Collection<AxisRangeManagerEx> axes) {
+	static Map<AxisTransformEx, NormalTransform> createVirtualTransformMap(
+			Collection<AxisTransformEx> axes) {
 
 		if (axes.size() == 0) {
 			return Collections.emptyMap();
 		}
 
-		Map<AxisRangeManagerEx, NormalTransform> result = new HashMap<AxisRangeManagerEx, NormalTransform>();
+		Map<AxisTransformEx, NormalTransform> result = new HashMap<AxisTransformEx, NormalTransform>();
 
 		boolean match = true;
 		double offset = Double.NaN;
-		for (AxisRangeManagerEx axis : axes) {
+		for (AxisTransformEx axis : axes) {
 			if (!match) {
 				offset = axis.getNormalTransform().getOffset();
 				match = true;
@@ -103,12 +103,12 @@ class AxisRangeUtils {
 			}
 		}
 		if (match) {
-			for (AxisRangeManagerEx axis : axes) {
+			for (AxisTransformEx axis : axes) {
 				NormalTransform nx = axis.getNormalTransform().deriveNoOffset();
 				result.put(axis, nx);
 			}
 		} else {
-			for (AxisRangeManagerEx axis : axes) {
+			for (AxisTransformEx axis : axes) {
 				NormalTransform nx = axis.getNormalTransform();
 				result.put(axis, nx);
 			}
@@ -117,10 +117,10 @@ class AxisRangeUtils {
 		return result;
 	}
 
-	private static Map<AxisRangeManagerEx, NormalTransform> createNormalTransformMap(
-			Collection<AxisRangeManagerEx> axes) {
-		Map<AxisRangeManagerEx, NormalTransform> vtMap = new LinkedHashMap<AxisRangeManagerEx, NormalTransform>();
-		for (AxisRangeManagerEx axis : axes) {
+	private static Map<AxisTransformEx, NormalTransform> createNormalTransformMap(
+			Collection<AxisTransformEx> axes) {
+		Map<AxisTransformEx, NormalTransform> vtMap = new LinkedHashMap<AxisTransformEx, NormalTransform>();
+		for (AxisTransformEx axis : axes) {
 			vtMap.put(axis, axis.getNormalTransform());
 		}
 		return vtMap;
@@ -152,8 +152,8 @@ class AxisRangeUtils {
 	 *         RangeAdjustTag status indicate if the given range is adjusted.
 	 */
 	static Range2D validateNormalRange(Range2D range,
-			Collection<AxisRangeManagerEx> axes, boolean findNearsetData) {
-		Map<AxisRangeManagerEx, NormalTransform> axisMap = createNormalTransformMap(axes);
+			Collection<AxisTransformEx> axes, boolean findNearsetData) {
+		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return validateNormalRange(range, axisMap, findNearsetData);
 	}
 
@@ -182,7 +182,7 @@ class AxisRangeUtils {
 	 *         RangeAdjustTag status indicate if the given range is adjusted.
 	 */
 	static Range2D validateNormalRange(Range2D range,
-			Map<AxisRangeManagerEx, NormalTransform> axisMap,
+			Map<AxisTransformEx, NormalTransform> axisMap,
 			boolean findNearsetData) {
 
 		if (range.isInverted()) {
@@ -191,12 +191,12 @@ class AxisRangeUtils {
 
 		/* find the physical intersected range of valid world range among layers */
 		Range2D pbnds = new Range2D.Double(range);
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : axisMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
 				.entrySet()) {
-			AxisRangeManagerEx ax = me.getKey();
+			AxisTransformEx ax = me.getKey();
 			// virtual normal range of the axis type boundary
 			Range2D aprange = me.getValue().getTransP(
-					me.getKey().getType().getBoundary(ax.getTransformType()));
+					me.getKey().getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 
@@ -208,12 +208,12 @@ class AxisRangeUtils {
 		 * The pbnds may be not null if a round error cause an intersection. In
 		 * this case, the pbnds.span() is 0.
 		 */
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : axisMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
 				.entrySet()) {
 			Range2D urange = me.getValue().getTransU(pbnds);
-			AxisRangeManagerEx ax = me.getKey();
-			urange = urange.intersect(ax.getType().getBoundary(
-					ax.getTransformType()));
+			AxisTransformEx ax = me.getKey();
+			urange = urange.intersect(ax.getAxisType().getBoundary(
+					ax.getType()));
 			if (urange == null) {
 				return null;
 			}
@@ -223,16 +223,16 @@ class AxisRangeUtils {
 		boolean findHiData = false;
 
 		if (findNearsetData) {
-			for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : axisMap
+			for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
 					.entrySet()) {
 				Range2D urange = me.getValue().getTransU(range);
-				AxisRangeManagerEx ax = me.getKey();
-				if (urange.getStart() < ax.getType()
-						.getBoundary(ax.getTransformType()).getStart()) {
+				AxisTransformEx ax = me.getKey();
+				if (urange.getStart() < ax.getAxisType()
+						.getBoundary(ax.getType()).getStart()) {
 					findLoData = true;
 				}
-				if (urange.getEnd() > ax.getType()
-						.getBoundary(ax.getTransformType()).getEnd()) {
+				if (urange.getEnd() > ax.getAxisType()
+						.getBoundary(ax.getType()).getEnd()) {
 					findHiData = true;
 				}
 			}
@@ -266,23 +266,23 @@ class AxisRangeUtils {
 	 * @return
 	 */
 	private static Range2D findDataRange(Range2D pbnds,
-			Map<AxisRangeManagerEx, NormalTransform> axisMap,
+			Map<AxisTransformEx, NormalTransform> axisMap,
 			boolean findLoData, boolean findHiData) {
 
 		// the physical adjusted range that find the data edge
 		Range2D padRange = null;
 
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : axisMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
 				.entrySet()) {
 			double pLo = Double.POSITIVE_INFINITY;
 			double pHi = Double.NEGATIVE_INFINITY;
 
-			AxisRangeManagerEx arm = (AxisRangeManagerEx) me.getKey();
+			AxisTransformEx arm = (AxisTransformEx) me.getKey();
 			NormalTransform vnt = me.getValue();
 			Range2D urange = vnt.getTransU(pbnds);
 			// in case of the round error exceed valid bounds
-			urange = urange.intersect(arm.getType().getBoundary(
-					arm.getTransformType()));
+			urange = urange.intersect(arm.getAxisType().getBoundary(
+					arm.getType()));
 			for (LayerEx layer : arm.getLayers()) {
 				Range2D wDRange = null;
 				if (layer.getXRangeManager() == arm) {
@@ -320,14 +320,14 @@ class AxisRangeUtils {
 			if (pLo == pHi) {
 				pXdRange = new Range2D.Double(pLo, pHi);
 			} else if (pLo < pHi) {
-				if (arm.getType().getDefaultTransformType() == vnt.getType()) {
+				if (arm.getAxisType().getDefaultTransformType() == vnt.getType()) {
 					double span = pHi - pLo;
 					pLo -= span * arm.getMarginFactor();
 					pHi += span * arm.getMarginFactor();
 					pXdRange = new Range2D.Double(pLo, pHi);
 				} else {
 					Range2D wr = vnt.getTransU(new Range2D.Double(pLo, pHi));
-					NormalTransform npt = arm.getType()
+					NormalTransform npt = arm.getAxisType()
 							.getDefaultTransformType()
 							.createNormalTransform(wr);
 					Range2D exnpr = new Range2D.Double(-arm.getMarginFactor(),
@@ -371,13 +371,13 @@ class AxisRangeUtils {
 	 *         is PrecisionException if the range is adjusted.
 	 */
 	static RangeStatus<PrecisionState> ensurePrecision(Range2D prange,
-			Collection<AxisRangeManagerEx> axes) {
-		Map<AxisRangeManagerEx, NormalTransform> axisMap = createNormalTransformMap(axes);
+			Collection<AxisTransformEx> axes) {
+		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return ensurePrecision(prange, axisMap);
 	}
 
 	static RangeStatus<PrecisionState> ensurePrecision(Range2D prange,
-			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
+			Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -394,9 +394,9 @@ class AxisRangeUtils {
 		String minRangeId = null;
 
 		// find new range to avoid PrecisionException
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : vtMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
 				.entrySet()) {
-			AxisRangeManagerEx axis = me.getKey();
+			AxisTransformEx axis = me.getKey();
 			NormalTransform vt = me.getValue();
 
 			/*
@@ -415,7 +415,7 @@ class AxisRangeUtils {
 			/* when auto range and range == 0 */
 			/* only when all axes are linear and contain constant 0 values */
 			double minScale = Double.POSITIVE_INFINITY;
-			for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : vtMap
+			for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
 					.entrySet()) {
 				NormalTransform vt = me.getValue();
 
@@ -460,13 +460,13 @@ class AxisRangeUtils {
 	}
 
 	static RangeStatus<PrecisionState> ensureCircleSpan(Range2D prange,
-			Collection<AxisRangeManagerEx> axes) {
-		Map<AxisRangeManagerEx, NormalTransform> vtMap = createNormalTransformMap(axes);
+			Collection<AxisTransformEx> axes) {
+		Map<AxisTransformEx, NormalTransform> vtMap = createNormalTransformMap(axes);
 		return ensureCircleSpan(prange, vtMap);
 	}
 
 	static RangeStatus<PrecisionState> ensureCircleSpan(Range2D prange,
-			Map<AxisRangeManagerEx, NormalTransform> vtMap) {
+			Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -478,14 +478,14 @@ class AxisRangeUtils {
 		/* the maximum physical range to satisfy the circle */
 		double maxRange = Double.POSITIVE_INFINITY;
 		String maxRangeId = null;
-		for (Map.Entry<AxisRangeManagerEx, NormalTransform> me : vtMap
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
 				.entrySet()) {
-			AxisRangeManagerEx axis = me.getKey();
+			AxisTransformEx axis = me.getKey();
 			NormalTransform vt = me.getValue();
 
-			if (axis.getType().getCircularRange() != null) {
+			if (axis.getAxisType().getCircularRange() != null) {
 				double ascale = Math.abs(vt.getScale());
-				double pcircle = axis.getType().getCircularRange().getSpan()
+				double pcircle = axis.getAxisType().getCircularRange().getSpan()
 						/ ascale;
 				if (maxRange > pcircle) {
 					maxRange = pcircle;

@@ -18,7 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.element.AxisTransform;
 import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
@@ -27,7 +27,7 @@ import org.jplot2d.util.Range2D;
  * @author Jingjing Li
  * 
  */
-public interface AxisRangeManagerEx extends AxisRangeManager, ElementEx,
+public interface AxisTransformEx extends AxisTransform, ElementEx,
 		Joinable {
 
 	public AxisTickManagerEx getParent();

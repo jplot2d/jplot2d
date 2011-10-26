@@ -46,10 +46,10 @@ public interface AxisTickManager extends Element {
 	public static final int DEFAULT_TICKS_NUMBER = 11;
 
 	@Hierarchy(HierarchyOp.GET)
-	public AxisRangeManager getRangeManager();
+	public AxisTransform getRangeManager();
 
 	@Hierarchy(HierarchyOp.JOIN)
-	public void setRangeManager(AxisRangeManager rangeManager);
+	public void setRangeManager(AxisTransform rangeManager);
 
 	/**
 	 * Returns all axes whose ticks are controlled by this tick manager.

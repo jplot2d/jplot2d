@@ -52,7 +52,7 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
-		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
+		AxisTransformEx va = mock(AxisTransformEx.class);
 		axis.getTickManager().setRangeManager(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
@@ -91,7 +91,7 @@ public class AxisImplTest {
 		when(sp.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
 		when(sp.getEffectiveFontSize()).thenReturn(12.0f);
 		axis.setParent(sp);
-		AxisRangeManagerEx va = mock(AxisRangeManagerEx.class);
+		AxisTransformEx va = mock(AxisTransformEx.class);
 		axis.getTickManager().setRangeManager(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
@@ -128,7 +128,7 @@ public class AxisImplTest {
 		AxisEx axis = new AxisImpl();
 		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
 		axis.setTickManager(tickManager);
-		AxisRangeManagerEx arm = new AxisRangeManagerImpl();
+		AxisTransformEx arm = new AxisTransformImpl();
 		tickManager.setRangeManager(arm);
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
 		when(alg.isAutoRange()).thenReturn(true);

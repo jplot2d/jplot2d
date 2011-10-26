@@ -335,12 +335,12 @@ public interface Plot extends PComponent {
 	 *            the y axis range manager
 	 */
 	@Hierarchy(HierarchyOp.ADD_REF2)
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager, AxisRangeManager yRangeManager);
+	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager);
 
 	/**
 	 * Add a layer to this plot. The layer will associate with the given X/Y axis' range manager to
 	 * control which part show in the plot viewport. Equivalent to
-	 * {@link #addLayer(Layer, AxisRangeManager, AxisRangeManager) addLayer(layer,
+	 * {@link #addLayer(Layer, AxisTransform, AxisTransform) addLayer(layer,
 	 * xaxis.getTickManager().getRangeManager(), yaxis.getTickManager().getRangeManager())}
 	 * 
 	 * @param layer

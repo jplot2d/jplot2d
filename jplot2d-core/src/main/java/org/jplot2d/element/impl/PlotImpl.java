@@ -35,7 +35,7 @@ import java.util.Set;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
@@ -165,7 +165,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
 		for (AxisEx axis : xAxis) {
-			AxisRangeManagerEx arm = axis.getTickManager().getRangeManager();
+			AxisTransformEx arm = axis.getTickManager().getRangeManager();
 			for (LayerEx layer : arm.getLayers()) {
 				if (layer.getParent() != this) {
 					result.put(arm, layer);
@@ -173,7 +173,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			}
 		}
 		for (AxisEx axis : yAxis) {
-			AxisRangeManagerEx arm = axis.getTickManager().getRangeManager();
+			AxisTransformEx arm = axis.getTickManager().getRangeManager();
 			for (LayerEx layer : arm.getLayers()) {
 				if (layer.getParent() != this) {
 					result.put(arm, layer);
@@ -799,7 +799,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
-	public void addLayer(Layer layer, AxisRangeManager xRangeManager, AxisRangeManager yRangeManager) {
+	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager) {
 		LayerEx lx = (LayerEx) layer;
 		layers.add(lx);
 		lx.setParent(this);
@@ -1037,12 +1037,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXRangeManager() == null && layer.getXRangeManager() != null) {
-				AxisRangeManagerEx xcopy = (AxisRangeManagerEx) orig2copyMap.get(layer
+				AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer
 						.getXRangeManager());
 				layerCopy.setXRangeManager(xcopy);
 			}
 			if (layerCopy.getYRangeManager() == null && layer.getYRangeManager() != null) {
-				AxisRangeManagerEx ycopy = (AxisRangeManagerEx) orig2copyMap.get(layer
+				AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer
 						.getYRangeManager());
 				layerCopy.setYRangeManager(ycopy);
 			}
@@ -1308,7 +1308,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * @param end
 	 */
 	private void zoomRange(Collection<AxisRangeLockGroupEx> arlgs, double start, double end) {
-		Collection<AxisRangeManagerEx> arms = new ArrayList<AxisRangeManagerEx>();
+		Collection<AxisTransformEx> arms = new ArrayList<AxisTransformEx>();
 		for (AxisRangeLockGroupEx arlg : arlgs) {
 			arms.addAll(Arrays.asList(arlg.getRangeManagers()));
 		}

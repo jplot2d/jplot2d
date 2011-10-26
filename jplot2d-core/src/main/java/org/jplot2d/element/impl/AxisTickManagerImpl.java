@@ -33,7 +33,7 @@ import org.jplot2d.axtick.RangeAdvisor;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtick.TickCalculator;
 import org.jplot2d.axtick.TickUtils;
-import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisTickTransform;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
@@ -85,7 +85,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public static final int AUTO_TICKS_MIN = 4;
 
-	private AxisRangeManagerEx rangeManager;
+	private AxisTransformEx rangeManager;
 
 	private List<AxisEx> axes = new ArrayList<AxisEx>();
 
@@ -249,15 +249,15 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
-	public AxisRangeManagerEx getRangeManager() {
+	public AxisTransformEx getRangeManager() {
 		return rangeManager;
 	}
 
-	public void setRangeManager(AxisRangeManager rangeManager) {
+	public void setRangeManager(AxisTransform rangeManager) {
 		if (this.rangeManager != null) {
 			this.rangeManager.removeTickManager(this);
 		}
-		this.rangeManager = (AxisRangeManagerEx) rangeManager;
+		this.rangeManager = (AxisTransformEx) rangeManager;
 		if (this.rangeManager != null) {
 			this.rangeManager.addTickManager(this);
 			updateTickAlgorithm();
@@ -272,11 +272,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * update tick algorithm when axis type or tick transform changed.
 	 */
 	private void updateTickAlgorithm() {
-		TickAlgorithm ta = rangeManager.getType().getTickAlgorithm(rangeManager.getTransformType(),
+		TickAlgorithm ta = rangeManager.getAxisType().getTickAlgorithm(rangeManager.getType(),
 				getTickTransform());
 		if (ta == null) {
 			setTickTransform(null);
-			ta = rangeManager.getType().getTickAlgorithm(rangeManager.getTransformType(), null);
+			ta = rangeManager.getAxisType().getTickAlgorithm(rangeManager.getType(), null);
 		}
 		setTickAlgorithm(ta);
 	}
@@ -514,7 +514,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	public void calcTicks() {
 
 		// detect changes of range manager
-		AxisRangeManagerEx va = getRangeManager();
+		AxisTransformEx va = getRangeManager();
 		if (!getRange().equals(this.range)) {
 			_rangeChanged = true;
 			this.range = getRange();
@@ -524,9 +524,9 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			_trfChanged = true;
 			this.axisNormalTransform = va.getNormalTransform();
 		}
-		if (va.getType().getCircularRange() != this.circularRange) {
+		if (va.getAxisType().getCircularRange() != this.circularRange) {
 			_axisCircularRangeChanged = true;
-			this.circularRange = va.getType().getCircularRange();
+			this.circularRange = va.getAxisType().getCircularRange();
 		}
 
 		for (AxisEx axis : axes) {
@@ -1095,9 +1095,9 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 
 		// copy or link range manager
-		AxisRangeManagerEx armCopy = (AxisRangeManagerEx) orig2copyMap.get(rangeManager);
+		AxisTransformEx armCopy = (AxisTransformEx) orig2copyMap.get(rangeManager);
 		if (armCopy == null) {
-			armCopy = (AxisRangeManagerEx) rangeManager.copyStructure(orig2copyMap);
+			armCopy = (AxisTransformEx) rangeManager.copyStructure(orig2copyMap);
 		}
 		result.rangeManager = armCopy;
 		armCopy.addTickManager(result);

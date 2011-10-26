@@ -27,14 +27,14 @@ import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 /**
- * A AxisRangeManager define a X or Y transformation of a viewport. It can be shared by a group of
+ * An axis transform define a X or Y transformation of a viewport. It can be shared by a group of
  * axes, which represent the same user range.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Axis Range")
-public interface AxisRangeManager extends Element {
+@PropertyGroup("Axis Transform")
+public interface AxisTransform extends Element {
 
 	/**
 	 * Return the type of this axis.
@@ -42,7 +42,7 @@ public interface AxisRangeManager extends Element {
 	 * @return the type of this axis
 	 */
 	@Property(order = 0)
-	public AxisType getType();
+	public AxisType getAxisType();
 
 	/**
 	 * Set the type of the axis. An axis type can only be changed when it dosn't lock with other
@@ -51,23 +51,23 @@ public interface AxisRangeManager extends Element {
 	 * @param type
 	 *            the axis type
 	 */
-	public void setType(AxisType type);
+	public void setAxisType(AxisType type);
 
 	/**
-	 * Returns the axis transform type
+	 * Returns the transform type
 	 * 
-	 * @return the axis transform type
+	 * @return the transform type
 	 */
 	@Property(order = 1)
-	public TransformType getTransformType();
+	public TransformType getType();
 
 	/**
-	 * Sets the axis transform type
+	 * Sets the transform type
 	 * 
 	 * @param txfType
-	 *            the axis transform type
+	 *            the transform type
 	 */
-	public void setTransformType(TransformType txfType);
+	public void setType(TransformType txfType);
 
 	/**
 	 * Returns if the displaying is "inverted": (right-left) for abscissa, (top-bottom) for
