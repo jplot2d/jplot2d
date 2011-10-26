@@ -22,7 +22,7 @@ import org.jplot2d.axtick.ArcDmsTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -30,7 +30,7 @@ import org.jplot2d.util.Range2D;
  */
 public class DeclinationAxisType extends AxisType {
 
-	private static final Range2D DECLINATION_BOUNDARY = new Range2D.Double(-90, true, 90, true);
+	private static final Range DECLINATION_BOUNDARY = new Range.Double(-90, true, 90, true);
 
 	public static DeclinationAxisType getInstance() {
 		return new DeclinationAxisType();
@@ -54,12 +54,12 @@ public class DeclinationAxisType extends AxisType {
 	}
 
 	@Override
-	public Range2D getBoundary(TransformType txfType) {
+	public Range getBoundary(TransformType txfType) {
 		return DECLINATION_BOUNDARY;
 	}
 
 	@Override
-	public Range2D getDefaultWorldRange(TransformType txfType) {
+	public Range getDefaultWorldRange(TransformType txfType) {
 		return DECLINATION_BOUNDARY;
 	}
 

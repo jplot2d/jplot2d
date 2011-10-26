@@ -22,7 +22,7 @@ import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -30,7 +30,7 @@ import org.jplot2d.util.Range2D;
  */
 public class DateAxisType extends AxisType {
 
-	private static final Range2D DATE_BOUNDARY = new Range2D.Long(0, Long.MAX_VALUE);
+	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
 
 	public static DateAxisType getInstance() {
 		return new DateAxisType();
@@ -54,14 +54,14 @@ public class DateAxisType extends AxisType {
 	}
 
 	@Override
-	public Range2D getBoundary(TransformType txfType) {
+	public Range getBoundary(TransformType txfType) {
 		return DATE_BOUNDARY;
 	}
 
 	@Override
-	public Range2D getDefaultWorldRange(TransformType txfType) {
+	public Range getDefaultWorldRange(TransformType txfType) {
 		long now = System.currentTimeMillis();
-		return new Range2D.Long(now, now + 1);
+		return new Range.Long(now, now + 1);
 	}
 
 	@Override

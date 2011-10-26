@@ -25,7 +25,7 @@ import java.util.Map;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a preferred tick
@@ -68,12 +68,12 @@ public abstract class AxisType {
 	 * 
 	 * @return
 	 */
-	public abstract Range2D getBoundary(TransformType txfType);
+	public abstract Range getBoundary(TransformType txfType);
 
 	/**
 	 * @return the default world range when the axis contains no valid data
 	 */
-	public abstract Range2D getDefaultWorldRange(TransformType txfType);
+	public abstract Range getDefaultWorldRange(TransformType txfType);
 
 	/**
 	 * Returns a TickAlgorithm by the given transform type and tick transform, or false if the given
@@ -95,7 +95,7 @@ public abstract class AxisType {
 	 * @return a range to represent this axis' circular nature, or
 	 *         <code>null<code> if this axis is not circular
 	 */
-	public Range2D getCircularRange() {
+	public Range getCircularRange() {
 		return null;
 	}
 

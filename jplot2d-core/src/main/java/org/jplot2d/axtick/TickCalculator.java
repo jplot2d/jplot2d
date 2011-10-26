@@ -20,7 +20,7 @@ package org.jplot2d.axtick;
 
 import java.text.Format;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * A calculator to calculate tick values and minor tick values
@@ -37,9 +37,9 @@ public interface TickCalculator {
 	 */
 	public static final double DOUBLE_PRECISION_TOLERANCE = 0x1.0p-40;
 
-	public Range2D getRange();
+	public Range getRange();
 
-	public void setRange(Range2D range);
+	public void setRange(Range range);
 
 	/**
 	 * Calculate the tick values by the given tick number and minor ticks

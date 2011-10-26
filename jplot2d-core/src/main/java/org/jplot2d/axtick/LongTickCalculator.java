@@ -18,7 +18,7 @@
  */
 package org.jplot2d.axtick;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * A calculator to calculate tick values and minor tick values
@@ -31,18 +31,18 @@ public abstract class LongTickCalculator implements TickCalculator {
 
 	protected boolean _inverted;
 
-	public Range2D getRange() {
+	public Range getRange() {
 		if (!_inverted) {
-			return new Range2D.Long(_lo, _hi);
+			return new Range.Long(_lo, _hi);
 		} else {
-			return new Range2D.Long(_hi, _lo);
+			return new Range.Long(_hi, _lo);
 		}
 	}
 
-	public void setRange(Range2D range) {
-		if (range instanceof Range2D.Long) {
-			long start = ((Range2D.Long) range).start;
-			long end = ((Range2D.Long) range).end;
+	public void setRange(Range range) {
+		if (range instanceof Range.Long) {
+			long start = ((Range.Long) range).start;
+			long end = ((Range.Long) range).end;
 			this.setRange(start, end);
 		} else {
 			double start = range.getStart();

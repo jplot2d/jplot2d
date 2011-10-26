@@ -24,7 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * An axis transform define a X or Y transformation of a viewport. It can be shared by a group of
@@ -128,19 +128,19 @@ public interface AxisTransform extends Element {
 	 * @return the core range
 	 */
 	@Property(order = 5)
-	public Range2D getCoreRange();
+	public Range getCoreRange();
 
 	/**
 	 * Set the core range of the axis. The range will expand according to the settings of autoMargin
 	 * and marginFactor, and derive an actual range. All locked axes will change with this axis.
 	 * <p>
-	 * If user want set actual range directly by {@link #setRange(Range2D)}, The coreRange will be
+	 * If user want set actual range directly by {@link #setRange(Range)}, The coreRange will be
 	 * set to <code>null</code> automatically.
 	 * 
 	 * @param range
 	 *            the core range to be set
 	 */
-	public void setCoreRange(Range2D range);
+	public void setCoreRange(Range range);
 
 	/**
 	 * Return the range of the axis. The range must be positive (start < end) even if the axis is
@@ -149,7 +149,7 @@ public interface AxisTransform extends Element {
 	 * @return the actual range displayed
 	 */
 	@Property(order = 6)
-	public Range2D getRange();
+	public Range getRange();
 
 	/**
 	 * Set the actual range displayed in the axis. All locked axes will change with this axis.
@@ -160,7 +160,7 @@ public interface AxisTransform extends Element {
 	 *            the actual range to be set. The range must be positive (start < end) even if the
 	 *            axis is inverted.
 	 */
-	public void setRange(Range2D range);
+	public void setRange(Range range);
 
 	/**
 	 * Returns the lock group to that this axis group belongs. A axis group must has a lock group,

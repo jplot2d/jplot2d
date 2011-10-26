@@ -23,7 +23,7 @@ import org.jplot2d.axtick.LogTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transfrom.AxisTickTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * An axis for displaying numerical data. It support both LinearTransformType and
@@ -34,15 +34,15 @@ import org.jplot2d.util.Range2D;
  */
 public class NumberAxisType extends AxisType {
 
-	private static final Range2D LINEAR_BOUNDARY = new Range2D.Double(-Double.MAX_VALUE / 2,
+	private static final Range LINEAR_BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
 			Double.MAX_VALUE / 2);
 
-	private static final Range2D LINEAR_DEFAULT_RANGE = new Range2D.Double(-1, 1);
+	private static final Range LINEAR_DEFAULT_RANGE = new Range.Double(-1, 1);
 
-	private static final Range2D POSITIVE_BOUNDARY = new Range2D.Double(Double.MIN_VALUE, true,
+	private static final Range POSITIVE_BOUNDARY = new Range.Double(Double.MIN_VALUE, true,
 			Double.MAX_VALUE / 2, true);
 
-	private static final Range2D LOG_DEFAULT_RANGE = new Range2D.Double(0.1, 10);
+	private static final Range LOG_DEFAULT_RANGE = new Range.Double(0.1, 10);
 
 	public static NumberAxisType getInstance() {
 		return new NumberAxisType();
@@ -62,7 +62,7 @@ public class NumberAxisType extends AxisType {
 		return false;
 	}
 
-	public Range2D getBoundary(TransformType txfType) {
+	public Range getBoundary(TransformType txfType) {
 		if (txfType == TransformType.LINEAR) {
 			return LINEAR_BOUNDARY;
 		}
@@ -72,7 +72,7 @@ public class NumberAxisType extends AxisType {
 		return null;
 	}
 
-	public Range2D getDefaultWorldRange(TransformType txfType) {
+	public Range getDefaultWorldRange(TransformType txfType) {
 		if (txfType == TransformType.LINEAR) {
 			return LINEAR_DEFAULT_RANGE;
 		}

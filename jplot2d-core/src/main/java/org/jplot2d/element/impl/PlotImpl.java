@@ -49,7 +49,7 @@ import org.jplot2d.notice.Notice;
 import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.transfrom.PhysicalTransform;
 import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -1313,9 +1313,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			arms.addAll(Arrays.asList(arlg.getRangeManagers()));
 		}
 
-		Range2D range = new Range2D.Double(start, end);
+		Range range = new Range.Double(start, end);
 
-		Range2D validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
+		Range validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
 		if (!validRange.equals(range)) {
 			notify(new RangeAdjustedToValueBoundsNotice(
 					"Range exceed valid boundary, has been adjusted."));

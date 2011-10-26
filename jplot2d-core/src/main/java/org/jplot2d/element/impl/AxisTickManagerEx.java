@@ -22,7 +22,7 @@ import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -61,7 +61,7 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable 
 	 *            the core range
 	 * @return the expanded range
 	 */
-	public Range2D expandRangeToTick(TransformType txfType, Range2D range);
+	public Range expandRangeToTick(TransformType txfType, Range range);
 
 	/**
 	 * Notified by AxisRangeManagerEx that transform type chnaged.

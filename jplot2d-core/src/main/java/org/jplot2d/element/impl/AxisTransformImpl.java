@@ -30,7 +30,7 @@ import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
@@ -45,7 +45,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	private double marginFactor = DEFAULT_MARGIN_FACTOR;
 
-	private Range2D coreRange;
+	private Range coreRange;
 
 	private NormalTransform ntf;
 
@@ -142,7 +142,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		if (group.isAutoRange() && group.getPrimaryAxis() == this) {
 			group.reAutoRange();
 		} else if (coreRange != null) {
-			Range2D irng = coreRange.copy();
+			Range irng = coreRange.copy();
 			setRange(coreRange, true);
 			coreRange = irng;
 		}
@@ -158,7 +158,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		if (group.isAutoRange() && group.getPrimaryAxis() == this) {
 			group.reAutoRange();
 		} else if (coreRange != null) {
-			Range2D irng = coreRange.copy();
+			Range irng = coreRange.copy();
 			setRange(coreRange, true);
 			coreRange = irng;
 		}
@@ -304,11 +304,11 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		}
 	}
 
-	public Range2D getCoreRange() {
+	public Range getCoreRange() {
 		return coreRange;
 	}
 
-	public void setCoreRange(Range2D range) {
+	public void setCoreRange(Range range) {
 		if (range == null) {
 
 		} else {
@@ -317,11 +317,11 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		coreRange = range;
 	}
 
-	public Range2D getRange() {
+	public Range getRange() {
 		return ntf.getRangeW();
 	}
 
-	public void setRange(Range2D urange) {
+	public void setRange(Range urange) {
 		if (urange.isInverted() != ntf.getRangeW().isInverted()) {
 			urange = urange.invert();
 		}
@@ -341,7 +341,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	 *            true to indicate a margin should be appended to the given range, to derive a
 	 *            actual range.
 	 */
-	private void setRange(Range2D urange, boolean appendMargin) {
+	private void setRange(Range urange, boolean appendMargin) {
 
 		if (Double.isNaN(urange.getStart()) || Double.isNaN(urange.getEnd())) {
 			throw new IllegalArgumentException("Range cannot start or end at NaN.");
@@ -351,15 +351,15 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 				.createVirtualTransformMap(Arrays.asList(group.getRangeManagers()));
 
 		NormalTransform vnt = vtMap.get(this);
-		Range2D pr = vnt.getTransP(urange);
+		Range pr = vnt.getTransP(urange);
 
 		if (appendMargin) {
 			double span = pr.getSpan();
 			double mpStart = pr.getStart() - span * getMarginFactor();
 			double mpEnd = pr.getEnd() + span * getMarginFactor();
-			pr = new Range2D.Double(mpStart, mpEnd);
+			pr = new Range.Double(mpStart, mpEnd);
 		}
-		Range2D pRange = AxisRangeUtils.validateNormalRange(pr, vtMap, false);
+		Range pRange = AxisRangeUtils.validateNormalRange(pr, vtMap, false);
 		if (pRange == null) {
 			// no intersect at all
 			throw new IllegalArgumentException(getFullId() + ": The given range is not valid.");
@@ -381,10 +381,10 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		}
 
 		/* extend range to tick */
-		Range2D extRange;
+		Range extRange;
 		if (appendMargin && isAutoMargin()) {
-			Range2D ur = vnt.getTransU(rs);
-			Range2D exur = expandRangeToTick(ur);
+			Range ur = vnt.getTransU(rs);
+			Range exur = expandRangeToTick(ur);
 			extRange = vnt.getTransP(exur);
 		} else {
 			extRange = rs;
@@ -398,7 +398,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	}
 
-	public Range2D expandRangeToTick(Range2D ur) {
+	public Range expandRangeToTick(Range ur) {
 		if (tickManagers.size() > 0) {
 			return tickManagers.get(0).expandRangeToTick(getType(), ur);
 		}

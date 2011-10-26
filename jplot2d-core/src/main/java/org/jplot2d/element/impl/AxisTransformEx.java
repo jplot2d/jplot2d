@@ -21,7 +21,7 @@ package org.jplot2d.element.impl;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.transfrom.TransformType;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
@@ -75,7 +75,7 @@ public interface AxisTransformEx extends AxisTransform, ElementEx,
 	 */
 	public void removeLayer(LayerEx layer);
 
-	public Range2D expandRangeToTick(Range2D ur);
+	public Range expandRangeToTick(Range ur);
 
 	public void changeTransformType(TransformType txfType);
 

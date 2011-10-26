@@ -25,7 +25,7 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.transfrom.AxisTickTransform;
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Manage ticks of axes. Axes may have the same tick manager. Their ticks are exactly same.
@@ -84,7 +84,7 @@ public interface AxisTickManager extends Element {
 	 * @return the tick range of this axis.
 	 */
 	@Property(order = 1)
-	public Range2D getRange();
+	public Range getRange();
 
 	/**
 	 * Set the tick range of the axis.
@@ -92,7 +92,7 @@ public interface AxisTickManager extends Element {
 	 * @param range
 	 *            the new tick range of the axis
 	 */
-	public void setRange(Range2D range);
+	public void setRange(Range range);
 
 	/**
 	 * Returns <code>true</code> if tick values is auto calculated from interval, or

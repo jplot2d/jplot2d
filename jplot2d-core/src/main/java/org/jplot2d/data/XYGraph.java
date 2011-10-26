@@ -18,7 +18,7 @@
  */
 package org.jplot2d.data;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 /**
  * Effectively Immutable. This class keep (x,y) data pairs and compute data feature such as max/min,
@@ -59,9 +59,9 @@ public final class XYGraph implements Graph {
 
 	private double _ymax = Double.NaN;
 
-	private Range2D _xboundary;
+	private Range _xboundary;
 
-	private Range2D _yboundary;
+	private Range _yboundary;
 
 	private boolean hasPointOutsideXBounds, hasPointOutsideYBounds;
 
@@ -73,8 +73,8 @@ public final class XYGraph implements Graph {
 		this(xy, errorX, errorY, null, null);
 	}
 
-	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range2D xboundary,
-			Range2D yboundary) {
+	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range xboundary,
+			Range yboundary) {
 		_xy = xy;
 		_errorX = errorX;
 		_errorY = errorY;
@@ -83,15 +83,15 @@ public final class XYGraph implements Graph {
 		extractDataFeature();
 	}
 
-	public XYGraph setXBoundary(Range2D xboundary) {
+	public XYGraph setXBoundary(Range xboundary) {
 		return setBoundary(xboundary, null);
 	}
 
-	public XYGraph setYBoundary(Range2D yboundary) {
+	public XYGraph setYBoundary(Range yboundary) {
 		return setBoundary(null, yboundary);
 	}
 
-	public XYGraph setBoundary(Range2D xboundary, Range2D yboundary) {
+	public XYGraph setBoundary(Range xboundary, Range yboundary) {
 		return new XYGraph(_xy, _errorX, _errorY, xboundary, yboundary);
 	}
 
@@ -283,12 +283,12 @@ public final class XYGraph implements Graph {
 		return _xy.getQDouble(idx);
 	}
 
-	public Range2D getXRange() {
-		return new Range2D.Double(_xmin, _xmax);
+	public Range getXRange() {
+		return new Range.Double(_xmin, _xmax);
 	}
 
-	public Range2D getYRange() {
-		return new Range2D.Double(_ymin, _ymax);
+	public Range getYRange() {
+		return new Range.Double(_ymin, _ymax);
 	}
 
 	public boolean hasPointOutsideXBounds() {

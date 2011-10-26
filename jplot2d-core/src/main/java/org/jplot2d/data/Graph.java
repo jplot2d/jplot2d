@@ -18,27 +18,27 @@
  */
 package org.jplot2d.data;
 
-import org.jplot2d.util.Range2D;
+import org.jplot2d.util.Range;
 
 public interface Graph {
 
-	public Graph setXBoundary(Range2D xboundary);
+	public Graph setXBoundary(Range xboundary);
 
-	public Graph setYBoundary(Range2D yboundary);
+	public Graph setYBoundary(Range yboundary);
 
-	public XYGraph setBoundary(Range2D xboundary, Range2D yboundary);
+	public XYGraph setBoundary(Range xboundary, Range yboundary);
 
 	/**
 	 * Returns x range. If there is no valid data in x data, the empty property of returned Range2D
 	 * will be set to <code>true</code>
 	 */
-	public Range2D getXRange();
+	public Range getXRange();
 
 	/**
 	 * Returns y range. If there is no valid data in y data, the empty property of returned Range2D
 	 * will be set to <code>true</code>
 	 */
-	public Range2D getYRange();
+	public Range getYRange();
 
 	public boolean hasPointOutsideXBounds();
 
