@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.transfrom;
 
 /**
  * This interface define the transformation between user value and tick value.

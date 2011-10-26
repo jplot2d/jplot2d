@@ -39,7 +39,6 @@ import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.PhysicalTransform;
 import org.jplot2d.element.Title;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
@@ -48,6 +47,7 @@ import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.Notice;
 import org.jplot2d.sizing.SizeMode;
+import org.jplot2d.transfrom.PhysicalTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range2D;
 
