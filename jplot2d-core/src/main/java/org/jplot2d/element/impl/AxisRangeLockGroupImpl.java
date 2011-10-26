@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.axtrans.NormalTransform;
-import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.data.Graph;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
+import org.jplot2d.transfrom.NormalTransform;
+import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLockGroupEx {

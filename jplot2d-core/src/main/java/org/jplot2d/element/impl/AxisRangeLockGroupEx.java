@@ -20,8 +20,8 @@ package org.jplot2d.element.impl;
 
 import java.util.Map;
 
-import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.element.AxisRangeLockGroup;
+import org.jplot2d.transfrom.NormalTransform;
 import org.jplot2d.util.Range2D;
 
 /**

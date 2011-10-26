@@ -16,14 +16,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.axtrans;
+package org.jplot2d.transfrom;
 
 import org.jplot2d.util.Range2D;
 
-public interface TransformType {
+/**
+ * @author Jingjing Li
+ * 
+ */
+public class LogarithmicTransformType implements TransformType {
 
-	public NormalTransform createNormalTransform(Range2D wrange);
+	private static LogarithmicTransformType _instance = new LogarithmicTransformType();
 
-	public AxisTransform createTransform(Range2D sourceRange, Range2D destRange);
+	public static LogarithmicTransformType getInstance() {
+		return _instance;
+	}
+
+	private LogarithmicTransformType() {
+
+	}
+
+	public NormalTransform createNormalTransform(Range2D wrange) {
+		NormalTransform result = new LogarithmicNormalTransform(wrange);
+		if (!result.isValid()) {
+			throw new IllegalArgumentException("The given range is invalid: " + wrange);
+		}
+		return result;
+	}
 
 }

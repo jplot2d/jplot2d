@@ -18,9 +18,9 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.axtrans.NormalTransform;
-import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisRangeManager;
+import org.jplot2d.transfrom.NormalTransform;
+import org.jplot2d.transfrom.TransformType;
 import org.jplot2d.util.Range2D;
 
 /**
