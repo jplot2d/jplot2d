@@ -328,7 +328,7 @@ public class ElementFactory {
 
 		AxisTickManagerImpl tm = new AxisTickManagerImpl();
 		applyProfile(tm);
-		tm.setRangeManager(rme);
+		tm.setAxisTransform(rme);
 
 		AxisTickManager vaProxy = proxy(tm, AxisTickManager.class);
 
