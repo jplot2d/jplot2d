@@ -144,31 +144,31 @@ public class LogTickCalculatorTest {
 	public void testExpandLogInterval() {
 		logTC.setRange(2, 9);
 		logTC.expandRangeByTickInterval(10);
-		checkRange2D(logTC.getRange(), 1, 10);
+		checkRange(logTC.getRange(), 1, 10);
 
 		logTC.setRange(2, 9);
 		logTC.expandRangeByTickInterval(100);
-		checkRange2D(logTC.getRange(), 1, 100);
+		checkRange(logTC.getRange(), 1, 100);
 
 		logTC.setRange(2, 9);
 		logTC.expandRangeByTickInterval(0.1);
-		checkRange2D(logTC.getRange(), 1, 10);
+		checkRange(logTC.getRange(), 1, 10);
 
 		logTC.setRange(0.5, 9);
 		logTC.expandRangeByTickInterval(10);
-		checkRange2D(logTC.getRange(), 0.1, 10);
+		checkRange(logTC.getRange(), 0.1, 10);
 
 		logTC.setRange(0.5, 9);
 		logTC.expandRangeByTickInterval(100);
-		checkRange2D(logTC.getRange(), 0.01, 100);
+		checkRange(logTC.getRange(), 0.01, 100);
 
 		logTC.setRange(0.5, 9);
 		logTC.expandRangeByTickInterval(3);
-		checkRange2D(logTC.getRange(), 0.1, 10);
+		checkRange(logTC.getRange(), 0.1, 10);
 
 		logTC.setRange(0.5, 9);
 		logTC.expandRangeByTickInterval(6);
-		checkRange2D(logTC.getRange(), 0.1, 10);
+		checkRange(logTC.getRange(), 0.1, 10);
 
 	}
 

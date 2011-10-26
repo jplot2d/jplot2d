@@ -24,7 +24,7 @@ package org.jplot2d.element.impl;
 import org.jplot2d.util.Range;
 
 /**
- * Extends the Range2D to supply a status object. Immutable.
+ * Extends the Range to supply a status object. Immutable.
  * 
  * @author Jingjing Li
  * 
