@@ -49,7 +49,7 @@ public class MouseAxisAdaptiveZoomHandler extends
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Adaptive Zoom");
 
-		axis.getTickManager().getRangeManager().getLockGroup().setAutoRange(true);
+		axis.getTickManager().getAxisTransform().getLockGroup().setAutoRange(true);
 
 		env.endBatch(token, UINoticeType.getInstance());
 

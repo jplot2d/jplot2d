@@ -95,11 +95,11 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
 			double npxStart = (start - plotRect.getX()) / plotRect.getWidth();
 			double npxEnd = (end - plotRect.getX()) / plotRect.getWidth();
-			axis.getTickManager().getRangeManager().getLockGroup().zoomRange(npxStart, npxEnd);
+			axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
 		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
 			double npyStart = 1 - (end - plotRect.getY()) / plotRect.getHeight();
 			double npyEnd = 1 - (start - plotRect.getY()) / plotRect.getHeight();
-			axis.getTickManager().getRangeManager().getLockGroup().zoomRange(npyStart, npyEnd);
+			axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npyStart, npyEnd);
 		}
 
 		env.endBatch(token, UINoticeType.getInstance());

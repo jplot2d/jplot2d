@@ -54,8 +54,8 @@ public class FreeLayoutDemo {
 		Layer layer = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
 				"line A");
-		plot.addLayer(layer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		plot.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		Plot sp1 = ElementFactory.getInstance().createSubplot();
 		Layer nestLayer = ElementFactory.getInstance().createLayer(
@@ -65,8 +65,8 @@ public class FreeLayoutDemo {
 		plot.addSubplot(sp1, null);
 		sp1.setLocation(80, 250);
 		sp1.setSize(300, 200);
-		sp1.addLayer(nestLayer, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp1.addLayer(nestLayer, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 	}
 

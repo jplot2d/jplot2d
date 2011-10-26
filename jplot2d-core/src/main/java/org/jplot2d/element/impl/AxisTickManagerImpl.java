@@ -249,11 +249,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
-	public AxisTransformEx getRangeManager() {
+	public AxisTransformEx getAxisTransform() {
 		return rangeManager;
 	}
 
-	public void setRangeManager(AxisTransform rangeManager) {
+	public void setAxisTransform(AxisTransform rangeManager) {
 		if (this.rangeManager != null) {
 			this.rangeManager.removeTickManager(this);
 		}
@@ -319,7 +319,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public Range2D getRange() {
-		Range2D range = getRangeManager().getRange();
+		Range2D range = getAxisTransform().getRange();
 		if (tickTransform == null) {
 			return range;
 		} else {
@@ -331,11 +331,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public void setRange(Range2D range) {
 		if (tickTransform == null) {
-			getRangeManager().setRange(range);
+			getAxisTransform().setRange(range);
 		} else {
 			double ustart = tickTransform.transformTick2User(range.getStart());
 			double uend = tickTransform.transformTick2User(range.getEnd());
-			getRangeManager().setRange(new Range2D.Double(ustart, uend));
+			getAxisTransform().setRange(new Range2D.Double(ustart, uend));
 		}
 	}
 
@@ -514,7 +514,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	public void calcTicks() {
 
 		// detect changes of range manager
-		AxisTransformEx va = getRangeManager();
+		AxisTransformEx va = getAxisTransform();
 		if (!getRange().equals(this.range)) {
 			_rangeChanged = true;
 			this.range = getRange();

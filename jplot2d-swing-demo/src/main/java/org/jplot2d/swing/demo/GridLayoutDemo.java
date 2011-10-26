@@ -57,8 +57,8 @@ public class GridLayoutDemo {
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
 		sp0.addXAxis(xaxis);
 		sp0.addYAxis(yaxis);
-		sp0.addLayer(l0, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		sp0.addLayer(l0, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		Axis xaxis1 = ElementFactory.getInstance().createAxis();
 		Axis yaxis1 = ElementFactory.getInstance().createAxis();
@@ -70,8 +70,8 @@ public class GridLayoutDemo {
 				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
 		sp1.addXAxis(xaxis1);
 		sp1.addYAxis(yaxis1);
-		sp1.addLayer(nestLayer, xaxis1.getTickManager().getRangeManager(),
-				yaxis1.getTickManager().getRangeManager());
+		sp1.addLayer(nestLayer, xaxis1.getTickManager().getAxisTransform(),
+				yaxis1.getTickManager().getAxisTransform());
 
 		plot.addSubplot(sp0, new GridConstraint(0, 0));
 		plot.addSubplot(sp1, new GridConstraint(1, 0));

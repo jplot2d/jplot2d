@@ -34,7 +34,7 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable 
 
 	public AxisEx[] getAxes();
 
-	public AxisTransformEx getRangeManager();
+	public AxisTransformEx getAxisTransform();
 
 	public void addAxis(AxisEx axis);
 

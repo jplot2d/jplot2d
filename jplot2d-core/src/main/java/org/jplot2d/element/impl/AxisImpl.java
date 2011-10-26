@@ -172,7 +172,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
 		if (tickManager.getParent() == this) {
-			AxisTransformEx rman = tickManager.getRangeManager();
+			AxisTransformEx rman = tickManager.getAxisTransform();
 			if (rman.getParent() == tickManager) {
 				for (LayerEx layer : rman.getLayers()) {
 					result.put(rman, layer);
@@ -278,8 +278,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLength(double length) {
 		if (this.length != length) {
 			this.length = length;
-			if (tickManager.getRangeManager().getLockGroup().isAutoRange()) {
-				tickManager.getRangeManager().getLockGroup().reAutoRange();
+			if (tickManager.getAxisTransform().getLockGroup().isAutoRange()) {
+				tickManager.getAxisTransform().getLockGroup().reAutoRange();
 			}
 		}
 	}
@@ -859,7 +859,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		} else {
 			uv = tickValue;
 		}
-		return tickManager.getRangeManager().getNormalTransform().getTransP(uv) * length;
+		return tickManager.getAxisTransform().getNormalTransform().getTransP(uv) * length;
 	}
 
 }

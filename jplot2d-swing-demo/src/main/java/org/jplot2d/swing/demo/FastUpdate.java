@@ -72,8 +72,8 @@ public class FastUpdate {
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 		layer0.addGraphPlotter(plotter0);
 		layer0.addGraphPlotter(plotter1);
-		plot.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		for (int i = 0; i < n; i++) {
 			double[] xa = new double[1];

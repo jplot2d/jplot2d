@@ -60,10 +60,10 @@ public class ExportFileDemo {
 		Layer layer1 = ElementFactory.getInstance().createLayer(
 				new double[] { 0, 0.2, 0.4 }, new double[] { 0, 0.3, 0.4 },
 				"lineB");
-		plot.addLayer(layer0, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
-		plot.addLayer(layer1, xaxis.getTickManager().getRangeManager(), yaxis
-				.getTickManager().getRangeManager());
+		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
+		plot.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis
+				.getTickManager().getAxisTransform());
 
 		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
