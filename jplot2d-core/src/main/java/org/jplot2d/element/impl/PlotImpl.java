@@ -803,7 +803,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		LayerEx lx = (LayerEx) layer;
 		layers.add(lx);
 		lx.setParent(this);
-		lx.setRangeManager(xRangeManager, yRangeManager);
+		lx.setAxesTransform(xRangeManager, yRangeManager);
 
 		if (lx.canContributeToParent()) {
 			redraw();
@@ -826,7 +826,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		LayerEx lx = (LayerEx) layer;
 		layers.remove(lx);
 		lx.setParent(null);
-		lx.setRangeManager(null, null);
+		lx.setAxesTransform(null, null);
 
 		if (lx.canContributeToParent()) {
 			redraw();
@@ -1036,15 +1036,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
-			if (layerCopy.getXRangeManager() == null && layer.getXRangeManager() != null) {
+			if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
 				AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer
-						.getXRangeManager());
-				layerCopy.setXRangeManager(xcopy);
+						.getXAxisTransform());
+				layerCopy.setXAxisTransform(xcopy);
 			}
-			if (layerCopy.getYRangeManager() == null && layer.getYRangeManager() != null) {
+			if (layerCopy.getYAxisTransform() == null && layer.getYAxisTransform() != null) {
 				AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer
-						.getYRangeManager());
-				layerCopy.setYRangeManager(ycopy);
+						.getYAxisTransform());
+				layerCopy.setYAxisTransform(ycopy);
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {

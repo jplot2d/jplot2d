@@ -220,15 +220,15 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return false;
 	}
 
-	public AxisTransformEx getXRangeManager() {
+	public AxisTransformEx getXAxisTransform() {
 		return xarm;
 	}
 
-	public AxisTransformEx getYRangeManager() {
+	public AxisTransformEx getYAxisTransform() {
 		return yarm;
 	}
 
-	public void setXRangeManager(AxisTransform axis) {
+	public void setXAxisTransform(AxisTransform axis) {
 		if (this.xarm != null) {
 			this.xarm.removeLayer(this);
 		}
@@ -238,7 +238,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public void setYRangeManager(AxisTransform axis) {
+	public void setYAxisTransform(AxisTransform axis) {
 		if (this.yarm != null) {
 			this.yarm.removeLayer(this);
 		}
@@ -248,9 +248,9 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public void setRangeManager(AxisTransform xaxis, AxisTransform yaxis) {
-		setXRangeManager(xaxis);
-		setYRangeManager(yaxis);
+	public void setAxesTransform(AxisTransform xaxis, AxisTransform yaxis) {
+		setXAxisTransform(xaxis);
+		setYAxisTransform(yaxis);
 	}
 
 	@Override

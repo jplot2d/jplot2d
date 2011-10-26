@@ -278,10 +278,10 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				Range2D urange = vtMap.get(ax).getTransU(pbnds);
 				Range2D wDRange = new Range2D.Double();
 
-				if (layer.getXRangeManager() == ax) {
-					boolean yar = layer.getYRangeManager().getLockGroup().isAutoRange();
-					Range2D yRange = (yar) ? layer.getYRangeManager().getAxisType()
-							.getBoundary(ax.getType()) : layer.getYRangeManager().getRange();
+				if (layer.getXAxisTransform() == ax) {
+					boolean yar = layer.getYAxisTransform().getLockGroup().isAutoRange();
+					Range2D yRange = (yar) ? layer.getYAxisTransform().getAxisType()
+							.getBoundary(ax.getType()) : layer.getYAxisTransform().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
@@ -289,10 +289,10 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 							dataOutsideBounds = true;
 						}
 					}
-				} else if (layer.getYRangeManager() == ax) {
-					boolean xar = layer.getXRangeManager().getLockGroup().isAutoRange();
-					Range2D xRange = (xar) ? layer.getXRangeManager().getAxisType()
-							.getBoundary(ax.getType()) : layer.getXRangeManager().getRange();
+				} else if (layer.getYAxisTransform() == ax) {
+					boolean xar = layer.getXAxisTransform().getLockGroup().isAutoRange();
+					Range2D xRange = (xar) ? layer.getXAxisTransform().getAxisType()
+							.getBoundary(ax.getType()) : layer.getXAxisTransform().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
@@ -337,10 +337,10 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			arm.setNormalTransfrom(arm.getType().createNormalTransform(wrange));
 
 			for (LayerEx layer : arm.getLayers()) {
-				if (layer.getXRangeManager() == arm) {
-					orthset.add(layer.getYRangeManager().getLockGroup());
-				} else if (layer.getXRangeManager() == arm) {
-					orthset.add(layer.getXRangeManager().getLockGroup());
+				if (layer.getXAxisTransform() == arm) {
+					orthset.add(layer.getYAxisTransform().getLockGroup());
+				} else if (layer.getXAxisTransform() == arm) {
+					orthset.add(layer.getXAxisTransform().getLockGroup());
 				}
 			}
 		}
@@ -385,10 +385,10 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			axis.setNormalTransfrom(axis.getType().createNormalTransform(wrange));
 
 			for (LayerEx layer : axis.getLayers()) {
-				if (layer.getXRangeManager() == axis) {
-					orthset.add(layer.getYRangeManager().getLockGroup());
-				} else if (layer.getXRangeManager() == axis) {
-					orthset.add(layer.getXRangeManager().getLockGroup());
+				if (layer.getXAxisTransform() == axis) {
+					orthset.add(layer.getYAxisTransform().getLockGroup());
+				} else if (layer.getXAxisTransform() == axis) {
+					orthset.add(layer.getXAxisTransform().getLockGroup());
 				}
 			}
 		}

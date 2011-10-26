@@ -6,9 +6,9 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public PlotEx getParent();
 
-	public AxisTransformEx getXRangeManager();
+	public AxisTransformEx getXAxisTransform();
 
-	public AxisTransformEx getYRangeManager();
+	public AxisTransformEx getYAxisTransform();
 
 	public GraphPlotterEx[] getGraphPlotters();
 

@@ -360,9 +360,9 @@ public class PlotImplTest {
 		assertSame(p2, p2.getLayer(0).getParent());
 		assertSame(p2.getLayer(0), p2.getLayer(0).getGraphPlotter(0).getParent());
 		// check link
-		assertSame(p2.getLayer(0).getXRangeManager(), p2.getXAxis(0).getTickManager()
+		assertSame(p2.getLayer(0).getXAxisTransform(), p2.getXAxis(0).getTickManager()
 				.getAxisTransform());
-		assertSame(p2.getLayer(0).getYRangeManager(), p2.getYAxis(0).getTickManager()
+		assertSame(p2.getLayer(0).getYAxisTransform(), p2.getYAxis(0).getTickManager()
 				.getAxisTransform());
 
 	}
