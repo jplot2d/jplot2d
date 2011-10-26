@@ -103,7 +103,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 		Method method;
 		try {
-			method = AxisTickManagerEx.class.getMethod("getRangeManager");
+			method = AxisTickManagerEx.class.getMethod("getAxisTransform");
 		} catch (NoSuchMethodException e) {
 			throw new Error(e);
 		}
