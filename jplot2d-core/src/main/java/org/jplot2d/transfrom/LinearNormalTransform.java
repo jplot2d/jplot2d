@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -28,12 +28,12 @@ import org.jplot2d.util.Range2D;
 public class LinearNormalTransform extends NormalTransform {
 
 	public LinearNormalTransform(double u1, double u2) {
-		super(LinearTransformType.getInstance());
+		super(TransformType.LINEAR);
 		computeTransform(u1, u2);
 	}
 
 	public LinearNormalTransform(Range2D ur) {
-		super(LinearTransformType.getInstance());
+		super(TransformType.LINEAR);
 		computeTransform(ur.getStart(), ur.getEnd());
 	}
 
@@ -99,8 +99,7 @@ public class LinearNormalTransform extends NormalTransform {
 	 * </pre>
 	 */
 	@Override
-	public double getMinPSpan4PrecisionLimit(double pLo, double pHi,
-			double precisionLimit) {
+	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
 		double r;
 		double b = getTransP(0);
 		if (pLo < b && pHi > b) {
