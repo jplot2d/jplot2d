@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.swing.components.PlotPropertiesFrame;
 
 /**
  * The popup menu support for PlotXY.
@@ -138,7 +140,7 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 		String command = event.getActionCommand();
 
 		if (command.equals(PROPERTIES_ACTION_COMMAND)) {
-			JOptionPane.showMessageDialog(getInvoker(), "Will be avaliable in next version.");
+			showProperties();
 			return;
 		}
 		if (command.equals(UNDO_ACTION_COMMAND)) {
@@ -167,6 +169,14 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			return;
 		}
 
+	}
+
+	/**
+	 * Create and show the properties frame.
+	 */
+	protected void showProperties() {
+		JFrame frame = new PlotPropertiesFrame(env);
+		frame.setVisible(true);
 	}
 
 	/**
