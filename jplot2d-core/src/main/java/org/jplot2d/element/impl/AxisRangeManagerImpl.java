@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -28,7 +28,6 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
-import org.jplot2d.element.Plot;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.util.Range2D;
@@ -62,6 +61,25 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		type = AxisType.NUMBER;
 		txfType = type.getDefaultTransformType();
 		ntf = txfType.createNormalTransform(type.getDefaultWorldRange(txfType));
+	}
+
+	public String getId() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Range(");
+		for (AxisTickManagerEx tick : tickManagers) {
+			sb.append("(");
+			for (AxisEx axis : tick.getAxes()) {
+				sb.append(axis.getShortId()).append(',');
+			}
+			sb.replace(sb.length() - 1, sb.length(), ")");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("))");
+		return sb.toString();
+	}
+
+	public String getShortId() {
+		return getFullId();
 	}
 
 	public String getFullId() {
@@ -412,16 +430,6 @@ public class AxisRangeManagerImpl extends ElementImpl implements AxisRangeManage
 		this.marginFactor = arm.marginFactor;
 		this.coreRange = arm.coreRange;
 		this.ntf = arm.ntf;
-	}
-
-	private AxisEx[] getAxes() {
-		List<AxisEx> axes = new ArrayList<AxisEx>();
-		for (AxisTickManagerEx tm : tickManagers) {
-			for (AxisEx axis : tm.getAxes()) {
-				axes.add(axis);
-			}
-		}
-		return axes.toArray(new AxisEx[axes.size()]);
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -188,7 +188,7 @@ public class TestUtils {
 
 	public static void checkPropertyInfoNames(PropertyInfo[] pis, String... names) {
 		if (pis.length != names.length) {
-			fail("length error [" + toString(pis) + "] [" + toString(names));
+			fail("length error [" + ArrayUtils.toString(pis) + "] [" + ArrayUtils.toString(names));
 		}
 		int length = pis.length;
 		for (int i = 0; i < length; i++) {
@@ -232,16 +232,6 @@ public class TestUtils {
 		}
 
 		return classes.toArray(new Class[classes.size()]);
-	}
-
-	public static String toString(Object[] array) {
-		StringBuilder b = new StringBuilder();
-		if (array.length > 0) {
-			b.append(array[0]);
-		}
-		for (int i = 1; i < array.length; i++)
-			b.append(',').append(array[i]);
-		return b.toString();
 	}
 
 }

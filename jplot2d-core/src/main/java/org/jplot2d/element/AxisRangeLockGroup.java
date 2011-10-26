@@ -20,6 +20,8 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A group of axes who are pinned together. When one axis changes its range, all axes follow the
@@ -28,6 +30,7 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Axis Range Lock Group")
 public interface AxisRangeLockGroup extends Element {
 
 	/**
@@ -35,6 +38,7 @@ public interface AxisRangeLockGroup extends Element {
 	 * 
 	 * @return true if the axis is in autorange status
 	 */
+	@Property(order = 0)
 	public boolean isAutoRange();
 
 	/**

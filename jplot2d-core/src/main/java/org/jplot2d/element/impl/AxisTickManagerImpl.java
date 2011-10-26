@@ -37,7 +37,6 @@ import org.jplot2d.axtrans.NormalTransform;
 import org.jplot2d.axtrans.TransformType;
 import org.jplot2d.element.AxisRangeManager;
 import org.jplot2d.element.AxisTickTransform;
-import org.jplot2d.element.Plot;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.NumberArrayUtils;
@@ -199,6 +198,20 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public AxisTickManagerImpl() {
 
+	}
+
+	public String getId() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Tick(");
+		for (AxisEx axis : axes) {
+			sb.append(axis.getShortId()).append(',');
+		}
+		sb.replace(sb.length() - 1, sb.length(), ")");
+		return sb.toString();
+	}
+
+	public String getShortId() {
+		return getFullId();
 	}
 
 	public String getFullId() {
