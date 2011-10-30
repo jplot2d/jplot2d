@@ -42,6 +42,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private AxisTransformEx xarm, yarm;
 
+	private List<MarkerEx> markers = new ArrayList<MarkerEx>();
+
 	public String getId() {
 		if (getParent() != null) {
 			return "Layer" + getParent().indexOf(this);
@@ -97,7 +99,20 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void parentPhysicalTransformChanged() {
-		redraw();
+		redrawChildren();
+	}
+
+	public void transformChanged() {
+		redrawChildren();
+	}
+
+	private void redrawChildren() {
+		for (GraphPlotterEx plotter : plotters) {
+			plotter.redraw();
+		}
+		for (MarkerEx marker : markers) {
+			marker.redraw();
+		}
 	}
 
 	public int getComponentCount() {
@@ -177,23 +192,19 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public MarkerEx[] getMarkers() {
-		// TODO Auto-generated method stub
-		return null;
+		return markers.toArray(new MarkerEx[markers.size()]);
 	}
 
 	public Marker getMarker(int idx) {
-		// TODO Auto-generated method stub
-		return null;
+		return markers.get(idx);
 	}
 
 	public void addMarker(Marker marker) {
-		// TODO Auto-generated method stub
-
+		markers.add((MarkerEx) marker);
 	}
 
 	public int indexOf(MarkerEx marker) {
-		// TODO Auto-generated method stub
-		return 0;
+		return markers.indexOf(marker);
 	}
 
 	public boolean canContributeToParent() {

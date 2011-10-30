@@ -238,17 +238,9 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 			}
 		}
 		for (LayerEx layer : layers) {
-			layer.redraw();
+			layer.transformChanged();
 		}
 	}
-
-	// public Axis getTickManagers(int index) {
-	// return axes.get(index);
-	// }
-
-	// public int indexOfAxis(AxisEx axis) {
-	// return axes.indexOf(axis);
-	// }
 
 	public AxisTickManagerEx[] getTickManagers() {
 		return tickManagers.toArray(new AxisTickManagerEx[tickManagers.size()]);
@@ -327,9 +319,6 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		}
 
 		setRange(urange, false);
-	}
-
-	public void setRange(double ustart, double uend) {
 	}
 
 	/**

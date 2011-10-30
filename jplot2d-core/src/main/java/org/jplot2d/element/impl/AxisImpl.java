@@ -200,6 +200,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		if (getLocation().getX() != locX || getLocation().getY() != locY) {
 			this.locX = locX;
 			this.locY = locY;
+			redraw();
 		}
 	}
 

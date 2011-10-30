@@ -15,9 +15,17 @@ public interface LayerEx extends Layer, ContainerEx {
 	public int indexOf(GraphPlotterEx plotter);
 
 	public MarkerEx[] getMarkers();
-	
+
 	public int indexOf(MarkerEx marker);
 
+	/**
+	 * Called by {@link PlotEx} to notify the paper transform is changed.
+	 */
 	public void parentPhysicalTransformChanged();
+
+	/**
+	 * Called by {@link AxisTransformEx} to notify that x/y transform is changed.
+	 */
+	public void transformChanged();
 
 }
