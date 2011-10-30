@@ -107,7 +107,7 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
 
-			// the physical bottom-left of a grid in chart(root layer)
+			// the paper bottom-left of a grid in chart(root layer)
 			double cws = cellGeom.getSumWidthLeft(col);
 			double chs = cellGeom.getSumHeightTop(row);
 			double pX = cws + col * hgap + marginGeom.getLeft(col);

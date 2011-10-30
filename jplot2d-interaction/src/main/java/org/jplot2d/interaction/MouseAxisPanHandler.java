@@ -87,7 +87,7 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 
 		Dimension2D csize = plot.getContentSize();
 		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
+		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
 		double npxStart = -offset / plotRect.getWidth();
 		double npxEnd = 1 + npxStart;

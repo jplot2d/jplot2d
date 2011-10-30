@@ -287,13 +287,13 @@ public class XYGraphPlotterDataChunker implements
 		}
 
 		private double getXUtoD2(double v) {
-			return layer.getPhysicalTransform().getXPtoD(
+			return layer.getPaperTransform().getXPtoD(
 					layer.getXAxisTransform().getNormalTransform().getTransP(v)
 							* layer.getSize().getWidth());
 		}
 
 		private double getYUtoD2(double v) {
-			return layer.getPhysicalTransform().getYPtoD(
+			return layer.getPaperTransform().getYPtoD(
 					layer.getYAxisTransform().getNormalTransform().getTransP(v)
 							* layer.getSize().getHeight());
 		}

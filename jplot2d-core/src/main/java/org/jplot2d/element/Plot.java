@@ -397,9 +397,9 @@ public interface Plot extends PComponent {
 	 * Zoom the given range to entire X axis
 	 * 
 	 * @param start
-	 *            the norm-physical start
+	 *            the normalized start
 	 * @param end
-	 *            the norm-physical end
+	 *            the normalized end
 	 */
 	public void zoomXRange(double start, double end);
 
@@ -407,9 +407,9 @@ public interface Plot extends PComponent {
 	 * Zoom the given range to entire Y axis
 	 * 
 	 * @param start
-	 *            the norm-physical start
+	 *            the normalized start
 	 * @param end
-	 *            the norm-physical end
+	 *            the normalized end
 	 */
 	public void zoomYRange(double start, double end);
 

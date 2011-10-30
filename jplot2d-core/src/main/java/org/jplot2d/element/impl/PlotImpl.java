@@ -47,7 +47,7 @@ import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.Notice;
 import org.jplot2d.sizing.SizeMode;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 
@@ -73,7 +73,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private double scale = 1;
 
-	private PhysicalTransform pxf;
+	private PaperTransform pxf;
 
 	/**
 	 * True when the object is valid. An invalid object needs to be laid out. This flag is set to
@@ -246,7 +246,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public double getScale() {
-		return getPhysicalTransform().getScale();
+		return getPaperTransform().getScale();
 	}
 
 	public void setScale(double scale) {
@@ -256,32 +256,32 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
+	public PaperTransform getPaperTransform() {
 		if (pxf == null) {
 			if (getParent() == null) {
-				pxf = new PhysicalTransform(margin.getLeft() + margin.getExtraLeft(),
+				pxf = new PaperTransform(margin.getLeft() + margin.getExtraLeft(),
 						contentSize.getHeight() + margin.getTop() + margin.getExtraTop(),
 						scale);
 			} else {
-				pxf = getParent().getPhysicalTransform().translate(locX, locY);
+				pxf = getParent().getPaperTransform().translate(locX, locY);
 			}
 		}
 		return pxf;
 	}
 
-	public void parentPhysicalTransformChanged() {
+	public void parentPaperTransformChanged() {
 		pxf = null;
 		redraw();
 
-		/* Axis, Title, Legend and Marker do not cache their physical transform */
+		/* Axis, Title, Legend and Marker do not cache their paper transform */
 
 		// notify all layers
 		for (LayerEx layer : layers) {
-			layer.parentPhysicalTransformChanged();
+			layer.parentPaperTransformChanged();
 		}
 		// notify all subplots
 		for (PlotEx sp : subplots) {
-			sp.parentPhysicalTransformChanged();
+			sp.parentPaperTransformChanged();
 		}
 	}
 
@@ -1059,7 +1059,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void commit() {
 
-		PhysicalTransform oldPxf = pxf;
+		PaperTransform oldPxf = pxf;
 		double scaleResult = 0;
 
 		// set the plot size if it is decided by size mode
@@ -1132,7 +1132,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// invalidate pxf on all children
 		if (oldPxf == null || oldPxf.equals(pxf)) {
-			this.parentPhysicalTransformChanged();
+			this.parentPaperTransformChanged();
 		}
 
 	}

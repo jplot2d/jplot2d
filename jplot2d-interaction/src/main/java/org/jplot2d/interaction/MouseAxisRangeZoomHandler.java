@@ -90,7 +90,7 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 
 		Dimension2D csize = plot.getContentSize();
 		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
+		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
 		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
 			double npxStart = (start - plotRect.getX()) / plotRect.getWidth();

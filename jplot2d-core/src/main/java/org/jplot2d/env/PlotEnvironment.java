@@ -373,7 +373,7 @@ public abstract class PlotEnvironment extends Environment {
 			for (int j = uccList.size() - 1; j >= 0; j--) {
 				ComponentEx ucc = uccList.get(j);
 				if (ucc.isSelectable()) {
-					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
+					Point2D p = ucc.getPaperTransform().getDtoP(dp);
 					if (ucc.getBounds().contains(p)) {
 						result = (PComponent) proxyMap.get(ucc);
 						break;
@@ -414,7 +414,7 @@ public abstract class PlotEnvironment extends Environment {
 			for (int j = uccList.size() - 1; j >= 0; j--) {
 				ComponentEx ucc = uccList.get(j);
 				if (ucc instanceof PlotEx) {
-					Point2D p = ucc.getPhysicalTransform().getDtoP(dp);
+					Point2D p = ucc.getPaperTransform().getDtoP(dp);
 					if (ucc.getBounds().contains(p)) {
 						result = (Plot) proxyMap.get(ucc);
 						break;

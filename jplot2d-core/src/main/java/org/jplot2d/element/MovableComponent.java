@@ -46,10 +46,10 @@ public interface MovableComponent extends PComponent {
 
 	/**
 	 * Moves this component to a new location. The location is specified by point in the parent's
-	 * physical coordinate space.
+	 * paper coordinate space.
 	 * 
 	 * @param loc
-	 *            the base point given in the physical coordinate space
+	 *            the base point given in the paper coordinate space
 	 */
 	public void setLocation(Point2D loc);
 

@@ -9,33 +9,33 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Defines the conversion between physical units and device units. Every component has its own
- * physical coordinate system, and maintains a PhysicalTransform object.
+ * Defines the conversion between paper units and device units. Every component has its own paper
+ * coordinate system, and maintains a PaperTransform object.
  * <p>
- * The transform is defined by 3 parameters. The xoff is the physical distance between component
- * left bound to device left bound. The yoff is the physical distance between component bottom bound
- * to device top bound. The scale is the factor of device to physical.
+ * The transform is defined by 3 parameters. The xoff is the paper distance between component left
+ * bound to device left bound. The yoff is the paper distance between component bottom bound to
+ * device top bound. The scale is the factor of device to paper.
  * 
  * @author Jingjing Li
  * 
  */
-public class PhysicalTransform implements Cloneable {
+public class PaperTransform implements Cloneable {
 
 	private final double xoff, yoff, scale;
 
-	public PhysicalTransform(double xoff, double yoff, double scale) {
+	public PaperTransform(double xoff, double yoff, double scale) {
 		this.xoff = xoff;
 		this.yoff = yoff;
 		this.scale = scale;
 	}
 
-	public PhysicalTransform(Point2D p, double scale) {
+	public PaperTransform(Point2D p, double scale) {
 		this(p.getX(), p.getY(), scale);
 	}
 
-	public PhysicalTransform clone() {
+	public PaperTransform clone() {
 		try {
-			return (PhysicalTransform) super.clone();
+			return (PaperTransform) super.clone();
 		} catch (CloneNotSupportedException e) {
 			// this shouldn't happen, since we are Cloneable
 			throw new InternalError();
@@ -58,19 +58,19 @@ public class PhysicalTransform implements Cloneable {
 	 * @param ty
 	 *            the distance by which coordinates are translated in the Y axis direction
 	 */
-	public PhysicalTransform translate(double tx, double ty) {
-		return new PhysicalTransform(xoff + tx, yoff - ty, scale);
+	public PaperTransform translate(double tx, double ty) {
+		return new PaperTransform(xoff + tx, yoff - ty, scale);
 	}
 
-	public PhysicalTransform rotate(double theta) {
-		return new RotatablePhysicalTransform(xoff, yoff, scale, theta);
+	public PaperTransform rotate(double theta) {
+		return new RotatablePaperTransform(xoff, yoff, scale, theta);
 	}
 
 	public boolean equals(Object obj) {
 		if (obj == null || this.getClass() != obj.getClass()) {
 			return false;
 		}
-		PhysicalTransform b = (PhysicalTransform) obj;
+		PaperTransform b = (PaperTransform) obj;
 		return xoff == b.xoff && yoff == b.yoff && scale == b.scale;
 	}
 
@@ -90,23 +90,23 @@ public class PhysicalTransform implements Cloneable {
 	}
 
 	/**
-	 * Transform device units to physical for the x direction.
+	 * Transform device units to paper for the x direction.
 	 * 
 	 * @param xd
 	 *            device x coordinate
 	 * 
-	 * @return physical x coordinate
+	 * @return paper x coordinate
 	 */
 	public double getXDtoP(double xd) {
 		return xd / scale - xoff;
 	}
 
 	/**
-	 * Transform device units to physical for the y direction.
+	 * Transform device units to paper for the y direction.
 	 * 
 	 * @param yd
 	 *            device y coordinate
-	 * @return physical y coordinate
+	 * @return paper y coordinate
 	 */
 	public double getYDtoP(double yd) {
 		return yoff - yd / scale;
@@ -145,7 +145,7 @@ public class PhysicalTransform implements Cloneable {
 	}
 
 	public String toString() {
-		return "PhysicalTransform(" + xoff + "," + yoff + "," + scale + ")";
+		return "PaperTransform(" + xoff + "," + yoff + "," + scale + ")";
 	}
 
 }

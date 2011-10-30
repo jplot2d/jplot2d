@@ -30,7 +30,7 @@ import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.Plot;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 
 /**
  * @author Jingjing Li
@@ -91,14 +91,14 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
+	public PaperTransform getPaperTransform() {
 		if (getParent() != null) {
-			return getParent().getPhysicalTransform();
+			return getParent().getPaperTransform();
 		}
 		return null;
 	}
 
-	public void parentPhysicalTransformChanged() {
+	public void parentPaperTransformChanged() {
 		redrawChildren();
 	}
 

@@ -27,9 +27,8 @@ import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
 
 /**
- * This class override all methods of its ancestor. It accept a TeX-like string
- * as its text to render a math. The underlayer component is
- * {@link MathLabelComp}.
+ * This class override all methods of its ancestor. It accept a TeX-like string as its text to
+ * render a math. The underlayer component is {@link MathLabelComp}.
  * <p>
  * Only support left to right writing direction, and subscript superscript.
  * 
@@ -80,17 +79,15 @@ public class MathLabel {
 
 		_mlc.relayout(_font.getSize2D());
 		Rectangle2D dbnds = _mlc.getBounds();
-		bounds = new Rectangle2D.Double(dbnds.getX(),
-				-(dbnds.getY() + dbnds.getHeight()), dbnds.getWidth(),
-				dbnds.getHeight());
+		bounds = new Rectangle2D.Double(dbnds.getX(), -(dbnds.getY() + dbnds.getHeight()),
+				dbnds.getWidth(), dbnds.getHeight());
 	}
 
 	public void draw(Graphics2D g) {
 
 		RenderingHints oldRenderingHints = g.getRenderingHints();
 
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
@@ -98,8 +95,7 @@ public class MathLabel {
 
 		g.setRenderingHints(oldRenderingHints);
 		/*
-		 * workaround for "strokeState not update by setRenderingHints" (Sun Bug
-		 * ID 6468831)
+		 * workaround for "strokeState not update by setRenderingHints" (Sun Bug ID 6468831)
 		 */
 		g.setStroke(g.getStroke());
 
@@ -122,11 +118,10 @@ public class MathLabel {
 	}
 
 	/**
-	 * Calculate the normal physical bounds of this label. The bounds is
-	 * relative to its location point, original point is left-bottom. Normal
-	 * scale is 1.
+	 * Calculate the normal paper bounds of this label. The bounds is relative to its location
+	 * point, original point is left-bottom. Normal scale is 1.
 	 * 
-	 * @return the normal physical bounds of this label.
+	 * @return the normal paper bounds of this label.
 	 */
 	public Rectangle2D getBounds() {
 		return bounds;

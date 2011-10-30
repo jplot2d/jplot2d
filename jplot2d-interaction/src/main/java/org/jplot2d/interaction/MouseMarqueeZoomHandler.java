@@ -69,7 +69,7 @@ public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoo
 
 		Dimension2D csize = plot.getContentSize();
 		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPhysicalTransform().getPtoD(cbnds).getBounds2D();
+		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
 		double npxStart = (zrect.getX() - plotRect.getX()) / plotRect.getWidth();
 		double npxEnd = (zrect.getMaxX() - plotRect.getX()) / plotRect.getWidth();

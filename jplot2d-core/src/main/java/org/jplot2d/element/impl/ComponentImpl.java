@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 
 public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
@@ -268,9 +268,9 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		}
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
+	public PaperTransform getPaperTransform() {
 		Point2D loc = getLocation();
-		return getParent().getPhysicalTransform().translate(loc.getX(), loc.getY());
+		return getParent().getPaperTransform().translate(loc.getX(), loc.getY());
 	}
 
 	public Rectangle2D getBounds() {
@@ -329,7 +329,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 			return;
 		}
 		g.setColor(Color.BLACK);
-		Rectangle rect = getPhysicalTransform().getPtoD(getBounds()).getBounds();
+		Rectangle rect = getPaperTransform().getPtoD(getBounds()).getBounds();
 		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1, (int) rect.getMaxY() - 1);
 		g.drawLine(rect.x, (int) rect.getMaxY() - 1, (int) rect.getMaxX() - 1, rect.y);

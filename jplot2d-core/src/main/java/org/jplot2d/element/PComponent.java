@@ -28,7 +28,7 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 
 /**
  * A <em>component</em> is an object having a graphical representation that can be drawn on the
@@ -237,12 +237,12 @@ public interface PComponent extends Element {
 	public Rectangle2D getBounds();
 
 	/**
-	 * Returns the PhysicalTransform of this component, which can be used to convert between device
-	 * coordinate and physical coordinate inside this component. The original point of physical
-	 * coordinate is bottom-left corner.
+	 * Returns the paper transform of this component, which can be used to convert between device
+	 * coordinate and paper coordinate inside this component. The original point of paper coordinate
+	 * is bottom-left corner.
 	 * 
 	 * @return
 	 */
-	public PhysicalTransform getPhysicalTransform();
+	public PaperTransform getPaperTransform();
 
 }

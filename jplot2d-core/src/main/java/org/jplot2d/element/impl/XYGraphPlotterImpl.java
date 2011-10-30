@@ -246,7 +246,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		}
 
 		Graphics2D g = (Graphics2D) graphics.create();
-		Shape clip = getPhysicalTransform().getPtoD(
+		Shape clip = getPaperTransform().getPtoD(
 				getBounds());
 		g.setClip(clip);
 
@@ -285,7 +285,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 */
 	private void drawLineAndSymbol(Graphics2D g) {
 
-		double scale = getParent().getPhysicalTransform().getScale();
+		double scale = getParent().getPaperTransform().getScale();
 
 		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker
 				.getInstance(this, g.getClipBounds());

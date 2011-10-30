@@ -10,42 +10,42 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Defines the conversion between physical units and device units. Every component has its own
- * physical coordinate system, and maintains a PhysicalTransform object.
+ * Defines the conversion between paper units and device units. Every component has its own paper
+ * coordinate system, and maintains a PaperTransform object.
  * <p>
- * The transform is defined by 3 parameters. The xoff is the physical distance between component
- * left bound to device left bound. The yoff is the physical distance between component bottom bound
- * to device top bound. The scale is the factor of device to physical.
+ * The transform is defined by 3 parameters. The xoff is the paper distance between component left
+ * bound to device left bound. The yoff is the paper distance between component bottom bound to
+ * device top bound. The scale is the factor of device to paper.
  * 
  * @author Jingjing Li
  * 
  */
-public class RotatablePhysicalTransform extends PhysicalTransform {
+public class RotatablePaperTransform extends PaperTransform {
 
 	private final double theta;
 
-	public RotatablePhysicalTransform(double xoff, double yoff, double scale, double theta) {
+	public RotatablePaperTransform(double xoff, double yoff, double scale, double theta) {
 		super(xoff, yoff, scale);
 		this.theta = theta;
 	}
 
-	public RotatablePhysicalTransform(double xoff, double yoff, double scale) {
+	public RotatablePaperTransform(double xoff, double yoff, double scale) {
 		this(xoff, yoff, scale, 0);
 	}
 
-	public RotatablePhysicalTransform(Point2D p, double scale) {
+	public RotatablePaperTransform(Point2D p, double scale) {
 		this(p.getX(), p.getY(), scale, 0);
 	}
 
-	public RotatablePhysicalTransform clone() {
-		return (RotatablePhysicalTransform) super.clone();
+	public RotatablePaperTransform clone() {
+		return (RotatablePaperTransform) super.clone();
 	}
 
 	public boolean equals(Object obj) {
 		if (obj == null || this.getClass() != obj.getClass()) {
 			return false;
 		}
-		RotatablePhysicalTransform b = (RotatablePhysicalTransform) obj;
+		RotatablePaperTransform b = (RotatablePaperTransform) obj;
 		return super.equals(b) && theta == b.theta;
 	}
 

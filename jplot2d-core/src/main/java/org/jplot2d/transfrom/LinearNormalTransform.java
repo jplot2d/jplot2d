@@ -48,11 +48,11 @@ public class LinearNormalTransform extends NormalTransform {
 	}
 
 	/**
-	 * Transform from user to physical coordinates.
+	 * Transform from user to paper coordinates.
 	 * 
 	 * @param u
 	 *            user value
-	 * @return physical value
+	 * @return paper value
 	 */
 	public double getTransP(double w) {
 		if (!_valid) {
