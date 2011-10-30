@@ -215,7 +215,7 @@ public class AxisTest {
 		}
 
 		// this is allowed if the viewport axis has no parent
-		yaxis.getTickManager().setAxisTransform(factory.createAxisRangeManager());
+		yaxis.getTickManager().setAxisTransform(factory.createAxisTransform());
 		AxisTransform yva = yaxis.getTickManager().getAxisTransform();
 
 		sp.addXAxis(xaxis);
@@ -247,7 +247,7 @@ public class AxisTest {
 		}
 
 		// set xaxis a new range manager
-		AxisTransform xnag = factory.createAxisRangeManager();
+		AxisTransform xnag = factory.createAxisTransform();
 		xtm.setAxisTransform(xnag);
 
 		assertSame(xtm.getAxisTransform(), xnag);
