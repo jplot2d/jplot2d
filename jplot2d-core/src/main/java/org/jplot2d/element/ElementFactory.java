@@ -36,6 +36,7 @@ import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
+import org.jplot2d.element.impl.PointMarkerImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
@@ -202,141 +203,6 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public Layer createLayer(double[] xarray, double[] yarray) {
-		return this.createLayer(new ArrayPair(xarray, yarray));
-	}
-
-	public Layer createLayer(double[] xarray, double[] yarray, String name) {
-		return this.createLayer(new ArrayPair(xarray, yarray), name);
-	}
-
-	public Layer createLayer(ArrayPair xy) {
-		return this.createLayer(new XYGraph(xy));
-	}
-
-	public Layer createLayer(ArrayPair xy, String name) {
-		return this.createLayer(new XYGraph(xy), name);
-	}
-
-	public Layer createLayer(XYGraph graph) {
-		return createLayer(graph, null);
-	}
-
-	public Layer createLayer(XYGraph graph, String name) {
-		Layer layer = this.createLayer();
-		XYGraphPlotter plotter = this.createXYGraphPlotter(graph, name);
-		layer.addGraphPlotter(plotter);
-		return layer;
-	}
-
-	public Layer createLayer() {
-		LayerImpl impl = new LayerImpl();
-		applyProfile(impl);
-		Layer proxy = proxy(impl, Layer.class);
-
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(impl, proxy);
-		return proxy;
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray) {
-		return createXYGraphPlotter(new ArrayPair(xarray, yarray));
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray, String name) {
-		return createXYGraphPlotter(new ArrayPair(xarray, yarray), name);
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy) {
-		return createXYGraphPlotter(new XYGraph(xy));
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, String name) {
-		return createXYGraphPlotter(new XYGraph(xy), name);
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(XYGraph graph) {
-		return createXYGraphPlotter(graph, null);
-	}
-
-	public XYGraphPlotter createXYGraphPlotter(XYGraph graph, String name) {
-		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
-		gp.setGraph(graph);
-		applyProfile(gp);
-		XYGraphPlotter gpProxy = proxy(gp, XYGraphPlotter.class);
-
-		LegendItemEx li = gp.getLegendItem();
-		if (name != null) {
-			li.setText(name);
-		}
-		LegendItem liProxy = proxy(li, LegendItem.class);
-
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(gp, gpProxy);
-		env.registerElement(li, liProxy);
-		return gpProxy;
-	}
-
-	/**
-	 * Create a axis lock group.
-	 * 
-	 * @return a axis lock group
-	 */
-	public AxisRangeLockGroup createAxisRangeLockGroup() {
-		AxisRangeLockGroupImpl impl = new AxisRangeLockGroupImpl();
-		applyProfile(impl);
-		AxisRangeLockGroup proxy = proxy(impl, AxisRangeLockGroup.class);
-
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerElement(impl, proxy);
-
-		return proxy;
-	}
-
-	/**
-	 * Create an AxisRangeManager, which contains an axis range lock group.
-	 * 
-	 * @return an AxisRangeManager
-	 */
-	public AxisTransform createAxisRangeManager() {
-		AxisTransformImpl rm = new AxisTransformImpl();
-		AxisRangeLockGroupImpl group = new AxisRangeLockGroupImpl();
-		applyProfile(rm);
-		applyProfile(group);
-		rm.setLockGroup(group);
-
-		AxisTransform vaProxy = proxy(rm, AxisTransform.class);
-		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
-
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-
-		env.registerElement(rm, vaProxy);
-		env.registerElement(group, groupProxy);
-
-		return vaProxy;
-	}
-
-	/**
-	 * Create an AxisTickManager, which contains an axis range manager.
-	 * 
-	 * @return an AxisTickManager
-	 */
-	public AxisTickManager createAxisTickManager() {
-		AxisTransform rm = createAxisRangeManager();
-		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
-		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) rm).getImpl();
-
-		AxisTickManagerImpl tm = new AxisTickManagerImpl();
-		applyProfile(tm);
-		tm.setAxisTransform(rme);
-
-		AxisTickManager vaProxy = proxy(tm, AxisTickManager.class);
-
-		env.registerElement(tm, vaProxy);
-
-		return vaProxy;
-	}
-
 	/**
 	 * Create an Axis. The default position is {@link AxisPosition#NEGATIVE_SIDE}
 	 * 
@@ -383,6 +249,165 @@ public class ElementFactory {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Create an AxisTickManager, which contains an axis range manager.
+	 * 
+	 * @return an AxisTickManager
+	 */
+	public AxisTickManager createAxisTickManager() {
+		AxisTransform rm = createAxisTransform();
+		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
+		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) rm).getImpl();
+
+		AxisTickManagerImpl tm = new AxisTickManagerImpl();
+		applyProfile(tm);
+		tm.setAxisTransform(rme);
+
+		AxisTickManager vaProxy = proxy(tm, AxisTickManager.class);
+
+		env.registerElement(tm, vaProxy);
+
+		return vaProxy;
+	}
+
+	/**
+	 * Create an AxisTransform, which contains an axis range lock group.
+	 * 
+	 * @return an AxisTransform
+	 */
+	public AxisTransform createAxisTransform() {
+		AxisTransformImpl rm = new AxisTransformImpl();
+		AxisRangeLockGroupImpl group = new AxisRangeLockGroupImpl();
+		applyProfile(rm);
+		applyProfile(group);
+		rm.setLockGroup(group);
+
+		AxisTransform vaProxy = proxy(rm, AxisTransform.class);
+		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+
+		env.registerElement(rm, vaProxy);
+		env.registerElement(group, groupProxy);
+
+		return vaProxy;
+	}
+
+	/**
+	 * Create an axis lock group.
+	 * 
+	 * @return an axis lock group
+	 */
+	public AxisRangeLockGroup createAxisRangeLockGroup() {
+		AxisRangeLockGroupImpl impl = new AxisRangeLockGroupImpl();
+		applyProfile(impl);
+		AxisRangeLockGroup proxy = proxy(impl, AxisRangeLockGroup.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerElement(impl, proxy);
+
+		return proxy;
+	}
+
+	public Layer createLayer(double[] xarray, double[] yarray) {
+		return this.createLayer(new ArrayPair(xarray, yarray));
+	}
+
+	public Layer createLayer(double[] xarray, double[] yarray, String name) {
+		return this.createLayer(new ArrayPair(xarray, yarray), name);
+	}
+
+	public Layer createLayer(ArrayPair xy) {
+		return this.createLayer(new XYGraph(xy));
+	}
+
+	public Layer createLayer(ArrayPair xy, String name) {
+		return this.createLayer(new XYGraph(xy), name);
+	}
+
+	public Layer createLayer(XYGraph graph) {
+		return createLayer(graph, null);
+	}
+
+	public Layer createLayer(XYGraph graph, String name) {
+		Layer layer = this.createLayer();
+		XYGraphPlotter plotter = this.createXYGraphPlotter(graph, name);
+		layer.addGraphPlotter(plotter);
+		return layer;
+	}
+
+	/**
+	 * Create a layer
+	 * 
+	 * @return a layer
+	 */
+	public Layer createLayer() {
+		LayerImpl impl = new LayerImpl();
+		applyProfile(impl);
+		Layer proxy = proxy(impl, Layer.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(impl, proxy);
+		return proxy;
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray) {
+		return createXYGraphPlotter(new ArrayPair(xarray, yarray));
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray, String name) {
+		return createXYGraphPlotter(new ArrayPair(xarray, yarray), name);
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy) {
+		return createXYGraphPlotter(new XYGraph(xy));
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, String name) {
+		return createXYGraphPlotter(new XYGraph(xy), name);
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(XYGraph graph) {
+		return createXYGraphPlotter(graph, null);
+	}
+
+	/**
+	 * Create a XYGraphPlotter with the given graph and name
+	 * 
+	 * @param graph
+	 *            the graph to be plotted
+	 * @param name
+	 *            the name
+	 * @return a XYGraphPlotter
+	 */
+	public XYGraphPlotter createXYGraphPlotter(XYGraph graph, String name) {
+		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
+		gp.setGraph(graph);
+		applyProfile(gp);
+		XYGraphPlotter gpProxy = proxy(gp, XYGraphPlotter.class);
+
+		LegendItemEx li = gp.getLegendItem();
+		if (name != null) {
+			li.setText(name);
+		}
+		LegendItem liProxy = proxy(li, LegendItem.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(gp, gpProxy);
+		env.registerElement(li, liProxy);
+		return gpProxy;
+	}
+
+	public PointMarker createPointMarker() {
+		PointMarkerImpl marker = new PointMarkerImpl();
+		applyProfile(marker);
+		PointMarker markerProxy = proxy(marker, PointMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
 	}
 
 }

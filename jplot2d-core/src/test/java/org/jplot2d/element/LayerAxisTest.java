@@ -38,8 +38,8 @@ public class LayerAxisTest {
 	 */
 	@Test
 	public void testLayerAttachAxis() {
-		AxisTransform xaxis = factory.createAxisRangeManager();
-		AxisTransform yaxis = factory.createAxisRangeManager();
+		AxisTransform xaxis = factory.createAxisTransform();
+		AxisTransform yaxis = factory.createAxisTransform();
 		Layer layer = factory.createLayer();
 
 		try {
