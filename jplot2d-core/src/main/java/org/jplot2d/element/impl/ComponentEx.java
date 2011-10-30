@@ -101,8 +101,8 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public boolean isRedrawNeeded();
 
 	/**
-	 * Mark this component need to be redrawn. If this component is not cacheable, this method will
-	 * called on its parent.
+	 * Mark this component need to be redrawn, eg. when color changed. If this component is not
+	 * cacheable, this method will called on its parent. This method is called when this component
 	 */
 	public void redraw();
 
@@ -112,8 +112,8 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public void clearRedrawNeeded();
 
 	/**
-	 * Mark the plot artifact need to be re-rendered. This method is called on its parent, until
-	 * reach the top plot.
+	 * Mark the plot artifact need to be re-rendered. eg, when a component is added or removed. This
+	 * method is called on its parent, until reach the top plot.
 	 */
 	public void rerender();
 

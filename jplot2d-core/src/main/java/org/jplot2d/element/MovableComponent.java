@@ -45,7 +45,8 @@ public interface MovableComponent extends PComponent {
 	public void setMovable(boolean movable);
 
 	/**
-	 * Moves this component to a new location.
+	 * Moves this component to a new location. The location is specified by point in the parent's
+	 * physical coordinate space.
 	 * 
 	 * @param loc
 	 *            the base point given in the physical coordinate space
