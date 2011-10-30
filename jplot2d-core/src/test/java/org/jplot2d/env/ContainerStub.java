@@ -25,7 +25,7 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerImpl;
 import org.jplot2d.element.impl.InvokeStep;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 
 /**
  * Stub for ContainerImpl
@@ -35,7 +35,7 @@ import org.jplot2d.transfrom.PhysicalTransform;
  */
 public class ContainerStub extends ContainerImpl {
 
-	public PhysicalTransform getPhysicalTransform() {
+	public PaperTransform getPaperTransform() {
 		return null;
 	}
 

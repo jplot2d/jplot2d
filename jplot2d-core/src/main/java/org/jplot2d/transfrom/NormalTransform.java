@@ -65,12 +65,10 @@ public abstract class NormalTransform implements Cloneable {
 	}
 
 	/**
-	 * Returns if this AxisTransform is ready to transform values. Only
-	 * <code>true</code> after both physical range and world range are set
-	 * properly.
+	 * Returns if this AxisTransform is ready to transform values. Only <code>true</code> after both
+	 * paper range and world range are set properly.
 	 * 
-	 * @return <code>true</code> if this AxisTransform is ready to transform
-	 *         values.
+	 * @return <code>true</code> if this AxisTransform is ready to transform values.
 	 */
 	public boolean isValid() {
 		return _valid;
@@ -91,33 +89,31 @@ public abstract class NormalTransform implements Cloneable {
 	}
 
 	/**
-	 * Transform from world to physical coordinate.
+	 * Transform from world to paper coordinate.
 	 * 
 	 * @param u
 	 *            world value
-	 * @return physical value
+	 * @return normalized value
 	 */
 	public abstract double getTransP(double u);
 
 	/**
-	 * Transform from physical to world coordinate.
+	 * Transform from normalized value to world coordinate.
 	 * 
 	 * @param p
-	 *            physical value
+	 *            normalized value
 	 * @return world value
 	 */
 	public abstract double getTransU(double p);
 
 	public Range getTransP(Range wrange) {
-		return new Range.Double(getTransP(wrange.getStart()),
-				wrange.isStartIncluded(), getTransP(wrange.getEnd()),
-				wrange.isEndIncluded());
+		return new Range.Double(getTransP(wrange.getStart()), wrange.isStartIncluded(),
+				getTransP(wrange.getEnd()), wrange.isEndIncluded());
 	}
 
 	public Range getTransU(Range prange) {
-		return new Range.Double(getTransU(prange.getStart()),
-				prange.isStartIncluded(), getTransU(prange.getEnd()),
-				prange.isEndIncluded());
+		return new Range.Double(getTransU(prange.getStart()), prange.isStartIncluded(),
+				getTransU(prange.getEnd()), prange.isEndIncluded());
 	}
 
 	public void zoom(Range npr) {
@@ -138,7 +134,6 @@ public abstract class NormalTransform implements Cloneable {
 
 	public abstract Range getRangeW();
 
-	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi,
-			double precisionLimit);
+	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit);
 
 }

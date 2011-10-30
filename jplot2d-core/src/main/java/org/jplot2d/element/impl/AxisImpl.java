@@ -50,7 +50,7 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -60,7 +60,7 @@ import org.jplot2d.util.DoubleDimension2D;
 public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	/**
-	 * the default physical width, 0.5 pt.
+	 * the default width, 0.5 pt.
 	 */
 	private static final float DEFAULT_AXISLINE_WIDTH = 0.5f;
 
@@ -231,12 +231,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return new Rectangle2D.Double(0, -desc, getLength(), getThickness());
 	}
 
-	public PhysicalTransform getPhysicalTransform() {
+	public PaperTransform getPaperTransform() {
 		if (getParent() == null) {
 			return null;
 		} else {
-			PhysicalTransform pxf = getParent().getPhysicalTransform().translate(
-					getLocation().getX(), getLocation().getY());
+			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(),
+					getLocation().getY());
 			if (getOrientation() == AxisOrientation.VERTICAL) {
 				pxf = pxf.rotate(Math.PI / 2);
 			}
@@ -460,7 +460,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					labelVAlign = VAlign.BOTTOM;
 					labelHAlign = HAlign.CENTER;
 				} else {
-					asc = labelOffset + getLabelsMaxNormalPhysicalWidth();
+					asc = labelOffset + getLabelsMaxPaperWidth();
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.RIGHT;
 				}
@@ -471,7 +471,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					labelVAlign = VAlign.TOP;
 					labelHAlign = HAlign.CENTER;
 				} else {
-					desc = -labelOffset + getLabelsMaxNormalPhysicalWidth();
+					desc = -labelOffset + getLabelsMaxPaperWidth();
 					labelVAlign = VAlign.MIDDLE;
 					labelHAlign = HAlign.LEFT;
 				}
@@ -521,9 +521,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * Returns the physical height label by axis effective font.
+	 * Returns the height label by axis effective font.
 	 * 
-	 * @return the physical label height
+	 * @return the label height
 	 */
 	private double getLabelHeight() {
 		FontRenderContext frc = new FontRenderContext(null, false, true);
@@ -537,8 +537,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * 
 	 * @return the maximum label width.
 	 */
-	private double getLabelsMaxNormalPhysicalWidth() {
-		Dimension2D[] labelsSize = getLabelsPhySize(getTickManager().getLabelModels(),
+	private double getLabelsMaxPaperWidth() {
+		Dimension2D[] labelsSize = getLabelsPaperSize(getTickManager().getLabelModels(),
 				getEffectiveFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
@@ -558,7 +558,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * 
 	 * @return the labels normal size.
 	 */
-	public static Dimension2D[] getLabelsPhySize(MathElement[] labels, Font labelFont) {
+	public static Dimension2D[] getLabelsPaperSize(MathElement[] labels, Font labelFont) {
 		Dimension2D[] ss = new Dimension2D[labels.length];
 
 		for (int i = 0; i < labels.length; i++) {
@@ -628,7 +628,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 		Graphics2D g = (Graphics2D) graphics.create();
 
-		g.transform(getPhysicalTransform().getTransform());
+		g.transform(getPaperTransform().getTransform());
 
 		g.setColor(getEffectiveColor());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -714,8 +714,6 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * Draw all labels of this axis.
 	 * 
 	 * @param g
-	 * @param yt
-	 *            the y value in physical coordinate system.
 	 * @param vertalign
 	 * @param horzalign
 	 */
@@ -792,7 +790,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 
-		PhysicalTransform _lxf = getParent().getPhysicalTransform();
+		PaperTransform _lxf = getParent().getPaperTransform();
 		double x0 = _lxf.getXPtoD(xp);
 		double y0 = _lxf.getYPtoD(sp);
 		double y1 = _lxf.getYPtoD(ep);
@@ -822,7 +820,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			}
 		}
 
-		PhysicalTransform _lxf = getParent().getPhysicalTransform();
+		PaperTransform _lxf = getParent().getPaperTransform();
 		double y0 = _lxf.getYPtoD(yp);
 		double x0 = _lxf.getXPtoD(sp);
 		double x1 = _lxf.getXPtoD(ep);

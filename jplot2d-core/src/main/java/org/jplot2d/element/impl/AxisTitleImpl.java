@@ -283,7 +283,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 		AffineTransform oldTransform = g.getTransform();
 
-		g.transform(getParent().getPhysicalTransform().getTransform());
+		g.transform(getParent().getPaperTransform().getTransform());
 		g.translate(x, y);
 		g.scale(1.0, -1.0);
 

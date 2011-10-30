@@ -37,15 +37,14 @@ import org.jplot2d.util.Range;
 class AxisRangeUtils {
 
 	/**
-	 * The depth of zoom-in is controlled by this constant. The precision limit
-	 * of double is 0x1.0p-52. 65536x to ensure the ticks look like
-	 * even-distributed.
+	 * The depth of zoom-in is controlled by this constant. The precision limit of double is
+	 * 0x1.0p-52. 65536x to ensure the ticks look like even-distributed.
 	 */
 	protected static final double PRECISIONLIMIT = 0x1.0p-36;
 
 	/**
-	 * The default precision limit when range == 0. This make the range is large
-	 * enough to produce tick labels within 4 digits.
+	 * The default precision limit when range == 0. This make the range is large enough to produce
+	 * tick labels within 4 digits.
 	 */
 	protected static final double DIGI4LIMIT = 0.004;
 
@@ -60,24 +59,19 @@ class AxisRangeUtils {
 	 *            locked axes
 	 * @return
 	 */
-	private static Range getBounds(
-			Map<AxisTransformEx, NormalTransform> vtMap) {
-		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY,
-				Double.POSITIVE_INFINITY);
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
-				.entrySet()) {
+	private static Range getBounds(Map<AxisTransformEx, NormalTransform> vtMap) {
+		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
-			Range aprange = me.getValue().getTransP(
-					ax.getAxisType().getBoundary(ax.getType()));
+			Range aprange = me.getValue().getTransP(ax.getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 		return pbnds;
 	}
 
 	/**
-	 * Create a set of virtual NormalTransform correspond to NPTs of the given
-	 * axes. The virtual NormalTransform will try to remove the offset to
-	 * minimize the double calculation round error.
+	 * Create a set of virtual NormalTransform correspond to NPTs of the given axes. The virtual
+	 * NormalTransform will try to remove the offset to minimize the double calculation round error.
 	 * 
 	 * @param axes
 	 * @return
@@ -127,20 +121,19 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * Adjust the given range and to make sure all corresponding user range only
-	 * contain valid values.
+	 * Adjust the given range and to make sure all corresponding user range only contain valid
+	 * values.
 	 * <ul>
-	 * <li>If there is no intersection among the given range and valid
-	 * boundaries, null is returned.</li>
-	 * <li>If all corresponding world range of layers are valid, the given norm
-	 * range is returned without any adjustment.</li>
-	 * <li>If any corresponding world range of layers spans over invalid value,
-	 * the end of given range is adjusted inward to the valid boundary.</li>
-	 * <li>If the given range start/end at INFINITY, then "nearest data" well be
-	 * found instead of the valid boundary.
+	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.
+	 * </li>
+	 * <li>If all corresponding world range of layers are valid, the given norm range is returned
+	 * without any adjustment.</li>
+	 * <li>If any corresponding world range of layers spans over invalid value, the end of given
+	 * range is adjusted inward to the valid boundary.</li>
+	 * <li>If the given range start/end at INFINITY, then "nearest data" well be found instead of
+	 * the valid boundary.
 	 * <ul>
-	 * <li>If there is no valid data inside the valid range, <code>null</code>
-	 * will be returned.</li>
+	 * <li>If there is no valid data inside the valid range, <code>null</code> will be returned.</li>
 	 * <li>A margin is appended on the "nearest data" end.</li>
 	 * </ul>
 	 * </li>
@@ -148,29 +141,27 @@ class AxisRangeUtils {
 	 * 
 	 * @param range
 	 *            The caller should guarantee pLo < pHi
-	 * @return a RangeStatus contain the adjusted norm-physical range. The
-	 *         RangeAdjustTag status indicate if the given range is adjusted.
+	 * @return a RangeStatus contain the adjusted normalized range. The RangeAdjustTag status
+	 *         indicate if the given range is adjusted.
 	 */
-	static Range validateNormalRange(Range range,
-			Collection<AxisTransformEx> axes, boolean findNearsetData) {
+	static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes,
+			boolean findNearsetData) {
 		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return validateNormalRange(range, axisMap, findNearsetData);
 	}
 
 	/**
-	 * Find a nice norm range inside the given range and to make sure all
-	 * corresponding user range only contain valid values.
+	 * Find a nice norm range inside the given range and to make sure all corresponding user range
+	 * only contain valid values.
 	 * <ul>
-	 * <li>If there is no intersection among the given range and valid
-	 * boundaries, null is returned.</li>
-	 * <li>If all corresponding world range of layers are valid, the given norm
-	 * range is returned without any adjustment.</li>
-	 * <li>If any corresponding world range of layers spans over invalid value,
-	 * the end of given range is adjusted inward to the data that most close to
-	 * boundary.
+	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.
+	 * </li>
+	 * <li>If all corresponding world range of layers are valid, the given norm range is returned
+	 * without any adjustment.</li>
+	 * <li>If any corresponding world range of layers spans over invalid value, the end of given
+	 * range is adjusted inward to the data that most close to boundary.
 	 * <ul>
-	 * <li>If there is no valid data inside the valid range, <code>null</code>
-	 * will be returned.</li>
+	 * <li>If there is no valid data inside the valid range, <code>null</code> will be returned.</li>
 	 * <li>A margin is appended on the "nearest data" end.</li>
 	 * </ul>
 	 * </li>
@@ -178,11 +169,10 @@ class AxisRangeUtils {
 	 * 
 	 * @param range
 	 *            The caller should guarantee pLo < pHi
-	 * @return a RangeStatus contain the nice norm-physical range. The
-	 *         RangeAdjustTag status indicate if the given range is adjusted.
+	 * @return a RangeStatus contain the nice normalized range. The RangeAdjustTag status indicate
+	 *         if the given range is adjusted.
 	 */
-	static Range validateNormalRange(Range range,
-			Map<AxisTransformEx, NormalTransform> axisMap,
+	static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap,
 			boolean findNearsetData) {
 
 		if (range.isInverted()) {
@@ -191,8 +181,7 @@ class AxisRangeUtils {
 
 		/* find the physical intersected range of valid world range among layers */
 		Range pbnds = new Range.Double(range);
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
-				.entrySet()) {
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
 			// virtual normal range of the axis type boundary
 			Range aprange = me.getValue().getTransP(
@@ -205,15 +194,13 @@ class AxisRangeUtils {
 			return null;
 		}
 		/*
-		 * The pbnds may be not null if a round error cause an intersection. In
-		 * this case, the pbnds.span() is 0.
+		 * The pbnds may be not null if a round error cause an intersection. In this case, the
+		 * pbnds.span() is 0.
 		 */
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
-				.entrySet()) {
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			Range urange = me.getValue().getTransU(pbnds);
 			AxisTransformEx ax = me.getKey();
-			urange = urange.intersect(ax.getAxisType().getBoundary(
-					ax.getType()));
+			urange = urange.intersect(ax.getAxisType().getBoundary(ax.getType()));
 			if (urange == null) {
 				return null;
 			}
@@ -223,16 +210,13 @@ class AxisRangeUtils {
 		boolean findHiData = false;
 
 		if (findNearsetData) {
-			for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
-					.entrySet()) {
+			for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 				Range urange = me.getValue().getTransU(range);
 				AxisTransformEx ax = me.getKey();
-				if (urange.getStart() < ax.getAxisType()
-						.getBoundary(ax.getType()).getStart()) {
+				if (urange.getStart() < ax.getAxisType().getBoundary(ax.getType()).getStart()) {
 					findLoData = true;
 				}
-				if (urange.getEnd() > ax.getAxisType()
-						.getBoundary(ax.getType()).getEnd()) {
+				if (urange.getEnd() > ax.getAxisType().getBoundary(ax.getType()).getEnd()) {
 					findHiData = true;
 				}
 			}
@@ -253,8 +237,8 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * If there is no data point in the given range, null is returned. The range
-	 * on the end of found data point will expand by a margin factor.
+	 * If there is no data point in the given range, null is returned. The range on the end of found
+	 * data point will expand by a margin factor.
 	 * 
 	 * @param pbnds
 	 *            The caller guarantee this is valid on all axes.
@@ -265,15 +249,13 @@ class AxisRangeUtils {
 	 *            indicate the high data should be found
 	 * @return
 	 */
-	private static Range findDataRange(Range pbnds,
-			Map<AxisTransformEx, NormalTransform> axisMap,
+	private static Range findDataRange(Range pbnds, Map<AxisTransformEx, NormalTransform> axisMap,
 			boolean findLoData, boolean findHiData) {
 
 		// the physical adjusted range that find the data edge
 		Range padRange = null;
 
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap
-				.entrySet()) {
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			double pLo = Double.POSITIVE_INFINITY;
 			double pHi = Double.NEGATIVE_INFINITY;
 
@@ -281,19 +263,16 @@ class AxisRangeUtils {
 			NormalTransform vnt = me.getValue();
 			Range urange = vnt.getTransU(pbnds);
 			// in case of the round error exceed valid bounds
-			urange = urange.intersect(arm.getAxisType().getBoundary(
-					arm.getType()));
+			urange = urange.intersect(arm.getAxisType().getBoundary(arm.getType()));
 			for (LayerEx layer : arm.getLayers()) {
 				Range wDRange = null;
 				if (layer.getXAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
-						wDRange = dp.getGraph().setXBoundary(urange)
-								.getXRange().union(wDRange);
+						wDRange = dp.getGraph().setXBoundary(urange).getXRange().union(wDRange);
 					}
 				} else if (layer.getYAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
-						wDRange = dp.getGraph().setYBoundary(urange)
-								.getYRange().union(wDRange);
+						wDRange = dp.getGraph().setYBoundary(urange).getYRange().union(wDRange);
 					}
 				}
 				if (wDRange != null) {
@@ -327,8 +306,7 @@ class AxisRangeUtils {
 					pXdRange = new Range.Double(pLo, pHi);
 				} else {
 					Range wr = vnt.getTransU(new Range.Double(pLo, pHi));
-					NormalTransform npt = arm.getAxisType()
-							.getDefaultTransformType()
+					NormalTransform npt = arm.getAxisType().getDefaultTransformType()
 							.createNormalTransform(wr);
 					Range exnpr = new Range.Double(-arm.getMarginFactor(),
 							1 + arm.getMarginFactor());
@@ -352,23 +330,21 @@ class AxisRangeUtils {
 			return null;
 		}
 
-		return new Range.Double((findLoData) ? padRange.getMin()
-				: pbnds.getStart(), (findHiData) ? padRange.getMax()
-				: pbnds.getEnd());
+		return new Range.Double((findLoData) ? padRange.getMin() : pbnds.getStart(),
+				(findHiData) ? padRange.getMax() : pbnds.getEnd());
 
 	}
 
 	/**
-	 * The actually range maybe different from the given range to satisfy the
-	 * precision limit.
+	 * The actually range maybe different from the given range to satisfy the precision limit.
 	 * 
 	 * @param pLo
-	 *            the norm-physical range low value
+	 *            the normalized range low value
 	 * @param pHi
-	 *            the norm-physical range high value
+	 *            the normalized range high value
 	 * @param lockedAxes
-	 * @return the new range that satisfy the precision limit. The status object
-	 *         is PrecisionException if the range is adjusted.
+	 * @return the new range that satisfy the precision limit. The status object is
+	 *         PrecisionException if the range is adjusted.
 	 */
 	static RangeStatus<PrecisionState> ensurePrecision(Range prange,
 			Collection<AxisTransformEx> axes) {
@@ -394,14 +370,12 @@ class AxisRangeUtils {
 		String minRangeId = null;
 
 		// find new range to avoid PrecisionException
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
-				.entrySet()) {
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
 			AxisTransformEx axis = me.getKey();
 			NormalTransform vt = me.getValue();
 
 			/*
-			 * the required physical range to satisfy the precision limit for
-			 * the axis
+			 * the required physical range to satisfy the precision limit for the axis
 			 */
 			double r = vt.getMinPSpan4PrecisionLimit(pLo, pHi, precisionLimit);
 			if (minRange < r) {
@@ -415,8 +389,7 @@ class AxisRangeUtils {
 			/* when auto range and range == 0 */
 			/* only when all axes are linear and contain constant 0 values */
 			double minScale = Double.POSITIVE_INFINITY;
-			for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
-					.entrySet()) {
+			for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
 				NormalTransform vt = me.getValue();
 
 				// np to world scale
@@ -453,8 +426,7 @@ class AxisRangeUtils {
 			}
 		}
 
-		RangeStatus<PrecisionState> result = new RangeStatus<PrecisionState>(
-				pLo, pHi, ex);
+		RangeStatus<PrecisionState> result = new RangeStatus<PrecisionState>(pLo, pHi, ex);
 
 		return result;
 	}
@@ -478,15 +450,13 @@ class AxisRangeUtils {
 		/* the maximum physical range to satisfy the circle */
 		double maxRange = Double.POSITIVE_INFINITY;
 		String maxRangeId = null;
-		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap
-				.entrySet()) {
+		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
 			AxisTransformEx axis = me.getKey();
 			NormalTransform vt = me.getValue();
 
 			if (axis.getAxisType().getCircularRange() != null) {
 				double ascale = Math.abs(vt.getScale());
-				double pcircle = axis.getAxisType().getCircularRange().getSpan()
-						/ ascale;
+				double pcircle = axis.getAxisType().getCircularRange().getSpan() / ascale;
 				if (maxRange > pcircle) {
 					maxRange = pcircle;
 					maxRangeId = axis.getFullId();

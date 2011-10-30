@@ -47,11 +47,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	}
 
 	/**
-	 * Transform from user to physical coordinates.
+	 * Transform from user to normalized coordinates.
 	 * 
 	 * @param u
 	 *            user value
-	 * @return physical value
+	 * @return normalized value
 	 */
 	public double getTransP(double w) {
 		if (!_valid) {

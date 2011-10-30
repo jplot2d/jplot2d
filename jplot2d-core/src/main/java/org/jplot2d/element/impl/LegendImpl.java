@@ -527,7 +527,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 		// transform to relative paper space
 		Graphics2D g = (Graphics2D) graphics.create();
-		g.transform(getPhysicalTransform().getTransform());
+		g.transform(getPaperTransform().getTransform());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setColor(BORDER_COLOR);

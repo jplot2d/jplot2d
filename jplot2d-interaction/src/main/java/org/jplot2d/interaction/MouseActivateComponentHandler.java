@@ -91,7 +91,7 @@ public class MouseActivateComponentHandler extends
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {
-		return comp.getPhysicalTransform().getPtoD(comp.getBounds());
+		return comp.getPaperTransform().getPtoD(comp.getBounds());
 	}
 
 }

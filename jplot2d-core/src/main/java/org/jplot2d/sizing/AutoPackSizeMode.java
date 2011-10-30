@@ -44,7 +44,7 @@ public class AutoPackSizeMode extends SizeMode {
 		Dimension2D size = plot.getSize();
 		Dimension2D containerSize = plot.getContainerSize();
 		/*
-		 * Calculate scale based on container size and physical size.
+		 * Calculate scale based on container size and paper size.
 		 */
 		double scaleX = containerSize.getWidth() / size.getWidth();
 		double scaleY = containerSize.getHeight() / size.getHeight();

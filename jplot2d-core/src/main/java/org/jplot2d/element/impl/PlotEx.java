@@ -78,7 +78,7 @@ public interface PlotEx extends Plot, ContainerEx {
 
 	public PlotEx[] getSubplots();
 
-	public void parentPhysicalTransformChanged();
+	public void parentPaperTransformChanged();
 
 	/**
 	 * Sets the content size by layout director. All layers in this plot have the same viewport

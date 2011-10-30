@@ -117,7 +117,7 @@ public interface Axis extends PComponent {
 	public void setTickSide(AxisTickSide side);
 
 	/**
-	 * Returns the physical height of the major ticks of the axis
+	 * Returns the height of the major ticks of the axis
 	 * 
 	 * @return the height of the ticks
 	 */
@@ -125,7 +125,7 @@ public interface Axis extends PComponent {
 	public double getTickHeight();
 
 	/**
-	 * Set the physical height of the major ticks of the axis.
+	 * Set the height of the major ticks of the axis.
 	 * 
 	 * @param height
 	 *            the new height of the ticks
@@ -133,18 +133,18 @@ public interface Axis extends PComponent {
 	public void setTickHeight(double height);
 
 	/**
-	 * Return the physical height of the minor ticks of the axis.
+	 * Return the height of the minor ticks of the axis.
 	 * 
-	 * @return the physical height of the minor ticks.
+	 * @return the height of the minor ticks.
 	 */
 	@Property(order = 6)
 	public double getMinorTickHeight();
 
 	/**
-	 * Set the physical height of the minor ticks of the axis.
+	 * Set the height of the minor ticks of the axis.
 	 * 
 	 * @param height
-	 *            the physical height of the ticks
+	 *            the height of the ticks
 	 */
 	public void setMinorTickHeight(double height);
 

@@ -58,7 +58,7 @@ public class FixedSizeMode extends SizeMode {
 	public Result update(PlotEx plot) {
 		Dimension2D containerSize = plot.getContainerSize();
 		/*
-		 * Calculate scale based on container size and physical size.
+		 * Calculate scale based on container size and paper size.
 		 */
 		double scaleX = containerSize.getWidth() / width;
 		double scaleY = containerSize.getHeight() / height;

@@ -54,9 +54,9 @@ public interface AxisRangeLockGroup extends Element {
 	 * Zoom the given range to entire axis
 	 * 
 	 * @param start
-	 *            the norm-physical start
+	 *            the normalized start
 	 * @param end
-	 *            the norm-physical end
+	 *            the normalized end
 	 */
 	public void zoomRange(double start, double end);
 

@@ -127,7 +127,7 @@ public class PlotImplTest {
 		assertTrue(p.isRedrawNeeded());
 		p.clearRedrawNeeded();
 
-		p.parentPhysicalTransformChanged();
+		p.parentPaperTransformChanged();
 		assertTrue(p.isRedrawNeeded());
 		p.clearRedrawNeeded();
 

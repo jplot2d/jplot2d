@@ -174,7 +174,7 @@ public abstract class TextComponentImpl extends ComponentImpl implements TextCom
 
 		AffineTransform oldTransform = g.getTransform();
 
-		g.transform(getParent().getPhysicalTransform().getTransform());
+		g.transform(getParent().getPaperTransform().getTransform());
 		g.translate(getLocation().getX(), getLocation().getY());
 		g.scale(1.0, -1.0);
 		g.rotate(-Math.PI * angle / 180.0);

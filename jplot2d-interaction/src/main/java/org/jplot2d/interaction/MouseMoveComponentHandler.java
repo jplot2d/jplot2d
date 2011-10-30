@@ -28,7 +28,7 @@ import java.beans.PropertyChangeListener;
 
 import org.jplot2d.element.MovableComponent;
 import org.jplot2d.element.PComponent;
-import org.jplot2d.transfrom.PhysicalTransform;
+import org.jplot2d.transfrom.PaperTransform;
 
 public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior>
 		implements PropertyChangeListener, VisualFeedbackDrawer {
@@ -97,7 +97,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 		double xoff = x - startPoint.x;
 		double yoff = y - startPoint.y;
-		PhysicalTransform pxf = pcomp.getParent().getPhysicalTransform();
+		PaperTransform pxf = pcomp.getParent().getPaperTransform();
 		Point2D dloc = pxf.getPtoD(pcomp.getLocation());
 		dloc.setLocation(dloc.getX() + xoff, dloc.getY() + yoff);
 		Point2D newLoc = pxf.getDtoP(dloc);
@@ -129,7 +129,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {
-		return comp.getPhysicalTransform().getPtoD(comp.getBounds());
+		return comp.getPaperTransform().getPtoD(comp.getBounds());
 	}
 
 }

@@ -900,7 +900,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			return 0;
 		}
 
-		Dimension2D[] labelsSize = AxisImpl.getLabelsPhySize(labels, labelFont);
+		Dimension2D[] labelsSize = AxisImpl.getLabelsPaperSize(labels, labelFont);
 		/* the space between 2 neighbor labels */
 		double blankWidth = labelsSize[0].getHeight() / 2;
 

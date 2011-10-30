@@ -72,13 +72,13 @@ public abstract class Renderer<T> {
 	 */
 	protected Rectangle getDeviceBounds(ComponentEx comp) {
 		if (comp instanceof PlotEx) {
-			double scale = ((PlotEx) comp).getPhysicalTransform().getScale();
+			double scale = ((PlotEx) comp).getPaperTransform().getScale();
 			Dimension2D size = ((PlotEx) comp).getSize();
 			return new Rectangle2D.Double(0, 0, size.getWidth() * scale, size.getHeight() * scale)
 					.getBounds();
 		} else {
 			Rectangle2D pbounds = comp.getBounds();
-			return comp.getPhysicalTransform().getPtoD(pbounds).getBounds();
+			return comp.getPaperTransform().getPtoD(pbounds).getBounds();
 		}
 	}
 

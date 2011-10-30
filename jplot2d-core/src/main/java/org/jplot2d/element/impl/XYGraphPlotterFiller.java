@@ -214,13 +214,13 @@ public class XYGraphPlotterFiller {
 	}
 
 	private double getDeviceX(int i) {
-		return layer.getPhysicalTransform().getXPtoD(
+		return layer.getPaperTransform().getXPtoD(
 				layer.getXAxisTransform().getNormalTransform().getTransP(graph.getX(i))
 						* layer.getSize().getWidth());
 	}
 
 	private double getDeviceY(int i) {
-		return layer.getPhysicalTransform().getYPtoD(
+		return layer.getPaperTransform().getYPtoD(
 				layer.getYAxisTransform().getNormalTransform().getTransP(graph.getY(i))
 						* layer.getSize().getHeight());
 	}
@@ -260,7 +260,7 @@ public class XYGraphPlotterFiller {
 	 * @return
 	 */
 	public Paint createHatchPaint(LineHatchPaint hp) {
-		double scale = layer.getPhysicalTransform().getScale();
+		double scale = layer.getPaperTransform().getScale();
 		Dimension size = new Dimension((int) clip.getMaxX(), (int) clip.getMaxY());
 
 		if (hatchImg != null && size.width <= hatchImg.getWidth()
