@@ -18,18 +18,38 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
 
+import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.MathLabel;
+import org.jplot2d.tex.TeXMathUtils;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class TitleImpl extends TextComponentImpl implements TitleEx {
+public class TitleImpl extends ComponentImpl implements TitleEx {
 
 	private Position position = Position.TOPCENTER;
+
+	private double locX, locY;
+
+	private MathElement textModel;
+
+	private HAlign hAlign;
+
+	private VAlign vAlign;
+
+	private MathLabel label;
 
 	private double gapFactor = 0.25;
 
@@ -37,6 +57,11 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in PlotImpl
 	 */
 	private Rectangle2D bounds = new Rectangle2D.Double();
+
+	public TitleImpl() {
+		hAlign = HAlign.CENTER;
+		vAlign = VAlign.MIDDLE;
+	}
 
 	public String getId() {
 		if (getParent() != null) {
@@ -62,6 +87,87 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 
 	public PlotEx getParent() {
 		return (PlotEx) super.getParent();
+	}
+
+	public boolean canContribute() {
+		return isVisible() && textModel != null;
+	}
+
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
+	}
+
+	public final void setLocation(Point2D p) {
+		setLocation(p.getX(), p.getY());
+	}
+
+	public void setLocation(double locX, double locY) {
+		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+			this.locX = locX;
+			this.locY = locY;
+		}
+	}
+
+	public void thisEffectiveColorChanged() {
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public void thisEffectiveFontChanged() {
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public String getText() {
+		return TeXMathUtils.toString(textModel);
+	}
+
+	public void setText(String text) {
+		setTextModel(TeXMathUtils.parseText(text));
+	}
+
+	public MathElement getTextModel() {
+		return textModel;
+	}
+
+	public void setTextModel(MathElement model) {
+		this.textModel = model;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public HAlign getHAlign() {
+		return hAlign;
+	}
+
+	public void setHAlign(HAlign hAlign) {
+		this.hAlign = hAlign;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public VAlign getVAlign() {
+		return vAlign;
+	}
+
+	public void setVAlign(VAlign vAlign) {
+		this.vAlign = vAlign;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public Dimension2D getSize() {
+		Rectangle2D bounds = getBounds();
+		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
 	public Position getPosition() {
@@ -97,7 +203,10 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 	}
 
 	public void calcSize() {
-		bounds = super.getBounds();
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+		bounds = label.getBounds();
 	}
 
 	@Override
@@ -105,8 +214,32 @@ public class TitleImpl extends TextComponentImpl implements TitleEx {
 		super.copyFrom(src);
 
 		TitleImpl tc = (TitleImpl) src;
+		locX = tc.locX;
+		locY = tc.locY;
+		this.textModel = tc.textModel;
+		this.hAlign = tc.hAlign;
+		this.vAlign = tc.vAlign;
+		this.label = tc.label;
 		this.position = tc.position;
 		this.gapFactor = tc.gapFactor;
+	}
+
+	public void draw(Graphics2D g) {
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+
+		AffineTransform oldTransform = g.getTransform();
+
+		g.transform(getParent().getPaperTransform().getTransform());
+		g.translate(getLocation().getX(), getLocation().getY());
+		g.scale(1.0, -1.0);
+
+		g.setColor(getEffectiveColor());
+
+		label.draw(g);
+
+		g.setTransform(oldTransform);
 	}
 
 }

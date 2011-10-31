@@ -18,12 +18,36 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.TextComponent;
+import static org.junit.Assert.*;
+
+import java.awt.Font;
+
+import org.junit.Test;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface TextComponentEx extends TextComponent, ComponentEx {
+public class TitleImplTest {
+
+	@Test
+	public void testInitProperties() {
+		TitleImpl tc = new TitleImpl();
+		assertTrue(tc.isVisible());
+		assertNull(tc.getTextModel());
+		assertFalse(tc.canContribute());
+
+		tc.setText("");
+		assertNotNull(tc.getTextModel());
+		assertTrue(tc.canContribute());
+	}
+
+	@Test
+	public void testSetFont() {
+		TitleImpl tc = new TitleImpl();
+		Font font = new Font("Serif", Font.PLAIN, 12);
+		tc.setFont(font);
+		assertEquals(tc.getEffectiveFont(), font);
+	}
 
 }
