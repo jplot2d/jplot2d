@@ -36,7 +36,7 @@ import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
-import org.jplot2d.element.impl.PointMarkerImpl;
+import org.jplot2d.element.impl.SymbolMarkerImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
@@ -400,10 +400,10 @@ public class ElementFactory {
 		return gpProxy;
 	}
 
-	public PointMarker createPointMarker() {
-		PointMarkerImpl marker = new PointMarkerImpl();
+	public SymbolMarker createSymbolMarker() {
+		SymbolMarkerImpl marker = new SymbolMarkerImpl();
 		applyProfile(marker);
-		PointMarker markerProxy = proxy(marker, PointMarker.class);
+		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(marker, markerProxy);

@@ -45,8 +45,6 @@ public abstract class TextComponentImpl extends ComponentImpl implements TextCom
 
 	private VAlign vAlign;
 
-	private double angle;
-
 	private MathLabel label;
 
 	public TextComponentImpl() {
@@ -130,17 +128,6 @@ public abstract class TextComponentImpl extends ComponentImpl implements TextCom
 		}
 	}
 
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double angle) {
-		this.angle = angle;
-		if (isVisible()) {
-			redraw();
-		}
-	}
-
 	public Dimension2D getSize() {
 		Rectangle2D bounds = getBounds();
 		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
@@ -163,7 +150,6 @@ public abstract class TextComponentImpl extends ComponentImpl implements TextCom
 		this.textModel = tc.textModel;
 		this.hAlign = tc.hAlign;
 		this.vAlign = tc.vAlign;
-		this.angle = tc.angle;
 		this.label = tc.label;
 	}
 
@@ -177,7 +163,6 @@ public abstract class TextComponentImpl extends ComponentImpl implements TextCom
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.translate(getLocation().getX(), getLocation().getY());
 		g.scale(1.0, -1.0);
-		g.rotate(-Math.PI * angle / 180.0);
 
 		g.setColor(getEffectiveColor());
 

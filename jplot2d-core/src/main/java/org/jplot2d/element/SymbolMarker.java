@@ -22,47 +22,47 @@ import java.awt.geom.Point2D;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.util.SymbolShape;
 
 /**
- * A marker which can highlight a point. The marker can contains a text string.
+ * A point marker with a symbol and a text string.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Point Marker")
-public interface PointMarker extends TextComponent {
+@PropertyGroup("Symbol and Text")
+public interface SymbolMarker extends PointMarker {
 
 	/**
-	 * returns the x,y values location in layer's world coordinate system.
+	 * Returns the symbol shape of this marker
 	 * 
-	 * @return the x,y values location
+	 * @return the symbol shape of this marker
 	 */
 	@Property(order = 0)
-	public Point2D getValuePoint();
+	public SymbolShape getSymbolShape();
 
 	/**
-	 * Sets the x,y values location in layer's world coordinate system
+	 * Sets the symbol shape of this marker
 	 * 
-	 * @param point
-	 *            the x,y values location
+	 * @param symbol
+	 *            the symbol shape of this marker
 	 */
-	public void setValuePoint(Point2D point);
+	public void getSymbolShape(SymbolShape symbol);
 
 	/**
-	 * Returns the rotation angle of this component.
+	 * Returns the symbol size of this marker
 	 * 
-	 * @return the rotation angle value
+	 * @return the symbol size of this marker
 	 */
 	@Property(order = 1)
-	public double getAngle();
+	public double getSymbolSize();
 
 	/**
-	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock
-	 * wise direction.
+	 * Sets the symbol shape of this marker
 	 * 
-	 * @param angle
-	 *            the rotation angle
+	 * @param symbol
+	 *            the symbol size of this marker
 	 */
-	public void setAngle(double angle);
+	public void getSymbolSize(double size);
 
 }
