@@ -18,17 +18,14 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
 
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.Layer;
 
-public class MarkerImpl extends ComponentImpl implements MarkerEx {
+public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
 
-	private double locX, locY;
+	protected double locX, locY;
 
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
@@ -37,11 +34,11 @@ public class MarkerImpl extends ComponentImpl implements MarkerEx {
 
 		Method method;
 		try {
-			method = Plot.class.getMethod("getMarker");
+			method = Layer.class.getMethod("getMarker", Integer.TYPE);
 		} catch (NoSuchMethodException e) {
 			throw new Error(e);
 		}
-		return new InvokeStep(method);
+		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
 	public LayerEx getParent() {
@@ -49,23 +46,15 @@ public class MarkerImpl extends ComponentImpl implements MarkerEx {
 	}
 
 	public void thisEffectiveColorChanged() {
-		// TODO Auto-generated method stub
-
+		if (isVisible()) {
+			redraw();
+		}
 	}
 
 	public void thisEffectiveFontChanged() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Dimension2D getSize() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-
+		if (isVisible()) {
+			redraw();
+		}
 	}
 
 	public Point2D getLocation() {
@@ -81,6 +70,29 @@ public class MarkerImpl extends ComponentImpl implements MarkerEx {
 			this.locX = locX;
 			this.locY = locY;
 		}
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		MarkerImpl tc = (MarkerImpl) src;
+		this.locX = tc.locX;
+		this.locY = tc.locY;
+	}
+
+	protected double getXWtoD(double v) {
+		LayerEx layer = getParent();
+		return layer.getPaperTransform().getXPtoD(
+				layer.getXAxisTransform().getNormalTransform().getTransP(v)
+						* layer.getSize().getWidth());
+	}
+
+	protected double getYWtoD(double v) {
+		LayerEx layer = getParent();
+		return layer.getPaperTransform().getYPtoD(
+				layer.getYAxisTransform().getNormalTransform().getTransP(v)
+						* layer.getSize().getHeight());
 	}
 
 }

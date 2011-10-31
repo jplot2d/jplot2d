@@ -18,25 +18,36 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Method;
 
-import org.jplot2d.element.Plot;
-import org.jplot2d.util.SymbolShape;
+import org.jplot2d.element.HAlign;
+import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.MathLabel;
+import org.jplot2d.tex.TeXMathUtils;
+import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class PointMarkerImpl extends TextComponentImpl implements PointMarkerEx {
+public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 
-	private double gapFactor = 0.25;
+	private Point2D valuePoint;
 
-	/**
-	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in PlotImpl
-	 */
-	private Rectangle2D bounds = new Rectangle2D.Double();
+	protected HAlign hAlign;
+
+	protected VAlign vAlign;
+
+	protected double angle;
+
+	private MathElement textModel;
+
+	private MathLabel label;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -46,38 +57,16 @@ public class PointMarkerImpl extends TextComponentImpl implements PointMarkerEx 
 		}
 	}
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (parent == null) {
-			return null;
-		}
-
-		Method method;
-		try {
-			method = Plot.class.getMethod("getMarker", Integer.TYPE);
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method, getParent().indexOf(this));
-	}
-
-	public LayerEx getParent() {
-		return (LayerEx) super.getParent();
-	}
-
-	public double getGapFactor() {
-		return gapFactor;
-	}
-
-	public void setGapFactor(double factor) {
-		this.gapFactor = factor;
+	public Dimension2D getSize() {
+		Rectangle2D bounds = getBounds();
+		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
 	public Rectangle2D getBounds() {
-		return bounds;
-	}
-
-	public void calcSize() {
-		bounds = super.getBounds();
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+		return label.getBounds();
 	}
 
 	@Override
@@ -85,37 +74,106 @@ public class PointMarkerImpl extends TextComponentImpl implements PointMarkerEx 
 		super.copyFrom(src);
 
 		PointMarkerImpl tc = (PointMarkerImpl) src;
-		this.gapFactor = tc.gapFactor;
-	}
-
-	public SymbolShape getSymbolShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void getSymbolShape(SymbolShape symbol) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public double getSymbolSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void getSymbolSize(double size) {
-		// TODO Auto-generated method stub
-
+		this.valuePoint = tc.valuePoint;
+		this.hAlign = tc.hAlign;
+		this.vAlign = tc.vAlign;
+		this.angle = tc.angle;
+		this.textModel = tc.textModel;
+		this.label = tc.label;
 	}
 
 	public Point2D getValuePoint() {
-		// TODO Auto-generated method stub
-		return null;
+		return valuePoint;
 	}
 
 	public void setValuePoint(Point2D point) {
-		// TODO Auto-generated method stub
+		this.valuePoint = point;
+		relocate();
+	}
 
+	public HAlign getHAlign() {
+		return hAlign;
+	}
+
+	public void setHAlign(HAlign hAlign) {
+		this.hAlign = hAlign;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public VAlign getVAlign() {
+		return vAlign;
+	}
+
+	public void setVAlign(VAlign vAlign) {
+		this.vAlign = vAlign;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public String getText() {
+		return TeXMathUtils.toString(textModel);
+	}
+
+	public void setText(String text) {
+		setTextModel(TeXMathUtils.parseText(text));
+	}
+
+	public MathElement getTextModel() {
+		return textModel;
+	}
+
+	public void setTextModel(MathElement model) {
+		this.textModel = model;
+		label = null;
+		if (isVisible()) {
+			redraw();
+		}
+	}
+
+	public void draw(Graphics2D g) {
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+
+		AffineTransform oldTransform = g.getTransform();
+
+		g.transform(getParent().getPaperTransform().getTransform());
+		g.translate(getLocation().getX(), getLocation().getY());
+		g.scale(1.0, -1.0);
+		g.rotate(-Math.PI * angle / 180.0);
+
+		g.setColor(getEffectiveColor());
+
+		label.draw(g);
+
+		g.setTransform(oldTransform);
+	}
+
+	/**
+	 * Recalculate the paper location by the user location
+	 */
+	public void relocate() {
+		locX = getParent().getXAxisTransform().getNormalTransform().getTransP(valuePoint.getX());
+		locY = getParent().getXAxisTransform().getNormalTransform().getTransP(valuePoint.getX());
+		if (isVisible()) {
+			redraw();
+		}
 	}
 
 }

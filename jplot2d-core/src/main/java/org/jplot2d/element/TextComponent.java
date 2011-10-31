@@ -100,21 +100,4 @@ public interface TextComponent extends PComponent {
 	 */
 	public void setVAlign(VAlign vAlign);
 
-	/**
-	 * Returns the rotation angle of this component.
-	 * 
-	 * @return the rotation angle value
-	 */
-	@Property(order = 3)
-	public double getAngle();
-
-	/**
-	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock
-	 * wise direction.
-	 * 
-	 * @param angle
-	 *            the rotation angle
-	 */
-	public void setAngle(double angle);
-
 }

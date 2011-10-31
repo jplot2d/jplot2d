@@ -133,19 +133,4 @@ public interface Title extends TextComponent, MovableComponent {
 
 	public void setMovable(boolean movable);
 
-	/**
-	 * Always returns 0.
-	 * 
-	 * @return always 0.
-	 */
-	public double getAngle();
-
-	/**
-	 * This method should never be called on Title.
-	 * 
-	 * @param angle
-	 *            the rotation angle
-	 */
-	public void setAngle(double angle);
-
 }
