@@ -45,7 +45,7 @@ public interface SymbolMarker extends PointMarker, TextComponent {
 	 * @param symbol
 	 *            the symbol shape of this marker
 	 */
-	public void getSymbolShape(SymbolShape symbol);
+	public void setSymbolShape(SymbolShape symbol);
 
 	/**
 	 * Returns the symbol size of this marker
@@ -61,6 +61,6 @@ public interface SymbolMarker extends PointMarker, TextComponent {
 	 * @param symbol
 	 *            the symbol size of this marker
 	 */
-	public void getSymbolSize(double size);
+	public void setSymbolSize(double size);
 
 }
