@@ -41,7 +41,7 @@ public class SymbolMarkerImpl extends PointMarkerImpl implements SymbolMarkerEx 
 		return null;
 	}
 
-	public void getSymbolShape(SymbolShape symbol) {
+	public void setSymbolShape(SymbolShape symbol) {
 		// TODO Auto-generated method stub
 
 	}
@@ -51,7 +51,7 @@ public class SymbolMarkerImpl extends PointMarkerImpl implements SymbolMarkerEx 
 		return 0;
 	}
 
-	public void getSymbolSize(double size) {
+	public void setSymbolSize(double size) {
 		// TODO Auto-generated method stub
 
 	}
