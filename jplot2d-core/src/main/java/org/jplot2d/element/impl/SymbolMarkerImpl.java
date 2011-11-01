@@ -18,6 +18,11 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+
+import org.jplot2d.tex.MathLabel;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -62,6 +67,30 @@ public class SymbolMarkerImpl extends PointMarkerImpl implements SymbolMarkerEx 
 
 	public void setTextGap(double factor) {
 		this.gap = factor;
+	}
+
+	public void draw(Graphics2D g) {
+		Shape oldClip = g.getClip();
+
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+
+		AffineTransform oldTransform = g.getTransform();
+
+		g.transform(getParent().getPaperTransform().getTransform());
+		g.setClip(getParent().getBounds());
+
+		g.translate(getLocation().getX(), getLocation().getY());
+		g.scale(1.0, -1.0);
+		g.rotate(-Math.PI * angle / 180.0);
+
+		g.setColor(getEffectiveColor());
+
+		label.draw(g);
+
+		g.setTransform(oldTransform);
+		g.setClip(oldClip);
 	}
 
 	@Override
