@@ -27,6 +27,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -99,6 +100,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(MathElement.class, new MathCellRenderer());
 		registerRenderer(LayoutDirector.class, new StringCellRenderer<Object>());
 		registerRenderer(AxisTickTransform.class, new StringCellRenderer<Object>());
+		registerRenderer(Stroke.class, new StringCellRenderer<Object>());
 	}
 
 }
