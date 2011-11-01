@@ -30,14 +30,19 @@ import org.jplot2d.annotation.PropertyGroup;
  * 
  */
 @PropertyGroup("Point Marker")
-public interface PointMarker extends Marker, TextComponent {
+public interface PointMarker extends Marker {
+
+	@Property(order = 0)
+	public boolean isMovable();
+
+	public void setMovable(boolean movable);
 
 	/**
 	 * returns the x,y values location in layer's world coordinate system.
 	 * 
 	 * @return the x,y values location
 	 */
-	@Property(order = 0)
+	@Property(order = 1)
 	public Point2D getValuePoint();
 
 	/**
@@ -53,7 +58,7 @@ public interface PointMarker extends Marker, TextComponent {
 	 * 
 	 * @return the rotation angle value
 	 */
-	@Property(order = 1)
+	@Property(order = 2)
 	public double getAngle();
 
 	/**
