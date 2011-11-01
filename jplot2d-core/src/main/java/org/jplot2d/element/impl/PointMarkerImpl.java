@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -35,7 +33,7 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
-public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
+public abstract class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 
 	private double locX, locY;
 
@@ -45,11 +43,11 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 
 	private VAlign vAlign = VAlign.MIDDLE;
 
-	private double angle;
+	protected double angle;
 
 	private MathElement textModel;
 
-	private MathLabel label;
+	protected MathLabel label;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -173,25 +171,6 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 		if (isVisible()) {
 			redraw();
 		}
-	}
-
-	public void draw(Graphics2D g) {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
-
-		AffineTransform oldTransform = g.getTransform();
-
-		g.transform(getParent().getPaperTransform().getTransform());
-		g.translate(getLocation().getX(), getLocation().getY());
-		g.scale(1.0, -1.0);
-		g.rotate(-Math.PI * angle / 180.0);
-
-		g.setColor(getEffectiveColor());
-
-		label.draw(g);
-
-		g.setTransform(oldTransform);
 	}
 
 	/**
