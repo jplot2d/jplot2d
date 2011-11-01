@@ -30,6 +30,7 @@ import org.jplot2d.element.impl.AxisTransformEx;
 import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
+import org.jplot2d.element.impl.HLineMarkerImpl;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
@@ -38,6 +39,7 @@ import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
 import org.jplot2d.element.impl.SymbolMarkerImpl;
 import org.jplot2d.element.impl.TitleImpl;
+import org.jplot2d.element.impl.VLineMarkerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
@@ -417,6 +419,28 @@ public class ElementFactory {
 		marker.setText(text);
 		applyProfile(marker);
 		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
+	public HLineMarker createHLineMarker(double y) {
+		HLineMarkerImpl marker = new HLineMarkerImpl();
+		marker.setValue(y);
+		applyProfile(marker);
+		HLineMarker markerProxy = proxy(marker, HLineMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
+	public VLineMarker createVLineMarker(double y) {
+		VLineMarkerImpl marker = new VLineMarkerImpl();
+		marker.setValue(y);
+		applyProfile(marker);
+		VLineMarker markerProxy = proxy(marker, VLineMarker.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(marker, markerProxy);
