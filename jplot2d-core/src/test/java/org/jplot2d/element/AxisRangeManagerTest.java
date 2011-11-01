@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class AxisRangeManagerTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTransform.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Transform");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Transform");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Transform"), "axisType",
 				"type", "inverted", "autoMargin", "marginFactor", "coreRange", "range");
 	}

@@ -16,7 +16,7 @@ public class ComponentTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(PComponent.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Component");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");

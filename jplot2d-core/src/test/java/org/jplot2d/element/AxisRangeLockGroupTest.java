@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class AxisRangeLockGroupTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisRangeLockGroup.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Range Lock Group");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Range Lock Group");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Range Lock Group"),
 				"autoRange");
 	}

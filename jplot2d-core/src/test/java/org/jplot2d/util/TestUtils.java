@@ -187,7 +187,7 @@ public class TestUtils {
 		}
 	}
 
-	public static <T> void checkSet(Collection<T> set, T... strs) {
+	public static <T> void checkCollecionOrder(Collection<T> set, T... strs) {
 		Object[] clt = set.toArray();
 		if (clt.length != strs.length) {
 			fail("length error [" + ArrayUtils.toString(clt) + "] [" + ArrayUtils.toString(strs));

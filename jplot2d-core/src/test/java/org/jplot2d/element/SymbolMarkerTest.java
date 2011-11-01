@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class SymbolMarkerTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(SymbolMarker.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Point Marker", "Text",
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Point Marker", "Text",
 				"Symbol Marker");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",

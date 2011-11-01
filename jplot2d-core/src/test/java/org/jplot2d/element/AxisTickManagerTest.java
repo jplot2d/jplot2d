@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class AxisTickManagerTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTickManager.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Tick Manager");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Tick Manager");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Tick Manager"),
 				"tickTransform", "range", "autoValues", "fixedValues", "fixedMinorValues",
 				"autoInterval", "interval", "offset", "number", "autoAdjustNumber",

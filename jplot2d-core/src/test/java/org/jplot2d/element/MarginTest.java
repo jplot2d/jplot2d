@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class MarginTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(PlotMargin.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Margin");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Margin");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Margin"), "autoLeft",
 				"autoRight", "autoBottom", "autoTop", "left", "right", "bottom", "top",
 				"extraLeft", "extraRight", "extraBottom", "extraTop");
