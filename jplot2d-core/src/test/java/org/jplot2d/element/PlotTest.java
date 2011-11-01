@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class PlotTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Plot.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Plot");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Plot");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "size", "bounds");

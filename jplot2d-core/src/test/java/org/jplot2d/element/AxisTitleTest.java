@@ -19,7 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkSet;
+import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class AxisTitleTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTitle.class);
-		checkSet(iinfo.getPropertyInfoGroupMap().keySet(), "AxisTitle");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "AxisTitle");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("AxisTitle"), "visible",
 				"color", "fontName", "fontStyle", "fontSize", "fontScale", "text");
 	}
