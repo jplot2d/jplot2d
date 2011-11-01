@@ -32,6 +32,7 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.LegendItem;
+import org.jplot2d.element.Marker;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 
@@ -115,6 +116,7 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			int gpNum = layer.getGraphPlotters().length;
+			int markerNum = layer.getMarkers().length;
 			if (index == 0) {
 				return layer.getXAxisTransform();
 			}
@@ -124,6 +126,10 @@ public class PlotTreeModel implements TreeModel {
 			int start = 2;
 			if (start <= index && index < start + gpNum) {
 				return layer.getGraphPlotter(index - start);
+			}
+			start += gpNum;
+			if (start <= index && index < start + markerNum) {
+				return layer.getMarker(index - start);
 			}
 		} else if (parent instanceof GraphPlotter) {
 			GraphPlotter gp = (GraphPlotter) parent;
@@ -157,7 +163,8 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			int gpNum = layer.getGraphPlotters().length;
-			return 2 + gpNum;
+			int markerNum = layer.getMarkers().length;
+			return 2 + gpNum + markerNum;
 		} else if (parent instanceof GraphPlotter) {
 			// legend item
 			return 1;
@@ -237,6 +244,7 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			GraphPlotter[] plotters = layer.getGraphPlotters();
+			Marker[] markers = layer.getMarkers();
 			if (child == layer.getXAxisTransform()) {
 				return 0;
 			}
@@ -246,6 +254,12 @@ public class PlotTreeModel implements TreeModel {
 			int start = 2;
 			for (int i = 0; i < plotters.length; i++) {
 				if (plotters[i] == child) {
+					return start + i;
+				}
+			}
+			start += markers.length;
+			for (int i = 0; i < markers.length; i++) {
+				if (markers[i] == child) {
 					return start + i;
 				}
 			}
