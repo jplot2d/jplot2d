@@ -18,8 +18,6 @@
  */
 package org.jplot2d.element;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.util.SymbolShape;
@@ -30,8 +28,8 @@ import org.jplot2d.util.SymbolShape;
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Symbol and Text")
-public interface SymbolMarker extends PointMarker {
+@PropertyGroup("Symbol Marker")
+public interface SymbolMarker extends PointMarker, TextComponent {
 
 	/**
 	 * Returns the symbol shape of this marker

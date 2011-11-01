@@ -32,6 +32,7 @@ import java.net.URL;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -162,7 +163,7 @@ public class TestUtils {
 		}
 	}
 
-	public static <T> void checkSet(Set<T> set, T... strs) {
+	public static <T> void checkHashSet(Set<T> set, T... strs) {
 		HashSet<T> extraSet = new HashSet<T>(set);
 		HashSet<T> omitSet = new HashSet<T>(Arrays.asList(strs));
 		extraSet.removeAll(omitSet);
@@ -183,6 +184,17 @@ public class TestUtils {
 				msg.append(extraSet);
 			}
 			fail(msg.toString());
+		}
+	}
+
+	public static <T> void checkSet(Collection<T> set, T... strs) {
+		Object[] clt = set.toArray();
+		if (clt.length != strs.length) {
+			fail("length error [" + ArrayUtils.toString(clt) + "] [" + ArrayUtils.toString(strs));
+		}
+		int length = clt.length;
+		for (int i = 0; i < length; i++) {
+			assertEquals(clt[i], strs[i]);
 		}
 	}
 
