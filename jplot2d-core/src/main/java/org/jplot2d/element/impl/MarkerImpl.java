@@ -25,8 +25,6 @@ import org.jplot2d.element.Layer;
 
 public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
 
-	protected double locX, locY;
-
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
 			return null;
@@ -57,42 +55,32 @@ public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
 		}
 	}
 
-	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
-	}
-
 	public final void setLocation(Point2D p) {
 		setLocation(p.getX(), p.getY());
 	}
 
-	public void setLocation(double locX, double locY) {
-		if (getLocation().getX() != locX || getLocation().getY() != locY) {
-			this.locX = locX;
-			this.locY = locY;
-		}
-	}
-
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
-
-		MarkerImpl tc = (MarkerImpl) src;
-		this.locX = tc.locX;
-		this.locY = tc.locY;
-	}
-
-	protected double getXWtoD(double v) {
+	protected double getXWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getPaperTransform().getXPtoD(
-				layer.getXAxisTransform().getNormalTransform().getTransP(v)
-						* layer.getSize().getWidth());
+		return layer.getXAxisTransform().getNormalTransform().getTransP(v)
+				* layer.getSize().getWidth();
 	}
 
-	protected double getYWtoD(double v) {
+	protected double getYWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getPaperTransform().getYPtoD(
-				layer.getYAxisTransform().getNormalTransform().getTransP(v)
-						* layer.getSize().getHeight());
+		return layer.getYAxisTransform().getNormalTransform().getTransP(v)
+				* layer.getSize().getHeight();
+	}
+
+	protected double getXPtoW(double v) {
+		LayerEx layer = getParent();
+		return layer.getXAxisTransform().getNormalTransform()
+				.getTransU(v / layer.getSize().getWidth());
+	}
+
+	protected double getYPtoW(double v) {
+		LayerEx layer = getParent();
+		return layer.getYAxisTransform().getNormalTransform()
+				.getTransU(v / layer.getSize().getHeight());
 	}
 
 }

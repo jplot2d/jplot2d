@@ -30,7 +30,7 @@ import org.jplot2d.annotation.PropertyGroup;
  * 
  */
 @PropertyGroup("Point Marker")
-public interface PointMarker extends TextComponent {
+public interface PointMarker extends Marker, TextComponent {
 
 	/**
 	 * returns the x,y values location in layer's world coordinate system.

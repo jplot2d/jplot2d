@@ -400,8 +400,21 @@ public class ElementFactory {
 		return gpProxy;
 	}
 
-	public SymbolMarker createSymbolMarker() {
+	public SymbolMarker createSymbolMarker(double x, double y) {
 		SymbolMarkerImpl marker = new SymbolMarkerImpl();
+		marker.setValuePoint(x, y);
+		applyProfile(marker);
+		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
+	public SymbolMarker createSymbolMarker(double x, double y, String text) {
+		SymbolMarkerImpl marker = new SymbolMarkerImpl();
+		marker.setValuePoint(x, y);
+		marker.setText(text);
 		applyProfile(marker);
 		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
 

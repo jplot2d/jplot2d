@@ -111,7 +111,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			plotter.redraw();
 		}
 		for (MarkerEx marker : markers) {
-			marker.redraw();
+			marker.relocate();
 		}
 	}
 
@@ -200,7 +200,15 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void addMarker(Marker marker) {
-		markers.add((MarkerEx) marker);
+		MarkerEx mex = (MarkerEx) marker;
+		markers.add(mex);
+		mex.setParent(this);
+
+		if (mex.canContributeToParent()) {
+			redraw();
+		} else if (mex.canContribute()) {
+			rerender();
+		}
 	}
 
 	public int indexOf(MarkerEx marker) {
@@ -268,11 +276,18 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public LayerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		LayerImpl result = (LayerImpl) super.copyStructure(orig2copyMap);
 
-		// copy plotter
+		// copy plotters
 		for (GraphPlotterEx plotter : this.plotters) {
 			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter.copyStructure(orig2copyMap);
 			plotterCopy.setParent(result);
 			result.plotters.add(plotterCopy);
+		}
+
+		// copy markers
+		for (MarkerEx marker : this.markers) {
+			MarkerEx copy = (MarkerEx) marker.copyStructure(orig2copyMap);
+			copy.setParent(result);
+			result.markers.add(copy);
 		}
 
 		return result;

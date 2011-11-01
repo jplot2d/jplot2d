@@ -37,13 +37,15 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 
-	private Point2D valuePoint;
+	private double locX, locY;
 
-	protected HAlign hAlign;
+	private double valueX, valueY;
 
-	protected VAlign vAlign;
+	private HAlign hAlign = HAlign.LEFT;
 
-	protected double angle;
+	private VAlign vAlign = VAlign.MIDDLE;
+
+	private double angle;
 
 	private MathElement textModel;
 
@@ -54,6 +56,22 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 			return "PointMarker" + getParent().indexOf(this);
 		} else {
 			return "PointMarker@" + Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
+	public Point2D getLocation() {
+		return new Point2D.Double(locX, locY);
+	}
+
+	public void setLocation(double locX, double locY) {
+		if (getLocation().getX() != locX || getLocation().getY() != locY) {
+			this.locX = locX;
+			this.locY = locY;
+			valueX = getXPtoW(locX);
+			valueY = getYPtoW(locY);
+			if (isVisible()) {
+				redraw();
+			}
 		}
 	}
 
@@ -74,7 +92,10 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 		super.copyFrom(src);
 
 		PointMarkerImpl tc = (PointMarkerImpl) src;
-		this.valuePoint = tc.valuePoint;
+		this.locX = tc.locX;
+		this.locY = tc.locY;
+		this.valueX = tc.valueX;
+		this.valueY = tc.valueY;
 		this.hAlign = tc.hAlign;
 		this.vAlign = tc.vAlign;
 		this.angle = tc.angle;
@@ -83,12 +104,20 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 	}
 
 	public Point2D getValuePoint() {
-		return valuePoint;
+		return new Point2D.Double(valueX, valueY);
 	}
 
 	public void setValuePoint(Point2D point) {
-		this.valuePoint = point;
-		relocate();
+		setValuePoint(point.getX(), point.getY());
+	}
+
+	public void setValuePoint(double x, double y) {
+		this.valueX = x;
+		this.valueY = y;
+		if (getParent() != null && getParent().getXAxisTransform() != null
+				&& getParent().getYAxisTransform() != null) {
+			relocate();
+		}
 	}
 
 	public HAlign getHAlign() {
@@ -169,8 +198,8 @@ public class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
 	 * Recalculate the paper location by the user location
 	 */
 	public void relocate() {
-		locX = getParent().getXAxisTransform().getNormalTransform().getTransP(valuePoint.getX());
-		locY = getParent().getXAxisTransform().getNormalTransform().getTransP(valuePoint.getX());
+		locX = getXWtoP(valueX);
+		locY = getYWtoP(valueY);
 		if (isVisible()) {
 			redraw();
 		}

@@ -30,4 +30,9 @@ public interface MarkerEx extends Marker, ComponentEx {
 
 	public LayerEx getParent();
 
+	/**
+	 * Update the paper location when layer's axis transform changed.
+	 */
+	public void relocate();
+
 }
