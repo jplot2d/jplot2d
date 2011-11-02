@@ -32,6 +32,7 @@ public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
 	protected final static Stroke ZERO_WIDTH_STROKE = new BasicStroke(0);
 
 	public MarkerImpl() {
+		setSelectable(true);
 		setMovable(true);
 	}
 
