@@ -42,7 +42,7 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 
 	private double locY;
 
-	private double paperWidth;
+	private double paperThickness;
 
 	private Range range;
 
@@ -68,7 +68,7 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 	public void setLocation(double x, double y) {
 		if (locY != y) {
 			this.locY = y;
-			double endY = locY + paperWidth;
+			double endY = locY + paperThickness;
 			double valueY = getYPtoW(locY);
 			double valueEnd = getYPtoW(endY);
 			range = new Range.Double(valueY, valueEnd);
@@ -82,7 +82,14 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 		if (getParent() == null && getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getWidth(), 0);
+		return new DoubleDimension2D(getParent().getSize().getWidth(), paperThickness);
+	}
+
+	public Rectangle2D getBounds() {
+		if (paperThickness < 2) {
+			return new Rectangle2D.Double(0, -1, getParent().getSize().getWidth(), 2);
+		}
+		return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
 	}
 
 	public Range getValueRange() {
@@ -99,7 +106,7 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 	public void relocate() {
 		locY = getYWtoP(range.getStart());
 		double endY = getYWtoP(range.getEnd());
-		paperWidth = endY - locY;
+		paperThickness = endY - locY;
 		if (isVisible()) {
 			redraw();
 		}
@@ -121,17 +128,18 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
 
-		if (paperWidth == 0) {
+		if (paperThickness == 0) {
 			Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
 			Stroke oldStroke = g.getStroke();
 			g.setStroke(ZERO_WIDTH_STROKE);
 			g.draw(line);
 			g.setStroke(oldStroke);
 		} else {
-			if (paperWidth > 0) {
-				strip.setRect(0, locY, getParent().getSize().getWidth(), paperWidth);
+			if (paperThickness > 0) {
+				strip.setRect(0, locY, getParent().getSize().getWidth(), paperThickness);
 			} else {
-				strip.setRect(0, locY + paperWidth, getParent().getSize().getWidth(), -paperWidth);
+				strip.setRect(0, locY + paperThickness, getParent().getSize().getWidth(),
+						-paperThickness);
 			}
 			g.fill(strip);
 		}
@@ -146,7 +154,7 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 
 		HStripMarkerImpl lm = (HStripMarkerImpl) src;
 		this.locY = lm.locY;
-		this.paperWidth = lm.paperWidth;
+		this.paperThickness = lm.paperThickness;
 		this.range = lm.range;
 		this.paint = lm.paint;
 		this.strip = (Rectangle2D) lm.strip.clone();
