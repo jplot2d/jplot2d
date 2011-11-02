@@ -18,50 +18,52 @@
  */
 package org.jplot2d.element;
 
-import java.awt.Stroke;
+import java.awt.Paint;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.util.Range;
 
 /**
- * A horizontal line marker to highlight a value.
+ * A horizontal strip marker to highlight a range.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Horizontal Line Marker")
-public interface HLineMarker extends Marker {
+@PropertyGroup("Horizontal Strip Marker")
+public interface HStripMarker extends Marker {
 
 	/**
-	 * Returns the value of this marker
+	 * Returns the value range of this marker
 	 * 
-	 * @return the value of this marker
+	 * @return the value range of this marker
 	 */
 	@Property(order = 0)
-	public double getValue();
+	public Range getValueRange();
 
 	/**
-	 * Sets the value of this marker
+	 * Sets the value range of this marker
 	 * 
-	 * @param value
-	 *            the value of this marker
+	 * @param range
+	 *            the value range of this marker
 	 */
-	public void setValue(double value);
+	public void setValueRange(Range range);
 
 	/**
-	 * Returns the <code>Stroke</code> to be used to draw the marker line.
+	 * Returns the <code>Paint</code> to be used to draw the marker strip.
 	 * 
-	 * @return the <code>Stroke</code>
+	 * @return the <code>Paint</code>
 	 */
 	@Property(order = 0)
-	public Stroke getStroke();
+	public Paint getPaint();
 
 	/**
-	 * Sets the <code>Stroke</code> to be used to draw the marker line.
+	 * Sets the <code>Paint</code> to be used to draw the marker strip. The default paint is
+	 * semi-transparent grey.
 	 * 
 	 * @param stroke
-	 *            the <code>Stroke</code> to be used to draw the marker line
+	 *            the <code>Paint</code> to be used to draw the marker strip
 	 */
-	public void setStroke(Stroke stroke);
+	public void setPaint(Paint stroke);
 
 }

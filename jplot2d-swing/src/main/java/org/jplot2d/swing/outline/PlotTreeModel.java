@@ -273,7 +273,8 @@ public class PlotTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		if (node instanceof AxisRangeLockGroup || node instanceof LegendItem) {
+		if (node instanceof AxisRangeLockGroup || node instanceof LegendItem
+				|| node instanceof Marker) {
 			return true;
 		} else {
 			return false;

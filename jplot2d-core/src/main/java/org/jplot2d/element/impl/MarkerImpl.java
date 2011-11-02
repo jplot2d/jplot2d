@@ -18,12 +18,22 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
 
 import org.jplot2d.element.Layer;
 
 public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
+
+	protected final static Stroke DEFAULT_STROKE = new BasicStroke();
+
+	protected final static Stroke ZERO_WIDTH_STROKE = new BasicStroke(0);
+
+	public MarkerImpl() {
+		setMovable(true);
+	}
 
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
