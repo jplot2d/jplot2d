@@ -72,5 +72,6 @@ public class SwingInteractiveComp implements InteractiveComp {
 		g2.setXORMode(comp.getPlotBackground());
 		g2.draw(shape);
 		g2.setPaintMode();
+		g2.translate(-comp.getImageOffsetX(), -comp.getImageOffsetY());
 	}
 }
