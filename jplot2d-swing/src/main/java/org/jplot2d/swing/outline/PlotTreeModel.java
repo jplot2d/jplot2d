@@ -25,13 +25,11 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.LegendItem;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
@@ -273,11 +271,12 @@ public class PlotTreeModel implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		if (node instanceof AxisRangeLockGroup || node instanceof LegendItem
-				|| node instanceof Marker) {
-			return true;
-		} else {
+		if (node instanceof Plot || node instanceof Axis || node instanceof AxisTickManager
+				|| node instanceof AxisTransform || node instanceof Layer
+				|| node instanceof GraphPlotter) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 
