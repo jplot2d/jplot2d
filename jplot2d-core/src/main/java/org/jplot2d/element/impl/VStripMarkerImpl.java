@@ -42,7 +42,7 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 
 	private double locX;
 
-	private double paperWidth;
+	private double paperThickness;
 
 	private Range range;
 
@@ -68,7 +68,7 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 	public void setLocation(double x, double y) {
 		if (locX != x) {
 			this.locX = x;
-			double endX = locX + paperWidth;
+			double endX = locX + paperThickness;
 			double valueX = getXPtoW(locX);
 			double valueEnd = getXPtoW(endX);
 			range = new Range.Double(valueX, valueEnd);
@@ -82,7 +82,14 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 		if (getParent() == null && getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getWidth(), 0);
+		return new DoubleDimension2D(paperThickness, getParent().getSize().getHeight());
+	}
+
+	public Rectangle2D getBounds() {
+		if (paperThickness < 2) {
+			return new Rectangle2D.Double(-1, 0, 2, getParent().getSize().getHeight());
+		}
+		return new Rectangle2D.Double(0, 0, paperThickness, getParent().getSize().getHeight());
 	}
 
 	public Range getValueRange() {
@@ -99,7 +106,7 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 	public void relocate() {
 		locX = getXWtoP(range.getStart());
 		double endX = getXWtoP(range.getEnd());
-		paperWidth = endX - locX;
+		paperThickness = endX - locX;
 		if (isVisible()) {
 			redraw();
 		}
@@ -121,17 +128,18 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
 
-		if (paperWidth == 0) {
+		if (paperThickness == 0) {
 			Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
 			Stroke oldStroke = g.getStroke();
 			g.setStroke(ZERO_WIDTH_STROKE);
 			g.draw(line);
 			g.setStroke(oldStroke);
 		} else {
-			if (paperWidth > 0) {
-				strip.setRect(locX, 0, paperWidth, getParent().getSize().getHeight());
+			if (paperThickness > 0) {
+				strip.setRect(locX, 0, paperThickness, getParent().getSize().getHeight());
 			} else {
-				strip.setRect(locX + paperWidth, 0, -paperWidth, getParent().getSize().getHeight());
+				strip.setRect(locX + paperThickness, 0, -paperThickness, getParent().getSize()
+						.getHeight());
 			}
 			g.fill(strip);
 		}
@@ -146,7 +154,7 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 
 		VStripMarkerImpl lm = (VStripMarkerImpl) src;
 		this.locX = lm.locX;
-		this.paperWidth = lm.paperWidth;
+		this.paperThickness = lm.paperThickness;
 		this.range = lm.range;
 		this.paint = lm.paint;
 		this.strip = (Rectangle2D) lm.strip.clone();
