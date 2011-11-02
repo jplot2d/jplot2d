@@ -24,7 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * A point marker with a line and a text string.
+ * A vertical line marker to highlight a value.
  * 
  * @author Jingjing Li
  * 

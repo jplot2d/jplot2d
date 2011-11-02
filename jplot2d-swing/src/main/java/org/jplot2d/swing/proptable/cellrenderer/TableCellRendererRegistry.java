@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
@@ -101,6 +102,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(LayoutDirector.class, new StringCellRenderer<Object>());
 		registerRenderer(AxisTickTransform.class, new StringCellRenderer<Object>());
 		registerRenderer(Stroke.class, new StringCellRenderer<Object>());
+		registerRenderer(Paint.class, new StringCellRenderer<Object>());
 	}
 
 }

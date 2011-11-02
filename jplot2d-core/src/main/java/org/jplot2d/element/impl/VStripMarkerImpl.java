@@ -18,49 +18,60 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
+public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 
-	private double locY;
+	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double valueY;
+	private double locX;
 
-	private Stroke stroke = DEFAULT_STROKE;
+	private double paperWidth;
+
+	private Range range;
+
+	private Paint paint = DEFAULT_PAINT;
 
 	/**
-	 * A local variable to avoid re-create line when drawing
+	 * A local variable to avoid re-create strip when drawing
 	 */
-	private Line2D line = new Line2D.Double();
+	private Rectangle2D strip = new Rectangle2D.Double();
 
 	public String getId() {
 		if (getParent() != null) {
-			return "HLineMarker" + getParent().indexOf(this);
+			return "HStripMarker" + getParent().indexOf(this);
 		} else {
-			return "HLineMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "HStripMarker@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(0, locY);
+		return new Point2D.Double(locX, 0);
 	}
 
 	public void setLocation(double x, double y) {
-		if (locY != y) {
-			this.locY = y;
-			valueY = getYPtoW(locY);
+		if (locX != x) {
+			this.locX = x;
+			double endX = locX + paperWidth;
+			double valueX = getXPtoW(locX);
+			double valueEnd = getXPtoW(endX);
+			range = new Range.Double(valueX, valueEnd);
 			if (isVisible()) {
 				redraw();
 			}
@@ -74,59 +85,71 @@ public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
 		return new DoubleDimension2D(getParent().getSize().getWidth(), 0);
 	}
 
-	public double getValue() {
-		return valueY;
+	public Range getValueRange() {
+		return range;
 	}
 
-	public void setValue(double value) {
-		this.valueY = value;
+	public void setValueRange(Range value) {
+		this.range = value;
 		if (getParent() != null && getParent().getYAxisTransform() != null) {
 			relocate();
 		}
 	}
 
 	public void relocate() {
-		locY = getYWtoP(valueY);
+		locX = getXWtoP(range.getStart());
+		double endX = getXWtoP(range.getEnd());
+		paperWidth = endX - locX;
 		if (isVisible()) {
 			redraw();
 		}
 	}
 
-	public Stroke getStroke() {
-		return stroke;
+	public Paint getPaint() {
+		return paint;
 	}
 
-	public void setStroke(Stroke stroke) {
-		this.stroke = stroke;
+	public void setPaint(Paint paint) {
+		this.paint = paint;
 	}
 
 	public void draw(Graphics2D g) {
-		Stroke oldStroke = g.getStroke();
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
 
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
-		g.setColor(getEffectiveColor());
-		g.setStroke(stroke);
+		g.setPaint(paint);
 
-		line.setLine(0, locY, getParent().getSize().getWidth(), locY);
-		g.draw(line);
+		if (paperWidth == 0) {
+			Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(ZERO_WIDTH_STROKE);
+			g.draw(line);
+			g.setStroke(oldStroke);
+		} else {
+			if (paperWidth > 0) {
+				strip.setRect(locX, 0, paperWidth, getParent().getSize().getHeight());
+			} else {
+				strip.setRect(locX + paperWidth, 0, -paperWidth, getParent().getSize().getHeight());
+			}
+			g.fill(strip);
+		}
 
 		g.setTransform(oldTransform);
 		g.setClip(oldClip);
-		g.setStroke(oldStroke);
 	}
 
 	@Override
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		HLineMarkerImpl lm = (HLineMarkerImpl) src;
-		this.locY = lm.locY;
-		this.valueY = lm.valueY;
-		this.stroke = lm.stroke;
-		this.line = (Line2D) lm.line.clone();
+		VStripMarkerImpl lm = (VStripMarkerImpl) src;
+		this.locX = lm.locX;
+		this.paperWidth = lm.paperWidth;
+		this.range = lm.range;
+		this.paint = lm.paint;
+		this.strip = (Rectangle2D) lm.strip.clone();
 	}
 
 }

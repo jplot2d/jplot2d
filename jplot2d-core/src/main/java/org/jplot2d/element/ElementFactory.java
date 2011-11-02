@@ -31,6 +31,7 @@ import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.HLineMarkerImpl;
+import org.jplot2d.element.impl.HStripMarkerImpl;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
@@ -40,11 +41,13 @@ import org.jplot2d.element.impl.AxisTransformImpl;
 import org.jplot2d.element.impl.SymbolMarkerImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.VLineMarkerImpl;
+import org.jplot2d.element.impl.VStripMarkerImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
 import org.jplot2d.env.Profile;
+import org.jplot2d.util.Range;
 
 /**
  * A factory to produce all kind of plot components.
@@ -441,6 +444,28 @@ public class ElementFactory {
 		marker.setValue(y);
 		applyProfile(marker);
 		VLineMarker markerProxy = proxy(marker, VLineMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
+	public HStripMarker createHStripMarker(double start, double end) {
+		HStripMarkerImpl marker = new HStripMarkerImpl();
+		marker.setValueRange(new Range.Double(start, end));
+		applyProfile(marker);
+		HStripMarker markerProxy = proxy(marker, HStripMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
+	public VStripMarker createVStripMarker(double start, double end) {
+		VStripMarkerImpl marker = new VStripMarkerImpl();
+		marker.setValueRange(new Range.Double(start, end));
+		applyProfile(marker);
+		VStripMarker markerProxy = proxy(marker, VStripMarker.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(marker, markerProxy);

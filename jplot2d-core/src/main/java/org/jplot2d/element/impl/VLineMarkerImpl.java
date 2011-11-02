@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -34,8 +33,6 @@ import org.jplot2d.util.DoubleDimension2D;
  * 
  */
 public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
-
-	private static Stroke DEFAULT_STROKE = new BasicStroke();
 
 	private double locX;
 

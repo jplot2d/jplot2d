@@ -18,38 +18,46 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
+public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
+
+	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
 	private double locY;
 
-	private double valueY;
+	private double paperWidth;
 
-	private Stroke stroke = DEFAULT_STROKE;
+	private Range range;
+
+	private Paint paint = DEFAULT_PAINT;
 
 	/**
-	 * A local variable to avoid re-create line when drawing
+	 * A local variable to avoid re-create strip when drawing
 	 */
-	private Line2D line = new Line2D.Double();
+	private Rectangle2D strip = new Rectangle2D.Double();
 
 	public String getId() {
 		if (getParent() != null) {
-			return "HLineMarker" + getParent().indexOf(this);
+			return "HStripMarker" + getParent().indexOf(this);
 		} else {
-			return "HLineMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "HStripMarker@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -60,7 +68,10 @@ public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
 	public void setLocation(double x, double y) {
 		if (locY != y) {
 			this.locY = y;
-			valueY = getYPtoW(locY);
+			double endY = locY + paperWidth;
+			double valueY = getYPtoW(locY);
+			double valueEnd = getYPtoW(endY);
+			range = new Range.Double(valueY, valueEnd);
 			if (isVisible()) {
 				redraw();
 			}
@@ -74,59 +85,71 @@ public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
 		return new DoubleDimension2D(getParent().getSize().getWidth(), 0);
 	}
 
-	public double getValue() {
-		return valueY;
+	public Range getValueRange() {
+		return range;
 	}
 
-	public void setValue(double value) {
-		this.valueY = value;
+	public void setValueRange(Range value) {
+		this.range = value;
 		if (getParent() != null && getParent().getYAxisTransform() != null) {
 			relocate();
 		}
 	}
 
 	public void relocate() {
-		locY = getYWtoP(valueY);
+		locY = getYWtoP(range.getStart());
+		double endY = getYWtoP(range.getEnd());
+		paperWidth = endY - locY;
 		if (isVisible()) {
 			redraw();
 		}
 	}
 
-	public Stroke getStroke() {
-		return stroke;
+	public Paint getPaint() {
+		return paint;
 	}
 
-	public void setStroke(Stroke stroke) {
-		this.stroke = stroke;
+	public void setPaint(Paint paint) {
+		this.paint = paint;
 	}
 
 	public void draw(Graphics2D g) {
-		Stroke oldStroke = g.getStroke();
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
 
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
-		g.setColor(getEffectiveColor());
-		g.setStroke(stroke);
+		g.setPaint(paint);
 
-		line.setLine(0, locY, getParent().getSize().getWidth(), locY);
-		g.draw(line);
+		if (paperWidth == 0) {
+			Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(ZERO_WIDTH_STROKE);
+			g.draw(line);
+			g.setStroke(oldStroke);
+		} else {
+			if (paperWidth > 0) {
+				strip.setRect(0, locY, getParent().getSize().getWidth(), paperWidth);
+			} else {
+				strip.setRect(0, locY + paperWidth, getParent().getSize().getWidth(), -paperWidth);
+			}
+			g.fill(strip);
+		}
 
 		g.setTransform(oldTransform);
 		g.setClip(oldClip);
-		g.setStroke(oldStroke);
 	}
 
 	@Override
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		HLineMarkerImpl lm = (HLineMarkerImpl) src;
+		HStripMarkerImpl lm = (HStripMarkerImpl) src;
 		this.locY = lm.locY;
-		this.valueY = lm.valueY;
-		this.stroke = lm.stroke;
-		this.line = (Line2D) lm.line.clone();
+		this.paperWidth = lm.paperWidth;
+		this.range = lm.range;
+		this.paint = lm.paint;
+		this.strip = (Rectangle2D) lm.strip.clone();
 	}
 
 }
