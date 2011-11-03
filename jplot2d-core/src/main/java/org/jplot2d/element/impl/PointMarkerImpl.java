@@ -27,6 +27,7 @@ import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
 import org.jplot2d.tex.TeXMathUtils;
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -83,6 +84,19 @@ public abstract class PointMarkerImpl extends MarkerImpl implements PointMarkerE
 			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
 		return label.getBounds();
+	}
+
+	public PaperTransform getPaperTransform() {
+		if (getParent() == null) {
+			return null;
+		} else {
+			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(),
+					getLocation().getY());
+			if (angle != 0) {
+				pxf = pxf.rotate(angle / 180 * Math.PI);
+			}
+			return pxf;
+		}
 	}
 
 	@Override
