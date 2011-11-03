@@ -269,13 +269,22 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public PaperTransform getPaperTransform() {
-		Point2D loc = getLocation();
-		return getParent().getPaperTransform().translate(loc.getX(), loc.getY());
+		PaperTransform pxf = getParent().getPaperTransform();
+		if (pxf == null) {
+			return null;
+		} else {
+			Point2D loc = getLocation();
+			return pxf.translate(loc.getX(), loc.getY());
+		}
 	}
 
 	public Rectangle2D getBounds() {
 		Dimension2D size = getSize();
 		return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
+	}
+
+	public Rectangle2D getSelectableBounds() {
+		return getBounds();
 	}
 
 	public boolean isRedrawNeeded() {

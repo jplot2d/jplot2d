@@ -237,6 +237,14 @@ public interface PComponent extends Element {
 	public Rectangle2D getBounds();
 
 	/**
+	 * Returns the selectable bounds relative to its location. The selectable bound may be slightly
+	 * larger than the bounds, for easy selection by mouse. The units of bounds is pt (1/72 inch)
+	 * 
+	 * @return the paper bounds of this component.
+	 */
+	public Rectangle2D getSelectableBounds();
+
+	/**
 	 * Returns the paper transform of this component, which can be used to convert between device
 	 * coordinate and paper coordinate inside this component. The original point of paper coordinate
 	 * is bottom-left corner.

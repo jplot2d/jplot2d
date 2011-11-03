@@ -129,7 +129,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {
-		return comp.getPaperTransform().getPtoD(comp.getBounds());
+		return comp.getPaperTransform().getPtoD(comp.getSelectableBounds());
 	}
 
 }
