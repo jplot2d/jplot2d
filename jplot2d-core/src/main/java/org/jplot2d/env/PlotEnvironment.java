@@ -374,7 +374,7 @@ public abstract class PlotEnvironment extends Environment {
 				ComponentEx ucc = uccList.get(j);
 				if (ucc.isSelectable()) {
 					Point2D p = ucc.getPaperTransform().getDtoP(dp);
-					if (ucc.getBounds().contains(p)) {
+					if (ucc.getSelectableBounds().contains(p)) {
 						result = (PComponent) proxyMap.get(ucc);
 						break;
 					}
