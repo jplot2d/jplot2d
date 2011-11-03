@@ -13,9 +13,10 @@ import java.awt.geom.Rectangle2D;
  * Defines the conversion between paper units and device units. Every component has its own paper
  * coordinate system, and maintains a PaperTransform object.
  * <p>
- * The transform is defined by 3 parameters. The xoff is the paper distance between component left
+ * The transform is defined by 4 parameters. The xoff is the paper distance between component left
  * bound to device left bound. The yoff is the paper distance between component bottom bound to
- * device top bound. The scale is the factor of device to paper.
+ * device top bound. The scale is the factor of device to paper. The theta is the conter-clockwise
+ * rotation angle in radians.
  * 
  * @author Jingjing Li
  * 

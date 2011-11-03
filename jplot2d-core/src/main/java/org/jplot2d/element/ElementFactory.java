@@ -428,6 +428,19 @@ public class ElementFactory {
 		return markerProxy;
 	}
 
+	public SymbolMarker createSymbolMarker(double x, double y, double angle, String text) {
+		SymbolMarkerImpl marker = new SymbolMarkerImpl();
+		marker.setValuePoint(x, y);
+		marker.setAngle(angle);
+		marker.setText(text);
+		applyProfile(marker);
+		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(marker, markerProxy);
+		return markerProxy;
+	}
+
 	public HLineMarker createHLineMarker(double y) {
 		HLineMarkerImpl marker = new HLineMarkerImpl();
 		marker.setValue(y);
