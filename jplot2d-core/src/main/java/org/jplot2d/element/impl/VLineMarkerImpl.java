@@ -18,6 +18,7 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -25,7 +26,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -71,7 +74,30 @@ public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
 		if (getParent() == null && getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getWidth(), 0);
+		return new DoubleDimension2D(getParent().getSize().getHeight(), 0);
+	}
+
+	public Rectangle2D getSelectableBounds() {
+		double lineWidth = 0;
+		if (stroke instanceof BasicStroke) {
+			lineWidth = ((BasicStroke) stroke).getLineWidth();
+		}
+		if (lineWidth < 2) {
+			lineWidth = 2;
+		}
+		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getHeight(),
+				lineWidth);
+	}
+
+	public PaperTransform getPaperTransform() {
+		if (getParent() == null) {
+			return null;
+		}
+		PaperTransform pxf = getParent().getPaperTransform();
+		if (pxf == null) {
+			return null;
+		}
+		return pxf.translate(locX, 0).rotate(Math.PI / 2);
 	}
 
 	public double getValue() {

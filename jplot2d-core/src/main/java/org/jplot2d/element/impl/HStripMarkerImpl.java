@@ -29,6 +29,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 
@@ -86,10 +87,26 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 	}
 
 	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
+	}
+
+	public Rectangle2D getSelectableBounds() {
 		if (paperThickness < 2) {
 			return new Rectangle2D.Double(0, -1, getParent().getSize().getWidth(), 2);
+		} else {
+			return getBounds();
 		}
-		return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
+	}
+
+	public PaperTransform getPaperTransform() {
+		if (getParent() == null) {
+			return null;
+		}
+		PaperTransform pxf = getParent().getPaperTransform();
+		if (pxf == null) {
+			return null;
+		}
+		return pxf.translate(0, locY);
 	}
 
 	public Range getValueRange() {

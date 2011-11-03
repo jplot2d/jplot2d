@@ -29,6 +29,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.transfrom.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 
@@ -82,14 +83,31 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 		if (getParent() == null && getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(paperThickness, getParent().getSize().getHeight());
+		return new DoubleDimension2D(getParent().getSize().getHeight(), paperThickness);
 	}
 
 	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(),
+				paperThickness);
+	}
+
+	public Rectangle2D getSelectableBounds() {
 		if (paperThickness < 2) {
-			return new Rectangle2D.Double(-1, 0, 2, getParent().getSize().getHeight());
+			return new Rectangle2D.Double(0, -1, getParent().getSize().getHeight(), 2);
+		} else {
+			return getBounds();
 		}
-		return new Rectangle2D.Double(0, 0, paperThickness, getParent().getSize().getHeight());
+	}
+
+	public PaperTransform getPaperTransform() {
+		if (getParent() == null) {
+			return null;
+		}
+		PaperTransform pxf = getParent().getPaperTransform();
+		if (pxf == null) {
+			return null;
+		}
+		return pxf.translate(locX, 0).rotate(Math.PI / 2);
 	}
 
 	public Range getValueRange() {
