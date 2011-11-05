@@ -40,7 +40,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.swing.proptable.property.Property;
 import org.jplot2d.tex.MathElement;
-import org.jplot2d.transfrom.AxisTickTransform;
+import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.Range;
 

@@ -20,8 +20,8 @@ package org.jplot2d.axtype;
 
 import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
-import org.jplot2d.transfrom.AxisTickTransform;
-import org.jplot2d.transfrom.TransformType;
+import org.jplot2d.transform.AxisTickTransform;
+import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**

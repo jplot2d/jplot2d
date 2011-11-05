@@ -28,7 +28,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**

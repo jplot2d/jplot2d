@@ -36,9 +36,9 @@ import org.jplot2d.axtick.TickUtils;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
-import org.jplot2d.transfrom.AxisTickTransform;
-import org.jplot2d.transfrom.NormalTransform;
-import org.jplot2d.transfrom.TransformType;
+import org.jplot2d.transform.AxisTickTransform;
+import org.jplot2d.transform.NormalTransform;
+import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.Range;
 

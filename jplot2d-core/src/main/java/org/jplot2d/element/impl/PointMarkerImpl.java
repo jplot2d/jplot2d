@@ -27,7 +27,7 @@ import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
 import org.jplot2d.tex.TeXMathUtils;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**

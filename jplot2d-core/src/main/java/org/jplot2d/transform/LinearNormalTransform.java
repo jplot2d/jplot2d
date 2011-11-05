@@ -16,30 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.transfrom;
+package org.jplot2d.transform;
 
 import org.jplot2d.util.Range;
 
 /**
- * Performs a log transformation on Cartesian axes. The equation is <code>worldvalue =
- * 10^(a * np + b)<code>
+ * Performs a linear transformation on Cartesian axes. The equation is <code>
+ * worldvalue = a * np + b
+ * </code>
  */
-public class LogarithmicNormalTransform extends NormalTransform {
+public class LinearNormalTransform extends NormalTransform {
 
-	public LogarithmicNormalTransform(double u1, double u2) {
-		super(TransformType.LOGARITHMIC);
+	public LinearNormalTransform(double u1, double u2) {
+		super(TransformType.LINEAR);
 		computeTransform(u1, u2);
 	}
 
-	public LogarithmicNormalTransform(Range ur) {
-		super(TransformType.LOGARITHMIC);
+	public LinearNormalTransform(Range ur) {
+		super(TransformType.LINEAR);
 		computeTransform(ur.getStart(), ur.getEnd());
 	}
 
-	public LogarithmicNormalTransform copy() {
-		LogarithmicNormalTransform newTransform;
+	public LinearNormalTransform copy() {
+		LinearNormalTransform newTransform;
 		try {
-			newTransform = (LogarithmicNormalTransform) clone();
+			newTransform = (LinearNormalTransform) clone();
 		} catch (CloneNotSupportedException e) {
 			throw new Error();
 		}
@@ -57,17 +58,14 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		if (!_valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		if (w <= 0) {
-			return Double.NEGATIVE_INFINITY * _a;
-		}
-		return (Math.log10(w) - _b) / _a;
+		return (w - _b) / _a;
 	}
 
 	public double getTransU(double p) {
 		if (!_valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return Math.pow(10, _a * p + _b);
+		return _a * p + _b;
 	}
 
 	protected void computeTransform(double _u1, double _u2) {
@@ -77,15 +75,8 @@ public class LogarithmicNormalTransform extends NormalTransform {
 			return;
 		}
 
-		if (_u1 <= 0 || _u2 <= 0) {
-			_a = Double.NaN;
-			_b = Double.NaN;
-			_valid = false;
-			return;
-		}
-
-		_a = Math.log10(_u2) - Math.log10(_u1);
-		_b = Math.log10(_u1);
+		_a = _u2 - _u1;
+		_b = _u1;
 		if (_a == 0) {
 			_a = Double.NaN;
 			_b = Double.NaN;
@@ -100,15 +91,25 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 * The formula: p = _a * u + _b *
 	 * 
 	 * <pre>
-	 *         u'/u &gt; 1 - t
-	 *         10&circ;(_ap'-_b)/10&circ;(_ap-_b) &gt; 1-t
-	 *         10&circ;(_a(p'-p)) &gt; 1-t
-	 *         _a(p'-p) &gt; log10(1-t)
-	 *         dP &gt; log10(1-t)/abs(_a)
+	 *         (u-dU)/u &lt; 1 - t
+	 *         dU/u &gt; t
+	 *         (dP / _a) / ((p - _b) / _a) &gt; t
+	 *         dP &gt; t * (p - _b)
+	 *         [[ _b= getTansP(0) ]]
 	 * </pre>
 	 */
+	@Override
 	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
-		return Math.log10(1 - precisionLimit) / Math.abs(_a);
+		double r;
+		double b = getTransP(0);
+		if (pLo < b && pHi > b) {
+			r = 0;
+		} else {
+			// find the far point from b
+			double p = ((pLo + pHi) > 2 * b) ? pHi : pLo;
+			r = precisionLimit * Math.abs(p - b);
+		}
+		return r;
 	}
 
 	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
@@ -125,7 +126,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	@Override
 	public Range getRangeW() {
-		return new Range.Double(Math.pow(10, _b), Math.pow(10, _a + _b));
+		return new Range.Double(_b, _a + _b);
 	}
 
 }

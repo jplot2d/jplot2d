@@ -30,7 +30,7 @@ import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Marker;
 import org.jplot2d.element.Plot;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 
 /**
  * @author Jingjing Li

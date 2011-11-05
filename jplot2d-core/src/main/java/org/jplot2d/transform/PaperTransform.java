@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jplot2d.transfrom;
+package org.jplot2d.transform;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;

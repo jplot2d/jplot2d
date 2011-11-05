@@ -25,7 +25,7 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerImpl;
 import org.jplot2d.element.impl.InvokeStep;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 
 /**
  * Stub for ContainerImpl

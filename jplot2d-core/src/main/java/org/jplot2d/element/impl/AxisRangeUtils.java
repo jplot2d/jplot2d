@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jplot2d.transfrom.NormalTransform;
+import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
 
 /**
