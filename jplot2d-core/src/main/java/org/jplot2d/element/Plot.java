@@ -171,8 +171,19 @@ public interface Plot extends PComponent {
 	 * Sets the preferred content area size
 	 * 
 	 * @param size
+	 *            the size in Dimension2D
 	 */
 	public void setPreferredContentSize(Dimension2D size);
+
+	/**
+	 * Sets the preferred content area size
+	 * 
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 */
+	public void setPreferredContentSize(double width, double height);
 
 	/**
 	 * Gets the location of this plot in its parent plot. The origin of a plot is the bottom-left
