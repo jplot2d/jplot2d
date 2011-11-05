@@ -114,18 +114,18 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		float by = ay;
 
 		Color sc = plotter.getEffectiveSymbolColor();
-		if (plotter.isLinesVisible()) {
+		if (plotter.isLineVisible()) {
 			g.setColor(plotter.getEffectiveColor());
 			g.setStroke(plotter.getLineStroke());
 			Path2D.Float gp = new Path2D.Float();
 			gp.moveTo(ax, ay);
 			gp.lineTo(bx, by);
 			g.draw(gp);
-			if (plotter.isSymbolsVisible()) {
+			if (plotter.isSymbolVisible()) {
 				drawSymbol(g, ax, ay, sc);
 				drawSymbol(g, bx, by, sc);
 			}
-		} else if (plotter.isSymbolsVisible()) {
+		} else if (plotter.isSymbolVisible()) {
 			drawSymbol(g, bx, by, sc);
 		}
 

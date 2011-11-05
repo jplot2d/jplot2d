@@ -26,7 +26,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,8 +40,9 @@ import org.jplot2d.util.SymbolShape;
  * @author Jingjing Li
  * 
  */
-public class XYGraphPlotterImpl extends GraphPlotterImpl implements
-		XYGraphPlotterEx {
+public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlotterEx {
+
+	private static Paint DEFAULT_FILL_PAINT = new Color(192, 192, 192, 128);
 
 	/**
 	 * The error arrow length in pt
@@ -71,7 +71,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 	private boolean fillEnabled;
 
-	private Paint fillPaint;
+	private Paint fillPaint = DEFAULT_FILL_PAINT;
 
 	private FillClosureType fillClosureType;
 
@@ -88,7 +88,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		redraw();
 	}
 
-	public boolean isSymbolsVisible() {
+	public boolean isSymbolVisible() {
 		return symbolVisible;
 	}
 
@@ -97,7 +97,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		redraw();
 	}
 
-	public boolean isLinesVisible() {
+	public boolean isLineVisible() {
 		return lineVisible;
 	}
 
@@ -177,8 +177,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	public void thisEffectiveColorChanged() {
-		if (isLinesVisible()
-				|| (isSymbolsVisible() && getSymbolColor() == null)) {
+		if (isLineVisible() || (isSymbolVisible() && getSymbolColor() == null)) {
 			redraw();
 		}
 	}
@@ -246,8 +245,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		}
 
 		Graphics2D g = (Graphics2D) graphics.create();
-		Shape clip = getPaperTransform().getPtoD(
-				getBounds());
+		Shape clip = getPaperTransform().getPtoD(getBounds());
 		g.setClip(clip);
 
 		if (isFillEnabled()) {
@@ -265,8 +263,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	private void fillLineAera(Graphics2D g) {
-		XYGraphPlotterFiller filler = XYGraphPlotterFiller.getInstance(this,
-				g.getClipBounds());
+		XYGraphPlotterFiller filler = XYGraphPlotterFiller.getInstance(this, g.getClipBounds());
 		Shape shape = filler.getShape();
 
 		Paint p = getFillPaint();
@@ -287,8 +284,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 		double scale = getParent().getPaperTransform().getScale();
 
-		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker
-				.getInstance(this, g.getClipBounds());
+		XYGraphPlotterDataChunker chunker = XYGraphPlotterDataChunker.getInstance(this,
+				g.getClipBounds());
 
 		for (ChunkData data : chunker) {
 			if (Thread.interrupted()) {
@@ -298,7 +295,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 			// draw lines
 			g.setColor(getEffectiveColor());
 
-			if (isLinesVisible()) {
+			if (isLineVisible()) {
 				switch (getChartType()) {
 				case LINECHART:
 					drawLine(g, data.xBuf, data.yBuf, data.size, this, scale);
@@ -307,8 +304,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 					drawHistogram(g, data, this, scale);
 					break;
 				case HISTOGRAM_EDGE:
-					drawEdgeHistogram(g, data.xBuf, data.yBuf, data.size, this,
-							scale);
+					drawEdgeHistogram(g, data.xBuf, data.yBuf, data.size, this, scale);
 					break;
 				}
 			}
@@ -318,30 +314,29 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 
 			if (data.xErrorSize != 0) {
 				for (int i = 0; i < data.xErrorSize; i++) {
-					drawErrorBarX(g, data.xBuf[i], data.yBuf[i],
-							data.xLowBuf[i], data.xHighBuf[i], (float) scale);
+					drawErrorBarX(g, data.xBuf[i], data.yBuf[i], data.xLowBuf[i], data.xHighBuf[i],
+							(float) scale);
 				}
 			}
 			if (data.yErrorSize != 0) {
 				for (int i = 0; i < data.yErrorSize; i++) {
-					drawErrorBarY(g, data.xBuf[i], data.yBuf[i],
-							data.yLowBuf[i], data.yHighBuf[i], (float) scale);
+					drawErrorBarY(g, data.xBuf[i], data.yBuf[i], data.yLowBuf[i], data.yHighBuf[i],
+							(float) scale);
 
 				}
 			}
 
 			// drawing marks may change color and stroke
-			if (isSymbolsVisible()) {
-				drawMarks(g, data.xBuf, data.yBuf, data.size, this,
-						data.markColorBuf, scale);
+			if (isSymbolVisible()) {
+				drawMarks(g, data.xBuf, data.yBuf, data.size, this, data.markColorBuf, scale);
 			}
 
 		}
 
 	}
 
-	private static void drawErrorBarX(Graphics2D g, float x, float y,
-			float low, float high, float scale) {
+	private static void drawErrorBarX(Graphics2D g, float x, float y, float low, float high,
+			float scale) {
 		if (low == high) {
 			// ignore?
 			return;
@@ -403,8 +398,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 * @param high
 	 * @param scale
 	 */
-	private static void drawErrorBarY(Graphics2D g, float x, float y,
-			float low, float high, float scale) {
+	private static void drawErrorBarY(Graphics2D g, float x, float y, float low, float high,
+			float scale) {
 		if (low == high) {
 			// ignore?
 			return;
@@ -470,18 +465,17 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	private static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
-		float[] dashArray = (stroke.getDashArray() == null) ? null
-				: NumberArrayUtils.multiply(stroke.getDashArray(), scale);
-		return new BasicStroke((float) (stroke.getLineWidth() * scale),
-				BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10f, dashArray,
-				0f);
+		float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
+				stroke.getDashArray(), scale);
+		return new BasicStroke((float) (stroke.getLineWidth() * scale), BasicStroke.CAP_BUTT,
+				BasicStroke.JOIN_BEVEL, 10f, dashArray, 0f);
 	}
 
 	/**
 	 * Draw Histogram lines that data points is on the level center.
 	 */
-	private static void drawHistogram(Graphics2D g, ChunkData data,
-			XYGraphPlotterEx plotter, double scale) {
+	private static void drawHistogram(Graphics2D g, ChunkData data, XYGraphPlotterEx plotter,
+			double scale) {
 
 		float[] x = data.xBuf;
 		float[] y = data.yBuf;
@@ -520,8 +514,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	 *            the number of points
 	 * @param plotter
 	 */
-	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y,
-			int lsize, XYGraphPlotterEx plotter, double scale) {
+	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y, int lsize,
+			XYGraphPlotterEx plotter, double scale) {
 		int nsize = lsize * 2 - 1;
 		float[] xout = new float[nsize];
 		float[] yout = new float[nsize];
@@ -542,8 +536,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 	}
 
 	/**
-	 * Draw a mark at the requested location. This routine is used by
-	 * LineCartesianGraph and LineKey.
+	 * Draw a mark at the requested location. This routine is used by LineCartesianGraph and
+	 * LineKey.
 	 * 
 	 * @param g
 	 *            Graphics object
@@ -575,8 +569,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 		} else {
 			// use half of line stroke to draw marks
 			double lw = plotter.getLineStroke().getLineWidth() * scale / 2;
-			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_BEVEL, 10f));
+			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+					10f));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			for (int i = 0; i < npoints; i++) {
@@ -588,8 +582,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements
 				g.setColor(colors[i]);
 
 				double safScale = scale * plotter.getSymbolSize();
-				AffineTransform maf = AffineTransform.getTranslateInstance(
-						xp[i], yp[i]);
+				AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
 				maf.scale(safScale, safScale);
 				maf.concatenate(ss.getSymbolTransform());
 
