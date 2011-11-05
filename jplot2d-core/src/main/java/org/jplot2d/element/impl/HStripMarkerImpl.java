@@ -129,11 +129,11 @@ public class HStripMarkerImpl extends MarkerImpl implements HStripMarkerEx {
 		}
 	}
 
-	public Paint getPaint() {
+	public Paint getFillPaint() {
 		return paint;
 	}
 
-	public void setPaint(Paint paint) {
+	public void setFillPaint(Paint paint) {
 		this.paint = paint;
 	}
 

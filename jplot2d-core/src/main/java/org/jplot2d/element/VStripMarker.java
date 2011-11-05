@@ -50,20 +50,20 @@ public interface VStripMarker extends Marker {
 	public void setValueRange(Range range);
 
 	/**
-	 * Returns the <code>Paint</code> to be used to draw the marker strip.
+	 * Returns the <code>Paint</code> to be used to fill the marker strip.
 	 * 
 	 * @return the <code>Paint</code>
 	 */
 	@Property(order = 0)
-	public Paint getPaint();
+	public Paint getFillPaint();
 
 	/**
-	 * Sets the <code>Paint</code> to be used to draw the marker strip. The default paint is
+	 * Sets the <code>Paint</code> to be used to fill the marker strip. The default paint is
 	 * semi-transparent grey.
 	 * 
 	 * @param stroke
-	 *            the <code>Paint</code> to be used to draw the marker strip
+	 *            the <code>Paint</code> to be used to fill the marker strip
 	 */
-	public void setPaint(Paint stroke);
+	public void setFillPaint(Paint stroke);
 
 }
