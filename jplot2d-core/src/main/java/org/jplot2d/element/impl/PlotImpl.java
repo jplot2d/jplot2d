@@ -97,7 +97,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * Must be valid size (positive width and height)
 	 */
-	private Dimension2D preferredContentSize = new DoubleDimension2D(320, 240);
+	private double preferredContentWidth = 320;
+
+	private double preferredContentHeight = 240;
 
 	private boolean preferredSizeChanged;
 
@@ -260,8 +262,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (pxf == null) {
 			if (getParent() == null) {
 				pxf = new PaperTransform(margin.getLeft() + margin.getExtraLeft(),
-						contentSize.getHeight() + margin.getTop() + margin.getExtraTop(),
-						scale);
+						contentSize.getHeight() + margin.getTop() + margin.getExtraTop(), scale);
 			} else {
 				pxf = getParent().getPaperTransform().translate(locX, locY);
 			}
@@ -394,18 +395,23 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public Dimension2D getPreferredContentSize() {
-		return preferredContentSize;
+		return new DoubleDimension2D(preferredContentWidth, preferredContentHeight);
 	}
 
 	public void setPreferredContentSize(Dimension2D size) {
 		if (size == null) {
 			throw new IllegalArgumentException("Preferred content size cannpt be null.");
 		}
-		if (size.getWidth() <= 0 || size.getHeight() <= 0) {
+		setPreferredContentSize(size.getWidth(), size.getHeight());
+	}
+
+	public void setPreferredContentSize(double width, double height) {
+		if (width <= 0 || height <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
 					+ " is invalid.");
 		}
-		preferredContentSize = size;
+		this.preferredContentWidth = width;
+		this.preferredContentHeight = height;
 		childPreferredContentSizeChanged();
 	}
 
@@ -1018,7 +1024,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		valid = plot.valid;
 		layoutDirector = plot.layoutDirector;
 		pxf = plot.pxf;
-		preferredContentSize = plot.preferredContentSize;
+		preferredContentWidth = plot.preferredContentWidth;
+		preferredContentHeight = plot.preferredContentHeight;
 		contentSize = plot.contentSize;
 
 		containerSize = plot.containerSize;
