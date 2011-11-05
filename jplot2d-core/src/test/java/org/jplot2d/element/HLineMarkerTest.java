@@ -30,23 +30,19 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class SymbolMarkerTest {
+public class HLineMarkerTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(SymbolMarker.class);
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(HLineMarker.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Marker",
-				"Point Marker", "Text", "Symbol Marker");
+				"Horizontal Line Marker");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Marker"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Marker"), "valuePoint",
-				"angle");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign",
-				"VAlign");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Marker"), "symbolShape",
-				"symbolSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Horizontal Line Marker"),
+				"value", "stroke");
 	}
 
 }

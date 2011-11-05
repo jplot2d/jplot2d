@@ -32,11 +32,6 @@ import org.jplot2d.annotation.PropertyGroup;
 @PropertyGroup("Point Marker")
 public interface PointMarker extends Marker {
 
-	@Property(order = 0)
-	public boolean isMovable();
-
-	public void setMovable(boolean movable);
-
 	/**
 	 * returns the x,y values location in layer's world coordinate system.
 	 * 

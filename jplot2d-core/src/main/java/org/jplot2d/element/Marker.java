@@ -20,6 +20,8 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A marker can be added to layers to mark a point or a range of values.
@@ -27,9 +29,15 @@ import org.jplot2d.annotation.HierarchyOp;
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Marker")
 public interface Marker extends MovableComponent {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();
+
+	@Property(order = 0)
+	public boolean isMovable();
+
+	public void setMovable(boolean movable);
 
 }
