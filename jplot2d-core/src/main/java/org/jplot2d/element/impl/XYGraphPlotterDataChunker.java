@@ -162,7 +162,7 @@ public class XYGraphPlotterDataChunker implements
 				return;
 			}
 
-			boolean drawMark = plotter.isSymbolsVisible();
+			boolean drawMark = plotter.isSymbolVisible();
 
 			boolean haspre = false;
 			double prex = Double.NaN;
