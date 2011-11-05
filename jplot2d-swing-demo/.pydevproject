@@ -6,6 +6,7 @@
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">jython 2.5</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
 <path>${JPLOT2D_LOC}/jplot2d-core/target/classes</path>
+<path>${JPLOT2D_LOC}/jplot2d-common-interaction/target/classes</path>
 <path>${JPLOT2D_LOC}/jplot2d-interaction/target/classes</path>
 <path>${JPLOT2D_LOC}/jplot2d-swing/target/classes</path>
 </pydev_pathproperty>

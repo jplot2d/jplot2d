@@ -22,7 +22,7 @@ import java.awt.Font;
 
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 
 public interface AxisEx extends Axis, ComponentEx {
 

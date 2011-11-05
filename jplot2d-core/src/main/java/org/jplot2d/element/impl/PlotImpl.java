@@ -47,7 +47,7 @@ import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.Notice;
 import org.jplot2d.sizing.SizeMode;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 

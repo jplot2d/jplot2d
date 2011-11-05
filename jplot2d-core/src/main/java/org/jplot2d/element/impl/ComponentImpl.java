@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jplot2d.element.Element;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 
 public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 

@@ -28,7 +28,7 @@ import java.beans.PropertyChangeListener;
 
 import org.jplot2d.element.MovableComponent;
 import org.jplot2d.element.PComponent;
-import org.jplot2d.transfrom.PaperTransform;
+import org.jplot2d.transform.PaperTransform;
 
 public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior>
 		implements PropertyChangeListener, VisualFeedbackDrawer {
