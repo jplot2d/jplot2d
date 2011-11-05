@@ -130,11 +130,11 @@ public class VStripMarkerImpl extends MarkerImpl implements VStripMarkerEx {
 		}
 	}
 
-	public Paint getPaint() {
+	public Paint getFillPaint() {
 		return paint;
 	}
 
-	public void setPaint(Paint paint) {
+	public void setFillPaint(Paint paint) {
 		this.paint = paint;
 	}
 
