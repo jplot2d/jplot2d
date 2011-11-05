@@ -125,11 +125,11 @@ public interface AxisTickManager extends Element {
 	public Object getFixedValues();
 
 	/**
-	 * Set an array of <code>double</code>. If the given values is null or a empty array, no tick
-	 * will be drawn.
+	 * Set an array of values that ticks will show. If the given values is null or a empty array, no
+	 * tick will be drawn.
 	 * <p>
-	 * Protocol: The autoValues <b>must</b> be false when this method is called. The minor values
-	 * wil be cleared by this method.
+	 * The autoValues will be set to false when this method is called. The minor values will be
+	 * cleared by this method.
 	 * 
 	 * @param values
 	 *            the values in user unit where ticks are displayed.
@@ -167,11 +167,8 @@ public interface AxisTickManager extends Element {
 	public boolean getAutoInterval();
 
 	/**
-	 * Set to true to indicate the tick interval need to be auto calculated or false to use user
-	 * assigned or null to use the default value of implementor.
-	 * <p>
-	 * Protocol: The caller <b>must</b> call this method before calling
-	 * {@link #setInterval(double, double)}
+	 * Set to <code>true</code> to indicate the tick interval need to be auto calculated, or
+	 * <code>false</code> to disable auto-calculation and keep using the current interval.
 	 * 
 	 * @param ati
 	 *            the flag
@@ -189,12 +186,9 @@ public interface AxisTickManager extends Element {
 
 	/**
 	 * Set the interval in axis units between two ticks. It change the number of ticks displayed in
-	 * the axis. For LOG axis, interval is the multiplying factor between two ticks.<br>
-	 * If the given number is 0, the actual interval will be calculated from tick number, and the
-	 * {@link #getAutoInterval()} will returns true.
+	 * the axis. For LOG axis, interval is the multiplying factor between two ticks.
 	 * <p>
-	 * Protocol: Before calling this method, the caller <b>must</b> call setAutoTickInterval(
-	 * <code>false</code>) first.
+	 * Setting a new interval will set autoInterval to <code>false</code>.
 	 * 
 	 * @param interval
 	 *            the interval between two major ticks
@@ -217,7 +211,8 @@ public interface AxisTickManager extends Element {
 	public void setOffset(double offset);
 
 	/**
-	 * Returns the proposed tick number.
+	 * Returns the proposed tick number. The actual tick number may be different from the given
+	 * number, to get nice tick values.
 	 * 
 	 * @return the number of ticks
 	 */
@@ -282,10 +277,9 @@ public interface AxisTickManager extends Element {
 	public void setAutoMinorNumber(boolean flag);
 
 	/**
-	 * Return the number of minor ticks displayed between two major ticks. When autoMinorTicks is
-	 * <code>true</code>, this method returns the actual minor ticks number, otherwise returns the
-	 * number set by {@link #setMinorNumber(Integer)}, no matter if the actual number has been
-	 * adjusted.
+	 * Return the number of minor ticks displayed between two major ticks. This method always
+	 * returns the number set by {@link #setMinorNumber(Integer)}, no matter if the actual number
+	 * has been adjusted.
 	 * 
 	 * @return the number of minor ticks displayed
 	 */
@@ -293,12 +287,10 @@ public interface AxisTickManager extends Element {
 	public int getMinorNumber();
 
 	/**
-	 * Set the number of minor ticks displayed between two major ticks, only when autoMinorTicks is
-	 * <code>false</code>. The actual number may be adjusted (for LOG axis), and not equal the
-	 * number set by this method.
+	 * Set the number of minor ticks displayed between two major ticks. The actual number may be
+	 * adjusted, and not equal the number set by this method.
 	 * <p>
-	 * Protocol: autoMinorTicks must be set to <code>false</code>, before calling this method,
-	 * otherwise an exception will be thrown.
+	 * Setting a new minor number will set autoMinornumber to <code>false</code>.
 	 * 
 	 * @param minors
 	 *            the number of minor ticks displayed
