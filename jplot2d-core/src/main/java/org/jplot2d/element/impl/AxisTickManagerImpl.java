@@ -109,7 +109,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	private int actualMinorNumber;
 
-	private int minorNumber = -1;
+	private int minorNumber;
 
 	private boolean autoLabelFormat = true;
 
@@ -155,16 +155,19 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	private boolean autoLabelFormatChanged;
 
-	private boolean _propNumberChanged;
+	private boolean propNumberChanged;
 
 	/**
 	 * interval or offset changed
 	 */
-	private boolean _intervalChanged;
+	private boolean intervalChanged;
 
 	private boolean _valuesChanged;
 
-	private boolean _minorNumberChanged;
+	/**
+	 * The minorNumber changed or autoMinorNumber changed
+	 */
+	private boolean minorNumberChanged;
 
 	private boolean _minorValuesChanged;
 
@@ -345,6 +348,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public void setAutoAdjustNumber(boolean flag) {
 		this.autoAdjustNumber = flag;
+		autoAdjustNumberChanged = true;
 	}
 
 	public int getNumber() {
@@ -353,14 +357,18 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public void setNumber(int tickNumber) {
 		this.tickNumber = tickNumber;
+		propNumberChanged = true;
 	}
 
 	public boolean getAutoInterval() {
 		return autoInterval;
 	}
 
-	public void setAutoInterval(boolean ati) {
-		this.autoInterval = ati;
+	public void setAutoInterval(boolean autoInterval) {
+		if (this.autoInterval != autoInterval) {
+			this.autoInterval = autoInterval;
+			autoIntervalChanged = true;
+		}
 	}
 
 	public double getInterval() {
@@ -372,11 +380,26 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setInterval(double interval) {
-		this.interval = interval;
+		if (Double.isNaN(interval) || Double.isInfinite(interval)) {
+			throw new IllegalArgumentException("tick interval can not be NaN or Infinit.");
+		}
+		if (this.interval != interval) {
+			this.interval = interval;
+			intervalChanged = true;
+			setAutoInterval(false);
+		}
+
 	}
 
 	public void setOffset(double offset) {
-		this.offset = offset;
+		if (Double.isNaN(interval) || Double.isInfinite(interval)) {
+			throw new IllegalArgumentException("tick offset can not be NaN or Infinit.");
+		}
+		if (this.offset != offset) {
+			this.offset = offset;
+			intervalChanged = true;
+			setAutoInterval(false);
+		}
 	}
 
 	public boolean isAutoValues() {
@@ -384,7 +407,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setAutoValues(boolean atv) {
-		this.autoValues = atv;
+		if (this.autoValues != atv) {
+			this.autoValues = atv;
+			this.autoValuesChanged = true;
+		}
 	}
 
 	public Object getFixedValues() {
@@ -393,6 +419,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public void setFixedValues(Object values) {
 		this.fixedValues = values;
+		setAutoValues(false);
 	}
 
 	public Object getFixedMinorValues() {
@@ -408,7 +435,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setAutoMinorNumber(boolean flag) {
-		this.autoMinorNumber = flag;
+		if (this.autoMinorNumber != flag) {
+			this.autoMinorNumber = flag;
+			minorNumberChanged = true;
+		}
 	}
 
 	public int getMinorNumber() {
@@ -416,7 +446,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setMinorNumber(int minors) {
-		this.minorNumber = minors;
+		if (this.minorNumber != minors) {
+			this.minorNumber = minors;
+			minorNumberChanged = true;
+			setAutoMinorNumber(false);
+		}
 	}
 
 	/* =========================== Labels ============================= */
@@ -568,16 +602,18 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		if (autoValues) {
 			if (autoInterval) {
 				if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged
-						|| _propNumberChanged || _minorNumberChanged || _tickAlgorithmChanged
+						|| propNumberChanged || minorNumberChanged || _tickAlgorithmChanged
 						|| _axisCircularRangeChanged || _rangeChanged) {
-					tickCalculator.calcValuesByTickNumber(tickNumber, minorNumber);
+					tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1
+							: minorNumber);
 					interval = tickCalculator.getInterval();
 					actualMinorNumber = tickCalculator.getMinorNumber();
 				}
 			} else {
-				if (autoValuesChanged || _intervalChanged || _minorNumberChanged
+				if (autoValuesChanged || intervalChanged || minorNumberChanged
 						|| _tickAlgorithmChanged || _axisCircularRangeChanged || _rangeChanged) {
-					tickCalculator.calcValuesByTickInterval(interval, offset, minorNumber);
+					tickCalculator.calcValuesByTickInterval(interval, offset, autoMinorNumber ? -1
+							: minorNumber);
 					actualMinorNumber = tickCalculator.getMinorNumber();
 				}
 			}
@@ -601,8 +637,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 
 		autoIntervalChanged = autoAdjustNumberChanged = false;
-		_propNumberChanged = _minorNumberChanged = false;
-		_intervalChanged = false;
+		propNumberChanged = minorNumberChanged = false;
+		intervalChanged = false;
 		autoValuesChanged = _rangeChanged = _tickAlgorithmChanged = false;
 
 		/* calculate auto format & labels form values */
@@ -672,14 +708,14 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 		/* Nothing changed */
 		if (!(autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged
-				|| _propNumberChanged || _minorNumberChanged || autoLabelFormatChanged
+				|| propNumberChanged || minorNumberChanged || autoLabelFormatChanged
 				|| _labelFormatChanged || _labelMaxDensityChanged || _tickAlgorithmChanged
 				|| _trfChanged || _rangeChanged)) {
 			return;
 		}
 
 		autoValuesChanged = autoIntervalChanged = autoAdjustNumberChanged = false;
-		_propNumberChanged = _minorNumberChanged = false;
+		propNumberChanged = minorNumberChanged = false;
 		autoLabelFormatChanged = _labelFormatChanged = false;
 		_labelMaxDensityChanged = false;
 		_tickAlgorithmChanged = _trfChanged = false;
@@ -692,7 +728,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		MathElement[] autoLabels;
 		MathElement[] labels;
 		while (true) {
-			tickCalculator.calcValuesByTickNumber(tickNumber, minorNumber);
+			tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1 : minorNumber);
 			values = tickCalculator.getValues();
 			if (autoLabelFormat) {
 				labelTextFormat = tickCalculator
