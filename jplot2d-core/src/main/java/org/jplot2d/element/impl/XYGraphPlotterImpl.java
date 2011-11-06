@@ -583,8 +583,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 				double safScale = scale * plotter.getSymbolSize();
 				AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
-				maf.scale(safScale, safScale);
-				maf.concatenate(ss.getSymbolTransform());
+				maf.scale(safScale, -safScale);
 
 				Iterator<Shape> dit = ss.getDrawShapeIterator();
 				while (dit.hasNext()) {

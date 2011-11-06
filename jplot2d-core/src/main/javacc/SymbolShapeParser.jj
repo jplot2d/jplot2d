@@ -25,26 +25,8 @@ import java.util.ArrayList;
 
 public class SymbolShapeParser {
 
-    private double _uow, _uoh;
-    private double _xoff, _yoff;
     private ArrayList<Shape> _drawShapeList = new ArrayList<Shape>();
     private ArrayList<Shape> _fillShapeList = new ArrayList<Shape>();
-
-    public double getUOW() {
-        return _uow;
-    }
-
-    public double getUOH() {
-        return _uoh;
-    }
-
-    public double getXoff() {
-        return _xoff;
-    }
-
-    public double getYoff() {
-        return _yoff;
-    }
 
     public ArrayList<Shape> getDrawShapeList() {
         return _drawShapeList;
@@ -76,35 +58,7 @@ public void parse(String s) :
 		_fillShapeList.clear();
 }
 {
-    "{" uow() "," uoh() "," xoff() "," yoff() (shape())+ "}" <EOF>
-}
-
-private void uow() :
-{   double n;}
-{
-    n=num()
-  { _uow = n; }
-}
-
-private void uoh() :
-{   double n;}
-{
-	n=num()
-  { _uoh = n;}
-}
-
-private void xoff() :
-{   double n;}
-{
-    n=num()
-  { _xoff = n;}
-}
-
-private void yoff() :
-{   double n;}
-{
-    n=num()
-  { _yoff = n;}
+    "{" (shape())+ "}" <EOF>
 }
 
 private void shape() :

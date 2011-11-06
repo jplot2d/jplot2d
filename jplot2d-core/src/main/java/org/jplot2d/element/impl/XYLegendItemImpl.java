@@ -155,7 +155,6 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 			AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
 			maf.scale(SYMBOL_SIZE, SYMBOL_SIZE);
-			maf.concatenate(ss.getSymbolTransform());
 
 			Iterator<Shape> dit = ss.getDrawShapeIterator();
 			while (dit.hasNext()) {

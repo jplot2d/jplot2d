@@ -1,28 +1,24 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * $Id: SymbolShape.java,v 1.9 2010/08/17 07:55:40 jli Exp $
+ * Copyright 2010, 2011 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.util;
 
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -38,24 +34,19 @@ import org.jplot2d.javacc.TokenMgrError;
 /**
  * SymbolShape has a unique id, a name and data to direct how to paint it.
  * <p>
- * The instance is immutable! This class also mantain a internal collection to
- * keep all created symbol shapes. User can call the static method
- * {@link #getSymbolShapes()} to get them.
+ * The instance is immutable! This class also maintains a internal collection to keep all created
+ * symbol shapes. User can call the static method {@link #getSymbolShapes()} to get them.
  * <p>
- * A symbol is paint in a square, with a base point. The data syntax (in EBNF):
+ * A symbol is painted in an 1-unit circle boundary. The data syntax (in EBNF):
  * 
  * <pre>
- *         syntax = &quot;{&quot; UOW &quot;,&quot; UOH &quot;,&quot; XOFF &quot;,&quot; YOFF SHAPE+ &quot;}&quot;
- *         UOW = NUM
- *         UOH = NUM
- *         XOFF = NUM
- *         YOFF = NUM
+ *         syntax = &quot;{&quot; SHAPE+ &quot;}&quot;
  *         SHAPE = FILLEDSHAPE | OUTLINESHAPE
  *         FILLEDSHAPE = &quot;F&quot; SHAPEDESC
  *         OUTLINESHAPE = SHAPEDESC
  *         SHAPEDESC = LINE | ARC | CIRCLE | ELLIPSE | RECTANGLE | POLYGON
  *         LINE = &quot;L&quot; LINE_DATA
- *         LINEDATA = POINT POINT
+ *         LINE_DATA = POINT POINT
  *         ARC = OPENARC | CHORDARC | PIEARC
  *         OPENARC = &quot;A&quot; ARC_DARTA
  *         CHORDARC = &quot;AC&quot; ARC_DARTA
@@ -75,22 +66,16 @@ import org.jplot2d.javacc.TokenMgrError;
  * </pre>
  * 
  * <p>
- * <dl>
- * <dt>UOW UOH</dt>
- * <dd>the number of unit in width and height.
- * <dd>
- * <dt>XOFF YOFF</dt>
- * <dd>the x and y offset of the base point by the center of the square.</dd>
  * <dt>RECTANGLE</dt>
- * <dd>is represented by a pair of end points of a diagonal or by x,y of bottom
- * left corner point and width and height.</dd>
+ * <dd>is represented by a pair of end points of a diagonal or by x,y of bottom left corner point
+ * and width and height.</dd>
  * <dt>ELLIPSE</dt>
  * <dd>is represented by a bounding RECTANGLE.</dd>
  * <dt>CIRLE</dt>
  * <dd>is represented by a center point and radius.</dd>
  * <dt>ARC</dt>
- * <dd>is represented by a ELLIPSE bounding rectangle and a ANGLERANGE, which is
- * defined by starting angle and angular extent in degrees.</dd>
+ * <dd>is represented by a ELLIPSE bounding rectangle and a ANGLERANGE, which is defined by starting
+ * angle and angular extent in degrees.</dd>
  * </dl>
  * </p>
  * 
@@ -113,101 +98,82 @@ public final class SymbolShape implements Serializable {
 	/**
 	 * DOT is a 0-length line
 	 */
-	public static final SymbolShape DOT = new SymbolShape("DOT",
-			"{2,2,0,0 L(0,0)(0,0)}");
+	public static final SymbolShape DOT = new SymbolShape("DOT", "{L(0,0)(0,0)}");
 
 	public static final SymbolShape VCROSS = new SymbolShape("VCROSS",
-			"{2,2,0,0 L(-1,0)(1,0) L(0,-1)(0,1)}");
+			"{L(-0.5,0)(0.5,0) L(0,-0.5)(0,0.5)}");
 
 	public static final SymbolShape DCROSS = new SymbolShape("DCROSS",
-			"{2,2,0,0 L(-1,-1)(1,1) L(-1,1)(1,-1)}");
+			"{L(-0.707,-0.707)(0.707,0.707) L(-0.707,0.707)(0.707,-0.707)}");
 
 	public static final SymbolShape VDCROSS = new SymbolShape("VDCROSS",
-			"{2,2,0,0 L(-1,0)(1,0) L(0,-1)(0,1) L(-1,-1)(1,1) L(-1,1)(1,-1)}");
+			"{L(-0.5,0)(0.5,0) L(0,-0.5)(0,0.5) L(-0.707,-0.707)(0.707,0.707) L(-0.707,0.707)(0.707,-0.707)}");
 
-	public static final SymbolShape CIRCLE = new SymbolShape("CIRCLE",
-			"{2,2,0,0 C(0,0,1)}");
+	public static final SymbolShape CIRCLE = new SymbolShape("CIRCLE", "{C(0,0,0.5)}");
+
+	public static final SymbolShape FCIRCLE = new SymbolShape("FCIRCLE", "{FC(0,0,0.5)}");
 
 	public static final SymbolShape TRIANGLE = new SymbolShape("TRIANGLE",
-			"{2,2,0,0 P(-0.866,-0.5)(0.866,-0.5)(0,1)}");
+			"{P(-0.433,-0.25)(0.433,-0.25)(0,0.5)}");
+
+	public static final SymbolShape FTRIANGLE = new SymbolShape("FTRIANGLE",
+			"{FP(-0.433,-0.25)(0.433,-0.25)(0,0.5)}");
 
 	public static final SymbolShape UTRIANGLE = new SymbolShape("UTRIANGLE",
-			"{2,2,0,0 P(-0.866,0.5)(0.866,0.5)(0,-1)}");
+			"{P(-0.433,0.25)(0.433,0.25)(0,-0.5)}");
 
 	public static final SymbolShape SQUARE = new SymbolShape("SQUARE",
-			"{2,2,0,0 R(-1,-1,2,2)}");
+			"{R(-0.354,-0.354)(0.354,0.354)}");
 
-	public static final SymbolShape SQUARE_CROSS = new SymbolShape(
-			"SQUARE_CROSS",
-			"{2,2,0,0 R(-1,-1,2,2) L(-1,-1)(1,1) L(-1,1)(1,-1)}");
+	public static final SymbolShape FSQUARE = new SymbolShape("FSQUARE",
+			"{FR(-0.354,-0.354)(0.354,0.354)}");
+
+	public static final SymbolShape SQUARE_CROSS = new SymbolShape("SQUARE_CROSS",
+			"{R(-0.354,-0.354)(0.354,0.354) L(-0.354,-0.354)(0.354,0.354) L(-0.354,0.354)(0.354,-0.354)}");
 
 	public static final SymbolShape DIAMOND = new SymbolShape("DIAMOND",
-			"{2,2,0,0 P(-1,0)(0,-1)(1,0)(0,1)}");
+			"{P(-0.5,0)(0,-0.5)(0.5,0)(0,0.5)}");
 
-	public static final SymbolShape DIAMOND_CROSS = new SymbolShape(
-			"DIAMOND_CROSS",
-			"{2,2,0,0 P(-1,0)(0,-1)(1,0)(0,1) L(-1,0)(1,0) L(0,-1)(0,1)}");
+	public static final SymbolShape FDIAMOND = new SymbolShape("FDIAMOND",
+			"{FP(-0.5,0)(0,-0.5)(0.5,0)(0,0.5)}");
+
+	public static final SymbolShape DIAMOND_CROSS = new SymbolShape("DIAMOND_CROSS",
+			"{P(-0.5,0)(0,-0.5)(0.5,0)(0,0.5) L(-0.5,0)(0.5,0) L(0,-0.5)(0,0.5)}");
 
 	public static final SymbolShape OCTAGON = new SymbolShape(
 			"OCTAGON",
-			"{2,2,0,0 P(-1,-0.4142)(-0.4142,-1)(0.4142,-1)(1,-0.4142)(1,0.4142)(0.4142,1)(-0.4142,1)(-1,0.4142)}");
-
-	public static final SymbolShape STAR = new SymbolShape(
-			"STAR",
-			"{2,2,0,0 P(-0.9511,0.3090)(0.9511,0.3090)(-0.5878, -0.8090)(0,1)(0.5878,-0.8090)}");
-
-	public static final SymbolShape FCIRCLE = new SymbolShape("FCIRCLE",
-			"{2,2,0,0 FC(0,0,1)}");
-
-	public static final SymbolShape FTRIANGLE = new SymbolShape("FTRIANGLE",
-			"{2,2,0,0 FP(-0.866,-0.5)(0.866,-0.5)(0,1)}");
-
-	public static final SymbolShape FSQUARE = new SymbolShape("FSQUARE",
-			"{2,2,0,0 FR(-1,-1,2,2)}");
-
-	public static final SymbolShape FDIAMOND = new SymbolShape("FDIAMOND",
-			"{2,2,0,0 FP(-1,0)(0,-1)(1,0)(0,1)}");
+			"{P(-0.4619,-0.1913)(-0.1913,-0.4619)(0.1913,-0.4619)(0.4619,-0.1913)(0.4619,0.1913)(0.1913,0.4619)(-0.1913,0.4619)(-0.4619,0.1913)}");
 
 	public static final SymbolShape FOCTAGON = new SymbolShape(
 			"FOCTAGON",
-			"{2,2,0,0 FP(-1,-0.4142)(-0.4142,-1)(0.4142,-1)(1,-0.4142)(1,0.4142)(0.4142,1)(-0.4142,1)(-1,0.4142)}");
+			"{FP(-0.4619,-0.1913)(-0.1913,-0.4619)(0.1913,-0.4619)(0.4619,-0.1913)(0.4619,0.1913)(0.1913,0.4619)(-0.1913,0.4619)(-0.4619,0.1913)}");
+
+	public static final SymbolShape STAR = new SymbolShape("STAR",
+			"{P(-0.4755,0.1545)(0.4755,0.1545)(-0.2939, -0.4045)(0,1)(0.2939,-0.4045)}");
 
 	public static final SymbolShape UARROW = new SymbolShape("UARROW",
-			"{2,2,0,0 L(0,-1)(0,0) L(0,0)(-0.5,-0.5) L(0,0)(0.5,-0.5)}");
+			"{L(0,-0.5)(0,0) L(0,0)(-0.25,-0.25) L(0,0)(0.25,-0.25)}");
 
 	public static final SymbolShape DARROW = new SymbolShape("DARROW",
-			"{2,2,0,0 L(0,1)(0,0) L(0,0)(-0.5,0.5) L(0,0)(0.5,0.5)}");
+			"{L(0,0.5)(0,0) L(0,0)(-0.25,0.25) L(0,0)(0.25,0.25)}");
 
 	public static final SymbolShape RARROW = new SymbolShape("RARROW",
-			"{2,2,0,0 L(-1,0)(0,0) L(0,0)(-0.5,0.5) L(0,0)(-0.5,-0.5)}");
+			"{L(-0.5,0)(0,0) L(0,0)(-0.25,0.25) L(0,0)(-0.25,-0.25)}");
 
 	public static final SymbolShape LARROW = new SymbolShape("LARROW",
-			"{2,2,0,0 L(1,0)(0,0) L(0,0)(0.5,-0.5) L(0,0)(0.5,0.5)}");
+			"{L(0.5,0)(0,0) L(0,0)(0.25,-0.25) L(0,0)(0.25,0.25)}");
 
-	public static final SymbolShape DARROW_LARGE = new SymbolShape(
-			"DARROW_LARGE", "{2,2,0,0 L(0,1)(0,-1) L(0,-1)(-1,0) L(0,-1)(1,0)}");
+	public static final SymbolShape UARROW_TAIL = new SymbolShape("UARROW_TAIL",
+			"{L(0,0)(0,0.5) L(0,0.5)(-0.25,0.25) L(0,0.5)(0.25,0.25)}");
 
-	public static final SymbolShape UARROW_TRIANGLE = new SymbolShape(
-			"UARROW_TRIANGLE", "{2,2,0,0 L(0,-1)(0,1) P(-1,0)(1,0)(0,1)}");
+	public static final SymbolShape DARROW_TAIL = new SymbolShape("DARROW_TAIL",
+			"{L(0,0)(0,-0.5) L(0,-0.5)(-0.25,-0.25) L(0,-0.5)(0.25,-0.25)}");
 
-	public static final SymbolShape DARROW_TRIANGLE = new SymbolShape(
-			"DARROW_TRIANGLE", "{2,2,0,0 L(0,1)(0,-1) P(-1,0)(1,0)(0,-1)}");
+	public static final SymbolShape RARROW_TAIL = new SymbolShape("RARROW_TAIL",
+			"{L(0,0)(0.5,0) L(0.5,0)(0.25,0.25) L(0.5,0)(0.25,-0.25)}");
 
-	public static final SymbolShape UARROW_TAIL = new SymbolShape(
-			"UARROW_TAIL",
-			"{2,2,0,0 L(0,0)(0,1) L(0,1)(-0.5,0.5) L(0,1)(0.5,0.5)}");
-
-	public static final SymbolShape DARROW_TAIL = new SymbolShape(
-			"DARROW_TAIL",
-			"{2,2,0,0 L(0,0)(0,-1) L(0,-1)(-0.5,-0.5) L(0,-1)(0.5,-0.5)}");
-
-	public static final SymbolShape RARROW_TAIL = new SymbolShape(
-			"RARROW_TAIL",
-			"{2,2,0,0 L(0,0)(1,0) L(1,0)(0.5,0.5) L(1,0)(0.5,-0.5)}");
-
-	public static final SymbolShape LARROW_TAIL = new SymbolShape(
-			"LARROW_TAIL",
-			"{2,2,0,0 L(0,0)(-1,0) L(-1,0)(-0.5,-0.5) L(-1,0)(-0.5,0.5)}");
+	public static final SymbolShape LARROW_TAIL = new SymbolShape("LARROW_TAIL",
+			"{L(0,0)(-0.5,0) L(-0.5,0)(-0.25,-0.25) L(-0.5,0)(-0.25,0.25)}");
 
 	/**
 	 * Returns all symbol shapes in a array.
@@ -216,29 +182,19 @@ public final class SymbolShape implements Serializable {
 	 */
 	public static SymbolShape[] getSymbolShapes() {
 		synchronized (_symbolMap) {
-			return _symbolMap.values().toArray(
-					new SymbolShape[_symbolMap.size()]);
+			return _symbolMap.values().toArray(new SymbolShape[_symbolMap.size()]);
 		}
 	}
 
 	// =========================================================
 
-	private String _name;
+	private String name;
 
-	private String _data;
+	private String data;
 
-	/**
-	 * units of width; unit of height. Normally, the 2 number is same. This 2
-	 * variables define a rectangle. The rectangle will scale to 1x1 square when
-	 * rendering.
-	 */
-	private double _uow, _uoh;
+	private final List<Shape> drawShapeList = new ArrayList<Shape>();
 
-	private double _xoff, _yoff;
-
-	private final List<Shape> _drawShapeList = new ArrayList<Shape>();
-
-	private final List<Shape> _fillShapeList = new ArrayList<Shape>();
+	private final List<Shape> fillShapeList = new ArrayList<Shape>();
 
 	/**
 	 * Create a symbol with a name and a description string
@@ -249,11 +205,10 @@ public final class SymbolShape implements Serializable {
 	 */
 	public SymbolShape(String name, String data) {
 		if (name.indexOf('{') != -1) {
-			throw new IllegalArgumentException(
-					"The char '{' is not allowed in name.");
+			throw new IllegalArgumentException("The char '{' is not allowed in name.");
 		}
-		_name = name;
-		_data = data;
+		this.name = name;
+		this.data = data;
 		this.parseData(data);
 		synchronized (_symbolMap) {
 			_symbolMap.put(name, this);
@@ -266,7 +221,7 @@ public final class SymbolShape implements Serializable {
 	 * @return the symbol name
 	 */
 	public String getName() {
-		return _name;
+		return name;
 	}
 
 	/**
@@ -275,21 +230,7 @@ public final class SymbolShape implements Serializable {
 	 * @return the data string
 	 */
 	public String getData() {
-		return _data;
-	}
-
-	/**
-	 * Returns a AffineTransform to apply to Grapgics2D before painting the
-	 * symbol.
-	 * 
-	 * @return a AffineTransform.
-	 */
-	public AffineTransform getSymbolTransform() {
-		// the -1 convert coordinate from Cartesian to device
-		AffineTransform tf = AffineTransform.getScaleInstance(1 / _uow, -1
-				/ _uoh);
-		tf.translate(-_xoff, -_yoff);
-		return tf;
+		return data;
 	}
 
 	/**
@@ -298,7 +239,7 @@ public final class SymbolShape implements Serializable {
 	 * @return a iterator over the draw shapes.
 	 */
 	public Iterator<Shape> getDrawShapeIterator() {
-		return this._drawShapeList.iterator();
+		return this.drawShapeList.iterator();
 	}
 
 	/**
@@ -307,7 +248,7 @@ public final class SymbolShape implements Serializable {
 	 * @return a iterator over the fill shapes.
 	 */
 	public Iterator<Shape> getFillShapeIterator() {
-		return this._fillShapeList.iterator();
+		return this.fillShapeList.iterator();
 	}
 
 	private void parseData(String data) {
@@ -317,31 +258,25 @@ public final class SymbolShape implements Serializable {
 		SymbolShapeParser ssp = parserTL.get();
 		try {
 			ssp.parse(data);
-			_uow = ssp.getUOW();
-			_uoh = ssp.getUOH();
-			_xoff = ssp.getXoff();
-			_yoff = ssp.getYoff();
-			_drawShapeList.addAll(ssp.getDrawShapeList());
-			_fillShapeList.addAll(ssp.getFillShapeList());
+			drawShapeList.addAll(ssp.getDrawShapeList());
+			fillShapeList.addAll(ssp.getFillShapeList());
 		} catch (ParseException e) {
-			throw new IllegalArgumentException(
-					"the syntax of data is not correct", e);
+			throw new IllegalArgumentException("the syntax of data is not correct", e);
 		} catch (TokenMgrError e) {
-			throw new IllegalArgumentException(
-					"the syntax of data is not correct", e);
+			throw new IllegalArgumentException("the syntax of data is not correct", e);
 		}
 	}
 
 	public boolean equals(Object obj) {
-		return obj instanceof SymbolShape && _name == ((SymbolShape) obj)._name;
+		return obj instanceof SymbolShape && name == ((SymbolShape) obj).name;
 	}
 
 	public int hashCode() {
-		return _name.hashCode();
+		return name.hashCode();
 	}
 
 	public String toString() {
-		return _name;
+		return name;
 	}
 
 }
