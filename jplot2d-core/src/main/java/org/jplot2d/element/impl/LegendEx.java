@@ -29,9 +29,9 @@ public interface LegendEx extends Legend, ComponentEx {
 	public PlotEx getParent();
 
 	/**
-	 * Add the given item to this legend. If this legend is disabled, the item
-	 * should be added to its 1st enabled upper level legend. This method will
-	 * set the legend property of added item to the actual hosting legend.
+	 * Add the given item to this legend. If this legend is disabled, the item should be added to
+	 * its 1st enabled upper level legend. This method will set the legend property of added item to
+	 * the actual hosting legend.
 	 * 
 	 * @param item
 	 *            the legend item to be added
@@ -39,8 +39,8 @@ public interface LegendEx extends Legend, ComponentEx {
 	public void addLegendItem(LegendItemEx item);
 
 	/**
-	 * Remove the given item from this legend. If this legend is disabled, the
-	 * item should be removed from its hosting legend.
+	 * Remove the given item from this legend. If this legend is disabled, the item should be
+	 * removed from its hosting legend.
 	 * 
 	 * @param item
 	 *            the legend item to be removed
@@ -58,22 +58,17 @@ public interface LegendEx extends Legend, ComponentEx {
 	public void itemVisibleChanged(LegendItemImpl item);
 
 	/**
-	 * Returns the thickness of this legend. When position is on top or bottom,
-	 * thickness is its height. When position is on left or right, thickness is
-	 * its width.
+	 * Returns the thickness of this legend. When position is on top or bottom, thickness is its
+	 * height. When position is on left or right, thickness is its width.
 	 * 
 	 * @return the thickness of this legend
 	 */
 	public double getThickness();
 
 	/**
-	 * Called by plot to calculate size of this legend.
+	 * Calculate size of this legend and re-layout legend items. This method is always called by
+	 * plot when committing changes.
 	 */
 	public void calcSize();
-
-	/**
-	 * Locate all items of this legend.
-	 */
-	public void layoutItems();
 
 }
