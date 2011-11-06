@@ -33,7 +33,7 @@ import org.jplot2d.annotation.PropertyGroup;
 public interface Legend extends MovableComponent {
 
 	public enum Position {
-		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
+		FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
 	};
 
 	/**
@@ -61,8 +61,9 @@ public interface Legend extends MovableComponent {
 	public Position getPosition();
 
 	/**
-	 * Sets the position of this legend. Only when position is <code>null</code> , the legend can be
-	 * located by {@link #setLocation(Point2D)}, {@link #setHAlign()} , {@link #setVAlign()}.
+	 * Sets the position of this legend. Only when position is <code>Position.FREE</code> , the
+	 * legend can be located by {@link #setLocation(Point2D)}, {@link #setHAlign()} ,
+	 * {@link #setVAlign()}.
 	 * 
 	 * @param position
 	 *            the position of this legend.
@@ -157,6 +158,21 @@ public interface Legend extends MovableComponent {
 	 *            number of columns
 	 */
 	public void setColumns(int columns);
+
+	/**
+	 * Returns <code>true</code> if the legend border is visible
+	 * 
+	 * @return <code>true</code> if the legend border is visible
+	 */
+	public boolean isBorderVisible();
+
+	/**
+	 * Sets if the legend border is visible. By default, the legend border is visible.
+	 * 
+	 * @param visible
+	 *            the flag to indicate if the legend border is visible
+	 */
+	public void setBorderVisible(boolean visible);
 
 	@Property(order = 6)
 	public boolean isMovable();

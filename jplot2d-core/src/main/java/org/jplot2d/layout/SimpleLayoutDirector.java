@@ -359,21 +359,18 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
-				legend.layoutItems();
 				break;
 			case LEFTMIDDLE:
 				xloc -= LEGEND_GAP;
 				legend.setLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.MIDDLE);
-				legend.layoutItems();
 				break;
 			case LEFTBOTTOM:
 				xloc -= LEGEND_GAP;
 				legend.setLocation(xloc, 0);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
-				legend.layoutItems();
 				break;
 			}
 		}
@@ -415,21 +412,18 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
-				legend.layoutItems();
 				break;
 			case RIGHTMIDDLE:
 				xloc += LEGEND_GAP;
 				legend.setLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.MIDDLE);
-				legend.layoutItems();
 				break;
 			case RIGHTBOTTOM:
 				xloc += LEGEND_GAP;
 				legend.setLocation(xloc, 0);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
-				legend.layoutItems();
 				break;
 			}
 		}
@@ -471,7 +465,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
-				legend.layoutItems();
 				yloc += legend.getSize().getHeight();
 				break;
 			case TOPCENTER:
@@ -479,7 +472,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.BOTTOM);
-				legend.layoutItems();
 				yloc += legend.getSize().getHeight();
 				break;
 			case TOPRIGHT:
@@ -487,7 +479,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
-				legend.layoutItems();
 				yloc += legend.getSize().getHeight();
 				break;
 			}
@@ -563,7 +554,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
-				legend.layoutItems();
 				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMCENTER:
@@ -571,7 +561,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.TOP);
-				legend.layoutItems();
 				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMRIGHT:
@@ -579,7 +568,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 				legend.setLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
-				legend.layoutItems();
 				yloc -= legend.getSize().getHeight();
 				break;
 			}
