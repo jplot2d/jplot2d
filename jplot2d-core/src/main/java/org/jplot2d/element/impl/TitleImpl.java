@@ -45,9 +45,9 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 
 	private MathElement textModel;
 
-	private HAlign hAlign;
+	private HAlign hAlign = HAlign.CENTER;
 
-	private VAlign vAlign;
+	private VAlign vAlign = VAlign.BOTTOM;
 
 	private MathLabel label;
 
@@ -59,8 +59,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	private Rectangle2D bounds = new Rectangle2D.Double();
 
 	public TitleImpl() {
-		hAlign = HAlign.CENTER;
-		vAlign = VAlign.MIDDLE;
+		setSelectable(true);
 	}
 
 	public String getId() {
@@ -175,7 +174,13 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void setPosition(Position position) {
-		this.position = position;
+		if (position == null) {
+			position = Position.FREE;
+		}
+		if (this.position != position) {
+			this.position = position;
+			invalidatePlot();
+		}
 	}
 
 	public double getGapFactor() {
@@ -193,7 +198,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	 * Invalidate the parent plot when its position is not null.
 	 */
 	private void invalidatePlot() {
-		if (getParent() != null && position != null) {
+		if (isVisible() && getParent() != null) {
 			getParent().invalidate();
 		}
 	}
