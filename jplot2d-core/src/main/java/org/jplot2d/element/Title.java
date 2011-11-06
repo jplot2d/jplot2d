@@ -33,7 +33,7 @@ import org.jplot2d.annotation.PropertyGroup;
 public interface Title extends TextComponent, MovableComponent {
 
 	public static enum Position {
-		TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT
+		FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT
 	};
 
 	/**
@@ -45,9 +45,9 @@ public interface Title extends TextComponent, MovableComponent {
 	public Position getPosition();
 
 	/**
-	 * Sets the position of this title. Possible value is TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT,
-	 * BOTTOMCENTER, BOTTOMRIGHT. Only when position is <code>null</code>, the title can be located
-	 * by {@link #setLocation(Point2D)}, {@link #setHAlign()}, {@link #setVAlign()} .
+	 * Sets the position of this title. Possible value is FREE, TOPLEFT, TOPCENTER, TOPRIGHT,
+	 * BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT. Only when position is <code>FREE</code>, the title can
+	 * be located by {@link #setLocation(Point2D)}, {@link #setHAlign()}, {@link #setVAlign()} .
 	 * 
 	 * @param position
 	 *            the position of this title.
