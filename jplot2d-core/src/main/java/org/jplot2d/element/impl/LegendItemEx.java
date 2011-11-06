@@ -42,6 +42,13 @@ public interface LegendItemEx extends LegendItem, ElementEx {
 	 */
 	public void setLocation(double locx, double locy);
 
+	/**
+	 * This method is called by LegendImpl. The given g has been transformed to legend's paper
+	 * space.
+	 * 
+	 * @param g
+	 *            the graphic to draw.
+	 */
 	public void draw(Graphics2D g);
 
 }
