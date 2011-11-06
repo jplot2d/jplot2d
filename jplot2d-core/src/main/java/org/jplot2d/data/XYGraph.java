@@ -21,8 +21,8 @@ package org.jplot2d.data;
 import org.jplot2d.util.Range;
 
 /**
- * Effectively Immutable. This class keep (x,y) data pairs and compute data feature such as max/min,
- * NaN indexes.
+ * Immutable. This class keep (x,y) data pairs and compute data feature such as max/min, NaN
+ * indexes.
  * 
  * @author Jingjing Li
  */
@@ -364,24 +364,6 @@ public final class XYGraph implements Graph {
 
 	public double getYErrorHigh(int idx) {
 		return _errorY.getQDouble(idx);
-	}
-
-	public XYGraph setErrorX(ArrayPair arrayPair) {
-		XYGraph nld = new XYGraph(_xy, arrayPair, _errorY);
-		return nld;
-	}
-
-	public XYGraph appendErrorX(ArrayPair arrayPair) {
-		return setErrorX(_errorX.append(arrayPair));
-	}
-
-	public XYGraph setErrorY(ArrayPair arrayPair) {
-		XYGraph nld = new XYGraph(_xy, _errorX, arrayPair);
-		return nld;
-	}
-
-	public XYGraph appendErrorY(ArrayPair arrayPair) {
-		return setErrorY(_errorY.append(arrayPair));
 	}
 
 }
