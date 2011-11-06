@@ -18,8 +18,10 @@
  */
 package org.jplot2d.element;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Stroke;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
@@ -366,12 +368,41 @@ public class ElementFactory {
 		return createXYGraphPlotter(new ArrayPair(xarray, yarray), name);
 	}
 
+	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray,
+			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh) {
+		return createXYGraphPlotter(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh,
+				null);
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray,
+			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh,
+			String name) {
+		ArrayPair errorX = null;
+		if (xErrorLow != null && xErrorHigh != null) {
+			errorX = new ArrayPair(xErrorLow, xErrorHigh);
+		}
+		ArrayPair errorY = null;
+		if (yErrorLow != null && yErrorHigh != null) {
+			errorY = new ArrayPair(yErrorLow, yErrorHigh);
+		}
+		return createXYGraphPlotter(new ArrayPair(xarray, yarray), errorX, errorY, name);
+	}
+
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy) {
 		return createXYGraphPlotter(new XYGraph(xy));
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, String name) {
 		return createXYGraphPlotter(new XYGraph(xy), name);
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
+		return createXYGraphPlotter(new XYGraph(xy, errorX, errorY));
+	}
+
+	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
+			String name) {
+		return createXYGraphPlotter(new XYGraph(xy, errorX, errorY), name);
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(XYGraph graph) {
@@ -485,4 +516,8 @@ public class ElementFactory {
 		return markerProxy;
 	}
 
+	public Stroke createStroke(float width, float[] dash) {
+		return new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dash,
+				0f);
+	}
 }
