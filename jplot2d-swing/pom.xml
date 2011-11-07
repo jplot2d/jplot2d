@@ -15,11 +15,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>${project.artifactId}-${project.version}-all</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<descriptors>
+						<descriptor>../jar-jplot2d-dependencies.xml</descriptor>
+						<descriptor>../zip-ext-libs.xml</descriptor>
+					</descriptors>
 				</configuration>
 				<executions>
 					<execution>
