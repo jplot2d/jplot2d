@@ -201,6 +201,8 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		for (AxisTickManagerEx atm : tickManagers) {
 			atm.transformTypeChanged();
 		}
+
+		group.validateAxesRange();
 	}
 
 	public void changeTransformType(TransformType txfType) {
