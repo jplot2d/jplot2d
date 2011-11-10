@@ -27,7 +27,8 @@ import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
- * The space are distributed to subplots according to ratio of their preferedContentSize.
+ * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio
+ * of their preferedContentSize.
  * 
  * @author Jingjing Li
  * 
@@ -101,7 +102,6 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 		GridCellGeom cellGeom = new GridCellGeom(cellWidthMap, cellHeightMap);
 
-		Dimension2D cbnds = plot.getContentSize();
 		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
@@ -109,10 +109,9 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 			// the paper bottom-left of a grid in chart(root layer)
 			double cws = cellGeom.getSumWidthLeft(col);
-			double chs = cellGeom.getSumHeightTop(row);
-			double pX = cws + col * hgap + marginGeom.getLeft(col);
-			double pY = cbnds.getHeight() - chs - cellGeom.getHeight(row) - row * vgap
-					+ marginGeom.getBottom(row);
+			double chs = cellGeom.getSumHeightBelow(row);
+			double pX = cws + marginGeom.getLeft(col) + col * hgap;
+			double pY = chs + marginGeom.getBottom(row) + row * vgap;
 
 			sp.setLocation(pX, pY);
 		}
