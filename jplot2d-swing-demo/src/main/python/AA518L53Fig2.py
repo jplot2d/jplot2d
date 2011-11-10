@@ -23,40 +23,41 @@ pf.size = (480, 480)
 pf.visible = 1
 
 # create subplots
-sp0 = ef.createSubplot()
-sp1 = ef.createSubplot()
-sp0.setPreferredContentSize(300, 200)
-sp1.setPreferredContentSize(300, 120)
-p.addSubplot(sp0, GridConstraint(0,0))
-p.addSubplot(sp1, GridConstraint(1,1))
+usp = ef.createSubplot()
+lsp = ef.createSubplot()
+usp.setPreferredContentSize(300, 200)
+lsp.setPreferredContentSize(300, 120)
+p.layoutDirector = GridLayoutDirector();
+p.addSubplot(usp, GridConstraint(0, 1))
+p.addSubplot(lsp, GridConstraint(0, 0))
 
-# sp0 Axes
-sp0x = ef.createAxes(2)
-sp0x[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
-sp0x[0].tickManager.range = Range.Double(10, 2e6)
-sp0x[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
-sp0x[1].labelVisible = 0
+# upper subplot Axes
+uspx = ef.createAxes(2)
+uspx[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
+uspx[0].tickManager.range = Range.Double(10, 2e6)
+uspx[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
+uspx[1].labelVisible = 0
 
-sp0y = ef.createAxes(2)
-sp0y[0].title.text = "flux density [Jy]"
-sp0y[0].tickManager.range = Range.Double(0.05, 1200)
-sp0y[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
-sp0y[1].labelVisible = 0
-sp0.addXAxes(sp0x)
-sp0.addYAxes(sp0y)
+uspy = ef.createAxes(2)
+uspy[0].title.text = "flux density [Jy]"
+uspy[0].tickManager.range = Range.Double(0.05, 1200)
+uspy[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
+uspy[1].labelVisible = 0
+usp.addXAxes(uspx)
+usp.addYAxes(uspy)
 
-# sp0 Axes
-sp1x = ef.createAxes(2)
-sp1x[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
-sp1x[0].tickManager.range = Range.Double(10, 1500)
-sp1x[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
-sp1x[1].labelVisible = 0
+# lower subplot Axes
+lspx = ef.createAxes(2)
+lspx[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
+lspx[0].tickManager.range = Range.Double(10, 1500)
+lspx[0].tickManager.axisTransform.type = TransformType.LOGARITHMIC
+lspx[1].labelVisible = 0
 
-sp1y = ef.createAxes(2)
-sp1y[0].title.text = "residual [Jy]"
-sp1y[0].tickManager.range = Range.Double(-0.7, 0.7)
-sp1y[1].labelVisible = 0
-sp1.addXAxes(sp1x)
-sp1.addYAxes(sp1y)
+lspy = ef.createAxes(2)
+lspy[0].title.text = "residual [Jy]"
+lspy[0].tickManager.range = Range.Double(-0.7, 0.7)
+lspy[1].labelVisible = 0
+lsp.addXAxes(lspx)
+lsp.addYAxes(lspy)
 
 # Layer
