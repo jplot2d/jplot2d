@@ -73,9 +73,10 @@ public class GridCellGeom {
 	 * Returns sum of height of all grid cells on left of the given column
 	 * 
 	 * @param col
+	 *            the column number form bottom to top
 	 * @return the sum height
 	 */
-	public double getSumHeightTop(int row) {
+	public double getSumHeightBelow(int row) {
 		double sum = 0;
 		for (SortedMap.Entry<Integer, Double> me : rowHeight.entrySet()) {
 			int r = me.getKey();
