@@ -106,9 +106,6 @@ public interface AxisTickManager extends Element {
 	/**
 	 * Set to <code>true</code> to indicate the tick values need to be auto calculated or
 	 * <code>false</code> to use user assigned values.
-	 * <p>
-	 * Protocol: The caller <b>must</b> call this method before calling
-	 * {@link #setFixedValues(double[])}
 	 * 
 	 * @param atv
 	 *            the flag
@@ -149,7 +146,7 @@ public interface AxisTickManager extends Element {
 	 * Set an array of <code>double</code>. If the given values is null or a empty array, no tick
 	 * will be drawn.
 	 * <p>
-	 * Protocol: The autoValues <b>must</b> be false when this method is called.
+	 * This method <b>must</b> be called after {@link #setFixedValues(double[])} is called.
 	 * {@link #setFixedValues(double[])} calling will clear the minor values.
 	 * 
 	 * @param values
@@ -360,6 +357,8 @@ public interface AxisTickManager extends Element {
 	/**
 	 * Sets the format object that is used to format the tick labels from tick values. If this text
 	 * format is null, the printf-style format will be used to format the labels.
+	 * <p>
+	 * Setting a new labelTextFormat will set autoLabelFormat to <code>false</code>
 	 * 
 	 * @param format
 	 *            the format object
@@ -380,8 +379,7 @@ public interface AxisTickManager extends Element {
 	 * formatter conversions, a special conversion 'm' can be used to produce labels in n_10^e
 	 * format. The usage of conversion 'm' is like the standard conversion 'e'.
 	 * <p>
-	 * Protocol: This method must be called when AutoLabelFormat is set to <code>false</code>,
-	 * otherwise an exception will be thrown.
+	 * Setting a new labelFormat will set autoLabelFormat to <code>false</code>
 	 * 
 	 * @param format
 	 *            the format string, or null to used the auto format.
