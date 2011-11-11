@@ -239,6 +239,16 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			throw new IllegalArgumentException("Columns number must great than 0.");
 		}
 		this.columns = columns;
+
+		// calculate rows
+		int nrow = visibleItemNum / columns;
+		if (visibleItemNum % columns > 0) {
+			nrow++;
+		}
+		rows = nrow;
+		
+		sizeCalculationNeeded = true;
+		redraw();
 	}
 
 	public boolean isBorderVisible() {
