@@ -64,7 +64,7 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable 
 	public Range expandRangeToTick(TransformType txfType, Range range);
 
 	/**
-	 * Notified by AxisRangeManagerEx that transform type chnaged.
+	 * Notified by AxisRangeManagerEx that transform type changed.
 	 */
 	public void transformTypeChanged();
 
