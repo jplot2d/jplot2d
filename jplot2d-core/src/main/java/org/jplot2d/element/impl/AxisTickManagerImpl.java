@@ -171,7 +171,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	private boolean _minorValuesChanged;
 
-	private boolean _labelFormatChanged;
+	private boolean labelFormatChanged;
 
 	/**
 	 * The label font cache for detect font changes
@@ -460,7 +460,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void setAutoLabelFormat(boolean alf) {
-		this.autoLabelFormat = alf;
+		if (this.autoLabelFormat != alf) {
+			this.autoLabelFormat = alf;
+			autoLabelFormatChanged = true;
+		}
 	}
 
 	public Format getLabelTextFormat() {
@@ -469,6 +472,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public void setLabelTextFormat(Format format) {
 		this.labelTextFormat = format;
+		labelFormatChanged = true;
+		setAutoLabelFormat(false);
 	}
 
 	public String getLabelFormat() {
@@ -478,6 +483,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	public void setLabelFormat(String format) {
 		if (tickCalculator.isValidFormat(format)) {
 			this.labelFormat = format;
+			labelFormatChanged = true;
+			setAutoLabelFormat(false);
 		} else {
 			throw new IllegalArgumentException("The label format is invalid");
 		}
@@ -649,10 +656,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 		autoLabelFormatChanged = false;
 
-		if (_valuesChanged || _labelFormatChanged) {
+		if (_valuesChanged || labelFormatChanged) {
 			autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat, labelFormat);
 		}
-		_labelFormatChanged = false;
+		labelFormatChanged = false;
 
 		/* apply fixed labels */
 		MathElement[] fixedLabelsInRange;
@@ -709,14 +716,14 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		/* Nothing changed */
 		if (!(autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged
 				|| propNumberChanged || minorNumberChanged || autoLabelFormatChanged
-				|| _labelFormatChanged || _labelMaxDensityChanged || _tickAlgorithmChanged
+				|| labelFormatChanged || _labelMaxDensityChanged || _tickAlgorithmChanged
 				|| _trfChanged || _rangeChanged)) {
 			return;
 		}
 
 		autoValuesChanged = autoIntervalChanged = autoAdjustNumberChanged = false;
 		propNumberChanged = minorNumberChanged = false;
-		autoLabelFormatChanged = _labelFormatChanged = false;
+		autoLabelFormatChanged = labelFormatChanged = false;
 		_labelMaxDensityChanged = false;
 		_tickAlgorithmChanged = _trfChanged = false;
 		_rangeChanged = false;
@@ -852,11 +859,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		if (labelTextFormat != textFormat
 				&& (labelTextFormat == null || !labelTextFormat.equals(textFormat))) {
 			labelTextFormat = textFormat;
-			_labelFormatChanged = true;
+			labelFormatChanged = true;
 		}
 		if (labelFormat != format && (labelFormat == null || !labelFormat.equals(format))) {
 			labelFormat = format;
-			_labelFormatChanged = true;
+			labelFormatChanged = true;
 		}
 	}
 
