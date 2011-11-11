@@ -117,13 +117,11 @@ bg0.legendItem.text = "BG system OutSide PACS (100$\\micro$m estimated)"
 layer.addGraphPlotter(bg0)
 
 
-#
-## legend
-#p.legend.visible = 1
-p.legend.borderVisible = 0
-p.legend.fontSize = 9
-p.legend.columns = 1
+# legend
 p.legend.position = None
+p.legend.columns = 1
 p.legend.setLocation(-20, 300)
 p.legend.HAlign = HAlign.LEFT
 p.legend.VAlign = VAlign.TOP
+p.legend.borderVisible = 0
+p.legend.fontSize = 9
