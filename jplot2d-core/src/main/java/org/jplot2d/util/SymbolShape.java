@@ -149,7 +149,7 @@ public final class SymbolShape implements Serializable {
 			"{FP(-0.4619,-0.1913)(-0.1913,-0.4619)(0.1913,-0.4619)(0.4619,-0.1913)(0.4619,0.1913)(0.1913,0.4619)(-0.1913,0.4619)(-0.4619,0.1913)}");
 
 	public static final SymbolShape STAR = new SymbolShape("STAR",
-			"{P(-0.4755,0.1545)(0.4755,0.1545)(-0.2939, -0.4045)(0,1)(0.2939,-0.4045)}");
+			"{P(-0.4755,0.1545)(0.4755,0.1545)(-0.2939,-0.4045)(0,0.5)(0.2939,-0.4045)}");
 
 	public static final SymbolShape UARROW = new SymbolShape("UARROW",
 			"{L(0,-0.5)(0,0) L(0,0)(-0.25,-0.25) L(0,0)(0.25,-0.25)}");
