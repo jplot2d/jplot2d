@@ -74,12 +74,12 @@ llayer = ef.createLayer()
 lsp.addLayer(llayer, lspx[0], lspy[0])
 
 # solid line
-slx = array([10, 2000000], 'd')
-sly = array([0.09, 900], 'd')
-sl = ef.createXYGraphPlotter(slx, sly)
-sl.color = BLUE
-sl.legendItem.visible = 0
-ulayer.addGraphPlotter(sl)
+solx = array([10, 2000000], 'd')
+soly = array([0.09, 900], 'd')
+sol = ef.createXYGraphPlotter(solx, soly)
+sol.color = BLUE
+sol.legendItem.visible = 0
+ulayer.addGraphPlotter(sol)
 
 # dashed line
 dlx = array([10, 2000000], 'd')
