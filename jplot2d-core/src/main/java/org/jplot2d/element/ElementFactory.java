@@ -21,7 +21,6 @@ package org.jplot2d.element;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Stroke;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
@@ -516,7 +515,7 @@ public class ElementFactory {
 		return markerProxy;
 	}
 
-	public Stroke createStroke(float width, float[] dash) {
+	public BasicStroke createStroke(float width, float[] dash) {
 		return new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dash,
 				0f);
 	}
