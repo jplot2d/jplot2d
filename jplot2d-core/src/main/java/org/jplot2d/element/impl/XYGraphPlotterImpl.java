@@ -67,7 +67,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
 
-	private BasicStroke lineStroke = new BasicStroke(0.5f);
+	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
 	private boolean fillEnabled;
 
@@ -467,8 +467,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 	private static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
 		float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
 				stroke.getDashArray(), scale);
-		return new BasicStroke((float) (stroke.getLineWidth() * scale), BasicStroke.CAP_SQUARE,
-				BasicStroke.JOIN_MITER, 10f, dashArray, 0f);
+		return new BasicStroke((float) (stroke.getLineWidth() * scale), stroke.getEndCap(),
+				stroke.getLineJoin(), 10f, dashArray, (float) (stroke.getDashPhase() * scale));
 	}
 
 	/**
@@ -568,7 +568,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		} else {
 			// use half of line stroke to draw marks
 			double lw = plotter.getLineStroke().getLineWidth() * scale / 2;
-			g.setStroke(new BasicStroke((float) lw));
+			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			for (int i = 0; i < npoints; i++) {

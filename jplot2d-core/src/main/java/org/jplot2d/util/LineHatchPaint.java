@@ -33,141 +33,138 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 
 /**
- * The LineHatchPaint class provides a way to fill a Shape with line hatch
- * pattern. Because Java require instances of classes implementing Paint must be
- * read-only, this class is more like a factory to create paint instance for
- * renderer threads.
+ * The LineHatchPaint class provides a way to fill a Shape with line hatch pattern. Because Java
+ * require instances of classes implementing Paint must be read-only, this class is more like a
+ * factory to create paint instance for renderer threads.
  * 
  * @author Jingjing Li
  */
 public class LineHatchPaint implements Paint {
 
-    private static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
+	private static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
 
-    private static final Color DEFAULT_COLOR = Color.BLACK;
+	private static final Color DEFAULT_COLOR = Color.BLACK;
 
-    private final Color color;
+	private final Color color;
 
-    private final float lineWidth;
+	private final float lineWidth;
 
-    private final float[] dash;
+	private final float[] dash;
 
-    private final double angle;
+	private final double angle;
 
-    private final double spacing;
+	private final double spacing;
 
-    /**
-     * Construct a LineHatchPaint with the given angle. The default values:
-     * <ul>
-     * <li>color: BLACK</li>
-     * <li>line width: 0.0</li>
-     * <li>line style: solid</li>
-     * <li>line spacing: 6pt</li>
-     * </ul>
-     * 
-     * @param angle
-     *            the counterclockwise angle in degrees from horizontal
-     */
-    public LineHatchPaint(double angle) {
-        this(DEFAULT_COLOR, 0, null, angle, 6);
-    }
+	/**
+	 * Construct a LineHatchPaint with the given angle. The default values:
+	 * <ul>
+	 * <li>color: BLACK</li>
+	 * <li>line width: 0.0</li>
+	 * <li>line style: solid</li>
+	 * <li>line spacing: 6pt</li>
+	 * </ul>
+	 * 
+	 * @param angle
+	 *            the counterclockwise angle in degrees from horizontal
+	 */
+	public LineHatchPaint(double angle) {
+		this(DEFAULT_COLOR, 0, null, angle, 6);
+	}
 
-    /**
-     * Construct a LineHatchPaint with the given angle. The default values:
-     * <ul>
-     * <li>color: BLACK</li>
-     * <li>line style: solid</li>
-     * </ul>
-     * 
-     * @param width
-     *            the line width
-     * @param angle
-     *            the counterclockwise angle in degrees from horizontal
-     * @param spacing
-     *            the spacing, in point(1/72 inch), between the parallel lines
-     */
-    public LineHatchPaint(float width, double angle, double spacing) {
-        this(DEFAULT_COLOR, width, null, angle, spacing);
-    }
+	/**
+	 * Construct a LineHatchPaint with the given angle. The default values:
+	 * <ul>
+	 * <li>color: BLACK</li>
+	 * <li>line style: solid</li>
+	 * </ul>
+	 * 
+	 * @param width
+	 *            the line width
+	 * @param angle
+	 *            the counterclockwise angle in degrees from horizontal
+	 * @param spacing
+	 *            the spacing, in point(1/72 inch), between the parallel lines
+	 */
+	public LineHatchPaint(float width, double angle, double spacing) {
+		this(DEFAULT_COLOR, width, null, angle, spacing);
+	}
 
-    /**
-     * Construct a LineHatchPaint with given arguments.
-     * 
-     * @param width
-     *            the line width
-     * @param dash
-     *            the dash array. null means solid line
-     * @param angle
-     *            the counterclockwise angle in degrees from horizontal
-     * @param spacing
-     *            the spacing, in point(1/72 inch), between the parallel lines
-     */
-    public LineHatchPaint(Color color, float width, float[] dash, double angle,
-            double spacing) {
-        this.color = color;
-        this.lineWidth = width;
-        this.dash = dash;
-        this.angle = angle;
-        this.spacing = spacing;
-    }
+	/**
+	 * Construct a LineHatchPaint with given arguments.
+	 * 
+	 * @param width
+	 *            the line width
+	 * @param dash
+	 *            the dash array. null means solid line
+	 * @param angle
+	 *            the counterclockwise angle in degrees from horizontal
+	 * @param spacing
+	 *            the spacing, in point(1/72 inch), between the parallel lines
+	 */
+	public LineHatchPaint(Color color, float width, float[] dash, double angle, double spacing) {
+		this.color = color;
+		this.lineWidth = width;
+		this.dash = dash;
+		this.angle = angle;
+		this.spacing = spacing;
+	}
 
-    public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
-            Rectangle2D userBounds, AffineTransform xform, RenderingHints hints) {
-        throw new UnsupportedOperationException();
-    }
+	public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
+			Rectangle2D userBounds, AffineTransform xform, RenderingHints hints) {
+		throw new UnsupportedOperationException();
+	}
 
-    public int getTransparency() {
-        throw new UnsupportedOperationException();
-    }
+	public int getTransparency() {
+		throw new UnsupportedOperationException();
+	}
 
-    /**
-     * Create a Paint with the given image and scale. The given image will be
-     * cleared and filled by hatch lines.
-     * 
-     * @param hatchImg
-     * @param scale
-     * @return a TexturePaint
-     */
-    public Paint createPaint(BufferedImage hatchImg, double scale) {
-        int imgWidth = hatchImg.getWidth();
-        int imgHeight = hatchImg.getHeight();
+	/**
+	 * Create a Paint with the given image and scale. The given image will be cleared and filled by
+	 * hatch lines.
+	 * 
+	 * @param hatchImg
+	 * @param scale
+	 * @return a TexturePaint
+	 */
+	public Paint createPaint(BufferedImage hatchImg, double scale) {
+		int imgWidth = hatchImg.getWidth();
+		int imgHeight = hatchImg.getHeight();
 
-        Graphics2D g = (Graphics2D) hatchImg.getGraphics();
+		Graphics2D g = (Graphics2D) hatchImg.getGraphics();
 
-        // clear the image
-        g.setBackground(TRANSPARENT_COLOR);
-        g.clearRect(0, 0, imgWidth, imgHeight);
+		// clear the image
+		g.setBackground(TRANSPARENT_COLOR);
+		g.clearRect(0, 0, imgWidth, imgHeight);
 
-        hatch(g, scale, imgWidth, imgHeight);
-        return new TexturePaint(hatchImg, new Rectangle(0, 0, imgWidth,
-                imgHeight));
-    }
+		hatch(g, scale, imgWidth, imgHeight);
+		return new TexturePaint(hatchImg, new Rectangle(0, 0, imgWidth, imgHeight));
+	}
 
-    /**
-     * fill the buffered image with hatch lines.
-     */
-    private void hatch(Graphics2D g, double scale, int width, int height) {
-        double sf = scale / 72;
+	/**
+	 * fill the buffered image with hatch lines.
+	 */
+	private void hatch(Graphics2D g, double scale, int width, int height) {
+		double sf = scale / 72;
 
-        g.translate(width / 2.0, height / 2.0);
-        g.rotate(Math.toRadians(-angle));
-        g.scale(sf, sf);
+		g.translate(width / 2.0, height / 2.0);
+		g.rotate(Math.toRadians(-angle));
+		g.scale(sf, sf);
 
-        if (dash == null) {
-            g.setStroke(new BasicStroke(lineWidth));
-        } else {
-            g.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_SQUARE,
-                    BasicStroke.JOIN_MITER, 10f, dash, 0f));
-        }
-        g.setColor(color);
+		if (dash == null) {
+			g.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		} else {
+			g.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+					10f, dash, 0f));
+		}
+		g.setColor(color);
 
-        // the max possible length of line, and the height for line spacing.
-        double halfStdDiagonal = Math.hypot(width, height) / sf / 2;
-        int maxiy = (int) (halfStdDiagonal / spacing);
-        for (double iy = -maxiy; iy <= maxiy; iy++) {
-            double y = spacing * iy;
-            g.draw(new Line2D.Double(-halfStdDiagonal, y, halfStdDiagonal, y));
-        }
-    }
+		// the max possible length of line, and the height for line spacing.
+		double halfStdDiagonal = Math.hypot(width, height) / sf / 2;
+		int maxiy = (int) (halfStdDiagonal / spacing);
+		for (double iy = -maxiy; iy <= maxiy; iy++) {
+			double y = spacing * iy;
+			g.draw(new Line2D.Double(-halfStdDiagonal, y, halfStdDiagonal, y));
+		}
+	}
 
 }
