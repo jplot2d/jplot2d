@@ -674,8 +674,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			Color oldColor = g.getColor();
 
 			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 2,
-					BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0.0f, new float[] { 2.0f, 2.0f },
-					0.0f);
+					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+					new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
 			Color c = getColor();
