@@ -467,8 +467,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 	private static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
 		float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
 				stroke.getDashArray(), scale);
-		return new BasicStroke((float) (stroke.getLineWidth() * scale), BasicStroke.CAP_BUTT,
-				BasicStroke.JOIN_BEVEL, 10f, dashArray, 0f);
+		return new BasicStroke((float) (stroke.getLineWidth() * scale), BasicStroke.CAP_SQUARE,
+				BasicStroke.JOIN_MITER, 10f, dashArray, 0f);
 	}
 
 	/**
@@ -553,8 +553,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 		if (plotter.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks
-			BasicStroke markStroke = new BasicStroke(0, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_BEVEL, 10f);
+			BasicStroke markStroke = new BasicStroke(0);
 			g.setStroke(markStroke);
 
 			for (int i = 0; i < npoints; i++) {
@@ -569,8 +568,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		} else {
 			// use half of line stroke to draw marks
 			double lw = plotter.getLineStroke().getLineWidth() * scale / 2;
-			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
-					10f));
+			g.setStroke(new BasicStroke((float) lw));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			for (int i = 0; i < npoints; i++) {
@@ -601,5 +599,4 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		}
 
 	}
-
 }

@@ -64,8 +64,8 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	private MathLabel getLabel() {
 		if (label == null) {
-			label = new MathLabel(getTextModel(), getLegend()
-					.getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
+			label = new MathLabel(getTextModel(), getLegend().getEffectiveFont(), VAlign.MIDDLE,
+					HAlign.LEFT);
 		}
 		return label;
 	}
@@ -138,8 +138,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 		if (plotter.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks
-			BasicStroke markStroke = new BasicStroke(0, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_BEVEL, 10f);
+			BasicStroke markStroke = new BasicStroke(0);
 			g.setStroke(markStroke);
 			g.setColor(color);
 			Shape dot = new Line2D.Float(x, y, x, y);
@@ -147,8 +146,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		} else {
 			// use half of line stroke to draw marks
 			float lw = plotter.getLineStroke().getLineWidth() / 2;
-			g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT,
-					BasicStroke.JOIN_BEVEL, 10f));
+			g.setStroke(new BasicStroke(lw));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			g.setColor(color);
@@ -174,8 +172,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	private void drawLabel(Graphics2D g) {
 		AffineTransform oldTransform = g.getTransform();
 
-		g.translate(getLocation().getX() + LINE_LENGTH + LABEL_SPACE,
-				getLocation().getY());
+		g.translate(getLocation().getX() + LINE_LENGTH + LABEL_SPACE, getLocation().getY());
 		g.scale(1.0, -1.0);
 		g.setColor(Color.BLACK);
 		getLabel().draw(g);
