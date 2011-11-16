@@ -146,7 +146,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		} else {
 			// use half of line stroke to draw marks
 			float lw = plotter.getLineStroke().getLineWidth() / 2;
-			g.setStroke(new BasicStroke(lw));
+			g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 
 			SymbolShape ss = plotter.getSymbolShape();
 			g.setColor(color);

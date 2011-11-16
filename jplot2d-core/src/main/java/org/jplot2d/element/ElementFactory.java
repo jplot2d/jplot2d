@@ -516,7 +516,6 @@ public class ElementFactory {
 	}
 
 	public BasicStroke createStroke(float width, float[] dash) {
-		return new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dash,
-				0f);
+		return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0f);
 	}
 }

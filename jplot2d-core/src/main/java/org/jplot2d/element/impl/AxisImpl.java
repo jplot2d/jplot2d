@@ -633,7 +633,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		g.setColor(getEffectiveColor());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g.setStroke(new BasicStroke(DEFAULT_AXISLINE_WIDTH));
+		g.setStroke(new BasicStroke(DEFAULT_AXISLINE_WIDTH, BasicStroke.CAP_BUTT,
+				BasicStroke.JOIN_MITER));
 		drawAxisLine(g);
 		drawTicks(g);
 
@@ -674,7 +675,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			Color oldColor = g.getColor();
 
 			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 2,
-					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
 					new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
