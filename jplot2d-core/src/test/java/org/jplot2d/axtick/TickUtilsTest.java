@@ -116,6 +116,7 @@ public class TickUtilsTest {
 		assertEquals("+1 $10^64$", TickUtils.format("%+.0m", 1e64).toString());
 		assertEquals("-1 $10^64$", TickUtils.format("%+.0m", -1e64).toString());
 		assertEquals("3.142", TickUtils.format("%.3m", 3.14159).toString());
+		assertEquals("0.000", TickUtils.format("%.3m", 0.0).toString());
 
 		assertEquals("01/01/70", TickUtils.format("%tm/%<td/%<ty", 1L).toString());
 		assertEquals("01-01-70", TickUtils.format("%tm-%<td-%<ty", 1L).toString());
