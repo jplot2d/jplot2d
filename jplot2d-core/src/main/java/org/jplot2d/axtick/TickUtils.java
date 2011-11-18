@@ -212,7 +212,7 @@ public class TickUtils {
 			.compile("(%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?)(m)");
 
 	private static Pattern eResultPattern = Pattern
-			.compile("-->>([+-]?[1-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");
+			.compile("-->>([+-]?[0-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");
 
 	/**
 	 * Returns a formatted string using the specified format string on the given value.
