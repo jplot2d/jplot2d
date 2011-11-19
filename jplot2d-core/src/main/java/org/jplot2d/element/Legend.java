@@ -156,10 +156,27 @@ public interface Legend extends MovableComponent {
 	public void setColumns(int columns);
 
 	/**
+	 * Returns the row spacing factor. The row spacing is factor * row height.
+	 * 
+	 * @return the row spacing factor
+	 */
+	@Property(order = 6)
+	public double getRowSpacingFactor();
+
+	/**
+	 * Sets the row spacing factor. The row spacing is factor * row height. The default factor is 0.125
+	 * 
+	 * @param factor
+	 *            the row spacing factor
+	 */
+	public void setRowSpacingFactor(double factor);
+
+	/**
 	 * Returns <code>true</code> if the legend border is visible
 	 * 
 	 * @return <code>true</code> if the legend border is visible
 	 */
+	@Property(order = 7)
 	public boolean isBorderVisible();
 
 	/**
@@ -170,7 +187,7 @@ public interface Legend extends MovableComponent {
 	 */
 	public void setBorderVisible(boolean visible);
 
-	@Property(order = 6)
+	@Property(order = 8)
 	public boolean isMovable();
 
 	public void setMovable(boolean movable);
