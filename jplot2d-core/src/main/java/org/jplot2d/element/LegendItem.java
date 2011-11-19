@@ -20,16 +20,19 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.tex.MathElement;
 
 /**
- * An item in legend to show a short line and a text. It will be hosted by the
- * legend of the plot which host the GraphPlotter. If the hosting legend is
- * disabled, it will be hosted by legend of parent plot.
+ * An item in legend to show a short line and a text. It will be hosted by the legend of the plot
+ * which host the GraphPlotter. If the hosting legend is disabled, it will be hosted by legend of
+ * parent plot.
  * 
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Legend Item")
 public interface LegendItem extends Element {
 
 	@Hierarchy(HierarchyOp.GET)
@@ -44,17 +47,17 @@ public interface LegendItem extends Element {
 	public Legend getLegend();
 
 	/**
-	 * returns <code>true</code> if this item is displayed in legend; otherwise,
-	 * returns <code>false</code>.
+	 * returns <code>true</code> if this item is displayed in legend; otherwise, returns
+	 * <code>false</code>.
 	 * 
 	 * @return the flag
 	 */
+	@Property(order = 0)
 	public boolean isVisible();
 
 	/**
-	 * Sets a flag indicating whether this item should be displayed in the
-	 * legend. The default value is <code>true</code>, even if the GraphPlotter
-	 * is invisible.
+	 * Sets a flag indicating whether this item should be displayed in the legend. The default value
+	 * is <code>true</code>, even if the GraphPlotter is invisible.
 	 * 
 	 * @param show
 	 *            the flag
@@ -66,6 +69,7 @@ public interface LegendItem extends Element {
 	 * 
 	 * @return the text
 	 */
+	@Property(order = 1)
 	public String getText();
 
 	/**
