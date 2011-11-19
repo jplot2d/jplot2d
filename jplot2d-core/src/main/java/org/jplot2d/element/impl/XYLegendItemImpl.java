@@ -20,6 +20,7 @@ package org.jplot2d.element.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -60,6 +61,18 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	public XYGraphPlotterEx getParent() {
 		return (XYGraphPlotterEx) super.getParent();
+	}
+
+	public void setLegend(LegendEx legend) {
+		Font oldFont = (getLegend() == null) ? null : getLegend().getEffectiveFont();
+		super.setLegend(legend);
+		if (legend != null && !legend.getEffectiveFont().equals(oldFont)) {
+			label = null;
+		}
+	}
+
+	public void legendEffectiveFontChanged() {
+		label = null;
 	}
 
 	private MathLabel getLabel() {

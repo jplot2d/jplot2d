@@ -40,7 +40,8 @@ public class LegendTest {
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend"), "enabled",
-				"position", "location", "HAlign", "VAlign", "columns", "movable");
+				"position", "location", "HAlign", "VAlign", "columns", "rowSpacingFactor",
+				"borderVisible", "movable");
 	}
 
 }

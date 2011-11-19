@@ -35,6 +35,11 @@ public interface LegendItemEx extends LegendItem, ElementEx {
 
 	public void setLegend(LegendEx legend);
 
+	/**
+	 * Called by legend when its effective font changed
+	 */
+	public void legendEffectiveFontChanged();
+
 	public Dimension2D getSize();
 
 	/**
