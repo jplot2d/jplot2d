@@ -90,6 +90,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public LegendImpl() {
 		setSelectable(true);
+		setMovable(true);
 	}
 
 	public String getId() {
@@ -181,6 +182,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void setLocation(double locX, double locY) {
+		directLocation(locX, locY);
+		setPosition(Position.FREE);
+	}
+
+	public void directLocation(double locX, double locY) {
 		if (this.locX != locX || this.locY != locY) {
 			this.locX = locX;
 			this.locY = locY;
@@ -246,7 +252,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			nrow++;
 		}
 		rows = nrow;
-		
+
 		sizeCalculationNeeded = true;
 		redraw();
 	}

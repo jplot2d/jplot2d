@@ -29,6 +29,14 @@ public interface LegendEx extends Legend, ComponentEx {
 	public PlotEx getParent();
 
 	/**
+	 * Sets the location without setting the position to Position.FREE
+	 * 
+	 * @param locX
+	 * @param locY
+	 */
+	public void directLocation(double locX, double locY);
+
+	/**
 	 * Add the given item to this legend. If this legend is disabled, the item should be added to
 	 * its 1st enabled upper level legend. This method will set the legend property of added item to
 	 * the actual hosting legend.
