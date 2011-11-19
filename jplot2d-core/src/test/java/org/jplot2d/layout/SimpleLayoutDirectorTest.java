@@ -220,7 +220,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getTop(), 0);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 12 - 12, 200 - 12 - bottomMargin);
-		verify(legend).setLocation(csize.getWidth() / 2, -SimpleLayoutDirector.LEGEND_GAP);
+		verify(legend).directLocation(csize.getWidth() / 2, -SimpleLayoutDirector.LEGEND_GAP);
 		verify(legend).setHAlign(HAlign.CENTER);
 		verify(legend).setVAlign(VAlign.TOP);
 	}
@@ -247,7 +247,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getTop(), 10 + SimpleLayoutDirector.LEGEND_GAP);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 12 - 12, 200 - topMargin - 12);
-		verify(legend).setLocation(csize.getWidth() / 2,
+		verify(legend).directLocation(csize.getWidth() / 2,
 				csize.getHeight() + SimpleLayoutDirector.LEGEND_GAP);
 		verify(legend).setHAlign(HAlign.CENTER);
 		verify(legend).setVAlign(VAlign.BOTTOM);
@@ -275,7 +275,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getBottom(), 0);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - leftMargin - 12, 200 - 12 - 12);
-		verify(legend).setLocation(-SimpleLayoutDirector.LEGEND_GAP, csize.getHeight() / 2);
+		verify(legend).directLocation(-SimpleLayoutDirector.LEGEND_GAP, csize.getHeight() / 2);
 		verify(legend).setHAlign(HAlign.RIGHT);
 		verify(legend).setVAlign(VAlign.MIDDLE);
 	}
@@ -302,7 +302,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getTop(), 0);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 12 - rightMargin, 200 - 12 - 12);
-		verify(legend).setLocation(csize.getWidth() + SimpleLayoutDirector.LEGEND_GAP,
+		verify(legend).directLocation(csize.getWidth() + SimpleLayoutDirector.LEGEND_GAP,
 				csize.getHeight() / 2);
 		verify(legend).setHAlign(HAlign.LEFT);
 		verify(legend).setVAlign(VAlign.MIDDLE);

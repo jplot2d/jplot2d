@@ -356,19 +356,19 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case LEFTTOP:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, contentSize.getHeight());
+				legend.directLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
 				break;
 			case LEFTMIDDLE:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, contentSize.getHeight() / 2);
+				legend.directLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.MIDDLE);
 				break;
 			case LEFTBOTTOM:
 				xloc -= LEGEND_GAP;
-				legend.setLocation(xloc, 0);
+				legend.directLocation(xloc, 0);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
 				break;
@@ -409,19 +409,19 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, contentSize.getHeight());
+				legend.directLocation(xloc, contentSize.getHeight());
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
 				break;
 			case RIGHTMIDDLE:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, contentSize.getHeight() / 2);
+				legend.directLocation(xloc, contentSize.getHeight() / 2);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.MIDDLE);
 				break;
 			case RIGHTBOTTOM:
 				xloc += LEGEND_GAP;
-				legend.setLocation(xloc, 0);
+				legend.directLocation(xloc, 0);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
 				break;
@@ -462,21 +462,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case TOPLEFT:
 				yloc += LEGEND_GAP;
-				legend.setLocation(0, yloc);
+				legend.directLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.BOTTOM);
 				yloc += legend.getSize().getHeight();
 				break;
 			case TOPCENTER:
 				yloc += LEGEND_GAP;
-				legend.setLocation(contentSize.getWidth() / 2, yloc);
+				legend.directLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.BOTTOM);
 				yloc += legend.getSize().getHeight();
 				break;
 			case TOPRIGHT:
 				yloc += LEGEND_GAP;
-				legend.setLocation(contentSize.getWidth(), yloc);
+				legend.directLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.BOTTOM);
 				yloc += legend.getSize().getHeight();
@@ -551,21 +551,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(0, yloc);
+				legend.directLocation(0, yloc);
 				legend.setHAlign(HAlign.LEFT);
 				legend.setVAlign(VAlign.TOP);
 				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMCENTER:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(contentSize.getWidth() / 2, yloc);
+				legend.directLocation(contentSize.getWidth() / 2, yloc);
 				legend.setHAlign(HAlign.CENTER);
 				legend.setVAlign(VAlign.TOP);
 				yloc -= legend.getSize().getHeight();
 				break;
 			case BOTTOMRIGHT:
 				yloc -= LEGEND_GAP;
-				legend.setLocation(contentSize.getWidth(), yloc);
+				legend.directLocation(contentSize.getWidth(), yloc);
 				legend.setHAlign(HAlign.RIGHT);
 				legend.setVAlign(VAlign.TOP);
 				yloc -= legend.getSize().getHeight();

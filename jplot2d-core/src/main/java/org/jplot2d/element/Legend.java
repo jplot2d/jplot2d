@@ -79,10 +79,8 @@ public interface Legend extends MovableComponent {
 	public Point2D getLocation();
 
 	/**
-	 * Moves this legend to a new location.
-	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Moves this legend to a new location. Setting legend to a new location will change legend
+	 * position to {@link Position#FREE}
 	 * 
 	 * @param loc
 	 *            the base point of this legend
@@ -90,10 +88,8 @@ public interface Legend extends MovableComponent {
 	public void setLocation(Point2D loc);
 
 	/**
-	 * Moves this legend to a new location.
-	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Moves this legend to a new location. Setting legend to a new location will change legend
+	 * position to {@link Position#FREE}
 	 * 
 	 * @param x
 	 *            the x-coordinate of the new location
