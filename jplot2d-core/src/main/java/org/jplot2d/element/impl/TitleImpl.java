@@ -92,6 +92,13 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 		return isVisible() && textModel != null;
 	}
 
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (textModel != null && getPosition() != Position.FREE && getParent() != null) {
+			getParent().invalidate();
+		}
+	}
+
 	public Point2D getLocation() {
 		return new Point2D.Double(locX, locY);
 	}
@@ -189,16 +196,14 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 
 	public void setGapFactor(double factor) {
 		this.gapFactor = factor;
-		if (canContribute()) {
-			invalidatePlot();
-		}
+		invalidatePlot();
 	}
 
 	/**
 	 * Invalidate the parent plot when its position is not null.
 	 */
 	private void invalidatePlot() {
-		if (isVisible() && getParent() != null) {
+		if (canContribute() && getParent() != null) {
 			getParent().invalidate();
 		}
 	}
@@ -230,6 +235,10 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void draw(Graphics2D g) {
+		if (!canContribute()) {
+			return;
+		}
+
 		if (label == null) {
 			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
