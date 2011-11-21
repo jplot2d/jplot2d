@@ -74,15 +74,15 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	private boolean layoutItemsNeeded;
 
 	/**
-	 * If this legend is enabled, the collection contains all items managed by this legend, include
-	 * items pushed by disabled legend of subplots. If this legend is disabled, the collection
-	 * contains all items pushed to upper legend, include the items pushed by disabled legend of
-	 * subplots.
+	 * If this legend is enabled, or top level legend, the collection contains all items managed by
+	 * this legend, include items pushed by disabled legend of subplots. If this legend is disabled,
+	 * the collection is empty.
 	 */
 	private final Collection<LegendItemEx> items = new ArrayList<LegendItemEx>();
 
 	/**
-	 * The visible item count. only be maintained when this legend is enabled.
+	 * The visible item count. only be maintained when this legend is enabled or is top level
+	 * legend.
 	 */
 	private int visibleItemNum;
 
@@ -127,9 +127,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (isEnabled() && visibleItemNum > 0) {
-			if (getParent() != null) {
-				getParent().invalidate();
-			}
+			getParent().invalidate();
 		}
 	}
 
@@ -141,9 +139,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		for (LegendItemEx item : items) {
 			item.legendEffectiveFontChanged();
 		}
-		maxItemSize = null;
-		sizeCalculationNeeded = true;
-		redraw();
 	}
 
 	public Dimension2D getSize() {
@@ -207,7 +202,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (this.position != position) {
 			this.position = position;
 			if (canContribute()) {
-				invalidatePlotIfVisible();
+				getParent().invalidate();
 			}
 		}
 	}
@@ -235,27 +230,33 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		boolean oldContribution = this.canContribute();
+
 		if (enabled) {
-			for (LegendItemEx item : items) {
-				if (getParentLegend() != null) {
-					getParentLegend().removeLegendItem(item);
-				}
-				item.setLegend(this);
-				if (item.isVisible()) {
-					visibleItemNum++;
+			LegendEx oldLegend = getParent().getEnabledLegend();
+			LegendItemEx[] allItems = oldLegend.getItems();
+			this.enabled = enabled;
+			for (LegendItemEx item : allItems) {
+				if (item.getParent().getParent().getParent().getEnabledLegend() == this) {
+					oldLegend.removeLegendItem(item);
+					this.addLegendItem(item);
 				}
 			}
-			layoutItemsNeeded = true;
-			redraw();
 		} else {
-			for (LegendItemEx item : items) {
-				if (getParentLegend() != null) {
-					getParentLegend().addLegendItem(item);
+			this.enabled = enabled;
+			LegendEx newLegend = getParent().getEnabledLegend();
+			if (newLegend != this) {
+				for (LegendItemEx item : items) {
+					newLegend.addLegendItem(item);
 				}
+				items.clear();
+				visibleItemNum = 0;
+				maxItemSize = null;
 			}
-			visibleItemNum = 0;
-			maxItemSize = null;
+		}
+
+		if (oldContribution != this.canContribute()) {
+			getParent().invalidate();
 		}
 	}
 
@@ -298,52 +299,31 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		redraw();
 	}
 
+	public LegendItemEx[] getItems() {
+		return items.toArray(new LegendItemEx[items.size()]);
+	}
+
 	public void addLegendItem(LegendItemEx item) {
 		items.add(item);
-		if (isEnabled()) {
-			item.setLegend(this);
-			if (item.isVisible()) {
-				visibleItemNum++;
-				maxItemSize = null;
-				sizeCalculationNeeded = true;
-				if (isVisible()) {
-					redraw();
-				}
+		item.setLegend(this);
+		if (item.isVisible()) {
+			incVisibleItemNum();
+			maxItemSize = null;
+			sizeCalculationNeeded = true;
+			if (isVisible()) {
+				redraw();
 			}
-		} else if (getParentLegend() != null) {
-			getParentLegend().addLegendItem(item);
 		}
 	}
 
 	public void removeLegendItem(LegendItemEx item) {
 		items.remove(item);
-		if (isEnabled()) {
-			item.setLegend(null);
-			if (item.isVisible()) {
-				visibleItemNum--;
-				if (item.getSize().equals(maxItemSize)) {
-					maxItemSize = null;
-				}
-				sizeCalculationNeeded = true;
-				redraw();
+		item.setLegend(null);
+		if (item.isVisible()) {
+			decVisibleItemNum();
+			if (item.getSize().equals(maxItemSize)) {
+				maxItemSize = null;
 			}
-		} else if (getParentLegend() != null) {
-			getParentLegend().removeLegendItem(item);
-		}
-	}
-
-	private LegendEx getParentLegend() {
-		PlotEx parentPlot = this.getParent().getParent();
-		if (parentPlot == null) {
-			return null;
-		} else {
-			return parentPlot.getLegend();
-		}
-	}
-
-	public void itemSizeChanged(LegendItemEx item) {
-		if (item.getSize().equals(maxItemSize)) {
-			maxItemSize = null;
 			sizeCalculationNeeded = true;
 			redraw();
 		}
@@ -354,11 +334,33 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			maxItemSize = null;
 		}
 		if (item.isVisible()) {
-			visibleItemNum++;
+			incVisibleItemNum();
 		} else {
-			visibleItemNum--;
+			decVisibleItemNum();
 		}
 		sizeCalculationNeeded = true;
+		redraw();
+	}
+
+	private void incVisibleItemNum() {
+		visibleItemNum++;
+		if (visibleItemNum == 1 && isVisible() && isEnabled()) {
+			getParent().invalidate();
+		}
+	}
+
+	private void decVisibleItemNum() {
+		visibleItemNum--;
+		if (visibleItemNum == 0 && isVisible() && isEnabled()) {
+			getParent().invalidate();
+		}
+	}
+
+	public void itemSizeChanged(LegendItemEx item) {
+		if (maxItemSize != null && maxItemSize.equals(item.getSize())) {
+			maxItemSize = null;
+			sizeCalculationNeeded = true;
+		}
 		redraw();
 	}
 
@@ -386,15 +388,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		visibleItemNum = legend.visibleItemNum;
 	}
 
-	/**
-	 * Invalid plot if this legend is visible
-	 */
-	private void invalidatePlotIfVisible() {
-		if (isVisible() && getParent() != null) {
-			getParent().invalidate();
-		}
-	}
-
 	public double getThickness() {
 		switch (getPosition()) {
 		case TOPLEFT:
@@ -417,6 +410,13 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void calcSize() {
+
+		if (visibleItemNum == 0) {
+			width = 0;
+			height = 0;
+			sizeCalculationNeeded = false;
+			return;
+		}
 
 		PlotEx plot = getParent();
 		switch (getPosition()) {

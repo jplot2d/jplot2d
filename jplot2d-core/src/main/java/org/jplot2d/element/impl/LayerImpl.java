@@ -142,7 +142,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 		// add legend item
 		if (getParent() != null) {
-			getParent().getLegend().addLegendItem(gp.getLegendItem());
+			getParent().getEnabledLegend().addLegendItem(gp.getLegendItem());
 		}
 
 		if (gp.canContributeToParent()) {

@@ -68,15 +68,25 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		super.setLegend(legend);
 		if (legend != null && !legend.getEffectiveFont().equals(oldFont)) {
 			label = null;
+			if (isVisible()) {
+				if (getLegend() != null) {
+					getLegend().itemSizeChanged(this);
+				}
+			}
 		}
 	}
 
 	public void legendEffectiveFontChanged() {
 		label = null;
+		if (isVisible()) {
+			if (getLegend() != null) {
+				getLegend().itemSizeChanged(this);
+			}
+		}
 	}
 
 	private MathLabel getLabel() {
-		if (label == null) {
+		if (label == null && getLegend() != null && getLegend().getEffectiveFont().getSize2D() > 0) {
 			label = new MathLabel(getTextModel(), getLegend().getEffectiveFont(), VAlign.MIDDLE,
 					HAlign.LEFT);
 		}
@@ -84,6 +94,9 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	}
 
 	public Dimension2D getSize() {
+		if (getLabel() == null) {
+			return null;
+		}
 		Rectangle2D labelBounds = getLabel().getBounds();
 		double width = labelBounds.getWidth();
 		double height = labelBounds.getHeight();
