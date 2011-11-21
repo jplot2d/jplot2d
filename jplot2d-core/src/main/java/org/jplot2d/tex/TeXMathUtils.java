@@ -40,9 +40,9 @@ public class TeXMathUtils {
 	};
 
 	/**
-	 * Parse the given text into a math model. If the given text is null, then
-	 * null is returned. if the given text does not represent a math model, such
-	 * as "", or "$$", then a MathElement.NULL is returned.
+	 * Parse the given text into a math model. If the given text is null, then null is returned. if
+	 * the given text does not represent a math model, such as "", or "$$", then a
+	 * {@link MathElement#EMPTY} is returned.
 	 * 
 	 * @param text
 	 * @return
@@ -58,11 +58,9 @@ public class TeXMathUtils {
 			try {
 				model = parser.parse();
 			} catch (ParseException e) {
-				throw new IllegalArgumentException(
-						"the syntax of text is not correct", e);
+				throw new IllegalArgumentException("the syntax of text is not correct", e);
 			} catch (TokenMgrError e) {
-				throw new IllegalArgumentException(
-						"the syntax of text is not correct", e);
+				throw new IllegalArgumentException("the syntax of text is not correct", e);
 			}
 
 			return model;
@@ -70,9 +68,8 @@ public class TeXMathUtils {
 	}
 
 	/**
-	 * Returns the TeX string to represent the given MathElement. Unlike
-	 * String.valueOf(), this method returns null when the given MathElement is
-	 * null.
+	 * Returns the TeX string to represent the given MathElement. Unlike String.valueOf(), this
+	 * method returns null when the given MathElement is null.
 	 * 
 	 * @param me
 	 *            the math model
