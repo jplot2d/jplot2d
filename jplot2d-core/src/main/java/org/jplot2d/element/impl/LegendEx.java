@@ -29,6 +29,13 @@ public interface LegendEx extends Legend, ComponentEx {
 	public PlotEx getParent();
 
 	/**
+	 * Returns all legend items managed by this legend
+	 * 
+	 * @return items managed by this legend
+	 */
+	public LegendItemEx[] getItems();
+
+	/**
 	 * Sets the location without setting the position to Position.FREE
 	 * 
 	 * @param locX
@@ -38,8 +45,8 @@ public interface LegendEx extends Legend, ComponentEx {
 
 	/**
 	 * Add the given item to this legend. If this legend is disabled, the item should be added to
-	 * its 1st enabled upper level legend. This method will set the legend property of added item to
-	 * the actual hosting legend.
+	 * its upper level legend. This method will set the legend property of added legend item to the
+	 * actual hosting legend.
 	 * 
 	 * @param item
 	 *            the legend item to be added
@@ -48,7 +55,7 @@ public interface LegendEx extends Legend, ComponentEx {
 
 	/**
 	 * Remove the given item from this legend. If this legend is disabled, the item should be
-	 * removed from its hosting legend.
+	 * removed from its upper level legend.
 	 * 
 	 * @param item
 	 *            the legend item to be removed
@@ -56,12 +63,14 @@ public interface LegendEx extends Legend, ComponentEx {
 	public void removeLegendItem(LegendItemEx item);
 
 	/**
-	 * Notify this legend that one of its item's size changed
+	 * Called by a visible legend item to notify this legend that the item's size is changed. This
+	 * method is only called on the legend hosts the given item.
 	 */
 	public void itemSizeChanged(LegendItemEx item);
 
 	/**
-	 * Notify this legend one of its item's visible changed
+	 * Called by a visible legend item to notify this legend that the item's visibility is changed.
+	 * This method is only called on the legend hosts the given item.
 	 */
 	public void itemVisibleChanged(LegendItemImpl item);
 

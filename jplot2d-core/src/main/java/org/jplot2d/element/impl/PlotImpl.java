@@ -539,6 +539,26 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return legend;
 	}
 
+	public LegendEx getEnabledLegend() {
+		return getEnabledLegend(this);
+	}
+
+	/**
+	 * Find an enabled legend to host legend item for the given plot
+	 * 
+	 * @param plot
+	 * @return
+	 */
+	private static LegendEx getEnabledLegend(PlotEx plot) {
+		if (plot.getLegend().isEnabled()) {
+			return plot.getLegend();
+		} else if (plot.getParent() == null) {
+			return plot.getLegend();
+		} else {
+			return getEnabledLegend(plot.getParent());
+		}
+	}
+
 	public TitleEx getTitle(int index) {
 		return titles.get(index);
 	}
@@ -818,8 +838,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		// add legend items
+		LegendEx enabledLegend = getEnabledLegend();
 		for (GraphPlotterEx gp : lx.getGraphPlotters()) {
-			getLegend().addLegendItem(gp.getLegendItem());
+			enabledLegend.addLegendItem(gp.getLegendItem());
 		}
 	}
 
@@ -988,12 +1009,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			LayerEx layerCopy = (LayerEx) layer.copyStructure(orig2copyMap);
 			layerCopy.setParent(result);
 			result.layers.add(layerCopy);
-
-			// link LegendItem to legend
-			for (GraphPlotterEx gp : layerCopy.getGraphPlotters()) {
-				LegendItemEx liCopy = gp.getLegendItem();
-				result.legend.addLegendItem(liCopy);
-			}
 		}
 
 		// copy subplots
@@ -1001,6 +1016,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			PlotEx spCopy = (PlotEx) sp.copyStructure(orig2copyMap);
 			((ComponentEx) spCopy).setParent(result);
 			result.subplots.add(spCopy);
+		}
+
+		// link legend and legend items
+		for (LegendItemEx item : getLegend().getItems()) {
+			LegendItemEx liCopy = (LegendItemEx) orig2copyMap.get(item);
+			result.legend.addLegendItem(liCopy);
 		}
 
 		// only link layer and axis range manager on top level plot
@@ -1172,7 +1193,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
-	private void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
+	private static void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
 			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
 			algs.add(alg);
@@ -1189,7 +1210,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * Calculate axis thickness according to its tick height, label font and label orientation.
 	 */
-	private void calcAxesThickness(PlotEx plot) {
+	private static void calcAxesThickness(PlotEx plot) {
 		for (AxisEx axis : plot.getXAxes()) {
 			if (axis.canContribute()) {
 				calcAxisThickness(axis);
@@ -1205,7 +1226,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	private void calcAxisThickness(AxisEx axis) {
+	private static void calcAxisThickness(AxisEx axis) {
 		double asc = axis.getAsc();
 		double desc = axis.getDesc();
 
@@ -1213,16 +1234,16 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		if (Math.abs(asc - axis.getAsc()) > Math.abs(asc) * 1e-12
 				|| Math.abs(desc - axis.getDesc()) > Math.abs(desc) * 1e-12) {
-			invalidate();
+			axis.getParent().invalidate();
 		}
 	}
 
 	/**
 	 * Calculate axis ticks according to its length, range and tick properties.
 	 */
-	private void calcAxesTick(PlotEx plot) {
+	private static void calcAxesTick(PlotEx plot) {
 		Set<AxisTickManagerEx> algs = new HashSet<AxisTickManagerEx>();
-		fillTickManagers(this, algs);
+		fillTickManagers(plot, algs);
 
 		for (AxisTickManagerEx alg : algs) {
 			alg.calcTicks();
@@ -1232,7 +1253,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
-	private void fillTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
+	private static void fillTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
 		for (AxisEx axis : plot.getXAxes()) {
 			AxisTickManagerEx alg = axis.getTickManager();
 			algs.add(alg);
@@ -1249,13 +1270,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * Calculate title size according to its contents
 	 */
-	private void calcTitleSize(PlotEx plot) {
+	private static void calcTitleSize(PlotEx plot) {
 		for (TitleEx title : plot.getTitles()) {
 			if (title.canContribute()) {
 				double oldThickness = title.getSize().getHeight();
 				title.calcSize();
 				if (Math.abs(oldThickness - title.getSize().getHeight()) > Math.abs(oldThickness) * 1e-12) {
-					invalidate();
+					plot.invalidate();
 				}
 			}
 		}
