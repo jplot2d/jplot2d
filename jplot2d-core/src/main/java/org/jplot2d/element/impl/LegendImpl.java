@@ -126,7 +126,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (isEnabled() && visibleItemNum > 0) {
+		if (isEnabled() && visibleItemNum > 0 && getPosition() != Position.FREE) {
 			getParent().invalidate();
 		}
 	}
