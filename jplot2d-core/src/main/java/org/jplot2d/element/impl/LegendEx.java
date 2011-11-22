@@ -36,6 +36,11 @@ public interface LegendEx extends Legend, ComponentEx {
 	public LegendItemEx[] getItems();
 
 	/**
+	 * Put all items in this disabled legend to enabled upper legend
+	 */
+	public void putItemsToEnabledLegend();
+
+	/**
 	 * Sets the location without setting the position to Position.FREE
 	 * 
 	 * @param locX

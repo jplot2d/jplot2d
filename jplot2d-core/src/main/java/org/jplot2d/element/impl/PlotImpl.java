@@ -897,6 +897,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (ld != null) {
 			ld.setConstraint(sp, constraint);
 		}
+
+		// push the legend items if the legend is disabled
+		if (!sp.getLegend().isEnabled()) {
+			sp.getLegend().putItemsToEnabledLegend();
+		}
+
 	}
 
 	public void removeSubplot(Plot subplot) {

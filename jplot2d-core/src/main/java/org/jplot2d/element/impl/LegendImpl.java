@@ -260,6 +260,18 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
+	public void putItemsToEnabledLegend() {
+		if (!isEnabled() && items.size() > 0) {
+			LegendEx newLegend = getParent().getEnabledLegend();
+			for (LegendItemEx item : items) {
+				newLegend.addLegendItem(item);
+			}
+			items.clear();
+			visibleItemNum = 0;
+			maxItemSize = null;
+		}
+	}
+
 	public int getColumns() {
 		return columns;
 	}
@@ -269,13 +281,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			throw new IllegalArgumentException("Columns number must great than 0.");
 		}
 		this.columns = columns;
-
-		// calculate rows
-		int nrow = visibleItemNum / columns;
-		if (visibleItemNum % columns > 0) {
-			nrow++;
-		}
-		rows = nrow;
 
 		sizeCalculationNeeded = true;
 		redraw();
@@ -441,6 +446,13 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			setLengthConstraint(contentHeight);
 			break;
 		}
+		default:
+			// calculate rows
+			int nrow = visibleItemNum / columns;
+			if (visibleItemNum % columns > 0) {
+				nrow++;
+			}
+			rows = nrow;
 		}
 
 		if (sizeCalculationNeeded) {
