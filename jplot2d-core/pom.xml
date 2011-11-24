@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jplot2d</groupId>
 		<artifactId>jplot2d</artifactId>
-		<version>0.31</version>
+		<version>0.3.2</version>
 	</parent>
 
 	<artifactId>jplot2d-core</artifactId>
@@ -58,6 +58,11 @@
 	</build>
 
 	<dependencies>
+		<!--dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-ps</artifactId>
+			<version>2.1.3</version>
+		</dependency-->
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
