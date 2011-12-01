@@ -94,12 +94,12 @@ public class TickUtils {
 		/* number of fraction digits */
 		int maxFractionDigits = 0;
 		for (int i = 0; i < values.length; i++) {
-			if (values[i] == 0) {
+			if (values[i] == 0 || Double.isNaN(values[i]) || Double.isInfinite(values[i])) {
 				continue;
 			}
 
 			double v = Math.abs(values[i]);
-			
+
 			String s = String.format(Locale.US, "%.14e", v);
 			int eidx = s.lastIndexOf('e');
 			int ensi = eidx + 1; // the start index of exponent number

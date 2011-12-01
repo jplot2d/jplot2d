@@ -99,7 +99,7 @@ public class NumberUtils {
 	 */
 	public static String calcFormatStr(float value) {
 
-		if (value == 0) {
+		if (value == 0 || Float.isNaN(value) || Float.isInfinite(value)) {
 			return "%.0f";
 		}
 
@@ -110,7 +110,7 @@ public class NumberUtils {
 
 		double v = Math.abs(value);
 
-		String s = String.format(Locale.US, "%.5e", v);
+		String s = String.format((Locale) null, "%.5e", v);
 		int eidx = s.lastIndexOf('e');
 		int ensi = eidx + 1; // the start index of exponent number
 		if (s.charAt(ensi) == '+') {
@@ -163,7 +163,7 @@ public class NumberUtils {
 	 */
 	public static String calcFormatStr(double value) {
 
-		if (value == 0) {
+		if (value == 0 || Double.isNaN(value) || Double.isInfinite(value)) {
 			return "%.0f";
 		}
 
@@ -174,7 +174,7 @@ public class NumberUtils {
 
 		double v = Math.abs(value);
 
-		String s = String.format(Locale.US, "%.14e", v);
+		String s = String.format((Locale) null, "%.14e", v);
 		int eidx = s.lastIndexOf('e');
 		int ensi = eidx + 1; // the start index of exponent number
 		if (s.charAt(ensi) == '+') {
@@ -215,6 +215,14 @@ public class NumberUtils {
 		}
 		return format;
 
+	}
+
+	public static String toString(float v) {
+		return String.format((Locale) null, calcFormatStr(v), v);
+	}
+
+	public static String toString(double v) {
+		return String.format((Locale) null, calcFormatStr(v), v);
 	}
 
 }

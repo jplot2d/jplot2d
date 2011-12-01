@@ -26,6 +26,9 @@ public class NumberUtilsTest {
 
 	@Test
 	public void testCalcLabelFormatStrDouble() {
+		assertEquals(NumberUtils.calcFormatStr(Double.NaN), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Double.POSITIVE_INFINITY), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Double.NEGATIVE_INFINITY), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(0d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(1d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(-1d), "%.0f");
@@ -51,6 +54,9 @@ public class NumberUtilsTest {
 
 	@Test
 	public void testCalcLabelFormatStrFloat() {
+		assertEquals(NumberUtils.calcFormatStr(Float.NaN), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Float.POSITIVE_INFINITY), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Float.NEGATIVE_INFINITY), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(0f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(1f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(-1f), "%.0f");
