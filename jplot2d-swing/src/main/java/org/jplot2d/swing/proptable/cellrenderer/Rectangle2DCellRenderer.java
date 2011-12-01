@@ -20,6 +20,8 @@ package org.jplot2d.swing.proptable.cellrenderer;
 
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.util.NumberUtils;
+
 /**
  * 
  * @author Jingjing Li
@@ -33,7 +35,9 @@ public class Rectangle2DCellRenderer extends StringCellRenderer<Rectangle2D> {
 		if (value == null) {
 			return null;
 		}
-		return "[" + value.getX() + ", " + value.getY() + ", " + value.getWidth() + ", "
-				+ value.getHeight() + "]";
+		return "[" + NumberUtils.toString(value.getX()) + ", "
+				+ NumberUtils.toString(value.getY()) + ", "
+				+ NumberUtils.toString(value.getWidth()) + ", "
+				+ NumberUtils.toString(value.getHeight()) + "]";
 	}
 }
