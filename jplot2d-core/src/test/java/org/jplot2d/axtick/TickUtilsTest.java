@@ -64,6 +64,8 @@ public class TickUtilsTest {
 
 	@Test
 	public void testCalcLabelFormatStrForLinear() {
+		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 0 }));
+
 		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1000, 2000, 3000 }));
 		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1200, 1200, 1300 }));
 		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 10000, 20000, 30000 }));

@@ -99,8 +99,23 @@ public class TickUtils {
 			}
 
 			double v = Math.abs(values[i]);
+			
+			String s = String.format(Locale.US, "%.14e", v);
+			int eidx = s.lastIndexOf('e');
+			int ensi = eidx + 1; // the start index of exponent number
+			if (s.charAt(ensi) == '+') {
+				ensi++;
+			}
+			int mag = Integer.parseInt(s.substring(ensi));
+			/* number of significant digits, eg. the pp1 for 1.1 is 2 */
+			int pp1 = -1;
+			for (int ci = eidx - 1; ci >= 0; ci--) {
+				if (s.charAt(ci) != '0') {
+					pp1 = ci;
+					break;
+				}
+			}
 
-			int mag = (int) Math.floor(Math.log10(v));
 			if (minMag > mag) {
 				minMag = mag;
 			}
@@ -108,11 +123,6 @@ public class TickUtils {
 				maxMag = mag;
 			}
 
-			double scale = Math.pow(10, mag);
-			double coefficient = v / scale;
-			String s = String.format((Locale) null, "%.14f", coefficient);
-			/* number of significant digits, eg. the pp1 for 1.1 is 2 */
-			int pp1 = lastNon0Idx(s);
 			if (maxPrec < pp1) {
 				maxPrec = pp1;
 			}
