@@ -27,8 +27,8 @@ import java.util.Arrays;
 import org.jplot2d.data.ArrayPair;
 
 /**
- * This utilities offer some high performance routine for number array. Saving
- * loop can improve performance especially when the array is very large.
+ * This utilities offer some high performance routine for number array. Saving loop can improve
+ * performance especially when the array is very large.
  * 
  * @author Jingjing Li
  */
@@ -50,8 +50,7 @@ public class NumberArrayUtils {
 	}
 
 	/**
-	 * Double.NaN is ignored. If the array contains only Double.NaN, returns
-	 * Double.NaN
+	 * Double.NaN is ignored. If the array contains only Double.NaN, returns Double.NaN
 	 * 
 	 * @param array
 	 * @return the min value
@@ -78,8 +77,7 @@ public class NumberArrayUtils {
 	}
 
 	/**
-	 * Double.NaN is ignored. If the array contains only Double.NaN, returns
-	 * Double.NaN
+	 * Double.NaN is ignored. If the array contains only Double.NaN, returns Double.NaN
 	 * 
 	 * @param array
 	 * @return athe max value
@@ -106,8 +104,8 @@ public class NumberArrayUtils {
 	}
 
 	/**
-	 * Double.NaN is ignored. If the array contains only Double.NaN, returns {
-	 * Double.NaN, Double.NaN }.
+	 * Double.NaN is ignored. If the array contains only Double.NaN, returns { Double.NaN,
+	 * Double.NaN }.
 	 * 
 	 * @param array
 	 * @return an array that contains min and max values
@@ -159,8 +157,8 @@ public class NumberArrayUtils {
 	}
 
 	/**
-	 * Returns the indexes of the min value of the given array. Double.NaN is
-	 * ignored. If the array contains only Double.NaN, returns int[0].
+	 * Returns the indexes of the min value of the given array. Double.NaN is ignored. If the array
+	 * contains only Double.NaN, returns int[0].
 	 * 
 	 * @param array
 	 * @return the indexes.
@@ -238,8 +236,7 @@ public class NumberArrayUtils {
 	}
 
 	/**
-	 * Returns the distance of the every point in ArrayPair to the base point
-	 * given in bx and by.
+	 * Returns the distance of the every point in ArrayPair to the base point given in bx and by.
 	 * 
 	 * @param xy
 	 * @param bx
@@ -250,8 +247,7 @@ public class NumberArrayUtils {
 		int length = xy.size();
 		double[] result = new double[length];
 		for (int i = 0; i < length; i++) {
-			result[i] = Math
-					.hypot(xy.getPDouble(i) - bx, xy.getQDouble(i) - by);
+			result[i] = Math.hypot(xy.getPDouble(i) - bx, xy.getQDouble(i) - by);
 		}
 		return result;
 	}
@@ -272,8 +268,8 @@ public class NumberArrayUtils {
 		return r;
 	}
 
-	public static int[] getIdxesOfValueBetween(ArrayPair xy, double xLo,
-			double xHi, double yLo, double yHi) {
+	public static int[] getIdxesOfValueBetween(ArrayPair xy, double xLo, double xHi, double yLo,
+			double yHi) {
 		int length = xy.size();
 		int[] idxes = new int[4];
 		int idxCount = 0;
@@ -352,20 +348,20 @@ public class NumberArrayUtils {
 	public static String toString(double[] array) {
 		StringBuilder b = new StringBuilder();
 		if (array.length > 0) {
-			b.append(array[0]);
+			b.append(NumberUtils.toString(array[0]));
 		}
 		for (int i = 1; i < array.length; i++)
-			b.append(',').append(array[i]);
+			b.append(',').append(NumberUtils.toString(array[i]));
 		return b.toString();
 	}
 
 	public static String toString(float[] array) {
 		StringBuilder b = new StringBuilder();
 		if (array.length > 0) {
-			b.append(array[0]);
+			b.append(NumberUtils.toString(array[0]));
 		}
 		for (int i = 1; i < array.length; i++)
-			b.append(',').append(array[i]);
+			b.append(',').append(NumberUtils.toString(array[i]));
 		return b.toString();
 	}
 
@@ -466,8 +462,7 @@ public class NumberArrayUtils {
 		if (a instanceof boolean[]) {
 			return ((boolean[]) a).clone();
 		}
-		throw new IllegalArgumentException(
-				"The argument is not a number array.");
+		throw new IllegalArgumentException("The argument is not a number array.");
 	}
 
 }

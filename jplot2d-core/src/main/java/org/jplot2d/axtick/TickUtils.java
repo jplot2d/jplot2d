@@ -100,7 +100,7 @@ public class TickUtils {
 
 			double v = Math.abs(values[i]);
 
-			String s = String.format(Locale.US, "%.14e", v);
+			String s = String.format((Locale) null, "%.14e", v);
 			int eidx = s.lastIndexOf('e');
 			int ensi = eidx + 1; // the start index of exponent number
 			if (s.charAt(ensi) == '+') {
