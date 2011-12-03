@@ -84,6 +84,10 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(Float.class, new FloatCellRenderer());
 		registerRenderer(double.class, new DoubleCellRenderer());
 		registerRenderer(Double.class, new DoubleCellRenderer());
+
+		// number array renderer
+		registerRenderer(float[].class, new ObjectCellRenderer());
+		registerRenderer(double[].class, new ObjectCellRenderer());
 		
 		// geom renderer
 		registerRenderer(Point.class, new PointCellRenderer());
@@ -106,6 +110,11 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(AxisTickTransform.class, new StringCellRenderer<Object>());
 		registerRenderer(Stroke.class, new StringCellRenderer<Object>());
 		registerRenderer(Paint.class, new StringCellRenderer<Object>());
+
+		// Objct renderer
+		registerRenderer(Object.class, new ObjectCellRenderer());
+		registerRenderer(String[].class, new StringArrayCellRenderer());
+
 	}
 
 }
