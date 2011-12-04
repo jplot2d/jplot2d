@@ -18,7 +18,7 @@
  */
 package org.jplot2d.element;
 
-import java.awt.Stroke;
+import java.awt.BasicStroke;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
@@ -49,19 +49,19 @@ public interface VLineMarker extends Marker {
 	public void setValue(double value);
 
 	/**
-	 * Returns the <code>Stroke</code> to be used to draw the marker line.
+	 * Returns the <code>BasicStroke</code> to be used to draw the marker line.
 	 * 
-	 * @return the <code>Stroke</code>
+	 * @return the <code>BasicStroke</code>
 	 */
 	@Property(order = 0)
-	public Stroke getStroke();
+	public BasicStroke getStroke();
 
 	/**
-	 * Sets the <code>Stroke</code> to be used to draw the marker line.
+	 * Sets the <code>BasicStroke</code> to be used to draw the marker line.
 	 * 
 	 * @param stroke
-	 *            the <code>Stroke</code> to be used to draw the marker line
+	 *            the <code>BasicStroke</code> to be used to draw the marker line
 	 */
-	public void setStroke(Stroke stroke);
+	public void setStroke(BasicStroke stroke);
 
 }
