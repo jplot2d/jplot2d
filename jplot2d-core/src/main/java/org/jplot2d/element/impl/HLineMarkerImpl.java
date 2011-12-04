@@ -41,7 +41,7 @@ public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
 
 	private double valueY;
 
-	private Stroke stroke = DEFAULT_STROKE;
+	private BasicStroke stroke = DEFAULT_STROKE;
 
 	/**
 	 * A local variable to avoid re-create line when drawing
@@ -118,11 +118,11 @@ public class HLineMarkerImpl extends MarkerImpl implements HLineMarkerEx {
 		}
 	}
 
-	public Stroke getStroke() {
+	public BasicStroke getStroke() {
 		return stroke;
 	}
 
-	public void setStroke(Stroke stroke) {
+	public void setStroke(BasicStroke stroke) {
 		this.stroke = stroke;
 	}
 
