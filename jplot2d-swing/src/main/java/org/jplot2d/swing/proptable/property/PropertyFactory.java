@@ -21,6 +21,7 @@
  */
 package org.jplot2d.swing.proptable.property;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Dimension2D;
@@ -44,6 +45,7 @@ public class PropertyFactory {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static MainProperty<?> createProperty(PropertyInfo descriptor) {
 
 		Class<?> type = descriptor.getPropertyType();
@@ -75,6 +77,10 @@ public class PropertyFactory {
 
 		if (Range.class.isAssignableFrom(type)) {
 			return new RangeProperty(descriptor);
+		}
+
+		if (BasicStroke.class.isAssignableFrom(type)) {
+			return new BasicStrokeProperty(descriptor);
 		}
 
 		return new PropertyDescriptorAdapter(descriptor);

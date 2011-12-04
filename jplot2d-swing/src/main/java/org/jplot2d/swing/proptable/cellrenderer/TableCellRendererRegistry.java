@@ -18,6 +18,7 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -25,7 +26,6 @@ import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -88,7 +88,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		// number array renderer
 		registerRenderer(float[].class, new ObjectCellRenderer());
 		registerRenderer(double[].class, new ObjectCellRenderer());
-		
+
 		// geom renderer
 		registerRenderer(Point.class, new PointCellRenderer());
 		registerRenderer(Point2D.class, new Point2DCellRenderer());
@@ -108,7 +108,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(MathElement.class, new MathCellRenderer());
 		registerRenderer(LayoutDirector.class, new StringCellRenderer<Object>());
 		registerRenderer(AxisTickTransform.class, new StringCellRenderer<Object>());
-		registerRenderer(Stroke.class, new StringCellRenderer<Object>());
+		registerRenderer(BasicStroke.class, new BasicStrokeCellRenderer());
 		registerRenderer(Paint.class, new StringCellRenderer<Object>());
 
 		// Objct renderer
