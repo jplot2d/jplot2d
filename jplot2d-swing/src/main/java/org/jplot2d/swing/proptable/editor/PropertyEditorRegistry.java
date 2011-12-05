@@ -1,26 +1,22 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * 
+ * Copyright 2010, 2011 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.proptable.editor;
-
 
 import java.awt.Color;
 import java.awt.Font;
@@ -55,7 +51,7 @@ public class PropertyEditorRegistry implements PropertyEditorFactory {
 		typeEditorMap.remove(type);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public PropertyEditor createPropertyEditor(Property<?> property) {
 
 		Object[] avs = property.getAvailableValues();
@@ -89,8 +85,8 @@ public class PropertyEditorRegistry implements PropertyEditorFactory {
 		registerEditor(Float.class, floatEditor);
 
 		PropertyEditor longEditor = new LongEditor();
-		registerEditor(int.class, longEditor);
-		registerEditor(Integer.class, longEditor);
+		registerEditor(long.class, longEditor);
+		registerEditor(Long.class, longEditor);
 
 		PropertyEditor integerEditor = new IntegerEditor();
 		registerEditor(int.class, integerEditor);
@@ -99,6 +95,9 @@ public class PropertyEditorRegistry implements PropertyEditorFactory {
 		PropertyEditor booleanEditor = new BooleanPropertyEditor();
 		registerEditor(boolean.class, booleanEditor);
 		registerEditor(Boolean.class, booleanEditor);
+
+		registerEditor(float[].class, new FloatArrayEditor());
+		registerEditor(double[].class, new DoubleArrayEditor());
 
 		// string and math
 		registerEditor(String.class, new StringPropertyEditor());
