@@ -88,7 +88,7 @@ public interface XYGraphPlotter extends GraphPlotter {
 	@Property(order = 1)
 	public boolean isSymbolVisible();
 
-	public void setSymbolsVisible(boolean symbolsVisible);
+	public void setSymbolVisible(boolean symbolVisible);
 
 	/**
 	 * Returns the symbol shape.
@@ -130,7 +130,7 @@ public interface XYGraphPlotter extends GraphPlotter {
 	@Property(order = 10)
 	public boolean isLineVisible();
 
-	public void setLinesVisible(boolean linesVisible);
+	public void setLineVisible(boolean lineVisible);
 
 	@Property(order = 11)
 	public BasicStroke getLineStroke();

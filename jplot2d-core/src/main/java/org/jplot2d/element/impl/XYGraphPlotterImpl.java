@@ -92,8 +92,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		return symbolVisible;
 	}
 
-	public void setSymbolsVisible(boolean symbolsVisible) {
-		this.symbolVisible = symbolsVisible;
+	public void setSymbolVisible(boolean symbolVisible) {
+		this.symbolVisible = symbolVisible;
 		redraw();
 	}
 
@@ -101,8 +101,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		return lineVisible;
 	}
 
-	public void setLinesVisible(boolean linesVisible) {
-		this.lineVisible = linesVisible;
+	public void setLineVisible(boolean lineVisible) {
+		this.lineVisible = lineVisible;
 		redraw();
 	}
 
