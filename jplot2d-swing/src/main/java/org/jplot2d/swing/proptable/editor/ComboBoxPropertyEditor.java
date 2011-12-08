@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.editor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
@@ -38,14 +37,8 @@ public class ComboBoxPropertyEditor extends AbstractPropertyEditor<JComboBox> {
 		}
 	};
 
-	public ComboBoxPropertyEditor() {
-		editor = new JComboBox();
-		editor.addActionListener(action);
-	}
-
 	public ComboBoxPropertyEditor(Object[] items) {
 		editor = new JComboBox(items);
-		editor.addActionListener(action);
 	}
 
 	public Object getValue() {
@@ -55,10 +48,7 @@ public class ComboBoxPropertyEditor extends AbstractPropertyEditor<JComboBox> {
 
 	public void setValue(Object value) {
 		editor.setSelectedItem(value);
-	}
-
-	public void setAvailableValues(Object[] values) {
-		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
+		editor.addActionListener(action);
 	}
 
 }
