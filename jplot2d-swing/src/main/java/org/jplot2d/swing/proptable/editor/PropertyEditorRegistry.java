@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jplot2d.swing.proptable.property.Property;
-import org.jplot2d.tex.MathElement;
 
 /**
  * A registry to keep the map between property type and PropertyEditor. Warning: the internal map is
@@ -99,9 +98,9 @@ public class PropertyEditorRegistry implements PropertyEditorFactory {
 		registerEditor(float[].class, new FloatArrayEditor());
 		registerEditor(double[].class, new DoubleArrayEditor());
 
-		// string and math
+		// string
 		registerEditor(String.class, new StringPropertyEditor());
-		registerEditor(MathElement.class, new MathPropertyEditor());
+
 		// color and font
 		registerEditor(Color.class, new ColorPropertyEditor());
 		registerEditor(Font.class, new FontPropertyEditor());

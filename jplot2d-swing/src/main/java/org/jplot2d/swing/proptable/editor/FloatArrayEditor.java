@@ -27,17 +27,17 @@ import org.jplot2d.util.NumberArrayUtils;
  * 
  * @author Jingjing Li
  */
-public class FloatArrayEditor extends AbstractPropertyEditor {
+public class FloatArrayEditor extends AbstractPropertyEditor<JTextField> {
 
 	private float[] oldValue;
 
 	public FloatArrayEditor() {
 		editor = new JTextField();
-		((JTextField) editor).setBorder(null);
+		editor.setBorder(null);
 	}
 
 	public Object getValue() {
-		String text = ((JTextComponent) editor).getText();
+		String text = editor.getText();
 		if (text == null || text.length() == 0) {
 			return null;
 		}

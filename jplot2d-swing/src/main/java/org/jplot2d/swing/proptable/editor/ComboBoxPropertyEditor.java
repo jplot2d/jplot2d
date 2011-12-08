@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010, 2011 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.proptable.editor;
 
@@ -28,66 +28,37 @@ import javax.swing.JComboBox;
  * ComboBoxPropertyEditor. <br>
  * 
  */
-public class ComboBoxPropertyEditor extends AbstractPropertyEditor {
+public class ComboBoxPropertyEditor extends AbstractPropertyEditor<JComboBox> {
 
-    private class PComboBox extends JComboBox {
+	private Object oldValue;
 
-        private static final long serialVersionUID = 1L;
+	private ActionListener action = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			firePropertyChange(oldValue, editor.getSelectedItem());
+		}
+	};
 
-        private Object oldValue;
+	public ComboBoxPropertyEditor() {
+		editor = new JComboBox();
+		editor.addActionListener(action);
+	}
 
-        private ActionListener action = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ComboBoxPropertyEditor.this.firePropertyChange(oldValue,
-                        getSelectedItem());
-            }
-        };
+	public ComboBoxPropertyEditor(Object[] items) {
+		editor = new JComboBox(items);
+		editor.addActionListener(action);
+	}
 
-        public PComboBox() {
-            super();
-            addActionListener(action);
-        }
+	public Object getValue() {
+		Object selected = ((JComboBox) editor).getSelectedItem();
+		return selected;
+	}
 
-        public PComboBox(Object[] items) {
-            super(items);
-            addActionListener(action);
-        }
+	public void setValue(Object value) {
+		editor.setSelectedItem(value);
+	}
 
-        public void setSelectedItem(Object anObject) {
-            oldValue = getSelectedItem();
-            super.setSelectedItem(anObject);
-        }
-    }
-
-    public ComboBoxPropertyEditor() {
-        editor = new PComboBox();
-    }
-
-    public ComboBoxPropertyEditor(Object[] items) {
-        editor = new PComboBox(items);
-    }
-
-    public Object getValue() {
-        Object selected = ((JComboBox) editor).getSelectedItem();
-        return selected;
-    }
-
-    public void setValue(Object value) {
-        JComboBox combo = (JComboBox) editor;
-        Object current = null;
-        int index = -1;
-        for (int i = 0, c = combo.getModel().getSize(); i < c; i++) {
-            current = combo.getModel().getElementAt(i);
-            if (value == current || (current != null && current.equals(value))) {
-                index = i;
-                break;
-            }
-        }
-        ((JComboBox) editor).setSelectedIndex(index);
-    }
-
-    public void setAvailableValues(Object[] values) {
-        ((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
-    }
+	public void setAvailableValues(Object[] values) {
+		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
+	}
 
 }
