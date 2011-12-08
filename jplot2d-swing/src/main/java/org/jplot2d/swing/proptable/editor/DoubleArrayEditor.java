@@ -27,17 +27,17 @@ import org.jplot2d.util.NumberArrayUtils;
  * 
  * @author Jingjing Li
  */
-public class DoubleArrayEditor extends AbstractPropertyEditor {
+public class DoubleArrayEditor extends AbstractPropertyEditor<JTextField> {
 
 	private double[] oldValue;
 
 	public DoubleArrayEditor() {
 		editor = new JTextField();
-		((JTextField) editor).setBorder(null);
+		editor.setBorder(null);
 	}
 
 	public Object getValue() {
-		String text = ((JTextComponent) editor).getText();
+		String text = editor.getText();
 		if (text == null || text.length() == 0) {
 			return null;
 		}

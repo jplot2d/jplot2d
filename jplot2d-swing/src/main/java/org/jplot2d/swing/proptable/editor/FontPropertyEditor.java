@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swing.proptable.editor;
 
-
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Window;
@@ -37,69 +36,69 @@ import org.jplot2d.swing.proptable.cellrenderer.FontCellRenderer;
  * FontPropertyEditor.<br>
  * 
  */
-public class FontPropertyEditor extends AbstractPropertyEditor {
+public class FontPropertyEditor extends AbstractPropertyEditor<JPanel> {
 
-    private FontCellRenderer label;
+	private FontCellRenderer label;
 
-    private JButton button;
+	private JButton button;
 
-    private Font font;
+	private Font font;
 
-    private FontChooserDialog fontDialog;
+	private FontChooserDialog fontDialog;
 
-    public FontPropertyEditor() {
-        editor = new JPanel(new BorderLayout(0, 0));
-        ((JPanel) editor).add(getLabel(), "Center");
-        ((JPanel) editor).add(getButton(), "East");
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                selectFont();
-            }
-        });
-        ((JPanel) editor).setOpaque(false);
-    }
+	public FontPropertyEditor() {
+		editor = new JPanel(new BorderLayout(0, 0));
+		editor.add(getLabel(), "Center");
+		editor.add(getButton(), "East");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selectFont();
+			}
+		});
+		editor.setOpaque(false);
+	}
 
-    private FontCellRenderer getLabel() {
-        if (label == null) {
-            label = new FontCellRenderer();
-            label.setUI((LabelUI) UIManager.getUI(label));
-            label.setOpaque(false);
-        }
-        return label;
-    }
+	private FontCellRenderer getLabel() {
+		if (label == null) {
+			label = new FontCellRenderer();
+			label.setUI((LabelUI) UIManager.getUI(label));
+			label.setOpaque(false);
+		}
+		return label;
+	}
 
-    private JButton getButton() {
-        if (button == null) {
-            button = new FixedButton();
-        }
-        return button;
-    }
+	private JButton getButton() {
+		if (button == null) {
+			button = new FixedButton();
+		}
+		return button;
+	}
 
-    public Font getValue() {
-        return font;
-    }
+	public Font getValue() {
+		return font;
+	}
 
-    public void setValue(Object value) {
-        font = (Font) value;
-        label.setValue(value);
-    }
+	public void setValue(Object value) {
+		font = (Font) value;
+		label.setValue(value);
+	}
 
-    protected void selectFont() {
-        if (fontDialog == null) {
-            Window win = SwingUtilities.getWindowAncestor(editor);
-            fontDialog = new FontChooserDialog(win, true);
-        }
+	protected void selectFont() {
+		if (fontDialog == null) {
+			Window win = SwingUtilities.getWindowAncestor(editor);
+			fontDialog = new FontChooserDialog(win, true);
+		}
 
-        fontDialog.setFontValue(getValue());
-        fontDialog.setLocationRelativeTo(editor);
-        fontDialog.setVisible(true);
+		fontDialog.setFontValue(getValue());
+		fontDialog.setLocationRelativeTo(editor);
+		fontDialog.setVisible(true);
 
-        if (fontDialog.isOK()) {
-            Font oldFont = font;
-            setValue(fontDialog.getFontValue());
-            firePropertyChange(oldFont, font);
-        }
+		if (fontDialog.isOK()) {
+			Font oldFont = font;
+			setValue(fontDialog.getFontValue());
+			firePropertyChange(oldFont, font);
+		}
 
-    }
+	}
 
 }
