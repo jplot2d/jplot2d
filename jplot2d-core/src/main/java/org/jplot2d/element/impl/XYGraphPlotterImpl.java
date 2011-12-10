@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.impl.XYGraphPlotterDataChunker.ChunkData;
-import org.jplot2d.util.LineHatchPaint;
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.SymbolShape;
 
@@ -67,13 +66,14 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
 
-	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
+			BasicStroke.JOIN_MITER);
 
 	private boolean fillEnabled;
 
 	private Paint fillPaint = DEFAULT_FILL_PAINT;
 
-	private FillClosureType fillClosureType;
+	private FillClosureType fillClosureType = FillClosureType.SELF;
 
 	public XYGraphPlotterImpl() {
 		super(new XYLegendItemImpl());
@@ -236,6 +236,9 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		this.symbolSize = dp.symbolSize;
 		this.symbolColor = dp.symbolColor;
 		this.lineStroke = dp.lineStroke;
+		this.fillEnabled = dp.fillEnabled;
+		this.fillPaint = dp.fillPaint;
+		this.fillClosureType = dp.fillClosureType;
 	}
 
 	public void draw(Graphics2D graphics) {
@@ -264,15 +267,9 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	private void fillLineAera(Graphics2D g) {
 		XYGraphPlotterFiller filler = XYGraphPlotterFiller.getInstance(this, g.getClipBounds());
-		Shape shape = filler.getShape();
 
 		Paint p = getFillPaint();
-		if (p instanceof LineHatchPaint) {
-			g.setPaint(filler.createHatchPaint((LineHatchPaint) p));
-		} else {
-			g.setPaint(p);
-		}
-		g.fill(shape);
+		filler.fill(g, p);
 	}
 
 	/**

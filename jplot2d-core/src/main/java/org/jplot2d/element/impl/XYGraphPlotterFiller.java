@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010,2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,16 +19,15 @@
 package org.jplot2d.element.impl;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 import org.jplot2d.data.XYGraph;
 import org.jplot2d.util.LineHatchPaint;
-import org.jplot2d.util.NumberUtils;
 
 /**
  * Down-sample the line data and construct a closed shape for filling.
@@ -37,8 +36,6 @@ import org.jplot2d.util.NumberUtils;
  * 
  */
 public class XYGraphPlotterFiller {
-
-	private static final ThreadLocal<XYGraphPlotterFiller> _threadLocalBuilder = new ThreadLocal<XYGraphPlotterFiller>();
 
 	private final Path2D.Float path = new Path2D.Float();
 
@@ -54,11 +51,19 @@ public class XYGraphPlotterFiller {
 
 	private int endx, endy;
 
-	private BufferedImage hatchImg;
+	/**
+	 * @param plotter
+	 * @param clip
+	 * @return
+	 */
+	public static XYGraphPlotterFiller getInstance(XYGraphPlotterEx plotter, Rectangle clip) {
+		XYGraphPlotterFiller builder = new XYGraphPlotterFiller();
 
-	private double lastHatchScale;
+		builder.setLineData(plotter);
+		builder.setClip(clip);
 
-	private Paint hatchPaint;
+		return builder;
+	}
 
 	private XYGraphPlotterFiller() {
 
@@ -68,15 +73,13 @@ public class XYGraphPlotterFiller {
 		this.graph = dp.getGraph();
 		this.layer = dp.getParent();
 		this.plotter = dp;
-
-		reset();
 	}
 
 	private void setClip(Rectangle2D clip) {
 		this.clip = clip;
 	}
 
-	public Shape getShape() {
+	private Shape getShape() {
 		switch (plotter.getChartType()) {
 		case LINECHART:
 			fill();
@@ -91,10 +94,6 @@ public class XYGraphPlotterFiller {
 		closeLine();
 
 		return path;
-	}
-
-	private void reset() {
-		path.reset();
 	}
 
 	private void fill() {
@@ -254,45 +253,36 @@ public class XYGraphPlotterFiller {
 	}
 
 	/**
-	 * Create a paint to fill the shape in the given clip area.
+	 * fill paint on the given graphics.
+	 * 
+	 * @param g
+	 * @param p
+	 */
+	public void fill(Graphics2D g, Paint p) {
+		if (p instanceof LineHatchPaint) {
+			LineHatchPaint lhp = (LineHatchPaint) p;
+			Path2D hatch = createHatchLines(lhp);
+
+			g.setColor(lhp.getColor());
+			g.setStroke(lhp.getStroke());
+			g.draw(hatch);
+		} else {
+			g.setPaint(p);
+			g.fill(getShape());
+		}
+	}
+
+	/**
+	 * Create a Path2D which contains all hatch lines
 	 * 
 	 * @param hp
 	 * @return
 	 */
-	public Paint createHatchPaint(LineHatchPaint hp) {
+	private Path2D createHatchLines(LineHatchPaint hp) {
 		double scale = layer.getPaperTransform().getScale();
 		Dimension size = new Dimension((int) clip.getMaxX(), (int) clip.getMaxY());
 
-		if (hatchImg != null && size.width <= hatchImg.getWidth()
-				&& size.height <= hatchImg.getHeight()) {
-			if (NumberUtils.approximate(this.lastHatchScale, scale, 4)) {
-				return hatchPaint;
-			}
-		} else {
-			/*
-			 * re-create the hatch image. The image is 64px larger than required size.
-			 */
-			int imgWidth = size.width + 64;
-			int imgHeight = size.height + 64;
-			hatchImg = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
-		}
-
-		lastHatchScale = scale;
-		hatchPaint = hp.createPaint(hatchImg, scale);
-		return hatchPaint;
-	}
-
-	public static XYGraphPlotterFiller getInstance(XYGraphPlotterImpl dp, Rectangle clip) {
-		XYGraphPlotterFiller builder = _threadLocalBuilder.get();
-		if (builder == null) {
-			builder = new XYGraphPlotterFiller();
-			_threadLocalBuilder.set(builder);
-		}
-
-		builder.setLineData(dp);
-		builder.setClip(clip);
-
-		return builder;
+		return null;
 	}
 
 }

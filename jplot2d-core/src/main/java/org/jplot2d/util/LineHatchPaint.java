@@ -1,35 +1,31 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010, 2011 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.util;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 
 /**
@@ -41,15 +37,11 @@ import java.awt.image.ColorModel;
  */
 public class LineHatchPaint implements Paint {
 
-	private static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
-
 	private static final Color DEFAULT_COLOR = Color.BLACK;
 
 	private final Color color;
 
-	private final float lineWidth;
-
-	private final float[] dash;
+	private final BasicStroke stroke;
 
 	private final double angle;
 
@@ -68,7 +60,7 @@ public class LineHatchPaint implements Paint {
 	 *            the counterclockwise angle in degrees from horizontal
 	 */
 	public LineHatchPaint(double angle) {
-		this(DEFAULT_COLOR, 0, null, angle, 6);
+		this(0, angle, 6);
 	}
 
 	/**
@@ -86,7 +78,7 @@ public class LineHatchPaint implements Paint {
 	 *            the spacing, in point(1/72 inch), between the parallel lines
 	 */
 	public LineHatchPaint(float width, double angle, double spacing) {
-		this(DEFAULT_COLOR, width, null, angle, spacing);
+		this(DEFAULT_COLOR, new BasicStroke(width), angle, spacing);
 	}
 
 	/**
@@ -101,12 +93,27 @@ public class LineHatchPaint implements Paint {
 	 * @param spacing
 	 *            the spacing, in point(1/72 inch), between the parallel lines
 	 */
-	public LineHatchPaint(Color color, float width, float[] dash, double angle, double spacing) {
+	public LineHatchPaint(Color color, BasicStroke stroke, double angle, double spacing) {
 		this.color = color;
-		this.lineWidth = width;
-		this.dash = dash;
+		this.stroke = stroke;
 		this.angle = angle;
 		this.spacing = spacing;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public BasicStroke getStroke() {
+		return stroke;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public double spacing() {
+		return spacing;
 	}
 
 	public PaintContext createContext(ColorModel cm, Rectangle deviceBounds,
@@ -116,55 +123,6 @@ public class LineHatchPaint implements Paint {
 
 	public int getTransparency() {
 		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Create a Paint with the given image and scale. The given image will be cleared and filled by
-	 * hatch lines.
-	 * 
-	 * @param hatchImg
-	 * @param scale
-	 * @return a TexturePaint
-	 */
-	public Paint createPaint(BufferedImage hatchImg, double scale) {
-		int imgWidth = hatchImg.getWidth();
-		int imgHeight = hatchImg.getHeight();
-
-		Graphics2D g = (Graphics2D) hatchImg.getGraphics();
-
-		// clear the image
-		g.setBackground(TRANSPARENT_COLOR);
-		g.clearRect(0, 0, imgWidth, imgHeight);
-
-		hatch(g, scale, imgWidth, imgHeight);
-		return new TexturePaint(hatchImg, new Rectangle(0, 0, imgWidth, imgHeight));
-	}
-
-	/**
-	 * fill the buffered image with hatch lines.
-	 */
-	private void hatch(Graphics2D g, double scale, int width, int height) {
-		double sf = scale / 72;
-
-		g.translate(width / 2.0, height / 2.0);
-		g.rotate(Math.toRadians(-angle));
-		g.scale(sf, sf);
-
-		if (dash == null) {
-			g.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-		} else {
-			g.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-					10f, dash, 0f));
-		}
-		g.setColor(color);
-
-		// the max possible length of line, and the height for line spacing.
-		double halfStdDiagonal = Math.hypot(width, height) / sf / 2;
-		int maxiy = (int) (halfStdDiagonal / spacing);
-		for (double iy = -maxiy; iy <= maxiy; iy++) {
-			double y = spacing * iy;
-			g.draw(new Line2D.Double(-halfStdDiagonal, y, halfStdDiagonal, y));
-		}
 	}
 
 }
