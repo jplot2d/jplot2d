@@ -145,36 +145,44 @@ public class LineHatchPaint implements Paint {
 
 		}
 
-		return new Line2D[0];
+		return clippedLines;
 	}
 
 	public static Line2D[] calcHatchLinesClipped(LineHatchPaint lhp, Rectangle2D clip, double scale) {
 
-		double angle = lhp.getAngle() % 360.0;
-		if (angle < 0) {
-			angle += 360;
+		// the angle to positive x axis or negative x axis
+		double anglex = lhp.getAngle() % 180.0;
+		if (anglex > 90) {
+			anglex = 180 - anglex;
+		} else if (anglex < -90) {
+			anglex += 180;
+		} else if (anglex < -0) {
+			anglex = -anglex;
 		}
+		anglex *= Math.PI / 180;
 
 		double diagonalLength = Math.hypot(clip.getHeight(), clip.getWidth());
 		double diagonalAngle = Math.atan(clip.getHeight() / clip.getWidth());
 
-		double halfLength = diagonalLength / 2 * Math.cos(angle - diagonalAngle);
-		double halfRange = diagonalLength / 2 * Math.sin(angle + diagonalAngle);
+		double halfLength = diagonalLength / 2 * Math.cos(anglex - diagonalAngle);
+		double halfRange = diagonalLength / 2 * Math.sin(anglex + diagonalAngle);
 		double spacing = lhp.spacing() * scale;
 		int halfn = (int) (halfRange / spacing);
 
 		Line2D[] result = new Line2D[2 * halfn + 1];
 
+		double angle = -lhp.getAngle() * Math.PI / 180;
+
 		double a0x = clip.getCenterX() - halfLength * Math.cos(angle);
 		double a0y = clip.getCenterY() - halfLength * Math.sin(angle);
 		double b0x = clip.getCenterX() + halfLength * Math.cos(angle);
 		double b0y = clip.getCenterY() + halfLength * Math.sin(angle);
-		for (int i = -halfn; i < halfn; i++) {
-			double aix = a0x - spacing * Math.sin(angle);
-			double aiy = a0y + spacing * Math.cos(angle);
-			double bix = b0x - spacing * Math.sin(angle);
-			double biy = b0y + spacing * Math.cos(angle);
-			result[1] = new Line2D.Float((float) aix, (float) aiy, (float) bix, (float) biy);
+		for (int i = 0; i < result.length; i++) {
+			double aix = a0x - (i - halfn) * spacing * Math.sin(angle);
+			double aiy = a0y + (i - halfn) * spacing * Math.cos(angle);
+			double bix = b0x - (i - halfn) * spacing * Math.sin(angle);
+			double biy = b0y + (i - halfn) * spacing * Math.cos(angle);
+			result[i] = new Line2D.Float((float) aix, (float) aiy, (float) bix, (float) biy);
 		}
 
 		return result;
