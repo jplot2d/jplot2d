@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
@@ -259,30 +258,21 @@ public class XYGraphPlotterFiller {
 	 * @param p
 	 */
 	public void fill(Graphics2D g, Paint p) {
+		double scale = layer.getPaperTransform().getScale();
+
 		if (p instanceof LineHatchPaint) {
 			LineHatchPaint lhp = (LineHatchPaint) p;
-			Path2D hatch = createHatchLines(lhp);
+			Shape[] hatch = lhp.calcHatchShapes(path, clip, scale);
 
 			g.setColor(lhp.getColor());
 			g.setStroke(lhp.getStroke());
-			g.draw(hatch);
+			for (Shape shape : hatch) {
+				g.draw(shape);
+			}
 		} else {
 			g.setPaint(p);
 			g.fill(getShape());
 		}
-	}
-
-	/**
-	 * Create a Path2D which contains all hatch lines
-	 * 
-	 * @param hp
-	 * @return
-	 */
-	private Path2D createHatchLines(LineHatchPaint hp) {
-		double scale = layer.getPaperTransform().getScale();
-		Dimension size = new Dimension((int) clip.getMaxX(), (int) clip.getMaxY());
-
-		return null;
 	}
 
 }

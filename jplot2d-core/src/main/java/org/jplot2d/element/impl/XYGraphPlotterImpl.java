@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.jplot2d.data.XYGraph;
 import org.jplot2d.element.impl.XYGraphPlotterDataChunker.ChunkData;
-import org.jplot2d.util.NumberArrayUtils;
+import org.jplot2d.util.GraphicsUtil;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -307,7 +307,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 			}
 
 			// draw error bar with line color and new stroke
-			g.setStroke(scaleStroke(getLineStroke(), scale / 2));
+			g.setStroke(GraphicsUtil.scaleStroke(getLineStroke(), scale / 2));
 
 			if (data.xErrorSize != 0) {
 				for (int i = 0; i < data.xErrorSize; i++) {
@@ -451,7 +451,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize,
 			XYGraphPlotterEx plotter, double scale) {
 		// set line stroke
-		g.setStroke(scaleStroke(plotter.getLineStroke(), scale));
+		g.setStroke(GraphicsUtil.scaleStroke(plotter.getLineStroke(), scale));
 		// draw lines
 		Path2D.Float gp = new Path2D.Float();
 		gp.moveTo(xout[0], yout[0]);
@@ -459,13 +459,6 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 			gp.lineTo(xout[i], yout[i]);
 		}
 		g.draw(gp);
-	}
-
-	private static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
-		float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
-				stroke.getDashArray(), scale);
-		return new BasicStroke((float) (stroke.getLineWidth() * scale), stroke.getEndCap(),
-				stroke.getLineJoin(), 10f, dashArray, (float) (stroke.getDashPhase() * scale));
 	}
 
 	/**
