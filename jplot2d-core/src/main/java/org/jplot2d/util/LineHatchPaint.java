@@ -24,7 +24,9 @@ import java.awt.Paint;
 import java.awt.PaintContext;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
 
@@ -125,4 +127,56 @@ public class LineHatchPaint implements Paint {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Calculate hatch shapes to fill the given shape.
+	 * 
+	 * @param shape
+	 *            the shape to hatch
+	 * @param clip
+	 *            the clip
+	 * @param scale
+	 * @return hatch shapes
+	 */
+	public Shape[] calcHatchShapes(Shape shape, Rectangle2D clip, double scale) {
+
+		Line2D[] clippedLines = calcHatchLinesClipped(this, clip, scale);
+
+		for (Line2D line : clippedLines) {
+
+		}
+
+		return new Line2D[0];
+	}
+
+	public static Line2D[] calcHatchLinesClipped(LineHatchPaint lhp, Rectangle2D clip, double scale) {
+
+		double angle = lhp.getAngle() % 360.0;
+		if (angle < 0) {
+			angle += 360;
+		}
+
+		double diagonalLength = Math.hypot(clip.getHeight(), clip.getWidth());
+		double diagonalAngle = Math.atan(clip.getHeight() / clip.getWidth());
+
+		double halfLength = diagonalLength / 2 * Math.cos(angle - diagonalAngle);
+		double halfRange = diagonalLength / 2 * Math.sin(angle + diagonalAngle);
+		double spacing = lhp.spacing() * scale;
+		int halfn = (int) (halfRange / spacing);
+
+		Line2D[] result = new Line2D[2 * halfn + 1];
+
+		double a0x = clip.getCenterX() - halfLength * Math.cos(angle);
+		double a0y = clip.getCenterY() - halfLength * Math.sin(angle);
+		double b0x = clip.getCenterX() + halfLength * Math.cos(angle);
+		double b0y = clip.getCenterY() + halfLength * Math.sin(angle);
+		for (int i = -halfn; i < halfn; i++) {
+			double aix = a0x - spacing * Math.sin(angle);
+			double aiy = a0y + spacing * Math.cos(angle);
+			double bix = b0x - spacing * Math.sin(angle);
+			double biy = b0y + spacing * Math.cos(angle);
+			result[1] = new Line2D.Float((float) aix, (float) aiy, (float) bix, (float) biy);
+		}
+
+		return result;
+	}
 }
