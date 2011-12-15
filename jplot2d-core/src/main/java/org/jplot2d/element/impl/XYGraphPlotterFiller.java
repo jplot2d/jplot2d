@@ -36,8 +36,6 @@ import org.jplot2d.util.LineHatchPaint;
  */
 public class XYGraphPlotterFiller {
 
-	private final Path2D.Float path = new Path2D.Float();
-
 	private LayerEx layer;
 
 	private XYGraphPlotterEx plotter;
@@ -78,24 +76,51 @@ public class XYGraphPlotterFiller {
 		this.clip = clip;
 	}
 
-	private Shape getShape() {
+	/**
+	 * fill paint on the given graphics.
+	 * 
+	 * @param g
+	 * @param p
+	 */
+	public void fill(Graphics2D g, Paint p) {
+		double scale = layer.getPaperTransform().getScale();
+
+		Path2D path = getFillShape();
+		if (p instanceof LineHatchPaint) {
+			LineHatchPaint lhp = (LineHatchPaint) p;
+			Shape[] hatch = lhp.calcHatchShapes(path, clip, scale);
+
+			g.setColor(lhp.getColor());
+			g.setStroke(lhp.getStroke());
+			for (Shape shape : hatch) {
+				g.draw(shape);
+			}
+		} else {
+			g.setPaint(p);
+			g.fill(path);
+		}
+	}
+
+	private Path2D getFillShape() {
+		Path2D.Double path = new Path2D.Double();
+
 		switch (plotter.getChartType()) {
 		case LINECHART:
-			fill();
+			fillPolygon(path);
 			break;
 		case HISTOGRAM:
-			fillHistogram();
+			fillHistogram(path);
 			break;
 		case HISTOGRAM_EDGE:
-			fillEdgeHistogram();
+			fillEdgeHistogram(path);
 			break;
 		}
-		closeLine();
+		closeLine(path);
 
 		return path;
 	}
 
-	private void fill() {
+	private void fillPolygon(Path2D path) {
 
 		boolean hasPre = false;
 
@@ -131,7 +156,7 @@ public class XYGraphPlotterFiller {
 	/**
      * 
      */
-	private void fillHistogram() {
+	private void fillHistogram(Path2D path) {
 
 		boolean hasPre = false;
 		// the x coordinate of preIdx
@@ -176,7 +201,7 @@ public class XYGraphPlotterFiller {
 		}
 	}
 
-	private void fillEdgeHistogram() {
+	private void fillEdgeHistogram(Path2D path) {
 
 		boolean hasPre = false;
 
@@ -223,7 +248,7 @@ public class XYGraphPlotterFiller {
 						* layer.getSize().getHeight());
 	}
 
-	private void closeLine() {
+	private void closeLine(Path2D path) {
 		switch (plotter.getFillClosureType()) {
 		case SELF:
 			path.closePath();
@@ -248,30 +273,6 @@ public class XYGraphPlotterFiller {
 			path.lineTo(startx, Short.MAX_VALUE);
 			path.closePath();
 			break;
-		}
-	}
-
-	/**
-	 * fill paint on the given graphics.
-	 * 
-	 * @param g
-	 * @param p
-	 */
-	public void fill(Graphics2D g, Paint p) {
-		double scale = layer.getPaperTransform().getScale();
-
-		if (p instanceof LineHatchPaint) {
-			LineHatchPaint lhp = (LineHatchPaint) p;
-			Shape[] hatch = lhp.calcHatchShapes(path, clip, scale);
-
-			g.setColor(lhp.getColor());
-			g.setStroke(lhp.getStroke());
-			for (Shape shape : hatch) {
-				g.draw(shape);
-			}
-		} else {
-			g.setPaint(p);
-			g.fill(getShape());
 		}
 	}
 
