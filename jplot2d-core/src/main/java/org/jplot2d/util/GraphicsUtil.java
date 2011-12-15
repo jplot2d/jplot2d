@@ -19,9 +19,6 @@
 package org.jplot2d.util;
 
 import java.awt.BasicStroke;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
 
 /**
  * @author Jingjing Li

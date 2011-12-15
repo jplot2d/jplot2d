@@ -27,8 +27,17 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.harmony.awt.geom.GeometryUtil;
 
 /**
  * The LineHatchPaint class provides a way to fill a Shape with line hatch pattern. Because Java
@@ -38,6 +47,36 @@ import java.awt.image.ColorModel;
  * @author Jingjing Li
  */
 public class LineHatchPaint implements Paint {
+
+	private static final Comparator<Point2D> pointComparatorX = new Comparator<Point2D>() {
+
+		public int compare(Point2D p1, Point2D p2) {
+			double d = p1.getX() - p2.getX();
+			if (d > 0) {
+				return 1;
+			} else if (d < 0) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+
+	};
+
+	private static final Comparator<Point2D> pointComparatorY = new Comparator<Point2D>() {
+
+		public int compare(Point2D p1, Point2D p2) {
+			double d = p1.getY() - p2.getY();
+			if (d > 0) {
+				return 1;
+			} else if (d < 0) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+
+	};
 
 	private static final Color DEFAULT_COLOR = Color.BLACK;
 
@@ -141,11 +180,13 @@ public class LineHatchPaint implements Paint {
 
 		Line2D[] clippedLines = calcHatchLinesClipped(this, clip, scale);
 
+		ArrayList<Line2D> result = new ArrayList<Line2D>();
 		for (Line2D line : clippedLines) {
-
+			Line2D[] ilines = calcLineSegInside(line, shape);
+			result.addAll(Arrays.asList(ilines));
 		}
 
-		return clippedLines;
+		return result.toArray(new Shape[result.size()]);
 	}
 
 	public static Line2D[] calcHatchLinesClipped(LineHatchPaint lhp, Rectangle2D clip, double scale) {
@@ -182,9 +223,92 @@ public class LineHatchPaint implements Paint {
 			double aiy = a0y + (i - halfn) * spacing * Math.cos(angle);
 			double bix = b0x - (i - halfn) * spacing * Math.sin(angle);
 			double biy = b0y + (i - halfn) * spacing * Math.cos(angle);
-			result[i] = new Line2D.Float((float) aix, (float) aiy, (float) bix, (float) biy);
+			result[i] = new Line2D.Double(aix, aiy, bix, biy);
 		}
 
 		return result;
+	}
+
+	public static Line2D[] calcLineSegInside(Line2D line, Shape shape) {
+
+		// all intersect points
+		HashSet<Point2D> inersects = new HashSet<Point2D>();
+
+		double segCoords[] = new double[6];
+		double inersectCoords[] = new double[6];
+		double lastMoveX = 0.0, prex = 0.0;
+		double lastMoveY = 0.0, prey = 0.0;
+
+		for (PathIterator pi = shape.getPathIterator(null); !pi.isDone(); pi.next()) {
+			int segType = pi.currentSegment(segCoords);
+
+			switch (segType) {
+			case PathIterator.SEG_MOVETO:
+				lastMoveX = prex = segCoords[0];
+				lastMoveY = prey = segCoords[1];
+				break;
+			case PathIterator.SEG_LINETO:
+				if ((segCoords[0] != lastMoveX) || (segCoords[1] != lastMoveY)) {
+					int its = GeometryUtil.intersectLines(line.getX1(), line.getY1(), line.getX2(),
+							line.getY2(), prex, prey, segCoords[0], segCoords[1], inersectCoords);
+					if (its == 1) {
+						inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
+					}
+					prex = segCoords[0];
+					prey = segCoords[1];
+				}
+				break;
+			case PathIterator.SEG_QUADTO:
+				int itqs = GeometryUtil.intersectLineAndQuad(line.getX1(), line.getY1(),
+						line.getX2(), line.getY2(), prex, prey, segCoords[0], segCoords[1],
+						segCoords[2], segCoords[3], inersectCoords);
+				for (int i = 0; i < itqs; i++) {
+					inersects.add(new Point2D.Double(inersectCoords[2 * i],
+							inersectCoords[2 * i + 1]));
+				}
+				prex = segCoords[2];
+				prey = segCoords[3];
+				break;
+			case PathIterator.SEG_CUBICTO:
+				int itcs = GeometryUtil.intersectLineAndCubic(line.getX1(), line.getY1(),
+						line.getX2(), line.getY2(), prex, prey, segCoords[0], segCoords[1],
+						segCoords[2], segCoords[3], segCoords[4], segCoords[5], inersectCoords);
+				for (int i = 0; i < itcs; i++) {
+					inersects.add(new Point2D.Double(inersectCoords[2 * i],
+							inersectCoords[2 * i + 1]));
+				}
+				prex = segCoords[4];
+				prey = segCoords[5];
+				break;
+			case PathIterator.SEG_CLOSE:
+				if ((prex != lastMoveX) || (prey != lastMoveY)) {
+					int its = GeometryUtil.intersectLines(line.getX1(), line.getY1(), line.getX2(),
+							line.getY2(), prex, prey, lastMoveX, lastMoveY, inersectCoords);
+					if (its == 1) {
+						inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
+					}
+				}
+				break;
+			}
+
+		}
+
+		Point2D[] ips = inersects.toArray(new Point2D[inersects.size()]);
+		if (Math.abs(line.getX1() - line.getX2()) > Math.abs(line.getY1() - line.getY2())) {
+			Arrays.sort(ips, pointComparatorX);
+		} else {
+			Arrays.sort(ips, pointComparatorY);
+		}
+
+		List<Line2D> result = new ArrayList<Line2D>();
+		for (int i = 0, j = 1; j < ips.length; i++, j++) {
+			double x = (ips[i].getX() + ips[j].getX()) / 2;
+			double y = (ips[i].getY() + ips[j].getY()) / 2;
+			if (shape.contains(x, y)) {
+				result.add(new Line2D.Double(ips[i], ips[j]));
+			}
+		}
+
+		return result.toArray(new Line2D[result.size()]);
 	}
 }
