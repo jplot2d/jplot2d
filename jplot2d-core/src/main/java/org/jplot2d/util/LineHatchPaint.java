@@ -153,7 +153,7 @@ public class LineHatchPaint implements Paint {
 		return angle;
 	}
 
-	public double spacing() {
+	public double getSpacing() {
 		return spacing;
 	}
 
@@ -207,7 +207,7 @@ public class LineHatchPaint implements Paint {
 
 		double halfLength = diagonalLength / 2 * Math.cos(anglex - diagonalAngle);
 		double halfRange = diagonalLength / 2 * Math.sin(anglex + diagonalAngle);
-		double spacing = lhp.spacing() * scale;
+		double spacing = lhp.getSpacing() * scale;
 		int halfn = (int) (halfRange / spacing);
 
 		Line2D[] result = new Line2D[2 * halfn + 1];
@@ -233,6 +233,8 @@ public class LineHatchPaint implements Paint {
 
 		// all intersect points
 		HashSet<Point2D> inersects = new HashSet<Point2D>();
+		inersects.add(line.getP1());
+		inersects.add(line.getP2());
 
 		double segCoords[] = new double[6];
 		double inersectCoords[] = new double[6];

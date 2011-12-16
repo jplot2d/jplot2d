@@ -20,7 +20,6 @@ package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -49,11 +48,13 @@ public class XYGraphPlotterFiller {
 	private int endx, endy;
 
 	/**
+	 * Returns a filler and initial it with the given arguments.
+	 * 
 	 * @param plotter
 	 * @param clip
 	 * @return
 	 */
-	public static XYGraphPlotterFiller getInstance(XYGraphPlotterEx plotter, Rectangle clip) {
+	public static XYGraphPlotterFiller getInstance(XYGraphPlotterEx plotter, Rectangle2D clip) {
 		XYGraphPlotterFiller builder = new XYGraphPlotterFiller();
 
 		builder.setLineData(plotter);
