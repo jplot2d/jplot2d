@@ -18,6 +18,8 @@
  */
 package org.jplot2d.util;
 
+import static org.jplot2d.util.NumberUtils.approximate;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Paint;
@@ -37,8 +39,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.harmony.awt.geom.GeometryUtil;
-
 /**
  * The LineHatchPaint class provides a way to fill a Shape with line hatch pattern. Because Java
  * require instances of classes implementing Paint must be read-only, this class is more like a
@@ -48,7 +48,12 @@ import org.apache.harmony.awt.geom.GeometryUtil;
  */
 public class LineHatchPaint implements Paint {
 
-	private static final Comparator<Point2D> pointComparatorX = new Comparator<Point2D>() {
+	private static final double EPSILON = Math.pow(10, -14);
+
+	/**
+	 * ascend X
+	 */
+	private static final class PointComparatorX implements Comparator<Point2D> {
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getX() - p2.getX();
@@ -63,7 +68,28 @@ public class LineHatchPaint implements Paint {
 
 	};
 
-	private static final Comparator<Point2D> pointComparatorY = new Comparator<Point2D>() {
+	/**
+	 * descend X
+	 */
+	private static final class PointComparatorNX implements Comparator<Point2D> {
+
+		public int compare(Point2D p1, Point2D p2) {
+			double d = p1.getX() - p2.getX();
+			if (d > 0) {
+				return -1;
+			} else if (d < 0) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+	};
+
+	/**
+	 * ascend Y
+	 */
+	private static final class PointComparatorY implements Comparator<Point2D> {
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getY() - p2.getY();
@@ -71,6 +97,24 @@ public class LineHatchPaint implements Paint {
 				return 1;
 			} else if (d < 0) {
 				return -1;
+			} else {
+				return 0;
+			}
+		}
+
+	};
+
+	/**
+	 * descend Y
+	 */
+	private static final class PointComparatorNY implements Comparator<Point2D> {
+
+		public int compare(Point2D p1, Point2D p2) {
+			double d = p1.getY() - p2.getY();
+			if (d > 0) {
+				return -1;
+			} else if (d < 0) {
+				return 1;
 			} else {
 				return 0;
 			}
@@ -87,6 +131,8 @@ public class LineHatchPaint implements Paint {
 	private final double angle;
 
 	private final double spacing;
+
+	private final Comparator<Point2D> pointComparator;
 
 	/**
 	 * Construct a LineHatchPaint with the given angle. The default values:
@@ -139,6 +185,20 @@ public class LineHatchPaint implements Paint {
 		this.stroke = stroke;
 		this.angle = angle;
 		this.spacing = spacing;
+
+		angle = angle % 360;
+		if (angle < 0) {
+			angle += 360;
+		}
+		if (90 - 45 < angle && angle < 90 + 45) {
+			pointComparator = new PointComparatorNY();
+		} else if (270 - 45 < angle && angle < 270 + 45) {
+			pointComparator = new PointComparatorY();
+		} else if (180 - 45 <= angle && angle <= 180 + 45) {
+			pointComparator = new PointComparatorNX();
+		} else {
+			pointComparator = new PointComparatorX();
+		}
 	}
 
 	public Color getColor() {
@@ -212,6 +272,7 @@ public class LineHatchPaint implements Paint {
 
 		Line2D[] result = new Line2D[2 * halfn + 1];
 
+		// angle is positive x toward positive y (downward in graphic coordinate system)
 		double angle = -lhp.getAngle() * Math.PI / 180;
 
 		double a0x = clip.getCenterX() - halfLength * Math.cos(angle);
@@ -229,7 +290,7 @@ public class LineHatchPaint implements Paint {
 		return result;
 	}
 
-	public static Line2D[] calcLineSegInside(Line2D line, Shape shape) {
+	private Line2D[] calcLineSegInside(Line2D line, Shape shape) {
 
 		// all intersect points
 		HashSet<Point2D> inersects = new HashSet<Point2D>();
@@ -237,7 +298,7 @@ public class LineHatchPaint implements Paint {
 		inersects.add(line.getP2());
 
 		double segCoords[] = new double[6];
-		double inersectCoords[] = new double[6];
+		double inersectCoords[] = new double[2];
 		double lastMoveX = 0.0, prex = 0.0;
 		double lastMoveY = 0.0, prey = 0.0;
 
@@ -251,9 +312,9 @@ public class LineHatchPaint implements Paint {
 				break;
 			case PathIterator.SEG_LINETO:
 				if ((segCoords[0] != lastMoveX) || (segCoords[1] != lastMoveY)) {
-					int its = GeometryUtil.intersectLines(line.getX1(), line.getY1(), line.getX2(),
-							line.getY2(), prex, prey, segCoords[0], segCoords[1], inersectCoords);
-					if (its == 1) {
+					boolean its = intersectLines(line, prex, prey, segCoords[0], segCoords[1],
+							inersectCoords);
+					if (its) {
 						inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
 					}
 					prex = segCoords[0];
@@ -261,32 +322,28 @@ public class LineHatchPaint implements Paint {
 				}
 				break;
 			case PathIterator.SEG_QUADTO:
-				int itqs = GeometryUtil.intersectLineAndQuad(line.getX1(), line.getY1(),
-						line.getX2(), line.getY2(), prex, prey, segCoords[0], segCoords[1],
-						segCoords[2], segCoords[3], inersectCoords);
-				for (int i = 0; i < itqs; i++) {
-					inersects.add(new Point2D.Double(inersectCoords[2 * i],
-							inersectCoords[2 * i + 1]));
+				boolean itqs = intersectLines(line, prex, prey, segCoords[2], segCoords[3],
+						inersectCoords);
+				if (itqs) {
+					inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
 				}
 				prex = segCoords[2];
 				prey = segCoords[3];
 				break;
 			case PathIterator.SEG_CUBICTO:
-				int itcs = GeometryUtil.intersectLineAndCubic(line.getX1(), line.getY1(),
-						line.getX2(), line.getY2(), prex, prey, segCoords[0], segCoords[1],
-						segCoords[2], segCoords[3], segCoords[4], segCoords[5], inersectCoords);
-				for (int i = 0; i < itcs; i++) {
-					inersects.add(new Point2D.Double(inersectCoords[2 * i],
-							inersectCoords[2 * i + 1]));
+				boolean itcs = intersectLines(line, prex, prey, segCoords[4], segCoords[5],
+						inersectCoords);
+				if (itcs) {
+					inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
 				}
 				prex = segCoords[4];
 				prey = segCoords[5];
 				break;
 			case PathIterator.SEG_CLOSE:
 				if ((prex != lastMoveX) || (prey != lastMoveY)) {
-					int its = GeometryUtil.intersectLines(line.getX1(), line.getY1(), line.getX2(),
-							line.getY2(), prex, prey, lastMoveX, lastMoveY, inersectCoords);
-					if (its == 1) {
+					boolean its = intersectLines(line, prex, prey, lastMoveX, lastMoveY,
+							inersectCoords);
+					if (its) {
 						inersects.add(new Point2D.Double(inersectCoords[0], inersectCoords[1]));
 					}
 				}
@@ -296,11 +353,7 @@ public class LineHatchPaint implements Paint {
 		}
 
 		Point2D[] ips = inersects.toArray(new Point2D[inersects.size()]);
-		if (Math.abs(line.getX1() - line.getX2()) > Math.abs(line.getY1() - line.getY2())) {
-			Arrays.sort(ips, pointComparatorX);
-		} else {
-			Arrays.sort(ips, pointComparatorY);
-		}
+		Arrays.sort(ips, pointComparator);
 
 		List<Line2D> result = new ArrayList<Line2D>();
 		for (int i = 0, j = 1; j < ips.length; i++, j++) {
@@ -312,5 +365,95 @@ public class LineHatchPaint implements Paint {
 		}
 
 		return result.toArray(new Line2D[result.size()]);
+	}
+
+	/**
+	 * The method checks up if line and line (x3, y3) - (x4, y4) intersect. If lines intersect then
+	 * the result parameters are saved to point array. The size of array point must be at least 2.
+	 * Note the algorithm is not symmetric. The given line is the primary line.
+	 * 
+	 * @param line
+	 *            the primary line
+	 * @param x3
+	 * @param y3
+	 * @param x4
+	 * @param y4
+	 * @param point
+	 * @return true if two lines intersect
+	 */
+	public static boolean intersectLines(Line2D line, double x3, double y3, double x4, double y4,
+			double[] point) {
+
+		double dxa = line.getX1() - line.getX2();
+		double dya = line.getY1() - line.getY2();
+		double dxb = x3 - x4;
+		double dyb = y3 - y4;
+		double ca = line.getX1() * line.getY2() - line.getY1() * line.getX2();
+		double cb = x3 * y4 - y3 * x4;
+		double coefParallel = dxa * dyb - dya * dxb;
+
+		// point on primary line
+		if (approximate(x3, x4, 4) && approximate(y3, y4, 4)) {
+			double x = (x3 + x4) / 2;
+			double y = (y3 + y4) / 2;
+			if (approximate(dxa * y - dya * x, ca, 4)) {
+				point[0] = x;
+				point[1] = y;
+				return true;
+			}
+		}
+
+		// parallel
+		if (Math.abs(coefParallel) < EPSILON) {
+			return false;
+		}
+
+		// vertical
+		if (approximate(line.getX1(), line.getX2(), 4)) {
+			point[0] = (line.getX1() + line.getX2()) / 2;
+			point[1] = (point[0] * dyb + cb) / dxb;
+			return approxBetween(line.getY1(), line.getY2(), point[1])
+					&& approxBetween(x3, x4, point[0]);
+		}
+
+		// horizontal
+		if (approximate(line.getY1(), line.getY2(), 4)) {
+			point[1] = (line.getY1() + line.getY2()) / 2;
+			point[0] = (point[1] * dxb - cb) / dyb;
+			return approxBetween(line.getX1(), line.getX2(), point[0])
+					&& approxBetween(y3, y4, point[1]);
+		}
+
+		point[0] = (ca * dxb - dxa * cb) / coefParallel;
+		point[1] = (ca * dyb - dya * cb) / coefParallel;
+
+		boolean inlineA = false, inlineB = false;
+		if (Math.abs(dxa) > Math.abs(dya)) {
+			inlineA = approxBetween(line.getX1(), line.getX2(), point[0]);
+		} else {
+			inlineA = approxBetween(line.getY1(), line.getY2(), point[1]);
+		}
+		if (Math.abs(dxb) > Math.abs(dyb)) {
+			inlineB = approxBetween(x3, x4, point[0]);
+		} else {
+			inlineB = approxBetween(y3, y4, point[1]);
+		}
+		return inlineA && inlineB;
+	}
+
+	public static boolean approxBetween(double a, double b, double v) {
+		if (a > b) {
+			if (a >= v && v >= b) {
+				return true;
+			}
+		} else {
+			if (a <= v && v <= b) {
+				return true;
+			}
+		}
+		if (approximate(a, v, 4) || approximate(b, v, 4)) {
+			return true;
+		}
+		return false;
 	}
 }
