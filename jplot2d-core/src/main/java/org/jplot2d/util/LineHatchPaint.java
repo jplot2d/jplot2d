@@ -53,7 +53,13 @@ public class LineHatchPaint implements Paint {
 	/**
 	 * ascend X
 	 */
-	private static final class PointComparatorX implements Comparator<Point2D> {
+	public static final class PointComparatorX implements Comparator<Point2D> {
+
+		private static Comparator<Point2D> instance = new PointComparatorX();
+
+		public static Comparator<Point2D> getInstance() {
+			return instance;
+		}
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getX() - p2.getX();
@@ -71,7 +77,13 @@ public class LineHatchPaint implements Paint {
 	/**
 	 * descend X
 	 */
-	private static final class PointComparatorNX implements Comparator<Point2D> {
+	public static final class PointComparatorNX implements Comparator<Point2D> {
+
+		private static Comparator<Point2D> instance = new PointComparatorNX();
+
+		public static Comparator<Point2D> getInstance() {
+			return instance;
+		}
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getX() - p2.getX();
@@ -89,7 +101,13 @@ public class LineHatchPaint implements Paint {
 	/**
 	 * ascend Y
 	 */
-	private static final class PointComparatorY implements Comparator<Point2D> {
+	public static final class PointComparatorY implements Comparator<Point2D> {
+
+		private static Comparator<Point2D> instance = new PointComparatorY();
+
+		public static Comparator<Point2D> getInstance() {
+			return instance;
+		}
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getY() - p2.getY();
@@ -107,7 +125,13 @@ public class LineHatchPaint implements Paint {
 	/**
 	 * descend Y
 	 */
-	private static final class PointComparatorNY implements Comparator<Point2D> {
+	public static final class PointComparatorNY implements Comparator<Point2D> {
+
+		private static Comparator<Point2D> instance = new PointComparatorNY();
+
+		public static Comparator<Point2D> getInstance() {
+			return instance;
+		}
 
 		public int compare(Point2D p1, Point2D p2) {
 			double d = p1.getY() - p2.getY();
@@ -191,13 +215,13 @@ public class LineHatchPaint implements Paint {
 			angle += 360;
 		}
 		if (90 - 45 < angle && angle < 90 + 45) {
-			pointComparator = new PointComparatorNY();
+			pointComparator = PointComparatorNY.getInstance();
 		} else if (270 - 45 < angle && angle < 270 + 45) {
-			pointComparator = new PointComparatorY();
+			pointComparator = PointComparatorY.getInstance();
 		} else if (180 - 45 <= angle && angle <= 180 + 45) {
-			pointComparator = new PointComparatorNX();
+			pointComparator = PointComparatorNX.getInstance();
 		} else {
-			pointComparator = new PointComparatorX();
+			pointComparator = PointComparatorX.getInstance();
 		}
 	}
 
