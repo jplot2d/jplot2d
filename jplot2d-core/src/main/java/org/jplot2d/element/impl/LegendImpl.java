@@ -635,6 +635,8 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				item.draw(g);
 			}
 		}
+
+		g.dispose();
 	}
 
 }
