@@ -646,6 +646,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			drawTitle(graphics);
 		}
 
+		g.dispose();
 	}
 
 	private void drawAxisLine(Graphics2D g2) {

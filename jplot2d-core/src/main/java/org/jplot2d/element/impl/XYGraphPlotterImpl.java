@@ -253,16 +253,19 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 		if (isFillEnabled()) {
 			if (Thread.interrupted()) {
+				g.dispose();
 				return;
 			}
 			fillLineAera((Graphics2D) g);
 		}
 
 		if (Thread.interrupted()) {
+			g.dispose();
 			return;
 		}
 		drawLineAndSymbol((Graphics2D) g);
 
+		g.dispose();
 	}
 
 	private void fillLineAera(Graphics2D g) {
