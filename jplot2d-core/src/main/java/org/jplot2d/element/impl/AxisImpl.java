@@ -724,6 +724,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		Object tvs = getTickManager().getValues();
 		MathElement[] labels = getTickManager().getLabelModels();
 
+		Color color = getLabelColor();
+		g.setColor(color);
+
 		AffineTransform oldTransform = g.getTransform();
 
 		for (int i = 0; i < labels.length; i++) {
@@ -732,14 +735,11 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 			MathLabel label = new MathLabel(labels[i], getActualLabelFont(), vertalign, horzalign);
 
-			Color color = getLabelColor();
-
 			g.translate(xt, labelOffset);
 			g.scale(1, -1);
 			if (!isLabelSameOrientation()) {
 				g.rotate(Math.PI / 2.0);
 			}
-			g.setColor(color);
 
 			label.draw(g);
 
