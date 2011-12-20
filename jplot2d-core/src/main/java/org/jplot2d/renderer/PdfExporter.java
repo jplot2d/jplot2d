@@ -94,7 +94,7 @@ public class PdfExporter extends Renderer<File> {
 			document.addTitle(title);
 		}
 		PdfContentByte cb = writer.getDirectContent();
-		Graphics2D g = cb.createGraphicsShapes(size.width, size.height);
+		Graphics2D g = cb.createGraphics(size.width, size.height);
 
 		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
 			ComponentEx ccopy = me.getValue();
