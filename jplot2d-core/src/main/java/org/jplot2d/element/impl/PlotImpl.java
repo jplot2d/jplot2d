@@ -69,7 +69,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private double locX, locY;
 
-	private double width = 640, height = 680;
+	private double width = 640, height = 480;
 
 	private double scale = 1;
 
