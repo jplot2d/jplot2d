@@ -21,10 +21,7 @@ package org.jplot2d.renderer;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -38,12 +35,9 @@ import org.jplot2d.element.impl.PlotEx;
  * @author Jingjing Li
  * 
  */
-public abstract class Renderer<T> {
+public abstract class Renderer {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.renderer");
-
-	private final List<RenderingFinishedListener> renderingFinishedListenerList = Collections
-			.synchronizedList(new ArrayList<RenderingFinishedListener>());
 
 	/**
 	 * Render the given plot. This method is protected by environment lock.
@@ -80,27 +74,6 @@ public abstract class Renderer<T> {
 			Rectangle2D pbounds = comp.getBounds();
 			return comp.getPaperTransform().getPtoD(pbounds).getBounds();
 		}
-	}
-
-	/**
-	 * @param fsn
-	 * @param t
-	 */
-	protected void fireRenderingFinished(long fsn, T t) {
-		RenderingFinishedListener[] ls = renderingFinishedListenerList
-				.toArray(new RenderingFinishedListener[0]);
-		for (RenderingFinishedListener lsnr : ls) {
-			lsnr.renderingFinished(new RenderingFinishedEvent(fsn, t));
-		}
-
-	}
-
-	public void addRenderingFinishedListener(RenderingFinishedListener listener) {
-		renderingFinishedListenerList.add(listener);
-	}
-
-	public void removeRenderingFinishedListener(RenderingFinishedListener listener) {
-		renderingFinishedListenerList.remove(listener);
 	}
 
 }

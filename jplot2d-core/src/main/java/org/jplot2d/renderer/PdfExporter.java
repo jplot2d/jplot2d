@@ -43,7 +43,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author Jingjing Li
  * 
  */
-public class PdfExporter extends Renderer<File> {
+public class PdfExporter extends Renderer {
 
 	private final OutputStream os;
 
