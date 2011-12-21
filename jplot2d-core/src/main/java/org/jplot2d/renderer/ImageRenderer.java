@@ -22,7 +22,10 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -55,7 +58,7 @@ import org.jplot2d.element.impl.PlotEx;
  * @author Jingjing Li
  * 
  */
-public abstract class ImageRenderer extends Renderer<BufferedImage> {
+public abstract class ImageRenderer extends Renderer {
 
 	/**
 	 * Component renderer execute service
@@ -86,6 +89,9 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 	private ImageAssemblyInfo compCachedFutureMap = new ImageAssemblyInfo();
 
 	protected int fsn;
+
+	private final List<RenderingFinishedListener> renderingFinishedListenerList = Collections
+			.synchronizedList(new ArrayList<RenderingFinishedListener>());
 
 	/**
 	 * Create a Renderer with the given image factory.
@@ -128,6 +134,27 @@ public abstract class ImageRenderer extends Renderer<BufferedImage> {
 		}
 
 		fireRenderingFinished(fsn++, result);
+	}
+
+	/**
+	 * @param fsn
+	 * @param t
+	 */
+	protected void fireRenderingFinished(long fsn, BufferedImage img) {
+		RenderingFinishedListener[] ls = renderingFinishedListenerList
+				.toArray(new RenderingFinishedListener[0]);
+		for (RenderingFinishedListener lsnr : ls) {
+			lsnr.renderingFinished(new RenderingFinishedEvent(fsn, img));
+		}
+
+	}
+
+	public void addRenderingFinishedListener(RenderingFinishedListener listener) {
+		renderingFinishedListenerList.add(listener);
+	}
+
+	public void removeRenderingFinishedListener(RenderingFinishedListener listener) {
+		renderingFinishedListenerList.remove(listener);
 	}
 
 	protected final BufferedImage runSingleRender(Dimension size, ComponentEx[] sublist) {

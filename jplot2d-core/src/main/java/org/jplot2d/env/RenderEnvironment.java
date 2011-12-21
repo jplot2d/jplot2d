@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -41,8 +41,8 @@ import org.jplot2d.renderer.Renderer;
  */
 public class RenderEnvironment extends PlotEnvironment {
 
-	private final List<Renderer<?>> rendererList = Collections
-			.synchronizedList(new ArrayList<Renderer<?>>());
+	private final List<Renderer> rendererList = Collections
+			.synchronizedList(new ArrayList<Renderer>());
 
 	protected static volatile File defaultExportDirectory;
 
@@ -60,15 +60,15 @@ public class RenderEnvironment extends PlotEnvironment {
 		super(threadSafe);
 	}
 
-	public Renderer<?>[] getRenderers() {
+	public Renderer[] getRenderers() {
 		return rendererList.toArray(new Renderer[0]);
 	}
 
-	public boolean addRenderer(Renderer<?> renderer) {
+	public boolean addRenderer(Renderer renderer) {
 		return rendererList.add(renderer);
 	}
 
-	public boolean removeRenderer(Renderer<?> renderer) {
+	public boolean removeRenderer(Renderer renderer) {
 		return rendererList.remove(renderer);
 	}
 
@@ -77,7 +77,7 @@ public class RenderEnvironment extends PlotEnvironment {
 	 * 
 	 * @param renderer
 	 */
-	public void exportPlot(Renderer<?> renderer) {
+	public void exportPlot(Renderer renderer) {
 		begin();
 
 		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
@@ -98,7 +98,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
-		for (Renderer<?> r : getRenderers()) {
+		for (Renderer r : getRenderers()) {
 			r.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap, umCachableComps,
 					subcompsMap);
 		}
