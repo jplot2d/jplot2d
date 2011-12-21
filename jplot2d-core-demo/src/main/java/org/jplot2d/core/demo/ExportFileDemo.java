@@ -28,6 +28,7 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 import org.jplot2d.element.XYGraphPlotter;
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
 import org.jplot2d.renderer.PngFileExporter;
 import org.jplot2d.util.LineHatchPaint;
@@ -78,6 +79,7 @@ public class ExportFileDemo {
 
 		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
+		env.exportPlot(new EpsExporter("/tmp/demo.eps"));
 		env.exportPlot(new PdfExporter("/tmp/demo.pdf"));
 		env.exportPlot(new PngFileExporter("/tmp/demo.png"));
 	}
