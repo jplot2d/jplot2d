@@ -19,6 +19,8 @@
 package org.jplot2d.env;
 
 /**
+ * A logger to print command invocation to system out.
+ * 
  * @author Jingjing Li
  * 
  */
