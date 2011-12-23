@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -41,7 +41,7 @@ import org.jplot2d.element.impl.Joinable;
  */
 public class ElementIH<T extends Element> implements InvocationHandler {
 
-	private static CommandLogger cmdLogger = SystemOutCommandLogger.getInstance();
+	private static CommandLogger cmdLogger = JavaLoggingCommandLogger.getInstance();
 
 	private final InterfaceInfo iinfo;
 
@@ -705,6 +705,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
+	 * Log a command invocation. The logging is protected by environment.
+	 * 
 	 * @param method
 	 *            the command method
 	 * @param args
