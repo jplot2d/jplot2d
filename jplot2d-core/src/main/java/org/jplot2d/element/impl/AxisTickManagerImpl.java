@@ -85,7 +85,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 	public static final int AUTO_TICKS_MIN = 4;
 
-	private AxisTransformEx rangeManager;
+	private AxisTransformEx axisTransform;
 
 	private List<AxisEx> axes = new ArrayList<AxisEx>();
 
@@ -218,9 +218,9 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public String getFullId() {
-		if (rangeManager != null) {
-			int xidx = rangeManager.indexOfTickManager(this);
-			return "Tick" + xidx + "." + rangeManager.getFullId();
+		if (axisTransform != null) {
+			int xidx = axisTransform.indexOfTickManager(this);
+			return "Tick" + xidx + "." + axisTransform.getFullId();
 		} else {
 			return super.getId();
 		}
@@ -253,16 +253,16 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public AxisTransformEx getAxisTransform() {
-		return rangeManager;
+		return axisTransform;
 	}
 
 	public void setAxisTransform(AxisTransform rangeManager) {
-		if (this.rangeManager != null) {
-			this.rangeManager.removeTickManager(this);
+		if (this.axisTransform != null) {
+			this.axisTransform.removeTickManager(this);
 		}
-		this.rangeManager = (AxisTransformEx) rangeManager;
-		if (this.rangeManager != null) {
-			this.rangeManager.addTickManager(this);
+		this.axisTransform = (AxisTransformEx) rangeManager;
+		if (this.axisTransform != null) {
+			this.axisTransform.addTickManager(this);
 			updateTickAlgorithm();
 		}
 	}
@@ -275,11 +275,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * update tick algorithm when axis type or tick transform changed.
 	 */
 	private void updateTickAlgorithm() {
-		TickAlgorithm ta = rangeManager.getAxisType().getTickAlgorithm(rangeManager.getType(),
+		TickAlgorithm ta = axisTransform.getAxisType().getTickAlgorithm(axisTransform.getType(),
 				getTickTransform());
 		if (ta == null) {
 			setTickTransform(null);
-			ta = rangeManager.getAxisType().getTickAlgorithm(rangeManager.getType(), null);
+			ta = axisTransform.getAxisType().getTickAlgorithm(axisTransform.getType(), null);
 		}
 		setTickAlgorithm(ta);
 	}
@@ -1138,12 +1138,12 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 
 		// copy or link range manager
-		AxisTransformEx armCopy = (AxisTransformEx) orig2copyMap.get(rangeManager);
-		if (armCopy == null) {
-			armCopy = (AxisTransformEx) rangeManager.copyStructure(orig2copyMap);
+		AxisTransformEx axisTransformCopy = (AxisTransformEx) orig2copyMap.get(axisTransform);
+		if (axisTransformCopy == null) {
+			axisTransformCopy = (AxisTransformEx) axisTransform.copyStructure(orig2copyMap);
 		}
-		result.rangeManager = armCopy;
-		armCopy.addTickManager(result);
+		result.axisTransform = axisTransformCopy;
+		axisTransformCopy.addTickManager(result);
 
 		return result;
 	}
