@@ -27,24 +27,63 @@ import org.jplot2d.util.Range;
  */
 public class LinearNormalTransform extends NormalTransform {
 
-	public LinearNormalTransform(double u1, double u2) {
-		super(TransformType.LINEAR);
-		computeTransform(u1, u2);
-	}
+	private static final TransformType type = TransformType.LINEAR;
+
+	private final boolean valid;
+
+	private final double slope;
+
+	private final double offset;
 
 	public LinearNormalTransform(Range ur) {
-		super(TransformType.LINEAR);
-		computeTransform(ur.getStart(), ur.getEnd());
+		this(ur.getStart(), ur.getEnd());
 	}
 
-	public LinearNormalTransform copy() {
-		LinearNormalTransform newTransform;
-		try {
-			newTransform = (LinearNormalTransform) clone();
-		} catch (CloneNotSupportedException e) {
-			throw new Error();
+	public LinearNormalTransform(double u1, double u2) {
+		if (Double.isNaN(u1) || Double.isNaN(u2)) {
+			valid = false;
+			slope = Double.NaN;
+			offset = Double.NaN;
+			return;
 		}
-		return newTransform;
+
+		if (u2 - u1 == 0) {
+			valid = false;
+			slope = Double.NaN;
+			offset = Double.NaN;
+		} else {
+			valid = true;
+			slope = u2 - u1;
+			offset = u1;
+		}
+	}
+
+	private LinearNormalTransform(boolean valid, double a, double b) {
+		this.valid = valid;
+		this.slope = a;
+		this.offset = b;
+	}
+
+	public TransformType getType() {
+		return type;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public double getScale() {
+		if (!valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return slope;
+	}
+
+	public double getOffset() {
+		if (!valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return offset;
 	}
 
 	/**
@@ -55,35 +94,37 @@ public class LinearNormalTransform extends NormalTransform {
 	 * @return normalized value
 	 */
 	public double getTransP(double w) {
-		if (!_valid) {
+		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return (w - _b) / _a;
+		return (w - offset) / slope;
 	}
 
 	public double getTransU(double p) {
-		if (!_valid) {
+		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return _a * p + _b;
+		return slope * p + offset;
 	}
 
-	protected void computeTransform(double _u1, double _u2) {
+	public NormalTransform deriveNoOffset() {
+		return new LinearNormalTransform(valid, slope, 0);
+	}
 
-		if (Double.isNaN(_u1) || Double.isNaN(_u2)) {
-			_valid = false;
-			return;
+	public NormalTransform zoom(Range npr) {
+		double b = offset + slope * npr.getStart();
+		double a = slope * npr.getSpan();
+		// prevent overflow
+		if (a == Double.POSITIVE_INFINITY) {
+			a = Double.MAX_VALUE;
+		} else if (a == Double.NEGATIVE_INFINITY) {
+			a = -Double.MAX_VALUE;
 		}
+		return new LinearNormalTransform(valid, a, b);
+	}
 
-		_a = _u2 - _u1;
-		_b = _u1;
-		if (_a == 0) {
-			_a = Double.NaN;
-			_b = Double.NaN;
-			_valid = false;
-		} else {
-			_valid = true;
-		}
+	public NormalTransform invert() {
+		return new LinearNormalTransform(valid, -slope, slope + offset);
 	}
 
 	/**
@@ -126,7 +167,7 @@ public class LinearNormalTransform extends NormalTransform {
 
 	@Override
 	public Range getRangeW() {
-		return new Range.Double(_b, _a + _b);
+		return new Range.Double(offset, slope + offset);
 	}
 
 }
