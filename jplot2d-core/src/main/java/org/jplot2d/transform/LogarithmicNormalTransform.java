@@ -26,24 +26,71 @@ import org.jplot2d.util.Range;
  */
 public class LogarithmicNormalTransform extends NormalTransform {
 
-	public LogarithmicNormalTransform(double u1, double u2) {
-		super(TransformType.LOGARITHMIC);
-		computeTransform(u1, u2);
-	}
+	private static final TransformType type = TransformType.LOGARITHMIC;
+
+	private final boolean valid;
+
+	private final double slope;
+
+	private final double offset;
 
 	public LogarithmicNormalTransform(Range ur) {
-		super(TransformType.LOGARITHMIC);
-		computeTransform(ur.getStart(), ur.getEnd());
+		this(ur.getStart(), ur.getEnd());
 	}
 
-	public LogarithmicNormalTransform copy() {
-		LogarithmicNormalTransform newTransform;
-		try {
-			newTransform = (LogarithmicNormalTransform) clone();
-		} catch (CloneNotSupportedException e) {
-			throw new Error();
+	public LogarithmicNormalTransform(double u1, double u2) {
+		if (Double.isNaN(u1) || Double.isNaN(u2)) {
+			valid = false;
+			slope = Double.NaN;
+			offset = Double.NaN;
+			return;
 		}
-		return newTransform;
+
+		if (u1 <= 0 || u2 <= 0) {
+			valid = false;
+			slope = Double.NaN;
+			offset = Double.NaN;
+			return;
+		}
+
+		double scale = Math.log10(u2) - Math.log10(u1);
+		if (scale == 0) {
+			valid = false;
+			slope = Double.NaN;
+			offset = Double.NaN;
+		} else {
+			valid = true;
+			slope = scale;
+			offset = Math.log10(u1);
+		}
+	}
+
+	private LogarithmicNormalTransform(boolean valid, double a, double b) {
+		this.valid = valid;
+		this.slope = a;
+		this.offset = b;
+	}
+
+	public TransformType getType() {
+		return type;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public double getScale() {
+		if (!valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return slope;
+	}
+
+	public double getOffset() {
+		if (!valid) {
+			throw new IllegalStateException("Transform is invalid");
+		}
+		return offset;
 	}
 
 	/**
@@ -54,45 +101,40 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 * @return normalized value
 	 */
 	public double getTransP(double w) {
-		if (!_valid) {
+		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
 		if (w <= 0) {
-			return Double.NEGATIVE_INFINITY * _a;
+			return Double.NEGATIVE_INFINITY * slope;
 		}
-		return (Math.log10(w) - _b) / _a;
+		return (Math.log10(w) - offset) / slope;
 	}
 
 	public double getTransU(double p) {
-		if (!_valid) {
+		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return Math.pow(10, _a * p + _b);
+		return Math.pow(10, slope * p + offset);
 	}
 
-	protected void computeTransform(double _u1, double _u2) {
+	public NormalTransform deriveNoOffset() {
+		return new LogarithmicNormalTransform(valid, slope, 0);
+	}
 
-		if (Double.isNaN(_u1) || Double.isNaN(_u2)) {
-			_valid = false;
-			return;
+	public NormalTransform zoom(Range npr) {
+		double b = offset + slope * npr.getStart();
+		double a = slope * npr.getSpan();
+		// prevent overflow
+		if (a == Double.POSITIVE_INFINITY) {
+			a = Double.MAX_VALUE;
+		} else if (a == Double.NEGATIVE_INFINITY) {
+			a = -Double.MAX_VALUE;
 		}
+		return new LogarithmicNormalTransform(valid, a, b);
+	}
 
-		if (_u1 <= 0 || _u2 <= 0) {
-			_a = Double.NaN;
-			_b = Double.NaN;
-			_valid = false;
-			return;
-		}
-
-		_a = Math.log10(_u2) - Math.log10(_u1);
-		_b = Math.log10(_u1);
-		if (_a == 0) {
-			_a = Double.NaN;
-			_b = Double.NaN;
-			_valid = false;
-		} else {
-			_valid = true;
-		}
+	public NormalTransform invert() {
+		return new LogarithmicNormalTransform(valid, -slope, slope + offset);
 	}
 
 	/**
@@ -108,7 +150,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 * </pre>
 	 */
 	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
-		return Math.log10(1 - precisionLimit) / Math.abs(_a);
+		return Math.log10(1 - precisionLimit) / Math.abs(slope);
 	}
 
 	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
@@ -125,7 +167,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	@Override
 	public Range getRangeW() {
-		return new Range.Double(Math.pow(10, _b), Math.pow(10, _a + _b));
+		return new Range.Double(Math.pow(10, offset), Math.pow(10, slope + offset));
 	}
 
 }

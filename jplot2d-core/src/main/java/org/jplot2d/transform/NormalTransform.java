@@ -21,48 +21,17 @@ package org.jplot2d.transform;
 import org.jplot2d.util.Range;
 
 /**
- * Transform between world coordinate and normal coordinate.
+ * Immutable! Transform between world coordinate and normal coordinate.
  */
-public abstract class NormalTransform implements Cloneable {
+public abstract class NormalTransform {
 
 	public static final Range NORMAL_RANGE = new Range.Double(0.0, 1.0);
 
-	private TransformType type;
+	protected NormalTransform() {
 
-	protected boolean _valid = false;
-
-	protected double _a;
-
-	protected double _b;
-
-	/**
-	 * Create a non-transformable AxisTranform.
-	 */
-	protected NormalTransform(TransformType type) {
-		this.type = type;
 	}
 
-	public TransformType getType() {
-		return type;
-	}
-
-	/**
-	 * Create a copy of this <code>NormalTransform</code>.
-	 * 
-	 * @return the copy
-	 */
-	public abstract NormalTransform copy();
-
-	/**
-	 * Derive a new NormalTransform with offset set to 0;
-	 * 
-	 * @return the derived NormalTransform
-	 */
-	public NormalTransform deriveNoOffset() {
-		NormalTransform result = this.copy();
-		result._b = 0;
-		return result;
-	}
+	public abstract TransformType getType();
 
 	/**
 	 * Returns if this AxisTransform is ready to transform values. Only <code>true</code> after both
@@ -70,23 +39,22 @@ public abstract class NormalTransform implements Cloneable {
 	 * 
 	 * @return <code>true</code> if this AxisTransform is ready to transform values.
 	 */
-	public boolean isValid() {
-		return _valid;
-	}
+	public abstract boolean isValid();
 
-	public double getScale() {
-		if (!_valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
-		return _a;
-	}
+	public abstract double getScale();
 
-	public double getOffset() {
-		if (!_valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
-		return _b;
-	}
+	public abstract double getOffset();
+
+	/**
+	 * Derive a new NormalTransform with offset set to 0;
+	 * 
+	 * @return the derived NormalTransform
+	 */
+	public abstract NormalTransform deriveNoOffset();
+
+	public abstract NormalTransform zoom(Range npr);
+
+	public abstract NormalTransform invert();
 
 	/**
 	 * Transform from world to paper coordinate.
@@ -114,22 +82,6 @@ public abstract class NormalTransform implements Cloneable {
 	public Range getTransU(Range prange) {
 		return new Range.Double(getTransU(prange.getStart()), prange.isStartIncluded(),
 				getTransU(prange.getEnd()), prange.isEndIncluded());
-	}
-
-	public void zoom(Range npr) {
-		_b = _b + _a * npr.getStart();
-		_a = _a * npr.getSpan();
-		// prevent overflow
-		if (_a == Double.POSITIVE_INFINITY) {
-			_a = Double.MAX_VALUE;
-		} else if (_a == Double.NEGATIVE_INFINITY) {
-			_a = -Double.MAX_VALUE;
-		}
-	}
-
-	public void invert() {
-		_b += _a;
-		_a = -_a;
 	}
 
 	public abstract Range getRangeW();

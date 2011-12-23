@@ -331,8 +331,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
 
 		for (AxisTransformEx arm : arms) {
-			NormalTransform vt = vtMap.get(arm);
-			vt.zoom(range);
+			NormalTransform vt = vtMap.get(arm).zoom(range);
 			Range wrange = vt.getRangeW();
 			arm.setNormalTransfrom(arm.getType().createNormalTransform(wrange));
 
@@ -379,8 +378,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
 
 		for (AxisTransformEx axis : arms) {
-			NormalTransform npt = axis.getNormalTransform();
-			npt.zoom(npRange);
+			NormalTransform npt = axis.getNormalTransform().zoom(npRange);
 			Range wrange = npt.getRangeW();
 			axis.setNormalTransfrom(axis.getType().createNormalTransform(wrange));
 
