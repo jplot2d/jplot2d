@@ -92,8 +92,7 @@ public class UndoManager<T> {
 	}
 
 	/**
-	 * Returns the possible undo steps. The size dose not count the current
-	 * change set.
+	 * Returns the possible undo steps. The size dose not count the current change set.
 	 * 
 	 * @return
 	 */
@@ -108,6 +107,15 @@ public class UndoManager<T> {
 	 */
 	public T current() {
 		return cur;
+	}
+
+	/**
+	 * Returns the current CSN
+	 * 
+	 * @return the current CSN
+	 */
+	public int getCSN() {
+		return csn;
 	}
 
 	/**
@@ -163,8 +171,8 @@ public class UndoManager<T> {
 	}
 
 	/**
-	 * Returns the next cset after the current cset. Returns <code>null</code>
-	 * if there is no next cset.
+	 * Returns the next cset after the current cset. Returns <code>null</code> if there is no next
+	 * cset.
 	 * 
 	 * @return
 	 */

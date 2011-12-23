@@ -18,14 +18,17 @@
  */
 package org.jplot2d.env;
 
+import static org.jplot2d.util.TestUtils.*;
 import static org.junit.Assert.*;
 
 import java.awt.Color;
 
+import org.jplot2d.element.Axis;
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.util.Range;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -131,9 +134,8 @@ public class PlotEnvironmentTest {
 	}
 
 	@Test
-	public void undoAddCompTest() {
+	public void undoAddTitleTest() {
 		Plot plot = ef.createPlot();
-		Title title = ef.createTitle("title");
 		PlotEnvironment env = new PlotEnvironmentStub(false);
 		env.setPlot(plot);
 
@@ -141,6 +143,7 @@ public class PlotEnvironmentTest {
 		assertFalse(env.canRedo());
 		assertFalse(env.canUndo());
 
+		Title title = ef.createTitle("title");
 		plot.addTitle(title);
 		assertEquals(plot.getTitles().length, 1);
 		assertFalse(env.canRedo());
@@ -155,6 +158,91 @@ public class PlotEnvironmentTest {
 		assertEquals(plot.getTitles().length, 1);
 		assertFalse(env.canRedo());
 		assertTrue(env.canUndo());
+	}
 
+	@Test
+	public void undoAddAxisTest() {
+		Plot plot = ef.createPlot();
+		PlotEnvironment env = new PlotEnvironmentStub(false);
+		env.setPlot(plot);
+
+		assertEquals(plot.getXAxes().length, 0);
+		assertEquals(plot.getYAxes().length, 0);
+		assertFalse(env.canRedo());
+		assertFalse(env.canUndo());
+
+		Axis xaxis = ef.createAxis();
+		xaxis.getTitle().setText("x axis");
+		Axis yaxis = ef.createAxis();
+		yaxis.getTitle().setText("y axis");
+		plot.addXAxis(xaxis);
+		plot.addYAxis(yaxis);
+		assertEquals(plot.getXAxes().length, 1);
+		assertEquals(plot.getYAxes().length, 1);
+		assertFalse(env.canRedo());
+		assertTrue(env.canUndo());
+
+		env.undo();
+		assertEquals(plot.getXAxes().length, 1);
+		assertEquals(plot.getYAxes().length, 0);
+		assertTrue(env.canRedo());
+		assertTrue(env.canUndo());
+
+		env.undo();
+		assertEquals(plot.getXAxes().length, 0);
+		assertEquals(plot.getYAxes().length, 0);
+		assertTrue(env.canRedo());
+		assertFalse(env.canUndo());
+
+		env.redo();
+		assertEquals(plot.getXAxes().length, 1);
+		assertEquals(plot.getYAxes().length, 0);
+		assertTrue(env.canRedo());
+		assertTrue(env.canUndo());
+
+		env.redo();
+		assertEquals(plot.getXAxes().length, 1);
+		assertEquals(plot.getYAxes().length, 1);
+		assertFalse(env.canRedo());
+		assertTrue(env.canUndo());
+	}
+
+	@Test
+	public void undoAxisRangeTest() {
+		Plot plot = ef.createPlot();
+		PlotEx plotImpl0 = (PlotEx) ((ElementAddition) plot).getImpl();
+		PlotEnvironment env = new PlotEnvironmentStub(false);
+		env.setPlot(plot);
+
+		assertEquals(env.changeHistory.getCSN(), 1);
+
+		Axis xaxis = ef.createAxis();
+		xaxis.getTitle().setText("x axis");
+		plot.addXAxis(xaxis);
+
+		assertEquals(env.changeHistory.getCSN(), 2);
+		PlotEx safeCopy2 = (PlotEx) env.getCopyMap().get(plotImpl0);
+		checkRange(safeCopy2.getXAxis(0).getTickManager().getAxisTransform().getRange(), -1, 1);
+
+		// set new range
+		xaxis.getTickManager().getAxisTransform().setRange(new Range.Double(20, 30));
+
+		assertEquals(env.changeHistory.getCSN(), 3);
+		PlotEx safeCopy3 = (PlotEx) env.getCopyMap().get(plotImpl0);
+
+		assertNotSame(safeCopy2, safeCopy3);
+		assertNotSame(safeCopy2.getXAxis(0), safeCopy3.getXAxis(0));
+		assertNotSame(safeCopy2.getXAxis(0).getTickManager(), safeCopy3.getXAxis(0)
+				.getTickManager());
+		assertNotSame(safeCopy2.getXAxis(0).getTickManager().getAxisTransform(), safeCopy3
+				.getXAxis(0).getTickManager().getAxisTransform());
+
+		checkRange(safeCopy2.getXAxis(0).getTickManager().getAxisTransform().getRange(), -1, 1);
+		checkRange(safeCopy3.getXAxis(0).getTickManager().getAxisTransform().getRange(), 20, 30);
+
+		env.undo();
+
+		assertEquals(env.changeHistory.getCSN(), 2);
+		checkRange(xaxis.getTickManager().getAxisTransform().getRange(), -1, 1);
 	}
 }
