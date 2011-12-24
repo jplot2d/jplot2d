@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.jplot2d.data.XYGraph;
+import org.jplot2d.transform.Transform1D;
 
 /**
  * Supply graph data points in iterable chunks.
@@ -170,8 +171,8 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 			while (i < graph.size()) {
 
-				double x = getXUtoD2(graph.getX(i));
-				double y = getYUtoD2(graph.getY(i));
+				double x = xW2D.convert(graph.getX(i));
+				double y = yW2D.convert(graph.getY(i));
 
 				/* break at NaN value */
 				if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
@@ -225,13 +226,13 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 						if (vxlow || vxhigh) {
 							data.xErrorSize = data.size + 1;
 							if (vxlow) {
-								data.xLowBuf[data.size] = (float) getXUtoD2(graph.getX(i)
+								data.xLowBuf[data.size] = (float) xW2D.convert(graph.getX(i)
 										- graph.getXErrorLow(i));
 							} else {
 								data.xLowBuf[data.size] = data.xBuf[data.size];
 							}
 							if (vxhigh) {
-								data.xHighBuf[data.size] = (float) getXUtoD2(graph.getX(i)
+								data.xHighBuf[data.size] = (float) xW2D.convert(graph.getX(i)
 										+ graph.getXErrorHigh(i));
 							} else {
 								data.xHighBuf[data.size] = data.xBuf[data.size];
@@ -245,13 +246,13 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 						if (vylow || vyhigh) {
 							data.yErrorSize = data.size + 1;
 							if (vylow) {
-								data.yLowBuf[data.size] = (float) getYUtoD2(graph.getY(i)
+								data.yLowBuf[data.size] = (float) yW2D.convert(graph.getY(i)
 										- graph.getYErrorLow(i));
 							} else {
 								data.yLowBuf[data.size] = data.yBuf[data.size];
 							}
 							if (vyhigh) {
-								data.yHighBuf[data.size] = (float) getYUtoD2(graph.getY(i)
+								data.yHighBuf[data.size] = (float) yW2D.convert(graph.getY(i)
 										+ graph.getYErrorHigh(i));
 							} else {
 								data.yHighBuf[data.size] = data.yBuf[data.size];
@@ -280,18 +281,6 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 		}
 
-		private double getXUtoD2(double v) {
-			return layer.getPaperTransform().getXPtoD(
-					layer.getXAxisTransform().getNormalTransform().convToNR(v)
-							* layer.getSize().getWidth());
-		}
-
-		private double getYUtoD2(double v) {
-			return layer.getPaperTransform().getYPtoD(
-					layer.getYAxisTransform().getNormalTransform().convToNR(v)
-							* layer.getSize().getHeight());
-		}
-
 	}
 
 	private LayerEx layer;
@@ -301,7 +290,9 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 	private XYGraph graph;
 
 	private Rectangle2D clip;
-	
+
+	private Transform1D xW2D, yW2D;
+
 	private final DataChunkIterator ite = new DataChunkIterator();
 
 	private XYGraphPlotterDataChunker() {
@@ -312,10 +303,28 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 		this.graph = dp.getGraph();
 		this.layer = dp.getParent();
 		this.plotter = dp;
+
+		calcTransformXY();
 	}
 
 	private void setClip(Rectangle2D clip) {
 		this.clip = clip;
+	}
+
+	/**
+	 * Calculate the transform for world value to device value
+	 */
+	private void calcTransformXY() {
+		xW2D = layer
+				.getXAxisTransform()
+				.getNormalTransform()
+				.createTransform(layer.getPaperTransform().getXPtoD(0),
+						layer.getPaperTransform().getXPtoD(layer.getSize().getWidth()));
+		yW2D = layer
+				.getYAxisTransform()
+				.getNormalTransform()
+				.createTransform(layer.getPaperTransform().getYPtoD(0),
+						layer.getPaperTransform().getYPtoD(layer.getSize().getHeight()));
 	}
 
 	/*
