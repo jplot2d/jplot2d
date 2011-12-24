@@ -21,15 +21,12 @@ package org.jplot2d.transform;
 import org.jplot2d.util.Range;
 
 /**
- * Performs a linear transformation on Cartesian axes. The equation is <code>
- * worldvalue = a * np + b
- * </code>
+ * Performs a linear transformation on Cartesian axes. The equation is
+ * <code> worldvalue = scale * normalized v + offset </code>
  */
 public class LinearNormalTransform extends NormalTransform {
 
 	private static final TransformType type = TransformType.LINEAR;
-
-	private final boolean valid;
 
 	private final double scale;
 
@@ -41,25 +38,18 @@ public class LinearNormalTransform extends NormalTransform {
 
 	public LinearNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			valid = false;
-			scale = Double.NaN;
-			offset = Double.NaN;
-			return;
+			throw new IllegalArgumentException("Transform is invalid");
 		}
 
 		if (u2 - u1 == 0) {
-			valid = false;
-			scale = Double.NaN;
-			offset = Double.NaN;
+			throw new IllegalArgumentException("Transform is invalid");
 		} else {
-			valid = true;
 			scale = u2 - u1;
 			offset = u1;
 		}
 	}
 
-	private LinearNormalTransform(boolean valid, double a, double b) {
-		this.valid = valid;
+	private LinearNormalTransform(Void v, double a, double b) {
 		this.scale = a;
 		this.offset = b;
 	}
@@ -68,21 +58,11 @@ public class LinearNormalTransform extends NormalTransform {
 		return type;
 	}
 
-	public boolean isValid() {
-		return valid;
-	}
-
 	public double getScale() {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return scale;
 	}
 
 	public double getOffset() {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return offset;
 	}
 
@@ -94,21 +74,15 @@ public class LinearNormalTransform extends NormalTransform {
 	 * @return normalized value
 	 */
 	public double convToNR(double w) {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return (w - offset) / scale;
 	}
 
 	public double convFromNR(double p) {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return scale * p + offset;
 	}
 
 	public NormalTransform deriveNoOffset() {
-		return new LinearNormalTransform(valid, scale, 0);
+		return new LinearNormalTransform(null, scale, 0);
 	}
 
 	public NormalTransform zoom(Range npr) {
@@ -120,11 +94,11 @@ public class LinearNormalTransform extends NormalTransform {
 		} else if (a == Double.NEGATIVE_INFINITY) {
 			a = -Double.MAX_VALUE;
 		}
-		return new LinearNormalTransform(valid, a, b);
+		return new LinearNormalTransform(null, a, b);
 	}
 
 	public NormalTransform invert() {
-		return new LinearNormalTransform(valid, -scale, scale + offset);
+		return new LinearNormalTransform(null, -scale, scale + offset);
 	}
 
 	/**
@@ -168,6 +142,11 @@ public class LinearNormalTransform extends NormalTransform {
 	@Override
 	public Range getValueRange() {
 		return new Range.Double(offset, scale + offset);
+	}
+
+	@Override
+	public Transform1D createTransform(double d1, double d2) {
+		return new LinearTransform(offset, scale + offset, d1, d2);
 	}
 
 }
