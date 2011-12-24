@@ -860,7 +860,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		} else {
 			uv = tickValue;
 		}
-		return tickManager.getAxisTransform().getNormalTransform().getTransP(uv) * length;
+		return tickManager.getAxisTransform().getNormalTransform().convToNR(uv) * length;
 	}
 
 }

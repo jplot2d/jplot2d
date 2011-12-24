@@ -15,9 +15,11 @@ import org.jplot2d.data.XYGraph;
  * 
  * @author Jingjing Li
  */
-public class XYGraphPlotterDataChunker implements
-		Iterable<XYGraphPlotterDataChunker.ChunkData> {
+public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChunker.ChunkData> {
 
+	/**
+	 * For re-using the instance of this class to avoid re-allocate buffers.
+	 */
 	private static final ThreadLocal<XYGraphPlotterDataChunker> _threadLocalBuilder = new ThreadLocal<XYGraphPlotterDataChunker>();
 
 	private static final int CHUNK_SIZE = 1000;
@@ -73,8 +75,7 @@ public class XYGraphPlotterDataChunker implements
 			xLowBuf[size] = xHighBuf[size] = 0;
 			yLowBuf[size] = yHighBuf[size] = 0;
 			/*
-			 * error size need not change because it always equals the last
-			 * valid data.size + 1
+			 * error size need not change because it always equals the last valid data.size + 1
 			 */
 			size++;
 		}
@@ -128,9 +129,8 @@ public class XYGraphPlotterDataChunker implements
 		}
 
 		/**
-		 * After forwarding the current to next, calculating the next chunk.
-		 * After this method, the ChunkData.size() may be 0 if there is no more
-		 * chunk.
+		 * After forwarding the current to next, calculating the next chunk. After this method, the
+		 * ChunkData.size() may be 0 if there is no more chunk.
 		 */
 		private void prepareNextChunk(ChunkData data) {
 			// fill the next chunk, non-empty
@@ -144,9 +144,8 @@ public class XYGraphPlotterDataChunker implements
 		}
 
 		/**
-		 * calculating the next chunk from the current position till the NaN
-		 * data or chunk full. After this method, the ChunkData.size() may be 0
-		 * if there is no valid data in this chunk.
+		 * calculating the next chunk from the current position till the NaN data or chunk full.
+		 * After this method, the ChunkData.size() may be 0 if there is no valid data in this chunk.
 		 */
 		private void fillChunk(ChunkData data) {
 
@@ -189,8 +188,7 @@ public class XYGraphPlotterDataChunker implements
 						Point2D b = new Point2D.Double(prex, prey);
 						Point2D newb = intersecate(clip, b, a);
 						if (newb != null) {
-							data.addPoint((float) newb.getX(),
-									(float) newb.getY());
+							data.addPoint((float) newb.getX(), (float) newb.getY());
 						}
 					}
 
@@ -200,8 +198,7 @@ public class XYGraphPlotterDataChunker implements
 						Point2D b = new Point2D.Double(prex, prey);
 						Point2D newa = intersecate(clip, a, b);
 						if (newa != null) {
-							data.addPoint((float) newa.getX(),
-									(float) newa.getY());
+							data.addPoint((float) newa.getX(), (float) newa.getY());
 						}
 					}
 				} else {
@@ -218,47 +215,44 @@ public class XYGraphPlotterDataChunker implements
 
 					/* markColorBuf */
 					if (drawMark) {
-						data.markColorBuf[data.size] = plotter
-								.getEffectiveSymbolColor(i);
+						data.markColorBuf[data.size] = plotter.getEffectiveSymbolColor(i);
 					}
 
 					/* error buffer */
-					if (graph.getXError() != null
-							&& i < graph.getXError().size()) {
+					if (graph.getXError() != null && i < graph.getXError().size()) {
 						boolean vxlow = !Double.isNaN(graph.getXErrorLow(i));
 						boolean vxhigh = !Double.isNaN(graph.getXErrorHigh(i));
 						if (vxlow || vxhigh) {
 							data.xErrorSize = data.size + 1;
 							if (vxlow) {
-								data.xLowBuf[data.size] = (float) getXUtoD2(graph
-										.getX(i) - graph.getXErrorLow(i));
+								data.xLowBuf[data.size] = (float) getXUtoD2(graph.getX(i)
+										- graph.getXErrorLow(i));
 							} else {
 								data.xLowBuf[data.size] = data.xBuf[data.size];
 							}
 							if (vxhigh) {
-								data.xHighBuf[data.size] = (float) getXUtoD2(graph
-										.getX(i) + graph.getXErrorHigh(i));
+								data.xHighBuf[data.size] = (float) getXUtoD2(graph.getX(i)
+										+ graph.getXErrorHigh(i));
 							} else {
 								data.xHighBuf[data.size] = data.xBuf[data.size];
 							}
 						}
 					}
 
-					if (graph.getYError() != null
-							&& i < graph.getYError().size()) {
+					if (graph.getYError() != null && i < graph.getYError().size()) {
 						boolean vylow = !Double.isNaN(graph.getYErrorLow(i));
 						boolean vyhigh = !Double.isNaN(graph.getYErrorHigh(i));
 						if (vylow || vyhigh) {
 							data.yErrorSize = data.size + 1;
 							if (vylow) {
-								data.yLowBuf[data.size] = (float) getYUtoD2(graph
-										.getY(i) - graph.getYErrorLow(i));
+								data.yLowBuf[data.size] = (float) getYUtoD2(graph.getY(i)
+										- graph.getYErrorLow(i));
 							} else {
 								data.yLowBuf[data.size] = data.yBuf[data.size];
 							}
 							if (vyhigh) {
-								data.yHighBuf[data.size] = (float) getYUtoD2(graph
-										.getY(i) + graph.getYErrorHigh(i));
+								data.yHighBuf[data.size] = (float) getYUtoD2(graph.getY(i)
+										+ graph.getYErrorHigh(i));
 							} else {
 								data.yHighBuf[data.size] = data.yBuf[data.size];
 							}
@@ -269,14 +263,14 @@ public class XYGraphPlotterDataChunker implements
 				}
 
 				/*
-				 * the next data point may generate 2 points by bring the big
-				 * number to clip border if both this and next point are big
-				 * number. So an extra array space must be reserved
+				 * the next data point may generate 2 points by bring the big number to clip border
+				 * if both this and next point are big number. So an extra array space must be
+				 * reserved
 				 */
 				if (data.size >= CHUNK_SIZE - 1) {
 					/*
-					 * Do not forward the i to make next chunk starts from the
-					 * line data in last chunk (need overlap).
+					 * Do not forward the i to make next chunk starts from the line data in last
+					 * chunk (need overlap).
 					 */
 					break;
 				} else {
@@ -288,13 +282,13 @@ public class XYGraphPlotterDataChunker implements
 
 		private double getXUtoD2(double v) {
 			return layer.getPaperTransform().getXPtoD(
-					layer.getXAxisTransform().getNormalTransform().getTransP(v)
+					layer.getXAxisTransform().getNormalTransform().convToNR(v)
 							* layer.getSize().getWidth());
 		}
 
 		private double getYUtoD2(double v) {
 			return layer.getPaperTransform().getYPtoD(
-					layer.getYAxisTransform().getNormalTransform().getTransP(v)
+					layer.getYAxisTransform().getNormalTransform().convToNR(v)
 							* layer.getSize().getHeight());
 		}
 
@@ -307,7 +301,7 @@ public class XYGraphPlotterDataChunker implements
 	private XYGraph graph;
 
 	private Rectangle2D clip;
-
+	
 	private final DataChunkIterator ite = new DataChunkIterator();
 
 	private XYGraphPlotterDataChunker() {
@@ -343,8 +337,8 @@ public class XYGraphPlotterDataChunker implements
 	}
 
 	/**
-	 * Calculate the intersection between the the line AB and the clip border.
-	 * Return null if there is not intersection.
+	 * Calculate the intersection between the the line AB and the clip border. Return null if there
+	 * is not intersection.
 	 * 
 	 * @param clip
 	 *            the clip
@@ -352,8 +346,8 @@ public class XYGraphPlotterDataChunker implements
 	 *            the last point
 	 * @param b
 	 *            the previous point
-	 * @return the point on the intersection between the the line AB and the
-	 *         clip border and closer to A.
+	 * @return the point on the intersection between the the line AB and the clip border and closer
+	 *         to A.
 	 */
 	private static Point2D intersecate(Rectangle2D clip, Point2D a, Point2D b) {
 		Line2D line = new Line2D.Double(a, b);
@@ -374,13 +368,13 @@ public class XYGraphPlotterDataChunker implements
 
 			}
 			if (a.getY() < clip.getY() - offset) {
-				result = new Point2D.Double((clip.getY() - offset - b.getY())
-						/ slope + b.getX(), clip.getY() - offset);
+				result = new Point2D.Double((clip.getY() - offset - b.getY()) / slope + b.getX(),
+						clip.getY() - offset);
 			}
 			if (a.getY() > clip.getMaxY() + offset) {
 				result = new Point2D.Double(
-						(clip.getMaxY() + offset - b.getY()) / slope + b.getX(),
-						clip.getMaxY() + offset);
+						(clip.getMaxY() + offset - b.getY()) / slope + b.getX(), clip.getMaxY()
+								+ offset);
 			}
 
 		}
@@ -388,8 +382,7 @@ public class XYGraphPlotterDataChunker implements
 		return result;
 	}
 
-	public static XYGraphPlotterDataChunker getInstance(XYGraphPlotterEx dp,
-			Rectangle clip) {
+	public static XYGraphPlotterDataChunker getInstance(XYGraphPlotterEx dp, Rectangle clip) {
 		XYGraphPlotterDataChunker builder = _threadLocalBuilder.get();
 		if (builder == null) {
 			builder = new XYGraphPlotterDataChunker();

@@ -30,7 +30,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	private final boolean valid;
 
-	private final double slope;
+	private final double scale;
 
 	private final double offset;
 
@@ -41,33 +41,33 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	public LogarithmicNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
 			valid = false;
-			slope = Double.NaN;
+			scale = Double.NaN;
 			offset = Double.NaN;
 			return;
 		}
 
 		if (u1 <= 0 || u2 <= 0) {
 			valid = false;
-			slope = Double.NaN;
+			scale = Double.NaN;
 			offset = Double.NaN;
 			return;
 		}
 
-		double scale = Math.log10(u2) - Math.log10(u1);
-		if (scale == 0) {
+		double sc = Math.log10(u2) - Math.log10(u1);
+		if (sc == 0) {
 			valid = false;
-			slope = Double.NaN;
+			scale = Double.NaN;
 			offset = Double.NaN;
 		} else {
 			valid = true;
-			slope = scale;
+			scale = sc;
 			offset = Math.log10(u1);
 		}
 	}
 
 	private LogarithmicNormalTransform(boolean valid, double a, double b) {
 		this.valid = valid;
-		this.slope = a;
+		this.scale = a;
 		this.offset = b;
 	}
 
@@ -83,7 +83,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return slope;
+		return scale;
 	}
 
 	public double getOffset() {
@@ -100,30 +100,30 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 *            user value
 	 * @return normalized value
 	 */
-	public double getTransP(double w) {
+	public double convToNR(double w) {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
 		if (w <= 0) {
-			return Double.NEGATIVE_INFINITY * slope;
+			return Double.NEGATIVE_INFINITY * scale;
 		}
-		return (Math.log10(w) - offset) / slope;
+		return (Math.log10(w) - offset) / scale;
 	}
 
-	public double getTransU(double p) {
+	public double convFromNR(double p) {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return Math.pow(10, slope * p + offset);
+		return Math.pow(10, scale * p + offset);
 	}
 
 	public NormalTransform deriveNoOffset() {
-		return new LogarithmicNormalTransform(valid, slope, 0);
+		return new LogarithmicNormalTransform(valid, scale, 0);
 	}
 
 	public NormalTransform zoom(Range npr) {
-		double b = offset + slope * npr.getStart();
-		double a = slope * npr.getSpan();
+		double b = offset + scale * npr.getStart();
+		double a = scale * npr.getSpan();
 		// prevent overflow
 		if (a == Double.POSITIVE_INFINITY) {
 			a = Double.MAX_VALUE;
@@ -134,7 +134,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	}
 
 	public NormalTransform invert() {
-		return new LogarithmicNormalTransform(valid, -slope, slope + offset);
+		return new LogarithmicNormalTransform(valid, -scale, scale + offset);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 * </pre>
 	 */
 	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
-		return Math.log10(1 - precisionLimit) / Math.abs(slope);
+		return Math.log10(1 - precisionLimit) / Math.abs(scale);
 	}
 
 	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
@@ -166,8 +166,8 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	}
 
 	@Override
-	public Range getRangeW() {
-		return new Range.Double(Math.pow(10, offset), Math.pow(10, slope + offset));
+	public Range getValueRange() {
+		return new Range.Double(Math.pow(10, offset), Math.pow(10, scale + offset));
 	}
 
 }

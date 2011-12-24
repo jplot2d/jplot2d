@@ -994,7 +994,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		} else {
 			uv = tickValue;
 		}
-		return nxf.getTransP(uv) * axisLength;
+		return nxf.convToNR(uv) * axisLength;
 	}
 
 	/**

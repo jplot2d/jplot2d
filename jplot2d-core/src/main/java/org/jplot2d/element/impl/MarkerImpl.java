@@ -71,26 +71,26 @@ public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
 
 	protected double getXWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getXAxisTransform().getNormalTransform().getTransP(v)
+		return layer.getXAxisTransform().getNormalTransform().convToNR(v)
 				* layer.getSize().getWidth();
 	}
 
 	protected double getYWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getYAxisTransform().getNormalTransform().getTransP(v)
+		return layer.getYAxisTransform().getNormalTransform().convToNR(v)
 				* layer.getSize().getHeight();
 	}
 
 	protected double getXPtoW(double v) {
 		LayerEx layer = getParent();
 		return layer.getXAxisTransform().getNormalTransform()
-				.getTransU(v / layer.getSize().getWidth());
+				.convFromNR(v / layer.getSize().getWidth());
 	}
 
 	protected double getYPtoW(double v) {
 		LayerEx layer = getParent();
 		return layer.getYAxisTransform().getNormalTransform()
-				.getTransU(v / layer.getSize().getHeight());
+				.convFromNR(v / layer.getSize().getHeight());
 	}
 
 }
