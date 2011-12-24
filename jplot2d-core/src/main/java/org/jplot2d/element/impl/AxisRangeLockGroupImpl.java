@@ -224,9 +224,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		AxisTransformEx master = getPrimaryAxis();
 		Range extRange;
 		if (master.isAutoMargin()) {
-			Range ur = vtMap.get(master).getTransU(rs);
+			Range ur = vtMap.get(master).convFromNR(rs);
 			Range exur = master.expandRangeToTick(ur);
-			extRange = vtMap.get(master).getTransP(exur);
+			extRange = vtMap.get(master).convToNR(exur);
 		} else {
 			extRange = rs;
 		}
@@ -262,7 +262,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		/* find the physical intersected range of valid world range among layers */
 		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		for (AxisTransformEx ax : arms) {
-			Range aprange = vtMap.get(ax).getTransP(ax.getAxisType().getBoundary(ax.getType()));
+			Range aprange = vtMap.get(ax).convToNR(ax.getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 
@@ -275,7 +275,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		boolean dataOutsideBounds = false;
 		for (AxisTransformEx ax : arms) {
 			for (LayerEx layer : ax.getLayers()) {
-				Range urange = vtMap.get(ax).getTransU(pbnds);
+				Range urange = vtMap.get(ax).convFromNR(pbnds);
 				Range wDRange = new Range.Double();
 
 				if (layer.getXAxisTransform() == ax) {
@@ -303,7 +303,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				}
 
 				if (!wDRange.isEmpty()) {
-					Range pDRange = vtMap.get(ax).getTransP(wDRange);
+					Range pDRange = vtMap.get(ax).convToNR(wDRange);
 					/* expand range by margin factor */
 					double pLo = pDRange.getMin();
 					double pHi = pDRange.getMax();
@@ -452,9 +452,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 			Range pr = validateNormalRange(INFINITY_PHYSICAL_RANGE);
 			RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pr, arms);
-			Range ur = prim.getNormalTransform().getTransU(rs);
+			Range ur = prim.getNormalTransform().convFromNR(rs);
 			Range exur = prim.expandRangeToTick(ur);
-			Range expr = prim.getNormalTransform().getTransP(exur);
+			Range expr = prim.getNormalTransform().convToNR(exur);
 
 			RangeStatus<PrecisionState> xrs = AxisRangeUtils.ensureCircleSpan(expr, arms);
 			zoomNormalRange(xrs);
@@ -464,7 +464,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		}
 
 		for (AxisTransformEx ax : arms) {
-			Range wr = ax.getNormalTransform().getTransU(pRange);
+			Range wr = ax.getNormalTransform().convFromNR(pRange);
 			// set the inverted nature
 			if (ax.getAxisType().getDefaultWorldRange(ax.getType()).isInverted() != (wr
 					.isInverted() ^ ax.isInverted())) {

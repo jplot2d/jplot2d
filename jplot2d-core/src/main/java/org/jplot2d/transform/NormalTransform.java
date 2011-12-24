@@ -74,16 +74,21 @@ public abstract class NormalTransform {
 	 */
 	public abstract double convFromNR(double p);
 
-	public Range getTransP(Range wrange) {
+	public Range convToNR(Range wrange) {
 		return new Range.Double(convToNR(wrange.getStart()), wrange.isStartIncluded(),
 				convToNR(wrange.getEnd()), wrange.isEndIncluded());
 	}
 
-	public Range getTransU(Range prange) {
+	public Range convFromNR(Range prange) {
 		return new Range.Double(convFromNR(prange.getStart()), prange.isStartIncluded(),
 				convFromNR(prange.getEnd()), prange.isEndIncluded());
 	}
 
+	/**
+	 * Returns the value range of this transform.
+	 * 
+	 * @return the value range
+	 */
 	public abstract Range getValueRange();
 
 	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit);

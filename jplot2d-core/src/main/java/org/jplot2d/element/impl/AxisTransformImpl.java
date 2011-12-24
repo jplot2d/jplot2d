@@ -342,7 +342,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 				.createVirtualTransformMap(Arrays.asList(group.getRangeManagers()));
 
 		NormalTransform vnt = vtMap.get(this);
-		Range pr = vnt.getTransP(urange);
+		Range pr = vnt.convToNR(urange);
 
 		if (appendMargin) {
 			double span = pr.getSpan();
@@ -374,9 +374,9 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		/* extend range to tick */
 		Range extRange;
 		if (appendMargin && isAutoMargin()) {
-			Range ur = vnt.getTransU(rs);
+			Range ur = vnt.convFromNR(rs);
 			Range exur = expandRangeToTick(ur);
-			extRange = vnt.getTransP(exur);
+			extRange = vnt.convToNR(exur);
 		} else {
 			extRange = rs;
 		}
