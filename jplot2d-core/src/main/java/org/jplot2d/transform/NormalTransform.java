@@ -33,14 +33,6 @@ public abstract class NormalTransform {
 
 	public abstract TransformType getType();
 
-	/**
-	 * Returns if this AxisTransform is ready to transform values. Only <code>true</code> after both
-	 * paper range and world range are set properly.
-	 * 
-	 * @return <code>true</code> if this AxisTransform is ready to transform values.
-	 */
-	public abstract boolean isValid();
-
 	public abstract double getScale();
 
 	public abstract double getOffset();
@@ -92,5 +84,16 @@ public abstract class NormalTransform {
 	public abstract Range getValueRange();
 
 	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit);
+
+	/**
+	 * Create a Transform1D by assign a dest range.
+	 * 
+	 * @param d1
+	 *            the start value of dest range
+	 * @param d2
+	 *            the end value of dest range
+	 * @return a Transform1D
+	 */
+	public abstract Transform1D createTransform(double d1, double d2);
 
 }

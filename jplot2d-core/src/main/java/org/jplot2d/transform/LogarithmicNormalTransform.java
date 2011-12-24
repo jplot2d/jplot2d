@@ -21,14 +21,12 @@ package org.jplot2d.transform;
 import org.jplot2d.util.Range;
 
 /**
- * Performs a log transformation on Cartesian axes. The equation is <code>worldvalue =
- * 10^(a * np + b)<code>
+ * Performs a log transformation on Cartesian axes. The equation is
+ * <code>worldvalue = 10^(scale * normalized v + offset)<code>
  */
 public class LogarithmicNormalTransform extends NormalTransform {
 
 	private static final TransformType type = TransformType.LOGARITHMIC;
-
-	private final boolean valid;
 
 	private final double scale;
 
@@ -40,33 +38,23 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	public LogarithmicNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			valid = false;
-			scale = Double.NaN;
-			offset = Double.NaN;
-			return;
+			throw new IllegalArgumentException("Transform is invalid");
 		}
 
 		if (u1 <= 0 || u2 <= 0) {
-			valid = false;
-			scale = Double.NaN;
-			offset = Double.NaN;
-			return;
+			throw new IllegalArgumentException("Transform is invalid");
 		}
 
 		double sc = Math.log10(u2) - Math.log10(u1);
 		if (sc == 0) {
-			valid = false;
-			scale = Double.NaN;
-			offset = Double.NaN;
+			throw new IllegalArgumentException("Transform is invalid");
 		} else {
-			valid = true;
 			scale = sc;
 			offset = Math.log10(u1);
 		}
 	}
 
-	private LogarithmicNormalTransform(boolean valid, double a, double b) {
-		this.valid = valid;
+	private LogarithmicNormalTransform(Void v, double a, double b) {
 		this.scale = a;
 		this.offset = b;
 	}
@@ -75,21 +63,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		return type;
 	}
 
-	public boolean isValid() {
-		return valid;
-	}
-
 	public double getScale() {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return scale;
 	}
 
 	public double getOffset() {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return offset;
 	}
 
@@ -101,9 +79,6 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	 * @return normalized value
 	 */
 	public double convToNR(double w) {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		if (w <= 0) {
 			return Double.NEGATIVE_INFINITY * scale;
 		}
@@ -111,14 +86,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	}
 
 	public double convFromNR(double p) {
-		if (!valid) {
-			throw new IllegalStateException("Transform is invalid");
-		}
 		return Math.pow(10, scale * p + offset);
 	}
 
 	public NormalTransform deriveNoOffset() {
-		return new LogarithmicNormalTransform(valid, scale, 0);
+		return new LogarithmicNormalTransform(null, scale, 0);
 	}
 
 	public NormalTransform zoom(Range npr) {
@@ -130,11 +102,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		} else if (a == Double.NEGATIVE_INFINITY) {
 			a = -Double.MAX_VALUE;
 		}
-		return new LogarithmicNormalTransform(valid, a, b);
+		return new LogarithmicNormalTransform(null, a, b);
 	}
 
 	public NormalTransform invert() {
-		return new LogarithmicNormalTransform(valid, -scale, scale + offset);
+		return new LogarithmicNormalTransform(null, -scale, scale + offset);
 	}
 
 	/**
@@ -168,6 +140,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 	@Override
 	public Range getValueRange() {
 		return new Range.Double(Math.pow(10, offset), Math.pow(10, scale + offset));
+	}
+
+	@Override
+	public Transform1D createTransform(double d1, double d2) {
+		return new LogTransform(offset, scale + offset, d1, d2);
 	}
 
 }

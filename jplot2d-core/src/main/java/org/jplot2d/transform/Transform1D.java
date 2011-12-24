@@ -18,24 +18,12 @@
  */
 package org.jplot2d.transform;
 
-import org.jplot2d.util.Range;
+/**
+ * @author Jingjing Li
+ * 
+ */
+public interface Transform1D {
 
-public enum TransformType {
-
-	LINEAR {
-		@Override
-		public NormalTransform createNormalTransform(Range wrange) {
-			return new LinearNormalTransform(wrange);
-		}
-	},
-	LOGARITHMIC {
-
-		@Override
-		public NormalTransform createNormalTransform(Range wrange) {
-			return new LogarithmicNormalTransform(wrange);
-		}
-	};
-
-	public abstract NormalTransform createNormalTransform(Range wrange);
+	public double convert(double u);
 
 }
