@@ -25,6 +25,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.data.XYGraph;
+import org.jplot2d.transform.Transform1D;
 import org.jplot2d.util.LineHatchPaint;
 
 /**
@@ -42,6 +43,8 @@ public class XYGraphPlotterFiller {
 	private XYGraph graph;
 
 	private Rectangle2D clip;
+
+	private Transform1D xW2D, yW2D;
 
 	private int startx, starty;
 
@@ -71,10 +74,28 @@ public class XYGraphPlotterFiller {
 		this.graph = dp.getGraph();
 		this.layer = dp.getParent();
 		this.plotter = dp;
+
+		calcTransformXY();
 	}
 
 	private void setClip(Rectangle2D clip) {
 		this.clip = clip;
+	}
+
+	/**
+	 * Calculate the transform for world value to device value
+	 */
+	private void calcTransformXY() {
+		xW2D = layer
+				.getXAxisTransform()
+				.getNormalTransform()
+				.createTransform(layer.getPaperTransform().getXPtoD(0),
+						layer.getPaperTransform().getXPtoD(layer.getSize().getWidth()));
+		yW2D = layer
+				.getYAxisTransform()
+				.getNormalTransform()
+				.createTransform(layer.getPaperTransform().getYPtoD(0),
+						layer.getPaperTransform().getYPtoD(layer.getSize().getHeight()));
 	}
 
 	/**
@@ -132,8 +153,8 @@ public class XYGraphPlotterFiller {
 				continue;
 			}
 
-			double x = getDeviceX(i);
-			double y = getDeviceY(i);
+			double x = xW2D.convert(graph.getX(i));
+			double y = yW2D.convert(graph.getY(i));
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -170,8 +191,8 @@ public class XYGraphPlotterFiller {
 				continue;
 			}
 
-			double x = getDeviceX(i);
-			double y = getDeviceY(i);
+			double x = xW2D.convert(graph.getX(i));
+			double y = yW2D.convert(graph.getY(i));
 			int iy = (int) (y + 0.5);
 
 			if (hasPre) {
@@ -213,8 +234,8 @@ public class XYGraphPlotterFiller {
 				continue;
 			}
 
-			double x = getDeviceX(i);
-			double y = getDeviceY(i);
+			double x = xW2D.convert(graph.getX(i));
+			double y = yW2D.convert(graph.getY(i));
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -235,18 +256,6 @@ public class XYGraphPlotterFiller {
 			endy = iy;
 		}
 
-	}
-
-	private double getDeviceX(int i) {
-		return layer.getPaperTransform().getXPtoD(
-				layer.getXAxisTransform().getNormalTransform().convToNR(graph.getX(i))
-						* layer.getSize().getWidth());
-	}
-
-	private double getDeviceY(int i) {
-		return layer.getPaperTransform().getYPtoD(
-				layer.getYAxisTransform().getNormalTransform().convToNR(graph.getY(i))
-						* layer.getSize().getHeight());
 	}
 
 	private void closeLine(Path2D path) {
