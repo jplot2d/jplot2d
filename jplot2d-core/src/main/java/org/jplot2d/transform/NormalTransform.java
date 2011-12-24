@@ -21,7 +21,7 @@ package org.jplot2d.transform;
 import org.jplot2d.util.Range;
 
 /**
- * Immutable! Transform between world coordinate and normal coordinate.
+ * Immutable! Transform between value range and normalized range.
  */
 public abstract class NormalTransform {
 
@@ -57,34 +57,34 @@ public abstract class NormalTransform {
 	public abstract NormalTransform invert();
 
 	/**
-	 * Transform from world to paper coordinate.
+	 * Transform from value range to normalized range.
 	 * 
 	 * @param u
-	 *            world value
+	 *            the value
 	 * @return normalized value
 	 */
-	public abstract double getTransP(double u);
+	public abstract double convToNR(double u);
 
 	/**
-	 * Transform from normalized value to world coordinate.
+	 * Transform a value from normalized range to value range.
 	 * 
 	 * @param p
 	 *            normalized value
 	 * @return world value
 	 */
-	public abstract double getTransU(double p);
+	public abstract double convFromNR(double p);
 
 	public Range getTransP(Range wrange) {
-		return new Range.Double(getTransP(wrange.getStart()), wrange.isStartIncluded(),
-				getTransP(wrange.getEnd()), wrange.isEndIncluded());
+		return new Range.Double(convToNR(wrange.getStart()), wrange.isStartIncluded(),
+				convToNR(wrange.getEnd()), wrange.isEndIncluded());
 	}
 
 	public Range getTransU(Range prange) {
-		return new Range.Double(getTransU(prange.getStart()), prange.isStartIncluded(),
-				getTransU(prange.getEnd()), prange.isEndIncluded());
+		return new Range.Double(convFromNR(prange.getStart()), prange.isStartIncluded(),
+				convFromNR(prange.getEnd()), prange.isEndIncluded());
 	}
 
-	public abstract Range getRangeW();
+	public abstract Range getValueRange();
 
 	public abstract double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit);
 

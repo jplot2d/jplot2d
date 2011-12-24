@@ -312,11 +312,11 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	}
 
 	public Range getRange() {
-		return ntf.getRangeW();
+		return ntf.getValueRange();
 	}
 
 	public void setRange(Range urange) {
-		if (urange.isInverted() != ntf.getRangeW().isInverted()) {
+		if (urange.isInverted() != ntf.getValueRange().isInverted()) {
 			urange = urange.invert();
 		}
 
@@ -362,7 +362,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		if (!pRange.equals(pr)) {
 			notify(new RangeAdjustedToValueBoundsNotice(getFullId()
 					+ ": the given range contains invalid value, range adjusted to ["
-					+ ntf.getTransU(pLo) + ", " + ntf.getTransU(pHi) + "]"));
+					+ ntf.convFromNR(pLo) + ", " + ntf.convFromNR(pHi) + "]"));
 		}
 
 		/* ensurePrecision */

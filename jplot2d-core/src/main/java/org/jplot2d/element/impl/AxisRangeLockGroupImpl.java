@@ -332,7 +332,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		for (AxisTransformEx arm : arms) {
 			NormalTransform vt = vtMap.get(arm).zoom(range);
-			Range wrange = vt.getRangeW();
+			Range wrange = vt.getValueRange();
 			arm.setNormalTransfrom(arm.getType().createNormalTransform(wrange));
 
 			for (LayerEx layer : arm.getLayers()) {
@@ -379,7 +379,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		for (AxisTransformEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform().zoom(npRange);
-			Range wrange = npt.getRangeW();
+			Range wrange = npt.getValueRange();
 			axis.setNormalTransfrom(axis.getType().createNormalTransform(wrange));
 
 			for (LayerEx layer : axis.getLayers()) {

@@ -31,7 +31,7 @@ public class LinearNormalTransform extends NormalTransform {
 
 	private final boolean valid;
 
-	private final double slope;
+	private final double scale;
 
 	private final double offset;
 
@@ -42,25 +42,25 @@ public class LinearNormalTransform extends NormalTransform {
 	public LinearNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
 			valid = false;
-			slope = Double.NaN;
+			scale = Double.NaN;
 			offset = Double.NaN;
 			return;
 		}
 
 		if (u2 - u1 == 0) {
 			valid = false;
-			slope = Double.NaN;
+			scale = Double.NaN;
 			offset = Double.NaN;
 		} else {
 			valid = true;
-			slope = u2 - u1;
+			scale = u2 - u1;
 			offset = u1;
 		}
 	}
 
 	private LinearNormalTransform(boolean valid, double a, double b) {
 		this.valid = valid;
-		this.slope = a;
+		this.scale = a;
 		this.offset = b;
 	}
 
@@ -76,7 +76,7 @@ public class LinearNormalTransform extends NormalTransform {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return slope;
+		return scale;
 	}
 
 	public double getOffset() {
@@ -93,27 +93,27 @@ public class LinearNormalTransform extends NormalTransform {
 	 *            user value
 	 * @return normalized value
 	 */
-	public double getTransP(double w) {
+	public double convToNR(double w) {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return (w - offset) / slope;
+		return (w - offset) / scale;
 	}
 
-	public double getTransU(double p) {
+	public double convFromNR(double p) {
 		if (!valid) {
 			throw new IllegalStateException("Transform is invalid");
 		}
-		return slope * p + offset;
+		return scale * p + offset;
 	}
 
 	public NormalTransform deriveNoOffset() {
-		return new LinearNormalTransform(valid, slope, 0);
+		return new LinearNormalTransform(valid, scale, 0);
 	}
 
 	public NormalTransform zoom(Range npr) {
-		double b = offset + slope * npr.getStart();
-		double a = slope * npr.getSpan();
+		double b = offset + scale * npr.getStart();
+		double a = scale * npr.getSpan();
 		// prevent overflow
 		if (a == Double.POSITIVE_INFINITY) {
 			a = Double.MAX_VALUE;
@@ -124,7 +124,7 @@ public class LinearNormalTransform extends NormalTransform {
 	}
 
 	public NormalTransform invert() {
-		return new LinearNormalTransform(valid, -slope, slope + offset);
+		return new LinearNormalTransform(valid, -scale, scale + offset);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class LinearNormalTransform extends NormalTransform {
 	@Override
 	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
 		double r;
-		double b = getTransP(0);
+		double b = convToNR(0);
 		if (pLo < b && pHi > b) {
 			r = 0;
 		} else {
@@ -166,8 +166,8 @@ public class LinearNormalTransform extends NormalTransform {
 	}
 
 	@Override
-	public Range getRangeW() {
-		return new Range.Double(offset, slope + offset);
+	public Range getValueRange() {
+		return new Range.Double(offset, scale + offset);
 	}
 
 }
