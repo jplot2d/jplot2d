@@ -63,7 +63,7 @@ class AxisRangeUtils {
 		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
-			Range aprange = me.getValue().getTransP(ax.getAxisType().getBoundary(ax.getType()));
+			Range aprange = me.getValue().convToNR(ax.getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
 		return pbnds;
@@ -184,7 +184,7 @@ class AxisRangeUtils {
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
 			// virtual normal range of the axis type boundary
-			Range aprange = me.getValue().getTransP(
+			Range aprange = me.getValue().convToNR(
 					me.getKey().getAxisType().getBoundary(ax.getType()));
 			pbnds = pbnds.intersect(aprange);
 		}
@@ -198,7 +198,7 @@ class AxisRangeUtils {
 		 * pbnds.span() is 0.
 		 */
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
-			Range urange = me.getValue().getTransU(pbnds);
+			Range urange = me.getValue().convFromNR(pbnds);
 			AxisTransformEx ax = me.getKey();
 			urange = urange.intersect(ax.getAxisType().getBoundary(ax.getType()));
 			if (urange == null) {
@@ -211,7 +211,7 @@ class AxisRangeUtils {
 
 		if (findNearsetData) {
 			for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
-				Range urange = me.getValue().getTransU(range);
+				Range urange = me.getValue().convFromNR(range);
 				AxisTransformEx ax = me.getKey();
 				if (urange.getStart() < ax.getAxisType().getBoundary(ax.getType()).getStart()) {
 					findLoData = true;
@@ -261,7 +261,7 @@ class AxisRangeUtils {
 
 			AxisTransformEx arm = (AxisTransformEx) me.getKey();
 			NormalTransform vnt = me.getValue();
-			Range urange = vnt.getTransU(pbnds);
+			Range urange = vnt.convFromNR(pbnds);
 			// in case of the round error exceed valid bounds
 			urange = urange.intersect(arm.getAxisType().getBoundary(arm.getType()));
 			for (LayerEx layer : arm.getLayers()) {
@@ -276,7 +276,7 @@ class AxisRangeUtils {
 					}
 				}
 				if (wDRange != null) {
-					Range pDRange = vnt.getTransP(wDRange);
+					Range pDRange = vnt.convToNR(wDRange);
 					if (pLo > pDRange.getMin()) {
 						pLo = pDRange.getMin();
 					}
@@ -305,13 +305,13 @@ class AxisRangeUtils {
 					pHi += span * arm.getMarginFactor();
 					pXdRange = new Range.Double(pLo, pHi);
 				} else {
-					Range wr = vnt.getTransU(new Range.Double(pLo, pHi));
+					Range wr = vnt.convFromNR(new Range.Double(pLo, pHi));
 					NormalTransform npt = arm.getAxisType().getDefaultTransformType()
 							.createNormalTransform(wr);
 					Range exnpr = new Range.Double(-arm.getMarginFactor(),
 							1 + arm.getMarginFactor());
-					Range exwr = npt.getTransU(exnpr);
-					pXdRange = vnt.getTransP(exwr);
+					Range exwr = npt.convFromNR(exnpr);
+					pXdRange = vnt.convToNR(exwr);
 				}
 			}
 
