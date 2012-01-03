@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>jplot2d</artifactId>
 		<groupId>org.jplot2d</groupId>
-		<version>0.3.2</version>
+		<version>0.4</version>
 	</parent>
 
 	<artifactId>jplot2d-swing</artifactId>
