@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -44,8 +44,9 @@ public class AxisTest {
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation",
-				"position", "gridLines", "minorGridLines", "tickVisible", "tickSide", "tickHeight",
-				"minorTickHeight", "labelVisible", "labelSide", "labelOrientation", "labelColor");
+				"position", "axisLineWidth", "gridLines", "minorGridLines", "tickVisible",
+				"tickSide", "tickHeight", "minorTickHeight", "tickLineWidth", "labelVisible",
+				"labelSide", "labelOrientation", "labelColor");
 	}
 
 	/**
@@ -228,8 +229,8 @@ public class AxisTest {
 		assertNotSame(yva.getEnvironment(), sp.getEnvironment());
 
 		assertSame(ytm.getAxisTransform(), xtm.getAxisTransform());
-		assertArrayEquals(xtm.getAxisTransform().getTickManagers(),
-				new AxisTickManager[] { xtm, ytm });
+		assertArrayEquals(xtm.getAxisTransform().getTickManagers(), new AxisTickManager[] { xtm,
+				ytm });
 		assertSame(xtm.getAxisTransform().getEnvironment(), sp.getEnvironment());
 
 		// remove x axis
