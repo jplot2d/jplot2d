@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -89,6 +89,22 @@ public interface Axis extends PComponent {
 	 *            if true show the grid lines.
 	 */
 	public void setGridLines(boolean showGridLines);
+
+	/**
+	 * Return if the minor grid line is displayed or not.
+	 * 
+	 * @return true if the minor grid line is displayed
+	 */
+	@Property(order = 2, displayName = "Minor Grid Lines")
+	public boolean isMinorGridLines();
+
+	/**
+	 * Sets grid lines of grey lines in corresponding of minor ticks of the axis.
+	 * 
+	 * @param showGridLines
+	 *            if true show the grid lines.
+	 */
+	public void setMinorGridLines(boolean showGridLines);
 
 	/**
 	 * Returns if the tick mark is shown or not

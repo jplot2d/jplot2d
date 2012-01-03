@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -80,9 +80,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private double length;
 
-	private AxisPosition position;
+	private AxisPosition position = AxisPosition.NEGATIVE_SIDE;
 
-	private boolean showGridLines;
+	private boolean showGridLines, showMinorGridLines;
 
 	private boolean tickVisible = true;
 
@@ -301,6 +301,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setGridLines(boolean showGridLines) {
 		this.showGridLines = showGridLines;
+		redraw();
+	}
+
+	public boolean isMinorGridLines() {
+		return showMinorGridLines;
+	}
+
+	public void setMinorGridLines(boolean showGridLines) {
+		this.showMinorGridLines = showGridLines;
 		redraw();
 	}
 
@@ -604,6 +613,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.length = axis.length;
 		this.position = axis.position;
 		this.showGridLines = axis.showGridLines;
+		this.showMinorGridLines = axis.showMinorGridLines;
 		this.tickVisible = axis.tickVisible;
 		this.tickSide = axis.tickSide;
 		this.tickHeight = axis.tickHeight;
@@ -671,7 +681,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		 * implement notes: grid lines must be drawn before ticks, otherwise the tick may be
 		 * overlapped.
 		 */
-		if (isGridLines()) {
+		if (showGridLines && tvslen > 0) {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
@@ -680,20 +690,36 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 					new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
-			Color c = getColor();
+			Color c = getEffectiveColor();
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() / 2));
 
 			Dimension2D pcontentSize = getParent().getContentSize();
-			if (getOrientation() == AxisOrientation.HORIZONTAL) {
-				for (int i = 0; i < tvslen; i++) {
-					double xp = transTickToPaper(Array.getDouble(tvs, i));
-					drawXGridLine(g, xp, 0, pcontentSize.getHeight());
-				}
-			} else {
-				for (int i = 0; i < tvslen; i++) {
-					double yp = transTickToPaper(Array.getDouble(tvs, i));
-					drawYGridLine(g, yp, 0, pcontentSize.getWidth());
-				}
+			AxisEx[] orthoAxes = getOrthoAxes();
+			for (int i = 0; i < tvslen; i++) {
+				double xp = transTickToPaper(Array.getDouble(tvs, i));
+				drawGridLine(g, xp, pcontentSize, orthoAxes);
+			}
+
+			g.setStroke(oldStroke);
+			g.setColor(oldColor);
+		}
+		if (showMinorGridLines && mvslen > 0) {
+			Stroke oldStroke = g.getStroke();
+			Color oldColor = g.getColor();
+
+			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 4,
+					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
+					new float[] { 2.0f, 2.0f }, 0.0f);
+			g.setStroke(gridLineStroke);
+
+			Color c = getEffectiveColor();
+			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha() / 4));
+
+			Dimension2D pcontentSize = getParent().getContentSize();
+			AxisEx[] orthoAxes = getOrthoAxes();
+			for (int i = 0; i < mvslen; i++) {
+				double xp = transTickToPaper(Array.getDouble(mvs, i));
+				drawGridLine(g, xp, pcontentSize, orthoAxes);
 			}
 
 			g.setStroke(oldStroke);
@@ -703,11 +729,11 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		if (isTickVisible()) {
 			for (int i = 0; i < tvslen; i++) {
 				double xp = transTickToPaper(Array.getDouble(tvs, i));
-				drawXTic(g, xp, getTickHeight());
+				drawTic(g, xp, getTickHeight());
 			}
 			for (int i = 0; i < mvslen; i++) {
 				double xp = transTickToPaper(Array.getDouble(mvs, i));
-				drawXTic(g, xp, getMinorTickHeight());
+				drawTic(g, xp, getMinorTickHeight());
 			}
 		}
 	}
@@ -753,7 +779,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		getTitle().draw(g, x, titleOffset);
 	}
 
-	private void drawXTic(Graphics2D g, double xp, double ticHeight) {
+	private void drawTic(Graphics2D g, double xp, double ticHeight) {
 
 		double yp0, yp1;
 
@@ -778,61 +804,42 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 * @param g
 	 * @param xp
 	 *            x location
-	 * @param sp
-	 *            start p
-	 * @param ep
-	 *            end p
+	 * @param contentSize
+	 * @param orthoAxes
 	 */
-	private void drawXGridLine(Graphics2D g, double xp, double sp, double ep) {
-
-		/* avoid overlapping on the other Y axes */
-		for (AxisEx axis : this.getOrthoAxes()) {
-			if (Math.abs(axis.getLocation().getX() - xp) < DEFAULT_AXISLINE_WIDTH) {
-				return;
+	private void drawGridLine(Graphics2D g, double xp, Dimension2D contentSize, AxisEx[] orthoAxes) {
+		if (getOrientation() == AxisOrientation.HORIZONTAL) {
+			/* avoid overlapping on the other Y axes */
+			for (AxisEx axis : orthoAxes) {
+				if (Math.abs(axis.getLocation().getX() - xp) < DEFAULT_AXISLINE_WIDTH) {
+					return;
+				}
+			}
+			if (position == AxisPosition.NEGATIVE_SIDE) {
+				Shape line = new Line2D.Double(xp, 0, xp, contentSize.getHeight());
+				g.draw(line);
+			} else {
+				Shape line = new Line2D.Double(xp, -contentSize.getHeight(), xp, 0);
+				g.draw(line);
+			}
+		} else {
+			/* avoid overlapping on the other X axes */
+			for (AxisEx axis : orthoAxes) {
+				if (Math.abs(axis.getLocation().getY() - xp) < DEFAULT_AXISLINE_WIDTH) {
+					return;
+				}
+			}
+			if (position == AxisPosition.NEGATIVE_SIDE) {
+				Shape line = new Line2D.Double(xp, -contentSize.getWidth(), xp, 0);
+				g.draw(line);
+			} else {
+				Shape line = new Line2D.Double(xp, 0, xp, contentSize.getWidth());
+				g.draw(line);
 			}
 		}
-
-		PaperTransform _lxf = getParent().getPaperTransform();
-		double x0 = _lxf.getXPtoD(xp);
-		double y0 = _lxf.getYPtoD(sp);
-		double y1 = _lxf.getYPtoD(ep);
-
-		Shape line = new Line2D.Double(x0, y0, x0, y1);
-		g.draw(line);
-
 	}
 
-	/**
-	 * Draw horizontal grid line on Y axis
-	 * 
-	 * @param g
-	 * @param yp
-	 *            y location
-	 * @param sp
-	 *            start p
-	 * @param ep
-	 *            end p
-	 */
-	private void drawYGridLine(Graphics2D g, double yp, double sp, double ep) {
-
-		/* avoid overlapping on the other X axes */
-		for (AxisEx axis : getOrthoAxes()) {
-			if (Math.abs(axis.getLocation().getY() - yp) < DEFAULT_AXISLINE_WIDTH) {
-				return;
-			}
-		}
-
-		PaperTransform _lxf = getParent().getPaperTransform();
-		double y0 = _lxf.getYPtoD(yp);
-		double x0 = _lxf.getXPtoD(sp);
-		double x1 = _lxf.getXPtoD(ep);
-
-		Shape line = new Line2D.Double(x0, y0, x1, y0);
-		g.draw(line);
-
-	}
-
-	private List<AxisEx> getOrthoAxes() {
+	private AxisEx[] getOrthoAxes() {
 		List<AxisEx> axes = new ArrayList<AxisEx>();
 		if (getOrientation() == AxisOrientation.HORIZONTAL) {
 			for (AxisEx a : getParent().getYAxes()) {
@@ -843,7 +850,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 				axes.add(a);
 			}
 		}
-		return axes;
+		return axes.toArray(new AxisEx[axes.size()]);
 	}
 
 	/**
