@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
 import org.jplot2d.renderer.PngFileExporter;
 import org.jplot2d.renderer.Renderer;
@@ -246,6 +247,15 @@ public class RenderEnvironment extends PlotEnvironment {
 
 	static {
 		setDefaultExportDirectory(null);
+	}
+
+	/**
+	 * Saves the Plot as an EPS file.
+	 * 
+	 * @throws IOException
+	 */
+	public void saveAsEPS(String filename) throws IOException {
+		exportPlot(new EpsExporter(getExportFile(filename)));
 	}
 
 	/**
