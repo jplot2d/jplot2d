@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -238,6 +238,8 @@ public class MenuHandler implements MenuListener, SelectionListener {
 					env.saveAsPNG(filename);
 				} else if (fileDesc.contains("PDF")) {
 					env.saveAsPDF(filename);
+				} else if (fileDesc.contains("EPS")) {
+					env.saveAsEPS(filename);
 				}
 			} catch (IOException e) {
 				ar.set(e);
@@ -253,8 +255,8 @@ public class MenuHandler implements MenuListener, SelectionListener {
 	private void initSaveFileChooser() {
 		_saveFileChooser = new FileDialog(control.getShell(), SWT.SAVE);
 		_saveFileChooser.setFilterPath(RenderEnvironment.getDefaultExportDirectory());
-		_saveFileChooser.setFilterNames(new String[] { "PNG file", "PDF file" });
-		_saveFileChooser.setFilterExtensions(new String[] { "*.png", "*.pdf" });
+		_saveFileChooser.setFilterNames(new String[] { "PNG file", "PDF file", "EPS file" });
+		_saveFileChooser.setFilterExtensions(new String[] { "*.png", "*.pdf", "*.eps" });
 		_saveFileChooser.setFilterIndex(0);
 		_saveFileChooser.setOverwrite(true);
 	}

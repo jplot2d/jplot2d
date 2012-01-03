@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -238,6 +238,8 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 						env.saveAsPNG(filename);
 					} else if (fileDesc.contains("PDF")) {
 						env.saveAsPDF(filename);
+					} else if (fileDesc.contains("EPS")) {
+						env.saveAsEPS(filename);
 					}
 				} catch (IOException e) {
 					ar.set(e);
@@ -271,10 +273,12 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 
 		FileNameExtensionFilter PNG_FILE_FILTER = new FileNameExtensionFilter("PNG file", "png");
 		FileNameExtensionFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF file", "pdf");
+		FileNameExtensionFilter EPS_FILE_FILTER = new FileNameExtensionFilter("EPS file", "eps");
 		List<FileNameExtensionFilter> EXPORT_FILE_FILTERS = new ArrayList<FileNameExtensionFilter>(
 				2);
 		EXPORT_FILE_FILTERS.add(PNG_FILE_FILTER);
 		EXPORT_FILE_FILTERS.add(PDF_FILE_FILTER);
+		EXPORT_FILE_FILTERS.add(EPS_FILE_FILTER);
 
 		for (FileNameExtensionFilter fnef : EXPORT_FILE_FILTERS) {
 			_saveFileChooser.addChoosableFileFilter(fnef);
