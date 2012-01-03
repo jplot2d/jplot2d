@@ -44,7 +44,7 @@ public class AxisTest {
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation",
-				"position", "gridLines", "tickVisible", "tickSide", "tickHeight",
+				"position", "gridLines", "minorGridLines", "tickVisible", "tickSide", "tickHeight",
 				"minorTickHeight", "labelVisible", "labelSide", "labelOrientation", "labelColor");
 	}
 
