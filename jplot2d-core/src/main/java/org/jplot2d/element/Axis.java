@@ -75,11 +75,27 @@ public interface Axis extends PComponent {
 	public void setPosition(AxisPosition position);
 
 	/**
+	 * Returns the axis line width is pt(1/72 inch)
+	 * 
+	 * @return the axis line width
+	 */
+	@Property(order = 2)
+	public float getAxisLineWidth();
+
+	/**
+	 * Sets the axis line width is pt(1/72 inch). The default line width is 1.0 pt.
+	 * 
+	 * @param width
+	 *            the axis line width
+	 */
+	public void setAxisLineWidth(float width);
+
+	/**
 	 * Return if the grid line is displayed or not.
 	 * 
 	 * @return true if the grid line is displayed
 	 */
-	@Property(order = 2, displayName = "Grid Lines")
+	@Property(order = 3, displayName = "Grid Lines")
 	public boolean isGridLines();
 
 	/**
@@ -95,7 +111,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return true if the minor grid line is displayed
 	 */
-	@Property(order = 3, displayName = "Minor Grid Lines")
+	@Property(order = 4, displayName = "Minor Grid Lines")
 	public boolean isMinorGridLines();
 
 	/**
@@ -163,6 +179,22 @@ public interface Axis extends PComponent {
 	 *            the height of the ticks
 	 */
 	public void setMinorTickHeight(double height);
+
+	/**
+	 * Returns the axis line width is pt(1/72 inch)
+	 * 
+	 * @return the axis line width
+	 */
+	@Property(order = 9)
+	public float getTickLineWidth();
+
+	/**
+	 * Sets the axis line width is pt(1/72 inch). The default line width is 0.5 pt.
+	 * 
+	 * @param width
+	 *            the axis line width
+	 */
+	public void setTickLineWidth(float width);
 
 	/**
 	 * Returns if the tick labels is shown or not

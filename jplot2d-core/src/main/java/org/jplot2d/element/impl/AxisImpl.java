@@ -60,9 +60,9 @@ import org.jplot2d.util.DoubleDimension2D;
 public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	/**
-	 * the default width, 0.5 pt.
+	 * the default width, 1.0 pt.
 	 */
-	private static final float DEFAULT_AXISLINE_WIDTH = 0.5f;
+	private static final float DEFAULT_AXISLINE_WIDTH = 1.0f;
 
 	/* the gap between label and tick */
 	private static final double LABEL_GAP_RATIO = 1.0 / 4;
@@ -82,6 +82,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private AxisPosition position = AxisPosition.NEGATIVE_SIDE;
 
+	private float axisLineWidth = DEFAULT_AXISLINE_WIDTH;
+
 	private boolean showGridLines, showMinorGridLines;
 
 	private boolean tickVisible = true;
@@ -91,6 +93,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	private double tickHeight = 8.0;
 
 	private double minorHeight = 4.0;
+
+	private float tickLineWidth = DEFAULT_AXISLINE_WIDTH / 2;
 
 	private boolean labelVisible = true;
 
@@ -295,6 +299,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		invalidatePlot();
 	}
 
+	public float getAxisLineWidth() {
+		return axisLineWidth;
+	}
+
+	public void setAxisLineWidth(float width) {
+		this.axisLineWidth = width;
+		redraw();
+	}
+
 	public boolean isGridLines() {
 		return showGridLines;
 	}
@@ -349,6 +362,15 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setMinorTickHeight(double height) {
 		this.minorHeight = height;
+	}
+
+	public float getTickLineWidth() {
+		return tickLineWidth;
+	}
+
+	public void setTickLineWidth(float width) {
+		this.tickLineWidth = width;
+		redraw();
 	}
 
 	public boolean isLabelVisible() {
@@ -612,12 +634,14 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.orientation = axis.orientation;
 		this.length = axis.length;
 		this.position = axis.position;
+		this.axisLineWidth = axis.axisLineWidth;
 		this.showGridLines = axis.showGridLines;
 		this.showMinorGridLines = axis.showMinorGridLines;
 		this.tickVisible = axis.tickVisible;
 		this.tickSide = axis.tickSide;
 		this.tickHeight = axis.tickHeight;
 		this.minorHeight = axis.minorHeight;
+		this.tickLineWidth = axis.tickLineWidth;
 		this.labelVisible = axis.labelVisible;
 		this.labelOrientation = axis.labelOrientation;
 		this.labelSide = axis.labelSide;
@@ -643,9 +667,9 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		g.setColor(getEffectiveColor());
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g.setStroke(new BasicStroke(DEFAULT_AXISLINE_WIDTH, BasicStroke.CAP_BUTT,
-				BasicStroke.JOIN_MITER));
+		g.setStroke(new BasicStroke(axisLineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		drawAxisLine(g);
+		g.setStroke(new BasicStroke(tickLineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		drawTicks(g);
 
 		if (isLabelVisible()) {
