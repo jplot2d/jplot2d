@@ -11,6 +11,7 @@
 		<dependencySet>
 			<includes>
 				<include>com.lowagie:itext</include>
+				<include>org.apache.xmlgraphics:xmlgraphics-commons</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>
