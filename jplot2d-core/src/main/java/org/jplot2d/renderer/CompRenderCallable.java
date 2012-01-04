@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -39,26 +39,30 @@ public class CompRenderCallable implements Callable<BufferedImage> {
 	 * @param imageFactory
 	 * @param bounds
 	 */
-	public CompRenderCallable(ComponentEx[] comps, ImageFactory imageFactory,
-			Rectangle bounds) {
+	public CompRenderCallable(ComponentEx[] comps, ImageFactory imageFactory, Rectangle bounds) {
 		this.comps = comps;
 		this.imageFactory = imageFactory;
 		this.bounds = bounds;
 	}
 
 	public BufferedImage call() throws Exception {
-		BufferedImage image = imageFactory.createTransparentImage(bounds.width,
-				bounds.height);
+		if (Thread.interrupted()) {
+			return null;
+		}
 
+		BufferedImage image = imageFactory.createTransparentImage(bounds.width, bounds.height);
 		Graphics2D g = image.createGraphics();
 		g.translate(-bounds.x, -bounds.y);
 
 		for (ComponentEx comp : comps) {
 			if (Thread.interrupted()) {
-				break;
+				g.dispose();
+				imageFactory.cacheTransparentImage(image);
+				return null;
 			}
 			comp.draw(g);
 		}
+
 		g.dispose();
 
 		return image;

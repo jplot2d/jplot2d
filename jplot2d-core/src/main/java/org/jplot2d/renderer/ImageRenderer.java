@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.jplot2d.element.impl.ComponentEx;
@@ -60,10 +62,17 @@ import org.jplot2d.element.impl.PlotEx;
  */
 public abstract class ImageRenderer extends Renderer {
 
+	private static final int cores = Runtime.getRuntime().availableProcessors();
+
+	static {
+		logger.info("Max Renderer Threads: " + cores);
+	}
+
 	/**
 	 * Component renderer execute service
 	 */
-	protected static Executor COMPONENT_RENDERING_POOL_EXECUTOR = Executors.newCachedThreadPool();
+	protected static Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1, cores,
+			0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 	protected static Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
 
@@ -158,14 +167,22 @@ public abstract class ImageRenderer extends Renderer {
 	}
 
 	protected final BufferedImage runSingleRender(Dimension size, ComponentEx[] sublist) {
+		if (Thread.interrupted()) {
+			return null;
+		}
+
 		BufferedImage result = imageFactory.createImage(size.width, size.height);
 		Graphics2D g = result.createGraphics();
+
 		for (ComponentEx subcomp : sublist) {
 			if (Thread.interrupted()) {
-				break;
+				g.dispose();
+				imageFactory.cacheImage(result);
+				return null;
 			}
 			subcomp.draw(g);
 		}
+
 		g.dispose();
 
 		return result;
@@ -237,6 +254,7 @@ public abstract class ImageRenderer extends Renderer {
 			try {
 				BufferedImage bi = f.get();
 				g.drawImage(bi, bounds.x, bounds.y, null);
+				imageFactory.cacheTransparentImage(bi);
 			} catch (InterruptedException e) {
 				// logger.log(Level.WARNING, "[R] Renderer interrupted, drop F." + fsn, e);
 			} catch (ExecutionException e) {
@@ -245,6 +263,7 @@ public abstract class ImageRenderer extends Renderer {
 		}
 
 		g.dispose();
+
 		return image;
 	}
 
