@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -33,8 +33,7 @@ import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * This renderer assemble all cacheable component in a individual thread
- * asynchronously.
+ * This renderer assemble all cacheable component in a individual thread asynchronously.
  * 
  * @author Jingjing Li
  * 
@@ -46,8 +45,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * Add ability to cancel component rendering futures.
 	 */
-	private interface CancelableRendererCallable extends
-			Callable<BufferedImage> {
+	private interface CancelableRendererCallable extends Callable<BufferedImage> {
 
 		/**
 		 * Cancel its component rendering tasks.
@@ -59,8 +57,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * This callable render whole plot in a single thread
 	 */
-	private final class SingleRendererCallable implements
-			CancelableRendererCallable {
+	private final class SingleRendererCallable implements CancelableRendererCallable {
 
 		private final Dimension size;
 
@@ -84,8 +81,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * This callable assemble component rendering futures.
 	 */
-	private final class RenderAssemblyCallable implements
-			CancelableRendererCallable {
+	private final class RenderAssemblyCallable implements CancelableRendererCallable {
 
 		private final Dimension size;
 
@@ -111,15 +107,13 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * A FutureTask to run CancelableRendererCallable.
 	 */
-	private final class AsyncImageRendererTask extends
-			FutureTask<BufferedImage> {
+	private final class AsyncImageRendererTask extends FutureTask<BufferedImage> {
 
 		protected final long fsn;
 
 		private final CancelableRendererCallable callable;
 
-		public AsyncImageRendererTask(long fsn,
-				CancelableRendererCallable callable) {
+		public AsyncImageRendererTask(long fsn, CancelableRendererCallable callable) {
 			super(callable);
 			this.fsn = fsn;
 			this.callable = callable;
@@ -139,8 +133,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 			try {
 				result = get();
 			} catch (InterruptedException e) {
-				// should not happen. Normal cancellation will set the internal
-				// state to CANCELLED
+				// should not happen. Normal cancellation will set the internal state to CANCELLED
 			} catch (ExecutionException e) {
 				logger.log(Level.WARNING, "[R] Renderer exception, drop F." + fsn, e);
 			}
@@ -153,37 +146,32 @@ public class AsyncImageRenderer extends ImageRenderer {
 			}
 
 			/*
-			 * remove this renderer and all old renderers from the queue, and
-			 * cancel all old renderers. The canceling only occur in
-			 * CANCEL_AFTER_NEWER_DONE mode. In CANCEL_BEFORE_EXEC_NEWER mode,
-			 * old renderers are canceled and removed from the queue when new
-			 * renderer is added.
+			 * remove this renderer and all old renderers from the queue, and cancel all old
+			 * renderers. The canceling only occur in CANCEL_AFTER_NEWER_DONE mode. In
+			 * CANCEL_BEFORE_EXEC_NEWER mode, old renderers are canceled and removed from the queue
+			 * when new renderer is added.
 			 */
 			if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
 				synchronized (renderLock) {
 					/*
-					 * the renderers in the queue are on fsn order. We can't
-					 * guarantee the current renderer exist in the queue. A
-					 * renderer may be done, before this method is called, a new
-					 * renderer may be created and added to the queue, and sweep
-					 * all old renderer(SURPASS mode), include this. The
-					 * renderer queue is not empty on this point, because
-					 * removal are guarded by renderLock.
+					 * the renderers in the queue are on fsn order. We can't guarantee the current
+					 * renderer exist in the queue. A renderer may be done, before this method is
+					 * called, a new renderer may be created and added to the queue, and sweep all
+					 * old renderer(SURPASS mode), include this. The renderer queue is not empty on
+					 * this point, because removal are guarded by renderLock.
 					 */
 					if (renderTaskQueue.peek().getFsn() > fsn) {
 						return;
 					}
 					for (;;) {
-						AsyncImageRendererTask renderer = renderTaskQueue
-								.poll();
+						AsyncImageRendererTask renderer = renderTaskQueue.poll();
 						if (renderer.getFsn() == fsn) {
 							break;
 						}
 						/* cancel old renderer */
 						if (renderer.getFsn() < fsn && renderer.cancel(true)) {
 							logger.info("[R] Renderer " + fsn
-									+ " finished. Cancel the old renderer "
-									+ renderer.getFsn());
+									+ " finished. Cancel the old renderer " + renderer.getFsn());
 						}
 					}
 				}
@@ -209,8 +197,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 	}
 
 	@Override
-	public final void render(PlotEx plot,
-			Map<ComponentEx, ComponentEx> cacheableCompMap,
+	public final void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
@@ -235,17 +222,14 @@ public class AsyncImageRenderer extends ImageRenderer {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger.info("[R] Render task "
-								+ fsn
-								+ " to be exec. Cancel the running render task "
-								+ rtask.getFsn());
+						logger.info("[R] Render task " + fsn
+								+ " to be exec. Cancel the running render task " + rtask.getFsn());
 					}
 				}
 			}
 
 			// add new task
-			AsyncImageRendererTask task = new AsyncImageRendererTask(fsn++,
-					callable);
+			AsyncImageRendererTask task = new AsyncImageRendererTask(fsn++, callable);
 			renderTaskQueue.offer(task);
 			executor.execute(task);
 		}
@@ -257,8 +241,8 @@ public class AsyncImageRenderer extends ImageRenderer {
 	}
 
 	/**
-	 * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS
-	 * mode, there is only 1 renderer in the queue is scheduled
+	 * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS mode, there is only 1
+	 * renderer in the queue is scheduled
 	 */
 	public void setRendererCancelPolicy(RendererCancelPolicy policy) {
 		cancelPolicy = policy;
