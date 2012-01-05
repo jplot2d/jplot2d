@@ -64,10 +64,13 @@ public class FastUpdate {
 				.createXYGraphPlotter(ap1, "lineB");
 		plotter0.setLineVisible(false);
 		plotter0.setSymbolVisible(true);
-		plotter0.setSymbolShape(SymbolShape.CIRCLE);
+		plotter0.setSymbolShape(SymbolShape.SQUARE);
 		plotter1.setLineVisible(false);
 		plotter1.setSymbolVisible(true);
-		plotter1.setSymbolShape(SymbolShape.CIRCLE);
+		plotter1.setSymbolShape(SymbolShape.SQUARE);
+		
+//		plotter0.setCacheable(true);
+//		plotter1.setCacheable(true);
 
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 		layer0.addGraphPlotter(plotter0);
