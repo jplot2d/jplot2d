@@ -37,8 +37,6 @@ import org.jplot2d.element.impl.PlotEx;
  * 
  * @author Jingjing Li
  * 
- * @param <T>
- *            the render result class type
  */
 public class AsyncImageRenderer extends ImageRenderer {
 
@@ -97,7 +95,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 		}
 
 		public void cancel() {
-			for (ComponentEx comp : ainfo.componentSet()) {
+			for (Object comp : ainfo.componentSet()) {
 				ainfo.getFuture(comp).cancel(true);
 			}
 		}
@@ -208,6 +206,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 			// If the plot has no cacheable component, run renderer directly
 			callable = new SingleRendererCallable(size, subcompsMap.get(plot));
 		} else {
+			// run cacheable component renderer
 			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap,
 					unmodifiedCacheableComps, subcompsMap);
 			callable = new RenderAssemblyCallable(size, ainfo);
