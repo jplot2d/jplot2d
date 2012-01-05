@@ -20,10 +20,7 @@ package org.jplot2d.renderer;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A factory to create buffered images.
@@ -31,8 +28,6 @@ import java.util.List;
  * @author Jingjing Li
  */
 public class BufferedImageFactory implements ImageFactory {
-
-	private static final ThreadLocal<List<BufferedImage>> tlTransparentImage = new ThreadLocal<List<BufferedImage>>();
 
 	private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
 
@@ -61,33 +56,7 @@ public class BufferedImageFactory implements ImageFactory {
 	 * @return a BufferedImage
 	 */
 	public BufferedImage createTransparentImage(int width, int height) {
-		List<BufferedImage> images = tlTransparentImage.get();
-		int idx = -1;
-		if (images != null) {
-			for (int i = 0; i < images.size(); i++) {
-				BufferedImage image = images.get(i);
-				if (image.getWidth() == width && image.getHeight() == height) {
-					idx = i;
-					break;
-				}
-			}
-		}
-		BufferedImage image = null;
-		if (idx != -1) {
-			image = images.remove(idx);
-		} else {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		}
-		return image;
-	}
-
-	public void cacheTransparentImage(BufferedImage image) {
-		List<BufferedImage> images = tlTransparentImage.get();
-		if (images == null) {
-			images = new ArrayList<BufferedImage>();
-			tlTransparentImage.set(images);
-		}
-		images.add(image);
+		return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	/**
@@ -103,12 +72,10 @@ public class BufferedImageFactory implements ImageFactory {
 			tlImage.remove();
 		}
 
-		if (image.getTransparency() == Transparency.OPAQUE) {
-			Graphics2D g = (Graphics2D) image.getGraphics();
-			g.setBackground(bgColor);
-			g.clearRect(0, 0, width, height);
-			g.dispose();
-		}
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setBackground(bgColor);
+		g.clearRect(0, 0, width, height);
+		g.dispose();
 
 		return image;
 	}

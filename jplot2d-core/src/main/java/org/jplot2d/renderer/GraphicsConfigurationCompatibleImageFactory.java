@@ -23,8 +23,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A factory to create GraphicsConfiguration compatible images.
@@ -33,8 +31,6 @@ import java.util.List;
  * 
  */
 public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory {
-
-	private static final ThreadLocal<List<BufferedImage>> tlTransparentImage = new ThreadLocal<List<BufferedImage>>();
 
 	private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
 
@@ -58,33 +54,7 @@ public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory
 	}
 
 	public BufferedImage createTransparentImage(int width, int height) {
-		List<BufferedImage> images = tlTransparentImage.get();
-		int idx = -1;
-		if (images != null) {
-			for (int i = 0; i < images.size(); i++) {
-				BufferedImage image = images.get(i);
-				if (image.getWidth() == width && image.getHeight() == height) {
-					idx = i;
-					break;
-				}
-			}
-		}
-		BufferedImage image = null;
-		if (idx != -1) {
-			image = images.remove(idx);
-		} else {
-			image = gconf.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-		}
-		return image;
-	}
-
-	public void cacheTransparentImage(BufferedImage image) {
-		List<BufferedImage> images = tlTransparentImage.get();
-		if (images == null) {
-			images = new ArrayList<BufferedImage>();
-			tlTransparentImage.set(images);
-		}
-		images.add(image);
+		return gconf.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
 	}
 
 	public BufferedImage createImage(int width, int height) {
@@ -95,12 +65,10 @@ public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory
 			tlImage.remove();
 		}
 
-		if (image.getTransparency() == Transparency.OPAQUE) {
-			Graphics2D g = (Graphics2D) image.getGraphics();
-			g.setBackground(bgColor);
-			g.clearRect(0, 0, width, height);
-			g.dispose();
-		}
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setBackground(bgColor);
+		g.clearRect(0, 0, width, height);
+		g.dispose();
 
 		return image;
 	}

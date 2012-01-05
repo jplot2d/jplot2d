@@ -57,7 +57,6 @@ public class CompRenderCallable implements Callable<BufferedImage> {
 		for (ComponentEx comp : comps) {
 			if (Thread.interrupted()) {
 				g.dispose();
-				imageFactory.cacheTransparentImage(image);
 				return null;
 			}
 			comp.draw(g);

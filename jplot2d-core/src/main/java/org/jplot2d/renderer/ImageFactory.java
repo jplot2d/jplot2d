@@ -33,13 +33,6 @@ public interface ImageFactory {
 	public BufferedImage createTransparentImage(int width, int height);
 
 	/**
-	 * Put the given buffered image into local cache for next usage.
-	 * 
-	 * @param image
-	 */
-	public void cacheTransparentImage(BufferedImage image);
-
-	/**
 	 * Create a buffered image. The image is the final image to draw everything.
 	 * 
 	 * @return a BufferedImage

@@ -86,7 +86,7 @@ public abstract class ImageRenderer extends Renderer {
 	 * The Executor to run component rendering tasks.
 	 */
 	protected final Executor executor;
-
+	
 	protected final ImageFactory imageFactory;
 
 	/**
@@ -210,6 +210,7 @@ public abstract class ImageRenderer extends Renderer {
 		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
 			ComponentEx comp = me.getKey();
 			ComponentEx ccopy = me.getValue();
+			
 
 			/*
 			 * the component may be set to cacheable, while stay unmodified
@@ -254,7 +255,6 @@ public abstract class ImageRenderer extends Renderer {
 			try {
 				BufferedImage bi = f.get();
 				g.drawImage(bi, bounds.x, bounds.y, null);
-				imageFactory.cacheTransparentImage(bi);
 			} catch (InterruptedException e) {
 				// logger.log(Level.WARNING, "[R] Renderer interrupted, drop F." + fsn, e);
 			} catch (ExecutionException e) {
