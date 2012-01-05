@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,11 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.jplot2d.element.impl.ComponentEx;
-
 /**
- * This class maintains a map to associate a component to its bounds and
- * rendered result.
+ * This class maintains a map to associate components to their bounds and future rendered images.
  * 
  * @author Jingjing Li
  * 
@@ -47,7 +44,7 @@ public class ImageAssemblyInfo {
 		}
 	}
 
-	private final Map<ComponentEx, InfoItem> map = new LinkedHashMap<ComponentEx, InfoItem>();
+	private final Map<Object, InfoItem> map = new LinkedHashMap<Object, InfoItem>();
 
 	public ImageAssemblyInfo() {
 
@@ -59,7 +56,7 @@ public class ImageAssemblyInfo {
 	 * @param comp
 	 * @return
 	 */
-	public boolean contains(ComponentEx comp) {
+	public boolean contains(Object comp) {
 		return map.containsKey(comp);
 	}
 
@@ -68,15 +65,15 @@ public class ImageAssemblyInfo {
 	 * 
 	 * @return
 	 */
-	public Set<ComponentEx> componentSet() {
+	public Set<Object> componentSet() {
 		return map.keySet();
 	}
 
-	public Rectangle getBounds(ComponentEx comp) {
+	public Rectangle getBounds(Object comp) {
 		return map.get(comp).bounds;
 	}
 
-	public Future<BufferedImage> getFuture(ComponentEx comp) {
+	public Future<BufferedImage> getFuture(Object comp) {
 		return map.get(comp).future;
 	}
 
@@ -87,8 +84,7 @@ public class ImageAssemblyInfo {
 	 * @param bounds
 	 * @param future
 	 */
-	public void put(ComponentEx comp, Rectangle bounds,
-			Future<BufferedImage> future) {
+	public void put(Object comp, Rectangle bounds, Future<BufferedImage> future) {
 		map.put(comp, new InfoItem(bounds, future));
 	}
 

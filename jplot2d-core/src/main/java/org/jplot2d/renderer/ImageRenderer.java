@@ -190,7 +190,7 @@ public abstract class ImageRenderer extends Renderer {
 
 	/**
 	 * Execute component renderer on every modified cacheable component. This method must be called
-	 * from render.
+	 * from a render.
 	 * 
 	 * @param cacheableCompMap
 	 *            cacheable component map in Z-order, the key is component, the value is components'
@@ -248,7 +248,7 @@ public abstract class ImageRenderer extends Renderer {
 
 		Graphics2D g = (Graphics2D) image.getGraphics();
 
-		for (ComponentEx c : ainfo.componentSet()) {
+		for (Object c : ainfo.componentSet()) {
 			Rectangle bounds = ainfo.getBounds(c);
 			Future<BufferedImage> f = ainfo.getFuture(c);
 			try {
