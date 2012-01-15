@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -31,7 +31,7 @@ import javax.swing.plaf.LabelUI;
 import org.jplot2d.swing.proptable.cellrenderer.ColorCellRenderer;
 
 /**
- * ColorPropertyEditor. <br>
+ * ColorPropertyEditor.
  * 
  */
 public class ColorPropertyEditor extends AbstractPropertyEditor<JPanel> {
@@ -84,8 +84,9 @@ public class ColorPropertyEditor extends AbstractPropertyEditor<JPanel> {
 		Color selectedColor = ColorChooser.showDialog(editor, title, color);
 
 		if (selectedColor != null) {
-			label.setValue(selectedColor);
-			color = selectedColor;
+            Color oldColor = color;
+            setValue(selectedColor);
+            firePropertyChange(oldColor, color);
 		}
 	}
 
