@@ -30,7 +30,7 @@ import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.Layer;
-import org.jplot2d.element.Marker;
+import org.jplot2d.element.Annotation;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 
@@ -114,7 +114,7 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			int gpNum = layer.getGraphPlotters().length;
-			int markerNum = layer.getMarkers().length;
+			int markerNum = layer.getAnnotations().length;
 			if (index == 0) {
 				return layer.getXAxisTransform();
 			}
@@ -127,7 +127,7 @@ public class PlotTreeModel implements TreeModel {
 			}
 			start += gpNum;
 			if (start <= index && index < start + markerNum) {
-				return layer.getMarker(index - start);
+				return layer.getAnnotation(index - start);
 			}
 		} else if (parent instanceof GraphPlotter) {
 			GraphPlotter gp = (GraphPlotter) parent;
@@ -161,7 +161,7 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			int gpNum = layer.getGraphPlotters().length;
-			int markerNum = layer.getMarkers().length;
+			int markerNum = layer.getAnnotations().length;
 			return 2 + gpNum + markerNum;
 		} else if (parent instanceof GraphPlotter) {
 			// legend item
@@ -242,7 +242,7 @@ public class PlotTreeModel implements TreeModel {
 			// x range manager + y range manager + graph plotters
 			Layer layer = (Layer) parent;
 			GraphPlotter[] plotters = layer.getGraphPlotters();
-			Marker[] markers = layer.getMarkers();
+			Annotation[] markers = layer.getAnnotations();
 			if (child == layer.getXAxisTransform()) {
 				return 0;
 			}
