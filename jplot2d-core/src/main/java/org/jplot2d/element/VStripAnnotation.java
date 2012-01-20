@@ -25,32 +25,32 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.util.Range;
 
 /**
- * A horizontal strip marker to highlight a range.
+ * A vertical strip annotation to highlight a range.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Horizontal Strip Marker")
-public interface HStripMarker extends Marker {
+@PropertyGroup("Vertical Strip Annotation")
+public interface VStripAnnotation extends Annotation {
 
 	/**
-	 * Returns the value range of this marker
+	 * Returns the value range of this annotation
 	 * 
-	 * @return the value range of this marker
+	 * @return the value range of this annotation
 	 */
 	@Property(order = 0)
 	public Range getValueRange();
 
 	/**
-	 * Sets the value range of this marker
+	 * Sets the value range of this annotation
 	 * 
 	 * @param range
-	 *            the value range of this marker
+	 *            the value range of this annotation
 	 */
 	public void setValueRange(Range range);
 
 	/**
-	 * Returns the <code>Paint</code> to be used to fill the marker strip.
+	 * Returns the <code>Paint</code> to be used to fill the annotation strip.
 	 * 
 	 * @return the <code>Paint</code>
 	 */
@@ -58,11 +58,11 @@ public interface HStripMarker extends Marker {
 	public Paint getFillPaint();
 
 	/**
-	 * Sets the <code>Paint</code> to be used to fill the marker strip. The default paint is
+	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is
 	 * semi-transparent grey.
 	 * 
 	 * @param stroke
-	 *            the <code>Paint</code> to be used to fill the marker strip
+	 *            the <code>Paint</code> to be used to fill the annotation strip
 	 */
 	public void setFillPaint(Paint stroke);
 

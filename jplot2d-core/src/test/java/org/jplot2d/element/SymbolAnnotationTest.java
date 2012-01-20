@@ -30,19 +30,23 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class HLineMarkerTest {
+public class SymbolAnnotationTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(HLineMarker.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Marker",
-				"Horizontal Line Marker");
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(SymbolAnnotation.class);
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
+				"Point Annotation", "Text", "Symbol Annotation");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Marker"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Horizontal Line Marker"),
-				"value", "stroke");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint",
+				"angle");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign",
+				"VAlign");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape",
+				"symbolSize");
 	}
 
 }

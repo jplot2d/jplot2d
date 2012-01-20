@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jplot2d.element;
+package org.jplot2d.element.impl;
+
+import org.jplot2d.element.SymbolAnnotation;
 
 /**
- * A marker with an image and a text string.
- * 
  * @author Jingjing Li
  * 
  */
-public interface ImageMarker {
+public interface SymbolAnnotationEx extends PointAnnotationEx, SymbolAnnotation {
 
 }

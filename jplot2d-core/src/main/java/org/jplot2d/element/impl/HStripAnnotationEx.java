@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.SymbolMarker;
+import org.jplot2d.element.HStripAnnotation;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface SymbolMarkerEx extends PointMarkerEx, SymbolMarker {
+public interface HStripAnnotationEx extends AnnotationEx, HStripAnnotation {
 
 }

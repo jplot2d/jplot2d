@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,12 +18,21 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.HStripMarker;
+import org.jplot2d.element.Annotation;
 
 /**
+ * A annotation with a symbol and a text string.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface HStripMarkerEx extends MarkerEx, HStripMarker {
+public interface AnnotationEx extends Annotation, ComponentEx {
+
+	public LayerEx getParent();
+
+	/**
+	 * Update the paper location when layer's axis transform changed.
+	 */
+	public void relocate();
 
 }

@@ -18,49 +18,51 @@
  */
 package org.jplot2d.element;
 
+import java.awt.geom.Point2D;
+
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.util.SymbolShape;
 
 /**
- * A point marker with a symbol and a text string.
+ * A annotation which can highlight a point. The annotation can contains a text string.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Symbol Marker")
-public interface SymbolMarker extends PointMarker, TextComponent {
+@PropertyGroup("Point Annotation")
+public interface PointAnnotation extends Annotation {
 
 	/**
-	 * Returns the symbol shape of this marker
+	 * returns the x,y values location in layer's world coordinate system.
 	 * 
-	 * @return the symbol shape of this marker
-	 */
-	@Property(order = 0)
-	public SymbolShape getSymbolShape();
-
-	/**
-	 * Sets the symbol shape of this marker
-	 * 
-	 * @param symbol
-	 *            the symbol shape of this marker
-	 */
-	public void setSymbolShape(SymbolShape symbol);
-
-	/**
-	 * Returns the symbol size of this marker
-	 * 
-	 * @return the symbol size of this marker
+	 * @return the x,y values location
 	 */
 	@Property(order = 1)
-	public double getSymbolSize();
+	public Point2D getValuePoint();
 
 	/**
-	 * Sets the symbol shape of this marker
+	 * Sets the x,y values location in layer's world coordinate system
 	 * 
-	 * @param symbol
-	 *            the symbol size of this marker
+	 * @param point
+	 *            the x,y values location
 	 */
-	public void setSymbolSize(double size);
+	public void setValuePoint(Point2D point);
+
+	/**
+	 * Returns the rotation angle of this component.
+	 * 
+	 * @return the rotation angle value
+	 */
+	@Property(order = 2)
+	public double getAngle();
+
+	/**
+	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock
+	 * wise direction.
+	 * 
+	 * @param angle
+	 *            the rotation angle
+	 */
+	public void setAngle(double angle);
 
 }

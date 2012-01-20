@@ -34,7 +34,7 @@ import org.jplot2d.util.DoubleDimension2D;
  * @author Jingjing Li
  * 
  */
-public abstract class PointMarkerImpl extends MarkerImpl implements PointMarkerEx {
+public abstract class PointAnnotationImpl extends AnnotationImpl implements PointAnnotationEx {
 
 	private double locX, locY;
 
@@ -103,7 +103,7 @@ public abstract class PointMarkerImpl extends MarkerImpl implements PointMarkerE
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		PointMarkerImpl tc = (PointMarkerImpl) src;
+		PointAnnotationImpl tc = (PointAnnotationImpl) src;
 		this.locX = tc.locX;
 		this.locY = tc.locY;
 		this.valueX = tc.valueX;

@@ -30,18 +30,18 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class HStripMarkerTest {
+public class VStripAnnotationTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(HStripMarker.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Marker",
-				"Horizontal Strip Marker");
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(VStripAnnotation.class);
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
+				"Vertical Strip Annotation");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Marker"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Horizontal Strip Marker"),
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Vertical Strip Annotation"),
 				"valueRange", "fillPaint");
 	}
 

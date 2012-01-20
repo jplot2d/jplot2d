@@ -28,7 +28,7 @@ import java.util.Map;
 import org.jplot2d.element.GraphPlotter;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
-import org.jplot2d.element.Marker;
+import org.jplot2d.element.Annotation;
 import org.jplot2d.element.Plot;
 import org.jplot2d.transform.PaperTransform;
 
@@ -42,7 +42,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	private AxisTransformEx xarm, yarm;
 
-	private List<MarkerEx> markers = new ArrayList<MarkerEx>();
+	private List<AnnotationEx> annotations = new ArrayList<AnnotationEx>();
 
 	public String getId() {
 		if (getParent() != null) {
@@ -110,8 +110,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		for (GraphPlotterEx plotter : plotters) {
 			plotter.redraw();
 		}
-		for (MarkerEx marker : markers) {
-			marker.relocate();
+		for (AnnotationEx annotation : annotations) {
+			annotation.relocate();
 		}
 	}
 
@@ -191,17 +191,17 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return plotters.indexOf(plotter);
 	}
 
-	public MarkerEx[] getMarkers() {
-		return markers.toArray(new MarkerEx[markers.size()]);
+	public AnnotationEx[] getAnnotations() {
+		return annotations.toArray(new AnnotationEx[annotations.size()]);
 	}
 
-	public Marker getMarker(int idx) {
-		return markers.get(idx);
+	public Annotation getAnnotation(int idx) {
+		return annotations.get(idx);
 	}
 
-	public void addMarker(Marker marker) {
-		MarkerEx mex = (MarkerEx) marker;
-		markers.add(mex);
+	public void addAnnotation(Annotation annotation) {
+		AnnotationEx mex = (AnnotationEx) annotation;
+		annotations.add(mex);
 		mex.setParent(this);
 
 		if (mex.canContributeToParent()) {
@@ -211,8 +211,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public int indexOf(MarkerEx marker) {
-		return markers.indexOf(marker);
+	public int indexOf(AnnotationEx annotation) {
+		return annotations.indexOf(annotation);
 	}
 
 	public boolean canContributeToParent() {
@@ -283,11 +283,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			result.plotters.add(plotterCopy);
 		}
 
-		// copy markers
-		for (MarkerEx marker : this.markers) {
-			MarkerEx copy = (MarkerEx) marker.copyStructure(orig2copyMap);
+		// copy annotations
+		for (AnnotationEx annotation : this.annotations) {
+			AnnotationEx copy = (AnnotationEx) annotation.copyStructure(orig2copyMap);
 			copy.setParent(result);
-			result.markers.add(copy);
+			result.annotations.add(copy);
 		}
 
 		return result;

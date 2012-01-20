@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains an dataset and optionally some markers. Every layer has its own viewport to
- * show data line and markers.
+ * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport to
+ * show data line and annotations.
  * 
  * @author Jingjing Li
  * 
@@ -68,31 +68,31 @@ public interface Layer extends PComponent {
 	public void removeGraphPlotter(GraphPlotter plotter);
 
 	/**
-	 * Returns the marker.
+	 * Returns the annotation.
 	 * 
 	 * @param id
-	 *            the index of markers
-	 * @return the marker.
+	 *            the index of annotations
+	 * @return the annotation.
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public Marker getMarker(int idx);
+	public Annotation getAnnotation(int idx);
 
 	/**
-	 * Returns all the markers in this layer.
+	 * Returns all the annotations in this layer.
 	 * 
-	 * @return all markers in an array
+	 * @return all annotations in an array
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Marker[] getMarkers();
+	public Annotation[] getAnnotations();
 
 	/**
-	 * Add a new marker to this layer.
+	 * Add a new annotation to this layer.
 	 * 
-	 * @param marker
-	 *            the marker to be added
+	 * @param annotation
+	 *            the annotation to be added
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	public void addMarker(Marker marker);
+	public void addAnnotation(Annotation annotation);
 
 	/**
 	 * Returns the X axis to this layer attaching.

@@ -18,8 +18,9 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
@@ -30,29 +31,34 @@ import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
+public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnotationEx {
+
+	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
 	private double locX;
 
-	private double valueX;
+	private double paperThickness;
 
-	private BasicStroke stroke = DEFAULT_STROKE;
+	private Range range;
+
+	private Paint paint = DEFAULT_PAINT;
 
 	/**
-	 * A local variable to avoid re-create line when drawing
+	 * A local variable to avoid re-create strip when drawing
 	 */
-	private Line2D line = new Line2D.Double();
+	private Rectangle2D strip = new Rectangle2D.Double();
 
 	public String getId() {
 		if (getParent() != null) {
-			return "VLineMarker" + getParent().indexOf(this);
+			return "HStripMarker" + getParent().indexOf(this);
 		} else {
-			return "VLineMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "HStripMarker@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -63,7 +69,10 @@ public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
 	public void setLocation(double x, double y) {
 		if (locX != x) {
 			this.locX = x;
-			valueX = getXPtoW(locX);
+			double endX = locX + paperThickness;
+			double valueX = getXPtoW(locX);
+			double valueEnd = getXPtoW(endX);
+			range = new Range.Double(valueX, valueEnd);
 			if (isVisible()) {
 				redraw();
 			}
@@ -74,19 +83,20 @@ public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
 		if (getParent() == null && getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getHeight(), 0);
+		return new DoubleDimension2D(getParent().getSize().getHeight(), paperThickness);
+	}
+
+	public Rectangle2D getBounds() {
+		return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(),
+				paperThickness);
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		double lineWidth = 0;
-		if (stroke instanceof BasicStroke) {
-			lineWidth = ((BasicStroke) stroke).getLineWidth();
+		if (paperThickness < 2) {
+			return new Rectangle2D.Double(0, -1, getParent().getSize().getHeight(), 2);
+		} else {
+			return getBounds();
 		}
-		if (lineWidth < 2) {
-			lineWidth = 2;
-		}
-		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getHeight(),
-				lineWidth);
 	}
 
 	public PaperTransform getPaperTransform() {
@@ -100,59 +110,72 @@ public class VLineMarkerImpl extends MarkerImpl implements VLineMarkerEx {
 		return pxf.translate(locX, 0).rotate(Math.PI / 2);
 	}
 
-	public double getValue() {
-		return valueX;
+	public Range getValueRange() {
+		return range;
 	}
 
-	public void setValue(double value) {
-		this.valueX = value;
-		if (getParent() != null && getParent().getXAxisTransform() != null) {
+	public void setValueRange(Range value) {
+		this.range = value;
+		if (getParent() != null && getParent().getYAxisTransform() != null) {
 			relocate();
 		}
 	}
 
 	public void relocate() {
-		locX = getXWtoP(valueX);
+		locX = getXWtoP(range.getStart());
+		double endX = getXWtoP(range.getEnd());
+		paperThickness = endX - locX;
 		if (isVisible()) {
 			redraw();
 		}
 	}
 
-	public BasicStroke getStroke() {
-		return stroke;
+	public Paint getFillPaint() {
+		return paint;
 	}
 
-	public void setStroke(BasicStroke stroke) {
-		this.stroke = stroke;
+	public void setFillPaint(Paint paint) {
+		this.paint = paint;
 	}
 
 	public void draw(Graphics2D g) {
-		Stroke oldStroke = g.getStroke();
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
 
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
-		g.setColor(getEffectiveColor());
-		g.setStroke(stroke);
+		g.setPaint(paint);
 
-		line.setLine(locX, 0, locX, getParent().getSize().getHeight());
-		g.draw(line);
+		if (paperThickness == 0) {
+			Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
+			Stroke oldStroke = g.getStroke();
+			g.setStroke(ZERO_WIDTH_STROKE);
+			g.draw(line);
+			g.setStroke(oldStroke);
+		} else {
+			if (paperThickness > 0) {
+				strip.setRect(locX, 0, paperThickness, getParent().getSize().getHeight());
+			} else {
+				strip.setRect(locX + paperThickness, 0, -paperThickness, getParent().getSize()
+						.getHeight());
+			}
+			g.fill(strip);
+		}
 
 		g.setTransform(oldTransform);
 		g.setClip(oldClip);
-		g.setStroke(oldStroke);
 	}
 
 	@Override
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		VLineMarkerImpl lm = (VLineMarkerImpl) src;
+		VStripAnnotationImpl lm = (VStripAnnotationImpl) src;
 		this.locX = lm.locX;
-		this.valueX = lm.valueX;
-		this.stroke = lm.stroke;
-		this.line = (Line2D) lm.line.clone();
+		this.paperThickness = lm.paperThickness;
+		this.range = lm.range;
+		this.paint = lm.paint;
+		this.strip = (Rectangle2D) lm.strip.clone();
 	}
 
 }

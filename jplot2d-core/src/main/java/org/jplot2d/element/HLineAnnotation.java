@@ -18,52 +18,50 @@
  */
 package org.jplot2d.element;
 
-import java.awt.Paint;
+import java.awt.BasicStroke;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.util.Range;
 
 /**
- * A vertical strip marker to highlight a range.
+ * A horizontal line annotation to highlight a value.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Vertical Strip Marker")
-public interface VStripMarker extends Marker {
+@PropertyGroup("Horizontal Line Annotation")
+public interface HLineAnnotation extends Annotation {
 
 	/**
-	 * Returns the value range of this marker
+	 * Returns the value of this annotation
 	 * 
-	 * @return the value range of this marker
+	 * @return the value of this annotation
 	 */
 	@Property(order = 0)
-	public Range getValueRange();
+	public double getValue();
 
 	/**
-	 * Sets the value range of this marker
+	 * Sets the value of this annotation
 	 * 
-	 * @param range
-	 *            the value range of this marker
+	 * @param value
+	 *            the value of this annotation
 	 */
-	public void setValueRange(Range range);
+	public void setValue(double value);
 
 	/**
-	 * Returns the <code>Paint</code> to be used to fill the marker strip.
+	 * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
 	 * 
-	 * @return the <code>Paint</code>
+	 * @return the <code>BasicStroke</code>
 	 */
 	@Property(order = 0)
-	public Paint getFillPaint();
+	public BasicStroke getStroke();
 
 	/**
-	 * Sets the <code>Paint</code> to be used to fill the marker strip. The default paint is
-	 * semi-transparent grey.
+	 * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
 	 * 
 	 * @param stroke
-	 *            the <code>Paint</code> to be used to fill the marker strip
+	 *            the <code>BasicStroke</code> to be used to draw the annotation line
 	 */
-	public void setFillPaint(Paint stroke);
+	public void setStroke(BasicStroke stroke);
 
 }

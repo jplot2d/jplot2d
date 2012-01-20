@@ -24,13 +24,13 @@ import java.lang.reflect.Method;
 
 import org.jplot2d.element.Layer;
 
-public abstract class MarkerImpl extends ComponentImpl implements MarkerEx {
+public abstract class AnnotationImpl extends ComponentImpl implements AnnotationEx {
 
 	protected final static BasicStroke DEFAULT_STROKE = new BasicStroke();
 
 	protected final static BasicStroke ZERO_WIDTH_STROKE = new BasicStroke(0);
 
-	public MarkerImpl() {
+	public AnnotationImpl() {
 		setSelectable(true);
 		setMovable(true);
 	}

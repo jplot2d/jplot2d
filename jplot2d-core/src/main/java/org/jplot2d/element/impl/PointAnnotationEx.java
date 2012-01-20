@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.VStripMarker;
+import org.jplot2d.element.PointAnnotation;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface VStripMarkerEx extends MarkerEx, VStripMarker {
+public interface PointAnnotationEx extends PointAnnotation, AnnotationEx {
 
 }
