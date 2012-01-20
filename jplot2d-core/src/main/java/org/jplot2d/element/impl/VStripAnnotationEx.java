@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,21 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.Marker;
+import org.jplot2d.element.VStripAnnotation;
 
 /**
- * A marker with a symbol and a text string.
- * 
  * @author Jingjing Li
  * 
  */
-public interface MarkerEx extends Marker, ComponentEx {
-
-	public LayerEx getParent();
-
-	/**
-	 * Update the paper location when layer's axis transform changed.
-	 */
-	public void relocate();
+public interface VStripAnnotationEx extends AnnotationEx, VStripAnnotation {
 
 }

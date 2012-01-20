@@ -29,7 +29,7 @@ import org.jplot2d.util.SymbolShape;
  * @author Jingjing Li
  * 
  */
-public class SymbolMarkerImpl extends PointMarkerImpl implements SymbolMarkerEx {
+public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolAnnotationEx {
 
 	private double gap;
 
@@ -97,7 +97,7 @@ public class SymbolMarkerImpl extends PointMarkerImpl implements SymbolMarkerEx 
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		SymbolMarkerImpl tc = (SymbolMarkerImpl) src;
+		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
 	}
 
 }

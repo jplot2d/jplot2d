@@ -18,12 +18,12 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.HLineMarker;
+import org.jplot2d.element.VLineAnnotation;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface HLineMarkerEx extends MarkerEx, HLineMarker {
+public interface VLineAnnotationEx extends AnnotationEx, VLineAnnotation {
 
 }

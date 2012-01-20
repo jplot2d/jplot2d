@@ -24,32 +24,32 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * A horizontal line marker to highlight a value.
+ * A vertical line annotation to highlight a value.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Horizontal Line Marker")
-public interface HLineMarker extends Marker {
+@PropertyGroup("Vertical Line Annotation")
+public interface VLineAnnotation extends Annotation {
 
 	/**
-	 * Returns the value of this marker
+	 * Returns the value of this annotation
 	 * 
-	 * @return the value of this marker
+	 * @return the value of this annotation
 	 */
 	@Property(order = 0)
 	public double getValue();
 
 	/**
-	 * Sets the value of this marker
+	 * Sets the value of this annotation
 	 * 
 	 * @param value
-	 *            the value of this marker
+	 *            the value of this annotation
 	 */
 	public void setValue(double value);
 
 	/**
-	 * Returns the <code>BasicStroke</code> to be used to draw the marker line.
+	 * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
 	 * 
 	 * @return the <code>BasicStroke</code>
 	 */
@@ -57,10 +57,10 @@ public interface HLineMarker extends Marker {
 	public BasicStroke getStroke();
 
 	/**
-	 * Sets the <code>BasicStroke</code> to be used to draw the marker line.
+	 * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
 	 * 
 	 * @param stroke
-	 *            the <code>BasicStroke</code> to be used to draw the marker line
+	 *            the <code>BasicStroke</code> to be used to draw the annotation line
 	 */
 	public void setStroke(BasicStroke stroke);
 

@@ -18,50 +18,49 @@
  */
 package org.jplot2d.element;
 
-import java.awt.BasicStroke;
-
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.util.SymbolShape;
 
 /**
- * A vertical line marker to highlight a value.
+ * A point annotation with a symbol and a text string.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Vertical Line Marker")
-public interface VLineMarker extends Marker {
+@PropertyGroup("Symbol Annotation")
+public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 
 	/**
-	 * Returns the value of this marker
+	 * Returns the symbol shape of this annotation
 	 * 
-	 * @return the value of this marker
+	 * @return the symbol shape of this annotation
 	 */
 	@Property(order = 0)
-	public double getValue();
+	public SymbolShape getSymbolShape();
 
 	/**
-	 * Sets the value of this marker
+	 * Sets the symbol shape of this annotation
 	 * 
-	 * @param value
-	 *            the value of this marker
+	 * @param symbol
+	 *            the symbol shape of this annotation
 	 */
-	public void setValue(double value);
+	public void setSymbolShape(SymbolShape symbol);
 
 	/**
-	 * Returns the <code>BasicStroke</code> to be used to draw the marker line.
+	 * Returns the symbol size of this annotation
 	 * 
-	 * @return the <code>BasicStroke</code>
+	 * @return the symbol size of this annotation
 	 */
-	@Property(order = 0)
-	public BasicStroke getStroke();
+	@Property(order = 1)
+	public double getSymbolSize();
 
 	/**
-	 * Sets the <code>BasicStroke</code> to be used to draw the marker line.
+	 * Sets the symbol shape of this annotation
 	 * 
-	 * @param stroke
-	 *            the <code>BasicStroke</code> to be used to draw the marker line
+	 * @param symbol
+	 *            the symbol size of this annotation
 	 */
-	public void setStroke(BasicStroke stroke);
+	public void setSymbolSize(double size);
 
 }

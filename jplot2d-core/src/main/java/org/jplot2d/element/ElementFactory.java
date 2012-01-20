@@ -31,18 +31,18 @@ import org.jplot2d.element.impl.AxisTransformEx;
 import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
-import org.jplot2d.element.impl.HLineMarkerImpl;
-import org.jplot2d.element.impl.HStripMarkerImpl;
+import org.jplot2d.element.impl.HLineAnnotationImpl;
+import org.jplot2d.element.impl.HStripAnnotationImpl;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
-import org.jplot2d.element.impl.SymbolMarkerImpl;
+import org.jplot2d.element.impl.SymbolAnnotationImpl;
 import org.jplot2d.element.impl.TitleImpl;
-import org.jplot2d.element.impl.VLineMarkerImpl;
-import org.jplot2d.element.impl.VStripMarkerImpl;
+import org.jplot2d.element.impl.VLineAnnotationImpl;
+import org.jplot2d.element.impl.VStripAnnotationImpl;
 import org.jplot2d.element.impl.XYGraphPlotterImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
@@ -435,84 +435,84 @@ public class ElementFactory {
 		return gpProxy;
 	}
 
-	public SymbolMarker createSymbolMarker(double x, double y) {
-		SymbolMarkerImpl marker = new SymbolMarkerImpl();
-		marker.setValuePoint(x, y);
-		applyProfile(marker);
-		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+	public SymbolAnnotation createSymbolMarker(double x, double y) {
+		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		applyProfile(annotation);
+		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public SymbolMarker createSymbolMarker(double x, double y, String text) {
-		SymbolMarkerImpl marker = new SymbolMarkerImpl();
-		marker.setValuePoint(x, y);
-		marker.setText(text);
-		applyProfile(marker);
-		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+	public SymbolAnnotation createSymbolMarker(double x, double y, String text) {
+		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		annotation.setText(text);
+		applyProfile(annotation);
+		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public SymbolMarker createSymbolMarker(double x, double y, double angle, String text) {
-		SymbolMarkerImpl marker = new SymbolMarkerImpl();
-		marker.setValuePoint(x, y);
-		marker.setAngle(angle);
-		marker.setText(text);
-		applyProfile(marker);
-		SymbolMarker markerProxy = proxy(marker, SymbolMarker.class);
+	public SymbolAnnotation createSymbolMarker(double x, double y, double angle, String text) {
+		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		annotation.setAngle(angle);
+		annotation.setText(text);
+		applyProfile(annotation);
+		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public HLineMarker createHLineMarker(double y) {
-		HLineMarkerImpl marker = new HLineMarkerImpl();
-		marker.setValue(y);
-		applyProfile(marker);
-		HLineMarker markerProxy = proxy(marker, HLineMarker.class);
+	public HLineAnnotation createHLineMarker(double y) {
+		HLineAnnotationImpl annotation = new HLineAnnotationImpl();
+		annotation.setValue(y);
+		applyProfile(annotation);
+		HLineAnnotation annotationProxy = proxy(annotation, HLineAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public VLineMarker createVLineMarker(double y) {
-		VLineMarkerImpl marker = new VLineMarkerImpl();
-		marker.setValue(y);
-		applyProfile(marker);
-		VLineMarker markerProxy = proxy(marker, VLineMarker.class);
+	public VLineAnnotation createVLineMarker(double y) {
+		VLineAnnotationImpl annotation = new VLineAnnotationImpl();
+		annotation.setValue(y);
+		applyProfile(annotation);
+		VLineAnnotation annotationProxy = proxy(annotation, VLineAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public HStripMarker createHStripMarker(double start, double end) {
-		HStripMarkerImpl marker = new HStripMarkerImpl();
-		marker.setValueRange(new Range.Double(start, end));
-		applyProfile(marker);
-		HStripMarker markerProxy = proxy(marker, HStripMarker.class);
+	public HStripAnnotation createHStripMarker(double start, double end) {
+		HStripAnnotationImpl annotation = new HStripAnnotationImpl();
+		annotation.setValueRange(new Range.Double(start, end));
+		applyProfile(annotation);
+		HStripAnnotation annotationProxy = proxy(annotation, HStripAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
-	public VStripMarker createVStripMarker(double start, double end) {
-		VStripMarkerImpl marker = new VStripMarkerImpl();
-		marker.setValueRange(new Range.Double(start, end));
-		applyProfile(marker);
-		VStripMarker markerProxy = proxy(marker, VStripMarker.class);
+	public VStripAnnotation createVStripMarker(double start, double end) {
+		VStripAnnotationImpl annotation = new VStripAnnotationImpl();
+		annotation.setValueRange(new Range.Double(start, end));
+		applyProfile(annotation);
+		VStripAnnotation annotationProxy = proxy(annotation, VStripAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(marker, markerProxy);
-		return markerProxy;
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
 	}
 
 	public BasicStroke createStroke(float width, float[] dash) {

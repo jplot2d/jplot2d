@@ -18,51 +18,52 @@
  */
 package org.jplot2d.element;
 
-import java.awt.geom.Point2D;
+import java.awt.Paint;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+import org.jplot2d.util.Range;
 
 /**
- * A marker which can highlight a point. The marker can contains a text string.
+ * A horizontal strip annotation to highlight a range.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Point Marker")
-public interface PointMarker extends Marker {
+@PropertyGroup("Horizontal Strip Annotation")
+public interface HStripAnnotation extends Annotation {
 
 	/**
-	 * returns the x,y values location in layer's world coordinate system.
+	 * Returns the value range of this annotation
 	 * 
-	 * @return the x,y values location
+	 * @return the value range of this annotation
 	 */
-	@Property(order = 1)
-	public Point2D getValuePoint();
+	@Property(order = 0)
+	public Range getValueRange();
 
 	/**
-	 * Sets the x,y values location in layer's world coordinate system
+	 * Sets the value range of this annotation
 	 * 
-	 * @param point
-	 *            the x,y values location
+	 * @param range
+	 *            the value range of this annotation
 	 */
-	public void setValuePoint(Point2D point);
+	public void setValueRange(Range range);
 
 	/**
-	 * Returns the rotation angle of this component.
+	 * Returns the <code>Paint</code> to be used to fill the annotation strip.
 	 * 
-	 * @return the rotation angle value
+	 * @return the <code>Paint</code>
 	 */
-	@Property(order = 2)
-	public double getAngle();
+	@Property(order = 0)
+	public Paint getFillPaint();
 
 	/**
-	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock
-	 * wise direction.
+	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is
+	 * semi-transparent grey.
 	 * 
-	 * @param angle
-	 *            the rotation angle
+	 * @param stroke
+	 *            the <code>Paint</code> to be used to fill the annotation strip
 	 */
-	public void setAngle(double angle);
+	public void setFillPaint(Paint stroke);
 
 }

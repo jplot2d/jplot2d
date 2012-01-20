@@ -32,9 +32,9 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public int indexOf(GraphPlotterEx plotter);
 
-	public MarkerEx[] getMarkers();
+	public AnnotationEx[] getAnnotations();
 
-	public int indexOf(MarkerEx marker);
+	public int indexOf(AnnotationEx annotation);
 
 	/**
 	 * Called by {@link PlotEx} to notify the paper transform is changed.
