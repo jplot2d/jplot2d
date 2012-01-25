@@ -21,26 +21,30 @@ package org.jplot2d.transform;
 /**
  * Performs a linear transformation. The equation is <code>dest value = src value * k + a</code>
  */
-public class LinearTransform implements Transform1D{
+public class LinearTransform implements Transform1D {
 
 	private double k;
 
 	private double a;
 
-	public LinearTransform(double s1, double s2, double d1, double d2) {
+	/**
+	 * @param offset
+	 *            the offset in LinearNormalTransform
+	 * @param scale
+	 *            the scale in LinearNormalTransform
+	 * @param d1
+	 *            the start value in destination
+	 * @param d2
+	 *            the end value in destination
+	 */
+	public LinearTransform(double offset, double scale, double d1, double d2) {
 
-		if (Double.isNaN(d1) || Double.isNaN(d2) || Double.isNaN(s1) || Double.isNaN(s2)) {
+		if (Double.isNaN(d1) || Double.isNaN(d2)) {
 			throw new IllegalArgumentException("Transform is invalid");
 		}
 
-		double denom;
-		denom = s1 - s2;
-		if (denom == 0) {
-			throw new IllegalArgumentException("Transform is invalid");
-		} else {
-			k = (d1 - d2) / denom;
-			a = d1 - k * s1;
-		}
+		k = (d2 - d1) / scale;
+		a = d1 - k * offset;
 	}
 
 	/**
