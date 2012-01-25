@@ -32,8 +32,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import org.jplot2d.element.impl.ComponentEx;
@@ -62,6 +64,30 @@ import org.jplot2d.element.impl.PlotEx;
  */
 public abstract class ImageRenderer extends Renderer {
 
+	/**
+	 * The renderer thread factory to create daemon thread
+	 */
+	static class RendererThreadFactory implements ThreadFactory {
+		final ThreadGroup group;
+		final AtomicInteger threadNumber = new AtomicInteger(1);
+
+		RendererThreadFactory() {
+			SecurityManager s = System.getSecurityManager();
+			group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		}
+
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(group, r, "JPlot2d-renderer-" + threadNumber.getAndIncrement(), 0);
+			if (!t.isDaemon()) {
+				t.setDaemon(true);
+			}
+			if (t.getPriority() != Thread.NORM_PRIORITY) {
+				t.setPriority(Thread.NORM_PRIORITY);
+			}
+			return t;
+		}
+	}
+
 	private static final int cores = Runtime.getRuntime().availableProcessors();
 
 	static {
@@ -72,7 +98,8 @@ public abstract class ImageRenderer extends Renderer {
 	 * Component renderer execute service
 	 */
 	protected static Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1, cores,
-			0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+			0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+			new RendererThreadFactory());
 
 	protected static Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
 
@@ -86,7 +113,7 @@ public abstract class ImageRenderer extends Renderer {
 	 * The Executor to run component rendering tasks.
 	 */
 	protected final Executor executor;
-	
+
 	protected final ImageFactory imageFactory;
 
 	/**
@@ -210,7 +237,6 @@ public abstract class ImageRenderer extends Renderer {
 		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
 			ComponentEx comp = me.getKey();
 			ComponentEx ccopy = me.getValue();
-			
 
 			/*
 			 * the component may be set to cacheable, while stay unmodified
