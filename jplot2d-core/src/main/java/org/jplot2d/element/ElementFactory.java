@@ -435,7 +435,7 @@ public class ElementFactory {
 		return gpProxy;
 	}
 
-	public SymbolAnnotation createSymbolMarker(double x, double y) {
+	public SymbolAnnotation createSymbolAnnotation(double x, double y) {
 		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
 		annotation.setValuePoint(x, y);
 		applyProfile(annotation);
@@ -446,7 +446,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public SymbolAnnotation createSymbolMarker(double x, double y, String text) {
+	public SymbolAnnotation createSymbolAnnotation(double x, double y, String text) {
 		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
 		annotation.setValuePoint(x, y);
 		annotation.setText(text);
@@ -458,7 +458,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public SymbolAnnotation createSymbolMarker(double x, double y, double angle, String text) {
+	public SymbolAnnotation createSymbolAnnotation(double x, double y, double angle, String text) {
 		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
 		annotation.setValuePoint(x, y);
 		annotation.setAngle(angle);
@@ -471,7 +471,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public HLineAnnotation createHLineMarker(double y) {
+	public HLineAnnotation createHLineAnnotation(double y) {
 		HLineAnnotationImpl annotation = new HLineAnnotationImpl();
 		annotation.setValue(y);
 		applyProfile(annotation);
@@ -482,7 +482,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public VLineAnnotation createVLineMarker(double y) {
+	public VLineAnnotation createVLineAnnotation(double y) {
 		VLineAnnotationImpl annotation = new VLineAnnotationImpl();
 		annotation.setValue(y);
 		applyProfile(annotation);
@@ -493,7 +493,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public HStripAnnotation createHStripMarker(double start, double end) {
+	public HStripAnnotation createHStripAnnotation(double start, double end) {
 		HStripAnnotationImpl annotation = new HStripAnnotationImpl();
 		annotation.setValueRange(new Range.Double(start, end));
 		applyProfile(annotation);
@@ -504,7 +504,7 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public VStripAnnotation createVStripMarker(double start, double end) {
+	public VStripAnnotation createVStripAnnotation(double start, double end) {
 		VStripAnnotationImpl annotation = new VStripAnnotationImpl();
 		annotation.setValueRange(new Range.Double(start, end));
 		applyProfile(annotation);
