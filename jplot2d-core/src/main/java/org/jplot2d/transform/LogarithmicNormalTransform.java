@@ -144,7 +144,7 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	@Override
 	public Transform1D createTransform(double d1, double d2) {
-		return new LogTransform(offset, scale + offset, d1, d2);
+		return new LogTransform(offset, scale, d1, d2);
 	}
 
 }

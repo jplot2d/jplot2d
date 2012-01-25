@@ -146,7 +146,7 @@ public class LinearNormalTransform extends NormalTransform {
 
 	@Override
 	public Transform1D createTransform(double d1, double d2) {
-		return new LinearTransform(offset, scale + offset, d1, d2);
+		return new LinearTransform(offset, scale, d1, d2);
 	}
 
 }

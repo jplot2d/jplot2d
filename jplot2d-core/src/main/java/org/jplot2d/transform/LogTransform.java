@@ -33,23 +33,23 @@ public class LogTransform implements Transform1D {
 		super();
 	}
 
-	public LogTransform(double s1, double s2, double d1, double d2) {
-		if (Double.isNaN(d1) || Double.isNaN(d2) || Double.isNaN(s1) || Double.isNaN(s2)) {
+	/**
+	 * @param offset
+	 *            the offset in LogarithmicNormalTransform
+	 * @param scale
+	 *            the scale in LogarithmicNormalTransform
+	 * @param d1
+	 *            the start value in destination
+	 * @param d2
+	 *            the end value in destination
+	 */
+	public LogTransform(double offset, double scale, double d1, double d2) {
+		if (Double.isNaN(d1) || Double.isNaN(d2)) {
 			throw new IllegalArgumentException("Transform is invalid");
 		}
 
-		if (s1 <= 0 || s2 <= 0) {
-			throw new IllegalArgumentException("Transform is invalid");
-		}
-
-		double denom;
-		denom = Math.log10(s1) - Math.log10(s2);
-		if (denom == 0) {
-			throw new IllegalArgumentException("Transform is invalid");
-		} else {
-			k = (d1 - d2) / denom;
-			a = d1 - k * Math.log10(s1);
-		}
+		k = (d2 - d1) / scale;
+		a = d1 - k * offset;
 	}
 
 	public double convert(double u) {
