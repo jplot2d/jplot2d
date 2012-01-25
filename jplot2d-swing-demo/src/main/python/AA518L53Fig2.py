@@ -1,7 +1,6 @@
 from org.jplot2d.element import *
 from org.jplot2d.layout import *
 from org.jplot2d.sizing import *
-from org.jplot2d.sizing import *
 from org.jplot2d.transform import *
 from org.jplot2d.util import *
 from org.jplot2d.swing import JPlot2DFrame
