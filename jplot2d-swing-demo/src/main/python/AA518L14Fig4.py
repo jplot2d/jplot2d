@@ -46,16 +46,16 @@ layer = ef.createLayer()
 p.addLayer(layer, xaxes[0], yaxes[1])
 
 # horizontal dash line
-hdl = ef.createHLineMarker(1)
+hdl = ef.createHLineAnnotation(1)
 hdl.color = GRAY
 hdl.stroke = ef.createStroke(1, [6, 6])
-layer.addMarker(hdl);
+layer.addAnnotation(hdl);
 
 # horizontal strip
-strip = ef.createHStripMarker(0.5, 1.5)
+strip = ef.createHStripAnnotation(0.5, 1.5)
 strip.fillPaint = Color(251, 232, 189)
 strip.ZOrder = -1
-layer.addMarker(strip);
+layer.addAnnotation(strip);
 
 #
 b1_1 = array([1.419899, 1.619893, 1.419907, 1.319923, 1.810285, 1.841473, 1.608309], 'd')
@@ -64,8 +64,8 @@ b1_3 = array([1.194547, 2.334788, 0.975215, 1.046990, 4.026402, 4.353637, 1.9146
 b1_4 = array([0.106746, 0.670998, 0.114467, 0.120429, 0.592627, 0.566388, 0.199998], 'd')
 b1 = ef.createXYGraphPlotter(b1_1, b1_3, b1_2, b1_2, b1_4, b1_4)
 b1.color = GRAY
-b1.linesVisible = 0
-b1.symbolsVisible = 1
+b1.lineVisible = 0
+b1.symbolVisible = 1
 b1.symbolShape = SymbolShape.FTRIANGLE
 b1.symbolColor = RED
 b1.legendItem.text = "Bullet Cluster in PACS field"
@@ -78,8 +78,8 @@ bg1_3 = array([1.005709, 1.128696, 1.483923, 0.824007, 0.430120, 1.229956, 2.137
 bg1_4 = array([0.091131, 0.102801, 0.118804, 0.139412, 0.058699, 0.147821, 0.326636, 0.105967, 0.280889, 0.211824, 0.112502, 0.052559, 0.246040], 'd')
 bg1 = ef.createXYGraphPlotter(bg1_1, bg1_3, bg1_2, bg1_2, bg1_4, bg1_4)
 bg1.color = GRAY
-bg1.linesVisible = 0
-bg1.symbolsVisible = 1
+bg1.lineVisible = 0
+bg1.symbolVisible = 1
 bg1.symbolShape = SymbolShape.FCIRCLE
 bg1.symbolSize = 6
 bg1.symbolColor = RED
@@ -93,8 +93,8 @@ b0_3 = array([1.931079, 0.439483, 1.661472, 1.946264, 1.213043, 1.480344, 1.0515
 b0_4 = array([0.618866, 0.085960, 0.291826, 0.681112, 0.230290, 0.260769, 0.264749, 0.856806, 0.111786, 0.390115, 0.114122, 0.144550, 0.593335, 0.443113, 0.816351], 'd')
 b0 = ef.createXYGraphPlotter(b0_1, b0_3, b0_2, b0_2, b0_4, b0_4)
 b0.color = GRAY
-b0.linesVisible = 0
-b0.symbolsVisible = 1
+b0.lineVisible = 0
+b0.symbolVisible = 1
 b0.symbolShape = SymbolShape.TRIANGLE
 b0.symbolColor = DARK_GRAY
 b0.legendItem.text = "Bullet Cluster OutSide PACS (100$\\micro$m estimated)"
@@ -107,8 +107,8 @@ bg0_3 = array([1.552600, 3.422128, 0.459055, 1.807932, 2.435197, 0.955189, 3.364
 bg0_4 = array([0.312489, 0.465107, 0.080527, 0.324565, 0.495231, 0.165624, 0.684698, 0.183726], 'd')
 bg0 = ef.createXYGraphPlotter(bg0_1, bg0_3, bg0_2, bg0_2, bg0_4, bg0_4)
 bg0.color = GRAY
-bg0.linesVisible = 0
-bg0.symbolsVisible = 1
+bg0.lineVisible = 0
+bg0.symbolVisible = 1
 bg0.symbolShape = SymbolShape.CIRCLE
 bg0.symbolSize = 6
 bg0.symbolColor = DARK_GRAY

@@ -95,8 +95,8 @@ xy = array([0.1059], 'd')
 xye = array([0.0212], 'd')
 xl = ef.createXYGraphPlotter(xx, xy, None, None, xye, xye)
 xl.color = GREEN
-xl.linesVisible = 0
-xl.symbolsVisible = 1
+xl.lineVisible = 0
+xl.symbolVisible = 1
 xl.symbolShape = SymbolShape.SQUARE
 xl.legendItem.text = "Xilouris et al. 2004"
 ulayer.addGraphPlotter(xl)
@@ -107,8 +107,8 @@ gy = array([0.187, 0.546, 0.559], 'd')
 gye = array([0.0281, 0.0819, 0.0839], 'd')
 gl = ef.createXYGraphPlotter(gx, gy, None, None, gye, gye)
 gl.color = GREEN
-gl.linesVisible = 0
-gl.symbolsVisible = 1
+gl.lineVisible = 0
+gl.symbolVisible = 1
 gl.symbolShape = SymbolShape.FTRIANGLE
 gl.legendItem.text = "Golombek et al. 1988"
 ulayer.addGraphPlotter(gl)
@@ -119,8 +119,8 @@ sy = array([0.171, 0.455, 0.582], 'd')
 sye = array([0.013, 0.0092, 0.01], 'd')
 sl = ef.createXYGraphPlotter(sx, sy, None, None, sye, sye)
 sl.color = GREEN
-sl.linesVisible = 0
-sl.symbolsVisible = 1
+sl.lineVisible = 0
+sl.symbolVisible = 1
 sl.symbolShape = SymbolShape.FDIAMOND
 sl.legendItem.text = "Shi et al. 2007"
 ulayer.addGraphPlotter(sl)
@@ -131,8 +131,8 @@ hy = array([1.32, 2.48], 'd')
 hye = array([0.396, 0.496], 'd')
 hl = ef.createXYGraphPlotter(hx, hy, None, None, hye, hye)
 hl.color = GREEN
-hl.linesVisible = 0
-hl.symbolsVisible = 1
+hl.lineVisible = 0
+hl.symbolVisible = 1
 hl.symbolShape = SymbolShape.TRIANGLE
 hl.legendItem.text = "Haas et al. 2004"
 ulayer.addGraphPlotter(hl)
@@ -143,8 +143,8 @@ wy = array([6.2, 9.7, 13.3, 15.5, 19.7], 'd')
 wye = array([0.4, 0.2, 0.1, 0.09, 0.06], 'd')
 wl = ef.createXYGraphPlotter(wx, wy, None, None, wye, wye)
 wl.color = GREEN
-wl.linesVisible = 0
-wl.symbolsVisible = 1
+wl.lineVisible = 0
+wl.symbolVisible = 1
 wl.symbolShape = SymbolShape.STAR
 wl.legendItem.text = "Wright et al. 2009"
 ulayer.addGraphPlotter(wl)
@@ -155,8 +155,8 @@ cy = array([26.4, 45.8, 70.1, 136.2, 327], 'd')
 cye = array([2.643, 3.66, 5.61, 10.89, 16.38], 'd')
 cl = ef.createXYGraphPlotter(cx, cy, None, None, cye, cye)
 cl.color = GREEN
-cl.linesVisible = 0
-cl.symbolsVisible = 1
+cl.lineVisible = 0
+cl.symbolVisible = 1
 cl.symbolShape = SymbolShape.FOCTAGON
 cl.legendItem.text = "Cotton et al. 2009"
 ulayer.addGraphPlotter(cl)
@@ -167,8 +167,8 @@ ty = array([0.517, 0.673, 0.86, 1.074, 1.426], 'd')
 tye = array([0.129, 0.168, 0.215, 0.267, 0.375], 'd')
 tl = ef.createXYGraphPlotter(tx, ty, None, None, tye, tye)
 tl.color = RED
-tl.linesVisible = 0
-tl.symbolsVisible = 1
+tl.lineVisible = 0
+tl.symbolVisible = 1
 tl.symbolShape = SymbolShape.FOCTAGON
 tl.legendItem.text = "this paper"
 ulayer.addGraphPlotter(tl)
@@ -193,8 +193,8 @@ llayer.addGraphPlotter(slrl)
 xry = array([-0.01], 'd')
 xrl = ef.createXYGraphPlotter(xx, xry, None, None, xye, xye)
 xrl.color = GREEN
-xrl.linesVisible = 0
-xrl.symbolsVisible = 1
+xrl.lineVisible = 0
+xrl.symbolVisible = 1
 xrl.symbolShape = SymbolShape.SQUARE
 xrl.legendItem.visible = 0
 llayer.addGraphPlotter(xrl)
@@ -202,8 +202,8 @@ llayer.addGraphPlotter(xrl)
 gry = array([0.01, 0.2, 0.06], 'd')
 grl = ef.createXYGraphPlotter(gx, gry, None, None, gye, gye)
 grl.color = GREEN
-grl.linesVisible = 0
-grl.symbolsVisible = 1
+grl.lineVisible = 0
+grl.symbolVisible = 1
 grl.symbolShape = SymbolShape.FTRIANGLE
 grl.legendItem.visible = 0
 llayer.addGraphPlotter(grl)
@@ -211,8 +211,8 @@ llayer.addGraphPlotter(grl)
 sry = array([0.0, 0.07, -0.11], 'd')
 srl = ef.createXYGraphPlotter(sx, sry)
 srl.color = GREEN
-srl.linesVisible = 0
-srl.symbolsVisible = 1
+srl.lineVisible = 0
+srl.symbolVisible = 1
 srl.symbolShape = SymbolShape.FDIAMOND
 srl.legendItem.visible = 0
 llayer.addGraphPlotter(srl)
@@ -220,8 +220,8 @@ llayer.addGraphPlotter(srl)
 hry = array([-0.23, -0.03], 'd')
 hrl = ef.createXYGraphPlotter(hx, hry, None, None, hye, hye)
 hrl.color = GREEN
-hrl.linesVisible = 0
-hrl.symbolsVisible = 1
+hrl.lineVisible = 0
+hrl.symbolVisible = 1
 hrl.symbolShape = SymbolShape.TRIANGLE
 hrl.legendItem.visible = 0
 llayer.addGraphPlotter(hrl)
@@ -229,8 +229,8 @@ llayer.addGraphPlotter(hrl)
 trry = array([0.01, -0.03, -0.13, -0.21, -0.26], 'd')
 trl = ef.createXYGraphPlotter(tx, trry, None, None, tye, tye)
 trl.color = RED
-trl.linesVisible = 0
-trl.symbolsVisible = 1
+trl.lineVisible = 0
+trl.symbolVisible = 1
 trl.symbolShape = SymbolShape.FOCTAGON
 trl.legendItem.visible = 0
 llayer.addGraphPlotter(trl)
