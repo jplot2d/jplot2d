@@ -515,6 +515,10 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
+	public BasicStroke createStroke(float width) {
+		return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, null, 0f);
+	}
+
 	public BasicStroke createStroke(float width, float[] dash) {
 		return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0f);
 	}
