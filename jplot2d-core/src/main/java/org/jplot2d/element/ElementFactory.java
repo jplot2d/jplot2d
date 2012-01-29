@@ -221,7 +221,8 @@ public class ElementFactory {
 	/**
 	 * Create n Axes which share the same tick manager. The position of the axis on index 0 is
 	 * {@link AxisPosition#NEGATIVE_SIDE}, the position of the axis on index 1 is
-	 * {@link AxisPosition#POSITIVE_SIDE}
+	 * {@link AxisPosition#POSITIVE_SIDE}. All the created axes must be added to a plot by
+	 * {@link Plot#addXAxes(Axis[])} or {@link Plot#addYAxes(Axis[])}
 	 * 
 	 * @return axes in an array
 	 */
