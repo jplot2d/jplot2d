@@ -177,4 +177,20 @@ public interface XYGraphPlotter extends GraphPlotter {
 	 */
 	public void setFillClosureType(FillClosureType type);
 
+	/**
+	 * Returns the errorbar cap size in pt. If the cap size is 0, no cap is drawn.
+	 * 
+	 * @return the errorbar cap size
+	 */
+	@Property(order = 30)
+	public float getErrorbarCapSize();
+
+	/**
+	 * Sets the errorbar cap size in pt. The default cap size is 0, means no cap is drawn.
+	 * 
+	 * @param size
+	 *            the errorbar cap size
+	 */
+	public void setErrorbarCapSize(float size);
+
 }
