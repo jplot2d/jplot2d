@@ -75,6 +75,8 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	private FillClosureType fillClosureType = FillClosureType.SELF;
 
+	private float errorbarCapSize;
+
 	public XYGraphPlotterImpl() {
 		super(new XYLegendItemImpl());
 	}
@@ -222,6 +224,15 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		redraw();
 	}
 
+	public float getErrorbarCapSize() {
+		return errorbarCapSize;
+	}
+
+	public void setErrorbarCapSize(float size) {
+		errorbarCapSize = size;
+		redraw();
+	}
+
 	@Override
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
@@ -239,6 +250,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		this.fillEnabled = dp.fillEnabled;
 		this.fillPaint = dp.fillPaint;
 		this.fillClosureType = dp.fillClosureType;
+		this.errorbarCapSize = dp.errorbarCapSize;
 	}
 
 	public void draw(Graphics2D graphics) {
@@ -335,57 +347,60 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	}
 
-	private static void drawErrorBarX(Graphics2D g, float x, float y, float low, float high,
-			float scale) {
-		if (low == high) {
-			// ignore?
-			return;
-		}
+	private void drawErrorBarX(Graphics2D g, float x, float y, float low, float high, float scale) {
 
-		// error bar
+		// errorbar with arrow
 		if (!Float.isInfinite(low) && !Float.isInfinite(high)) {
 			g.draw(new Line2D.Float(low, y, high, y));
-			return;
-		}
-
-		// error arrow
-		if (low == Float.NEGATIVE_INFINITY) {
-			float head, tail;
-			if (high == Float.POSITIVE_INFINITY) {
-				tail = x;
-			} else {
-				tail = high;
-			}
-			if (x < high) {
-				head = x - ARROW_LENGTH * scale;
-			} else {
-				head = high - ARROW_LENGTH * scale;
-			}
-			// draw left arrow
-			g.draw(new Line2D.Float(tail, y, head, y));
-			float ah = ARROW_HEAD_LENGTH * scale;
-			g.draw(new Line2D.Float(head, y, head + ah, y - ah));
-			g.draw(new Line2D.Float(head, y, head + ah, y + ah));
-		}
-		if (high == Float.POSITIVE_INFINITY) {
-			float head, tail;
+		} else {
 			if (low == Float.NEGATIVE_INFINITY) {
-				tail = x;
-			} else {
-				tail = low;
+				float head, tail;
+				if (high == Float.POSITIVE_INFINITY) {
+					tail = x;
+				} else {
+					tail = high;
+				}
+				if (x < high) {
+					head = x - ARROW_LENGTH * scale;
+				} else {
+					head = high - ARROW_LENGTH * scale;
+				}
+				// draw left arrow
+				g.draw(new Line2D.Float(tail, y, head, y));
+				float ah = ARROW_HEAD_LENGTH * scale;
+				g.draw(new Line2D.Float(head, y, head + ah, y - ah));
+				g.draw(new Line2D.Float(head, y, head + ah, y + ah));
 			}
-			if (x > low) {
-				head = x + ARROW_LENGTH * scale;
-			} else {
-				head = low + ARROW_LENGTH * scale;
+			if (high == Float.POSITIVE_INFINITY) {
+				float head, tail;
+				if (low == Float.NEGATIVE_INFINITY) {
+					tail = x;
+				} else {
+					tail = low;
+				}
+				if (x > low) {
+					head = x + ARROW_LENGTH * scale;
+				} else {
+					head = low + ARROW_LENGTH * scale;
+				}
+				// draw right arrow
+				g.draw(new Line2D.Float(tail, y, head, y));
+				float ah = ARROW_HEAD_LENGTH * scale;
+				g.draw(new Line2D.Float(head, y, head - ah, y - ah));
+				g.draw(new Line2D.Float(head, y, head - ah, y + ah));
 			}
-			// draw right arrow
-			g.draw(new Line2D.Float(tail, y, head, y));
-			float ah = ARROW_HEAD_LENGTH * scale;
-			g.draw(new Line2D.Float(head, y, head - ah, y - ah));
-			g.draw(new Line2D.Float(head, y, head - ah, y + ah));
 		}
 
+		// errorbar cap
+		if (errorbarCapSize > 0) {
+			float halfcap = errorbarCapSize * scale / 2;
+			if (low != 0) {
+				g.draw(new Line2D.Float(low, y - halfcap, low, y + halfcap));
+			}
+			if (high != 0) {
+				g.draw(new Line2D.Float(high, y - halfcap, high, y + halfcap));
+			}
+		}
 	}
 
 	/**
@@ -398,57 +413,60 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 	 * @param high
 	 * @param scale
 	 */
-	private static void drawErrorBarY(Graphics2D g, float x, float y, float low, float high,
-			float scale) {
-		if (low == high) {
-			// ignore?
-			return;
-		}
+	private void drawErrorBarY(Graphics2D g, float x, float y, float low, float high, float scale) {
 
-		// error bar
+		// errorbar with arrow
 		if (!Float.isInfinite(low) && !Float.isInfinite(high)) {
 			g.draw(new Line2D.Float(x, low, x, high));
-			return;
-		}
-
-		// error arrow
-		if (low == Float.POSITIVE_INFINITY) {
-			float head, tail;
-			if (high == Float.NEGATIVE_INFINITY) {
-				tail = y;
-			} else {
-				tail = high;
-			}
-			if (y > high) {
-				head = y + ARROW_LENGTH * scale;
-			} else {
-				head = high + ARROW_LENGTH * scale;
-			}
-			// draw down arrow
-			g.draw(new Line2D.Float(x, tail, x, head));
-			float ah = ARROW_HEAD_LENGTH * scale;
-			g.draw(new Line2D.Float(x, head, x - ah, head - ah));
-			g.draw(new Line2D.Float(x, head, x + ah, head - ah));
-		}
-		if (high == Float.NEGATIVE_INFINITY) {
-			float head, tail;
+		} else {
 			if (low == Float.POSITIVE_INFINITY) {
-				tail = y;
-			} else {
-				tail = low;
+				float head, tail;
+				if (high == Float.NEGATIVE_INFINITY) {
+					tail = y;
+				} else {
+					tail = high;
+				}
+				if (y > high) {
+					head = y + ARROW_LENGTH * scale;
+				} else {
+					head = high + ARROW_LENGTH * scale;
+				}
+				// draw down arrow
+				g.draw(new Line2D.Float(x, tail, x, head));
+				float ah = ARROW_HEAD_LENGTH * scale;
+				g.draw(new Line2D.Float(x, head, x - ah, head - ah));
+				g.draw(new Line2D.Float(x, head, x + ah, head - ah));
 			}
-			if (y < low) {
-				head = y - ARROW_LENGTH * scale;
-			} else {
-				head = low - ARROW_LENGTH * scale;
+			if (high == Float.NEGATIVE_INFINITY) {
+				float head, tail;
+				if (low == Float.POSITIVE_INFINITY) {
+					tail = y;
+				} else {
+					tail = low;
+				}
+				if (y < low) {
+					head = y - ARROW_LENGTH * scale;
+				} else {
+					head = low - ARROW_LENGTH * scale;
+				}
+				// draw up arrow
+				g.draw(new Line2D.Float(x, tail, x, head));
+				float ah = ARROW_HEAD_LENGTH * scale;
+				g.draw(new Line2D.Float(x, head, x - ah, head + ah));
+				g.draw(new Line2D.Float(x, head, x + ah, head + ah));
 			}
-			// draw up arrow
-			g.draw(new Line2D.Float(x, tail, x, head));
-			float ah = ARROW_HEAD_LENGTH * scale;
-			g.draw(new Line2D.Float(x, head, x - ah, head + ah));
-			g.draw(new Line2D.Float(x, head, x + ah, head + ah));
 		}
 
+		// errorbar cap
+		if (errorbarCapSize > 0) {
+			float halfcap = errorbarCapSize * scale / 2;
+			if (low != 0) {
+				g.draw(new Line2D.Float(x - halfcap, low, x + halfcap, low));
+			}
+			if (high != 0) {
+				g.draw(new Line2D.Float(x - halfcap, high, x + halfcap, high));
+			}
+		}
 	}
 
 	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize,

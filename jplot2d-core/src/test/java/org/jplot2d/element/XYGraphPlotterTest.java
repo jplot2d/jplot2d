@@ -42,6 +42,7 @@ public class XYGraphPlotterTest {
 				"fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("XY Graph Plotter"),
 				"symbolVisible", "symbolShape", "symbolSize", "symbolColor", "lineVisible",
-				"lineStroke", "chartType", "fillEnabled", "fillPaint", "fillClosureType");
+				"lineStroke", "chartType", "fillEnabled", "fillPaint", "fillClosureType",
+				"errorbarCapSize");
 	}
 }
