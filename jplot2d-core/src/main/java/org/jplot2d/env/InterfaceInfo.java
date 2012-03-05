@@ -53,6 +53,8 @@ public class InterfaceInfo {
 
 	private static Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<Class<?>, InterfaceInfo>();
 
+	private final Map<String, PropertyInfo> piMap;
+
 	private final Map<Method, Method> propWriteReadMap = new HashMap<Method, Method>();
 
 	private final Collection<Method> propReadMethods = new HashSet<Method>();
@@ -74,12 +76,32 @@ public class InterfaceInfo {
 	public static InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
 		InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
 		if (iinfo == null) {
-			iinfo = new InterfaceInfo();
-			iinfo.loadGroup(interfaceClass);
-			iinfo.load(interfaceClass);
+			iinfo = new InterfaceInfo(interfaceClass);
 			interfaceInfoCache.put(interfaceClass, iinfo);
 		}
 		return iinfo;
+	}
+
+	private InterfaceInfo(Class<?> interfaceClass) {
+		// get an array of all the public methods at all level
+		Method methods[] = interfaceClass.getMethods();
+
+		try {
+			piMap = getPropertyInfo(methods);
+		} catch (IntrospectionException e) {
+			throw new Error(e);
+		}
+
+		loadGroup(interfaceClass);
+		load(interfaceClass);
+
+		for (Method method : methods) {
+			Hierarchy hierAnn = method.getAnnotation(Hierarchy.class);
+			if (hierAnn != null) {
+				hierachyMethodMap.put(method, hierAnn.value());
+			}
+		}
+
 	}
 
 	private void loadGroup(Class<?> interfaceClass) {
@@ -96,19 +118,9 @@ public class InterfaceInfo {
 
 	private void load(Class<?> beanClass) {
 
-		// get an array of all the public methods at all level
-		Method methods[] = beanClass.getMethods();
-
-		PropertyInfo[] pds = null;
-		try {
-			pds = getPropertyInfo(methods);
-		} catch (IntrospectionException e) {
-			throw new Error(e);
-		}
-
 		Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<String, List<PropertyInfo>>();
 
-		for (PropertyInfo p : pds) {
+		for (PropertyInfo p : piMap.values()) {
 			if (p.getPropertyType() != null) {
 				Method readMethod = p.getReadMethod();
 				Method writeMethod = p.getWriteMethod();
@@ -156,16 +168,27 @@ public class InterfaceInfo {
 			}
 		}
 
-		for (Method method : methods) {
-			Hierarchy hierAnn = method.getAnnotation(Hierarchy.class);
-			if (hierAnn != null) {
-				hierachyMethodMap.put(method, hierAnn.value());
-			}
-		}
 	}
 
 	public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
 		return pisGroupMap;
+	}
+
+	public Class<?> getPropWriteMethodType(String propName) {
+		if (piMap.containsKey(propName)) {
+			Method m = piMap.get(propName).getWriteMethod();
+			if (m != null) {
+				return m.getParameterTypes()[0];
+			}
+		}
+		return null;
+	}
+
+	public boolean isWritableProp(String propName) {
+		if (piMap.containsKey(propName)) {
+			return piMap.get(propName).getWriteMethod() != null;
+		}
+		return false;
 	}
 
 	/**
@@ -266,7 +289,8 @@ public class InterfaceInfo {
 	 * @return An array of PropertyDescriptors, with the order of getter declared.
 	 * @throws IntrospectionException
 	 */
-	private PropertyInfo[] getPropertyInfo(Method[] methods) throws IntrospectionException {
+	private static Map<String, PropertyInfo> getPropertyInfo(Method[] methods)
+			throws IntrospectionException {
 
 		Map<String, Method> pdReaderMap = new LinkedHashMap<String, Method>();
 		Map<String, Method> pdWriterMap = new HashMap<String, Method>();
@@ -325,16 +349,16 @@ public class InterfaceInfo {
 			}
 		}
 
-		List<PropertyInfo> pdList = new ArrayList<PropertyInfo>();
+		Map<String, PropertyInfo> pimap = new HashMap<String, PropertyInfo>();
 		for (Map.Entry<String, Method> me : pdReaderMap.entrySet()) {
 			String pname = me.getKey();
 			Method reader = me.getValue();
 			Method writer = pdWriterMap.get(pname);
 			PropertyInfo pd = new PropertyInfo(pname, reader, writer);
-			pdList.add(pd);
+			pimap.put(pname, pd);
 		}
 
-		return pdList.toArray(new PropertyInfo[pdList.size()]);
+		return pimap;
 	}
 
 	/**
