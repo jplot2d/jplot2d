@@ -472,6 +472,13 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
+	/**
+	 * Create horizontal line annotation with the given y value in world coordinate system
+	 * 
+	 * @param y
+	 *            the y value in world coordinate system
+	 * @return a horizontal line annotation
+	 */
 	public HLineAnnotation createHLineAnnotation(double y) {
 		HLineAnnotationImpl annotation = new HLineAnnotationImpl();
 		annotation.setValue(y);
@@ -483,9 +490,16 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-	public VLineAnnotation createVLineAnnotation(double y) {
+	/**
+	 * Create vertical line annotation with the given y value in world coordinate system
+	 * 
+	 * @param x
+	 *            the y value in world coordinate system
+	 * @return a horizontal line annotation
+	 */
+	public VLineAnnotation createVLineAnnotation(double x) {
 		VLineAnnotationImpl annotation = new VLineAnnotationImpl();
-		annotation.setValue(y);
+		annotation.setValue(x);
 		applyProfile(annotation);
 		VLineAnnotation annotationProxy = proxy(annotation, VLineAnnotation.class);
 
@@ -494,6 +508,15 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
+	/**
+	 * Create horizontal strip annotation with the given y value range in world coordinate system
+	 * 
+	 * @param start
+	 *            the y start value in world coordinate system
+	 * @param end
+	 *            the y end value in world coordinate system
+	 * @return a horizontal strip annotation
+	 */
 	public HStripAnnotation createHStripAnnotation(double start, double end) {
 		HStripAnnotationImpl annotation = new HStripAnnotationImpl();
 		annotation.setValueRange(new Range.Double(start, end));
@@ -505,6 +528,15 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
+	/**
+	 * Create vertical strip annotation with the given x value range in world coordinate system
+	 * 
+	 * @param start
+	 *            the x start value in world coordinate system
+	 * @param end
+	 *            the x end value in world coordinate system
+	 * @return a vertical strip annotation
+	 */
 	public VStripAnnotation createVStripAnnotation(double start, double end) {
 		VStripAnnotationImpl annotation = new VStripAnnotationImpl();
 		annotation.setValueRange(new Range.Double(start, end));
