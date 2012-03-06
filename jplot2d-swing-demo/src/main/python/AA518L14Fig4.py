@@ -1,10 +1,6 @@
 from org.jplot2d.python import *
 from org.jplot2d.swing import JPlot2DFrame
 
-from java.awt import Stroke
-from java.awt import Color
-from java.awt.Color import *
-
 # Create plot
 p = plot(preferredContentSize=(300, 300), sizeMode=AutoPackSizeMode())
 pf = JPlot2DFrame(p)
@@ -32,7 +28,7 @@ hdl = hlineannotation(1, color=GRAY, stroke=stroke(1, [6, 6]))
 layer.addAnnotation(hdl);
 
 # horizontal strip
-strip = hstripannotation(0.5, 1.5, fillPaint=Color(251, 232, 189), ZOrder=-1)
+strip = hstripannotation(0.5, 1.5, fillPaint=(251, 232, 189), ZOrder=-1)
 layer.addAnnotation(strip);
 
 #
