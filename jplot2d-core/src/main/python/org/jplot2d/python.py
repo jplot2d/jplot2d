@@ -1,16 +1,19 @@
 #
 from org.jplot2d.env import InterfaceInfo
-from java.awt.geom import Dimension2D
-from java.awt.geom import Point2D
-from org.python.core import PyArray
-from jarray import array
-
 from org.jplot2d.data import *
 from org.jplot2d.element import *
 from org.jplot2d.layout import *
 from org.jplot2d.sizing import *
 from org.jplot2d.transform import *
 from org.jplot2d.util import *
+
+from java.awt import Color
+from java.awt.Color import *
+from java.awt import Paint
+from java.awt.geom import Dimension2D
+from java.awt.geom import Point2D
+from org.python.core import PyArray
+from jarray import array
 
 
 jplot2d_default_element_factory = ElementFactory.getInstance()
@@ -23,6 +26,10 @@ def jplot2d_set_prop(iinfo, obj, name, v):
             v = DoubleDimension2D(v[0], v[1])
         elif argType == Point2D:
             v = Point2D.Double(v[0], v[1])
+        elif argType == Range:
+            v = Range.Double(v[0], v[1])
+        elif argType == Paint and len(v) == 3:
+            v = Color(*v)
     setattr(obj, name, v)
 
 def plot(*args, **kwargs):
@@ -75,10 +82,9 @@ def xygraphplotter(*args, **kwargs):
     elif len(args) == 2:
         if isinstance(args[0], PyArray) and isinstance(args[1], PyArray) :
             gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0], args[1]);
-        elif isinstance(args[0], list) and isinstance(args[1], list) :
-            return xygraphplotter(args[0], args[1], 'd', kwargs);
-        elif isinstance(args[0], tuple) and isinstance(args[1], tuple) :
-            return xygraphplotter(args[0], args[1], 'd', kwargs);
+        elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
+            and (isinstance(args[1], list) or isinstance(args[1], tuple)):
+            return xygraphplotter(args[0], args[1], 'd', **kwargs);
 
     elif len(args) == 3:
         if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair) :
@@ -89,52 +95,29 @@ def xygraphplotter(*args, **kwargs):
                 gp = jplot2d_default_element_factory.createXYGraphPlotter(array(args[0], t), array(args[1], t));
 
     elif len(args) == 6:
-        atype = None
-        for arg in args:
-            if atype == None:
-                if isinstance(arg, PyArray):
-                    atype = 1
-                elif isinstance(arg, list) or isinstance(arg, tuple):
-                    atype = 2
-                else:
-                    atype = 0
-                    break;
-            elif atype == 1:
-                if not isinstance(arg, PyArray):
-                    atype = 0
-                    break
-            elif atype == 2:
-                if not (isinstance(arg, list) or isinstance(arg, tuple)):
-                    atype = 0
-                    break
-        
-        if atype == 1:
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(*args);
-        elif atype == 2:
-            return xygraphplotter(*(args + ('d',)), **kwargs)
+        return xygraphplotter(*(args + ('d',)), **kwargs)
         
     elif len(args) == 7 and isinstance(args[6], str):
-        atype = None
-        for arg in args[0:6]:
-            if atype == None:
-                if isinstance(arg, list) or isinstance(arg, tuple):
-                    atype = 2
-                else:
-                    atype = 0
-                    break;
-            elif atype == 2:
-                if not (isinstance(arg, list) or isinstance(arg, tuple)):
-                    atype = 0
-                    break
+        argserror = 0
+        ali = [None] * 6 
+        for i in range(0, 6):
+            if isinstance(args[i], PyArray):
+                ali[i] = args[i]
+            elif isinstance(args[i], list) or isinstance(args[i], tuple):
+                ali[i] = array(args[i], args[6])
+            elif not args[i] == None:
+                argserror = 1
+                break;
         
-        if atype == 2:
-            t = args[6]
-            gp = jplot2d_default_element_factory.createXYGraphPlotter \
-                (array(args[0], t), array(args[1], t), array(args[2], t), array(args[3], t), array(args[4], t), array(args[5], t));
+        if (argserror == 0):
+            gp = jplot2d_default_element_factory.createXYGraphPlotter(*ali);
 
             
     if gp == None:
-        raise TypeError, "illegal args"
+        amsg = ''
+        for arg in args:
+            amsg += str(type(arg))
+        raise TypeError, "illegal args " + amsg
     
     gpinfo = InterfaceInfo.loadInterfaceInfo(XYGraphPlotter)
     for key in kwargs:
