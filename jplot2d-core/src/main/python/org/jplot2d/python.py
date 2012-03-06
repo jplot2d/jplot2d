@@ -79,8 +79,21 @@ def axes(n, *args, **kwargs):
 
     return axes
 
-def layer():
-    return jplot2d_default_element_factory.createLayer()
+def layer(*args, **kwargs):
+    layer = jplot2d_default_element_factory.createLayer()
+    if len(args) > 0:
+        xygp = xygraphplotter(*args, **kwargs)
+        layer.addGraphPlotter(xygp)
+    
+    iinfo = InterfaceInfo.loadInterfaceInfo(Layer)
+    for key in kwargs:
+        if iinfo.isWritableProp(key):
+            jplot2d_set_prop(iinfo, layer, key, kwargs[key])
+        else:
+            raise AttributeError, "Layer has no attribute " + key
+
+    return layer
+
 
 def xygraphplotter(*args, **kwargs):
     gp = None
@@ -186,6 +199,18 @@ def vstripannotation(start, end, *args, **kwargs):
             jplot2d_set_prop(anninfo, ann, key, kwargs[key])
         else:
             raise AttributeError, "VStripAnnotation has no attribute " + key
+
+    return ann
+ 
+def symbolannotation(*args, **kwargs):
+    ann = jplot2d_default_element_factory.createSymbolAnnotation(*args)
+        
+    anninfo = InterfaceInfo.loadInterfaceInfo(SymbolAnnotation)
+    for key in kwargs:
+        if anninfo.isWritableProp(key):
+            jplot2d_set_prop(anninfo, ann, key, kwargs[key])
+        else:
+            raise AttributeError, "SymbolAnnotation has no attribute " + key
 
     return ann
  
