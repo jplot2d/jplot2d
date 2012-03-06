@@ -35,9 +35,9 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	public String getId() {
 		if (getParent() != null) {
-			return "SymbolMarker" + getParent().indexOf(this);
+			return "SymbolAnnotation" + getParent().indexOf(this);
 		} else {
-			return "SymbolMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "SymbolAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
