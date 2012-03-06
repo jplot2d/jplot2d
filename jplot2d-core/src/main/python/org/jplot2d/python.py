@@ -44,6 +44,18 @@ def plot(*args, **kwargs):
     
     return p
 
+def subplot(*args, **kwargs):
+    p = jplot2d_default_element_factory.createSubplot()
+    
+    plotinfo = InterfaceInfo.loadInterfaceInfo(Plot)
+    for key in kwargs:
+        if plotinfo.isWritableProp(key):
+            jplot2d_set_prop(plotinfo, p, key, kwargs[key])
+        else:
+            raise AttributeError, "Plot has no attribute " + key
+    
+    return p
+
 
 def axis(*args, **kwargs):
     return axes(1, *args, **kwargs)[0]
