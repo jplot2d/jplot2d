@@ -20,13 +20,13 @@ package org.jplot2d.data;
 
 import org.jplot2d.util.Range;
 
-public interface Graph {
+public interface GraphData {
 
-	public Graph setXBoundary(Range xboundary);
+	public GraphData setXBoundary(Range xboundary);
 
-	public Graph setYBoundary(Range yboundary);
+	public GraphData setYBoundary(Range yboundary);
 
-	public XYGraph setBoundary(Range xboundary, Range yboundary);
+	public XYGraphData setBoundary(Range xboundary, Range yboundary);
 
 	/**
 	 * Returns x range. If there is no valid data in x data, the empty property of returned Range

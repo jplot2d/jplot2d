@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.XYGraphPlotterDataChunker.ChunkData;
 import org.jplot2d.util.GraphicsUtil;
 import org.jplot2d.util.SymbolShape;
@@ -50,7 +50,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	private static final float ARROW_HEAD_LENGTH = ARROW_LENGTH / 4;
 
-	private XYGraph graph;
+	private XYGraphData graph;
 
 	private boolean symbolVisible = false;
 
@@ -81,11 +81,11 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 		super(new XYLegendItemImpl());
 	}
 
-	public XYGraph getGraph() {
+	public XYGraphData getData() {
 		return graph;
 	}
 
-	public void setGraph(XYGraph graph) {
+	public void setData(XYGraphData graph) {
 		this.graph = graph;
 		redraw();
 	}
@@ -255,7 +255,7 @@ public class XYGraphPlotterImpl extends GraphPlotterImpl implements XYGraphPlott
 
 	public void draw(Graphics2D graphics) {
 
-		if (getGraph() == null) {
+		if (getData() == null) {
 			return;
 		}
 

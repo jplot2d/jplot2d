@@ -24,7 +24,7 @@ import java.awt.Paint;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -81,9 +81,9 @@ public interface XYGraphPlotter extends GraphPlotter {
 		BOTTOM
 	}
 
-	public XYGraph getGraph();
+	public XYGraphData getData();
 
-	public void setGraph(XYGraph graph);
+	public void setData(XYGraphData graph);
 
 	@Property(order = 1)
 	public boolean isSymbolVisible();

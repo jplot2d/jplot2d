@@ -24,7 +24,7 @@ import java.awt.Font;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
 import org.jplot2d.element.impl.AxisTransformEx;
@@ -368,23 +368,23 @@ public class ElementFactory {
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy) {
-		return createXYGraphPlotter(new XYGraph(xy));
+		return createXYGraphPlotter(new XYGraphData(xy));
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, String name) {
-		return createXYGraphPlotter(new XYGraph(xy), name);
+		return createXYGraphPlotter(new XYGraphData(xy), name);
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
-		return createXYGraphPlotter(new XYGraph(xy, errorX, errorY));
+		return createXYGraphPlotter(new XYGraphData(xy, errorX, errorY));
 	}
 
 	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
 			String name) {
-		return createXYGraphPlotter(new XYGraph(xy, errorX, errorY), name);
+		return createXYGraphPlotter(new XYGraphData(xy, errorX, errorY), name);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(XYGraph graph) {
+	public XYGraphPlotter createXYGraphPlotter(XYGraphData graph) {
 		return createXYGraphPlotter(graph, null);
 	}
 
@@ -397,9 +397,9 @@ public class ElementFactory {
 	 *            the name
 	 * @return a XYGraphPlotter
 	 */
-	public XYGraphPlotter createXYGraphPlotter(XYGraph graph, String name) {
+	public XYGraphPlotter createXYGraphPlotter(XYGraphData graph, String name) {
 		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
-		gp.setGraph(graph);
+		gp.setData(graph);
 		applyProfile(gp);
 		XYGraphPlotter gpProxy = proxy(gp, XYGraphPlotter.class);
 
