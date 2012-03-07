@@ -83,9 +83,6 @@ def axes(n, *args, **kwargs):
 
 def layer(*args, **kwargs):
     layer = jplot2d_default_element_factory.createLayer()
-    if len(args) > 0:
-        xygp = xygraphplotter(*args, **kwargs)
-        layer.addGraphPlotter(xygp)
     
     iinfo = InterfaceInfo.loadInterfaceInfo(Layer)
     for key in kwargs:
@@ -93,6 +90,12 @@ def layer(*args, **kwargs):
             jplot2d_set_prop(iinfo, layer, key, kwargs[key])
         else:
             raise AttributeError, "Layer has no attribute " + key
+
+    for arg in args:
+        if isinstance(arg, GraphPlotter):
+            layer.addGraphPlotter(arg)
+        else:
+            raise TypeError, "Cannot add " + str(type(arg)) + " to layer."
 
     return layer
 

@@ -37,36 +37,36 @@ public class FreeLayoutDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		ElementFactory ef = ElementFactory.getInstance();
+
+		Plot plot = ef.createPlot();
 		plot.setSizeMode(new FillContainerSizeMode(1));
 
 		JFrame frame = new JPlot2DFrame(plot);
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
 		xaxis.getTitle().setText("x axis");
 		yaxis.getTitle().setText("y axis");
 		plot.addXAxis(xaxis);
 		plot.addYAxis(yaxis);
 
-		Layer layer = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
-				"line A");
-		plot.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis
-				.getTickManager().getAxisTransform());
+		Layer layer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }, "line A"));
+		plot.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
+				.getAxisTransform());
 
-		Plot sp1 = ElementFactory.getInstance().createSubplot();
-		Layer nestLayer = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
-				"line B");
+		Plot sp1 = ef.createSubplot();
+		Layer nestLayer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }, "line B"));
 
 		plot.addSubplot(sp1, null);
 		sp1.setLocation(80, 250);
 		sp1.setSize(300, 200);
-		sp1.addLayer(nestLayer, xaxis.getTickManager().getAxisTransform(), yaxis
-				.getTickManager().getAxisTransform());
+		sp1.addLayer(nestLayer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
+				.getAxisTransform());
 
 	}
 

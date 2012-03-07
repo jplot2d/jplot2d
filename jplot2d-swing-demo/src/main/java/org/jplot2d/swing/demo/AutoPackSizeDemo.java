@@ -26,7 +26,6 @@ import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 import org.jplot2d.sizing.AutoPackSizeMode;
-import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 
 /**
@@ -39,10 +38,12 @@ public class AutoPackSizeDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		ElementFactory ef = ElementFactory.getInstance();
+
+		Plot plot = ef.createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 
-		Title title = ElementFactory.getInstance().createTitle("Title");
+		Title title = ef.createTitle("Title");
 		title.setFontScale(2);
 		plot.addTitle(title);
 
@@ -50,19 +51,17 @@ public class AutoPackSizeDemo {
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		Layer layer0 = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
-				null);
-		Layer layer1 = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.2, 0.4 }, new double[] { 0, 0.3, 0.4 },
-				"lineB");
+		Layer layer0 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }, null));
+		Layer layer1 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.2, 0.4 },
+				new double[] { 0, 0.3, 0.4 }, "lineB"));
 		plot.addLayer(layer0, xaxis, yaxis);
 		plot.addLayer(layer1, xaxis, yaxis);
 
