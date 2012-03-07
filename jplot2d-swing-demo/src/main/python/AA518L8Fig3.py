@@ -12,14 +12,14 @@ pf.visible = 1
 xaxis = axis(transform=LOGARITHMIC, range=(5e13, 2.5e17))
 xaxis.title.text = "r (cm)"
 xaxis.title.fontScale = 1
-xaxisTop = axis(position=AxisPosition.POSITIVE_SIDE, transform=LOGARITHMIC, range=(2.8e-2, 2e2), labelFormat="%.0m")
+xaxisTop = axis(position=POSITIVE_SIDE, transform=LOGARITHMIC, range=(2.8e-2, 2e2), labelFormat="%.0m")
 xaxisTop.title.text = u"r(\u2033)"
 xaxisTop.title.fontScale = 1
 
 yaxisLeft = axis(color=RED, transform=LOGARITHMIC, range=(3e-10, 7e-7))
 yaxisLeft.title.text = "X"
 yaxisLeft.title.fontScale = 1
-yaxisRight = axis(color=BLUE, position=AxisPosition.POSITIVE_SIDE, transform=LINEAR, range=(0, 1200), tickInterval=500)
+yaxisRight = axis(color=BLUE, position=POSITIVE_SIDE, transform=LINEAR, range=(0, 1200), tickInterval=500)
 yaxisRight.title.text = "$\\mathrm{T_K}$"
 yaxisRight.title.fontScale = 1
 
