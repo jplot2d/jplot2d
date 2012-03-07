@@ -54,7 +54,7 @@ public interface VStripAnnotation extends Annotation {
 	 * 
 	 * @return the <code>Paint</code>
 	 */
-	@Property(order = 0)
+	@Property(order = 1)
 	public Paint getFillPaint();
 
 	/**
