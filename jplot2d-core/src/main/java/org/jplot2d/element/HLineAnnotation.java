@@ -53,7 +53,7 @@ public interface HLineAnnotation extends Annotation {
 	 * 
 	 * @return the <code>BasicStroke</code>
 	 */
-	@Property(order = 0)
+	@Property(order = 1)
 	public BasicStroke getStroke();
 
 	/**
