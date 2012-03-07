@@ -268,11 +268,11 @@ class AxisRangeUtils {
 				Range wDRange = null;
 				if (layer.getXAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
-						wDRange = dp.getGraph().setXBoundary(urange).getXRange().union(wDRange);
+						wDRange = dp.getData().setXBoundary(urange).getXRange().union(wDRange);
 					}
 				} else if (layer.getYAxisTransform() == arm) {
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
-						wDRange = dp.getGraph().setYBoundary(urange).getYRange().union(wDRange);
+						wDRange = dp.getData().setYBoundary(urange).getYRange().union(wDRange);
 					}
 				}
 				if (wDRange != null) {

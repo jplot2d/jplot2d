@@ -22,7 +22,7 @@ import javax.swing.JFrame;
 
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.data.ArrayPair;
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
@@ -85,11 +85,11 @@ public class FastUpdate {
 			xa[0] = i;
 			ya[0] = i;
 			ap0 = ap0.append(xa, ya, 1);
-			plotter0.setGraph(new XYGraph(ap0));
+			plotter0.setData(new XYGraphData(ap0));
 			xa[0] = i;
 			ya[0] = n - i - 1;
 			ap1 = ap1.append(xa, ya, 1);
-			plotter1.setGraph(new XYGraph(ap1));
+			plotter1.setData(new XYGraphData(ap1));
 
 		}
 	}

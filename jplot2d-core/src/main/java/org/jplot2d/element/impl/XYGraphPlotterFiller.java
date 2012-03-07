@@ -24,7 +24,7 @@ import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.transform.Transform1D;
 import org.jplot2d.util.LineHatchPaint;
 
@@ -40,7 +40,7 @@ public class XYGraphPlotterFiller {
 
 	private XYGraphPlotterEx plotter;
 
-	private XYGraph graph;
+	private XYGraphData graph;
 
 	private Rectangle2D clip;
 
@@ -71,7 +71,7 @@ public class XYGraphPlotterFiller {
 	}
 
 	private void setLineData(XYGraphPlotterEx dp) {
-		this.graph = dp.getGraph();
+		this.graph = dp.getData();
 		this.layer = dp.getParent();
 		this.plotter = dp;
 

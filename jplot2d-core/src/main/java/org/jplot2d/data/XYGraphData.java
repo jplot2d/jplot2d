@@ -26,7 +26,7 @@ import org.jplot2d.util.Range;
  * 
  * @author Jingjing Li
  */
-public final class XYGraph implements Graph {
+public final class XYGraphData implements GraphData {
 
 	/** the default capacity for idx lists */
 	private static final int DEFAULT_CAPACITY = 4;
@@ -65,15 +65,15 @@ public final class XYGraph implements Graph {
 
 	private boolean hasPointOutsideXBounds, hasPointOutsideYBounds;
 
-	public XYGraph(ArrayPair xy) {
+	public XYGraphData(ArrayPair xy) {
 		this(xy, null, null);
 	}
 
-	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
+	public XYGraphData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
 		this(xy, errorX, errorY, null, null);
 	}
 
-	public XYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range xboundary,
+	public XYGraphData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range xboundary,
 			Range yboundary) {
 		_xy = xy;
 		_errorX = errorX;
@@ -83,16 +83,16 @@ public final class XYGraph implements Graph {
 		extractDataFeature();
 	}
 
-	public XYGraph setXBoundary(Range xboundary) {
+	public XYGraphData setXBoundary(Range xboundary) {
 		return setBoundary(xboundary, null);
 	}
 
-	public XYGraph setYBoundary(Range yboundary) {
+	public XYGraphData setYBoundary(Range yboundary) {
 		return setBoundary(null, yboundary);
 	}
 
-	public XYGraph setBoundary(Range xboundary, Range yboundary) {
-		return new XYGraph(_xy, _errorX, _errorY, xboundary, yboundary);
+	public XYGraphData setBoundary(Range xboundary, Range yboundary) {
+		return new XYGraphData(_xy, _errorX, _errorY, xboundary, yboundary);
 	}
 
 	/**
@@ -257,9 +257,9 @@ public final class XYGraph implements Graph {
 	 * @param xy
 	 * @return a new LineData object.
 	 */
-	public XYGraph addPoints(ArrayPair xy) {
+	public XYGraphData addPoints(ArrayPair xy) {
 		if (xy != null) {
-			XYGraph nld = new XYGraph(_xy.append(xy), _errorX, _errorY);
+			XYGraphData nld = new XYGraphData(_xy.append(xy), _errorX, _errorY);
 			return nld;
 		}
 		return this;

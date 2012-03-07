@@ -20,7 +20,7 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
-import org.jplot2d.data.Graph;
+import org.jplot2d.data.GraphData;
 
 /**
  * A plotter to draw Graph data in a viewport of layer.
@@ -46,6 +46,6 @@ public interface GraphPlotter extends PComponent {
 	 * 
 	 * @return
 	 */
-	public Graph getGraph();
+	public GraphData getData();
 
 }

@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.jplot2d.data.XYGraph;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.transform.Transform1D;
 
 /**
@@ -287,7 +287,7 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 	private XYGraphPlotterEx plotter;
 
-	private XYGraph graph;
+	private XYGraphData graph;
 
 	private Rectangle2D clip;
 
@@ -300,7 +300,7 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 	}
 
 	private void setLineData(XYGraphPlotterEx dp) {
-		this.graph = dp.getGraph();
+		this.graph = dp.getData();
 		this.layer = dp.getParent();
 		this.plotter = dp;
 
