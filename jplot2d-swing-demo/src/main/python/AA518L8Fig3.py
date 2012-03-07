@@ -19,7 +19,7 @@ xaxisTop.title.fontScale = 1
 yaxisLeft = axis(color=RED, type=TransformType.LOGARITHMIC, range=(3e-10, 7e-7))
 yaxisLeft.title.text = "X"
 yaxisLeft.title.fontScale = 1
-yaxisRight = axis(color=BLUE, position=AxisPosition.POSITIVE_SIDE, type=TransformType.LINEAR, range=(0, 1200), interval=500)
+yaxisRight = axis(color=BLUE, position=AxisPosition.POSITIVE_SIDE, type=TransformType.LINEAR, range=(0, 1200), tickInterval=500)
 yaxisRight.title.text = "$\\mathrm{T_K}$"
 yaxisRight.title.fontScale = 1
 

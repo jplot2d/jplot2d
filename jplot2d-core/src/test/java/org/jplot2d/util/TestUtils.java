@@ -148,11 +148,11 @@ public class TestUtils {
 	}
 
 	public static void checkAxisTicks(Axis axis, double... v) {
-		checkDoubleArray(axis.getTickManager().getValues(), v);
+		checkDoubleArray(axis.getTickManager().getTickValues(), v);
 	}
 
 	public static void checkAxisMinorTicks(Axis axis, double... v) {
-		checkDoubleArray(axis.getTickManager().getMinorValues(), v);
+		checkDoubleArray(axis.getTickManager().getMinorTickValues(), v);
 	}
 
 	public static void checkAxisLabels(Axis axis, String... v) {
