@@ -32,7 +32,7 @@ import org.jplot2d.util.SymbolShape;
  * 
  */
 @PropertyGroup("XY Graph Plotter")
-public interface XYGraphPlotter extends GraphPlotter {
+public interface XYGraph extends Graph {
 
 	public enum ChartType {
 		/**

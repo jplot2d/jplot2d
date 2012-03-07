@@ -20,13 +20,13 @@ package org.jplot2d.element.impl;
 
 import java.awt.Color;
 
-import org.jplot2d.element.XYGraphPlotter;
+import org.jplot2d.element.XYGraph;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface XYGraphPlotterEx extends XYGraphPlotter, GraphPlotterEx {
+public interface XYGraphEx extends XYGraph, GraphEx {
 
 	public Color getEffectiveSymbolColor();
 

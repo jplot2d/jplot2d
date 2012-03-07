@@ -36,7 +36,7 @@ import org.jplot2d.tex.MathElement;
 public interface LegendItem extends Element {
 
 	@Hierarchy(HierarchyOp.GET)
-	public GraphPlotter getParent();
+	public Graph getParent();
 
 	/**
 	 * Returns the legend who show this item

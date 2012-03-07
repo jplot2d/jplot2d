@@ -30,11 +30,11 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class XYGraphPlotterTest {
+public class XYGraphTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(XYGraphPlotter.class);
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(XYGraph.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component",
 				"XY Graph Plotter");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",

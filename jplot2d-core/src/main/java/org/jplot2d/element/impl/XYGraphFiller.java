@@ -34,13 +34,13 @@ import org.jplot2d.util.LineHatchPaint;
  * @author Jingjing Li
  * 
  */
-public class XYGraphPlotterFiller {
+public class XYGraphFiller {
 
 	private LayerEx layer;
 
-	private XYGraphPlotterEx plotter;
+	private XYGraphEx graph;
 
-	private XYGraphData graph;
+	private XYGraphData graphData;
 
 	private Rectangle2D clip;
 
@@ -53,27 +53,27 @@ public class XYGraphPlotterFiller {
 	/**
 	 * Returns a filler and initial it with the given arguments.
 	 * 
-	 * @param plotter
+	 * @param graph
 	 * @param clip
 	 * @return
 	 */
-	public static XYGraphPlotterFiller getInstance(XYGraphPlotterEx plotter, Rectangle2D clip) {
-		XYGraphPlotterFiller builder = new XYGraphPlotterFiller();
+	public static XYGraphFiller getInstance(XYGraphEx graph, Rectangle2D clip) {
+		XYGraphFiller builder = new XYGraphFiller();
 
-		builder.setLineData(plotter);
+		builder.setLineData(graph);
 		builder.setClip(clip);
 
 		return builder;
 	}
 
-	private XYGraphPlotterFiller() {
+	private XYGraphFiller() {
 
 	}
 
-	private void setLineData(XYGraphPlotterEx dp) {
-		this.graph = dp.getData();
+	private void setLineData(XYGraphEx dp) {
+		this.graphData = dp.getData();
 		this.layer = dp.getParent();
-		this.plotter = dp;
+		this.graph = dp;
 
 		calcTransformXY();
 	}
@@ -126,7 +126,7 @@ public class XYGraphPlotterFiller {
 	private Path2D getFillShape() {
 		Path2D.Double path = new Path2D.Double();
 
-		switch (plotter.getChartType()) {
+		switch (graph.getChartType()) {
 		case LINECHART:
 			fillPolygon(path);
 			break;
@@ -146,15 +146,15 @@ public class XYGraphPlotterFiller {
 
 		boolean hasPre = false;
 
-		for (int i = 0; i < graph.size(); i++) {
+		for (int i = 0; i < graphData.size(); i++) {
 
 			/* ignore NaN value */
-			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+			if (Double.isNaN(graphData.getX(i)) || Double.isNaN(graphData.getY(i))) {
 				continue;
 			}
 
-			double x = xW2D.convert(graph.getX(i));
-			double y = yW2D.convert(graph.getY(i));
+			double x = xW2D.convert(graphData.getX(i));
+			double y = yW2D.convert(graphData.getY(i));
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -184,15 +184,15 @@ public class XYGraphPlotterFiller {
 		// the x coordinate of preIdx
 		double preDotX = 0;
 
-		for (int i = 0; i < graph.size(); i++) {
+		for (int i = 0; i < graphData.size(); i++) {
 
 			/* ignore NaN value */
-			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+			if (Double.isNaN(graphData.getX(i)) || Double.isNaN(graphData.getY(i))) {
 				continue;
 			}
 
-			double x = xW2D.convert(graph.getX(i));
-			double y = yW2D.convert(graph.getY(i));
+			double x = xW2D.convert(graphData.getX(i));
+			double y = yW2D.convert(graphData.getY(i));
 			int iy = (int) (y + 0.5);
 
 			if (hasPre) {
@@ -227,15 +227,15 @@ public class XYGraphPlotterFiller {
 
 		boolean hasPre = false;
 
-		for (int i = 0; i < graph.size(); i++) {
+		for (int i = 0; i < graphData.size(); i++) {
 
 			/* ignore NaN value */
-			if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+			if (Double.isNaN(graphData.getX(i)) || Double.isNaN(graphData.getY(i))) {
 				continue;
 			}
 
-			double x = xW2D.convert(graph.getX(i));
-			double y = yW2D.convert(graph.getY(i));
+			double x = xW2D.convert(graphData.getX(i));
+			double y = yW2D.convert(graphData.getY(i));
 
 			int ix = (int) (x + 0.5);
 			int iy = (int) (y + 0.5);
@@ -259,7 +259,7 @@ public class XYGraphPlotterFiller {
 	}
 
 	private void closeLine(Path2D path) {
-		switch (plotter.getFillClosureType()) {
+		switch (graph.getFillClosureType()) {
 		case SELF:
 			path.closePath();
 			break;

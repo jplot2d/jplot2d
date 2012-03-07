@@ -24,12 +24,12 @@ import javax.swing.JFrame;
 
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.GraphPlotter;
+import org.jplot2d.element.Graph;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
-import org.jplot2d.element.XYGraphPlotter;
+import org.jplot2d.element.XYGraph;
 import org.jplot2d.layout.GridConstraint;
 import org.jplot2d.layout.GridLayoutDirector;
 import org.jplot2d.sizing.AutoPackSizeMode;
@@ -113,103 +113,103 @@ public class AA518L53Fig2 {
 		// solid line
 		double[] solx = { 10, 2000000 };
 		double[] soly = { 0.09, 900 };
-		GraphPlotter sol = ef.createXYGraphPlotter(solx, soly);
+		Graph sol = ef.createXYGraphPlotter(solx, soly);
 		sol.setColor(Color.BLUE);
 		sol.getLegendItem().setVisible(false);
-		ulayer.addGraphPlotter(sol);
+		ulayer.addGraph(sol);
 
 		// dashed line
 		double[] dlx = { 10, 2000000 };
 		double[] dly = { 0.1, 820 };
-		XYGraphPlotter dl = ef.createXYGraphPlotter(dlx, dly);
+		XYGraph dl = ef.createXYGraphPlotter(dlx, dly);
 		dl.setColor(Color.BLUE);
 		dl.setLineStroke(ef.createStroke(1, new float[] { 1, 3 }));
 		dl.getLegendItem().setVisible(false);
-		ulayer.addGraphPlotter(dl);
+		ulayer.addGraph(dl);
 
 		// ISO
 		double[] xx = { 15 };
 		double[] xy = { 0.1059 };
 		double[] xye = { 0.0212 };
-		XYGraphPlotter xl = ef.createXYGraphPlotter(xx, xy, null, null, xye, xye);
+		XYGraph xl = ef.createXYGraphPlotter(xx, xy, null, null, xye, xye);
 		xl.setColor(Color.GREEN);
 		xl.setLineVisible(false);
 		xl.setSymbolVisible(true);
 		xl.setSymbolShape(SymbolShape.SQUARE);
 		xl.getLegendItem().setText("Xilouris et al. 2004");
-		ulayer.addGraphPlotter(xl);
+		ulayer.addGraph(xl);
 
 		// IRAS
 		double[] gx = { 24.9, 59.9, 99.8 };
 		double[] gy = { 0.187, 0.546, 0.559 };
 		double[] gye = { 0.0281, 0.0819, 0.0839 };
-		XYGraphPlotter gl = ef.createXYGraphPlotter(gx, gy, null, null, gye, gye);
+		XYGraph gl = ef.createXYGraphPlotter(gx, gy, null, null, gye, gye);
 		gl.setColor(Color.GREEN);
 		gl.setLineVisible(false);
 		gl.setSymbolVisible(true);
 		gl.setSymbolShape(SymbolShape.FTRIANGLE);
 		gl.getLegendItem().setText("Golombek et al. 1988");
-		ulayer.addGraphPlotter(gl);
+		ulayer.addGraph(gl);
 
 		// MIPS
 		double[] sx = { 23.67, 71.3, 156 };
 		double[] sy = { 0.171, 0.455, 0.582 };
 		double[] sye = { 0.013, 0.0092, 0.01 };
-		XYGraphPlotter sl = ef.createXYGraphPlotter(sx, sy, null, null, sye, sye);
+		XYGraph sl = ef.createXYGraphPlotter(sx, sy, null, null, sye, sye);
 		sl.setColor(Color.GREEN);
 		sl.setLineVisible(false);
 		sl.setSymbolVisible(true);
 		sl.setSymbolShape(SymbolShape.FDIAMOND);
 		sl.getLegendItem().setText("Shi et al. 2007");
-		ulayer.addGraphPlotter(sl);
+		ulayer.addGraph(sl);
 
 		// SCUBA
 		double[] hx = { 449, 848 };
 		double[] hy = { 1.32, 2.48 };
 		double[] hye = { 0.396, 0.496 };
-		XYGraphPlotter hl = ef.createXYGraphPlotter(hx, hy, null, null, hye, hye);
+		XYGraph hl = ef.createXYGraphPlotter(hx, hy, null, null, hye, hye);
 		hl.setColor(Color.GREEN);
 		hl.setLineVisible(false);
 		hl.setSymbolVisible(true);
 		hl.setSymbolShape(SymbolShape.TRIANGLE);
 		hl.getLegendItem().setText("Haas et al. 2004");
-		ulayer.addGraphPlotter(hl);
+		ulayer.addGraph(hl);
 
 		// WMAP
 		double[] wx = { 3180, 4910, 7300, 9070, 13000 };
 		double[] wy = { 6.2, 9.7, 13.3, 15.5, 19.7 };
 		double[] wye = { 0.4, 0.2, 0.1, 0.09, 0.06 };
-		XYGraphPlotter wl = ef.createXYGraphPlotter(wx, wy, null, null, wye, wye);
+		XYGraph wl = ef.createXYGraphPlotter(wx, wy, null, null, wye, wye);
 		wl.setColor(Color.GREEN);
 		wl.setLineVisible(false);
 		wl.setSymbolVisible(true);
 		wl.setSymbolShape(SymbolShape.STAR);
 		wl.getLegendItem().setText("Wright et al. 2009");
-		ulayer.addGraphPlotter(wl);
+		ulayer.addGraph(wl);
 
 		// VLA
 		double[] cx = { 20130, 36540, 61730, 180200, 908400 };
 		double[] cy = { 26.4, 45.8, 70.1, 136.2, 327 };
 		double[] cye = { 2.643, 3.66, 5.61, 10.89, 16.38 };
-		XYGraphPlotter cl = ef.createXYGraphPlotter(cx, cy, null, null, cye, cye);
+		XYGraph cl = ef.createXYGraphPlotter(cx, cy, null, null, cye, cye);
 		cl.setColor(Color.GREEN);
 		cl.setLineVisible(false);
 		cl.setSymbolVisible(true);
 		cl.setSymbolShape(SymbolShape.FOCTAGON);
 		cl.getLegendItem().setText("Cotton et al. 2009");
-		ulayer.addGraphPlotter(cl);
+		ulayer.addGraph(cl);
 
 		// HERSCHEL
 		double[] tx = { 100, 160, 250, 350, 500 };
 		double[] ty = { 0.517, 0.673, 0.86, 1.074, 1.426 };
 		double[] tye = { 0.129, 0.168, 0.215, 0.267, 0.375 };
-		XYGraphPlotter tl = ef.createXYGraphPlotter(tx, ty, null, null, tye, tye);
+		XYGraph tl = ef.createXYGraphPlotter(tx, ty, null, null, tye, tye);
 		tl.setColor(Color.RED);
 		tl.setLineVisible(false);
 		tl.setSymbolVisible(true);
 		tl.setSymbolShape(SymbolShape.FOCTAGON);
 		tl.getLegendItem().setText("this paper");
-		ulayer.addGraphPlotter(tl);
+		ulayer.addGraph(tl);
 
 		// legend
 		usp.getLegend().setPosition(null);
@@ -223,55 +223,55 @@ public class AA518L53Fig2 {
 		// residual
 		double[] slrx = { 10, 1000 };
 		double[] slry = { 0, 0 };
-		XYGraphPlotter slrl = ef.createXYGraphPlotter(slrx, slry);
+		XYGraph slrl = ef.createXYGraphPlotter(slrx, slry);
 		slrl.setColor(Color.BLUE);
 		slrl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(slrl);
+		llayer.addGraph(slrl);
 
 		double[] xry = { -0.01 };
-		XYGraphPlotter xrl = ef.createXYGraphPlotter(xx, xry, null, null, xye, xye);
+		XYGraph xrl = ef.createXYGraphPlotter(xx, xry, null, null, xye, xye);
 		xrl.setColor(Color.GREEN);
 		xrl.setLineVisible(false);
 		xrl.setSymbolVisible(true);
 		xrl.setSymbolShape(SymbolShape.SQUARE);
 		xrl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(xrl);
+		llayer.addGraph(xrl);
 
 		double[] gry = { 0.01, 0.2, 0.06 };
-		XYGraphPlotter grl = ef.createXYGraphPlotter(gx, gry, null, null, gye, gye);
+		XYGraph grl = ef.createXYGraphPlotter(gx, gry, null, null, gye, gye);
 		grl.setColor(Color.GREEN);
 		grl.setLineVisible(false);
 		grl.setSymbolVisible(true);
 		grl.setSymbolShape(SymbolShape.FTRIANGLE);
 		grl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(grl);
+		llayer.addGraph(grl);
 
 		double[] sry = { 0.0, 0.07, -0.11 };
-		XYGraphPlotter srl = ef.createXYGraphPlotter(sx, sry);
+		XYGraph srl = ef.createXYGraphPlotter(sx, sry);
 		srl.setColor(Color.GREEN);
 		srl.setLineVisible(false);
 		srl.setSymbolVisible(true);
 		srl.setSymbolShape(SymbolShape.FDIAMOND);
 		srl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(srl);
+		llayer.addGraph(srl);
 
 		double[] hry = { -0.23, -0.03 };
-		XYGraphPlotter hrl = ef.createXYGraphPlotter(hx, hry, null, null, hye, hye);
+		XYGraph hrl = ef.createXYGraphPlotter(hx, hry, null, null, hye, hye);
 		hrl.setColor(Color.GREEN);
 		hrl.setLineVisible(false);
 		hrl.setSymbolVisible(true);
 		hrl.setSymbolShape(SymbolShape.TRIANGLE);
 		hrl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(hrl);
+		llayer.addGraph(hrl);
 
 		double[] trry = { 0.01, -0.03, -0.13, -0.21, -0.26 };
-		XYGraphPlotter trl = ef.createXYGraphPlotter(tx, trry, null, null, tye, tye);
+		XYGraph trl = ef.createXYGraphPlotter(tx, trry, null, null, tye, tye);
 		trl.setColor(Color.RED);
 		trl.setLineVisible(false);
 		trl.setSymbolVisible(true);
 		trl.setSymbolShape(SymbolShape.FOCTAGON);
 		trl.getLegendItem().setVisible(false);
-		llayer.addGraphPlotter(trl);
+		llayer.addGraph(trl);
 
 	}
 }

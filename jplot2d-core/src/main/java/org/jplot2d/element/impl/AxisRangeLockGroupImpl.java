@@ -282,7 +282,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					boolean yar = layer.getYAxisTransform().getLockGroup().isAutoRange();
 					Range yRange = (yar) ? layer.getYAxisTransform().getType()
 							.getBoundary(ax.getTransform()) : layer.getYAxisTransform().getRange();
-					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
+					for (GraphEx dp : layer.getGraph()) {
 						GraphData dataInBounds = dp.getData().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
 						if (dataInBounds.hasPointOutsideXBounds()) {
@@ -293,7 +293,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					boolean xar = layer.getXAxisTransform().getLockGroup().isAutoRange();
 					Range xRange = (xar) ? layer.getXAxisTransform().getType()
 							.getBoundary(ax.getTransform()) : layer.getXAxisTransform().getRange();
-					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
+					for (GraphEx dp : layer.getGraph()) {
 						GraphData dataInBounds = dp.getData().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
 						if (dataInBounds.hasPointOutsideYBounds()) {

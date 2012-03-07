@@ -59,8 +59,8 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	}
 
-	public XYGraphPlotterEx getParent() {
-		return (XYGraphPlotterEx) super.getParent();
+	public XYGraphEx getParent() {
+		return (XYGraphEx) super.getParent();
 	}
 
 	public void setLegend(LegendEx legend) {
@@ -132,26 +132,26 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		Point2D loc = getLocation();
 
 		/* draw line and mark */
-		XYGraphPlotterEx plotter = getParent();
+		XYGraphEx graph = getParent();
 
 		float ax = (float) loc.getX();
 		float bx = ax + (float) (LINE_LENGTH);
 		float ay = (float) loc.getY();
 		float by = ay;
 
-		Color sc = plotter.getEffectiveSymbolColor();
-		if (plotter.isLineVisible()) {
-			g.setColor(plotter.getEffectiveColor());
-			g.setStroke(plotter.getLineStroke());
+		Color sc = graph.getEffectiveSymbolColor();
+		if (graph.isLineVisible()) {
+			g.setColor(graph.getEffectiveColor());
+			g.setStroke(graph.getLineStroke());
 			Path2D.Float gp = new Path2D.Float();
 			gp.moveTo(ax, ay);
 			gp.lineTo(bx, by);
 			g.draw(gp);
-			if (plotter.isSymbolVisible()) {
+			if (graph.isSymbolVisible()) {
 				drawSymbol(g, ax, ay, sc);
 				drawSymbol(g, bx, by, sc);
 			}
-		} else if (plotter.isSymbolVisible()) {
+		} else if (graph.isSymbolVisible()) {
 			drawSymbol(g, bx, by, sc);
 		}
 
@@ -160,9 +160,9 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	}
 
 	private void drawSymbol(Graphics2D g, float x, float y, Color color) {
-		XYGraphPlotterEx plotter = getParent();
+		XYGraphEx graph = getParent();
 
-		if (plotter.getSymbolShape() == SymbolShape.DOT) {
+		if (graph.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks
 			BasicStroke markStroke = new BasicStroke(0);
 			g.setStroke(markStroke);
@@ -171,10 +171,10 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 			g.draw(dot);
 		} else {
 			// use half of line stroke to draw marks
-			float lw = plotter.getLineStroke().getLineWidth() / 2;
+			float lw = graph.getLineStroke().getLineWidth() / 2;
 			g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 
-			SymbolShape ss = plotter.getSymbolShape();
+			SymbolShape ss = graph.getSymbolShape();
 			g.setColor(color);
 
 			AffineTransform maf = AffineTransform.getTranslateInstance(x, y);

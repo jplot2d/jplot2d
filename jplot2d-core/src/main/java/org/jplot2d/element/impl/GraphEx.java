@@ -18,13 +18,13 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.GraphPlotter;
+import org.jplot2d.element.Graph;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface GraphPlotterEx extends GraphPlotter, ComponentEx {
+public interface GraphEx extends Graph, ComponentEx {
 
 	public LayerEx getParent();
 

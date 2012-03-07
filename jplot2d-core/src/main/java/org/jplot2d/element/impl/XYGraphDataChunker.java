@@ -16,12 +16,12 @@ import org.jplot2d.transform.Transform1D;
  * 
  * @author Jingjing Li
  */
-public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChunker.ChunkData> {
+public class XYGraphDataChunker implements Iterable<XYGraphDataChunker.ChunkData> {
 
 	/**
 	 * For re-using the instance of this class to avoid re-allocate buffers.
 	 */
-	private static final ThreadLocal<XYGraphPlotterDataChunker> _threadLocalBuilder = new ThreadLocal<XYGraphPlotterDataChunker>();
+	private static final ThreadLocal<XYGraphDataChunker> _threadLocalBuilder = new ThreadLocal<XYGraphDataChunker>();
 
 	private static final int CHUNK_SIZE = 1000;
 
@@ -136,7 +136,7 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 		private void prepareNextChunk(ChunkData data) {
 			// fill the next chunk, non-empty
 			data.reset();
-			while (i < graph.size()) {
+			while (i < graphData.size()) {
 				fillChunk(data);
 				if (data.size > 0) {
 					break;
@@ -151,31 +151,31 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 		private void fillChunk(ChunkData data) {
 
 			/* eat off the beginning NaNs */
-			while (i < graph.size()) {
-				if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+			while (i < graphData.size()) {
+				if (Double.isNaN(graphData.getX(i)) || Double.isNaN(graphData.getY(i))) {
 					i++;
 				} else {
 					break;
 				}
 			}
-			if (i >= graph.size()) {
+			if (i >= graphData.size()) {
 				return;
 			}
 
-			boolean drawMark = plotter.isSymbolVisible();
+			boolean drawMark = graph.isSymbolVisible();
 
 			boolean haspre = false;
 			double prex = Double.NaN;
 			double prey = Double.NaN;
 			boolean isPreBigNumber = false;
 
-			while (i < graph.size()) {
+			while (i < graphData.size()) {
 
-				double x = xW2D.convert(graph.getX(i));
-				double y = yW2D.convert(graph.getY(i));
+				double x = xW2D.convert(graphData.getX(i));
+				double y = yW2D.convert(graphData.getY(i));
 
 				/* break at NaN value */
-				if (Double.isNaN(graph.getX(i)) || Double.isNaN(graph.getY(i))) {
+				if (Double.isNaN(graphData.getX(i)) || Double.isNaN(graphData.getY(i))) {
 					i++;
 					break;
 				}
@@ -216,44 +216,44 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 					/* markColorBuf */
 					if (drawMark) {
-						data.markColorBuf[data.size] = plotter.getEffectiveSymbolColor(i);
+						data.markColorBuf[data.size] = graph.getEffectiveSymbolColor(i);
 					}
 
 					/* error buffer */
-					if (graph.getXError() != null && i < graph.getXError().size()) {
-						boolean vxlow = !Double.isNaN(graph.getXErrorLow(i));
-						boolean vxhigh = !Double.isNaN(graph.getXErrorHigh(i));
+					if (graphData.getXError() != null && i < graphData.getXError().size()) {
+						boolean vxlow = !Double.isNaN(graphData.getXErrorLow(i));
+						boolean vxhigh = !Double.isNaN(graphData.getXErrorHigh(i));
 						if (vxlow || vxhigh) {
 							data.xErrorSize = data.size + 1;
 							if (vxlow) {
-								data.xLowBuf[data.size] = (float) xW2D.convert(graph.getX(i)
-										- graph.getXErrorLow(i));
+								data.xLowBuf[data.size] = (float) xW2D.convert(graphData.getX(i)
+										- graphData.getXErrorLow(i));
 							} else {
 								data.xLowBuf[data.size] = data.xBuf[data.size];
 							}
 							if (vxhigh) {
-								data.xHighBuf[data.size] = (float) xW2D.convert(graph.getX(i)
-										+ graph.getXErrorHigh(i));
+								data.xHighBuf[data.size] = (float) xW2D.convert(graphData.getX(i)
+										+ graphData.getXErrorHigh(i));
 							} else {
 								data.xHighBuf[data.size] = data.xBuf[data.size];
 							}
 						}
 					}
 
-					if (graph.getYError() != null && i < graph.getYError().size()) {
-						boolean vylow = !Double.isNaN(graph.getYErrorLow(i));
-						boolean vyhigh = !Double.isNaN(graph.getYErrorHigh(i));
+					if (graphData.getYError() != null && i < graphData.getYError().size()) {
+						boolean vylow = !Double.isNaN(graphData.getYErrorLow(i));
+						boolean vyhigh = !Double.isNaN(graphData.getYErrorHigh(i));
 						if (vylow || vyhigh) {
 							data.yErrorSize = data.size + 1;
 							if (vylow) {
-								data.yLowBuf[data.size] = (float) yW2D.convert(graph.getY(i)
-										- graph.getYErrorLow(i));
+								data.yLowBuf[data.size] = (float) yW2D.convert(graphData.getY(i)
+										- graphData.getYErrorLow(i));
 							} else {
 								data.yLowBuf[data.size] = data.yBuf[data.size];
 							}
 							if (vyhigh) {
-								data.yHighBuf[data.size] = (float) yW2D.convert(graph.getY(i)
-										+ graph.getYErrorHigh(i));
+								data.yHighBuf[data.size] = (float) yW2D.convert(graphData.getY(i)
+										+ graphData.getYErrorHigh(i));
 							} else {
 								data.yHighBuf[data.size] = data.yBuf[data.size];
 							}
@@ -285,9 +285,9 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 	private LayerEx layer;
 
-	private XYGraphPlotterEx plotter;
+	private XYGraphEx graph;
 
-	private XYGraphData graph;
+	private XYGraphData graphData;
 
 	private Rectangle2D clip;
 
@@ -295,14 +295,14 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 
 	private final DataChunkIterator ite = new DataChunkIterator();
 
-	private XYGraphPlotterDataChunker() {
+	private XYGraphDataChunker() {
 
 	}
 
-	private void setLineData(XYGraphPlotterEx dp) {
-		this.graph = dp.getData();
+	private void setLineData(XYGraphEx dp) {
+		this.graphData = dp.getData();
 		this.layer = dp.getParent();
-		this.plotter = dp;
+		this.graph = dp;
 
 		calcTransformXY();
 	}
@@ -391,10 +391,10 @@ public class XYGraphPlotterDataChunker implements Iterable<XYGraphPlotterDataChu
 		return result;
 	}
 
-	public static XYGraphPlotterDataChunker getInstance(XYGraphPlotterEx dp, Rectangle clip) {
-		XYGraphPlotterDataChunker builder = _threadLocalBuilder.get();
+	public static XYGraphDataChunker getInstance(XYGraphEx dp, Rectangle clip) {
+		XYGraphDataChunker builder = _threadLocalBuilder.get();
 		if (builder == null) {
-			builder = new XYGraphPlotterDataChunker();
+			builder = new XYGraphDataChunker();
 			_threadLocalBuilder.set(builder);
 		}
 

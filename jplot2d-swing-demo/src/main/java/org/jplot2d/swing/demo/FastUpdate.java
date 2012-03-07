@@ -26,7 +26,7 @@ import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
-import org.jplot2d.element.XYGraphPlotter;
+import org.jplot2d.element.XYGraph;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.util.Range;
@@ -58,23 +58,23 @@ public class FastUpdate {
 
 		ArrayPair ap0 = new ArrayPair(new double[] { 0 }, new double[] { 0 });
 		ArrayPair ap1 = new ArrayPair(new double[] { 0 }, new double[] { n });
-		XYGraphPlotter plotter0 = ElementFactory.getInstance()
+		XYGraph graph0 = ElementFactory.getInstance()
 				.createXYGraphPlotter(ap0, "lineA");
-		XYGraphPlotter plotter1 = ElementFactory.getInstance()
+		XYGraph graph1 = ElementFactory.getInstance()
 				.createXYGraphPlotter(ap1, "lineB");
-		plotter0.setLineVisible(false);
-		plotter0.setSymbolVisible(true);
-		plotter0.setSymbolShape(SymbolShape.SQUARE);
-		plotter1.setLineVisible(false);
-		plotter1.setSymbolVisible(true);
-		plotter1.setSymbolShape(SymbolShape.SQUARE);
+		graph0.setLineVisible(false);
+		graph0.setSymbolVisible(true);
+		graph0.setSymbolShape(SymbolShape.SQUARE);
+		graph1.setLineVisible(false);
+		graph1.setSymbolVisible(true);
+		graph1.setSymbolShape(SymbolShape.SQUARE);
 		
-//		plotter0.setCacheable(true);
-//		plotter1.setCacheable(true);
+//		graph0.setCacheable(true);
+//		graph1.setCacheable(true);
 
 		Layer layer0 = ElementFactory.getInstance().createLayer();
-		layer0.addGraphPlotter(plotter0);
-		layer0.addGraphPlotter(plotter1);
+		layer0.addGraph(graph0);
+		layer0.addGraph(graph1);
 		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis
 				.getTickManager().getAxisTransform());
 
@@ -85,11 +85,11 @@ public class FastUpdate {
 			xa[0] = i;
 			ya[0] = i;
 			ap0 = ap0.append(xa, ya, 1);
-			plotter0.setData(new XYGraphData(ap0));
+			graph0.setData(new XYGraphData(ap0));
 			xa[0] = i;
 			ya[0] = n - i - 1;
 			ap1 = ap1.append(xa, ya, 1);
-			plotter1.setData(new XYGraphData(ap1));
+			graph1.setData(new XYGraphData(ap1));
 
 		}
 	}

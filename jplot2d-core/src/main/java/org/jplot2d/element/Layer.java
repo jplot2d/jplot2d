@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport to
- * show data line and annotations.
+ * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport
+ * to show data line and annotations.
  * 
  * @author Jingjing Li
  * 
@@ -34,38 +34,38 @@ public interface Layer extends PComponent {
 	public Plot getParent();
 
 	/**
-	 * Returns the graph plotter on the given index.
+	 * Returns the graph on the given index.
 	 * 
-	 * @return the graph plotter on the given index
+	 * @return the graph on the given index
 	 */
 	@Hierarchy(HierarchyOp.GET)
-	public GraphPlotter getGraphPlotter(int index);
+	public Graph getGraph(int index);
 
 	/**
-	 * Returns all graph plotters of this layer.
+	 * Returns all graph of this layer.
 	 * 
-	 * @return all graph plotters of this layer.
+	 * @return all graph of this layer.
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public GraphPlotter[] getGraphPlotters();
+	public Graph[] getGraph();
 
 	/**
-	 * Adds a graph plotter to this layer.
+	 * Adds a graph to this layer.
 	 * 
-	 * @param plotter
-	 *            the plotter to be add.
+	 * @param graph
+	 *            the graoh to be add.
 	 */
 	@Hierarchy(HierarchyOp.ADD)
-	public void addGraphPlotter(GraphPlotter plotter);
+	public void addGraph(Graph graph);
 
 	/**
-	 * Remove the graph plotter from this layer.
+	 * Remove the graph from this layer.
 	 * 
-	 * @param plotter
-	 *            the plotter to be removed
+	 * @param graph
+	 *            the graph to be removed
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeGraphPlotter(GraphPlotter plotter);
+	public void removeGraph(Graph graph);
 
 	/**
 	 * Returns the annotation.

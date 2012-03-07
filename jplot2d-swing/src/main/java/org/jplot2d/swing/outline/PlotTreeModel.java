@@ -28,7 +28,7 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.Element;
-import org.jplot2d.element.GraphPlotter;
+import org.jplot2d.element.Graph;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Annotation;
 import org.jplot2d.element.Plot;
@@ -111,9 +111,9 @@ public class PlotTreeModel implements TreeModel {
 				return arm.getLockGroup();
 			}
 		} else if (parent instanceof Layer) {
-			// x range manager + y range manager + graph plotters
+			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			int gpNum = layer.getGraphPlotters().length;
+			int gpNum = layer.getGraph().length;
 			int markerNum = layer.getAnnotations().length;
 			if (index == 0) {
 				return layer.getXAxisTransform();
@@ -123,14 +123,14 @@ public class PlotTreeModel implements TreeModel {
 			}
 			int start = 2;
 			if (start <= index && index < start + gpNum) {
-				return layer.getGraphPlotter(index - start);
+				return layer.getGraph(index - start);
 			}
 			start += gpNum;
 			if (start <= index && index < start + markerNum) {
 				return layer.getAnnotation(index - start);
 			}
-		} else if (parent instanceof GraphPlotter) {
-			GraphPlotter gp = (GraphPlotter) parent;
+		} else if (parent instanceof Graph) {
+			Graph gp = (Graph) parent;
 			if (index == 0) {
 				return gp.getLegendItem();
 			}
@@ -158,12 +158,12 @@ public class PlotTreeModel implements TreeModel {
 			// axis lock manager
 			return 1;
 		} else if (parent instanceof Layer) {
-			// x range manager + y range manager + graph plotters
+			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			int gpNum = layer.getGraphPlotters().length;
+			int gpNum = layer.getGraph().length;
 			int markerNum = layer.getAnnotations().length;
 			return 2 + gpNum + markerNum;
-		} else if (parent instanceof GraphPlotter) {
+		} else if (parent instanceof Graph) {
 			// legend item
 			return 1;
 		}
@@ -239,9 +239,9 @@ public class PlotTreeModel implements TreeModel {
 				return 0;
 			}
 		} else if (parent instanceof Layer) {
-			// x range manager + y range manager + graph plotters
+			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			GraphPlotter[] plotters = layer.getGraphPlotters();
+			Graph[] graphs = layer.getGraph();
 			Annotation[] markers = layer.getAnnotations();
 			if (child == layer.getXAxisTransform()) {
 				return 0;
@@ -250,8 +250,8 @@ public class PlotTreeModel implements TreeModel {
 				return 1;
 			}
 			int start = 2;
-			for (int i = 0; i < plotters.length; i++) {
-				if (plotters[i] == child) {
+			for (int i = 0; i < graphs.length; i++) {
+				if (graphs[i] == child) {
 					return start + i;
 				}
 			}
@@ -261,9 +261,9 @@ public class PlotTreeModel implements TreeModel {
 					return start + i;
 				}
 			}
-		} else if (parent instanceof GraphPlotter) {
+		} else if (parent instanceof Graph) {
 			// legend item
-			if (child == ((GraphPlotter) parent).getLegendItem()) {
+			if (child == ((Graph) parent).getLegendItem()) {
 				return 0;
 			}
 		}
@@ -273,7 +273,7 @@ public class PlotTreeModel implements TreeModel {
 	public boolean isLeaf(Object node) {
 		if (node instanceof Plot || node instanceof Axis || node instanceof AxisTickManager
 				|| node instanceof AxisTransform || node instanceof Layer
-				|| node instanceof GraphPlotter) {
+				|| node instanceof Graph) {
 			return false;
 		} else {
 			return true;
