@@ -62,14 +62,14 @@ public class AA518L8Fig3 {
 		Axis xaxis = ef.createAxis();
 		xaxis.getTitle().setText("r (cm)");
 		xaxis.getTitle().setFontScale(1);
-		xaxis.getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		xaxis.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		xaxis.getTickManager().getAxisTransform().setRange(new Range.Double(5e13, 2.5e17));
 
 		Axis xaxisTop = ef.createAxis();
 		xaxisTop.setPosition(AxisPosition.POSITIVE_SIDE);
 		xaxisTop.getTitle().setText("r(\u2033)");
 		xaxisTop.getTitle().setFontScale(1);
-		xaxisTop.getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		xaxisTop.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		xaxisTop.getTickManager().getAxisTransform().setRange(new Range.Double(2.8e-2, 2e2));
 		xaxisTop.getTickManager().setLabelFormat("%.0m");
 
@@ -77,7 +77,7 @@ public class AA518L8Fig3 {
 		yaxisLeft.setColor(Color.RED);
 		yaxisLeft.getTitle().setText("X");
 		yaxisLeft.getTitle().setFontScale(1);
-		yaxisLeft.getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		yaxisLeft.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		yaxisLeft.getTickManager().getAxisTransform().setRange(new Range.Double(3e-10, 7e-7));
 
 		Axis yaxisRight = ef.createAxis();
@@ -85,7 +85,7 @@ public class AA518L8Fig3 {
 		yaxisRight.setPosition(AxisPosition.POSITIVE_SIDE);
 		yaxisRight.getTitle().setText("$\\mathrm{T_K}$");
 		yaxisRight.getTitle().setFontScale(1);
-		yaxisRight.getTickManager().getAxisTransform().setType(TransformType.LINEAR);
+		yaxisRight.getTickManager().getAxisTransform().setTransform(TransformType.LINEAR);
 		yaxisRight.getTickManager().getAxisTransform().setRange(new Range.Double(0, 1200));
 		yaxisRight.getTickManager().setTickInterval(500);
 

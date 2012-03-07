@@ -275,11 +275,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * update tick algorithm when axis type or tick transform changed.
 	 */
 	private void updateTickAlgorithm() {
-		TickAlgorithm ta = axisTransform.getAxisType().getTickAlgorithm(axisTransform.getType(),
+		TickAlgorithm ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(),
 				getTickTransform());
 		if (ta == null) {
 			setTickTransform(null);
-			ta = axisTransform.getAxisType().getTickAlgorithm(axisTransform.getType(), null);
+			ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(), null);
 		}
 		setTickAlgorithm(ta);
 	}
@@ -565,9 +565,9 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			_trfChanged = true;
 			this.axisNormalTransform = va.getNormalTransform();
 		}
-		if (va.getAxisType().getCircularRange() != this.circularRange) {
+		if (va.getType().getCircularRange() != this.circularRange) {
 			_axisCircularRangeChanged = true;
-			this.circularRange = va.getAxisType().getCircularRange();
+			this.circularRange = va.getType().getCircularRange();
 		}
 
 		for (AxisEx axis : axes) {

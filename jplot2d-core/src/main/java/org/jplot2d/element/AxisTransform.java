@@ -42,7 +42,7 @@ public interface AxisTransform extends Element {
 	 * @return the type of this axis
 	 */
 	@Property(order = 0)
-	public AxisType getAxisType();
+	public AxisType getType();
 
 	/**
 	 * Set the type of the axis. An axis type can only be changed when it dosn't lock with other
@@ -51,7 +51,7 @@ public interface AxisTransform extends Element {
 	 * @param type
 	 *            the axis type
 	 */
-	public void setAxisType(AxisType type);
+	public void setType(AxisType type);
 
 	/**
 	 * Returns the transform type
@@ -59,7 +59,7 @@ public interface AxisTransform extends Element {
 	 * @return the transform type
 	 */
 	@Property(order = 1)
-	public TransformType getType();
+	public TransformType getTransform();
 
 	/**
 	 * Sets the transform type
@@ -67,7 +67,7 @@ public interface AxisTransform extends Element {
 	 * @param txfType
 	 *            the transform type
 	 */
-	public void setType(TransformType txfType);
+	public void setTransform(TransformType txfType);
 
 	/**
 	 * Returns if the displaying is "inverted": (right-left) for abscissa, (top-bottom) for
