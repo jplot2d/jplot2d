@@ -59,9 +59,9 @@ public class FastUpdate {
 		ArrayPair ap0 = new ArrayPair(new double[] { 0 }, new double[] { 0 });
 		ArrayPair ap1 = new ArrayPair(new double[] { 0 }, new double[] { n });
 		XYGraph graph0 = ElementFactory.getInstance()
-				.createXYGraphPlotter(ap0, "lineA");
+				.createXYGraph(ap0, "lineA");
 		XYGraph graph1 = ElementFactory.getInstance()
-				.createXYGraphPlotter(ap1, "lineB");
+				.createXYGraph(ap1, "lineB");
 		graph0.setLineVisible(false);
 		graph0.setSymbolVisible(true);
 		graph0.setSymbolShape(SymbolShape.SQUARE);

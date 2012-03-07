@@ -97,7 +97,7 @@ public class AA518L8Fig3 {
 		// Tk Layer
 		double[] tkx = new double[] { 1.1e14, 1e15, 1e16, 1e17 };
 		double[] tky = new double[] { 1200, 360, 80, 0 };
-		Layer tkl = ef.createLayer(ef.createXYGraphPlotter(tkx, tky));
+		Layer tkl = ef.createLayer(ef.createXYGraph(tkx, tky));
 		tkl.setColor(Color.BLUE);
 		Annotation tka = ef.createSymbolAnnotation(5e14, 600, "T$\\mathrm{_K}$");
 		tka.setColor(Color.BLUE);
@@ -108,7 +108,7 @@ public class AA518L8Fig3 {
 		// SiC2
 		double[] scx = new double[] { 5e13, 1e16, 2e16, 7e16, 1e17, 2.1e17 };
 		double[] scy = new double[] { 2e-7, 2e-7, 5e-7, 2e-7, 5e-8, 3e-10 };
-		Layer scl = ef.createLayer(ef.createXYGraphPlotter(scx, scy));
+		Layer scl = ef.createLayer(ef.createXYGraph(scx, scy));
 		scl.setColor(Color.RED);
 		Annotation sca = ef.createSymbolAnnotation(2e16, 1e-7, "SiC$\\mathrm{_2}$");
 		sca.setColor(Color.RED);
@@ -119,7 +119,7 @@ public class AA518L8Fig3 {
 		// SiC2 LTE
 		double[] ltex = new double[] { 5e13, 6e13, 9e13, 1.3e14, 2e14, 2.1e14, 2.7e14 };
 		double[] ltey = new double[] { 5e-8, 3e-7, 1.8e-7, 3e-7, 4e-8, 6e-8, 3e-10 };
-		Layer ltel = ef.createLayer(ef.createXYGraphPlotter(ltex, ltey));
+		Layer ltel = ef.createLayer(ef.createXYGraph(ltex, ltey));
 		ltel.setColor(Color.GREEN);
 		Annotation ltea = ef.createSymbolAnnotation(7e13, 3e-9, "SiC$\\mathrm{_2}$\nLTE");
 		ltea.setColor(Color.GREEN);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -58,9 +58,9 @@ public class FillContainerSizeDemo {
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		Layer layer0 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+		Layer layer0 = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
 				new double[] { 0, 0.1, 0.4 }, null));
-		Layer layer1 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.2, 0.4 },
+		Layer layer1 = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.2, 0.4 },
 				new double[] { 0, 0.3, 0.4 }, "lineB"));
 		plot.addLayer(layer0, xaxis, yaxis);
 		plot.addLayer(layer1, xaxis, yaxis);

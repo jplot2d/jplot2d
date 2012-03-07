@@ -113,7 +113,7 @@ public class AA518L53Fig2 {
 		// solid line
 		double[] solx = { 10, 2000000 };
 		double[] soly = { 0.09, 900 };
-		Graph sol = ef.createXYGraphPlotter(solx, soly);
+		Graph sol = ef.createXYGraph(solx, soly);
 		sol.setColor(Color.BLUE);
 		sol.getLegendItem().setVisible(false);
 		ulayer.addGraph(sol);
@@ -121,7 +121,7 @@ public class AA518L53Fig2 {
 		// dashed line
 		double[] dlx = { 10, 2000000 };
 		double[] dly = { 0.1, 820 };
-		XYGraph dl = ef.createXYGraphPlotter(dlx, dly);
+		XYGraph dl = ef.createXYGraph(dlx, dly);
 		dl.setColor(Color.BLUE);
 		dl.setLineStroke(ef.createStroke(1, new float[] { 1, 3 }));
 		dl.getLegendItem().setVisible(false);
@@ -131,7 +131,7 @@ public class AA518L53Fig2 {
 		double[] xx = { 15 };
 		double[] xy = { 0.1059 };
 		double[] xye = { 0.0212 };
-		XYGraph xl = ef.createXYGraphPlotter(xx, xy, null, null, xye, xye);
+		XYGraph xl = ef.createXYGraph(xx, xy, null, null, xye, xye);
 		xl.setColor(Color.GREEN);
 		xl.setLineVisible(false);
 		xl.setSymbolVisible(true);
@@ -143,7 +143,7 @@ public class AA518L53Fig2 {
 		double[] gx = { 24.9, 59.9, 99.8 };
 		double[] gy = { 0.187, 0.546, 0.559 };
 		double[] gye = { 0.0281, 0.0819, 0.0839 };
-		XYGraph gl = ef.createXYGraphPlotter(gx, gy, null, null, gye, gye);
+		XYGraph gl = ef.createXYGraph(gx, gy, null, null, gye, gye);
 		gl.setColor(Color.GREEN);
 		gl.setLineVisible(false);
 		gl.setSymbolVisible(true);
@@ -155,7 +155,7 @@ public class AA518L53Fig2 {
 		double[] sx = { 23.67, 71.3, 156 };
 		double[] sy = { 0.171, 0.455, 0.582 };
 		double[] sye = { 0.013, 0.0092, 0.01 };
-		XYGraph sl = ef.createXYGraphPlotter(sx, sy, null, null, sye, sye);
+		XYGraph sl = ef.createXYGraph(sx, sy, null, null, sye, sye);
 		sl.setColor(Color.GREEN);
 		sl.setLineVisible(false);
 		sl.setSymbolVisible(true);
@@ -167,7 +167,7 @@ public class AA518L53Fig2 {
 		double[] hx = { 449, 848 };
 		double[] hy = { 1.32, 2.48 };
 		double[] hye = { 0.396, 0.496 };
-		XYGraph hl = ef.createXYGraphPlotter(hx, hy, null, null, hye, hye);
+		XYGraph hl = ef.createXYGraph(hx, hy, null, null, hye, hye);
 		hl.setColor(Color.GREEN);
 		hl.setLineVisible(false);
 		hl.setSymbolVisible(true);
@@ -179,7 +179,7 @@ public class AA518L53Fig2 {
 		double[] wx = { 3180, 4910, 7300, 9070, 13000 };
 		double[] wy = { 6.2, 9.7, 13.3, 15.5, 19.7 };
 		double[] wye = { 0.4, 0.2, 0.1, 0.09, 0.06 };
-		XYGraph wl = ef.createXYGraphPlotter(wx, wy, null, null, wye, wye);
+		XYGraph wl = ef.createXYGraph(wx, wy, null, null, wye, wye);
 		wl.setColor(Color.GREEN);
 		wl.setLineVisible(false);
 		wl.setSymbolVisible(true);
@@ -191,7 +191,7 @@ public class AA518L53Fig2 {
 		double[] cx = { 20130, 36540, 61730, 180200, 908400 };
 		double[] cy = { 26.4, 45.8, 70.1, 136.2, 327 };
 		double[] cye = { 2.643, 3.66, 5.61, 10.89, 16.38 };
-		XYGraph cl = ef.createXYGraphPlotter(cx, cy, null, null, cye, cye);
+		XYGraph cl = ef.createXYGraph(cx, cy, null, null, cye, cye);
 		cl.setColor(Color.GREEN);
 		cl.setLineVisible(false);
 		cl.setSymbolVisible(true);
@@ -203,7 +203,7 @@ public class AA518L53Fig2 {
 		double[] tx = { 100, 160, 250, 350, 500 };
 		double[] ty = { 0.517, 0.673, 0.86, 1.074, 1.426 };
 		double[] tye = { 0.129, 0.168, 0.215, 0.267, 0.375 };
-		XYGraph tl = ef.createXYGraphPlotter(tx, ty, null, null, tye, tye);
+		XYGraph tl = ef.createXYGraph(tx, ty, null, null, tye, tye);
 		tl.setColor(Color.RED);
 		tl.setLineVisible(false);
 		tl.setSymbolVisible(true);
@@ -223,13 +223,13 @@ public class AA518L53Fig2 {
 		// residual
 		double[] slrx = { 10, 1000 };
 		double[] slry = { 0, 0 };
-		XYGraph slrl = ef.createXYGraphPlotter(slrx, slry);
+		XYGraph slrl = ef.createXYGraph(slrx, slry);
 		slrl.setColor(Color.BLUE);
 		slrl.getLegendItem().setVisible(false);
 		llayer.addGraph(slrl);
 
 		double[] xry = { -0.01 };
-		XYGraph xrl = ef.createXYGraphPlotter(xx, xry, null, null, xye, xye);
+		XYGraph xrl = ef.createXYGraph(xx, xry, null, null, xye, xye);
 		xrl.setColor(Color.GREEN);
 		xrl.setLineVisible(false);
 		xrl.setSymbolVisible(true);
@@ -238,7 +238,7 @@ public class AA518L53Fig2 {
 		llayer.addGraph(xrl);
 
 		double[] gry = { 0.01, 0.2, 0.06 };
-		XYGraph grl = ef.createXYGraphPlotter(gx, gry, null, null, gye, gye);
+		XYGraph grl = ef.createXYGraph(gx, gry, null, null, gye, gye);
 		grl.setColor(Color.GREEN);
 		grl.setLineVisible(false);
 		grl.setSymbolVisible(true);
@@ -247,7 +247,7 @@ public class AA518L53Fig2 {
 		llayer.addGraph(grl);
 
 		double[] sry = { 0.0, 0.07, -0.11 };
-		XYGraph srl = ef.createXYGraphPlotter(sx, sry);
+		XYGraph srl = ef.createXYGraph(sx, sry);
 		srl.setColor(Color.GREEN);
 		srl.setLineVisible(false);
 		srl.setSymbolVisible(true);
@@ -256,7 +256,7 @@ public class AA518L53Fig2 {
 		llayer.addGraph(srl);
 
 		double[] hry = { -0.23, -0.03 };
-		XYGraph hrl = ef.createXYGraphPlotter(hx, hry, null, null, hye, hye);
+		XYGraph hrl = ef.createXYGraph(hx, hry, null, null, hye, hye);
 		hrl.setColor(Color.GREEN);
 		hrl.setLineVisible(false);
 		hrl.setSymbolVisible(true);
@@ -265,7 +265,7 @@ public class AA518L53Fig2 {
 		llayer.addGraph(hrl);
 
 		double[] trry = { 0.01, -0.03, -0.13, -0.21, -0.26 };
-		XYGraph trl = ef.createXYGraphPlotter(tx, trry, null, null, tye, tye);
+		XYGraph trl = ef.createXYGraph(tx, trry, null, null, tye, tye);
 		trl.setColor(Color.RED);
 		trl.setLineVisible(false);
 		trl.setSymbolVisible(true);

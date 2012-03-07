@@ -67,7 +67,7 @@ public class ExportFileDemo {
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		XYGraph graph = ElementFactory.getInstance().createXYGraphPlotter(x, y, "lineA");
+		XYGraph graph = ElementFactory.getInstance().createXYGraph(x, y, "lineA");
 		graph.setFillEnabled(true);
 		LineHatchPaint hatch = new LineHatchPaint(Color.RED, ElementFactory.getInstance()
 				.createStroke(1, new float[] { 6, 2, 1, 2 }), 45, 10);

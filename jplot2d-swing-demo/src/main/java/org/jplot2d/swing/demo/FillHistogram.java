@@ -41,7 +41,7 @@ public class FillHistogram {
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		XYGraph graph = ElementFactory.getInstance().createXYGraphPlotter(x, y);
+		XYGraph graph = ElementFactory.getInstance().createXYGraph(x, y);
 		graph.setChartType(ChartType.HISTOGRAM);
 		graph.setSymbolVisible(true);
 		graph.setSymbolShape(SymbolShape.FCIRCLE);
