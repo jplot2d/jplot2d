@@ -35,7 +35,7 @@ lspx[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
 lspx[0].title.fontSize = 12
 lspx[1].labelVisible = 0
 
-lspy = axes(2, range=(-0.7, 0.7), number=3)
+lspy = axes(2, range=(-0.7, 0.7), ticks=3)
 lspy[0].title.text = "residual [Jy]"
 lspy[0].title.fontSize = 12
 lspy[1].labelVisible = 0

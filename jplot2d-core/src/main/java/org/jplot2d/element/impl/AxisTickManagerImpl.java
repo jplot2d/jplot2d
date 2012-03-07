@@ -342,114 +342,114 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
-	public boolean getAutoAdjustNumber() {
+	public boolean getAutoAdjustTicks() {
 		return autoAdjustNumber;
 	}
 
-	public void setAutoAdjustNumber(boolean flag) {
+	public void setAutoAdjustTicks(boolean flag) {
 		this.autoAdjustNumber = flag;
 		autoAdjustNumberChanged = true;
 	}
 
-	public int getNumber() {
+	public int getTicks() {
 		return tickNumber;
 	}
 
-	public void setNumber(int tickNumber) {
+	public void setTicks(int tickNumber) {
 		this.tickNumber = tickNumber;
 		propNumberChanged = true;
 	}
 
-	public boolean getAutoInterval() {
+	public boolean getAutoTickInterval() {
 		return autoInterval;
 	}
 
-	public void setAutoInterval(boolean autoInterval) {
+	public void setAutoTickInterval(boolean autoInterval) {
 		if (this.autoInterval != autoInterval) {
 			this.autoInterval = autoInterval;
 			autoIntervalChanged = true;
 		}
 	}
 
-	public double getInterval() {
+	public double getTickInterval() {
 		return interval;
 	}
 
-	public double getOffset() {
+	public double getTickOffset() {
 		return offset;
 	}
 
-	public void setInterval(double interval) {
+	public void setTickInterval(double interval) {
 		if (Double.isNaN(interval) || Double.isInfinite(interval)) {
 			throw new IllegalArgumentException("tick interval can not be NaN or Infinit.");
 		}
 		if (this.interval != interval) {
 			this.interval = interval;
 			intervalChanged = true;
-			setAutoInterval(false);
+			setAutoTickInterval(false);
 		}
 
 	}
 
-	public void setOffset(double offset) {
+	public void setTickOffset(double offset) {
 		if (Double.isNaN(interval) || Double.isInfinite(interval)) {
 			throw new IllegalArgumentException("tick offset can not be NaN or Infinit.");
 		}
 		if (this.offset != offset) {
 			this.offset = offset;
 			intervalChanged = true;
-			setAutoInterval(false);
+			setAutoTickInterval(false);
 		}
 	}
 
-	public boolean isAutoValues() {
+	public boolean isAutoTickValues() {
 		return autoValues;
 	}
 
-	public void setAutoValues(boolean atv) {
+	public void setAutoTickValues(boolean atv) {
 		if (this.autoValues != atv) {
 			this.autoValues = atv;
 			this.autoValuesChanged = true;
 		}
 	}
 
-	public Object getFixedValues() {
+	public Object getFixedTickValues() {
 		return fixedValues;
 	}
 
-	public void setFixedValues(Object values) {
+	public void setFixedTickValues(Object values) {
 		this.fixedValues = values;
-		setAutoValues(false);
+		setAutoTickValues(false);
 	}
 
-	public Object getFixedMinorValues() {
+	public Object getFixedMinorTickValues() {
 		return fixedMinorValues;
 	}
 
-	public void setFixedMinorValues(Object minorValues) {
+	public void setFixedMinorTickValues(Object minorValues) {
 		this.fixedMinorValues = minorValues;
 	}
 
-	public boolean isAutoMinorNumber() {
+	public boolean isAutoMinorTicks() {
 		return autoMinorNumber;
 	}
 
-	public void setAutoMinorNumber(boolean flag) {
+	public void setAutoMinorTicks(boolean flag) {
 		if (this.autoMinorNumber != flag) {
 			this.autoMinorNumber = flag;
 			minorNumberChanged = true;
 		}
 	}
 
-	public int getMinorNumber() {
+	public int getMinorTicks() {
 		return minorNumber;
 	}
 
-	public void setMinorNumber(int minors) {
+	public void setMinorTicks(int minors) {
 		if (this.minorNumber != minors) {
 			this.minorNumber = minors;
 			minorNumberChanged = true;
-			setAutoMinorNumber(false);
+			setAutoMinorTicks(false);
 		}
 	}
 
@@ -520,11 +520,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		this.labelInterval = n;
 	}
 
-	public Object getValues() {
+	public Object getTickValues() {
 		return values;
 	}
 
-	public Object getMinorValues() {
+	public Object getMinorTickValues() {
 		return minorValues;
 	}
 

@@ -87,7 +87,7 @@ public class AA518L8Fig3 {
 		yaxisRight.getTitle().setFontScale(1);
 		yaxisRight.getTickManager().getAxisTransform().setType(TransformType.LINEAR);
 		yaxisRight.getTickManager().getAxisTransform().setRange(new Range.Double(0, 1200));
-		yaxisRight.getTickManager().setInterval(500);
+		yaxisRight.getTickManager().setTickInterval(500);
 
 		p.addXAxis(xaxis);
 		p.addXAxis(xaxisTop);

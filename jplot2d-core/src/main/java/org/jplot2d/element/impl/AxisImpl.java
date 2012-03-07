@@ -696,8 +696,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private void drawTicks(Graphics2D g) {
 
-		Object tvs = getTickManager().getValues();
-		Object mvs = getTickManager().getMinorValues();
+		Object tvs = getTickManager().getTickValues();
+		Object mvs = getTickManager().getMinorTickValues();
 		int tvslen = Array.getLength(tvs);
 		int mvslen = Array.getLength(mvs);
 
@@ -771,7 +771,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	 */
 	private void drawLabels(Graphics2D g, VAlign vertalign, HAlign horzalign) {
 
-		Object tvs = getTickManager().getValues();
+		Object tvs = getTickManager().getTickValues();
 		MathElement[] labels = getTickManager().getLabelModels();
 
 		Color color = getLabelColor();

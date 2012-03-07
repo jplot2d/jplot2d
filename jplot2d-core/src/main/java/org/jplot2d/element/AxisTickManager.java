@@ -32,7 +32,7 @@ import org.jplot2d.util.Range;
  * <p>
  * The tick decision rules
  * <ol>
- * <li>if autoValues is false, the values can be set by {@link #setFixedValues(double[])}</li>
+ * <li>if autoValues is false, the values can be set by {@link #setFixedTickValues(double[])}</li>
  * <li>if autoInterval is false, the interval can be set by {@link #setTickInterval(double)}</li>
  * <li>the interval is calculated according to tick number. If autoAdjustNumber is true, the number
  * can be adjusted to derive better values.</li>
@@ -96,12 +96,12 @@ public interface AxisTickManager extends Element {
 
 	/**
 	 * Returns <code>true</code> if tick values is auto calculated from interval, or
-	 * <code>false</code> if tick values is assigned by {@link #setFixedValues(double[])}.
+	 * <code>false</code> if tick values is assigned by {@link #setFixedTickValues(double[])}.
 	 * 
 	 * @return <code>true</code> if tick values is auto calculated.
 	 */
 	@Property(order = 10)
-	public boolean isAutoValues();
+	public boolean isAutoTickValues();
 
 	/**
 	 * Set to <code>true</code> to indicate the tick values need to be auto calculated or
@@ -110,16 +110,16 @@ public interface AxisTickManager extends Element {
 	 * @param atv
 	 *            the flag
 	 */
-	public void setAutoValues(boolean atv);
+	public void setAutoTickValues(boolean atv);
 
 	/**
-	 * Return an array of <code>double</code> representing the fixed tick positions set by
-	 * {@link #setFixedValues(Object)}
+	 * Return an array of number to representing the fixed tick positions set by
+	 * {@link #setFixedTickValues(Object)}
 	 * 
 	 * @return the labels of the ticks
 	 */
 	@Property(order = 11)
-	public Object getFixedValues();
+	public Object getFixedTickValues();
 
 	/**
 	 * Set an array of values that ticks will show. If the given values is null or a empty array, no
@@ -131,28 +131,28 @@ public interface AxisTickManager extends Element {
 	 * @param values
 	 *            the values in user unit where ticks are displayed.
 	 */
-	public void setFixedValues(Object values);
+	public void setFixedTickValues(Object values);
 
 	/**
 	 * Return an array of <code>double</code> representing the fixed minor tick positions set by
-	 * {@link #setFixedMinorValues(Object)}
+	 * {@link #setFixedMinorTickValues(Object)}
 	 * 
 	 * @return the labels of the ticks
 	 */
 	@Property(order = 12)
-	public Object getFixedMinorValues();
+	public Object getFixedMinorTickValues();
 
 	/**
 	 * Set an array of <code>double</code>. If the given values is null or a empty array, no tick
 	 * will be drawn.
 	 * <p>
-	 * This method <b>must</b> be called after {@link #setFixedValues(double[])} is called.
-	 * {@link #setFixedValues(double[])} calling will clear the minor values.
+	 * This method <b>must</b> be called after {@link #setFixedTickValues(double[])} is called.
+	 * {@link #setFixedTickValues(double[])} calling will clear the minor values.
 	 * 
 	 * @param values
 	 *            the values in user unit where minor ticks are displayed.
 	 */
-	public void setFixedMinorValues(Object minorValues);
+	public void setFixedMinorTickValues(Object minorValues);
 
 	/**
 	 * Returns true if the tick interval is auto calculated from tick number and range, or false if
@@ -161,7 +161,7 @@ public interface AxisTickManager extends Element {
 	 * @return if the tick number is auto calculated.
 	 */
 	@Property(order = 13)
-	public boolean getAutoInterval();
+	public boolean getAutoTickInterval();
 
 	/**
 	 * Set to <code>true</code> to indicate the tick interval need to be auto calculated, or
@@ -170,7 +170,7 @@ public interface AxisTickManager extends Element {
 	 * @param ati
 	 *            the flag
 	 */
-	public void setAutoInterval(boolean ati);
+	public void setAutoTickInterval(boolean ati);
 
 	/**
 	 * Return the interval in axis units between two ticks. For LOG axis, interval is the
@@ -179,7 +179,7 @@ public interface AxisTickManager extends Element {
 	 * @return the interval between two ticks
 	 */
 	@Property(order = 14)
-	public double getInterval();
+	public double getTickInterval();
 
 	/**
 	 * Set the interval in axis units between two ticks. It change the number of ticks displayed in
@@ -189,9 +189,9 @@ public interface AxisTickManager extends Element {
 	 * 
 	 * @param interval
 	 *            the interval between two major ticks
-	 * @see #setAutoInterval(Boolean)
+	 * @see #setAutoTickInterval(Boolean)
 	 */
-	public void setInterval(double interval);
+	public void setTickInterval(double interval);
 
 	/**
 	 * Return the offset of ticks.
@@ -199,25 +199,25 @@ public interface AxisTickManager extends Element {
 	 * @return the offset.
 	 */
 	@Property(order = 15)
-	public double getOffset();
+	public double getTickOffset();
 
 	/**
 	 * @param offset
 	 *            the offset of ticks
 	 */
-	public void setOffset(double offset);
+	public void setTickOffset(double offset);
 
 	/**
-	 * Returns the proposed tick number. The actual tick number may be different from the given
+	 * Returns the proposed number of ticks. The actual number may be different from the given
 	 * number, to get nice tick values.
 	 * 
 	 * @return the number of ticks
 	 */
 	@Property(order = 16)
-	public int getNumber();
+	public int getTicks();
 
 	/**
-	 * Set the proposed tick number in the axis. The actual tick number may be different from the
+	 * Set the proposed number of ticks in the axis. The actual number may be different from the
 	 * given number, to get nice tick values. If the ticks may cause the tick interval close to
 	 * precision limit, the actual ticks may be less than the given value without throw
 	 * PrecisionException.
@@ -225,7 +225,7 @@ public interface AxisTickManager extends Element {
 	 * @param tickNumber
 	 *            the number of ticks.
 	 */
-	public void setNumber(int tickNumber);
+	public void setTicks(int tickNumber);
 
 	/**
 	 * Returns true if the tick number is allowed to be automatically reduced to avoid tick label
@@ -234,7 +234,7 @@ public interface AxisTickManager extends Element {
 	 * @return if the tick number is auto calculated.
 	 */
 	@Property(order = 17)
-	public boolean getAutoAdjustNumber();
+	public boolean getAutoAdjustTicks();
 
 	/**
 	 * Set to true to allow the tick number to be automatically reduced to avoid tick label
@@ -242,7 +242,7 @@ public interface AxisTickManager extends Element {
 	 * 
 	 * @param flag
 	 */
-	public void setAutoAdjustNumber(boolean flag);
+	public void setAutoAdjustTicks(boolean flag);
 
 	/**
 	 * Returns <code>true</code> is the minor ticks number is derived from tick interval.
@@ -250,7 +250,7 @@ public interface AxisTickManager extends Element {
 	 * @return <code>true</code> is the minor ticks number is derived from tick interval.
 	 */
 	@Property(order = 18)
-	public boolean isAutoMinorNumber();
+	public boolean isAutoMinorTicks();
 
 	/**
 	 * When autoTickInterval is set to true:
@@ -267,21 +267,21 @@ public interface AxisTickManager extends Element {
 	 * <li>if tick interval is not integer, create 0 minor ticks</li>
 	 * </ul>
 	 * when autoTickInterval is set to false: minor ticks is exactly the user set by
-	 * {@link #setMinorNumber(Integer)}. The Default number is zero, means not shown by default.
+	 * {@link #setMinorTicks(Integer)}. The Default number is zero, means not shown by default.
 	 * 
 	 * @param flag
 	 */
-	public void setAutoMinorNumber(boolean flag);
+	public void setAutoMinorTicks(boolean flag);
 
 	/**
 	 * Return the number of minor ticks displayed between two major ticks. This method always
-	 * returns the number set by {@link #setMinorNumber(Integer)}, no matter if the actual number
-	 * has been adjusted.
+	 * returns the number set by {@link #setMinorTicks(Integer)}, no matter if the actual number has
+	 * been adjusted.
 	 * 
 	 * @return the number of minor ticks displayed
 	 */
 	@Property(order = 19)
-	public int getMinorNumber();
+	public int getMinorTicks();
 
 	/**
 	 * Set the number of minor ticks displayed between two major ticks. The actual number may be
@@ -292,7 +292,7 @@ public interface AxisTickManager extends Element {
 	 * @param minors
 	 *            the number of minor ticks displayed
 	 */
-	public void setMinorNumber(int minors);
+	public void setMinorTicks(int minors);
 
 	/**
 	 * Return an array of number representing the tick positions shown in the axis.
@@ -300,7 +300,7 @@ public interface AxisTickManager extends Element {
 	 * @return the values of the ticks
 	 */
 	@Property(order = 20)
-	public Object getValues();
+	public Object getTickValues();
 
 	/**
 	 * Return an array of number representing the minor tick positions shown in the axis.
@@ -308,7 +308,7 @@ public interface AxisTickManager extends Element {
 	 * @return the values of the ticks
 	 */
 	@Property(order = 21)
-	public Object getMinorValues();
+	public Object getMinorTickValues();
 
 	/* =========================== Labels ============================= */
 
@@ -404,7 +404,7 @@ public interface AxisTickManager extends Element {
 	 * If the tick is autoValues mode (a.k.a. no fixedValues assigned), the given fixedLabels will
 	 * substitute the auto labels of visible ticks.
 	 * 
-	 * @see #setFixedValues(Object)
+	 * @see #setFixedTickValues(Object)
 	 * @param labels
 	 *            the new labels to be displayed in the ticks
 	 */

@@ -12,7 +12,7 @@ xaxes = axes(2, tickSide=AxisTickSide.OUTWARD, range=Range.Double(0.8, 2.2))
 xaxes[0].title.text = "S$_100$/S$_24$"
 xaxes[1].labelVisible = 0
 
-yaxes = axes(2, range=Range.Double(0, 5.2), tickSide=AxisTickSide.OUTWARD, interval=1, autoMinorNumber=0)
+yaxes = axes(2, range=Range.Double(0, 5.2), tickSide=AxisTickSide.OUTWARD, tickInterval=1, autoMinorTicks=0)
 yaxes[0].title.text = "SFR$_\\mathrm{FIR}$/SFR$_\\mathrm{24\\microm}$"
 yaxes[1].labelVisible = 0
 

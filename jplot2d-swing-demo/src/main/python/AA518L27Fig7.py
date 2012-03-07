@@ -9,11 +9,11 @@ pf.size = (480, 360)
 pf.visible = 1
 
 # Axes
-xaxes = axes(2, range=(0, 4), interval=1, minorNumber=9)
+xaxes = axes(2, range=(0, 4), tickInterval=1, minorTicks=9)
 xaxes[0].title.text = "z"
 xaxes[1].labelVisible = 0
 
-yaxes = axes(2, type=TransformType.LOGARITHMIC, range=(0.4, 7), interval=1)
+yaxes = axes(2, type=TransformType.LOGARITHMIC, range=(0.4, 7), tickInterval=1)
 yaxes[0].title.text = "$\\mathrm{S_160/S_100}$"
 yaxes[1].labelVisible = 0
 
