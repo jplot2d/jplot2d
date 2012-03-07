@@ -39,7 +39,9 @@ public class GridLayoutDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		ElementFactory ef = ElementFactory.getInstance();
+
+		Plot plot = ef.createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 		plot.setLayoutDirector(new GridLayoutDirector());
 
@@ -47,31 +49,31 @@ public class GridLayoutDemo {
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
 		xaxis.getTitle().setText("x axis");
 		yaxis.getTitle().setText("y axis");
 
-		Plot sp0 = ElementFactory.getInstance().createSubplot();
-		Layer l0 = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
+		Plot sp0 = ef.createSubplot();
+		Layer l0 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }));
 		sp0.addXAxis(xaxis);
 		sp0.addYAxis(yaxis);
-		sp0.addLayer(l0, xaxis.getTickManager().getAxisTransform(), yaxis
-				.getTickManager().getAxisTransform());
+		sp0.addLayer(l0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
+				.getAxisTransform());
 
-		Axis xaxis1 = ElementFactory.getInstance().createAxis();
-		Axis yaxis1 = ElementFactory.getInstance().createAxis();
+		Axis xaxis1 = ef.createAxis();
+		Axis yaxis1 = ef.createAxis();
 		xaxis1.getTitle().setText("x axis");
 		yaxis1.getTitle().setText("y axis");
 
-		Plot sp1 = ElementFactory.getInstance().createSubplot();
-		Layer nestLayer = ElementFactory.getInstance().createLayer(
-				new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 });
+		Plot sp1 = ef.createSubplot();
+		Layer nestLayer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+				new double[] { 0, 0.1, 0.4 }));
 		sp1.addXAxis(xaxis1);
 		sp1.addYAxis(yaxis1);
-		sp1.addLayer(nestLayer, xaxis1.getTickManager().getAxisTransform(),
-				yaxis1.getTickManager().getAxisTransform());
+		sp1.addLayer(nestLayer, xaxis1.getTickManager().getAxisTransform(), yaxis1.getTickManager()
+				.getAxisTransform());
 
 		plot.addSubplot(sp0, new GridConstraint(0, 0));
 		plot.addSubplot(sp1, new GridConstraint(1, 0));

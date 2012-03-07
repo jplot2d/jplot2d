@@ -318,29 +318,8 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public Layer createLayer(double[] xarray, double[] yarray) {
-		return this.createLayer(new ArrayPair(xarray, yarray));
-	}
-
-	public Layer createLayer(double[] xarray, double[] yarray, String name) {
-		return this.createLayer(new ArrayPair(xarray, yarray), name);
-	}
-
-	public Layer createLayer(ArrayPair xy) {
-		return this.createLayer(new XYGraph(xy));
-	}
-
-	public Layer createLayer(ArrayPair xy, String name) {
-		return this.createLayer(new XYGraph(xy), name);
-	}
-
-	public Layer createLayer(XYGraph graph) {
-		return createLayer(graph, null);
-	}
-
-	public Layer createLayer(XYGraph graph, String name) {
+	public Layer createLayer(XYGraphPlotter plotter) {
 		Layer layer = this.createLayer();
-		XYGraphPlotter plotter = this.createXYGraphPlotter(graph, name);
 		layer.addGraphPlotter(plotter);
 		return layer;
 	}
