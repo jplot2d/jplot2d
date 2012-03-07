@@ -29,7 +29,7 @@ import org.jplot2d.element.LegendItem;
  */
 public interface LegendItemEx extends LegendItem, ElementEx {
 
-	public GraphPlotterEx getParent();
+	public GraphEx getParent();
 
 	public LegendEx getLegend();
 

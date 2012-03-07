@@ -50,15 +50,15 @@ public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx
 
 		Method method;
 		try {
-			method = GraphPlotterEx.class.getMethod("getLegendItem");
+			method = GraphEx.class.getMethod("getLegendItem");
 		} catch (NoSuchMethodException e) {
 			throw new Error(e);
 		}
 		return new InvokeStep(method);
 	}
 
-	public GraphPlotterEx getParent() {
-		return (GraphPlotterEx) super.getParent();
+	public GraphEx getParent() {
+		return (GraphEx) super.getParent();
 	}
 
 	public LegendEx getLegend() {

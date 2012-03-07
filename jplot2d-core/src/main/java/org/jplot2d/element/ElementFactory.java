@@ -43,7 +43,7 @@ import org.jplot2d.element.impl.SymbolAnnotationImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.VLineAnnotationImpl;
 import org.jplot2d.element.impl.VStripAnnotationImpl;
-import org.jplot2d.element.impl.XYGraphPlotterImpl;
+import org.jplot2d.element.impl.XYGraphImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
@@ -318,9 +318,9 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public Layer createLayer(XYGraphPlotter plotter) {
+	public Layer createLayer(XYGraph graph) {
 		Layer layer = this.createLayer();
-		layer.addGraphPlotter(plotter);
+		layer.addGraph(graph);
 		return layer;
 	}
 
@@ -339,21 +339,21 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray) {
-		return createXYGraphPlotter(new ArrayPair(xarray, yarray));
+	public XYGraph createXYGraph(double[] xarray, double[] yarray) {
+		return createXYGraph(new ArrayPair(xarray, yarray));
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray, String name) {
-		return createXYGraphPlotter(new ArrayPair(xarray, yarray), name);
+	public XYGraph createXYGraph(double[] xarray, double[] yarray, String name) {
+		return createXYGraph(new ArrayPair(xarray, yarray), name);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray,
+	public XYGraph createXYGraph(double[] xarray, double[] yarray,
 			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh) {
-		return createXYGraphPlotter(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh,
+		return createXYGraph(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh,
 				null);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(double[] xarray, double[] yarray,
+	public XYGraph createXYGraph(double[] xarray, double[] yarray,
 			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh,
 			String name) {
 		ArrayPair errorX = null;
@@ -364,53 +364,53 @@ public class ElementFactory {
 		if (yErrorLow != null && yErrorHigh != null) {
 			errorY = new ArrayPair(yErrorLow, yErrorHigh);
 		}
-		return createXYGraphPlotter(new ArrayPair(xarray, yarray), errorX, errorY, name);
+		return createXYGraph(new ArrayPair(xarray, yarray), errorX, errorY, name);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy) {
-		return createXYGraphPlotter(new XYGraphData(xy));
+	public XYGraph createXYGraph(ArrayPair xy) {
+		return createXYGraph(new XYGraphData(xy));
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, String name) {
-		return createXYGraphPlotter(new XYGraphData(xy), name);
+	public XYGraph createXYGraph(ArrayPair xy, String name) {
+		return createXYGraph(new XYGraphData(xy), name);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
-		return createXYGraphPlotter(new XYGraphData(xy, errorX, errorY));
+	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
+		return createXYGraph(new XYGraphData(xy, errorX, errorY));
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
+	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
 			String name) {
-		return createXYGraphPlotter(new XYGraphData(xy, errorX, errorY), name);
+		return createXYGraph(new XYGraphData(xy, errorX, errorY), name);
 	}
 
-	public XYGraphPlotter createXYGraphPlotter(XYGraphData graph) {
-		return createXYGraphPlotter(graph, null);
+	public XYGraph createXYGraph(XYGraphData data) {
+		return createXYGraph(data, null);
 	}
 
 	/**
-	 * Create a XYGraphPlotter with the given graph and name
+	 * Create a XYGraph with the given graph and name
 	 * 
-	 * @param graph
+	 * @param data
 	 *            the graph to be plotted
 	 * @param name
 	 *            the name
-	 * @return a XYGraphPlotter
+	 * @return a XYGraph
 	 */
-	public XYGraphPlotter createXYGraphPlotter(XYGraphData graph, String name) {
-		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
-		gp.setData(graph);
-		applyProfile(gp);
-		XYGraphPlotter gpProxy = proxy(gp, XYGraphPlotter.class);
+	public XYGraph createXYGraph(XYGraphData data, String name) {
+		XYGraphImpl graph = new XYGraphImpl();
+		graph.setData(data);
+		applyProfile(graph);
+		XYGraph gpProxy = proxy(graph, XYGraph.class);
 
-		LegendItemEx li = gp.getLegendItem();
+		LegendItemEx li = graph.getLegendItem();
 		if (name != null) {
 			li.setText(name);
 		}
 		LegendItem liProxy = proxy(li, LegendItem.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerComponent(gp, gpProxy);
+		env.registerComponent(graph, gpProxy);
 		env.registerElement(li, liProxy);
 		return gpProxy;
 	}

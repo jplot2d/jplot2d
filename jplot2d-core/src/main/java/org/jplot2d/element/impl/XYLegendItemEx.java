@@ -24,6 +24,6 @@ package org.jplot2d.element.impl;
  */
 public interface XYLegendItemEx extends LegendItemEx {
 
-	public XYGraphPlotterEx getParent();
+	public XYGraphEx getParent();
 
 }

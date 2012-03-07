@@ -277,8 +277,8 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	public void addLayer(LayerEx layer) {
 		layers.add(layer);
 		if (group.isAutoRange()) {
-			for (GraphPlotterEx plotter : ((LayerEx) layer).getGraphPlotters()) {
-				if (plotter.isVisible()) {
+			for (GraphEx graph : ((LayerEx) layer).getGraph()) {
+				if (graph.isVisible()) {
 					group.reAutoRange();
 					break;
 				}
@@ -289,8 +289,8 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	public void removeLayer(LayerEx layer) {
 		layers.remove(layer);
 		if (group.isAutoRange()) {
-			for (GraphPlotterEx plotter : ((LayerEx) layer).getGraphPlotters()) {
-				if (plotter.isVisible()) {
+			for (GraphEx graph : ((LayerEx) layer).getGraph()) {
+				if (graph.isVisible()) {
 					group.reAutoRange();
 					break;
 				}

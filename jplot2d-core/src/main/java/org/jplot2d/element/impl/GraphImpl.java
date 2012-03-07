@@ -27,13 +27,13 @@ import java.util.Map;
  * @author Jingjing Li
  * 
  */
-public abstract class GraphPlotterImpl extends ComponentImpl implements GraphPlotterEx {
+public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 
 	private static Point2D LOCATION = new Point2D.Double();
 
 	private final LegendItemEx legendItem;
 
-	protected GraphPlotterImpl(LegendItemEx legendItem) {
+	protected GraphImpl(LegendItemEx legendItem) {
 		this.legendItem = legendItem;
 		legendItem.setParent(this);
 	}
@@ -86,7 +86,7 @@ public abstract class GraphPlotterImpl extends ComponentImpl implements GraphPlo
 
 	@Override
 	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		GraphPlotterImpl result = (GraphPlotterImpl) super.copyStructure(orig2copyMap);
+		GraphImpl result = (GraphImpl) super.copyStructure(orig2copyMap);
 
 		if (orig2copyMap != null) {
 			orig2copyMap.put(getLegendItem(), result.getLegendItem());

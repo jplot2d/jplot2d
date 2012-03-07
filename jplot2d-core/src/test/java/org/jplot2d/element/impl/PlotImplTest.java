@@ -157,14 +157,14 @@ public class PlotImplTest {
 
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
-		when(layer0.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
+		when(layer0.getGraph()).thenReturn(new GraphEx[0]);
 		p.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertFalse(p.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
-		when(layer1.getGraphPlotters()).thenReturn(new GraphPlotterEx[0]);
+		when(layer1.getGraph()).thenReturn(new GraphEx[0]);
 		p.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertTrue(p.isRedrawNeeded());
@@ -312,8 +312,8 @@ public class PlotImplTest {
 		p.addYAxis(y);
 		LayerImpl layer = new LayerImpl();
 		p.addLayer(layer, x, y);
-		XYGraphPlotterImpl gp = new XYGraphPlotterImpl();
-		layer.addGraphPlotter(gp);
+		XYGraphImpl gp = new XYGraphImpl();
+		layer.addGraph(gp);
 
 		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
 		PlotImpl p2 = p.copyStructure(orig2copyMap);
@@ -343,8 +343,8 @@ public class PlotImplTest {
 		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform().getLockGroup(),
 				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform().getLockGroup()));
 		assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
-		assertSame(p2.getLayer(0).getGraphPlotter(0),
-				orig2copyMap.get(p.getLayer(0).getGraphPlotter(0)));
+		assertSame(p2.getLayer(0).getGraph(0),
+				orig2copyMap.get(p.getLayer(0).getGraph(0)));
 
 		// check parent
 		assertSame(p2, p2.getMargin().getParent());
@@ -358,7 +358,7 @@ public class PlotImplTest {
 				.getTickManager().getAxisTransform().getLockGroup().getParent());
 		assertSame(p2, p2.getYAxis(0).getParent());
 		assertSame(p2, p2.getLayer(0).getParent());
-		assertSame(p2.getLayer(0), p2.getLayer(0).getGraphPlotter(0).getParent());
+		assertSame(p2.getLayer(0), p2.getLayer(0).getGraph(0).getParent());
 		// check link
 		assertSame(p2.getLayer(0).getXAxisTransform(), p2.getXAxis(0).getTickManager()
 				.getAxisTransform());

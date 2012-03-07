@@ -93,14 +93,14 @@ def layer(*args, **kwargs):
 
     for arg in args:
         if isinstance(arg, GraphPlotter):
-            layer.addGraphPlotter(arg)
+            layer.addGraph(arg)
         else:
             raise TypeError, "Cannot add " + str(type(arg)) + " to layer."
 
     return layer
 
 
-def xygraphplotter(*args, **kwargs):
+def xygraph(*args, **kwargs):
     gp = None
     
     if len(args) == 1:
@@ -114,7 +114,7 @@ def xygraphplotter(*args, **kwargs):
             gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0], args[1]);
         elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
             and (isinstance(args[1], list) or isinstance(args[1], tuple)):
-            return xygraphplotter(args[0], args[1], 'd', **kwargs);
+            return xygraph(args[0], args[1], 'd', **kwargs);
 
     elif len(args) == 3:
         if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair) :
@@ -125,7 +125,7 @@ def xygraphplotter(*args, **kwargs):
                 gp = jplot2d_default_element_factory.createXYGraphPlotter(array(args[0], t), array(args[1], t));
 
     elif len(args) == 6:
-        return xygraphplotter(*(args + ('d',)), **kwargs)
+        return xygraph(*(args + ('d',)), **kwargs)
         
     elif len(args) == 7 and isinstance(args[6], str):
         argserror = 0

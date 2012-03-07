@@ -26,7 +26,7 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
-import org.jplot2d.element.XYGraphPlotter;
+import org.jplot2d.element.XYGraph;
 import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
@@ -67,13 +67,13 @@ public class ExportFileDemo {
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		XYGraphPlotter plotter = ElementFactory.getInstance().createXYGraphPlotter(x, y, "lineA");
-		plotter.setFillEnabled(true);
+		XYGraph graph = ElementFactory.getInstance().createXYGraphPlotter(x, y, "lineA");
+		graph.setFillEnabled(true);
 		LineHatchPaint hatch = new LineHatchPaint(Color.RED, ElementFactory.getInstance()
 				.createStroke(1, new float[] { 6, 2, 1, 2 }), 45, 10);
-		plotter.setFillPaint(hatch);
+		graph.setFillPaint(hatch);
 		Layer layer0 = ElementFactory.getInstance().createLayer();
-		layer0.addGraphPlotter(plotter);
+		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 

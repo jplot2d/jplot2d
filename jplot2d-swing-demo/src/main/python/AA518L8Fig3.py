@@ -31,7 +31,7 @@ p.addYAxis(yaxisRight)
 # Tk Layer
 tkx = 1.1e14, 1e15, 1e16, 1e17
 tky = 1200, 360, 80, 0
-tkl = layer(xygraphplotter(tkx, tky), color=BLUE)
+tkl = layer(xygraph(tkx, tky), color=BLUE)
 tka = symbolannotation(5e14, 600, "T$\\mathrm{_K}$", fontScale=1.2)
 tkl.addAnnotation(tka)
 p.addLayer(tkl, xaxis, yaxisRight)
@@ -39,7 +39,7 @@ p.addLayer(tkl, xaxis, yaxisRight)
 # SiC2
 scx = 5e13, 1e16, 2e16, 7e16, 1e17, 2.1e17
 scy = 2e-7, 2e-7, 5e-7, 2e-7, 5e-8, 3e-10
-scl = layer(xygraphplotter(scx, scy), color=RED)
+scl = layer(xygraph(scx, scy), color=RED)
 sca = symbolannotation(2e16, 1e-7, "SiC$\\mathrm{_2}$", fontScale=1.2)
 scl.addAnnotation(sca)
 p.addLayer(scl, xaxis, yaxisLeft)
@@ -47,7 +47,7 @@ p.addLayer(scl, xaxis, yaxisLeft)
 # SiC2 LTE
 ltex = 5e13, 6e13, 9e13, 1.3e14, 2e14, 2.1e14, 2.7e14
 ltey = 5e-8, 3e-7, 1.8e-7, 3e-7, 4e-8, 6e-8, 3e-10
-ltel = layer(xygraphplotter(ltex, ltey), color=GREEN)
+ltel = layer(xygraph(ltex, ltey), color=GREEN)
 ltea = symbolannotation(7e13, 3e-9, "SiC$\\mathrm{_2}$\nLTE", fontScale = 1.2)
 ltel.addAnnotation(ltea)
 p.addLayer(ltel, xaxis, yaxisLeft)

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.element.GraphPlotter;
+import org.jplot2d.element.Graph;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Annotation;
@@ -38,7 +38,7 @@ import org.jplot2d.transform.PaperTransform;
  */
 public class LayerImpl extends ContainerImpl implements LayerEx {
 
-	private List<GraphPlotterEx> plotters = new ArrayList<GraphPlotterEx>();
+	private List<GraphEx> graphs = new ArrayList<GraphEx>();
 
 	private AxisTransformEx xarm, yarm;
 
@@ -107,8 +107,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	private void redrawChildren() {
-		for (GraphPlotterEx plotter : plotters) {
-			plotter.redraw();
+		for (GraphEx graph : graphs) {
+			graph.redraw();
 		}
 		for (AnnotationEx annotation : annotations) {
 			annotation.relocate();
@@ -116,28 +116,28 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public int getComponentCount() {
-		return plotters.size();
+		return graphs.size();
 	}
 
 	public ComponentEx getComponent(int index) {
-		return plotters.get(index);
+		return graphs.get(index);
 	}
 
 	public int getIndexOfComponent(ComponentEx comp) {
-		return plotters.indexOf(comp);
+		return graphs.indexOf(comp);
 	}
 
-	public GraphPlotter getGraphPlotter(int index) {
-		return plotters.get(index);
+	public Graph getGraph(int index) {
+		return graphs.get(index);
 	}
 
-	public GraphPlotterEx[] getGraphPlotters() {
-		return plotters.toArray(new GraphPlotterEx[plotters.size()]);
+	public GraphEx[] getGraph() {
+		return graphs.toArray(new GraphEx[graphs.size()]);
 	}
 
-	public void addGraphPlotter(GraphPlotter plotter) {
-		GraphPlotterEx gp = (GraphPlotterEx) plotter;
-		plotters.add(gp);
+	public void addGraph(Graph graph) {
+		GraphEx gp = (GraphEx) graph;
+		graphs.add(gp);
 		gp.setParent(this);
 
 		// add legend item
@@ -161,9 +161,9 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public void removeGraphPlotter(GraphPlotter plotter) {
-		GraphPlotterEx gp = (GraphPlotterEx) plotter;
-		plotters.remove(gp);
+	public void removeGraph(Graph graph) {
+		GraphEx gp = (GraphEx) graph;
+		graphs.remove(gp);
 		gp.setParent(null);
 
 		// remove legend item
@@ -187,8 +187,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public int indexOf(GraphPlotterEx plotter) {
-		return plotters.indexOf(plotter);
+	public int indexOf(GraphEx graph) {
+		return graphs.indexOf(graph);
 	}
 
 	public AnnotationEx[] getAnnotations() {
@@ -219,8 +219,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (!isVisible() || isCacheable()) {
 			return false;
 		}
-		for (GraphPlotterEx gp : plotters) {
-			if (gp.isVisible() && !gp.isCacheable()) {
+		for (GraphEx graph : graphs) {
+			if (graph.isVisible() && !graph.isCacheable()) {
 				return true;
 			}
 		}
@@ -231,8 +231,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (!isVisible()) {
 			return false;
 		}
-		for (GraphPlotterEx gp : plotters) {
-			if (gp.isVisible()) {
+		for (GraphEx graph : graphs) {
+			if (graph.isVisible()) {
 				return true;
 			}
 		}
@@ -276,11 +276,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public LayerEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		LayerImpl result = (LayerImpl) super.copyStructure(orig2copyMap);
 
-		// copy plotters
-		for (GraphPlotterEx plotter : this.plotters) {
-			GraphPlotterEx plotterCopy = (GraphPlotterEx) plotter.copyStructure(orig2copyMap);
-			plotterCopy.setParent(result);
-			result.plotters.add(plotterCopy);
+		// copy graphs
+		for (GraphEx graph : this.graphs) {
+			GraphEx graphCopy = (GraphEx) graph.copyStructure(orig2copyMap);
+			graphCopy.setParent(result);
+			result.graphs.add(graphCopy);
 		}
 
 		// copy annotations
