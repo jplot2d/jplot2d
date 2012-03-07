@@ -109,12 +109,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		if (arms.size() == 1) {
 			parent = axis;
 			prim = axis;
-			type = axis.getType();
+			type = axis.getTransform();
 		} else {
 			parent = null;
 		}
 
-		if (type != axis.getType()) {
+		if (type != axis.getTransform()) {
 			type = null;
 		}
 
@@ -132,7 +132,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		} else if (arms.size() == 1) {
 			parent = arms.get(0);
 			prim = arms.get(0);
-			type = prim.getType();
+			type = prim.getTransform();
 		} else {
 			parent = null;
 
@@ -146,9 +146,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				TransformType utype = null;
 				for (AxisTransformEx ax : arms) {
 					if (utype == null) {
-						utype = ax.getType();
+						utype = ax.getTransform();
 					} else {
-						if (utype != ax.getType()) {
+						if (utype != ax.getTransform()) {
 							utype = null;
 							break;
 						}
@@ -262,7 +262,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		/* find the physical intersected range of valid world range among layers */
 		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		for (AxisTransformEx ax : arms) {
-			Range aprange = vtMap.get(ax).convToNR(ax.getAxisType().getBoundary(ax.getType()));
+			Range aprange = vtMap.get(ax).convToNR(ax.getType().getBoundary(ax.getTransform()));
 			pbnds = pbnds.intersect(aprange);
 		}
 
@@ -280,8 +280,8 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 				if (layer.getXAxisTransform() == ax) {
 					boolean yar = layer.getYAxisTransform().getLockGroup().isAutoRange();
-					Range yRange = (yar) ? layer.getYAxisTransform().getAxisType()
-							.getBoundary(ax.getType()) : layer.getYAxisTransform().getRange();
+					Range yRange = (yar) ? layer.getYAxisTransform().getType()
+							.getBoundary(ax.getTransform()) : layer.getYAxisTransform().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
@@ -291,8 +291,8 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					}
 				} else if (layer.getYAxisTransform() == ax) {
 					boolean xar = layer.getXAxisTransform().getLockGroup().isAutoRange();
-					Range xRange = (xar) ? layer.getXAxisTransform().getAxisType()
-							.getBoundary(ax.getType()) : layer.getXAxisTransform().getRange();
+					Range xRange = (xar) ? layer.getXAxisTransform().getType()
+							.getBoundary(ax.getTransform()) : layer.getXAxisTransform().getRange();
 					for (GraphPlotterEx dp : layer.getGraphPlotters()) {
 						Graph dataInBounds = dp.getGraph().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
@@ -333,7 +333,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		for (AxisTransformEx arm : arms) {
 			NormalTransform vt = vtMap.get(arm).zoom(range);
 			Range wrange = vt.getValueRange();
-			arm.setNormalTransfrom(arm.getType().createNormalTransform(wrange));
+			arm.setNormalTransfrom(arm.getTransform().createNormalTransform(wrange));
 
 			for (LayerEx layer : arm.getLayers()) {
 				if (layer.getXAxisTransform() == arm) {
@@ -380,7 +380,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		for (AxisTransformEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform().zoom(npRange);
 			Range wrange = npt.getValueRange();
-			axis.setNormalTransfrom(axis.getType().createNormalTransform(wrange));
+			axis.setNormalTransfrom(axis.getTransform().createNormalTransform(wrange));
 
 			for (LayerEx layer : axis.getLayers()) {
 				if (layer.getXAxisTransform() == axis) {
@@ -432,9 +432,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			 * if no locked axes contains valid value, put them in the default world range
 			 */
 			for (AxisTransformEx ax : arms) {
-				Range defaultWRange = ax.getAxisType().getDefaultWorldRange(ax.getType());
+				Range defaultWRange = ax.getType().getDefaultWorldRange(ax.getTransform());
 				Range nwr = (ax.isInverted()) ? defaultWRange.invert() : defaultWRange;
-				ax.setNormalTransfrom(ax.getType().createNormalTransform(nwr));
+				ax.setNormalTransfrom(ax.getTransform().createNormalTransform(nwr));
 			}
 
 			notify(new RangeAdjustedToValueBoundsNotice(
@@ -445,9 +445,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		if (pRange.getSpan() == 0) {
 			/* if only one valid data point */
 			for (AxisTransformEx ax : arms) {
-				Range defaultWRange = ax.getAxisType().getDefaultWorldRange(ax.getType());
+				Range defaultWRange = ax.getType().getDefaultWorldRange(ax.getTransform());
 				Range nwr = (ax.isInverted()) ? defaultWRange.invert() : defaultWRange;
-				ax.setNormalTransfrom(ax.getType().createNormalTransform(nwr));
+				ax.setNormalTransfrom(ax.getTransform().createNormalTransform(nwr));
 			}
 
 			Range pr = validateNormalRange(INFINITY_PHYSICAL_RANGE);
@@ -466,11 +466,11 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		for (AxisTransformEx ax : arms) {
 			Range wr = ax.getNormalTransform().convFromNR(pRange);
 			// set the inverted nature
-			if (ax.getAxisType().getDefaultWorldRange(ax.getType()).isInverted() != (wr
+			if (ax.getType().getDefaultWorldRange(ax.getTransform()).isInverted() != (wr
 					.isInverted() ^ ax.isInverted())) {
 				wr = wr.invert();
 			}
-			ax.setNormalTransfrom(ax.getType().createNormalTransform(wr));
+			ax.setNormalTransfrom(ax.getTransform().createNormalTransform(wr));
 		}
 
 		if (isAutoRange()) {

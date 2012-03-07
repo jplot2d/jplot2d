@@ -164,11 +164,11 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		}
 	}
 
-	public AxisType getAxisType() {
+	public AxisType getType() {
 		return type;
 	}
 
-	public void setAxisType(AxisType type) {
+	public void setType(AxisType type) {
 		if (group.getRangeManagers().length > 1) {
 			throw new IllegalStateException(
 					"The axis type can only be changed when the axis doses not lock with other axes.");
@@ -186,11 +186,11 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		group.validateAxesRange();
 	}
 
-	public TransformType getType() {
+	public TransformType getTransform() {
 		return txfType;
 	}
 
-	public void setType(TransformType txfType) {
+	public void setTransform(TransformType txfType) {
 		if (group.getRangeManagers().length > 1) {
 			throw new IllegalStateException(
 					"The axis type can only be changed when the axis doses not lock with other axes.");
@@ -391,7 +391,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	public Range expandRangeToTick(Range ur) {
 		if (tickManagers.size() > 0) {
-			return tickManagers.get(0).expandRangeToTick(getType(), ur);
+			return tickManagers.get(0).expandRangeToTick(getTransform(), ur);
 		}
 		return null;
 	}

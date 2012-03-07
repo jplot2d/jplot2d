@@ -36,7 +36,7 @@ public class AxisRangeManagerTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTransform.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Transform");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Transform"), "axisType",
-				"type", "inverted", "autoMargin", "marginFactor", "coreRange", "range");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Transform"), "type",
+				"transform", "inverted", "autoMargin", "marginFactor", "coreRange", "range");
 	}
 }

@@ -16,12 +16,12 @@ p.addSubplot(usp, GridConstraint(0, 1))
 p.addSubplot(lsp, GridConstraint(0, 0))
 
 # upper subplot Axes
-uspx = axes(2, range=(10, 2e6), type=TransformType.LOGARITHMIC)
+uspx = axes(2, range=(10, 2e6), transform=LOGARITHMIC)
 uspx[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
 uspx[0].title.fontSize = 12
 uspx[1].labelVisible = 0
 
-uspy = axes(2, range=(0.05, 1200), type = TransformType.LOGARITHMIC, labelFormat="%.0f")
+uspy = axes(2, range=(0.05, 1200), transform=LOGARITHMIC, labelFormat="%.0f")
 uspy[0].title.text = "flux density [Jy]"
 uspy[0].title.fontSize = 12
 uspy[1].labelVisible = 0
@@ -30,7 +30,7 @@ usp.addXAxes(uspx)
 usp.addYAxes(uspy)
 
 # lower subplot Axes
-lspx = axes(2, range=(10, 1500), type = TransformType.LOGARITHMIC)
+lspx = axes(2, range=(10, 1500), transform=LOGARITHMIC)
 lspx[0].title.text = "wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]"
 lspx[0].title.fontSize = 12
 lspx[1].labelVisible = 0

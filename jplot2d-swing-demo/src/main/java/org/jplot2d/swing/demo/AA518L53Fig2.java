@@ -74,14 +74,14 @@ public class AA518L53Fig2 {
 		uspx[0].getTitle().setText("wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]");
 		uspx[0].getTitle().setFontSize(10);
 		uspx[0].getTickManager().setRange(new Range.Double(10, 2e6));
-		uspx[0].getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		uspx[0].getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		uspx[1].setLabelVisible(false);
 
 		Axis[] uspy = ef.createAxes(2);
 		uspy[0].getTitle().setText("flux density [Jy]");
 		uspy[0].getTitle().setFontSize(12);
 		uspy[0].getTickManager().setRange(new Range.Double(0.05, 1200));
-		uspy[0].getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		uspy[0].getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		uspy[0].getTickManager().setLabelFormat("%.0f");
 		uspy[1].setLabelVisible(false);
 		usp.addXAxes(uspx);
@@ -92,7 +92,7 @@ public class AA518L53Fig2 {
 		lspx[0].getTitle().setText("wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]");
 		lspx[0].getTitle().setFontSize(10);
 		lspx[0].getTickManager().setRange(new Range.Double(10, 1500));
-		lspx[0].getTickManager().getAxisTransform().setType(TransformType.LOGARITHMIC);
+		lspx[0].getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		lspx[1].setLabelVisible(false);
 
 		Axis[] lspy = ef.createAxes(2);
