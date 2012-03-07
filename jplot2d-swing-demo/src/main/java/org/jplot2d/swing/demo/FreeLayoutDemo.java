@@ -53,13 +53,13 @@ public class FreeLayoutDemo {
 		plot.addXAxis(xaxis);
 		plot.addYAxis(yaxis);
 
-		Layer layer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+		Layer layer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
 				new double[] { 0, 0.1, 0.4 }, "line A"));
 		plot.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 
 		Plot sp1 = ef.createSubplot();
-		Layer nestLayer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+		Layer nestLayer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
 				new double[] { 0, 0.1, 0.4 }, "line B"));
 
 		plot.addSubplot(sp1, null);

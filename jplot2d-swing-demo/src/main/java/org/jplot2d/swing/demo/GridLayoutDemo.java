@@ -55,7 +55,7 @@ public class GridLayoutDemo {
 		yaxis.getTitle().setText("y axis");
 
 		Plot sp0 = ef.createSubplot();
-		Layer l0 = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+		Layer l0 = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
 				new double[] { 0, 0.1, 0.4 }));
 		sp0.addXAxis(xaxis);
 		sp0.addYAxis(yaxis);
@@ -68,7 +68,7 @@ public class GridLayoutDemo {
 		yaxis1.getTitle().setText("y axis");
 
 		Plot sp1 = ef.createSubplot();
-		Layer nestLayer = ef.createLayer(ef.createXYGraphPlotter(new double[] { 0, 0.1, 0.2 },
+		Layer nestLayer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
 				new double[] { 0, 0.1, 0.4 }));
 		sp1.addXAxis(xaxis1);
 		sp1.addYAxis(yaxis1);
