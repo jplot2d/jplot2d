@@ -3,6 +3,7 @@ from org.jplot2d.env import InterfaceInfo
 from org.jplot2d.axtype import *
 from org.jplot2d.data import *
 from org.jplot2d.element import *
+from org.jplot2d.element.AxisPosition import *
 from org.jplot2d.layout import *
 from org.jplot2d.sizing import *
 from org.jplot2d.transform.TransformType import *
