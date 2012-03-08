@@ -362,10 +362,8 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void itemSizeChanged(LegendItemEx item) {
-		if (maxItemSize != null && maxItemSize.equals(item.getSize())) {
-			maxItemSize = null;
-			sizeCalculationNeeded = true;
-		}
+		maxItemSize = null;
+		sizeCalculationNeeded = true;
 		redraw();
 	}
 
