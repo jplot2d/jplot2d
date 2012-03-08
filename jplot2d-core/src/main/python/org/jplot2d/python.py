@@ -4,6 +4,7 @@ from org.jplot2d.axtype import *
 from org.jplot2d.data import *
 from org.jplot2d.element import *
 from org.jplot2d.element.AxisPosition import *
+from org.jplot2d.element.XYGraph.ChartType import *
 from org.jplot2d.layout import *
 from org.jplot2d.sizing import *
 from org.jplot2d.transform.TransformType import *
@@ -92,7 +93,7 @@ def layer(*args, **kwargs):
             raise AttributeError, "Layer has no attribute " + key
 
     for arg in args:
-        if isinstance(arg, GraphPlotter):
+        if isinstance(arg, Graph):
             layer.addGraph(arg)
         else:
             raise TypeError, "Cannot add " + str(type(arg)) + " to layer."
@@ -105,24 +106,24 @@ def xygraph(*args, **kwargs):
     
     if len(args) == 1:
         if isinstance(args[0], XYGraph) :
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0]);
+            gp = jplot2d_default_element_factory.createXYGraph(args[0]);
         elif isinstance(args[0], ArrayPair) :
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0]);
+            gp = jplot2d_default_element_factory.createXYGraph(args[0]);
 
     elif len(args) == 2:
         if isinstance(args[0], PyArray) and isinstance(args[1], PyArray) :
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0], args[1]);
+            gp = jplot2d_default_element_factory.createXYGraph(args[0], args[1]);
         elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
             and (isinstance(args[1], list) or isinstance(args[1], tuple)):
             return xygraph(args[0], args[1], 'd', **kwargs);
 
     elif len(args) == 3:
         if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair) :
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(args[0], args[1], args[2]);
+            gp = jplot2d_default_element_factory.createXYGraph(args[0], args[1], args[2]);
         elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
             and (isinstance(args[1], list) or isinstance(args[1], tuple)) and isinstance(args[2], str) :
                 t = args[2]
-                gp = jplot2d_default_element_factory.createXYGraphPlotter(array(args[0], t), array(args[1], t));
+                gp = jplot2d_default_element_factory.createXYGraph(array(args[0], t), array(args[1], t));
 
     elif len(args) == 6:
         return xygraph(*(args + ('d',)), **kwargs)
@@ -140,7 +141,7 @@ def xygraph(*args, **kwargs):
                 break;
         
         if (argserror == 0):
-            gp = jplot2d_default_element_factory.createXYGraphPlotter(*ali);
+            gp = jplot2d_default_element_factory.createXYGraph(*ali);
 
             
     if gp == None:
@@ -149,12 +150,12 @@ def xygraph(*args, **kwargs):
             amsg += str(type(arg))
         raise TypeError, "illegal args " + amsg
     
-    gpinfo = InterfaceInfo.loadInterfaceInfo(XYGraphPlotter)
+    gpinfo = InterfaceInfo.loadInterfaceInfo(XYGraph)
     for key in kwargs:
         if gpinfo.isWritableProp(key):
             jplot2d_set_prop(gpinfo, gp, key, kwargs[key])
         else:
-            raise AttributeError, "XYGraphPlotter has no attribute " + key
+            raise AttributeError, "XYGraph has no attribute " + key
 
     return gp
 
