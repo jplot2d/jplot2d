@@ -131,84 +131,77 @@ public class AA518L53Fig2 {
 		double[] xx = { 15 };
 		double[] xy = { 0.1059 };
 		double[] xye = { 0.0212 };
-		XYGraph xl = ef.createXYGraph(xx, xy, null, null, xye, xye);
+		XYGraph xl = ef.createXYGraph(xx, xy, null, null, xye, xye, "Xilouris et al. 2004");
 		xl.setColor(Color.GREEN);
 		xl.setLineVisible(false);
 		xl.setSymbolVisible(true);
 		xl.setSymbolShape(SymbolShape.SQUARE);
-		xl.getLegendItem().setText("Xilouris et al. 2004");
 		ulayer.addGraph(xl);
 
 		// IRAS
 		double[] gx = { 24.9, 59.9, 99.8 };
 		double[] gy = { 0.187, 0.546, 0.559 };
 		double[] gye = { 0.0281, 0.0819, 0.0839 };
-		XYGraph gl = ef.createXYGraph(gx, gy, null, null, gye, gye);
+		XYGraph gl = ef.createXYGraph(gx, gy, null, null, gye, gye, "Golombek et al. 1988");
 		gl.setColor(Color.GREEN);
 		gl.setLineVisible(false);
 		gl.setSymbolVisible(true);
 		gl.setSymbolShape(SymbolShape.FTRIANGLE);
-		gl.getLegendItem().setText("Golombek et al. 1988");
 		ulayer.addGraph(gl);
 
 		// MIPS
 		double[] sx = { 23.67, 71.3, 156 };
 		double[] sy = { 0.171, 0.455, 0.582 };
 		double[] sye = { 0.013, 0.0092, 0.01 };
-		XYGraph sl = ef.createXYGraph(sx, sy, null, null, sye, sye);
+		XYGraph sl = ef.createXYGraph(sx, sy, null, null, sye, sye, "Shi et al. 2007");
 		sl.setColor(Color.GREEN);
 		sl.setLineVisible(false);
 		sl.setSymbolVisible(true);
 		sl.setSymbolShape(SymbolShape.FDIAMOND);
-		sl.getLegendItem().setText("Shi et al. 2007");
 		ulayer.addGraph(sl);
 
 		// SCUBA
 		double[] hx = { 449, 848 };
 		double[] hy = { 1.32, 2.48 };
 		double[] hye = { 0.396, 0.496 };
-		XYGraph hl = ef.createXYGraph(hx, hy, null, null, hye, hye);
+		XYGraph hl = ef.createXYGraph(hx, hy, null, null, hye, hye, "Haas et al. 2004");
 		hl.setColor(Color.GREEN);
 		hl.setLineVisible(false);
 		hl.setSymbolVisible(true);
 		hl.setSymbolShape(SymbolShape.TRIANGLE);
-		hl.getLegendItem().setText("Haas et al. 2004");
 		ulayer.addGraph(hl);
 
 		// WMAP
 		double[] wx = { 3180, 4910, 7300, 9070, 13000 };
 		double[] wy = { 6.2, 9.7, 13.3, 15.5, 19.7 };
 		double[] wye = { 0.4, 0.2, 0.1, 0.09, 0.06 };
-		XYGraph wl = ef.createXYGraph(wx, wy, null, null, wye, wye);
+		XYGraph wl = ef.createXYGraph(wx, wy, null, null, wye, wye, "Wright et al. 2009");
 		wl.setColor(Color.GREEN);
 		wl.setLineVisible(false);
 		wl.setSymbolVisible(true);
 		wl.setSymbolShape(SymbolShape.STAR);
-		wl.getLegendItem().setText("Wright et al. 2009");
 		ulayer.addGraph(wl);
 
 		// VLA
 		double[] cx = { 20130, 36540, 61730, 180200, 908400 };
 		double[] cy = { 26.4, 45.8, 70.1, 136.2, 327 };
 		double[] cye = { 2.643, 3.66, 5.61, 10.89, 16.38 };
-		XYGraph cl = ef.createXYGraph(cx, cy, null, null, cye, cye);
+		XYGraph cl = ef.createXYGraph(cx, cy, null, null, cye, cye, "Cotton et al. 2009");
 		cl.setColor(Color.GREEN);
 		cl.setLineVisible(false);
 		cl.setSymbolVisible(true);
 		cl.setSymbolShape(SymbolShape.FOCTAGON);
-		cl.getLegendItem().setText("Cotton et al. 2009");
 		ulayer.addGraph(cl);
 
 		// HERSCHEL
 		double[] tx = { 100, 160, 250, 350, 500 };
 		double[] ty = { 0.517, 0.673, 0.86, 1.074, 1.426 };
 		double[] tye = { 0.129, 0.168, 0.215, 0.267, 0.375 };
-		XYGraph tl = ef.createXYGraph(tx, ty, null, null, tye, tye);
+		XYGraph tl = ef.createXYGraph(tx, ty, null, null, tye, tye, "this paper");
 		tl.setColor(Color.RED);
 		tl.setLineVisible(false);
 		tl.setSymbolVisible(true);
 		tl.setSymbolShape(SymbolShape.FOCTAGON);
-		tl.getLegendItem().setText("this paper");
 		ulayer.addGraph(tl);
 
 		// legend

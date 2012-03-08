@@ -611,7 +611,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
-				throw new IllegalArgumentException("");
+				throw new IllegalArgumentException(
+						"The component to be added already has a parent.");
 			}
 			penv.beginCommand("");
 

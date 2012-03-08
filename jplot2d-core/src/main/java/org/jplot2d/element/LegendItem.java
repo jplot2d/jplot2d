@@ -22,7 +22,6 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.tex.MathElement;
 
 /**
  * An item in legend to show a short line and a text. It will be hosted by the legend of the plot
@@ -63,36 +62,5 @@ public interface LegendItem extends Element {
 	 *            the flag
 	 */
 	public void setVisible(boolean show);
-
-	/**
-	 * Returns the text displayed in the legend item
-	 * 
-	 * @return the text
-	 */
-	@Property(order = 1)
-	public String getText();
-
-	/**
-	 * Sets the text displayed in the legend item
-	 * 
-	 * @param text
-	 *            the text displayed in the legend item
-	 */
-	public void setText(String text);
-
-	/**
-	 * Returns the text displayed in the legend item
-	 * 
-	 * @return the text
-	 */
-	public MathElement getTextModel();
-
-	/**
-	 * Sets the text displayed in the legend item
-	 * 
-	 * @param text
-	 *            the text displayed in the legend
-	 */
-	public void setTextModel(MathElement model);
 
 }

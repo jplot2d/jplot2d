@@ -81,6 +81,14 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		super(new XYLegendItemImpl());
 	}
 
+	public String getName() {
+		return ((XYLegendItemImpl) getLegendItem()).getText();
+	}
+
+	public void setName(String text) {
+		((XYLegendItemImpl) getLegendItem()).setText(text);
+	}
+
 	public XYGraphData getData() {
 		return graph;
 	}
@@ -296,8 +304,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 		double scale = getParent().getPaperTransform().getScale();
 
-		XYGraphDataChunker chunker = XYGraphDataChunker.getInstance(this,
-				g.getClipBounds());
+		XYGraphDataChunker chunker = XYGraphDataChunker.getInstance(this, g.getClipBounds());
 
 		for (ChunkData data : chunker) {
 			if (Thread.interrupted()) {
@@ -469,8 +476,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		}
 	}
 
-	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize,
-			XYGraphEx graph, double scale) {
+	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize, XYGraphEx graph,
+			double scale) {
 		// set line stroke
 		g.setStroke(GraphicsUtil.scaleStroke(graph.getLineStroke(), scale));
 		// draw lines
@@ -485,8 +492,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	/**
 	 * Draw Histogram lines that data points is on the level center.
 	 */
-	private static void drawHistogram(Graphics2D g, ChunkData data, XYGraphEx graph,
-			double scale) {
+	private static void drawHistogram(Graphics2D g, ChunkData data, XYGraphEx graph, double scale) {
 
 		float[] x = data.xBuf;
 		float[] y = data.yBuf;
@@ -559,8 +565,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	 * @param graph
 	 *            line attribute
 	 */
-	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints,
-			XYGraphEx graph, Color[] colors, double scale) {
+	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph,
+			Color[] colors, double scale) {
 
 		if (graph.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks

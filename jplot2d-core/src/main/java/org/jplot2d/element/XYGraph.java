@@ -85,6 +85,22 @@ public interface XYGraph extends Graph {
 
 	public void setData(XYGraphData graph);
 
+	/**
+	 * Returns the text displayed in the legend item
+	 * 
+	 * @return the text
+	 */
+	@Property(order = 0)
+	public String getName();
+
+	/**
+	 * Sets the text displayed in the legend item
+	 * 
+	 * @param text
+	 *            the text displayed in the legend item
+	 */
+	public void setName(String text);
+
 	@Property(order = 1)
 	public boolean isSymbolVisible();
 
