@@ -67,56 +67,49 @@ ulayer.addGraph(dl)
 xx = (15,)
 xy = (0.1059,)
 xye = (0.0212,)
-xl = xygraph(xx, xy, None, None, xye, xye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.SQUARE)
-xl.legendItem.text = "Xilouris et al. 2004"
+xl = xygraph(xx, xy, None, None, xye, xye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.SQUARE, name="Xilouris et al. 2004")
 ulayer.addGraph(xl)
 
 # IRAS
 gx = 24.9, 59.9, 99.8
 gy = 0.187, 0.546, 0.559
 gye = 0.0281, 0.0819, 0.0839
-gl = xygraph(gx, gy, None, None, gye, gye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FTRIANGLE)
-gl.legendItem.text = "Golombek et al. 1988"
+gl = xygraph(gx, gy, None, None, gye, gye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FTRIANGLE, name="Golombek et al. 1988")
 ulayer.addGraph(gl)
 
 # MIPS
 sx = 23.67, 71.3, 156
 sy = 0.171, 0.455, 0.582
 sye = 0.013, 0.0092, 0.01
-sl = xygraph(sx, sy, None, None, sye, sye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FDIAMOND)
-sl.legendItem.text = "Shi et al. 2007"
+sl = xygraph(sx, sy, None, None, sye, sye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FDIAMOND, name="Shi et al. 2007")
 ulayer.addGraph(sl)
 
 # SCUBA
 hx = 449, 848
 hy = 1.32, 2.48
 hye = 0.396, 0.496
-hl = xygraph(hx, hy, None, None, hye, hye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.TRIANGLE)
-hl.legendItem.text = "Haas et al. 2004"
+hl = xygraph(hx, hy, None, None, hye, hye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.TRIANGLE, name="Haas et al. 2004")
 ulayer.addGraph(hl)
 
 # WMAP
 wx = 3180, 4910, 7300, 9070, 13000
 wy = 6.2, 9.7, 13.3, 15.5, 19.7
 wye = 0.4, 0.2, 0.1, 0.09, 0.06
-wl = xygraph(wx, wy, None, None, wye, wye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.STAR)
-wl.legendItem.text = "Wright et al. 2009"
+wl = xygraph(wx, wy, None, None, wye, wye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.STAR, name="Wright et al. 2009")
 ulayer.addGraph(wl)
 
 # VLA
 cx = 20130, 36540, 61730, 180200, 908400
 cy = 26.4, 45.8, 70.1, 136.2, 327
 cye = 2.643, 3.66, 5.61, 10.89, 16.38
-cl = xygraph(cx, cy, None, None, cye, cye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FOCTAGON)
-cl.legendItem.text = "Cotton et al. 2009"
+cl = xygraph(cx, cy, None, None, cye, cye, color=GREEN, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FOCTAGON, name="Cotton et al. 2009")
 ulayer.addGraph(cl)
 
 # HERSCHEL
 tx = 100, 160, 250, 350, 500
 ty = 0.517, 0.673, 0.86, 1.074, 1.426
 tye = 0.129, 0.168, 0.215, 0.267, 0.375
-tl = xygraph(tx, ty, None, None, tye, tye, color=RED, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FOCTAGON)
-tl.legendItem.text = "this paper"
+tl = xygraph(tx, ty, None, None, tye, tye, color=RED, lineVisible=0, symbolVisible=1, symbolShape=SymbolShape.FOCTAGON, name="this paper")
 ulayer.addGraph(tl)
 
 # legend

@@ -26,4 +26,19 @@ public interface XYLegendItemEx extends LegendItemEx {
 
 	public XYGraphEx getParent();
 
+	/**
+	 * Returns the text displayed in the legend item
+	 * 
+	 * @return the text
+	 */
+	public String getText();
+
+	/**
+	 * Sets the text displayed in the legend item
+	 * 
+	 * @param text
+	 *            the text displayed in the legend item
+	 */
+	public void setText(String text);
+
 }

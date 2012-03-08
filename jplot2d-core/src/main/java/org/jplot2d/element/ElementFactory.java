@@ -400,13 +400,11 @@ public class ElementFactory {
 	public XYGraph createXYGraph(XYGraphData data, String name) {
 		XYGraphImpl graph = new XYGraphImpl();
 		graph.setData(data);
+		graph.setName(name);
 		applyProfile(graph);
 		XYGraph gpProxy = proxy(graph, XYGraph.class);
 
 		LegendItemEx li = graph.getLegendItem();
-		if (name != null) {
-			li.setText(name);
-		}
 		LegendItem liProxy = proxy(li, LegendItem.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
