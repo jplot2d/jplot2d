@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -31,6 +31,7 @@ import java.util.Collection;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -311,7 +312,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void addLegendItem(LegendItemEx item) {
 		items.add(item);
 		item.setLegend(this);
-		if (item.isVisible()) {
+		if (isItemVisible(item)) {
 			incVisibleItemNum();
 			maxItemSize = null;
 			sizeCalculationNeeded = true;
@@ -324,7 +325,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void removeLegendItem(LegendItemEx item) {
 		items.remove(item);
 		item.setLegend(null);
-		if (item.isVisible()) {
+		if (isItemVisible(item)) {
 			decVisibleItemNum();
 			if (item.getSize().equals(maxItemSize)) {
 				maxItemSize = null;
@@ -338,13 +339,18 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (item.getSize().equals(maxItemSize)) {
 			maxItemSize = null;
 		}
-		if (item.isVisible()) {
+		if (isItemVisible(item)) {
 			incVisibleItemNum();
 		} else {
 			decVisibleItemNum();
 		}
 		sizeCalculationNeeded = true;
 		redraw();
+	}
+
+	private boolean isItemVisible(LegendItemEx item) {
+		return item.isVisible() && item.getTextModel() != null
+				&& item.getTextModel() != MathElement.EMPTY;
 	}
 
 	private void incVisibleItemNum() {
@@ -572,7 +578,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		double yoff = bounds.getY();
 		int col = 0, row = 0;
 		for (LegendItemEx item : items) {
-			if (item.isVisible()) {
+			if (isItemVisible(item)) {
 				item.setLocation(lipx[col] + xoff, lipy[row] + yoff);
 				col++;
 				if (col >= columns) {
@@ -594,7 +600,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (LegendItemEx item : items) {
-			if (item.isVisible()) {
+			if (isItemVisible(item)) {
 				Dimension2D psize = item.getSize();
 				double pwidth = psize.getWidth();
 				double pheight = psize.getHeight();
@@ -629,7 +635,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 
 		for (LegendItemEx item : items) {
-			if (item.isVisible()) {
+			if (isItemVisible(item)) {
 				item.draw(g);
 			}
 		}
