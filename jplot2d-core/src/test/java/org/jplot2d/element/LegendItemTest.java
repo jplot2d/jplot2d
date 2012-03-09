@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -36,8 +36,6 @@ public class LegendItemTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(LegendItem.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Legend Item");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend Item"), "visible",
-				"text");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend Item"), "visible");
 	}
-
 }
