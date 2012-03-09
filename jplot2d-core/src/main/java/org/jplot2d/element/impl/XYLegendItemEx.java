@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,20 +25,5 @@ package org.jplot2d.element.impl;
 public interface XYLegendItemEx extends LegendItemEx {
 
 	public XYGraphEx getParent();
-
-	/**
-	 * Returns the text displayed in the legend item
-	 * 
-	 * @return the text
-	 */
-	public String getText();
-
-	/**
-	 * Sets the text displayed in the legend item
-	 * 
-	 * @param text
-	 *            the text displayed in the legend item
-	 */
-	public void setText(String text);
 
 }
