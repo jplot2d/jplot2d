@@ -248,7 +248,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public double getScale() {
-		return getPaperTransform().getScale();
+		return this.scale;
 	}
 
 	public void setScale(double scale) {
