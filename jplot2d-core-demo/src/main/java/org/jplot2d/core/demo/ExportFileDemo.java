@@ -54,25 +54,29 @@ public class ExportFileDemo {
 			y[i] = x[i] * x[i];
 		}
 
-		Plot plot = ElementFactory.getInstance().createPlot();
+		ElementFactory ef = ElementFactory.getInstance();
 
-		Title title = ElementFactory.getInstance().createTitle("Title");
+		Plot plot = ef.createPlot();
+		plot.setScale(0.5);
+		Title title = ef.createTitle("Title");
 		title.setFontScale(2);
 		plot.addTitle(title);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		XYGraph graph = ElementFactory.getInstance().createXYGraph(x, y, "lineA");
+		XYGraph graph = ef.createXYGraph(x, y, "lineA");
+		float[] dash = new float[] { 6, 2, 1, 2, 1, 2 };
+		graph.setLineStroke(ef.createStroke(1, dash));
 		graph.setFillEnabled(true);
 		LineHatchPaint hatch = new LineHatchPaint(Color.RED, ElementFactory.getInstance()
-				.createStroke(1, new float[] { 6, 2, 1, 2 }), 45, 10);
+				.createStroke(1, dash), 45, 10);
 		graph.setFillPaint(hatch);
-		Layer layer0 = ElementFactory.getInstance().createLayer();
+		Layer layer0 = ef.createLayer();
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());

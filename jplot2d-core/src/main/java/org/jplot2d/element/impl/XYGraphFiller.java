@@ -26,6 +26,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.transform.Transform1D;
+import org.jplot2d.util.GraphicsUtil;
 import org.jplot2d.util.LineHatchPaint;
 
 /**
@@ -113,7 +114,7 @@ public class XYGraphFiller {
 			Shape[] hatch = lhp.calcHatchShapes(path, clip, scale);
 
 			g.setColor(lhp.getColor());
-			g.setStroke(lhp.getStroke());
+			g.setStroke(GraphicsUtil.scaleStroke(lhp.getStroke(), scale));
 			for (Shape shape : hatch) {
 				g.draw(shape);
 			}
