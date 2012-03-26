@@ -31,7 +31,7 @@ import org.jplot2d.interaction.MouseBehavior;
  */
 public final class PlotInteractionManager extends InteractionManager {
 
-	private static final PlotInteractionManager _instance = new PlotInteractionManager();
+	private static final PlotInteractionManager instance = new PlotInteractionManager();
 
 	protected final MouseBehavior _activeComponentBehavior;
 
@@ -60,7 +60,7 @@ public final class PlotInteractionManager extends InteractionManager {
 	final InteractionMode _defaultMode;
 
 	public static PlotInteractionManager getInstance() {
-		return _instance;
+		return instance;
 	}
 
 	private PlotInteractionManager() {
