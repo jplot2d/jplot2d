@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>jplot2d</artifactId>
 		<groupId>org.jplot2d</groupId>
-		<version>0.6</version>
+		<version>0.6.1</version>
 	</parent>
 
 	<artifactId>jplot2d-interaction</artifactId>
