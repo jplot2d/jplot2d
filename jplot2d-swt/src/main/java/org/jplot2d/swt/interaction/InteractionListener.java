@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,6 +19,8 @@
 package org.jplot2d.swt.interaction;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -38,8 +40,8 @@ import org.jplot2d.swt.JPlot2DComposite;
  * @author Jingjing Li
  * 
  */
-public class InteractionListener implements MouseListener, MouseMoveListener, MouseTrackListener,
-		MouseWheelListener, VisualFeedbackDrawer {
+public class InteractionListener implements KeyListener, MouseListener, MouseMoveListener,
+		MouseTrackListener, MouseWheelListener, VisualFeedbackDrawer {
 
 	private final JPlot2DComposite comp;
 
@@ -51,6 +53,56 @@ public class InteractionListener implements MouseListener, MouseMoveListener, Mo
 		ihandler = new InteractionHandler(imanager, new SwtInteractiveComp(comp, env));
 		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
 		ihandler.init();
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int keyMask = getKeyMask(e);
+		if (keyMask != 0) {
+			ihandler.keyPressed(getModifiersKeyMask(e), keyMask);
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {
+		int keyMask = getKeyMask(e);
+		if (keyMask != 0) {
+			ihandler.keyReleased(getModifiersKeyMask(e), keyMask);
+		}
+	}
+
+	private int getModifiersKeyMask(KeyEvent e) {
+		int modifiers = 0;
+		if ((e.stateMask & SWT.SHIFT) != 0) {
+			modifiers |= GenericMouseEvent.SHIFT_DOWN_MASK;
+		}
+		if ((e.stateMask & SWT.CONTROL) != 0) {
+			modifiers |= GenericMouseEvent.CTRL_DOWN_MASK;
+		}
+		if ((e.stateMask & SWT.COMMAND) != 0) {
+			modifiers |= GenericMouseEvent.META_DOWN_MASK;
+		}
+		if ((e.stateMask & SWT.ALT) != 0) {
+			modifiers |= GenericMouseEvent.ALT_DOWN_MASK;
+		}
+		return modifiers;
+	}
+
+	private int getKeyMask(KeyEvent e) {
+		int keyMask = 0;
+		switch (e.keyCode) {
+		case SWT.SHIFT:
+			keyMask = GenericMouseEvent.SHIFT_DOWN_MASK;
+			break;
+		case SWT.CTRL:
+			keyMask = GenericMouseEvent.CTRL_DOWN_MASK;
+			break;
+		case SWT.COMMAND:
+			keyMask = GenericMouseEvent.META_DOWN_MASK;
+			break;
+		case SWT.ALT:
+			keyMask = GenericMouseEvent.ALT_DOWN_MASK;
+			break;
+		}
+		return keyMask;
 	}
 
 	public void mouseDoubleClick(MouseEvent e) {

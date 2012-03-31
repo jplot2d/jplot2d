@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,6 +26,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Path;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.swt.JPlot2DComposite;
@@ -38,9 +40,9 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	private final JPlot2DComposite comp;
 
-	private final Cursor defaultCursor;
+	private CursorStyle cursorStyle;
 
-	private final Cursor moveCursor;
+	private final Cursor defaultCursor, moveCursor, crossCursor;
 
 	private final Color plotBackground;
 
@@ -48,23 +50,38 @@ public class SwtInteractiveComp implements InteractiveComp {
 		this.comp = comp;
 		defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
 		moveCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
+		crossCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_CROSS);
 		int r = comp.getPlotBackground().getRed();
 		int g = comp.getPlotBackground().getGreen();
 		int b = comp.getPlotBackground().getBlue();
 		plotBackground = new Color(comp.getDisplay(), r, g, b);
 	}
 
+	public java.awt.Point getCursorLocation() {
+		Point p = comp.toControl(Display.getCurrent().getCursorLocation());
+		return new java.awt.Point(p.x, p.y);
+	}
+
 	public void repaint() {
 		comp.redraw();
 	}
 
+	public CursorStyle getCursor() {
+		return cursorStyle;
+	}
+
 	public void setCursor(CursorStyle cursorStyle) {
+		this.cursorStyle = cursorStyle;
+
 		switch (cursorStyle) {
 		case DEFAULT_CURSOR:
 			comp.setCursor(defaultCursor);
 			break;
 		case MOVE_CURSOR:
 			comp.setCursor(moveCursor);
+			break;
+		case CROSSHAIR_CURSOR:
+			comp.setCursor(crossCursor);
 			break;
 		}
 	}
@@ -149,4 +166,9 @@ public class SwtInteractiveComp implements InteractiveComp {
 		return path;
 	}
 
+	public void drawTooltip(Object g, String s, int x, int y) {
+		GC gc = (GC) g;
+		//gc.setColor(Color.BLACK);
+		gc.drawString(s, x, y);
+	}
 }
