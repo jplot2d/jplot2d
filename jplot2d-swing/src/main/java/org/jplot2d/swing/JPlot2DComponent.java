@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -123,6 +123,9 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 		imanager = getInteractionManager();
 
 		ial = new InteractionListener(this, imanager, env);
+		setFocusable(true);
+		requestFocusInWindow();
+		addKeyListener(ial);
 		addMouseListener(ial);
 		addMouseMotionListener(ial);
 		addMouseWheelListener((MouseWheelListener) ial);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,6 +18,8 @@
  */
 package org.jplot2d.swing.interaction;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -37,8 +39,8 @@ import org.jplot2d.swing.JPlot2DComponent;
  * @author Jingjing Li
  * 
  */
-public class InteractionListener implements MouseListener, MouseMotionListener, MouseWheelListener,
-		VisualFeedbackDrawer {
+public class InteractionListener implements KeyListener, MouseListener, MouseMotionListener,
+		MouseWheelListener, VisualFeedbackDrawer {
 
 	private final JPlot2DComponent comp;
 
@@ -53,6 +55,38 @@ public class InteractionListener implements MouseListener, MouseMotionListener, 
 		ihandler = new InteractionHandler(imanager, new SwingInteractiveComp(comp, env));
 		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
 		ihandler.init();
+	}
+
+	public void keyTyped(KeyEvent e) {
+		// ignored. The InteractionHandler will detect modifiers key.
+	}
+
+	public void keyPressed(KeyEvent e) {
+		int keyMask = getKeyMask(e.getKeyCode());
+		if (keyMask != 0) {
+			ihandler.keyPressed(e.getModifiersEx(), keyMask);
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {
+		int keyMask = getKeyMask(e.getKeyCode());
+		if (keyMask != 0) {
+			ihandler.keyReleased(e.getModifiersEx(), keyMask);
+		}
+	}
+
+	private int getKeyMask(int keyCode) {
+		switch (keyCode) {
+		case KeyEvent.VK_SHIFT:
+			return GenericMouseEvent.SHIFT_DOWN_MASK;
+		case KeyEvent.VK_CONTROL:
+			return GenericMouseEvent.CTRL_DOWN_MASK;
+		case KeyEvent.VK_META:
+			return GenericMouseEvent.META_DOWN_MASK;
+		case KeyEvent.VK_ALT:
+			return GenericMouseEvent.ALT_DOWN_MASK;
+		}
+		return 0;
 	}
 
 	public void mouseClicked(MouseEvent e) {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,7 +21,11 @@ package org.jplot2d.swing.interaction;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Shape;
+
+import javax.swing.SwingUtilities;
 
 import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
@@ -35,15 +39,29 @@ public class SwingInteractiveComp implements InteractiveComp {
 
 	private final JPlot2DComponent comp;
 
+	private CursorStyle cursorStyle;
+
 	public SwingInteractiveComp(JPlot2DComponent comp, RenderEnvironment env) {
 		this.comp = comp;
+	}
+
+	public Point getCursorLocation() {
+		Point p = MouseInfo.getPointerInfo().getLocation();
+		SwingUtilities.convertPointFromScreen(p, comp);
+		return p;
 	}
 
 	public void repaint() {
 		comp.repaint();
 	}
 
+	public CursorStyle getCursor() {
+		return cursorStyle;
+	}
+
 	public void setCursor(CursorStyle cursorStyle) {
+		this.cursorStyle = cursorStyle;
+
 		switch (cursorStyle) {
 		case DEFAULT_CURSOR:
 			comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -51,8 +69,10 @@ public class SwingInteractiveComp implements InteractiveComp {
 		case MOVE_CURSOR:
 			comp.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 			break;
+		case CROSSHAIR_CURSOR:
+			comp.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+			break;
 		}
-
 	}
 
 	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height) {
@@ -73,5 +93,11 @@ public class SwingInteractiveComp implements InteractiveComp {
 		g2.draw(shape);
 		g2.setPaintMode();
 		g2.translate(-comp.getImageOffsetX(), -comp.getImageOffsetY());
+	}
+
+	public void drawTooltip(Object g, String s, int x, int y) {
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(Color.BLACK);
+		g2.drawString(s, x, y);
 	}
 }
