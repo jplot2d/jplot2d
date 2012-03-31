@@ -40,10 +40,37 @@ public abstract class MouseBehaviorHandler<B extends MouseBehavior> {
 	}
 
 	/**
+	 * Processes the key pressed event. Returns true if the event is processed correctly and should
+	 * not be passed on to other behaviors. Returns false if this behavior does not process the
+	 * event. returns true.
+	 * 
+	 * @param keyCode
+	 * @return
+	 * 
+	 */
+	public boolean processKeyPressed(int keyCode) {
+		return false;
+	}
+
+	/**
+	 * Processes the key released event. Returns true if the event is processed correctly and should
+	 * not be passed on to other behaviors. Returns false if this behavior does not process the
+	 * event. returns true.
+	 * 
+	 * @param keyCode
+	 * @return
+	 */
+	public boolean processKeyReleased(int keyCode) {
+		return false;
+	}
+
+	/**
 	 * Processes the mouse event. Returns true if the event is processed correctly and should not be
 	 * passed on to other behaviors. Returns false if this behavior does not process the event.
 	 * returns true.
-	 * @param e TODO
+	 * 
+	 * @param e
+	 *            the mouse event
 	 */
 	public abstract boolean processMouseEvent(GenericMouseEvent e);
 

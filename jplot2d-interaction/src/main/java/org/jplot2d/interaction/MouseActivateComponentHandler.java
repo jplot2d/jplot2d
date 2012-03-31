@@ -51,10 +51,10 @@ public class MouseActivateComponentHandler extends
 	}
 
 	@Override
-	public void behaviorPerformed(int x, int y) {
+	public boolean behaviorPerformed(int x, int y) {
 
 		if (activeComponent != null && activeBounds.contains(x, y)) {
-			return;
+			return false;
 		}
 
 		// the selectable component that contains the specified point.
@@ -62,7 +62,7 @@ public class MouseActivateComponentHandler extends
 		PComponent newComp = penv.getSelectableCompnentAt(new Point(x, y));
 
 		if (activeComponent == newComp) {
-			return;
+			return false;
 		}
 
 		if (newComp != null) {
@@ -78,6 +78,7 @@ public class MouseActivateComponentHandler extends
 
 		icomp.repaint();
 
+		return true;
 	}
 
 	public void draw(Object g) {

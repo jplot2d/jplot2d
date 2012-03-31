@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -67,6 +67,32 @@ public class InteractionModeHandler {
 
 	void addValueChangeHandler(ValueChangeHandler<?> handler) {
 		vcHandlerMap.put(handler.behavior, handler);
+	}
+
+	public void keyPressed(int keyCode) {
+		for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
+			MouseBehavior behavior = me.getKey();
+			int mbc = me.getValue();
+			if (mbc == keyCode) {
+				MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
+				if (handler.processKeyPressed(keyCode)) {
+					break;
+				}
+			}
+		}
+	}
+
+	public void keyReleased(int keyCode) {
+		for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
+			MouseBehavior behavior = me.getKey();
+			int mbc = me.getValue();
+			if (mbc == keyCode) {
+				MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
+				if (handler.processKeyReleased(keyCode)) {
+					break;
+				}
+			}
+		}
 	}
 
 	public void mouseEntered(GenericMouseEvent e) {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,6 +18,7 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.Point;
 import java.awt.Shape;
 
 /**
@@ -29,13 +30,23 @@ import java.awt.Shape;
 public interface InteractiveComp {
 
 	public enum CursorStyle {
-		DEFAULT_CURSOR, MOVE_CURSOR
+		DEFAULT_CURSOR, MOVE_CURSOR, CROSSHAIR_CURSOR
 	}
+
+	public Point getCursorLocation();
 
 	/**
 	 * Repaints this component.
 	 */
 	public void repaint();
+
+	/**
+	 * Gets the cursor.
+	 * 
+	 * @param cursorStyle
+	 *            the style of cursor
+	 */
+	public CursorStyle getCursor();
 
 	/**
 	 * Sets the cursor.
@@ -70,5 +81,17 @@ public interface InteractiveComp {
 	 *            the shape to draw
 	 */
 	public void drawShape(Object g, int rgb, Shape shape);
+
+	/**
+	 * Draws a tooltip on the given location.
+	 * 
+	 * @param g
+	 *            the graphics object
+	 * @param s
+	 *            the string
+	 * @param x
+	 * @param y
+	 */
+	public void drawTooltip(Object g, String s, int x, int y);
 
 }
