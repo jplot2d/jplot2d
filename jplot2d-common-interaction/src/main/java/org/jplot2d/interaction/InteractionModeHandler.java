@@ -69,26 +69,36 @@ public class InteractionModeHandler {
 		vcHandlerMap.put(handler.behavior, handler);
 	}
 
-	public void keyPressed(int keyCode) {
+	public void keyPressed(int modifiers, int modifierKey) {
+		exitModifiersKey(modifiers & ~modifierKey);
+		enterModifiersKey(modifiers);
+	}
+
+	public void keyReleased(int modifiers, int modifierKey) {
+		exitModifiersKey(modifiers | modifierKey);
+		enterModifiersKey(modifiers);
+	}
+
+	private void enterModifiersKey(int modifiers) {
 		for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
 			MouseBehavior behavior = me.getKey();
-			int mbc = me.getValue();
-			if (mbc == keyCode) {
+			int modi = me.getValue();
+			if (modi == modifiers) {
 				MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-				if (handler.processKeyPressed(keyCode)) {
+				if (handler.enterModifiersKey()) {
 					break;
 				}
 			}
 		}
 	}
 
-	public void keyReleased(int keyCode) {
+	private void exitModifiersKey(int modifiers) {
 		for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
 			MouseBehavior behavior = me.getKey();
-			int mbc = me.getValue();
-			if (mbc == keyCode) {
+			int modi = me.getValue();
+			if (modi == modifiers) {
 				MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-				if (handler.processKeyReleased(keyCode)) {
+				if (handler.exitModifiersKey()) {
 					break;
 				}
 			}

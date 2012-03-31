@@ -44,11 +44,10 @@ public abstract class MouseBehaviorHandler<B extends MouseBehavior> {
 	 * not be passed on to other behaviors. Returns false if this behavior does not process the
 	 * event. returns true.
 	 * 
-	 * @param keyCode
 	 * @return
 	 * 
 	 */
-	public boolean processKeyPressed(int keyCode) {
+	public boolean enterModifiersKey() {
 		return false;
 	}
 
@@ -57,10 +56,9 @@ public abstract class MouseBehaviorHandler<B extends MouseBehavior> {
 	 * not be passed on to other behaviors. Returns false if this behavior does not process the
 	 * event. returns true.
 	 * 
-	 * @param keyCode
 	 * @return
 	 */
-	public boolean processKeyReleased(int keyCode) {
+	public boolean exitModifiersKey() {
 		return false;
 	}
 

@@ -44,8 +44,6 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 
 	public static final String ACTIVE_COMPONENT_MOVABLE_KEY = "ACTIVE_COMPONENT_MOVABLE";
 
-	public static final String SHOW_COORDINATES_TOOLTIP_KEY = "SHOW_COORDINATES_TOOLTIP";
-
 	private final InteractionManager imanager;
 
 	private final InteractiveComp icomp;
@@ -111,12 +109,24 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 		setMode(imanager.getDefaultMode());
 	}
 
-	public void keyPressed(int keyCode) {
-		modeHandler.keyPressed(keyCode);
+	/**
+	 * @param modifiers
+	 *            the modifiers mask after a modifier key pressed
+	 * @param modifierKey
+	 *            the modifiers mask of the modifier key pressed
+	 */
+	public void keyPressed(int modifiers, int modifierKey) {
+		modeHandler.keyPressed(modifiers, modifierKey);
 	}
 
-	public void keyReleased(int keyCode) {
-		modeHandler.keyReleased(keyCode);
+	/**
+	 * @param modifiers
+	 *            the modifiers mask after a modifier key released
+	 * @param modifierKey
+	 *            the modifiers mask of the modifier key released
+	 */
+	public void keyReleased(int modifiers, int modifierKey) {
+		modeHandler.keyReleased(modifiers, modifierKey);
 	}
 
 	public void mouseEntered(GenericMouseEvent e) {

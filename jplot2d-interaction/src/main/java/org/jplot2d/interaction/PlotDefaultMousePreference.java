@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -58,7 +58,7 @@ public class PlotDefaultMousePreference implements MousePreference {
 
 		MouseButtonCombinationEnablity moveBA = new MouseButtonCombinationEnablity(0, 0,
 				MouseEvent.NOBUTTON);
-		MouseButtonCombinationEnablity showCoordinatesBA = new MouseButtonCombinationEnablity(
+		MouseButtonCombinationEnablity moveCoordinatesBA = new MouseButtonCombinationEnablity(
 				MouseEvent.SHIFT_DOWN_MASK, 0, MouseEvent.NOBUTTON);
 		MouseButtonCombinationEnablity clickBA = new MouseButtonCombinationEnablity(0, 1,
 				MouseEvent.BUTTON1);
@@ -77,24 +77,25 @@ public class PlotDefaultMousePreference implements MousePreference {
 		MouseButtonCombinationEnablity metaWheelBA = new MouseButtonCombinationEnablity(
 				MouseEvent.META_DOWN_MASK, 0, MouseEvent.NOBUTTON);
 
-		addBinding(manager._defaultMode, manager._activeComponentBehavior, moveBA);
-		addBinding(manager._defaultMode, manager._moveComponentBehavior, dragBA);
-		addBinding(manager._defaultMode, manager._marqueeZoomBehavior, dragBA);
-		addBinding(manager._defaultMode, manager._wheelZoomBehavior, wheelBA);
-		addBinding(manager._defaultMode, manager._panBehavior, middleDragBA);
-		addBinding(manager._defaultMode, manager._axisRangeZoomBehavior, dragBA);
-		addBinding(manager._defaultMode, manager._axisWheelZoomBehavior, wheelBA);
-		addBinding(manager._defaultMode, manager._axisPanBehavior, middleDragBA);
+		addBinding(manager.defaultMode, manager.activeComponentBehavior, moveBA);
+		addBinding(manager.defaultMode, manager.showCoordinatesTooltipBehavior, moveCoordinatesBA);
+		addBinding(manager.defaultMode, manager.moveComponentBehavior, dragBA);
+		addBinding(manager.defaultMode, manager.marqueeZoomBehavior, dragBA);
+		addBinding(manager.defaultMode, manager.wheelZoomBehavior, wheelBA);
+		addBinding(manager.defaultMode, manager.panBehavior, middleDragBA);
+		addBinding(manager.defaultMode, manager.axisRangeZoomBehavior, dragBA);
+		addBinding(manager.defaultMode, manager.axisWheelZoomBehavior, wheelBA);
+		addBinding(manager.defaultMode, manager.axisPanBehavior, middleDragBA);
 		if (isMacOSX()) {
-			addBinding(manager._defaultMode, manager._adaptiveZoomBehavior, metaClickBA);
-			addBinding(manager._defaultMode, manager._wheelFinerZoomBehavior, metaWheelBA);
-			addBinding(manager._defaultMode, manager._axisAdaptiveZoomBehavior, metaClickBA);
-			addBinding(manager._defaultMode, manager._axisWheelFinerZoomBehavior, metaWheelBA);
+			addBinding(manager.defaultMode, manager.adaptiveZoomBehavior, metaClickBA);
+			addBinding(manager.defaultMode, manager.wheelFinerZoomBehavior, metaWheelBA);
+			addBinding(manager.defaultMode, manager.axisAdaptiveZoomBehavior, metaClickBA);
+			addBinding(manager.defaultMode, manager.axisWheelFinerZoomBehavior, metaWheelBA);
 		} else {
-			addBinding(manager._defaultMode, manager._adaptiveZoomBehavior, ctlClickBA);
-			addBinding(manager._defaultMode, manager._wheelFinerZoomBehavior, ctlWheelBA);
-			addBinding(manager._defaultMode, manager._axisAdaptiveZoomBehavior, ctlClickBA);
-			addBinding(manager._defaultMode, manager._axisWheelFinerZoomBehavior, ctlWheelBA);
+			addBinding(manager.defaultMode, manager.adaptiveZoomBehavior, ctlClickBA);
+			addBinding(manager.defaultMode, manager.wheelFinerZoomBehavior, ctlWheelBA);
+			addBinding(manager.defaultMode, manager.axisAdaptiveZoomBehavior, ctlClickBA);
+			addBinding(manager.defaultMode, manager.axisWheelFinerZoomBehavior, ctlWheelBA);
 		}
 
 	}
