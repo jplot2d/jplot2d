@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -33,31 +33,33 @@ public final class PlotInteractionManager extends InteractionManager {
 
 	private static final PlotInteractionManager instance = new PlotInteractionManager();
 
-	protected final MouseBehavior _activeComponentBehavior;
+	protected final MouseBehavior activeComponentBehavior;
 
-	protected final MouseBehavior _moveComponentBehavior;
+	protected final MouseBehavior showCoordinatesTooltipBehavior;
 
-	protected final MouseBehavior _axisAdaptiveZoomBehavior;
+	protected final MouseBehavior moveComponentBehavior;
 
-	protected final MouseBehavior _adaptiveZoomBehavior;
+	protected final MouseBehavior axisAdaptiveZoomBehavior;
 
-	protected final MouseBehavior _axisRangeZoomBehavior;
+	protected final MouseBehavior adaptiveZoomBehavior;
 
-	protected final MouseBehavior _marqueeZoomBehavior;
+	protected final MouseBehavior axisRangeZoomBehavior;
 
-	protected final MouseBehavior _axisWheelZoomBehavior;
+	protected final MouseBehavior marqueeZoomBehavior;
 
-	protected final MouseBehavior _wheelZoomBehavior;
+	protected final MouseBehavior axisWheelZoomBehavior;
 
-	protected final MouseBehavior _axisWheelFinerZoomBehavior;
+	protected final MouseBehavior wheelZoomBehavior;
 
-	protected final MouseBehavior _wheelFinerZoomBehavior;
+	protected final MouseBehavior axisWheelFinerZoomBehavior;
 
-	protected final MouseBehavior _axisPanBehavior;
+	protected final MouseBehavior wheelFinerZoomBehavior;
 
-	protected final MouseBehavior _panBehavior;
+	protected final MouseBehavior axisPanBehavior;
 
-	final InteractionMode _defaultMode;
+	protected final MouseBehavior panBehavior;
+
+	final InteractionMode defaultMode;
 
 	public static PlotInteractionManager getInstance() {
 		return instance;
@@ -66,35 +68,40 @@ public final class PlotInteractionManager extends InteractionManager {
 	private PlotInteractionManager() {
 
 		// define modes
-		_defaultMode = new InteractionMode("DEFAULT");
+		defaultMode = new InteractionMode("DEFAULT");
 
 		// define behaviors
-		_activeComponentBehavior = new MouseActivateComponentBehavior("ActivateComponent");
-		_moveComponentBehavior = new MouseMoveComponentBehavior("MoveComponent");
 
-		_axisPanBehavior = new MouseAxisPanBehavior("Pan on axis");
-		_panBehavior = new MousePanBehavior("Pan");
+		activeComponentBehavior = new MouseActivateComponentBehavior("ActivateComponent");
+		showCoordinatesTooltipBehavior = new MouseCoordinatesTooltipBehavior(
+				"UpdateCoordinatesTooltip");
+		moveComponentBehavior = new MouseMoveComponentBehavior("MoveComponent");
 
-		_axisAdaptiveZoomBehavior = new MouseAxisAdaptiveZoomBehavior("AdaptiveZoom on axis");
-		_adaptiveZoomBehavior = new MouseAdaptiveZoomBehavior("AdaptiveZoom");
+		axisPanBehavior = new MouseAxisPanBehavior("Pan on axis");
+		panBehavior = new MousePanBehavior("Pan");
 
-		_axisRangeZoomBehavior = new MouseAxisRangeZoomBehavior("Zoom on axis");
-		_marqueeZoomBehavior = new MouseMarqueeZoomBehavior("Zoom");
+		axisAdaptiveZoomBehavior = new MouseAxisAdaptiveZoomBehavior("AdaptiveZoom on axis");
+		adaptiveZoomBehavior = new MouseAdaptiveZoomBehavior("AdaptiveZoom");
 
-		_axisWheelZoomBehavior = new MouseAxisWheelZoomBehavior("WheelZoom on axis");
-		_wheelZoomBehavior = new MouseWheelZoomBehavior("WheelZoom");
-		_axisWheelFinerZoomBehavior = new MouseAxisWheelFinerZoomBehavior("WheelFinerZoom on axis");
-		_wheelFinerZoomBehavior = new MouseWheelFinerZoomBehavior("WheelFinerZoom");
+		axisRangeZoomBehavior = new MouseAxisRangeZoomBehavior("Zoom on axis");
+		marqueeZoomBehavior = new MouseMarqueeZoomBehavior("Zoom");
+
+		axisWheelZoomBehavior = new MouseAxisWheelZoomBehavior("WheelZoom on axis");
+		wheelZoomBehavior = new MouseWheelZoomBehavior("WheelZoom");
+		axisWheelFinerZoomBehavior = new MouseAxisWheelFinerZoomBehavior("WheelFinerZoom on axis");
+		wheelFinerZoomBehavior = new MouseWheelFinerZoomBehavior("WheelFinerZoom");
 
 		// set available behaviors for mode
-		_defaultMode.setAvailableMouseBehaviors(_activeComponentBehavior, _moveComponentBehavior,
-				_axisPanBehavior, _panBehavior, _axisAdaptiveZoomBehavior, _adaptiveZoomBehavior,
-				_axisRangeZoomBehavior, _marqueeZoomBehavior, _axisWheelZoomBehavior,
-				_wheelZoomBehavior, _axisWheelFinerZoomBehavior, _wheelFinerZoomBehavior);
-		_defaultMode.setValueChangeBehaviors(new CursorFeedbackBehavior());
-		registerMode(_defaultMode);
+		defaultMode.setAvailableMouseBehaviors(activeComponentBehavior,
+				showCoordinatesTooltipBehavior, moveComponentBehavior, axisPanBehavior,
+				panBehavior, axisAdaptiveZoomBehavior, adaptiveZoomBehavior, axisRangeZoomBehavior,
+				marqueeZoomBehavior, axisWheelZoomBehavior, wheelZoomBehavior,
+				axisWheelFinerZoomBehavior, wheelFinerZoomBehavior);
 
-		setDefaultMode(_defaultMode);
+		defaultMode.setValueChangeBehaviors(new CursorFeedbackBehavior());
+
+		registerMode(defaultMode);
+		setDefaultMode(defaultMode);
 
 	}
 
