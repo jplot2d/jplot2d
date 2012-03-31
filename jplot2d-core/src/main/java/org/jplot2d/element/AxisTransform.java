@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,6 +23,7 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.axtype.AxisType;
+import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
@@ -134,8 +135,8 @@ public interface AxisTransform extends Element {
 	 * Set the core range of the axis. The range will expand according to the settings of autoMargin
 	 * and marginFactor, and derive an actual range. All locked axes will change with this axis.
 	 * <p>
-	 * If user want set actual range directly by {@link #setRange(Range)}, The coreRange will be
-	 * set to <code>null</code> automatically.
+	 * If user want set actual range directly by {@link #setRange(Range)}, The coreRange will be set
+	 * to <code>null</code> automatically.
 	 * 
 	 * @param range
 	 *            the core range to be set
@@ -161,6 +162,13 @@ public interface AxisTransform extends Element {
 	 *            axis is inverted.
 	 */
 	public void setRange(Range range);
+
+	/**
+	 * Returns the normal transform of this axis
+	 * 
+	 * @return the normal transform
+	 */
+	public NormalTransform getNormalTransform();
 
 	/**
 	 * Returns the lock group to that this axis group belongs. A axis group must has a lock group,

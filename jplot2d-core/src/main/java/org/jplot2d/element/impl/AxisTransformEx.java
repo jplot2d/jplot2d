@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -37,13 +37,6 @@ public interface AxisTransformEx extends AxisTransform, ElementEx,
 	public AxisRangeLockGroupEx getLockGroup();
 
 	public int indexOfTickManager(AxisTickManagerEx tickManager);
-
-	/**
-	 * Returns the normal transform of this axis
-	 * 
-	 * @return the normal transform
-	 */
-	public NormalTransform getNormalTransform();
 
 	/**
 	 * Sets the normal transform of this axis
