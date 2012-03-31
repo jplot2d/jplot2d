@@ -26,10 +26,9 @@ public abstract class MouseMoveBehaviorHandler<B extends MouseMoveBehavior> exte
 	}
 
 	public boolean processMouseEvent(GenericMouseEvent e) {
-		behaviorPerformed(e.getX(), e.getY());
-		return false;
+		return behaviorPerformed(e.getX(), e.getY());
 	}
 
-	public abstract void behaviorPerformed(int x, int y);
+	public abstract boolean behaviorPerformed(int x, int y);
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -43,6 +43,8 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 	public static final String ACTIVE_COMPONENT_KEY = "ACTIVE_COMPONENT";
 
 	public static final String ACTIVE_COMPONENT_MOVABLE_KEY = "ACTIVE_COMPONENT_MOVABLE";
+
+	public static final String SHOW_COORDINATES_TOOLTIP_KEY = "SHOW_COORDINATES_TOOLTIP";
 
 	private final InteractionManager imanager;
 
@@ -107,6 +109,14 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 		}
 
 		setMode(imanager.getDefaultMode());
+	}
+
+	public void keyPressed(int keyCode) {
+		modeHandler.keyPressed(keyCode);
+	}
+
+	public void keyReleased(int keyCode) {
+		modeHandler.keyReleased(keyCode);
 	}
 
 	public void mouseEntered(GenericMouseEvent e) {
