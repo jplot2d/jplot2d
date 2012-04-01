@@ -58,14 +58,14 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMov
 	public void keyPressed(KeyEvent e) {
 		int keyMask = getKeyMask(e);
 		if (keyMask != 0) {
-			ihandler.keyPressed(getModifiersKeyMask(e), keyMask);
+			ihandler.keyPressed(getModifiersKeyMask(e) | keyMask, keyMask);
 		}
 	}
 
 	public void keyReleased(KeyEvent e) {
 		int keyMask = getKeyMask(e);
 		if (keyMask != 0) {
-			ihandler.keyReleased(getModifiersKeyMask(e), keyMask);
+			ihandler.keyReleased(getModifiersKeyMask(e) & ~keyMask, keyMask);
 		}
 	}
 
