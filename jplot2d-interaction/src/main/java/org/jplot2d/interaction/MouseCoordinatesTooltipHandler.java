@@ -92,13 +92,13 @@ public class MouseCoordinatesTooltipHandler extends
 			return;
 		}
 
-		double paperX = plot.getPaperTransform().getXDtoP(p.x);
-		double paperY = plot.getPaperTransform().getYDtoP(p.y);
+		double nx = plot.getPaperTransform().getXDtoP(p.x) / plot.getContentSize().getWidth();
+		double ny = plot.getPaperTransform().getYDtoP(p.y) / plot.getContentSize().getHeight();
 
-		if (paperX < 0 || paperX > plot.getContentSize().getWidth()) {
+		if (nx < 0 || nx > 1) {
 			return;
 		}
-		if (paperY < 0 || paperY > plot.getContentSize().getHeight()) {
+		if (ny < 0 || ny > 1) {
 			return;
 		}
 
@@ -111,12 +111,30 @@ public class MouseCoordinatesTooltipHandler extends
 			yats.add(axis.getTickManager().getAxisTransform());
 		}
 
+		StringBuilder sb = new StringBuilder();
 		if (xats.size() > 1 || yats.size() > 1) {
-
+			sb.append("X=");
+			for (AxisTransform xat : xats) {
+				sb.append(xat.getNormalTransform().convFromNR(nx)).append(";");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append("\n");
+			sb.append("Y=");
+			for (AxisTransform yat : yats) {
+				sb.append(yat.getNormalTransform().convFromNR(ny)).append(";");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+		} else {
+			for (AxisTransform xat : xats) {
+				sb.append(xat.getNormalTransform().convFromNR(nx));
+			}
+			sb.append(",");
+			for (AxisTransform yat : yats) {
+				sb.append(yat.getNormalTransform().convFromNR(ny));
+			}
 		}
 
-		icomp.drawTooltip(g, "tooltip", p.x, p.y);
+		icomp.drawTooltip(g, sb.toString(), p.x, p.y);
 
 	}
-
 }
