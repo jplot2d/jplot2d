@@ -46,6 +46,10 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	private final Color plotBackground;
 
+	private final Color tooltipBackground;
+
+	private final Color tooltipForeground;
+
 	public SwtInteractiveComp(JPlot2DComposite comp, PlotEnvironment env) {
 		this.comp = comp;
 		defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
@@ -55,6 +59,8 @@ public class SwtInteractiveComp implements InteractiveComp {
 		int g = comp.getPlotBackground().getGreen();
 		int b = comp.getPlotBackground().getBlue();
 		plotBackground = new Color(comp.getDisplay(), r, g, b);
+		tooltipBackground = comp.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
+		tooltipForeground = comp.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND);
 	}
 
 	public java.awt.Point getCursorLocation() {
@@ -167,8 +173,23 @@ public class SwtInteractiveComp implements InteractiveComp {
 	}
 
 	public void drawTooltip(Object g, String s, int x, int y) {
+		x += 4;
+		y += 2;
+
 		GC gc = (GC) g;
-		//gc.setColor(Color.BLACK);
-		gc.drawString(s, x, y);
+		gc.setForeground(tooltipForeground);
+		gc.setBackground(tooltipBackground);
+
+		int cridx = s.indexOf('\n');
+		if (cridx == -1) {
+			gc.drawString(s, x, y);
+		} else {
+			String sa = s.substring(0, cridx);
+			gc.drawString(sa, x, y);
+
+			y += gc.getFontMetrics().getHeight();
+			String sb = s.substring(cridx + 1);
+			gc.drawString(sb, x, y);
+		}
 	}
 }

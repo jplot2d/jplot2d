@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Shape;
+import java.awt.SystemColor;
 
 import javax.swing.SwingUtilities;
 
@@ -96,8 +97,25 @@ public class SwingInteractiveComp implements InteractiveComp {
 	}
 
 	public void drawTooltip(Object g, String s, int x, int y) {
+		x += 4;
+		y += 2;
+
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.BLACK);
-		g2.drawString(s, x, y);
+		g2.setColor(SystemColor.infoText);
+		g2.setBackground(SystemColor.info);
+
+		y += g2.getFontMetrics().getAscent();
+
+		int cridx = s.indexOf('\n');
+		if (cridx == -1) {
+			g2.drawString(s, x, y);
+		} else {
+			String sa = s.substring(0, cridx);
+			g2.drawString(sa, x, y);
+
+			y += g2.getFontMetrics().getHeight();
+			String sb = s.substring(cridx + 1);
+			g2.drawString(sb, x, y);
+		}
 	}
 }
