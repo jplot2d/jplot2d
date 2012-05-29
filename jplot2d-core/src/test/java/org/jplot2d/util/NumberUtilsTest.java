@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,6 +25,39 @@ import org.junit.Test;
 public class NumberUtilsTest {
 
 	@Test
+	public void testApproximate() {
+		assertFalse(NumberUtils.approximate(1, 1 - 0x1p-53, 0));
+		assertTrue(NumberUtils.approximate(1, 1 - 0x1p-53, 1));
+		assertFalse(NumberUtils.approximate(1, 1 - 0x1p-52, 1));
+		assertTrue(NumberUtils.approximate(1, 1 - 0x1p-52, 2));
+		assertFalse(NumberUtils.approximate(1, 1 - 0x1p-50, 3));
+		assertTrue(NumberUtils.approximate(1, 1 - 0x1p-50, 4));
+
+		assertTrue(NumberUtils.approximate(1, 1 + 0x1p-53, 0));
+		assertFalse(NumberUtils.approximate(1, 1 + 0x1p-52, 0));
+		assertTrue(NumberUtils.approximate(1, 1 + 0x1p-52, 1));
+		assertFalse(NumberUtils.approximate(1, 1 + 0x1p-51, 1));
+		assertTrue(NumberUtils.approximate(1, 1 + 0x1p-51, 2));
+		assertFalse(NumberUtils.approximate(1, 1 + 0x1p-49, 3));
+		assertTrue(NumberUtils.approximate(1, 1 + 0x1p-49, 4));
+
+		assertFalse(NumberUtils.approximate(-1, -1 + 0x1p-53, 0));
+		assertTrue(NumberUtils.approximate(-1, -1 + 0x1p-53, 1));
+		assertFalse(NumberUtils.approximate(-1, -1 + 0x1p-52, 1));
+		assertTrue(NumberUtils.approximate(-1, -1 + 0x1p-52, 2));
+		assertFalse(NumberUtils.approximate(-1, -1 + 0x1p-50, 3));
+		assertTrue(NumberUtils.approximate(-1, -1 + 0x1p-50, 4));
+
+		assertTrue(NumberUtils.approximate(-1, -1 - 0x1p-53, 0));
+		assertFalse(NumberUtils.approximate(-1, -1 - 0x1p-52, 0));
+		assertTrue(NumberUtils.approximate(-1, -1 - 0x1p-52, 1));
+		assertFalse(NumberUtils.approximate(-1, -1 - 0x1p-51, 1));
+		assertTrue(NumberUtils.approximate(-1, -1 - 0x1p-51, 2));
+		assertFalse(NumberUtils.approximate(-1, -1 - 0x1p-49, 3));
+		assertTrue(NumberUtils.approximate(-1, -1 - 0x1p-49, 4));
+	}
+
+	@Test
 	public void testCalcLabelFormatStrDouble() {
 		assertEquals(NumberUtils.calcFormatStr(Double.NaN), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(Double.POSITIVE_INFINITY), "%.0f");
@@ -36,20 +69,21 @@ public class NumberUtilsTest {
 		assertEquals(NumberUtils.calcFormatStr(0.001), "%.3f");
 		assertEquals(NumberUtils.calcFormatStr(0.0011), "%.4f");
 		assertEquals(NumberUtils.calcFormatStr(0.00111), "%.5f");
-		// more than 4 '0' can be saved
-		assertEquals(NumberUtils.calcFormatStr(0.0001), "%.0e");
 
 		assertEquals(NumberUtils.calcFormatStr(10d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(100d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(1000d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(11000d), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(111000d), "%.0f");
-		// more than 1000000
-		assertEquals(NumberUtils.calcFormatStr(1000000d), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(1000001d), "%.6e");
-		// more than 4 '0' can be saved
+
+		// more than 4 '0' can be saved, produce 'e' conversion
+		assertEquals(NumberUtils.calcFormatStr(0.0001), "%.0e");
 		assertEquals(NumberUtils.calcFormatStr(10000d), "%.0e");
 		assertEquals(NumberUtils.calcFormatStr(110000d), "%.1e");
+
+		// more than 14 significant digits
+		assertEquals(NumberUtils.calcFormatStr(1e14d + 1d), "%.14e");
+		assertEquals(NumberUtils.calcFormatStr(1e15d + 1d), "%.0e");
 	}
 
 	@Test
@@ -64,21 +98,21 @@ public class NumberUtilsTest {
 		assertEquals(NumberUtils.calcFormatStr(0.001f), "%.3f");
 		assertEquals(NumberUtils.calcFormatStr(0.0011f), "%.4f");
 		assertEquals(NumberUtils.calcFormatStr(0.00111f), "%.5f");
-		// more than 4 '0' can be saved
-		assertEquals(NumberUtils.calcFormatStr(0.0001f), "%.0e");
 
 		assertEquals(NumberUtils.calcFormatStr(10f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(100f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(1000f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(11000f), "%.0f");
 		assertEquals(NumberUtils.calcFormatStr(111000f), "%.0f");
-		// more than 1000000
-		assertEquals(NumberUtils.calcFormatStr(1000000f), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(1000001f), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(1000010f), "%.5e");
-		// more than 4 '0' can be saved
+
+		// more than 4 '0' can be saved, produce 'e' conversion
+		assertEquals(NumberUtils.calcFormatStr(0.0001f), "%.0e");
 		assertEquals(NumberUtils.calcFormatStr(10000f), "%.0e");
 		assertEquals(NumberUtils.calcFormatStr(110000f), "%.1e");
+
+		// more than 5 significant digits
+		assertEquals(NumberUtils.calcFormatStr(1000010f), "%.5e");
+		assertEquals(NumberUtils.calcFormatStr(1000001f), "%.0e");
 	}
 
 }
