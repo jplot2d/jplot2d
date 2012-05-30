@@ -65,7 +65,7 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	public java.awt.Point getCursorLocation() {
 		Point p = comp.toControl(Display.getCurrent().getCursorLocation());
-		return new java.awt.Point(p.x, p.y);
+		return new java.awt.Point(p.x - comp.getImageOffsetX(), p.y - comp.getImageOffsetY());
 	}
 
 	public void repaint() {

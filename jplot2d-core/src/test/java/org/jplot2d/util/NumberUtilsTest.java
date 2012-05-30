@@ -20,6 +20,8 @@ package org.jplot2d.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Locale;
+
 import org.junit.Test;
 
 public class NumberUtilsTest {
@@ -115,4 +117,40 @@ public class NumberUtilsTest {
 		assertEquals(NumberUtils.calcFormatStr(1000001f), "%.0e");
 	}
 
+	@Test
+	public void calcDeltaFormatStr() {
+		assertEquals(NumberUtils.calcDeltaFormatStr(Float.NaN, 1), "%.0f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(0, 1e-3), "%.0f");
+
+		assertEquals(NumberUtils.calcDeltaFormatStr(1, 1e2), "0");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1), "0");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1e-1), "%.1f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1e-2), "%.2f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1e-3), "%.3f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-8, 1e-3), "%.3f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-4, 1e-4), "%.4f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-8, 1e-4), "%.4f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-6, 1e-5), "0");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-8, 1e-5), "0");
+
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-1, 1e-3), "%.3f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1.1e-1, 1e-3), "%.3f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1.1e-1, 1.1e-3), "%.3f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-2, 1e-7), "%.7f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1e-7), "%.7f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-3, 1e-8), "%.8f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-4, 1e-7), "%.7f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-4, 1e-8), "%.8f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-5, 1e-7), "%.2e");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e-5, 1e-8), "%.3e");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e5, 1), "%.0f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e6, 1), "%.6e");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e5, 1e4), "%.0f");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e6, 1e5), "%.1e");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e7, 1e6), "%.1e");
+		assertEquals(NumberUtils.calcDeltaFormatStr(1e8, 1e7), "%.1e");
+
+		assertEquals(String.format((Locale) null, "0", 0.001), "0");
+		assertEquals(String.format((Locale) null, "%.2f", 0.001), "0.00");
+	}
 }

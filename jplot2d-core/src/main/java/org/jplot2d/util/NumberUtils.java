@@ -225,4 +225,41 @@ public class NumberUtils {
 		return String.format((Locale) null, calcFormatStr(v), v);
 	}
 
+	/**
+	 * Find a proper format to show the delta digit.
+	 * 
+	 * @param v
+	 * @param delta
+	 * @return the format string for java Formatter
+	 */
+	public static String calcDeltaFormatStr(double v, double delta) {
+
+		if (v == 0 || Double.isNaN(v) || Double.isInfinite(v)) {
+			return "%.0f";
+		}
+
+		int deltaExp = (int) Math.floor(Math.log10(delta));
+		int aExp = (int) Math.floor(Math.log10(Math.abs(v)));
+		// Significant digits - 1
+		int precision = aExp - deltaExp;
+
+		if (precision >= 0) {
+			if (-4 <= aExp && aExp < 6) {
+				if (deltaExp >= 0) {
+					return "%.0f";
+				} else {
+					return "%." + -deltaExp + "f";
+				}
+			} else {
+				return "%." + precision + "e";
+			}
+		} else {
+			if (-4 <= deltaExp && deltaExp < 0) {
+				return "%." + -deltaExp + "f";
+			} else {
+				return "0";
+			}
+		}
+	}
+
 }
