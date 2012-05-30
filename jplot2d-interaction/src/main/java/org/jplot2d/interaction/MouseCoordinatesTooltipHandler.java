@@ -20,6 +20,7 @@ package org.jplot2d.interaction;
 
 import java.awt.Point;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.jplot2d.element.Axis;
@@ -27,6 +28,7 @@ import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractiveComp.CursorStyle;
+import org.jplot2d.util.NumberUtils;
 
 /**
  * This handler shows a tooltip to display the coordinates on where the cursor is.
@@ -93,7 +95,12 @@ public class MouseCoordinatesTooltipHandler extends
 		}
 
 		double nx = plot.getPaperTransform().getXDtoP(p.x) / plot.getContentSize().getWidth();
+		double nxL = plot.getPaperTransform().getXDtoP(p.x - 1) / plot.getContentSize().getWidth();
+		double nxH = plot.getPaperTransform().getXDtoP(p.x + 1) / plot.getContentSize().getWidth();
+
 		double ny = plot.getPaperTransform().getYDtoP(p.y) / plot.getContentSize().getHeight();
+		double nyL = plot.getPaperTransform().getYDtoP(p.y - 1) / plot.getContentSize().getHeight();
+		double nyH = plot.getPaperTransform().getYDtoP(p.y + 1) / plot.getContentSize().getHeight();
 
 		if (nx < 0 || nx > 1) {
 			return;
@@ -115,26 +122,43 @@ public class MouseCoordinatesTooltipHandler extends
 		if (xats.size() > 1 || yats.size() > 1) {
 			sb.append("X=");
 			for (AxisTransform xat : xats) {
-				sb.append(xat.getNormalTransform().convFromNR(nx)).append(";");
+				double v = xat.getNormalTransform().convFromNR(nx);
+				double deltaL = Math.abs(xat.getNormalTransform().convFromNR(nxL) - v);
+				double deltaH = Math.abs(xat.getNormalTransform().convFromNR(nxH) - v);
+				String format = NumberUtils.calcDeltaFormatStr(v, Math.min(deltaL, deltaH) / 2);
+				sb.append(String.format((Locale) null, format, v)).append("; ");
 			}
-			sb.deleteCharAt(sb.length() - 1);
+			sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1);
 			sb.append("\n");
 			sb.append("Y=");
 			for (AxisTransform yat : yats) {
-				sb.append(yat.getNormalTransform().convFromNR(ny)).append(";");
+				double v = yat.getNormalTransform().convFromNR(ny);
+				double deltaL = Math.abs(yat.getNormalTransform().convFromNR(nyL) - v);
+				double deltaH = Math.abs(yat.getNormalTransform().convFromNR(nyH) - v);
+				String format = NumberUtils.calcDeltaFormatStr(v, Math.min(deltaL, deltaH) / 2);
+				sb.append(String.format((Locale) null, format, v)).append("; ");
 			}
-			sb.deleteCharAt(sb.length() - 1);
+			sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1);
 		} else {
 			for (AxisTransform xat : xats) {
-				sb.append(xat.getNormalTransform().convFromNR(nx));
+				double v = xat.getNormalTransform().convFromNR(nx);
+				double deltaL = Math.abs(xat.getNormalTransform().convFromNR(nxL) - v);
+				double deltaH = Math.abs(xat.getNormalTransform().convFromNR(nxH) - v);
+				String format = NumberUtils.calcDeltaFormatStr(v, Math.min(deltaL, deltaH) / 2);
+				sb.append(String.format((Locale) null, format, v));
 			}
-			sb.append(",");
+			sb.append(", ");
 			for (AxisTransform yat : yats) {
-				sb.append(yat.getNormalTransform().convFromNR(ny));
+				double v = yat.getNormalTransform().convFromNR(ny);
+				double deltaL = Math.abs(yat.getNormalTransform().convFromNR(nyL) - v);
+				double deltaH = Math.abs(yat.getNormalTransform().convFromNR(nyH) - v);
+				String format = NumberUtils.calcDeltaFormatStr(v, Math.min(deltaL, deltaH) / 2);
+				sb.append(String.format((Locale) null, format, v));
 			}
 		}
 
 		icomp.drawTooltip(g, sb.toString(), p.x, p.y);
 
 	}
+
 }

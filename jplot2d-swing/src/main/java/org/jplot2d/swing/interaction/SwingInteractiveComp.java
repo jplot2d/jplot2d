@@ -49,6 +49,8 @@ public class SwingInteractiveComp implements InteractiveComp {
 	public Point getCursorLocation() {
 		Point p = MouseInfo.getPointerInfo().getLocation();
 		SwingUtilities.convertPointFromScreen(p, comp);
+		p.x -= comp.getImageOffsetX();
+		p.y -= comp.getImageOffsetY();
 		return p;
 	}
 
