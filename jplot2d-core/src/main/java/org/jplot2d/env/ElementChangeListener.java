@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -35,7 +35,7 @@ public interface ElementChangeListener extends EventListener {
 
     void componentRemoved(ElementChangeEvent evt);
 
-    void enginePropertiesChanged(ElementChangeEvent evt);
+    void propertiesChanged(ElementChangeEvent evt);
     
-    void batchModeChanged(ElementChangeEvent evt);
+    void propertyChangesProcessed(ElementChangeEvent evt);
 }

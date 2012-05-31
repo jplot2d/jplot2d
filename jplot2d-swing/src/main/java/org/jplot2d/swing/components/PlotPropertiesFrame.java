@@ -57,7 +57,7 @@ public class PlotPropertiesFrame extends JFrame implements ShowPropertiesAction 
 	private PropertyTable _propertyTable;
 
 	public PlotPropertiesFrame(PlotEnvironment env) {
-		super("Herschel Property Panel");
+		super("Properties Panel");
 		_manager = new PlotOutline(env);
 		_manager.setShowPropertiesAction(this);
 		initGUI();
