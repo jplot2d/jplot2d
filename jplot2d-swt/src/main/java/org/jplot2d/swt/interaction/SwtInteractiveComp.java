@@ -93,6 +93,24 @@ public class SwtInteractiveComp implements InteractiveComp {
 	}
 
 	@SuppressWarnings("deprecation")
+	public void drawLine(Object g, int rgb, int x1, int y1, int x2, int y2) {
+		GC gc = (GC) g;
+		int cr = (rgb & 0x00ff0000) >> 16;
+		int cg = (rgb & 0x0000ff00) >> 8;
+		int cb = (rgb & 0x000000ff);
+		Color c = new Color(comp.getDisplay(), cr, cg, cb);
+
+		gc.setForeground(c);
+		gc.setBackground(plotBackground);
+		gc.setXORMode(true);
+		gc.drawLine(x1 + comp.getImageOffsetX(), y1 + comp.getImageOffsetY(),
+				x2 + comp.getImageOffsetX(), y2 + comp.getImageOffsetY());
+		gc.setXORMode(false);
+
+		c.dispose();
+	}
+
+	@SuppressWarnings("deprecation")
 	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height) {
 		GC gc = (GC) g;
 		int cr = (rgb & 0x00ff0000) >> 16;
@@ -173,8 +191,8 @@ public class SwtInteractiveComp implements InteractiveComp {
 	}
 
 	public void drawTooltip(Object g, String s, int x, int y) {
-		x += 4;
-		y += 2;
+		x += comp.getImageOffsetX() + 4;
+		y += comp.getImageOffsetY() + 2;
 
 		GC gc = (GC) g;
 		gc.setForeground(tooltipForeground);

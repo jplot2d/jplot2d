@@ -18,7 +18,10 @@
  */
 package org.jplot2d.interaction;
 
+import java.awt.Color;
 import java.awt.Point;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -157,6 +160,14 @@ public class MouseCoordinatesTooltipHandler extends
 			}
 		}
 
+		Dimension2D csize = plot.getContentSize();
+		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
+
+		icomp.drawLine(g, Color.GRAY.getRGB(), (int) plotRect.getX(), p.y,
+				(int) plotRect.getMaxX(), p.y);
+		icomp.drawLine(g, Color.GRAY.getRGB(), p.x, (int) plotRect.getY(), p.x,
+				(int) plotRect.getMaxY());
 		icomp.drawTooltip(g, sb.toString(), p.x, p.y);
 
 	}

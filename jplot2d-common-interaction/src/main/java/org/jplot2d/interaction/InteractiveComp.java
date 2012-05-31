@@ -57,6 +57,20 @@ public interface InteractiveComp {
 	public void setCursor(CursorStyle cursorStyle);
 
 	/**
+	 * Draws a line with the given graphics object and rgb color.
+	 * 
+	 * @param g
+	 *            the graphics object
+	 * @param rgb
+	 *            the color value
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 */
+	public void drawLine(Object g, int rgb, int x1, int y1, int x2, int y2);
+
+	/**
 	 * Draws a rectangle with the given graphics object and rgb color.
 	 * 
 	 * @param g
