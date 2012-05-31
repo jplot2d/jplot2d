@@ -452,7 +452,7 @@ public abstract class Environment {
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
-				lsnr.enginePropertiesChanged(evt);
+				lsnr.propertiesChanged(evt);
 			}
 		}
 	}

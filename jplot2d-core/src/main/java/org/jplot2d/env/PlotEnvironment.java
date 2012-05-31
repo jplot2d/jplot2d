@@ -151,6 +151,7 @@ public abstract class PlotEnvironment extends Environment {
 			renderOnCommit();
 		}
 
+		fireChangeProcessed();
 	}
 
 	public int getHistoryCapacity() {
@@ -341,7 +342,7 @@ public abstract class PlotEnvironment extends Environment {
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, null);
 			for (ElementChangeListener lsnr : ls) {
-				lsnr.batchModeChanged(evt);
+				lsnr.propertyChangesProcessed(evt);
 			}
 		}
 	}

@@ -132,11 +132,11 @@ public class PlotOutline implements ElementChangeListener {
 		_treeModel.fireTreeStructureChanged(evt.getElement());
 	}
 
-	public void enginePropertiesChanged(ElementChangeEvent evt) {
+	public void propertiesChanged(ElementChangeEvent evt) {
 		_modified = true;
 	}
 
-	public void batchModeChanged(ElementChangeEvent evt) {
+	public void propertyChangesProcessed(ElementChangeEvent evt) {
 		if (_modified) {
 			_modified = false;
 			TreePath path = _plotTree.getSelectionPath();
