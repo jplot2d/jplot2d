@@ -86,7 +86,6 @@ public class MouseCoordinatesTooltipHandler extends
 		/*
 		 * Draw tooltip for the current coordinate
 		 */
-		InteractiveComp icomp = handler.getInteractiveComp();
 		Point p = icomp.getCursorLocation();
 
 		// the selectable component that contains the specified point.
