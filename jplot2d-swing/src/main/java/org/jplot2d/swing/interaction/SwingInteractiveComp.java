@@ -78,6 +78,16 @@ public class SwingInteractiveComp implements InteractiveComp {
 		}
 	}
 
+	public void drawLine(Object g, int rgb, int x1, int y1, int x2, int y2) {
+		Graphics2D g2 = (Graphics2D) g;
+		Color c = new Color(rgb);
+		g2.setColor(c);
+		g2.setXORMode(comp.getPlotBackground());
+		g2.drawLine(x1 + comp.getImageOffsetX(), y1 + comp.getImageOffsetY(),
+				x2 + comp.getImageOffsetX(), y2 + comp.getImageOffsetY());
+		g2.setPaintMode();
+	}
+
 	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height) {
 		Graphics2D g2 = (Graphics2D) g;
 		Color c = new Color(rgb);
@@ -99,8 +109,8 @@ public class SwingInteractiveComp implements InteractiveComp {
 	}
 
 	public void drawTooltip(Object g, String s, int x, int y) {
-		x += 4;
-		y += 2;
+		x += comp.getImageOffsetX() + 4;
+		y += comp.getImageOffsetY() + 2;
 
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(SystemColor.infoText);
