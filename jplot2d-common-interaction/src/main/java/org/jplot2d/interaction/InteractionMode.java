@@ -91,6 +91,7 @@ public class InteractionMode {
 	public void bindMoveBehavior(MouseMoveBehavior behavior, MouseButtonCombination mbc) {
 		if (mbc == null) {
 			moveMap.remove(behavior);
+			modifiersKeyMap.remove(behavior);
 		} else {
 			moveMap.put(behavior, mbc);
 			if (mbc.getModifiers() != 0) {
