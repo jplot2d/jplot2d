@@ -9,5 +9,6 @@
 <path>${JPLOT2D_LOC}/jplot2d-common-interaction/target/classes</path>
 <path>${JPLOT2D_LOC}/jplot2d-interaction/target/classes</path>
 <path>${JPLOT2D_LOC}/jplot2d-swing/target/classes</path>
+<path>${M2_REPO}/com/lowagie/itext/2.1.7/itext-2.1.7.jar</path>
 </pydev_pathproperty>
 </pydev_project>
