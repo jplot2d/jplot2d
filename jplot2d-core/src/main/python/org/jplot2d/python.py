@@ -59,6 +59,18 @@ def subplot(*args, **kwargs):
     
     return p
 
+def title(text, *args, **kwargs):
+    title = jplot2d_default_element_factory.createTitle(text)
+    
+    iinfo = InterfaceInfo.loadInterfaceInfo(Title)
+    for key in kwargs:
+        if iinfo.isWritableProp(key):
+            jplot2d_set_prop(iinfo, title, key, kwargs[key])
+        else:
+            raise AttributeError, "Title has no attribute " + key
+        
+    return title
+
 
 def axis(*args, **kwargs):
     return axes(1, *args, **kwargs)[0]
@@ -219,15 +231,13 @@ def symbolannotation(*args, **kwargs):
             raise AttributeError, "SymbolAnnotation has no attribute " + key
 
     return ann
- 
- 
- 
+
 def stroke(width, dash=None):
     return jplot2d_default_element_factory.createStroke(width, dash)
 
 
 
-#
+# set property for the given obj
 def setp(obj, *args, **kwargs):
     if isinstance(obj, Legend):
         iinfo = InterfaceInfo.loadInterfaceInfo(Legend)
@@ -235,6 +245,6 @@ def setp(obj, *args, **kwargs):
             if iinfo.isWritableProp(key):
                 jplot2d_set_prop(iinfo, obj, key, kwargs[key])
             else:
-                raise AttributeError, "Legend has no attribute " + key
+                raise AttributeError, obj + " has no attribute " + key
         
 
