@@ -143,8 +143,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create a plot with setting the default color, font, and margin. The default size mode is
-	 * FillContainerSizeMode(1).
+	 * Create a plot with setting the default color, font, and margin. The default size is 640x480.
 	 * 
 	 * @return
 	 */
@@ -347,15 +346,13 @@ public class ElementFactory {
 		return createXYGraph(new ArrayPair(xarray, yarray), name);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray,
-			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh) {
-		return createXYGraph(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh,
-				null);
+	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow,
+			double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh) {
+		return createXYGraph(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh, null);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray,
-			double[] xErrorLow, double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh,
-			String name) {
+	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow,
+			double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh, String name) {
 		ArrayPair errorX = null;
 		if (xErrorLow != null && xErrorHigh != null) {
 			errorX = new ArrayPair(xErrorLow, xErrorHigh);
@@ -379,8 +376,7 @@ public class ElementFactory {
 		return createXYGraph(new XYGraphData(xy, errorX, errorY));
 	}
 
-	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY,
-			String name) {
+	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, String name) {
 		return createXYGraph(new XYGraphData(xy, errorX, errorY), name);
 	}
 
