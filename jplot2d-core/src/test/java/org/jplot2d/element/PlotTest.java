@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
+import static org.junit.Assert.*;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -42,6 +43,23 @@ public class PlotTest {
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Plot"), "sizeMode",
 				"containerSize", "scale", "layoutDirector", "preferredContentSize", "location",
 				"contentSize");
+	}
+
+	@Test
+	public void testTitle() {
+		ElementFactory ef = ElementFactory.getInstance();
+		Plot p = ef.createPlot();
+		Title title = ef.createTitle("title");
+		p.addTitle(title);
+
+		p.removeTitle(title);
+
+		try {
+			p.removeTitle(title);
+			fail("An IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
 	}
 
 }
