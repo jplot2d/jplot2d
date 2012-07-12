@@ -370,29 +370,35 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			penv.beginCommand("");
 			ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
-			// check removable
-			Map<Element, Element> mooringMap = cimpl.getMooringMap();
-			if (mooringMap.size() > 0) {
-				String msg = "The removing is not allowed, because some element is required.\n";
-				for (Map.Entry<Element, Element> me : mooringMap.entrySet()) {
-					msg += "\t" + me.getKey() + " is required by " + me.getValue() + "\n";
-				}
-				throwable = new IllegalStateException(msg);
+			if (cimpl.getParent() != impl) {
+				throwable = new IllegalArgumentException(
+						"The component to be removed dosn't belong to this container.");
 
 			} else {
+				// check removable
+				Map<Element, Element> mooringMap = cimpl.getMooringMap();
+				if (mooringMap.size() > 0) {
+					String msg = "The removing is not allowed, because some element is required.\n";
+					for (Map.Entry<Element, Element> me : mooringMap.entrySet()) {
+						msg += "\t" + me.getKey() + " is required by " + me.getValue() + "\n";
+					}
+					throwable = new IllegalStateException(msg);
 
-				logCommand(method, args);
+				} else {
 
-				// notify environment a component is going to be removed
-				penv.componentRemoving(cimpl);
+					logCommand(method, args);
 
-				// remove the component
-				Object[] cargs = args.clone();
-				cargs[0] = cimpl;
-				try {
-					method.invoke(impl, cargs);
-				} catch (InvocationTargetException e) {
-					throwable = e.getCause();
+					// notify environment a component is going to be removed
+					penv.componentRemoving(cimpl);
+
+					// remove the component
+					Object[] cargs = args.clone();
+					cargs[0] = cimpl;
+					try {
+						method.invoke(impl, cargs);
+					} catch (InvocationTargetException e) {
+						throwable = e.getCause();
+					}
 				}
 			}
 
@@ -625,7 +631,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			for (int i = 1; i <= nref; i++) {
 				if (((Element) args[i]).getEnvironment() != penv) {
 					throw new IllegalArgumentException(
-							"The reference argument must belong to the environment of the container to be added.");
+							"The reference argument must belong to the environment of the container.");
 				}
 				cargs[i] = (args[i] == null) ? null : ((ElementAddition) args[i]).getImpl();
 			}
