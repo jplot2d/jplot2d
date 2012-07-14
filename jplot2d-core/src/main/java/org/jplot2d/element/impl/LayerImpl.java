@@ -211,6 +211,19 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
+	public void removeAnnotation(Annotation annotation) {
+		AnnotationEx annx = (AnnotationEx) annotation;
+
+		annotations.remove(annx);
+		annx.setParent(null);
+
+		if (annx.canContributeToParent()) {
+			redraw();
+		} else if (annx.canContribute()) {
+			rerender();
+		}
+	}
+
 	public int indexOf(AnnotationEx annotation) {
 		return annotations.indexOf(annotation);
 	}
