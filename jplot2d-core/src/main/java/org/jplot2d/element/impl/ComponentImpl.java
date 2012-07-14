@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -280,7 +280,11 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	public Rectangle2D getBounds() {
 		Dimension2D size = getSize();
-		return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
+		if (size == null) {
+			return null;
+		} else {
+			return new Rectangle2D.Double(0, 0, size.getWidth(), size.getHeight());
+		}
 	}
 
 	public Rectangle2D getSelectableBounds() {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -52,11 +52,6 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	private MathLabel label;
 
 	private double gapFactor = 0.25;
-
-	/**
-	 * A cached bounds to meet the oldValue-calcSize-invalidate procedure in PlotImpl
-	 */
-	private Rectangle2D bounds = new Rectangle2D.Double();
 
 	public TitleImpl() {
 		setSelectable(true);
@@ -152,10 +147,12 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void setHAlign(HAlign hAlign) {
-		this.hAlign = hAlign;
-		label = null;
-		if (isVisible()) {
-			redraw();
+		if (this.hAlign != hAlign) {
+			this.hAlign = hAlign;
+			label = null;
+			if (isVisible()) {
+				redraw();
+			}
 		}
 	}
 
@@ -164,16 +161,22 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void setVAlign(VAlign vAlign) {
-		this.vAlign = vAlign;
-		label = null;
-		if (isVisible()) {
-			redraw();
+		if (this.vAlign != vAlign) {
+			this.vAlign = vAlign;
+			label = null;
+			if (isVisible()) {
+				redraw();
+			}
 		}
 	}
 
 	public Dimension2D getSize() {
 		Rectangle2D bounds = getBounds();
-		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
+		if (bounds == null) {
+			return null;
+		} else {
+			return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
+		}
 	}
 
 	public Position getPosition() {
@@ -209,14 +212,17 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return bounds;
+		if (label == null) {
+			return null;
+		} else {
+			return label.getBounds();
+		}
 	}
 
 	public void calcSize() {
 		if (label == null) {
 			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
-		bounds = label.getBounds();
 	}
 
 	@Override

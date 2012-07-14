@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,8 +18,8 @@
  */
 package org.jplot2d.element;
 
-import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
-import static org.jplot2d.util.TestUtils.checkCollecionOrder;
+import static org.jplot2d.util.TestUtils.*;
+import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -43,6 +43,17 @@ public class HStripAnnotationTest {
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Horizontal Strip Annotation"),
 				"valueRange", "fillPaint");
+	}
+
+	@Test
+	public void testCreateHStripAnnotation() {
+		ElementFactory ef = ElementFactory.getInstance();
+
+		HStripAnnotation ann = ef.createHStripAnnotation(0, 1);
+
+		assertNull(ann.getSize());
+		assertNull(ann.getBounds());
+		assertNull(ann.getSelectableBounds());
 	}
 
 }

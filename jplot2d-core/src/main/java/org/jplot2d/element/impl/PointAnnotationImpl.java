@@ -52,9 +52,9 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 
 	public String getId() {
 		if (getParent() != null) {
-			return "PointMarker" + getParent().indexOf(this);
+			return "PointAnnotation" + getParent().indexOf(this);
 		} else {
-			return "PointMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "PointAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 

@@ -274,7 +274,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		pxf = null;
 		redraw();
 
-		/* Axis, Title, Legend and Marker do not cache their paper transform */
+		/* Axis, Title, Legend and Annotation do not cache their paper transform */
 
 		// notify all layers
 		for (LayerEx layer : layers) {
@@ -1279,7 +1279,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private static void calcTitleSize(PlotEx plot) {
 		for (TitleEx title : plot.getTitles()) {
 			if (title.canContribute()) {
-				double oldThickness = title.getSize().getHeight();
+				Dimension2D size = title.getSize();
+				double oldThickness = (size == null) ? 0 : size.getHeight();
 				title.calcSize();
 				if (Math.abs(oldThickness - title.getSize().getHeight()) > Math.abs(oldThickness) * 1e-12) {
 					plot.invalidate();

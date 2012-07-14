@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -56,9 +56,9 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 
 	public String getId() {
 		if (getParent() != null) {
-			return "HStripMarker" + getParent().indexOf(this);
+			return "VStripAnnotation" + getParent().indexOf(this);
 		} else {
-			return "HStripMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "VStripAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -80,20 +80,32 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null && getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getHeight(), paperThickness);
+		return new DoubleDimension2D(getParent().getSize().getHeight(), Math.abs(paperThickness));
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(),
-				paperThickness);
+		if (getParent() == null || getParent().getSize() == null) {
+			return null;
+		}
+
+		if (paperThickness >= 0) {
+			return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(),
+					paperThickness);
+		} else {
+			return new Rectangle2D.Double(0, 0, getParent().getSize().getHeight(), -paperThickness);
+		}
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		if (paperThickness < 2) {
-			return new Rectangle2D.Double(0, -1, getParent().getSize().getHeight(), 2);
+		if (getParent() == null || getParent().getSize() == null) {
+			return null;
+		}
+
+		if (-2 < paperThickness && paperThickness < 2) {
+			return new Rectangle2D.Double(-1, 0, 2, getParent().getSize().getHeight());
 		} else {
 			return getBounds();
 		}

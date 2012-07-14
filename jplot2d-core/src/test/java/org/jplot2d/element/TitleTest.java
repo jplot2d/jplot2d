@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
+import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -42,6 +43,17 @@ public class TitleTest {
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Title"), "position",
 				"location", "HAlign", "VAlign", "gapFactor", "movable");
+	}
+
+	@Test
+	public void testCreateTitle() {
+		ElementFactory ef = ElementFactory.getInstance();
+
+		Title title = ef.createTitle("title");
+
+		assertNull(title.getSize());
+		assertNull(title.getBounds());
+		assertNull(title.getSelectableBounds());
 	}
 
 }

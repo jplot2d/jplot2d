@@ -56,9 +56,9 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 
 	public String getId() {
 		if (getParent() != null) {
-			return "HStripMarker" + getParent().indexOf(this);
+			return "HStripAnnotation" + getParent().indexOf(this);
 		} else {
-			return "HStripMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "HStripAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -80,18 +80,31 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null && getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null) {
 			return null;
 		}
 		return new DoubleDimension2D(getParent().getSize().getWidth(), paperThickness);
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
+		if (getParent() == null || getParent().getSize() == null) {
+			return null;
+		}
+
+		if (paperThickness >= 0) {
+			return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
+		} else {
+			return new Rectangle2D.Double(0, paperThickness, getParent().getSize().getWidth(),
+					-paperThickness);
+		}
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		if (paperThickness < 2) {
+		if (getParent() == null || getParent().getSize() == null) {
+			return null;
+		}
+
+		if (-2 < paperThickness && paperThickness < 2) {
 			return new Rectangle2D.Double(0, -1, getParent().getSize().getWidth(), 2);
 		} else {
 			return getBounds();

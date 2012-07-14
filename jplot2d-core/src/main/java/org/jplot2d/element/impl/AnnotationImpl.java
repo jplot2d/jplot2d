@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -42,7 +42,7 @@ public abstract class AnnotationImpl extends ComponentImpl implements Annotation
 
 		Method method;
 		try {
-			method = Layer.class.getMethod("getMarker", Integer.TYPE);
+			method = Layer.class.getMethod("getAnnotation", Integer.TYPE);
 		} catch (NoSuchMethodException e) {
 			throw new Error(e);
 		}
