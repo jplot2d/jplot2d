@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
+import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -45,4 +46,16 @@ public class XYGraphTest {
 				"lineStroke", "chartType", "fillEnabled", "fillPaint", "fillClosureType",
 				"errorbarCapSize");
 	}
+
+	@Test
+	public void testCreateGraph() {
+		ElementFactory ef = ElementFactory.getInstance();
+
+		XYGraph graph = ef.createXYGraph(new double[0], new double[0]);
+
+		assertNull(graph.getSize());
+		assertNull(graph.getBounds());
+		assertNull(graph.getSelectableBounds());
+	}
+
 }

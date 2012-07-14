@@ -232,7 +232,11 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, -desc, getLength(), getThickness());
+		if (getParent() == null) {
+			return null;
+		} else {
+			return new Rectangle2D.Double(0, -desc, getLength(), getThickness());
+		}
 	}
 
 	public PaperTransform getPaperTransform() {

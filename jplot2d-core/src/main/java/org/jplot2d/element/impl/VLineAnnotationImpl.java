@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -50,9 +50,9 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 
 	public String getId() {
 		if (getParent() != null) {
-			return "VLineMarker" + getParent().indexOf(this);
+			return "VLineAnnotation" + getParent().indexOf(this);
 		} else {
-			return "VLineMarker@" + Integer.toHexString(System.identityHashCode(this));
+			return "VLineAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -71,13 +71,17 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null && getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null) {
 			return null;
 		}
 		return new DoubleDimension2D(getParent().getSize().getHeight(), 0);
 	}
 
 	public Rectangle2D getSelectableBounds() {
+		if (getParent() == null || getParent().getSize() == null) {
+			return null;
+		}
+
 		double lineWidth = 0;
 		if (stroke instanceof BasicStroke) {
 			lineWidth = ((BasicStroke) stroke).getLineWidth();

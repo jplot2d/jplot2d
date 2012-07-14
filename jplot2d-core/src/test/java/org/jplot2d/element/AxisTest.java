@@ -55,6 +55,11 @@ public class AxisTest {
 	@Test
 	public void testCreateAxis() {
 		Axis axis = factory.createAxis();
+
+		assertNull(axis.getSize());
+		assertNull(axis.getBounds());
+		assertNull(axis.getSelectableBounds());
+
 		AxisTitle title = axis.getTitle();
 		AxisTickManager tm = axis.getTickManager();
 		AxisTransform arm = tm.getAxisTransform();
