@@ -95,6 +95,15 @@ public interface Layer extends PComponent {
 	public void addAnnotation(Annotation annotation);
 
 	/**
+	 * Remove the annotation from this layer.
+	 * 
+	 * @param annotation
+	 *            the annotation to be removed
+	 */
+	@Hierarchy(HierarchyOp.REMOVE)
+	public void removeAnnotation(Annotation annotation);
+
+	/**
 	 * Returns the X axis to this layer attaching.
 	 * 
 	 * @return
