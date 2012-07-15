@@ -43,11 +43,6 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 
 	private BasicStroke stroke = DEFAULT_STROKE;
 
-	/**
-	 * A local variable to avoid re-create line when drawing
-	 */
-	private Line2D line = new Line2D.Double();
-
 	public String getId() {
 		if (getParent() != null) {
 			return "VLineAnnotation" + getParent().indexOf(this);
@@ -140,7 +135,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
 
-		line.setLine(locX, 0, locX, getParent().getSize().getHeight());
+		Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
 		g.draw(line);
 
 		g.setTransform(oldTransform);
@@ -156,7 +151,6 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		this.locX = lm.locX;
 		this.valueX = lm.valueX;
 		this.stroke = lm.stroke;
-		this.line = (Line2D) lm.line.clone();
 	}
 
 }

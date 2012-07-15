@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -37,37 +37,47 @@ import org.jplot2d.util.Range;
  * @author Jingjing Li
  * 
  */
-public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnotationEx {
+public class RectangleAnnotationImpl extends AnnotationImpl implements RectangleAnnotationEx {
 
 	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double locY;
+	private double locX, locY;
 
-	private double paperThickness;
+	private double paperWidth, paperHeight;
 
-	private Range range;
+	private Range xrange, yrange;
 
 	private Paint paint = DEFAULT_PAINT;
 
 	public String getId() {
 		if (getParent() != null) {
-			return "HStripAnnotation" + getParent().indexOf(this);
+			return "RectangleAnnotation" + getParent().indexOf(this);
 		} else {
-			return "HStripAnnotation@" + Integer.toHexString(System.identityHashCode(this));
+			return "RectangleAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(0, locY);
+		return new Point2D.Double(locX, locY);
 	}
 
 	public void setLocation(double x, double y) {
+		if (locX != x) {
+			this.locX = x;
+			double endX = locX + paperWidth;
+			double valueX = getXPtoW(locX);
+			double valueXEnd = getXPtoW(endX);
+			xrange = new Range.Double(valueX, valueXEnd);
+			if (isVisible()) {
+				redraw();
+			}
+		}
 		if (locY != y) {
 			this.locY = y;
-			double endY = locY + paperThickness;
+			double endY = locY + paperHeight;
 			double valueY = getYPtoW(locY);
-			double valueEnd = getYPtoW(endY);
-			range = new Range.Double(valueY, valueEnd);
+			double valueYEnd = getYPtoW(endY);
+			yrange = new Range.Double(valueY, valueYEnd);
 			if (isVisible()) {
 				redraw();
 			}
@@ -78,7 +88,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		if (getParent() == null || getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getWidth(), Math.abs(paperThickness));
+		return new DoubleDimension2D(Math.abs(paperWidth), Math.abs(paperHeight));
 	}
 
 	public Rectangle2D getBounds() {
@@ -86,12 +96,8 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 			return null;
 		}
 
-		if (paperThickness >= 0) {
-			return new Rectangle2D.Double(0, 0, getParent().getSize().getWidth(), paperThickness);
-		} else {
-			return new Rectangle2D.Double(0, paperThickness, getParent().getSize().getWidth(),
-					-paperThickness);
-		}
+		return new Rectangle2D.Double(Math.min(paperWidth, 0), Math.min(paperHeight, 0),
+				Math.abs(paperWidth), Math.abs(paperHeight));
 	}
 
 	public Rectangle2D getSelectableBounds() {
@@ -99,11 +105,21 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 			return null;
 		}
 
-		if (-2 < paperThickness && paperThickness < 2) {
-			return new Rectangle2D.Double(0, -1, getParent().getSize().getWidth(), 2);
-		} else {
-			return getBounds();
+		double rx = Math.min(paperWidth, 0);
+		double ry = Math.min(paperHeight, 0);
+		double rw = Math.abs(paperWidth);
+		double rh = Math.abs(paperHeight);
+
+		if (rw < 2) {
+			rx = -1;
+			rw = 2;
 		}
+		if (rh < 2) {
+			ry = -1;
+			rh = 2;
+		}
+
+		return new Rectangle2D.Double(rx, ry, rw, rh);
 	}
 
 	public PaperTransform getPaperTransform() {
@@ -114,24 +130,40 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		if (pxf == null) {
 			return null;
 		}
-		return pxf.translate(0, locY);
+		return pxf.translate(locX, locY);
 	}
 
-	public Range getValueRange() {
-		return range;
+	public Range getXValueRange() {
+		return xrange;
 	}
 
-	public void setValueRange(Range value) {
-		this.range = value;
+	public void setXValueRange(Range value) {
+		this.xrange = value;
+		if (getParent() != null && getParent().getXAxisTransform() != null) {
+			relocate();
+		}
+	}
+
+	public Range getYValueRange() {
+		return yrange;
+	}
+
+	public void setYValueRange(Range value) {
+		this.yrange = value;
 		if (getParent() != null && getParent().getYAxisTransform() != null) {
 			relocate();
 		}
 	}
 
 	public void relocate() {
-		locY = getYWtoP(range.getStart());
-		double endY = getYWtoP(range.getEnd());
-		paperThickness = endY - locY;
+		locX = getXWtoP(xrange.getStart());
+		double endX = getXWtoP(xrange.getEnd());
+		paperWidth = endX - locX;
+
+		locY = getYWtoP(yrange.getStart());
+		double endY = getYWtoP(yrange.getEnd());
+		paperHeight = endY - locY;
+
 		if (isVisible()) {
 			redraw();
 		}
@@ -153,21 +185,19 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
 
-		if (paperThickness == 0) {
-			Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
+		double rx = Math.min(paperWidth, 0);
+		double ry = Math.min(paperHeight, 0);
+		double rw = Math.abs(paperWidth);
+		double rh = Math.abs(paperHeight);
+
+		if (paperWidth == 0 || paperHeight == 0) {
+			Line2D line = new Line2D.Double(locX + rx, locY + ry, locX + rw, locY + rh);
 			Stroke oldStroke = g.getStroke();
 			g.setStroke(ZERO_WIDTH_STROKE);
 			g.draw(line);
 			g.setStroke(oldStroke);
 		} else {
-			Rectangle2D strip;
-			if (paperThickness > 0) {
-				strip = new Rectangle2D.Double(0, locY, getParent().getSize().getWidth(),
-						paperThickness);
-			} else {
-				strip = new Rectangle2D.Double(0, locY + paperThickness, getParent().getSize()
-						.getWidth(), -paperThickness);
-			}
+			Rectangle2D strip = new Rectangle2D.Double(locX + rx, locY + ry, rw, rh);
 			g.fill(strip);
 		}
 
@@ -179,10 +209,13 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
 
-		HStripAnnotationImpl lm = (HStripAnnotationImpl) src;
+		RectangleAnnotationImpl lm = (RectangleAnnotationImpl) src;
+		this.locX = lm.locX;
 		this.locY = lm.locY;
-		this.paperThickness = lm.paperThickness;
-		this.range = lm.range;
+		this.paperWidth = lm.paperWidth;
+		this.paperHeight = lm.paperHeight;
+		this.xrange = lm.xrange;
+		this.yrange = lm.yrange;
 		this.paint = lm.paint;
 	}
 

@@ -220,6 +220,18 @@ def vstripannotation(start, end, *args, **kwargs):
 
     return ann
  
+def rectangleannotation(x1, x2, y1, y2, *args, **kwargs):
+    ann = jplot2d_default_element_factory.createRectangleAnnotation(x1, x2, y1, y2)
+        
+    anninfo = InterfaceInfo.loadInterfaceInfo(RectangleAnnotation)
+    for key in kwargs:
+        if anninfo.isWritableProp(key):
+            jplot2d_set_prop(anninfo, ann, key, kwargs[key])
+        else:
+            raise AttributeError, "RectangleAnnotation has no attribute " + key
+
+    return ann
+ 
 def symbolannotation(*args, **kwargs):
     ann = jplot2d_default_element_factory.createSymbolAnnotation(*args)
         

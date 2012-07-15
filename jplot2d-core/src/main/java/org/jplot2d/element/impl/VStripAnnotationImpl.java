@@ -49,11 +49,6 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 
 	private Paint paint = DEFAULT_PAINT;
 
-	/**
-	 * A local variable to avoid re-create strip when drawing
-	 */
-	private Rectangle2D strip = new Rectangle2D.Double();
-
 	public String getId() {
 		if (getParent() != null) {
 			return "VStripAnnotation" + getParent().indexOf(this);
@@ -128,7 +123,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 
 	public void setValueRange(Range value) {
 		this.range = value;
-		if (getParent() != null && getParent().getYAxisTransform() != null) {
+		if (getParent() != null && getParent().getXAxisTransform() != null) {
 			relocate();
 		}
 	}
@@ -165,11 +160,13 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 			g.draw(line);
 			g.setStroke(oldStroke);
 		} else {
+			Rectangle2D strip;
 			if (paperThickness > 0) {
-				strip.setRect(locX, 0, paperThickness, getParent().getSize().getHeight());
-			} else {
-				strip.setRect(locX + paperThickness, 0, -paperThickness, getParent().getSize()
+				strip = new Rectangle2D.Double(locX, 0, paperThickness, getParent().getSize()
 						.getHeight());
+			} else {
+				strip = new Rectangle2D.Double(locX + paperThickness, 0, -paperThickness,
+						getParent().getSize().getHeight());
 			}
 			g.fill(strip);
 		}
@@ -187,7 +184,6 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 		this.paperThickness = lm.paperThickness;
 		this.range = lm.range;
 		this.paint = lm.paint;
-		this.strip = (Rectangle2D) lm.strip.clone();
 	}
 
 }
