@@ -77,6 +77,7 @@ public class HStripAnnotationTest {
 		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(p);
 
+		checkDouble(ann0.getSize().getHeight(), ann1.getSize().getHeight());
 		checkDouble(ann0.getBounds().getY(), 0);
 		checkDouble(ann0.getBounds().getHeight(), ann1.getBounds().getHeight());
 		checkDouble(ann1.getBounds().getY(), -ann1.getBounds().getHeight());

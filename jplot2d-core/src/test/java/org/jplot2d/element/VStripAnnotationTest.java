@@ -79,6 +79,7 @@ public class VStripAnnotationTest {
 		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(p);
 
+		checkDouble(ann0.getSize().getWidth(), ann1.getSize().getWidth());
 		checkDouble(ann0.getBounds().getY(), -ann1.getBounds().getHeight());
 		checkDouble(ann0.getBounds().getHeight(), ann1.getBounds().getHeight());
 		checkDouble(ann1.getBounds().getY(), 0);
