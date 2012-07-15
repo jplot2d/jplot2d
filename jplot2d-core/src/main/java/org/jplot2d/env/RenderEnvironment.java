@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,6 +20,7 @@ package org.jplot2d.env;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +28,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
@@ -35,12 +38,17 @@ import org.jplot2d.renderer.PngFileExporter;
 import org.jplot2d.renderer.Renderer;
 
 /**
- * This environment extends plot environment to add ability to render a plot.
+ * This environment extends plot environment to add ability to render a plot and undo/redo ability.
  * 
  * @author Jingjing Li
  * 
  */
 public class RenderEnvironment extends PlotEnvironment {
+
+	/**
+	 * the key is impl element, the value is copy of element (for renderer thread safe)
+	 */
+	protected final Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 
 	private final List<Renderer> rendererList = Collections
 			.synchronizedList(new ArrayList<Renderer>());
@@ -48,6 +56,9 @@ public class RenderEnvironment extends PlotEnvironment {
 	protected static volatile File defaultExportDirectory;
 
 	private volatile File exportDirectory;
+
+	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>(
+			Integer.MAX_VALUE);
 
 	/**
 	 * Construct a environment to render the given plot.
@@ -86,7 +97,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		try {
-			renderer.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap, umCachableComps,
+			renderer.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps,
 					subcompsMap);
 		} finally {
 			end();
@@ -94,14 +105,27 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	@Override
+	protected void commit() {
+		super.commit();
+
+		makeUndoMemento();
+
+		if (plotImpl.isRerenderNeeded()) {
+			plotImpl.clearRerenderNeeded();
+			renderOnCommit();
+		}
+	}
+
+	/**
+	 * Redraw the plot in this environment.
+	 */
 	protected void renderOnCommit() {
 		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
 		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		for (Renderer r : getRenderers()) {
-			r.render((PlotEx) getCopyMap().get(plotImpl), cacheableCompMap, umCachableComps,
-					subcompsMap);
+			r.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
 		}
 	}
 
@@ -130,7 +154,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		}
 
 		for (ComponentEx comp : ccl) {
-			ComponentEx copy = (ComponentEx) getCopyMap().get(comp);
+			ComponentEx copy = (ComponentEx) copyMap.get(comp);
 			assert (copy != null) : "Null copy of Component " + comp;
 			cacheableCompMap.put(comp, copy);
 			// unmodified components
@@ -157,11 +181,11 @@ public class RenderEnvironment extends PlotEnvironment {
 			int size = sublist.size();
 			ComponentEx[] copys = new ComponentEx[size];
 			for (int i = 0; i < size; i++) {
-				ComponentEx copy = (ComponentEx) getCopyMap().get(sublist.get(i));
+				ComponentEx copy = (ComponentEx) copyMap.get(sublist.get(i));
 				assert (copy != null) : "Null copy of Component " + sublist.get(i);
 				copys[i] = copy;
 			}
-			subcompsMap.put((ComponentEx) getCopyMap().get(key), copys);
+			subcompsMap.put((ComponentEx) copyMap.get(key), copys);
 		}
 
 		return subcompsMap;
@@ -274,6 +298,184 @@ public class RenderEnvironment extends PlotEnvironment {
 	 */
 	public void saveAsPNG(String filename) throws IOException {
 		exportPlot(new PngFileExporter(getExportFile(filename)));
+	}
+
+	protected Map<ElementEx, ElementEx> getCopyMap() {
+		return copyMap;
+	}
+
+	/**
+	 * Create a undo memento and add it to change history.
+	 * 
+	 * @return a map, the key is impl element, the value is copy of element
+	 */
+	protected void makeUndoMemento() {
+
+		copyMap.clear();
+
+		/*
+		 * only when no history and all renderer is sync renderer and the component renderer is
+		 * caller run, the deepCopy can be omitted.
+		 */
+		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.copyStructure(copyMap);
+		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
+			me.getValue().copyFrom(me.getKey());
+		}
+
+		if (changeHistory.getCapacity() > 0) {
+			// build copy to proxy map
+			Map<ElementEx, Element> proxyMap2 = new HashMap<ElementEx, Element>();
+			for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
+				Element element = me.getKey();
+				Element proxy = me.getValue();
+				ElementEx copye = copyMap.get(element);
+				proxyMap2.put(copye, proxy);
+			}
+
+			changeHistory.add(new UndoMemento(plotRenderSafeCopy, proxyMap2));
+		}
+	}
+
+	/* ====================== Undo/Redo ====================== */
+
+	public int getHistoryCapacity() {
+		begin();
+		int capacity = changeHistory.getCapacity();
+		end();
+
+		return capacity;
+	}
+
+	/**
+	 * Returns <code>true</code> if undo is possible.
+	 * 
+	 * @return
+	 */
+	public boolean canUndo() {
+		begin();
+		boolean b = changeHistory.canUndo();
+		end();
+
+		return b;
+	}
+
+	/**
+	 * Returns <code>true</code> if undo is possible.
+	 * 
+	 * @return
+	 */
+	public boolean canRedo() {
+		begin();
+		boolean b = changeHistory.canRedo();
+		end();
+
+		return b;
+	}
+
+	/**
+	 * Undo the last change. If there is nothing to undo, an exception is thrown.
+	 * 
+	 * @return
+	 */
+	public void undo() {
+		begin();
+
+		UndoMemento memento = changeHistory.undo();
+		if (memento == null) {
+			throw new RuntimeException("Cannot undo");
+		}
+
+		restore(memento);
+
+		renderOnCommit();
+
+		end();
+	}
+
+	/**
+	 * Undo the last change. If there is nothing to undo, an exception is thrown.
+	 * 
+	 * @return
+	 */
+	public void redo() {
+		begin();
+
+		UndoMemento memento = changeHistory.redo();
+		if (memento == null) {
+			throw new RuntimeException("Cannot redo");
+		}
+
+		restore(memento);
+
+		renderOnCommit();
+
+		end();
+	}
+
+	/**
+	 * copy the memento back to working environment. This method create a copy of memento, and
+	 * assign the copy as working plotImpl.
+	 * 
+	 * @param memento
+	 *            the memento to be copied from
+	 */
+	@SuppressWarnings("unchecked")
+	private void restore(UndoMemento memento) {
+
+		// the key is element in memento, the value is copy of element for restoring
+		Map<ElementEx, ElementEx> rcopyMap = new HashMap<ElementEx, ElementEx>();
+
+		// copy the memento as implements
+		plotImpl = (PlotEx) memento.getPlot().copyStructure(rcopyMap);
+		plotImpl.setNotifier(notifier);
+
+		copyMap.clear();
+		proxyMap.clear();
+		for (Map.Entry<ElementEx, Element> me : memento.getProxyMap().entrySet()) {
+			ElementEx mmte = me.getKey(); // the memento element
+			Element proxy = me.getValue(); // the proxy
+			ElementEx impl = rcopyMap.get(mmte); // the copy of memento element, as the new impl
+			// copy properties from memento element to new impl
+			impl.copyFrom(mmte);
+			// replace impl in invocation handler
+			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy.getInvocationHandler(proxy);
+			ih.replaceImpl(impl);
+
+			proxyMap.put(impl, proxy);
+			copyMap.put(impl, mmte);
+		}
+
+		// rebuild cacheableComponentList and subComponentMap
+		cacheableComponentList.clear();
+		subComponentMap.clear();
+
+		for (ElementEx element : proxyMap.keySet()) {
+			if (element instanceof ComponentEx && ((ComponentEx) element).isCacheable()) {
+				ComponentEx comp = (ComponentEx) element;
+				cacheableComponentList.add(comp);
+				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
+				subComponentMap.put(comp, subComps);
+			}
+		}
+		updateOrder(cacheableComponentList);
+		if (!plotImpl.isCacheable()) {
+			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
+			subComponentMap.put(plotImpl, subComps);
+		}
+		for (ElementEx element : proxyMap.keySet()) {
+			if (element instanceof ComponentEx && !((ComponentEx) element).isCacheable()) {
+				ComponentEx a = getCacheableAncestor((ComponentEx) element);
+				List<ComponentEx> subcompList = subComponentMap.get(a);
+				if (subcompList == null) {
+					System.out.println(a);
+				}
+				subcompList.add((ComponentEx) element);
+			}
+		}
+		for (List<ComponentEx> subcomps : subComponentMap.values()) {
+			updateOrder(subcomps);
+		}
+
 	}
 
 }

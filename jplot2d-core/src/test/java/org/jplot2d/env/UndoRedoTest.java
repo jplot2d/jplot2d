@@ -39,20 +39,7 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class PlotEnvironmentTest {
-
-	private class PlotEnvironmentStub extends PlotEnvironment {
-
-		protected PlotEnvironmentStub(boolean threadSafe) {
-			super(threadSafe);
-		}
-
-		@Override
-		protected void renderOnCommit() {
-
-		}
-
-	}
+public class UndoRedoTest {
 
 	private static ElementFactory ef = ElementFactory.getInstance();
 
@@ -68,7 +55,7 @@ public class PlotEnvironmentTest {
 	public void undoPropertyTest() {
 		Plot plot = ef.createPlot();
 		PlotEx plotImpl0 = (PlotEx) ((ElementAddition) plot).getImpl();
-		PlotEnvironment env = new PlotEnvironmentStub(false);
+		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getColor(), Color.BLACK);
@@ -136,7 +123,7 @@ public class PlotEnvironmentTest {
 	@Test
 	public void undoAddTitleTest() {
 		Plot plot = ef.createPlot();
-		PlotEnvironment env = new PlotEnvironmentStub(false);
+		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getTitles().length, 0);
@@ -163,7 +150,7 @@ public class PlotEnvironmentTest {
 	@Test
 	public void undoAddAxisTest() {
 		Plot plot = ef.createPlot();
-		PlotEnvironment env = new PlotEnvironmentStub(false);
+		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getXAxes().length, 0);
@@ -211,7 +198,7 @@ public class PlotEnvironmentTest {
 	public void undoAxisRangeTest() {
 		Plot plot = ef.createPlot();
 		PlotEx plotImpl0 = (PlotEx) ((ElementAddition) plot).getImpl();
-		PlotEnvironment env = new PlotEnvironmentStub(false);
+		RenderEnvironment env = new RenderEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(env.changeHistory.getCSN(), 1);

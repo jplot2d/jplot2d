@@ -22,6 +22,7 @@ import static org.jplot2d.util.TestUtils.*;
 import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
+import org.jplot2d.env.PlotEnvironment;
 import org.junit.Test;
 
 /**
@@ -54,6 +55,31 @@ public class HStripAnnotationTest {
 		assertNull(ann.getSize());
 		assertNull(ann.getBounds());
 		assertNull(ann.getSelectableBounds());
+	}
+
+	@Test
+	public void testReverseRange() {
+		ElementFactory ef = ElementFactory.getInstance();
+		Plot p = ef.createPlot();
+
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
+		Layer layer = ef.createLayer();
+		p.addXAxis(xaxis);
+		p.addYAxis(yaxis);
+		p.addLayer(layer, xaxis, yaxis);
+
+		HStripAnnotation ann0 = ef.createHStripAnnotation(0, 1);
+		layer.addAnnotation(ann0);
+		HStripAnnotation ann1 = ef.createHStripAnnotation(1, 0);
+		layer.addAnnotation(ann1);
+
+		PlotEnvironment env = new PlotEnvironment(false);
+		env.setPlot(p);
+
+		checkDouble(ann0.getBounds().getY(), 0);
+		checkDouble(ann0.getBounds().getHeight(), ann1.getBounds().getHeight());
+		checkDouble(ann1.getBounds().getY(), -ann1.getBounds().getHeight());
 	}
 
 }
