@@ -18,11 +18,13 @@
  */
 package org.jplot2d.element;
 
+import static org.jplot2d.util.TestUtils.checkDouble;
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
+import org.jplot2d.env.PlotEnvironment;
 import org.junit.Test;
 
 /**
@@ -57,4 +59,28 @@ public class VStripAnnotationTest {
 		assertNull(ann.getSelectableBounds());
 	}
 
+	@Test
+	public void testReverseRange() {
+		ElementFactory ef = ElementFactory.getInstance();
+		Plot p = ef.createPlot();
+
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
+		Layer layer = ef.createLayer();
+		p.addXAxis(xaxis);
+		p.addYAxis(yaxis);
+		p.addLayer(layer, xaxis, yaxis);
+
+		VStripAnnotation ann0 = ef.createVStripAnnotation(0, 1);
+		layer.addAnnotation(ann0);
+		VStripAnnotation ann1 = ef.createVStripAnnotation(1, 0);
+		layer.addAnnotation(ann1);
+
+		PlotEnvironment env = new PlotEnvironment(false);
+		env.setPlot(p);
+
+		checkDouble(ann0.getBounds().getY(), -ann1.getBounds().getHeight());
+		checkDouble(ann0.getBounds().getHeight(), ann1.getBounds().getHeight());
+		checkDouble(ann1.getBounds().getY(), 0);
+	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,31 +19,24 @@
 package org.jplot2d.env;
 
 import java.awt.geom.Point2D;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notifier;
 
 /**
- * This Environment can host a plot instance and provide undo/redo ability.
+ * This Environment can host a plot instance.
  * 
  * @author Jingjing Li
  * 
  */
-public abstract class PlotEnvironment extends Environment {
-
-	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>(
-			Integer.MAX_VALUE);
+public class PlotEnvironment extends Environment {
 
 	/**
 	 * The plot proxy
@@ -52,12 +45,7 @@ public abstract class PlotEnvironment extends Environment {
 
 	protected PlotEx plotImpl;
 
-	/**
-	 * the key is impl element, the value is copy of element (for renderer thread safe)
-	 */
-	private final Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
-
-	protected PlotEnvironment(boolean threadSafe) {
+	public PlotEnvironment(boolean threadSafe) {
 		super(threadSafe);
 	}
 
@@ -135,205 +123,11 @@ public abstract class PlotEnvironment extends Environment {
 		endCommand();
 	}
 
-	protected Map<ElementEx, ElementEx> getCopyMap() {
-		return copyMap;
-	}
-
 	@Override
 	protected void commit() {
-
 		plotImpl.commit();
-
-		makeUndoMemento();
-
-		if (plotImpl.isRerenderNeeded()) {
-			plotImpl.clearRerenderNeeded();
-			renderOnCommit();
-		}
-
 		fireChangeProcessed();
 	}
-
-	public int getHistoryCapacity() {
-		begin();
-		int capacity = changeHistory.getCapacity();
-		end();
-
-		return capacity;
-	}
-
-	/**
-	 * Returns <code>true</code> if undo is possible.
-	 * 
-	 * @return
-	 */
-	public boolean canUndo() {
-		begin();
-		boolean b = changeHistory.canUndo();
-		end();
-
-		return b;
-	}
-
-	/**
-	 * Returns <code>true</code> if undo is possible.
-	 * 
-	 * @return
-	 */
-	public boolean canRedo() {
-		begin();
-		boolean b = changeHistory.canRedo();
-		end();
-
-		return b;
-	}
-
-	/**
-	 * Undo the last change. If there is nothing to undo, an exception is thrown.
-	 * 
-	 * @return
-	 */
-	public void undo() {
-		begin();
-
-		UndoMemento memento = changeHistory.undo();
-		if (memento == null) {
-			throw new RuntimeException("Cannot undo");
-		}
-
-		restore(memento);
-
-		renderOnCommit();
-
-		end();
-	}
-
-	/**
-	 * Undo the last change. If there is nothing to undo, an exception is thrown.
-	 * 
-	 * @return
-	 */
-	public void redo() {
-		begin();
-
-		UndoMemento memento = changeHistory.redo();
-		if (memento == null) {
-			throw new RuntimeException("Cannot redo");
-		}
-
-		restore(memento);
-
-		renderOnCommit();
-
-		end();
-	}
-
-	/**
-	 * Create a undo memento and add it to change history.
-	 * 
-	 * @return a map, the key is impl element, the value is copy of element
-	 */
-	protected void makeUndoMemento() {
-
-		copyMap.clear();
-		/*
-		 * only when no history and all renderer is sync renderer and the component renderer is
-		 * caller run, the deepCopy can be omitted.
-		 */
-		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.copyStructure(copyMap);
-		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
-			me.getValue().copyFrom(me.getKey());
-		}
-
-		// build copy to proxy map
-		Map<ElementEx, Element> proxyMap2 = new HashMap<ElementEx, Element>();
-		for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
-			Element element = me.getKey();
-			Element proxy = me.getValue();
-			ElementEx copye = copyMap.get(element);
-			proxyMap2.put(copye, proxy);
-		}
-
-		changeHistory.add(new UndoMemento(plotRenderSafeCopy, proxyMap2));
-
-	}
-
-	/**
-	 * copy the memento back to working environment. This method create a copy of memento, and
-	 * assign the copy as working plotImpl.
-	 * 
-	 * @param memento
-	 *            the memento to be copied from
-	 */
-	@SuppressWarnings("unchecked")
-	private void restore(UndoMemento memento) {
-
-		// the key is element in memento, the value is copy of element for restoring
-		Map<ElementEx, ElementEx> rcopyMap = new HashMap<ElementEx, ElementEx>();
-
-		// copy the memento as implements
-		plotImpl = (PlotEx) memento.getPlot().copyStructure(rcopyMap);
-		plotImpl.setNotifier(notifier);
-
-		copyMap.clear();
-		proxyMap.clear();
-		for (Map.Entry<ElementEx, Element> me : memento.getProxyMap().entrySet()) {
-			ElementEx mmte = me.getKey(); // the memento element
-			Element proxy = me.getValue(); // the proxy
-			ElementEx impl = rcopyMap.get(mmte); // the copy of memento element, as the new impl
-			// copy properties from memento element to new impl
-			impl.copyFrom(mmte);
-			// replace impl in invocation handler
-			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy.getInvocationHandler(proxy);
-			ih.replaceImpl(impl);
-
-			proxyMap.put(impl, proxy);
-			copyMap.put(impl, mmte);
-		}
-
-		// rebuild cacheableComponentList and subComponentMap
-		cacheableComponentList.clear();
-		subComponentMap.clear();
-
-		for (ElementEx element : proxyMap.keySet()) {
-			if (element instanceof ComponentEx && ((ComponentEx) element).isCacheable()) {
-				ComponentEx comp = (ComponentEx) element;
-				cacheableComponentList.add(comp);
-				List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-				subComponentMap.put(comp, subComps);
-			}
-		}
-		updateOrder(cacheableComponentList);
-		if (!plotImpl.isCacheable()) {
-			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-			subComponentMap.put(plotImpl, subComps);
-		}
-		for (ElementEx element : proxyMap.keySet()) {
-			if (element instanceof ComponentEx && !((ComponentEx) element).isCacheable()) {
-				ComponentEx a = getCacheableAncestor((ComponentEx) element);
-				List<ComponentEx> subcompList = subComponentMap.get(a);
-				if (subcompList == null) {
-					System.out.println(a);
-				}
-				subcompList.add((ComponentEx) element);
-			}
-		}
-		for (List<ComponentEx> subcomps : subComponentMap.values()) {
-			updateOrder(subcomps);
-		}
-
-	}
-
-	/**
-	 * Redraw the plot in this environment.
-	 * 
-	 * @param plot
-	 *            the plot to be redrawn.
-	 * @param copyMap
-	 *            the key contains all components in the plot. The values are the thread safe copies
-	 *            of keys.
-	 */
-	protected abstract void renderOnCommit();
 
 	/* --- JPlot2DChangeListener --- */
 
