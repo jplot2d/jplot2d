@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -39,6 +39,7 @@ import org.jplot2d.element.impl.LegendItemEx;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
+import org.jplot2d.element.impl.RectangleAnnotationImpl;
 import org.jplot2d.element.impl.SymbolAnnotationImpl;
 import org.jplot2d.element.impl.TitleImpl;
 import org.jplot2d.element.impl.VLineAnnotationImpl;
@@ -148,7 +149,8 @@ public class ElementFactory {
 	 * @return
 	 */
 	public Plot createPlot() {
-		Plot plot = createSubplot();
+
+		PlotImpl plot = new PlotImpl();
 
 		plot.setCacheable(true);
 		plot.setColor(Color.BLACK);
@@ -158,7 +160,23 @@ public class ElementFactory {
 		plot.getMargin().setExtraBottom(12);
 		plot.getMargin().setExtraRight(12);
 
-		return plot;
+		applyProfile(plot);
+		Plot plotProxy = proxy(plot, Plot.class);
+
+		LegendEx legend = plot.getLegend();
+		applyProfile(legend);
+		Legend legendProxy = proxy(legend, Legend.class);
+
+		PlotMarginEx margin = plot.getMargin();
+		applyProfile(margin);
+		PlotMargin marginProxy = proxy(margin, PlotMargin.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(plot, plotProxy);
+		env.registerComponent(legend, legendProxy);
+		env.registerElement(margin, marginProxy);
+
+		return plotProxy;
 	}
 
 	/**
@@ -446,7 +464,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create horizontal line annotation with the given y value in world coordinate system
+	 * Create a horizontal line annotation with the given y value in world coordinate system
 	 * 
 	 * @param y
 	 *            the y value in world coordinate system
@@ -464,7 +482,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create vertical line annotation with the given y value in world coordinate system
+	 * Create a vertical line annotation with the given y value in world coordinate system
 	 * 
 	 * @param x
 	 *            the y value in world coordinate system
@@ -482,7 +500,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create horizontal strip annotation with the given y value range in world coordinate system
+	 * Create a horizontal strip annotation with the given y value range in world coordinate system
 	 * 
 	 * @param start
 	 *            the y start value in world coordinate system
@@ -502,7 +520,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create vertical strip annotation with the given x value range in world coordinate system
+	 * Create a vertical strip annotation with the given x value range in world coordinate system.
 	 * 
 	 * @param start
 	 *            the x start value in world coordinate system
@@ -515,6 +533,31 @@ public class ElementFactory {
 		annotation.setValueRange(new Range.Double(start, end));
 		applyProfile(annotation);
 		VStripAnnotation annotationProxy = proxy(annotation, VStripAnnotation.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerComponent(annotation, annotationProxy);
+		return annotationProxy;
+	}
+
+	/**
+	 * Create a rectangle annotation with the given x and y value range in world coordinate system.
+	 * 
+	 * @param x1
+	 *            the x start value in world coordinate system
+	 * @param x2
+	 *            the x end value in world coordinate system
+	 * @param y1
+	 *            the y start value in world coordinate system
+	 * @param y2
+	 *            the y end value in world coordinate system
+	 * @return a rectangle annotation
+	 */
+	public RectangleAnnotation createRectangleAnnotation(double x1, double x2, double y1, double y2) {
+		RectangleAnnotationImpl annotation = new RectangleAnnotationImpl();
+		annotation.setXValueRange(new Range.Double(x1, x2));
+		annotation.setYValueRange(new Range.Double(y1, y2));
+		applyProfile(annotation);
+		RectangleAnnotation annotationProxy = proxy(annotation, RectangleAnnotation.class);
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerComponent(annotation, annotationProxy);

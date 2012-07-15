@@ -43,11 +43,6 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 
 	private BasicStroke stroke = DEFAULT_STROKE;
 
-	/**
-	 * A local variable to avoid re-create line when drawing
-	 */
-	private Line2D line = new Line2D.Double();
-
 	public String getId() {
 		if (getParent() != null) {
 			return "HLineAnnotation" + getParent().indexOf(this);
@@ -140,7 +135,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
 
-		line.setLine(0, locY, getParent().getSize().getWidth(), locY);
+		Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
 		g.draw(line);
 
 		g.setTransform(oldTransform);
@@ -156,7 +151,6 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		this.locY = lm.locY;
 		this.valueY = lm.valueY;
 		this.stroke = lm.stroke;
-		this.line = (Line2D) lm.line.clone();
 	}
 
 }
