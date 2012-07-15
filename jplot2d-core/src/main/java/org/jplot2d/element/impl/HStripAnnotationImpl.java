@@ -83,7 +83,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		if (getParent() == null || getParent().getSize() == null) {
 			return null;
 		}
-		return new DoubleDimension2D(getParent().getSize().getWidth(), paperThickness);
+		return new DoubleDimension2D(getParent().getSize().getWidth(), Math.abs(paperThickness));
 	}
 
 	public Rectangle2D getBounds() {
