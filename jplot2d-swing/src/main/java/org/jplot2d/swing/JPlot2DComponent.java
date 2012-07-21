@@ -85,12 +85,12 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed within the Event
-	 *            Dispatcher Thread. if <code>true</code>, all plot properties can be safely changed
-	 *            by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single
+	 *            thread. if <code>true</code>, all plot properties can be safely changed by
+	 *            multiple threads.
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
-		this(createRenderEnvironment(plot, threadSafe));
+		this(createRenderEnvironment(threadSafe));
 		env.setPlot(plot, new DefaultNotifier(this));
 	}
 
@@ -101,7 +101,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 * @param threadSafe
 	 * @return
 	 */
-	private static RenderEnvironment createRenderEnvironment(Plot plot, boolean threadSafe) {
+	private static RenderEnvironment createRenderEnvironment(boolean threadSafe) {
 		RenderEnvironment env = new RenderEnvironment(threadSafe);
 		return env;
 	}
