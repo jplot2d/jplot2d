@@ -89,6 +89,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 * Construct a Composite to display the given plot in its center. The plot properties can be
 	 * safely modified by multiple threads.
 	 * 
+	 * @param parent
+	 *            a widget which will be the parent of the new instance (cannot be null)
 	 * @param plot
 	 *            the plot to be display
 	 */
@@ -99,28 +101,28 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	/**
 	 * Construct a Composite to display the given plot in its center.
 	 * 
+	 * @param parent
+	 *            a widget which will be the parent of the new instance (cannot be null)
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed within the Event
-	 *            Dispatcher Thread. if <code>true</code>, all plot properties can be safely changed
-	 *            by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single
+	 *            thread. if <code>true</code>, all plot properties can be safely changed by
+	 *            multiple threads.
 	 */
 	public JPlot2DComposite(Composite parent, Plot plot, boolean threadSafe) {
-		this(parent, createRenderEnvironment(plot, threadSafe));
-		env.setNotifier(new DefaultNotifier(this));
+		this(parent, createRenderEnvironment(threadSafe));
+		env.setPlot(plot, new DefaultNotifier(this));
 	}
 
 	/**
 	 * create a RenderEnvironment with the given plot.
 	 * 
-	 * @param plot
 	 * @param threadSafe
 	 * @return
 	 */
-	private static RenderEnvironment createRenderEnvironment(Plot plot, boolean threadSafe) {
+	private static RenderEnvironment createRenderEnvironment(boolean threadSafe) {
 		RenderEnvironment env = new RenderEnvironment(threadSafe);
-		env.setPlot(plot);
 		return env;
 	}
 
@@ -128,6 +130,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 * Construct a Composite to display a plot in its center. The plot has been assigned to the
 	 * given RenderEnvironment.
 	 * 
+	 * @param parent
+	 *            a widget which will be the parent of the new instance (cannot be null)
 	 * @param env
 	 *            the RenderEnvironment
 	 */
