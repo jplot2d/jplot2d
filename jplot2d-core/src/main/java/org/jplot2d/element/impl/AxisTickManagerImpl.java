@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -319,6 +319,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	public void setTickTransform(AxisTickTransform transform) {
 		this.tickTransform = transform;
 		_trfChanged = true;
+		updateTickAlgorithm();
 	}
 
 	public Range getRange() {
@@ -559,6 +560,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		if (!getRange().equals(this.range)) {
 			_rangeChanged = true;
 			this.range = getRange();
+		}
+		if (_tickAlgorithmChanged || _rangeChanged) {
 			tickCalculator.setRange(range);
 		}
 		if (!va.getNormalTransform().equals(this.axisNormalTransform)) {
