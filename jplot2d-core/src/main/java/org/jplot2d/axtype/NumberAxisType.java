@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,8 +20,10 @@ package org.jplot2d.axtype;
 
 import org.jplot2d.axtick.LinearTickAlgorithm;
 import org.jplot2d.axtick.LogTickAlgorithm;
+import org.jplot2d.axtick.ReciprocalTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transform.AxisTickTransform;
+import org.jplot2d.transform.ReciprocalAxisTickTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
@@ -87,14 +89,20 @@ public class NumberAxisType extends AxisType {
 	}
 
 	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
-		if (tickTransform != null) {
-			return null;
-		}
-		if (txfType == TransformType.LINEAR) {
-			return LinearTickAlgorithm.getInstance();
-		}
-		if (txfType == TransformType.LOGARITHMIC) {
-			return LogTickAlgorithm.getInstance();
+		if (tickTransform == null) {
+			if (txfType == TransformType.LINEAR) {
+				return LinearTickAlgorithm.getInstance();
+			}
+			if (txfType == TransformType.LOGARITHMIC) {
+				return LogTickAlgorithm.getInstance();
+			}
+		} else if (tickTransform instanceof ReciprocalAxisTickTransform) {
+			if (txfType == TransformType.LINEAR) {
+				return ReciprocalTickAlgorithm.getInstance();
+			}
+			if (txfType == TransformType.LOGARITHMIC) {
+				return LogTickAlgorithm.getInstance();
+			}
 		}
 		return null;
 	}
