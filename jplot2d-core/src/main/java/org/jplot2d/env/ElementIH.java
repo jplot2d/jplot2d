@@ -637,8 +637,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 			for (int i = 1; i <= nref; i++) {
 				if (((Element) args[i]).getEnvironment() != penv) {
-					throw new IllegalArgumentException(
-							"The reference argument must belong to the environment of the container.");
+					throw new IllegalArgumentException("The argument " + args[i]
+							+ " must belong to the environment of the container.");
 				}
 				cargs[i] = (args[i] == null) ? null : ((ElementAddition) args[i]).getImpl();
 			}
