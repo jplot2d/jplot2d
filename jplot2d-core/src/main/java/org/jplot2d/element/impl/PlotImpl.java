@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -191,6 +191,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public void setContainerSize(Dimension2D size) {
+		if (sizeMode == null) {
+			throw new IllegalStateException("The sizeMode property must be set.");
+		}
 		this.containerSize = size;
 	}
 
