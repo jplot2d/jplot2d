@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2011 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -75,7 +75,8 @@ public interface Plot extends PComponent {
 	 * Sets the container size. The container size is given in device coordinate system and used by
 	 * size mode to derive paper size and scale. The default value is 640x480 pixels.
 	 * <p>
-	 * When the size mode is <code>null</code>, the container size has no effect.
+	 * If the size mode is <code>null</code> when calling this method, an IllegalStateException will
+	 * be thrown.
 	 * 
 	 * @param size
 	 */
