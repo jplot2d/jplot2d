@@ -19,7 +19,7 @@
 package org.jplot2d.axtick;
 
 /**
- * A Concrete Creator for Linear TickCalculator.
+ * A Concrete Creator for Reciprocal TickCalculator.
  * 
  * @author Jingjing Li
  * 

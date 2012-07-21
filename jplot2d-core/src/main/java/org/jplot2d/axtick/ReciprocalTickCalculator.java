@@ -21,9 +21,8 @@ package org.jplot2d.axtick;
 import java.text.Format;
 
 /**
- * A AuxTickCalculator for reciprocal. A reciprocal ticks contains a primary
- * tick zone, with a end tick value is multiple of the other end. The reasonable
- * multiplying factor is 4.
+ * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone, with a end tick
+ * value is multiple of the other end. The reasonable multiplying factor is 4.
  * 
  * @author Jingjing Li
  * 
@@ -56,8 +55,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 	}
 
 	@Override
-	public void calcValuesByTickInterval(double interval, double offset,
-			int minorTickNumber) {
+	public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
 		calcReciprocal(minorTickNumber);
 		if (_tickValues == null) {
 			calcAsLinear(interval, offset, minorTickNumber);
@@ -97,8 +95,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 		if (mf == 0 || mf > 4) {
 			mf = 4;
 		}
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance()
-				.createCalculator();
+		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(farv, farv * mf);
 		tc.calcValuesByTickNumber(3, minorTickNumber);
 		this._minorNumber = tc.getMinorNumber();
@@ -108,8 +105,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 	}
 
 	private void calcAsLinear(int tickNumber, int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance()
-				.createCalculator();
+		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(_start, _end);
 		tc.calcValuesByTickNumber(tickNumber, minorTickNumber);
 		this._minorNumber = tc.getMinorNumber();
@@ -117,10 +113,8 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 		this._minorValues = tc.getMinorValues();
 	}
 
-	private void calcAsLinear(double interval, double offset,
-			int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance()
-				.createCalculator();
+	private void calcAsLinear(double interval, double offset, int minorTickNumber) {
+		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(_start, _end);
 		tc.calcValuesByTickInterval(interval, offset, minorTickNumber);
 		this._minorNumber = tc.getMinorNumber();

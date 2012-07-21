@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -76,8 +76,8 @@ public abstract class AxisType {
 	public abstract Range getDefaultWorldRange(TransformType txfType);
 
 	/**
-	 * Returns a TickAlgorithm by the given transform type and tick transform, or false if the given
-	 * tick transform is not allowed.
+	 * Returns a TickAlgorithm by the given transform type and tick transform, or
+	 * <code>null<code> if the given tick transform is not allowed.
 	 * 
 	 * @param txfType
 	 *            the transform type
