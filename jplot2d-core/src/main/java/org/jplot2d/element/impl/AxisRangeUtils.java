@@ -265,7 +265,7 @@ class AxisRangeUtils {
 			// in case of the round error exceed valid bounds
 			urange = urange.intersect(arm.getType().getBoundary(arm.getTransform()));
 			for (LayerEx layer : arm.getLayers()) {
-				Range wDRange = null;
+				Range wDRange = new Range.Double();
 				if (layer.getXAxisTransform() == arm) {
 					for (GraphEx dp : layer.getGraph()) {
 						wDRange = dp.getData().setXBoundary(urange).getXRange().union(wDRange);

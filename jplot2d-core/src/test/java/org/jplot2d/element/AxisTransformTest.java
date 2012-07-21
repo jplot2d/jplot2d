@@ -23,6 +23,8 @@ import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 import static org.jplot2d.util.TestUtils.checkRange;
 import static org.junit.Assert.*;
 
+import org.jplot2d.data.ArrayPair;
+import org.jplot2d.data.XYGraphData;
 import org.jplot2d.env.InterfaceInfo;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.transform.TransformType;
@@ -85,4 +87,40 @@ public class AxisTransformTest {
 		assertFalse(axf.getLockGroup().isAutoRange());
 
 	}
+
+	/**
+	 * Test find nice range
+	 */
+	@Test
+	public void testSwitchTransformType2() {
+		Plot plot = ElementFactory.getInstance().createPlot();
+
+		Axis xaxis = ElementFactory.getInstance().createAxis();
+		xaxis.getTitle().setText("x axis");
+		plot.addXAxis(xaxis);
+		Axis yaxis = ElementFactory.getInstance().createAxis();
+		yaxis.getTitle().setText("y axis");
+		plot.addYAxis(yaxis);
+
+		XYGraphData graphData = new XYGraphData(new ArrayPair(new double[] { 0, 2, 4, 6, 8, 10 },
+				new double[] { 0, 0.6, 1, 0.4, 0.5, 0.8 }));
+		XYGraph graph = ElementFactory.getInstance().createXYGraph(graphData);
+		Layer layer0 = ElementFactory.getInstance().createLayer();
+
+		layer0.addGraph(graph);
+		plot.addLayer(layer0, xaxis, yaxis);
+
+		PlotEnvironment env = new PlotEnvironment(false);
+		env.setPlot(plot);
+
+		AxisTransform axf = xaxis.getTickManager().getAxisTransform();
+		AxisTransform yaxf = yaxis.getTickManager().getAxisTransform();
+
+		axf.setTransform(TransformType.LOGARITHMIC);
+		checkRange(axf.getRange(), 1, 100);
+		assertTrue(axf.getLockGroup().isAutoRange());
+		checkRange(yaxf.getRange(), 0.3, 1.1);
+		assertTrue(yaxf.getLockGroup().isAutoRange());
+	}
+
 }

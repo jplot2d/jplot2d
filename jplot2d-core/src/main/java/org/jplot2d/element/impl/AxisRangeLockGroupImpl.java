@@ -273,15 +273,19 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		Range padRange = null;
 		boolean dataOutsideBounds = false;
-		for (AxisTransformEx ax : arms) {
-			for (LayerEx layer : ax.getLayers()) {
-				Range urange = vtMap.get(ax).convFromNR(pbnds);
+		for (AxisTransformEx at : arms) {
+			for (LayerEx layer : at.getLayers()) {
+				Range urange = vtMap.get(at).convFromNR(pbnds);
 				Range wDRange = new Range.Double();
 
-				if (layer.getXAxisTransform() == ax) {
-					boolean yar = layer.getYAxisTransform().getLockGroup().isAutoRange();
-					Range yRange = (yar) ? layer.getYAxisTransform().getType()
-							.getBoundary(ax.getTransform()) : layer.getYAxisTransform().getRange();
+				if (layer.getXAxisTransform() == at) {
+					AxisTransformEx yat = layer.getYAxisTransform();
+					Range yRange;
+					if (yat.getLockGroup().isAutoRange()) {
+						yRange = yat.getType().getBoundary(yat.getTransform());
+					} else {
+						yRange = yat.getRange();
+					}
 					for (GraphEx dp : layer.getGraph()) {
 						GraphData dataInBounds = dp.getData().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
@@ -289,10 +293,14 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 							dataOutsideBounds = true;
 						}
 					}
-				} else if (layer.getYAxisTransform() == ax) {
-					boolean xar = layer.getXAxisTransform().getLockGroup().isAutoRange();
-					Range xRange = (xar) ? layer.getXAxisTransform().getType()
-							.getBoundary(ax.getTransform()) : layer.getXAxisTransform().getRange();
+				} else if (layer.getYAxisTransform() == at) {
+					AxisTransformEx xat = layer.getXAxisTransform();
+					Range xRange;
+					if (xat.getLockGroup().isAutoRange()) {
+						xRange = xat.getType().getBoundary(xat.getTransform());
+					} else {
+						xRange = xat.getRange();
+					}
 					for (GraphEx dp : layer.getGraph()) {
 						GraphData dataInBounds = dp.getData().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
@@ -303,13 +311,13 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				}
 
 				if (!wDRange.isEmpty()) {
-					Range pDRange = vtMap.get(ax).convToNR(wDRange);
+					Range pDRange = vtMap.get(at).convToNR(wDRange);
 					/* expand range by margin factor */
 					double pLo = pDRange.getMin();
 					double pHi = pDRange.getMax();
 					double span = pDRange.getSpan();
-					pLo -= span * ax.getMarginFactor();
-					pHi += span * ax.getMarginFactor();
+					pLo -= span * at.getMarginFactor();
+					pHi += span * at.getMarginFactor();
 					Range pXdRange = new Range.Double(pLo, pHi).intersect(pbnds);
 					if (padRange == null) {
 						padRange = pXdRange;
