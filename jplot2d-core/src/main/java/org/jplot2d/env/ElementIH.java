@@ -180,20 +180,27 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			if (iinfo.isPropWriteMethod(method)) {
 				/* property setter method */
 				boolean propChanged = invokeSetter(method, args);
-				if (!propChanged) {
-					return null;
+				if (propChanged) {
+					// fire PropertyChanged
+					environment.elementPropertyChanged((ElementEx) impl);
 				}
 			} else {
 				/* other method */
 				invokeOther(method, args);
+				// fire PropertyChanged
+				environment.elementPropertyChanged((ElementEx) impl);
 			}
 
-			// fire PropertyChanged
-			environment.elementPropertyChanged((ElementEx) impl);
-
-		} finally {
-			environment.endCommand();
+		} catch (Exception e) {
+			try {
+				environment.endCommand();
+			} catch (Exception e2) {
+				// ignore
+			}
+			throw e;
 		}
+
+		environment.endCommand();
 
 		return null;
 
