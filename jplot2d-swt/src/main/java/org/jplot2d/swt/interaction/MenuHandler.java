@@ -56,7 +56,7 @@ public class MenuHandler implements MenuListener, SelectionListener {
 	protected MenuItem redoItem;
 
 	/** Save action command. */
-	protected MenuItem saveItem;
+	protected MenuItem exportItem;
 
 	/** Print action command. */
 	protected MenuItem printItem;
@@ -107,9 +107,9 @@ public class MenuHandler implements MenuListener, SelectionListener {
 			separator = false;
 		}
 
-		saveItem = new MenuItem(menu, SWT.PUSH);
-		saveItem.setText("Save as...");
-		saveItem.addSelectionListener(this);
+		exportItem = new MenuItem(menu, SWT.PUSH);
+		exportItem.setText("Export...");
+		exportItem.addSelectionListener(this);
 		separator = true;
 
 		if (separator) {
@@ -169,11 +169,11 @@ public class MenuHandler implements MenuListener, SelectionListener {
 			env.redo();
 			return;
 		}
-		if (source == saveItem) {
+		if (source == exportItem) {
 			try {
 				doSaveAs();
 			} catch (IOException e) {
-				String msg = "SgtPlotXY doSaveAs: i/o exception = " + e.getMessage();
+				String msg = "I/O exception: " + e.getMessage();
 				MessageBox msgbox = new MessageBox(control.getShell(), SWT.OK | SWT.ICON_ERROR
 						| SWT.APPLICATION_MODAL);
 				msgbox.setMessage(msg);
@@ -235,11 +235,11 @@ public class MenuHandler implements MenuListener, SelectionListener {
 
 			try {
 				if (fileDesc.contains("PNG")) {
-					env.saveAsPNG(filename);
+					env.exportToPNG(filename);
 				} else if (fileDesc.contains("PDF")) {
-					env.saveAsPDF(filename);
+					env.exportToPDF(filename);
 				} else if (fileDesc.contains("EPS")) {
-					env.saveAsEPS(filename);
+					env.exportToEPS(filename);
 				}
 			} catch (IOException e) {
 				ar.set(e);

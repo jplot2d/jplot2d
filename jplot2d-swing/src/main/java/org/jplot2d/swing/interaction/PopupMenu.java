@@ -56,7 +56,7 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 	protected final String REDO_ACTION_COMMAND = "REDO";
 
 	/** Save action command. */
-	protected final String SAVE_ACTION_COMMAND = "SAVE";
+	protected final String EXPORT_ACTION_COMMAND = "EXPORT";
 
 	/** Print action command. */
 	protected final String PRINT_ACTION_COMMAND = "PRINT";
@@ -112,8 +112,8 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			separator = false;
 		}
 
-		JMenuItem saveItem = new JMenuItem("Save as...");
-		saveItem.setActionCommand(SAVE_ACTION_COMMAND);
+		JMenuItem saveItem = new JMenuItem("Export...");
+		saveItem.setActionCommand(EXPORT_ACTION_COMMAND);
 		saveItem.addActionListener(this);
 		super.add(saveItem);
 		separator = true;
@@ -151,11 +151,11 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			env.redo();
 			return;
 		}
-		if (command.equals(SAVE_ACTION_COMMAND)) {
+		if (command.equals(EXPORT_ACTION_COMMAND)) {
 			try {
 				doSaveAs();
 			} catch (IOException e) {
-				String msg = "SgtPlotXY doSaveAs: i/o exception = " + e.getMessage();
+				String msg = "I/O exception: " + e.getMessage();
 				JOptionPane.showMessageDialog(getInvoker(), msg);
 			}
 			return;
@@ -235,11 +235,11 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			if (confirmOverwrite(filename)) {
 				try {
 					if (fileDesc.contains("PNG")) {
-						env.saveAsPNG(filename);
+						env.exportToPNG(filename);
 					} else if (fileDesc.contains("PDF")) {
-						env.saveAsPDF(filename);
+						env.exportToPDF(filename);
 					} else if (fileDesc.contains("EPS")) {
-						env.saveAsEPS(filename);
+						env.exportToEPS(filename);
 					}
 				} catch (IOException e) {
 					ar.set(e);

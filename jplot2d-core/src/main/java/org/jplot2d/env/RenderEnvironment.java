@@ -274,29 +274,29 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Saves the Plot as an EPS file.
+	 * Export the Plot to an EPS file.
 	 * 
 	 * @throws IOException
 	 */
-	public void saveAsEPS(String filename) throws IOException {
+	public void exportToEPS(String filename) throws IOException {
 		exportPlot(new EpsExporter(getExportFile(filename)));
 	}
 
 	/**
-	 * Saves the Plot as an PDF file.
+	 * Export the Plot to an PDF file.
 	 * 
 	 * @throws IOException
 	 */
-	public void saveAsPDF(String filename) throws IOException {
+	public void exportToPDF(String filename) throws IOException {
 		exportPlot(new PdfExporter(getExportFile(filename)));
 	}
 
 	/**
-	 * Saves the Plot as a PNG file.
+	 * Export the Plot to a PNG file.
 	 * 
 	 * @throws IOException
 	 */
-	public void saveAsPNG(String filename) throws IOException {
+	public void exportToPNG(String filename) throws IOException {
 		exportPlot(new PngFileExporter(getExportFile(filename)));
 	}
 
