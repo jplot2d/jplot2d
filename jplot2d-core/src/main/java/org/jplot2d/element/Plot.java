@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -112,6 +112,8 @@ public interface Plot extends PComponent {
 	/**
 	 * Sets the paper size of this plot. This method only take effect when size mode is
 	 * <code>null</code>. Otherwise the size is decided by size mode.
+	 * <p>
+	 * For subplot, the size is set by layout manager.
 	 * 
 	 * @param width
 	 *            the paper width
