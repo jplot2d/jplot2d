@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -133,32 +133,32 @@ public interface PlotMargin extends Element {
 	public double getTop();
 
 	/**
-	 * Sets the margin value. The value only take effect when {@link #isAutoLeft()} is
-	 * <code>false</code>.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
+	 * <code>false</code>, otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginLeft
 	 */
 	public void setLeft(double marginLeft);
 
 	/**
-	 * Sets the margin value. The value only take effect when {@link #isAutoRight()} is
-	 * <code>false</code>.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
+	 * <code>false</code>, otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginRight
 	 */
 	public void setRight(double marginRight);
 
 	/**
-	 * Sets the margin value. The value only take effect when {@link #isAutoBottom()} is
-	 * <code>false</code>.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
+	 * <code>false</code>, otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginBottom
 	 */
 	public void setBottom(double marginBottom);
 
 	/**
-	 * Sets the margin value. The value only take effect when {@link #isAutoTop()} is
-	 * <code>false</code>.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
+	 * <code>false</code>, otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginTop
 	 */
