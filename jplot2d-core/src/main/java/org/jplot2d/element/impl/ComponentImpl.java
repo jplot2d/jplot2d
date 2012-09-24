@@ -338,10 +338,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	protected void drawBounds(Graphics2D g) {
-		if (getParent() == null) {
-			return;
-		}
-		g.setColor(Color.BLACK);
+		g.setColor(Color.RED);
 		Rectangle rect = getPaperTransform().getPtoD(getBounds()).getBounds();
 		g.draw(new Rectangle(rect.x, rect.y, rect.width - 1, rect.height - 1));
 		g.drawLine(rect.x, rect.y, (int) rect.getMaxX() - 1, (int) rect.getMaxY() - 1);

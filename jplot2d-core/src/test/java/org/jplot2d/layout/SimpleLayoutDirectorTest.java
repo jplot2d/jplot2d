@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -187,6 +187,11 @@ public class SimpleLayoutDirectorTest {
 		plot.validate();
 		checkDouble(plot.getMargin().getLeft(), 8.0);
 		checkDouble(plot.getMargin().getBottom(), 5.0);
+		checkDouble(plot.getBounds().getX(), -8.0);
+		checkDouble(plot.getBounds().getY(), -5.0);
+		checkDouble(plot.getBounds().getWidth(), 300);
+		checkDouble(plot.getBounds().getHeight(), 200);
+
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 8 - 8, 200 - 5 - 5);
 		verify(left).setLocation(0, 0);
