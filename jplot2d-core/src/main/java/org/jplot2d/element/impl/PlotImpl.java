@@ -247,7 +247,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(0, 0, width, height);
+		return new Rectangle2D.Double(-margin.getLeft() - margin.getExtraLeft(),
+				-margin.getBottom() - margin.getExtraBottom(), width, height);
 	}
 
 	public double getScale() {
