@@ -25,8 +25,8 @@ import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * An item in legend to show a short line and a text. It will be hosted by the legend of the plot
- * which host the GraphPlotter. If the hosting legend is disabled, it will be hosted by legend of
- * parent plot.
+ * which host the Graph. If the hosting legend is disabled, it will be hosted by legend of parent
+ * plot.
  * 
  * @author Jingjing Li
  * 
@@ -56,7 +56,7 @@ public interface LegendItem extends Element {
 
 	/**
 	 * Sets a flag indicating whether this item should be displayed in the legend. The default value
-	 * is <code>true</code>, even if the GraphPlotter is invisible.
+	 * is <code>true</code>, even if the Graph is invisible.
 	 * 
 	 * @param show
 	 *            the flag

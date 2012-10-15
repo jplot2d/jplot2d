@@ -53,7 +53,7 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 
 		Method method;
 		try {
-			method = LayerEx.class.getMethod("getGraphPlotter", Integer.TYPE);
+			method = LayerEx.class.getMethod("getGraph", Integer.TYPE);
 		} catch (NoSuchMethodException e) {
 			throw new Error(e);
 		}
