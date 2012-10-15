@@ -442,101 +442,32 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		pxf = null;
 	}
 
-	public int getComponentCount() {
-		return 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
-	}
+	public ComponentEx[] getComponents() {
 
-	public ComponentEx getComponent(int index) {
-		if (index == 0) {
-			return legend;
-		} else {
-			index -= 1;
-		}
-		if (index < titles.size() - 1) {
-			return titles.get(index);
-		} else {
-			index -= titles.size();
-		}
-		if (index < xAxis.size()) {
-			return xAxis.get(index);
-		} else {
-			index -= xAxis.size();
-		}
-		if (index < yAxis.size()) {
-			return yAxis.get(index);
-		} else {
-			index -= yAxis.size();
-		}
-		if (index < layers.size()) {
-			return layers.get(index);
-		} else {
-			index -= layers.size();
-		}
-		if (index < subplots.size()) {
-			return subplots.get(index);
-		} else {
-			index -= subplots.size();
-		}
-		return null;
-	}
+		int size = 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size()
+				+ subplots.size();
 
-	public int getIndexOfComponent(ComponentEx comp) {
-		int index = 0;
-		if (comp instanceof LegendEx) {
-			if (comp == legend) {
-				return index;
-			} else {
-				return -1;
-			}
-		} else {
-			index += 1;
+		ComponentEx[] comps = new ComponentEx[size];
+
+		int n = 0;
+		comps[n++] = legend;
+		for (int i = 0; i < titles.size() - 1; i++) {
+			comps[n++] = titles.get(i);
 		}
-		if (comp instanceof TitleEx) {
-			int i = titles.indexOf(comp);
-			if (i != -1) {
-				return index + i;
-			} else {
-				return -1;
-			}
-		} else {
-			index += titles.size();
+		for (int i = 0; i < xAxis.size() - 1; i++) {
+			comps[n++] = xAxis.get(i);
 		}
-		if (comp instanceof AxisEx) {
-			int ix = xAxis.indexOf(comp);
-			if (ix != -1) {
-				return index + ix;
-			}
-			int iy = yAxis.indexOf(comp);
-			if (iy != -1) {
-				return index + xAxis.size() + iy;
-			} else {
-				return -1;
-			}
-		} else {
-			index += xAxis.size() + yAxis.size();
+		for (int i = 0; i < yAxis.size() - 1; i++) {
+			comps[n++] = yAxis.get(i);
 		}
-		if (comp instanceof LayerEx) {
-			int i = layers.indexOf(comp);
-			if (i != -1) {
-				return index + i;
-			} else {
-				return -1;
-			}
-		} else {
-			index += layers.size();
+		for (int i = 0; i < layers.size() - 1; i++) {
+			comps[n++] = layers.get(i);
 		}
-		if (comp instanceof PlotEx) {
-			int i = subplots.indexOf(comp);
-			if (i != -1) {
-				return index + i;
-			} else {
-				return -1;
-			}
-		} else {
-			index += subplots.size();
+		for (int i = 0; i < subplots.size() - 1; i++) {
+			comps[n++] = subplots.get(i);
 		}
 
-		return -1;
+		return comps;
 	}
 
 	public LegendEx getLegend() {

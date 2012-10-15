@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -115,16 +115,8 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
-	public int getComponentCount() {
-		return graphs.size();
-	}
-
-	public ComponentEx getComponent(int index) {
-		return graphs.get(index);
-	}
-
-	public int getIndexOfComponent(ComponentEx comp) {
-		return graphs.indexOf(comp);
+	public ComponentEx[] getComponents() {
+		return graphs.toArray(new ComponentEx[graphs.size()]);
 	}
 
 	public Graph getGraph(int index) {
