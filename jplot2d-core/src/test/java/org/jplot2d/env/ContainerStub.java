@@ -51,16 +51,8 @@ public class ContainerStub extends ContainerImpl {
 		return null;
 	}
 
-	public int getComponentCount() {
-		return 0;
-	}
-
-	public ComponentEx getComponent(int index) {
+	public ComponentEx[] getComponents() {
 		return null;
-	}
-
-	public int getIndexOfComponent(ComponentEx comp) {
-		return -1;
 	}
 
 	public InvokeStep getInvokeStepFormParent() {

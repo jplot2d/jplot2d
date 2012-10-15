@@ -1,31 +1,30 @@
+/**
+ * Copyright 2010-2012 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.jplot2d.element.impl;
 
 public interface ContainerEx extends ComponentEx {
 
 	/**
-	 * Returns the number of component of this container. Returns 0 if this
-	 * component has no children.
+	 * Returns the components in this container.
 	 * 
-	 * @return the number of component of this container
+	 * @return an array of sub-components
 	 */
-	public int getComponentCount();
-
-	/**
-	 * Returns the component at index <code>index</code> in this container.
-	 * 
-	 * @return the child at index <code>index</code>
-	 */
-	public ComponentEx getComponent(int index);
-
-	/**
-	 * Returns the index of component in this container. If <code>comp</code> is
-	 * <code>null</code>, returns -1. If <code>comp</code> don't belong to this
-	 * component, returns -1.
-	 * 
-	 * @param comp
-	 *            the component
-	 * @return the index of the component in this container
-	 */
-	public int getIndexOfComponent(ComponentEx comp);
+	public ComponentEx[] getComponents();
 
 }

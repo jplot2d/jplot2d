@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,18 +20,17 @@ package org.jplot2d.element.impl;
 
 import java.awt.Graphics2D;
 
-public abstract class ContainerImpl extends ComponentImpl implements
-		ContainerEx {
+public abstract class ContainerImpl extends ComponentImpl implements ContainerEx {
 
 	public final void thisEffectiveColorChanged() {
-		for (int i = 0; i < getComponentCount(); i++) {
-			getComponent(i).parentEffectiveColorChanged();
+		for (ComponentEx comp : getComponents()) {
+			comp.parentEffectiveColorChanged();
 		}
 	}
 
 	public final void thisEffectiveFontChanged() {
-		for (int i = 0; i < getComponentCount(); i++) {
-			getComponent(i).parentEffectiveFontChanged();
+		for (ComponentEx comp : getComponents()) {
+			comp.parentEffectiveFontChanged();
 		}
 	}
 
