@@ -451,19 +451,19 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		int n = 0;
 		comps[n++] = legend;
-		for (int i = 0; i < titles.size() - 1; i++) {
+		for (int i = 0; i < titles.size(); i++) {
 			comps[n++] = titles.get(i);
 		}
-		for (int i = 0; i < xAxis.size() - 1; i++) {
+		for (int i = 0; i < xAxis.size(); i++) {
 			comps[n++] = xAxis.get(i);
 		}
-		for (int i = 0; i < yAxis.size() - 1; i++) {
+		for (int i = 0; i < yAxis.size(); i++) {
 			comps[n++] = yAxis.get(i);
 		}
-		for (int i = 0; i < layers.size() - 1; i++) {
+		for (int i = 0; i < layers.size(); i++) {
 			comps[n++] = layers.get(i);
 		}
-		for (int i = 0; i < subplots.size() - 1; i++) {
+		for (int i = 0; i < subplots.size(); i++) {
 			comps[n++] = subplots.get(i);
 		}
 
