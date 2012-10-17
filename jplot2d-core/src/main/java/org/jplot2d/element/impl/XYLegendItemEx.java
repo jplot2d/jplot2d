@@ -26,4 +26,9 @@ public interface XYLegendItemEx extends LegendItemEx {
 
 	public XYGraphEx getParent();
 
+	/**
+	 * Called by XYGraphEx to notify XYLegendItemEx that the symbol size has been changed.
+	 */
+	public void graphSymbolSizeChanged();
+
 }

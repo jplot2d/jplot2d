@@ -63,4 +63,22 @@ public interface LegendItem extends Element {
 	 */
 	public void setVisible(boolean show);
 
+	/**
+	 * Returns the size of the symbol draw in legend. The default symbol size is
+	 * <code>Float.NaN</code>, means the same size as the symbol size of XYGraph.
+	 * 
+	 * @return the size of the symbol draw in legend
+	 */
+	@Property(order = 1)
+	public float getSymbolSize();
+
+	/**
+	 * Set the size of symbol draw in legend. Setting to <code>Float.NaN</code> means the same size
+	 * as the symbol size of XYGraph.
+	 * 
+	 * @param size
+	 *            the size of symbols draw in legend
+	 */
+	public void setSymbolSize(float size);
+
 }

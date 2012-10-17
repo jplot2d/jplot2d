@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -81,6 +81,10 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		super(new XYLegendItemImpl());
 	}
 
+	public XYLegendItemEx getLegendItem() {
+		return (XYLegendItemEx) legendItem;
+	}
+
 	public String getName() {
 		return ((XYLegendItemImpl) getLegendItem()).getText();
 	}
@@ -149,10 +153,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setSymbolSize(float size) {
 		this.symbolSize = size;
-		// size does no effect on SymbolShape.DOT
-		if (symbolShape != SymbolShape.DOT) {
-			redraw();
-		}
+		redraw();
+		getLegendItem().graphSymbolSizeChanged();
 	}
 
 	public Color getSymbolColor() {

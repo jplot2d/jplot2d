@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -31,7 +31,7 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 
 	private static Point2D LOCATION = new Point2D.Double();
 
-	private final LegendItemEx legendItem;
+	protected final LegendItemEx legendItem;
 
 	protected GraphImpl(LegendItemEx legendItem) {
 		this.legendItem = legendItem;
