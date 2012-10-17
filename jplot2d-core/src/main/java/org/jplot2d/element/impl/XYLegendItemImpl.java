@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -49,7 +49,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	private static final double LINE_LENGTH = 24;
 
-	private static final double SYMBOL_SIZE = 8;
+	private float symbolSize = Float.NaN;
 
 	private MathElement textModel;
 
@@ -100,8 +100,9 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		Rectangle2D labelBounds = getLabel().getBounds();
 		double width = labelBounds.getWidth();
 		double height = labelBounds.getHeight();
-		if (height < SYMBOL_SIZE) {
-			height = SYMBOL_SIZE;
+		// System.out.println(height);
+		if (height < getEffectiveSymbolSize()) {
+			height = getEffectiveSymbolSize();
 		}
 		return new DoubleDimension2D(LINE_LENGTH + LABEL_SPACE + width, height);
 	}
@@ -125,6 +126,37 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 			if (getLegend() != null) {
 				getLegend().itemSizeChanged(this);
 			}
+		}
+	}
+
+	public float getSymbolSize() {
+		return symbolSize;
+	}
+
+	public void setSymbolSize(float size) {
+		if (symbolSize != size) {
+			symbolSize = size;
+			symbolSizeChanged();
+		}
+	}
+
+	public void graphSymbolSizeChanged() {
+		if (Float.isNaN(symbolSize)) {
+			symbolSizeChanged();
+		}
+	}
+
+	private void symbolSizeChanged() {
+		if (isVisible() && getLegend() != null) {
+			getLegend().itemSizeChanged(this);
+		}
+	}
+
+	private float getEffectiveSymbolSize() {
+		if (Float.isNaN(symbolSize)) {
+			return getParent().getSymbolSize();
+		} else {
+			return symbolSize;
 		}
 	}
 
@@ -173,13 +205,13 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 			// use half of line stroke to draw marks
 			float lw = graph.getLineStroke().getLineWidth() / 2;
 			g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-
-			SymbolShape ss = graph.getSymbolShape();
 			g.setColor(color);
 
+			float actSymbolSize = getEffectiveSymbolSize();
 			AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
-			maf.scale(SYMBOL_SIZE, SYMBOL_SIZE);
+			maf.scale(actSymbolSize, actSymbolSize);
 
+			SymbolShape ss = graph.getSymbolShape();
 			Iterator<Shape> dit = ss.getDrawShapeIterator();
 			while (dit.hasNext()) {
 				Shape s = maf.createTransformedShape(dit.next());
