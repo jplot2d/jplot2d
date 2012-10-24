@@ -1,4 +1,5 @@
-from org.jplot2d.python import *
+from jplot2d.python import *
+
 # the sizeMode must be set
 p=plot(sizeMode=AutoPackSizeMode())
 from org.jplot2d.swing import JPlot2DFrame

@@ -1,4 +1,4 @@
-from org.jplot2d.python import *
+from jplot2d.python import *
 from org.jplot2d.swing import JPlot2DFrame
 
 # Create plot
