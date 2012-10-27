@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -17,6 +17,8 @@
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.demo;
+
+import java.awt.Color;
 
 import javax.swing.JFrame;
 
@@ -43,9 +45,17 @@ public class AutoPackSizeDemo {
 		Plot plot = ef.createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 
-		Title title = ef.createTitle("Title");
+		Title title = ef.createTitle("Custom Title");
 		title.setFontScale(2);
 		plot.addTitle(title);
+		Title subtitle = ef.createTitle("Custom Subtitle");
+		subtitle.setFontScale(1.2f);
+		plot.addTitle(subtitle);
+		Title copyRight = ef.createTitle("\u00A9 2012 jplot2d project (LGPL)");
+		copyRight.setFontScale(1);
+		copyRight.setColor(Color.BLUE.darker());
+		copyRight.setPosition(Title.Position.BOTTOMRIGHT);
+		plot.addTitle(copyRight);
 
 		JFrame frame = new JPlot2DFrame(plot);
 		frame.setSize(640, 480);
