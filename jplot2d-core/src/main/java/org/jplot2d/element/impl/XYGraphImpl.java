@@ -356,6 +356,22 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	}
 
+	/**
+	 * Draw a horizontal errorbar for the given point (x,y)
+	 * 
+	 * @param g
+	 *            the Graphics2D
+	 * @param x
+	 *            the point x
+	 * @param y
+	 *            the point y
+	 * @param low
+	 *            the low x of the errorbar
+	 * @param high
+	 *            the high x of the errorbar
+	 * @param scale
+	 *            the scale
+	 */
 	private void drawErrorBarX(Graphics2D g, float x, float y, float low, float high, float scale) {
 
 		// errorbar with arrow
@@ -403,24 +419,30 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		// errorbar cap
 		if (errorbarCapSize > 0) {
 			float halfcap = errorbarCapSize * scale / 2;
-			if (low != 0) {
+			if (low != 0 && !Float.isInfinite(low)) {
 				g.draw(new Line2D.Float(low, y - halfcap, low, y + halfcap));
 			}
-			if (high != 0) {
+			if (high != 0 && !Float.isInfinite(high)) {
 				g.draw(new Line2D.Float(high, y - halfcap, high, y + halfcap));
 			}
 		}
 	}
 
 	/**
-	 * Draw an error bar for the given point x,y
+	 * Draw a vertical error bar for the given point (x,y)
 	 * 
 	 * @param g
+	 *            the Graphics2D
 	 * @param x
+	 *            the point x
 	 * @param y
+	 *            the point y
 	 * @param low
+	 *            the low y of the errorbar
 	 * @param high
+	 *            the high y of the errorbar
 	 * @param scale
+	 *            the scale
 	 */
 	private void drawErrorBarY(Graphics2D g, float x, float y, float low, float high, float scale) {
 
@@ -469,10 +491,10 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		// errorbar cap
 		if (errorbarCapSize > 0) {
 			float halfcap = errorbarCapSize * scale / 2;
-			if (low != 0) {
+			if (low != 0 && !Float.isInfinite(low)) {
 				g.draw(new Line2D.Float(x - halfcap, low, x + halfcap, low));
 			}
-			if (high != 0) {
+			if (high != 0 && !Float.isInfinite(high)) {
 				g.draw(new Line2D.Float(x - halfcap, high, x + halfcap, high));
 			}
 		}
