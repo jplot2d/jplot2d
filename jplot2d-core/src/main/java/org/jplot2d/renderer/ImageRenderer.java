@@ -21,12 +21,14 @@ package org.jplot2d.renderer;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -67,7 +69,7 @@ public abstract class ImageRenderer extends Renderer {
 	/**
 	 * The renderer thread factory to create daemon thread
 	 */
-	static class RendererThreadFactory implements ThreadFactory {
+	private static class RendererThreadFactory implements ThreadFactory {
 		final ThreadGroup group;
 		final AtomicInteger threadNumber = new AtomicInteger(1);
 
@@ -88,26 +90,72 @@ public abstract class ImageRenderer extends Renderer {
 		}
 	}
 
-	private static final int cores = Runtime.getRuntime().availableProcessors();
+	private static class CompRenderCallable implements Callable<BufferedImage> {
 
-	static {
-		logger.info("Max Renderer Threads: " + cores);
+		private final ComponentEx[] comps;
+
+		private final ImageFactory imageFactory;
+
+		private final Rectangle bounds;
+
+		/**
+		 * @param comps
+		 *            the components in z-order
+		 * @param imageFactory
+		 * @param bounds
+		 */
+		public CompRenderCallable(ComponentEx[] comps, ImageFactory imageFactory, Rectangle bounds) {
+			this.comps = comps;
+			this.imageFactory = imageFactory;
+			this.bounds = bounds;
+		}
+
+		public BufferedImage call() throws Exception {
+			if (Thread.interrupted()) {
+				return null;
+			}
+
+			BufferedImage image = imageFactory.createTransparentImage(bounds.width, bounds.height);
+			Graphics2D g = image.createGraphics();
+			g.translate(-bounds.x, -bounds.y);
+			g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+			for (ComponentEx comp : comps) {
+				if (Thread.interrupted()) {
+					g.dispose();
+					return null;
+				}
+				comp.draw(g);
+			}
+
+			g.dispose();
+
+			return image;
+		}
+
 	}
+
+	private static final int cores = Runtime.getRuntime().availableProcessors();
 
 	/**
 	 * Component renderer execute service
 	 */
-	protected static Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1, cores,
-			0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+	protected static final Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1,
+			cores, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
 			new RendererThreadFactory());
 
-	protected static Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
+	protected static final Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
 
 		public void execute(Runnable command) {
 			command.run();
 		}
 
 	};
+
+	static {
+		logger.info("Max Renderer Threads: " + cores);
+	}
 
 	/**
 	 * The Executor to run component rendering tasks.
@@ -119,8 +167,6 @@ public abstract class ImageRenderer extends Renderer {
 	/**
 	 * The map contains the component cache future in the latest status. They will be assembled into
 	 * a renderer result later.
-	 * 
-	 * @return
 	 */
 	private ImageAssemblyInfo compCachedFutureMap = new ImageAssemblyInfo();
 
@@ -200,6 +246,8 @@ public abstract class ImageRenderer extends Renderer {
 
 		BufferedImage result = imageFactory.createImage(size.width, size.height);
 		Graphics2D g = result.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
 		for (ComponentEx subcomp : sublist) {
 			if (Thread.interrupted()) {
