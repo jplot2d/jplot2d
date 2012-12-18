@@ -419,10 +419,10 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		// errorbar cap
 		if (errorbarCapSize > 0) {
 			float halfcap = errorbarCapSize * scale / 2;
-			if (low != 0 && !Float.isInfinite(low)) {
+			if (low != x && !Float.isInfinite(low)) {
 				g.draw(new Line2D.Float(low, y - halfcap, low, y + halfcap));
 			}
-			if (high != 0 && !Float.isInfinite(high)) {
+			if (high != x && !Float.isInfinite(high)) {
 				g.draw(new Line2D.Float(high, y - halfcap, high, y + halfcap));
 			}
 		}
@@ -491,10 +491,10 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		// errorbar cap
 		if (errorbarCapSize > 0) {
 			float halfcap = errorbarCapSize * scale / 2;
-			if (low != 0 && !Float.isInfinite(low)) {
+			if (low != y && !Float.isInfinite(low)) {
 				g.draw(new Line2D.Float(x - halfcap, low, x + halfcap, low));
 			}
-			if (high != 0 && !Float.isInfinite(high)) {
+			if (high != y && !Float.isInfinite(high)) {
 				g.draw(new Line2D.Float(x - halfcap, high, x + halfcap, high));
 			}
 		}
