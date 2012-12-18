@@ -84,21 +84,7 @@ public class MathLabel {
 	}
 
 	public void draw(Graphics2D g) {
-
-		RenderingHints oldRenderingHints = g.getRenderingHints();
-
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
 		_mlc.draw(g);
-
-		g.setRenderingHints(oldRenderingHints);
-		/*
-		 * workaround for "strokeState not update by setRenderingHints" (Sun Bug ID 6468831)
-		 */
-		g.setStroke(g.getStroke());
-
 	}
 
 	public Font getFont() {
