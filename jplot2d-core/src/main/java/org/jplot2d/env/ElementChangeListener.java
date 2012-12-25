@@ -21,21 +21,42 @@ package org.jplot2d.env;
 import java.util.EventListener;
 
 /**
- * Listen to the structure change, such as add or remove layer, add or remove
- * annotation. Or properties change of a plot component.
+ * Listen to the structure change, such as adding or removing an element. Or property changes of an element.
  * 
  * @author Jingjing Li
  * 
  */
 public interface ElementChangeListener extends EventListener {
 
-    void componentCreated(ElementChangeEvent evt);
+	/**
+	 * Called after a component added to a container
+	 * 
+	 * @param event
+	 *            the ElementChangeEvent. The element of this event is the added component
+	 */
+	void componentAdded(ElementChangeEvent event);
 
-    void componentRemoving(ElementChangeEvent evt);
+	/**
+	 * Called before a component is removed form its container
+	 * 
+	 * @param event
+	 *            the ElementChangeEvent. The element of this event is the removing component
+	 */
+	void componentRemoving(ElementChangeEvent event);
 
-    void componentRemoved(ElementChangeEvent evt);
+	/**
+	 * Called after properties of an element is changed.
+	 * 
+	 * @param event
+	 *            event the ElementChangeEvent. The element of this event is the element whoes properties is changed
+	 */
+	void propertiesChanged(ElementChangeEvent event);
 
-    void propertiesChanged(ElementChangeEvent evt);
-    
-    void propertyChangesProcessed(ElementChangeEvent evt);
+	/**
+	 * Called after the property changes has been processed.
+	 * 
+	 * @param event
+	 *            the ElementChangeEvent. The element of this event is <code>null</code>
+	 */
+	void propertyChangesProcessed(ElementChangeEvent event);
 }

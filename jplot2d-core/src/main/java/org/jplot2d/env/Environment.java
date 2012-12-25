@@ -38,11 +38,10 @@ import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.NoticeType;
 
 /**
- * An environment that a plot can realization. Once a plot is put an environment, changes on the
- * plot can cause re-layout or redraw, according to the changed property.
+ * An environment that a plot can realization. Once a plot is put an environment, changes on the plot can cause
+ * re-layout or redraw, according to the changed property.
  * <p>
- * Renderers can be added to an environment to get the rendered result synchronously or
- * asynchronously.
+ * Renderers can be added to an environment to get the rendered result synchronously or asynchronously.
  * 
  * @author Jingjing Li
  * 
@@ -61,13 +60,15 @@ public abstract class Environment {
 	private final ReentrantLock lock;
 
 	/**
-	 * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch
-	 * depth
+	 * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch depth
 	 */
 	private int[] batchSND = new int[MAX_BATCH_DEPTH];
 
 	private int batchDepth;
 
+	/**
+	 * To notify something when ending a command.
+	 */
 	protected Notifier notifier;
 
 	/**
@@ -81,8 +82,8 @@ public abstract class Environment {
 	protected final List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
 
 	/**
-	 * The key is cacheable components or uncacheable top component; the value is key's uncacheable
-	 * descendants, include the key itself, in z-order.
+	 * The key is cacheable components or uncacheable top component; the value is key's uncacheable descendants, include
+	 * the key itself, in z-order.
 	 */
 	protected final Map<ComponentEx, List<ComponentEx>> subComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
@@ -158,9 +159,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Called after a component has been added to this environment, and its parent has been set. Or
-	 * called when adding a top plot to a plot environment. The added component either is cacheable,
-	 * or has a cacheable parent.
+	 * Called after a component has been added to this environment, and its parent has been set. Or called when adding a
+	 * top plot to a plot environment. The added component either is cacheable, or has a cacheable parent.
 	 * 
 	 * @param comp
 	 *            the added ComponentEx
@@ -356,8 +356,7 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor
-	 * will be returned.
+	 * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor will be returned.
 	 * 
 	 * @param comp
 	 * @return
@@ -426,7 +425,7 @@ public abstract class Environment {
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
-				lsnr.componentCreated(evt);
+				lsnr.componentAdded(evt);
 			}
 		}
 	}
@@ -436,14 +435,13 @@ public abstract class Environment {
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
-				lsnr.componentRemoved(evt);
+				lsnr.componentRemoving(evt);
 			}
 		}
 	}
 
 	/**
-	 * Notify all registered JPlot2DChangeListener that the properties of the given element has been
-	 * changed.
+	 * Notify all registered JPlot2DChangeListener that the properties of the given element has been changed.
 	 * 
 	 * @param element
 	 */
@@ -498,8 +496,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Begin a batch updating. In this mode, all update on environment will not send redraw command
-	 * to renderers, until endBatch is called.
+	 * Begin a batch updating. In this mode, all update on environment will not send redraw command to renderers, until
+	 * endBatch is called.
 	 * 
 	 * @param msg
 	 *            the short description about the batch
@@ -559,8 +557,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A light weight version of beginBatch, without verifying a batch token. This method is called
-	 * from element proxy invocation handler every time a method of the proxy is called.
+	 * A light weight version of beginBatch, without verifying a batch token. This method is called from element proxy
+	 * invocation handler every time a method of the proxy is called.
 	 */
 	final void endCommand() {
 		endCommand(null);
@@ -607,8 +605,8 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Commit all pending processes in a batch. The isBatch() should remain <code>true</code> while
-	 * this method is called. This method can be called many times.
+	 * Commit all pending processes in a batch. The isBatch() should remain <code>true</code> while this method is
+	 * called. This method can be called many times.
 	 */
 	protected abstract void commit();
 

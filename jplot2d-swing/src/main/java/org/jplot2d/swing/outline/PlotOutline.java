@@ -118,7 +118,7 @@ public class PlotOutline implements ElementChangeListener {
 		_cardLayout.show(_panel, "message");
 	}
 
-	public void componentCreated(ElementChangeEvent evt) {
+	public void componentAdded(ElementChangeEvent evt) {
 		_modified = true;
 		_treeModel.fireTreeStructureChanged(evt.getElement());
 	}
