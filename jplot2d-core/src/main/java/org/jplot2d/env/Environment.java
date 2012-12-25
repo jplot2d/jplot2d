@@ -67,6 +67,11 @@ public abstract class Environment {
 	private int batchDepth;
 
 	/**
+	 * To log a command
+	 */
+	protected CommandLogger cmdLogger;
+
+	/**
 	 * To notify something when ending a command.
 	 */
 	protected Notifier notifier;
@@ -455,16 +460,51 @@ public abstract class Environment {
 		}
 	}
 
+	/**
+	 * Returns all ElementChangeListeners.
+	 * 
+	 * @return ElementChangeListener in an array
+	 */
 	public ElementChangeListener[] getElementChangeListeners() {
 		return plotStructureListenerList.toArray(new ElementChangeListener[0]);
 	}
 
+	/**
+	 * Add an ElementChangeListener
+	 * 
+	 * @param listener
+	 */
 	public void addElementChangeListener(ElementChangeListener listener) {
 		plotStructureListenerList.add(listener);
 	}
 
+	/**
+	 * Remove an ElementChangeListener
+	 * 
+	 * @param listener
+	 */
 	public void removeElementChangeListener(ElementChangeListener listener) {
 		plotStructureListenerList.remove(listener);
+	}
+
+	/**
+	 * Return the command logger who receive commands executed in this environment. If there is no command logger,
+	 * returns <code>null</code>.
+	 * 
+	 * @return the command logger
+	 */
+	public CommandLogger getCommandLogger() {
+		return cmdLogger;
+	}
+
+	/**
+	 * Sets a command logger to receive commands executed in this environment.
+	 * 
+	 * @param cmdLogger
+	 *            a CommandLogger
+	 */
+	public void setCommandLogger(CommandLogger cmdLogger) {
+		this.cmdLogger = cmdLogger;
 	}
 
 	/**
