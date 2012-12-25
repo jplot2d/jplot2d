@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,8 +23,7 @@ import java.util.EventObject;
 import org.jplot2d.element.Element;
 
 /**
- * Encapsulates information describing changes to a plot structure, and used to notify plot
- * structure listeners of the change.
+ * Encapsulates information describing changes to a hierarchy structure or properties of an element.
  * 
  * @author Jingjing Li
  * 
@@ -36,17 +35,21 @@ public class ElementChangeEvent extends EventObject {
 	private Element element;
 
 	/**
-	 * create an event when plot structure have been changed. The children plot elements are the
-	 * created component or removed component.
+	 * create an event when hierarchy structure or properties changed.
 	 * 
 	 * @param element
-	 *            the element added
+	 *            the element which added, removing, or properties changed
 	 */
 	public ElementChangeEvent(Environment source, Element element) {
 		super(source);
 		this.element = element;
 	}
 
+	/**
+	 * Returns the element which added, removing, or properties changed
+	 * 
+	 * @return the element
+	 */
 	public Element getElement() {
 		return element;
 	}
