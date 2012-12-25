@@ -27,7 +27,6 @@ import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
@@ -133,30 +132,28 @@ public class AsyncImageRenderer extends ImageRenderer {
 			} catch (InterruptedException e) {
 				// should not happen. Normal cancellation will set the internal state to CANCELLED
 			} catch (ExecutionException e) {
-				logger.log(Level.WARNING, "[R] Renderer exception, drop F." + fsn, e);
+				logger.warn("Renderer exception, drop F." + fsn, e);
 			}
 			if (result != null) {
 				try {
 					fireRenderingFinished(fsn, result);
 				} catch (Exception e) {
-					logger.log(Level.WARNING, "RenderingFinishedListener Error", e);
+					logger.warn("RenderingFinishedListener Error", e);
 				}
 			}
 
 			/*
-			 * remove this renderer and all old renderers from the queue, and cancel all old
-			 * renderers. The canceling only occur in CANCEL_AFTER_NEWER_DONE mode. In
-			 * CANCEL_BEFORE_EXEC_NEWER mode, old renderers are canceled and removed from the queue
-			 * when new renderer is added.
+			 * remove this renderer and all old renderers from the queue, and cancel all old renderers. The canceling
+			 * only occur in CANCEL_AFTER_NEWER_DONE mode. In CANCEL_BEFORE_EXEC_NEWER mode, old renderers are canceled
+			 * and removed from the queue when new renderer is added.
 			 */
 			if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
 				synchronized (renderLock) {
 					/*
-					 * the renderers in the queue are on fsn order. We can't guarantee the current
-					 * renderer exist in the queue. A renderer may be done, before this method is
-					 * called, a new renderer may be created and added to the queue, and sweep all
-					 * old renderer(SURPASS mode), include this. The renderer queue is not empty on
-					 * this point, because removal are guarded by renderLock.
+					 * the renderers in the queue are on fsn order. We can't guarantee the current renderer exist in the
+					 * queue. A renderer may be done, before this method is called, a new renderer may be created and
+					 * added to the queue, and sweep all old renderer(SURPASS mode), include this. The renderer queue is
+					 * not empty on this point, because removal are guarded by renderLock.
 					 */
 					if (renderTaskQueue.peek().getFsn() > fsn) {
 						return;
@@ -168,8 +165,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 						}
 						/* cancel old renderer */
 						if (renderer.getFsn() < fsn && renderer.cancel(true)) {
-							logger.info("[R] Renderer " + fsn
-									+ " finished. Cancel the old renderer " + renderer.getFsn());
+							logger.info("Renderer {} finished. Cancel the old renderer {}", fsn, renderer.getFsn());
 						}
 					}
 				}
@@ -196,8 +192,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 	@Override
 	public final void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+			Collection<ComponentEx> unmodifiedCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -207,8 +202,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 			callable = new SingleRendererCallable(size, subcompsMap.get(plot));
 		} else {
 			// run cacheable component renderer
-			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap,
-					unmodifiedCacheableComps, subcompsMap);
+			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap, unmodifiedCacheableComps, subcompsMap);
 			callable = new RenderAssemblyCallable(size, ainfo);
 		}
 
@@ -221,8 +215,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger.info("[R] Render task " + fsn
-								+ " to be exec. Cancel the running render task " + rtask.getFsn());
+						logger.info("Render task {} to be exec. Cancel the running render task {}", fsn, rtask.getFsn());
 					}
 				}
 			}
@@ -240,8 +233,8 @@ public class AsyncImageRenderer extends ImageRenderer {
 	}
 
 	/**
-	 * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS mode, there is only 1
-	 * renderer in the queue is scheduled
+	 * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS mode, there is only 1 renderer in the
+	 * queue is scheduled
 	 */
 	public void setRendererCancelPolicy(RendererCancelPolicy policy) {
 		cancelPolicy = policy;

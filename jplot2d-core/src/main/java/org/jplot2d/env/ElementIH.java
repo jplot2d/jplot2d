@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -266,7 +266,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 			Class<?> arg0LcType = method.getParameterTypes()[0].getComponentType();
 			Object cimpls = Array.newInstance(arg0LcType, arg0.length);
-			cenv.beginCommand("");
+			cenv.beginCommand(method.getName());
 			for (int i = 0; i < arg0.length; i++) {
 				ComponentEx cimpl = (ComponentEx) ((ElementAddition) arg0[i]).getImpl();
 				if (cimpl.getParent() != null) {
@@ -277,7 +277,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				Array.set(cimpls, i, cimpl);
 			}
 
-			penv.beginCommand("");
+			penv.beginCommand(method.getName());
 
 			logCommand(method, args);
 
@@ -286,8 +286,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			try {
 				method.invoke(impl, cargs);
 			} catch (InvocationTargetException e) {
-				cenv.endCommand();
 				penv.endCommand();
+				cenv.endCommand();
 				throw e.getCause();
 			}
 
@@ -300,8 +300,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 		}
 
-		cenv.endCommand();
 		penv.endCommand();
+		cenv.endCommand();
 	}
 
 	/**
@@ -322,13 +322,13 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			// local safe copy
 			penv = environment;
 			cenv = ((Element) args[0]).getEnvironment();
-			cenv.beginCommand("");
+			cenv.beginCommand(method.getName());
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
 				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
-			penv.beginCommand("");
+			penv.beginCommand(method.getName());
 
 			logCommand(method, args);
 
@@ -337,8 +337,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			try {
 				method.invoke(impl, cargs);
 			} catch (InvocationTargetException e) {
-				cenv.endCommand();
 				penv.endCommand();
+				cenv.endCommand();
 				throw e.getCause();
 			}
 
@@ -349,8 +349,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			penv.componentAdded(cimpl, cenv);
 		}
 
-		cenv.endCommand();
 		penv.endCommand();
+		cenv.endCommand();
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		Environment cenv;
 		synchronized (Environment.getGlobalLock()) {
 			penv = environment;
-			penv.beginCommand("");
+			penv.beginCommand(method.getName());
 			ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 			if (cimpl.getParent() != impl) {
@@ -432,6 +432,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		if (args[0] == null) {
 			throw new IllegalArgumentException("Null is not a valid argument.");
 		}
+
+		// the join target belongs to a dummy env, bring it to this env.
 		boolean add = false;
 
 		ElementEx cimpl;
@@ -441,7 +443,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			env = environment;
 			cenv = ((Element) args[0]).getEnvironment();
 
-			cenv.beginCommand("");
+			cenv.beginCommand(method.getName());
 			cimpl = ((ElementAddition) args[0]).getImpl();
 			if (env != cenv) {
 				if (cimpl instanceof Joinable) {
@@ -455,7 +457,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 					throw new IllegalArgumentException("The argument is not referencable.");
 				}
 				add = true;
-				env.beginCommand("");
+				env.beginCommand(method.getName());
 			}
 
 			Method reader = iinfo.getPropReadMethodByWriteMethod(method);
@@ -476,10 +478,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			try {
 				method.invoke(impl, cargs);
 			} catch (InvocationTargetException e) {
+				env.endCommand();
 				if (add) {
 					cenv.endCommand();
 				}
-				env.endCommand();
 				throw e.getCause();
 			}
 
@@ -500,10 +502,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 		}
 
+		env.endCommand();
 		if (add) {
 			cenv.endCommand();
 		}
-		env.endCommand();
 
 	}
 
@@ -530,7 +532,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			if (env != cenv) {
 				throw new IllegalArgumentException("Must belongd to the same environment");
 			}
-			env.beginCommand("");
+			env.beginCommand(method.getName());
 			cimpl = ((ElementAddition) args[0]).getImpl();
 		}
 
@@ -574,7 +576,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				throw new IllegalArgumentException("Must belongd to the same environment");
 			}
 
-			env.beginCommand("");
+			env.beginCommand(method.getName());
 			cimpl0 = ((ElementAddition) args[0]).getImpl();
 			cimpl1 = ((ElementAddition) args[1]).getImpl();
 		}
@@ -612,13 +614,13 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			// local safe copy
 			penv = environment;
 			cenv = ((Element) args[0]).getEnvironment();
-			cenv.beginCommand("");
+			cenv.beginCommand(method.getName());
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
 				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
-			penv.beginCommand("");
+			penv.beginCommand(method.getName());
 
 			logCommand(method, args);
 
@@ -642,8 +644,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			cenv.endCommand();
 			penv.endCommand();
+			cenv.endCommand();
 		}
 	}
 
