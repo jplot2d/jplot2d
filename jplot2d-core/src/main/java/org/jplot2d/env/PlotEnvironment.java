@@ -50,8 +50,8 @@ public class PlotEnvironment extends Environment {
 	}
 
 	/**
-	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All notices are
-	 * logged to java logging facilities.
+	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All notices are logged to java
+	 * logging facilities.
 	 * 
 	 * @param plot
 	 */
@@ -72,8 +72,7 @@ public class PlotEnvironment extends Environment {
 			// remove the env of the given plot
 			oldEnv = plot.getEnvironment();
 			if (!(oldEnv instanceof DummyEnvironment)) {
-				throw new IllegalArgumentException(
-						"The plot to be added has been added a PlotEnvironment");
+				throw new IllegalArgumentException("The plot to be added has been added a PlotEnvironment");
 			}
 
 			// check this environment is ready to host plot
@@ -132,7 +131,7 @@ public class PlotEnvironment extends Environment {
 	/* --- JPlot2DChangeListener --- */
 
 	protected void fireChangeProcessed() {
-		ElementChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getElementChangeListeners();
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, null);
 			for (ElementChangeListener lsnr : ls) {
