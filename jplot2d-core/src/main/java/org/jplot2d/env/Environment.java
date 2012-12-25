@@ -421,7 +421,7 @@ public abstract class Environment {
 	/* --- JPlot2DChangeListener --- */
 
 	private void fireComponentAdded(PComponent element) {
-		ElementChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getElementChangeListeners();
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
@@ -431,7 +431,7 @@ public abstract class Environment {
 	}
 
 	private void fireComponentRemoving(PComponent element) {
-		ElementChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getElementChangeListeners();
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
@@ -446,7 +446,7 @@ public abstract class Environment {
 	 * @param element
 	 */
 	private void fireElementPropertyChanged(Element element) {
-		ElementChangeListener[] ls = getPlotPropertyListeners();
+		ElementChangeListener[] ls = getElementChangeListeners();
 		if (ls.length > 0) {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
@@ -455,15 +455,15 @@ public abstract class Environment {
 		}
 	}
 
-	public ElementChangeListener[] getPlotPropertyListeners() {
+	public ElementChangeListener[] getElementChangeListeners() {
 		return plotStructureListenerList.toArray(new ElementChangeListener[0]);
 	}
 
-	public void addPlotPropertyListener(ElementChangeListener listener) {
+	public void addElementChangeListener(ElementChangeListener listener) {
 		plotStructureListenerList.add(listener);
 	}
 
-	public void removePlotPropertyListener(ElementChangeListener listener) {
+	public void removeElementChangeListener(ElementChangeListener listener) {
 		plotStructureListenerList.remove(listener);
 	}
 
