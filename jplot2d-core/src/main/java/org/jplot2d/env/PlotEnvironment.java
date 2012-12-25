@@ -76,14 +76,14 @@ public class PlotEnvironment extends Environment {
 			}
 
 			// check this environment is ready to host plot
-			beginCommand("set plot");
+			beginCommand("setPlot");
 
 			if (this.plot != null) {
 				endCommand();
 				throw new IllegalArgumentException("This Environment has hosted a plot");
 			}
 
-			oldEnv.beginCommand("");
+			oldEnv.beginCommand("setPlot");
 
 			// update environment for all adding components
 			for (Element proxy : oldEnv.proxyMap.values()) {
@@ -99,8 +99,8 @@ public class PlotEnvironment extends Environment {
 		this.notifier = notifier;
 		plotImpl.setNotifier(notifier);
 
-		endCommand();
 		oldEnv.endCommand();
+		endCommand();
 	}
 
 	public Plot getPlot() {

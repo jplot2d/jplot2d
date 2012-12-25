@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,7 +18,8 @@
  */
 package org.jplot2d.env;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A logger to log command to java logger "org.jplot2d.command".
@@ -26,17 +27,17 @@ import java.util.logging.Logger;
  * @author Jingjing Li
  * 
  */
-public class JavaLoggingCommandLogger implements CommandLogger {
+public class LoggingCommandLogger implements CommandLogger {
 
-	private static JavaLoggingCommandLogger instance = new JavaLoggingCommandLogger();
+	private static LoggingCommandLogger instance = new LoggingCommandLogger();
 
-	private static Logger LOGGER = Logger.getLogger("org.jplot2d.command");
+	private static Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.command");
 
-	public static JavaLoggingCommandLogger getInstance() {
+	public static LoggingCommandLogger getInstance() {
 		return instance;
 	}
 
-	private JavaLoggingCommandLogger() {
+	private LoggingCommandLogger() {
 
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -28,14 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
-import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.NoticeType;
+import org.jplot2d.notice.Notifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An environment that a plot can realization. Once a plot is put an environment, changes on the plot can cause
@@ -48,7 +49,7 @@ import org.jplot2d.notice.NoticeType;
  */
 public abstract class Environment {
 
-	private static Logger logger = Logger.getLogger("org.jplot2d.env");
+	private static final Logger logger = LoggerFactory.getLogger("org.jplot2d.env");
 
 	/**
 	 * The global locking object for get/set environment.
@@ -593,7 +594,7 @@ public abstract class Environment {
 		batchDepth++;
 		batchSND[batchDepth] = 0;
 
-		logger.fine("[>] " + Integer.toHexString(hashCode()) + getBatchString() + " :" + msg);
+		logger.trace("[>] {}{} {}", Integer.toHexString(hashCode()), getBatchString(), msg);
 	}
 
 	/**
@@ -611,7 +612,7 @@ public abstract class Environment {
 	 *            the type for notice processor
 	 */
 	private void endCommand(NoticeType type) {
-		logger.fine("[<] " + Integer.toHexString(hashCode()) + getBatchString());
+		logger.trace("[<] {}{}", Integer.toHexString(hashCode()), getBatchString());
 
 		try {
 			if (batchDepth == 1) {

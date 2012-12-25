@@ -38,14 +38,13 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * Since Graphics can draw image, It's possible to render all cacheable component individually, then
- * assemble them together.
+ * Since Graphics can draw image, It's possible to render all cacheable component individually, then assemble them
+ * together.
  * <p>
  * The rendering steps:
  * <ol>
@@ -53,9 +52,8 @@ import org.jplot2d.element.impl.PlotEx;
  * <li>Assembling result of 1st step into a final result</li>
  * <li>notify all registered RenderingFinishedListener</li>
  * </ol>
- * A renderer maintains a cache for all cacheable components. The cache is a map, the key is uid of
- * components, the value is components future. The environment must offer those values when calling
- * a renderer
+ * A renderer maintains a cache for all cacheable components. The cache is a map, the key is uid of components, the
+ * value is components future. The environment must offer those values when calling a renderer
  * <ol>
  * <li>all cacheable components and their uid in assembly order</li>
  * <li>all uid of unmodified cacheable components</li>
@@ -120,10 +118,8 @@ public abstract class ImageRenderer extends Renderer {
 			g.translate(-bounds.x, -bounds.y);
 			g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-					RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
 			for (ComponentEx comp : comps) {
 				if (Thread.interrupted()) {
@@ -145,9 +141,8 @@ public abstract class ImageRenderer extends Renderer {
 	/**
 	 * Component renderer execute service
 	 */
-	protected static final Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1,
-			cores, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-			new RendererThreadFactory());
+	protected static final Executor COMPONENT_RENDERING_POOL_EXECUTOR = new ThreadPoolExecutor(1, cores, 0L,
+			TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new RendererThreadFactory());
 
 	protected static final Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
 
@@ -169,8 +164,8 @@ public abstract class ImageRenderer extends Renderer {
 	protected final ImageFactory imageFactory;
 
 	/**
-	 * The map contains the component cache future in the latest status. They will be assembled into
-	 * a renderer result later.
+	 * The map contains the component cache future in the latest status. They will be assembled into a renderer result
+	 * later.
 	 */
 	private ImageAssemblyInfo compCachedFutureMap = new ImageAssemblyInfo();
 
@@ -194,8 +189,7 @@ public abstract class ImageRenderer extends Renderer {
 	}
 
 	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+			Collection<ComponentEx> unmodifiedCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -212,8 +206,7 @@ public abstract class ImageRenderer extends Renderer {
 				ainfo = runCompRender(COMPONENT_RENDERING_CALLER_RUN_EXECUTOR, cacheableCompMap,
 						unmodifiedCacheableComps, subcompsMap);
 			} else {
-				ainfo = runCompRender(executor, cacheableCompMap, unmodifiedCacheableComps,
-						subcompsMap);
+				ainfo = runCompRender(executor, cacheableCompMap, unmodifiedCacheableComps, subcompsMap);
 			}
 
 			result = assembleResult(size, ainfo);
@@ -227,8 +220,7 @@ public abstract class ImageRenderer extends Renderer {
 	 * @param t
 	 */
 	protected void fireRenderingFinished(long fsn, BufferedImage img) {
-		RenderingFinishedListener[] ls = renderingFinishedListenerList
-				.toArray(new RenderingFinishedListener[0]);
+		RenderingFinishedListener[] ls = renderingFinishedListenerList.toArray(new RenderingFinishedListener[0]);
 		for (RenderingFinishedListener lsnr : ls) {
 			lsnr.renderingFinished(new RenderingFinishedEvent(fsn, img));
 		}
@@ -252,10 +244,8 @@ public abstract class ImageRenderer extends Renderer {
 		Graphics2D g = result.createGraphics();
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
 		for (ComponentEx subcomp : sublist) {
 			if (Thread.interrupted()) {
@@ -272,21 +262,18 @@ public abstract class ImageRenderer extends Renderer {
 	}
 
 	/**
-	 * Execute component renderer on every modified cacheable component. This method must be called
-	 * from a render.
+	 * Execute component renderer on every modified cacheable component. This method must be called from a render.
 	 * 
 	 * @param cacheableCompMap
-	 *            cacheable component map in Z-order, the key is component, the value is components'
-	 *            thread safe copy.
+	 *            cacheable component map in Z-order, the key is component, the value is components' thread safe copy.
 	 * @param umCacheableComps
 	 *            unmodified cacheable components
 	 * @param subcompsMap
-	 *            the key is safe copy of cacheable component, the value is the safe copies of all
-	 *            its sub-components in Z-order.
+	 *            the key is safe copy of cacheable component, the value is the safe copies of all its sub-components in
+	 *            Z-order.
 	 * @return
 	 */
-	protected final ImageAssemblyInfo runCompRender(Executor executor,
-			Map<ComponentEx, ComponentEx> cacheableCompMap,
+	protected final ImageAssemblyInfo runCompRender(Executor executor, Map<ComponentEx, ComponentEx> cacheableCompMap,
 			Collection<ComponentEx> umCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
@@ -298,14 +285,12 @@ public abstract class ImageRenderer extends Renderer {
 			 * the component may be set to cacheable, while stay unmodified
 			 */
 			if (umCacheableComps.contains(comp) && compCachedFutureMap.contains(comp)) {
-				ainfo.put(comp, compCachedFutureMap.getBounds(comp),
-						compCachedFutureMap.getFuture(comp));
+				ainfo.put(comp, compCachedFutureMap.getBounds(comp), compCachedFutureMap.getFuture(comp));
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
 				ComponentEx[] sublist = subcompsMap.get(ccopy);
-				CompRenderCallable compRenderCallable = new CompRenderCallable(sublist,
-						imageFactory, bounds);
+				CompRenderCallable compRenderCallable = new CompRenderCallable(sublist, imageFactory, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(compRenderCallable);
 
 				executor.execute(crtask);
@@ -338,9 +323,9 @@ public abstract class ImageRenderer extends Renderer {
 				BufferedImage bi = f.get();
 				g.drawImage(bi, bounds.x, bounds.y, null);
 			} catch (InterruptedException e) {
-				// logger.log(Level.WARNING, "[R] Renderer interrupted, drop F." + fsn, e);
+				// logger.log(Level.WARNING, "Renderer interrupted, drop F." + fsn, e);
 			} catch (ExecutionException e) {
-				logger.log(Level.WARNING, "[R] Renderer exception, drop F." + fsn, e);
+				logger.warn("Renderer exception, drop F." + fsn, e);
 			}
 		}
 
