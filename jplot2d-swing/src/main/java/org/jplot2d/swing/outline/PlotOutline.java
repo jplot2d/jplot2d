@@ -107,7 +107,7 @@ public class PlotOutline implements ElementChangeListener {
 		_panel.add(_plotTree, "tree");
 		_cardLayout.show(_panel, "tree");
 
-		env.addPlotPropertyListener(this);
+		env.addElementChangeListener(this);
 	}
 
 	public JComponent getComponent() {
