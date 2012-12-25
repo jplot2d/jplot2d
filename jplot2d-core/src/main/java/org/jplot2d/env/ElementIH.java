@@ -31,8 +31,7 @@ import org.jplot2d.element.impl.InvokeStep;
 import org.jplot2d.element.impl.Joinable;
 
 /**
- * This InvocationHandler intercept calls on proxy objects, and wrap the calls with environment
- * lock.
+ * This InvocationHandler intercept calls on proxy objects, and wrap the calls with environment lock.
  * 
  * @author Jingjing Li
  * 
@@ -40,8 +39,6 @@ import org.jplot2d.element.impl.Joinable;
  *            the element type
  */
 public class ElementIH<T extends Element> implements InvocationHandler {
-
-	private static CommandLogger cmdLogger = JavaLoggingCommandLogger.getInstance();
 
 	private final InterfaceInfo iinfo;
 
@@ -240,8 +237,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when adding a array of child components. The array of child components is the 1st
-	 * argument of the calling method.
+	 * Called when adding a array of child components. The array of child components is the 1st argument of the calling
+	 * method.
 	 * 
 	 * @param method
 	 * @param args
@@ -263,8 +260,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cenv = ((Element) arg0[0]).getEnvironment();
 			for (int i = 1; i < arg0.length; i++) {
 				if (cenv != ((Element) arg0[i]).getEnvironment()) {
-					throw new IllegalArgumentException(
-							"The components to be added must belong to the same envoriment.");
+					throw new IllegalArgumentException("The components to be added must belong to the same envoriment.");
 				}
 			}
 
@@ -309,8 +305,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when adding a child component. The child component is the 1st argument of the calling
-	 * method.
+	 * Called when adding a child component. The child component is the 1st argument of the calling method.
 	 * 
 	 * @param method
 	 * @param args
@@ -331,8 +326,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
-				throw new IllegalArgumentException(
-						"The component to be added already has a parent.");
+				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
 			penv.beginCommand("");
 
@@ -378,8 +372,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
 			if (cimpl.getParent() != impl) {
-				throwable = new IllegalArgumentException(
-						"The component to be removed dosn't belong to this container.");
+				throwable = new IllegalArgumentException("The component to be removed dosn't belong to this container.");
 
 			} else {
 				// check removable
@@ -427,8 +420,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Sets args[0] as a join reference. Such as axis join a axis tick manager, or axis tick manager
-	 * join a axis range manager, or axis range manager join a axis lock group.
+	 * Sets args[0] as a join reference. Such as axis join a axis tick manager, or axis tick manager join a axis range
+	 * manager, or axis range manager join a axis lock group.
 	 * 
 	 * @param method
 	 * @param object
@@ -515,8 +508,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when setting a reference to the element args[0]. The referred component must belong to
-	 * the same environment. For example, layer refer to x axis range manager.
+	 * Called when setting a reference to the element args[0]. The referred component must belong to the same
+	 * environment. For example, layer refer to x axis range manager.
 	 * 
 	 * @param method
 	 * @param args
@@ -555,9 +548,8 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * Called when setting a reference to the element args[0] and args[1]. The referred component
-	 * must belong to the same environment. For example, layer refer to x axis range manager and y
-	 * axis range manager.
+	 * Called when setting a reference to the element args[0] and args[1]. The referred component must belong to the
+	 * same environment. For example, layer refer to x axis range manager and y axis range manager.
 	 * 
 	 * @param method
 	 * @param args
@@ -624,8 +616,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
 				cenv.end();
-				throw new IllegalArgumentException(
-						"The component to be added already has a parent.");
+				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
 			penv.beginCommand("");
 
@@ -665,8 +656,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	}
 
 	/**
-	 * This method invoke reader 1st, only when the setting value is different, the setter method is
-	 * called.
+	 * This method invoke reader 1st, only when the setting value is different, the setter method is called.
 	 * 
 	 * @param method
 	 *            the setter method
@@ -742,7 +732,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		}
 		sb.append(")");
 
-		cmdLogger.log(sb.toString());
+		if (environment.cmdLogger != null) {
+			environment.cmdLogger.log(sb.toString());
+		}
 	}
 
 	/**
@@ -755,8 +747,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 */
 	private static void fillArgString(StringBuilder sb, Object arg) {
 		if (arg instanceof Element) {
-			fillElementExpString(sb, ((Element) arg).getEnvironment(),
-					((ElementAddition) arg).getImpl());
+			fillElementExpString(sb, ((Element) arg).getEnvironment(), ((ElementAddition) arg).getImpl());
 		} else if (arg instanceof Element[]) {
 			sb.append("[");
 			if (((Element[]) arg).length > 0) {
