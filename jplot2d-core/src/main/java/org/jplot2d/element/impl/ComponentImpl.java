@@ -252,8 +252,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	public Font getEffectiveFont() {
 		float size = getEffectiveFontSize();
-		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size)
-				.deriveFont(size);
+		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size).deriveFont(size);
 	}
 
 	public final void parentEffectiveColorChanged() {
@@ -296,11 +295,11 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void redraw() {
-		if (cacheable) {
+		if (!cacheable && getParent() != null) {
+			getParent().redraw();
+		} else {
 			redrawNeeded = true;
 			rerender();
-		} else if (getParent() != null) {
-			getParent().redraw();
 		}
 	}
 
