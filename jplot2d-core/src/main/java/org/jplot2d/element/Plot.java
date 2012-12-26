@@ -30,11 +30,10 @@ import org.jplot2d.sizing.SizeMode;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
- * Plot has a content area in the center, surrounded by margin area. The margin area holds axes,
- * title and legend.
+ * Plot has a content area in the center, surrounded by margin area. The margin area holds axes, titles and legend.
  * <p>
- * Plot can optionally contains a group of layers that stack over each other, their viewports have
- * the same bounds of the content area. <br/>
+ * Plot can contains a group of layers that stack over each other, their viewports have the same bounds of the content
+ * area. <br/>
  * Plot can also contains a group of subplots, which are laid out by LayoutDirector.
  * 
  * @author Jingjing Li
@@ -57,7 +56,8 @@ public interface Plot extends PComponent {
 	public SizeMode getSizeMode();
 
 	/**
-	 * Sets a size mode to manage the size and scale of this plot.
+	 * Sets a size mode to manage the size and scale of this plot according to its container size. The mode must be set
+	 * when displaying a plot in a swing/swt component.
 	 * 
 	 * @param mode
 	 */
@@ -72,11 +72,10 @@ public interface Plot extends PComponent {
 	public Dimension2D getContainerSize();
 
 	/**
-	 * Sets the container size. The container size is given in device coordinate system and used by
-	 * size mode to derive paper size and scale. The default value is 640x480 pixels.
+	 * Sets the container size. The container size is given in device coordinate system and used by size mode to derive
+	 * paper size and scale. The default value is 640x480 pixels.
 	 * <p>
-	 * If the size mode is <code>null</code> when calling this method, an IllegalStateException will
-	 * be thrown.
+	 * If the size mode is <code>null</code> when calling this method, an IllegalStateException will be thrown.
 	 * 
 	 * @param size
 	 */
@@ -91,8 +90,8 @@ public interface Plot extends PComponent {
 	public double getScale();
 
 	/**
-	 * Sets scale of this plot. This method only take effect when size mode is <code>null</code>.
-	 * Otherwise the scale is decided by size mode.
+	 * Sets scale of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the scale is
+	 * decided by size mode.
 	 * 
 	 * @param scale
 	 *            the scale
@@ -101,8 +100,8 @@ public interface Plot extends PComponent {
 	public void setScale(double scale);
 
 	/**
-	 * Sets the paper size of this plot. This method only take effect when size mode is
-	 * <code>null</code>. Otherwise the size is decided by size mode.
+	 * Sets the paper size of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the
+	 * size is decided by size mode.
 	 * 
 	 * @param size
 	 *            the paper size
@@ -110,8 +109,8 @@ public interface Plot extends PComponent {
 	public void setSize(Dimension2D size);
 
 	/**
-	 * Sets the paper size of this plot. This method only take effect when size mode is
-	 * <code>null</code>. Otherwise the size is decided by size mode.
+	 * Sets the paper size of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the
+	 * size is decided by size mode.
 	 * <p>
 	 * For subplot, the size is set by layout manager.
 	 * 
@@ -189,9 +188,8 @@ public interface Plot extends PComponent {
 	public void setPreferredContentSize(double width, double height);
 
 	/**
-	 * Gets the location of this plot in its parent plot. The origin of a plot is the bottom-left
-	 * corner of the content box (the intersect point of left axis and bottom axis). For root plot,
-	 * the returned value is always (0,0)
+	 * Gets the location of this plot in its parent plot. The origin of a plot is the bottom-left corner of the content
+	 * box (the intersect point of left axis and bottom axis). For root plot, the returned value is always (0,0)
 	 * 
 	 * @return an instance of <code>Point</code> representing the base point of this plot
 	 */
@@ -199,12 +197,11 @@ public interface Plot extends PComponent {
 	public Point2D getLocation();
 
 	/**
-	 * Moves this plot to a new location. The new location is specified by point and is given in the
-	 * parent's paper coordinate space.
+	 * Moves this plot to a new location. The new location is specified by point and is given in the parent's paper
+	 * coordinate space.
 	 * <p>
-	 * Notice: This method should be called when the parent plot's layout director does not manage
-	 * subplots, such as <code>SimpleLayoutDirector</code>, otherwise the location will be overwrite
-	 * by the layout director.
+	 * Notice: This method should be called when the parent plot's layout director does not manage subplots, such as
+	 * <code>SimpleLayoutDirector</code>, otherwise the location will be overwrite by the layout director.
 	 * <p>
 	 * For root plot, this method has no effect.
 	 * 
@@ -338,8 +335,8 @@ public interface Plot extends PComponent {
 	public Layer[] getLayers();
 
 	/**
-	 * Add a layer to this plot. The layer will associate with the given X/Y axis range manager to
-	 * control which part show in the plot viewport.
+	 * Add a layer to this plot. The layer will associate with the given X/Y axis range manager to control which part
+	 * show in the plot viewport.
 	 * 
 	 * @param layer
 	 *            the layer to be add
@@ -352,9 +349,8 @@ public interface Plot extends PComponent {
 	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager);
 
 	/**
-	 * Add a layer to this plot. The layer will associate with the given X/Y axis' range manager to
-	 * control which part show in the plot viewport. Equivalent to
-	 * {@link #addLayer(Layer, AxisTransform, AxisTransform) addLayer(layer,
+	 * Add a layer to this plot. The layer will associate with the given X/Y axis' range manager to control which part
+	 * show in the plot viewport. Equivalent to {@link #addLayer(Layer, AxisTransform, AxisTransform) addLayer(layer,
 	 * xaxis.getTickManager().getRangeManager(), yaxis.getTickManager().getRangeManager())}
 	 * 
 	 * @param layer

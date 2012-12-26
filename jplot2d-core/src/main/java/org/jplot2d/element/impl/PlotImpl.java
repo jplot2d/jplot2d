@@ -60,10 +60,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * The container size only take effect when this plot is top plot and has a size mode assigned.
 	 */
-	private Dimension2D containerSize = new Dimension(640, 480);
+	private Dimension2D containerSize;
 
 	/**
-	 * The size mode only take effect when this plot is top plot.
+	 * The size mode only take effect when this plot is the root plot.
 	 */
 	private SizeMode sizeMode;
 
@@ -76,9 +76,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private PaperTransform pxf;
 
 	/**
-	 * True when the object is valid. An invalid object needs to be laid out. This flag is set to
-	 * false when the object size is changed. The initial value is true, because the
-	 * {@link #contentSize} and size are same.
+	 * True when the object is valid. An invalid object needs to be laid out. This flag is set to false when the object
+	 * size is changed. The initial value is true, because the {@link #contentSize} and size are same.
 	 * 
 	 * @see #isValid
 	 * @see #validate
@@ -235,8 +234,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setSize(double width, double height) {
 		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("paper size must be positive, " + width + "x"
-					+ height + " is invalid.");
+			throw new IllegalArgumentException("paper size must be positive, " + width + "x" + height + " is invalid.");
 		}
 
 		if (this.width != width || this.height != height) {
@@ -247,8 +245,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public Rectangle2D getBounds() {
-		return new Rectangle2D.Double(-margin.getLeft() - margin.getExtraLeft(),
-				-margin.getBottom() - margin.getExtraBottom(), width, height);
+		return new Rectangle2D.Double(-margin.getLeft() - margin.getExtraLeft(), -margin.getBottom()
+				- margin.getExtraBottom(), width, height);
 	}
 
 	public double getScale() {
@@ -265,8 +263,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public PaperTransform getPaperTransform() {
 		if (pxf == null) {
 			if (getParent() == null) {
-				pxf = new PaperTransform(margin.getLeft() + margin.getExtraLeft(),
-						contentSize.getHeight() + margin.getTop() + margin.getExtraTop(), scale);
+				pxf = new PaperTransform(margin.getLeft() + margin.getExtraLeft(), contentSize.getHeight()
+						+ margin.getTop() + margin.getExtraTop(), scale);
 			} else {
 				pxf = getParent().getPaperTransform().translate(locX, locY);
 			}
@@ -316,8 +314,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setContentConstrant(Dimension2D constraint) {
 		if (constraint.getWidth() <= 0 || constraint.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
-					+ " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
 		}
 
 		if (!constraint.equals(this.contentConstraint)) {
@@ -327,8 +324,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	/**
-	 * Determines whether this component is valid. A component is valid when it is correctly sized
-	 * and positioned within its parent container and all its children are also valid.
+	 * Determines whether this component is valid. A component is valid when it is correctly sized and positioned within
+	 * its parent container and all its children are also valid.
 	 * 
 	 * @return <code>true</code> if the component is valid, <code>false</code> otherwise
 	 * @see #validate
@@ -411,8 +408,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setPreferredContentSize(double width, double height) {
 		if (width <= 0 || height <= 0) {
-			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
-					+ " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
 		}
 		this.preferredContentWidth = width;
 		this.preferredContentHeight = height;
@@ -433,8 +429,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void setContentSize(Dimension2D csize) {
 		if (csize.getWidth() <= 0 || csize.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height
-					+ " is invalid.");
+			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
 		}
 
 		this.contentSize = csize;
@@ -444,8 +439,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public ComponentEx[] getComponents() {
 
-		int size = 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size()
-				+ subplots.size();
+		int size = 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
 
 		ComponentEx[] comps = new ComponentEx[size];
 
@@ -780,8 +774,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
-		this.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
-				.getAxisTransform());
+		this.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 	}
 
 	public void removeLayer(Layer layer) {
@@ -1001,18 +994,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * @param plot
 	 * @param orig2copyMap
 	 */
-	protected static void linkLayerAndRangeManager(PlotEx plot,
-			Map<ElementEx, ElementEx> orig2copyMap) {
+	protected static void linkLayerAndRangeManager(PlotEx plot, Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
-				AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer
-						.getXAxisTransform());
+				AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer.getXAxisTransform());
 				layerCopy.setXAxisTransform(xcopy);
 			}
 			if (layerCopy.getYAxisTransform() == null && layer.getYAxisTransform() != null) {
-				AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer
-						.getYAxisTransform());
+				AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer.getYAxisTransform());
 				layerCopy.setYAxisTransform(ycopy);
 			}
 		}
@@ -1039,15 +1029,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		/*
-		 * Axis a special component. Its length can be set by layout manager, but its thick depends
-		 * on its internal status, such as tick height, labels. The auto range must be re-calculated
-		 * after all axes length are set. So we cannot use deep-first validate tree. we must layout
-		 * all subplots, then calculate auto range, then calculate thickness of all axes.
+		 * Axis a special component. Its length can be set by layout manager, but its thick depends on its internal
+		 * status, such as tick height, labels. The auto range must be re-calculated after all axes length are set. So
+		 * we cannot use deep-first validate tree. we must layout all subplots, then calculate auto range, then
+		 * calculate thickness of all axes.
 		 */
 
 		/*
-		 * The initial axis has 0 length and no label. The initial legend size as it contains 1
-		 * item. In most case, this assumption is correct.
+		 * The initial axis has 0 length and no label. The initial legend size as it contains 1 item. In most case, this
+		 * assumption is correct.
 		 */
 
 		/* calculate size may invalidate plot */
@@ -1069,8 +1059,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			this.validate();
 
 			/*
-			 * Auto range axes MUST be executed after they are laid out. <br> Auto range axes may
-			 * register some axis that ticks need be re-calculated
+			 * Auto range axes MUST be executed after they are laid out. <br> Auto range axes may register some axis
+			 * that ticks need be re-calculated
 			 */
 			calcPendingLockGroupAutoRange();
 
@@ -1287,8 +1277,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		Range validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
 		if (!validRange.equals(range)) {
-			notify(new RangeAdjustedToValueBoundsNotice(
-					"Range exceed valid boundary, has been adjusted."));
+			notify(new RangeAdjustedToValueBoundsNotice("Range exceed valid boundary, has been adjusted."));
 		}
 
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(validRange, arms);

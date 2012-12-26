@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.lang.reflect.Proxy;
 
@@ -49,6 +50,7 @@ import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
 import org.jplot2d.env.Profile;
+import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.util.Range;
 
 /**
@@ -64,8 +66,7 @@ public class ElementFactory {
 	private static ElementFactory threadSafeInstance = new ElementFactory(true, null);
 
 	/**
-	 * Returns an instance of ComponentFactory. All component created by this factory are not
-	 * thread-safe.
+	 * Returns an instance of ComponentFactory. All component created by this factory are not thread-safe.
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
@@ -74,8 +75,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory. All component created by this factory are
-	 * thread-safe.
+	 * Returns an instance of ComponentFactory. All component created by this factory are thread-safe.
 	 * 
 	 * @return an instance of ComponentFactory
 	 */
@@ -84,8 +84,8 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory which is configured by profile. All component created
-	 * by this factory are not thread-safe.
+	 * Returns an instance of ComponentFactory which is configured by profile. All component created by this factory are
+	 * not thread-safe.
 	 * 
 	 * @param profile
 	 * @return an instance of ComponentFactory
@@ -95,8 +95,8 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Returns an instance of ComponentFactory which is configured by profile. All component created
-	 * by this factory are thread-safe.
+	 * Returns an instance of ComponentFactory which is configured by profile. All component created by this factory are
+	 * thread-safe.
 	 * 
 	 * @param profile
 	 * @return an instance of ComponentFactory
@@ -139,12 +139,19 @@ public class ElementFactory {
 	@SuppressWarnings("unchecked")
 	public static final <T extends Element> T proxy(T impl, Class<T> clazz) {
 		ElementIH<T> ih = new ElementIH<T>(impl, clazz);
-		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz,
-				ElementAddition.class }, ih);
+		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz, ElementAddition.class }, ih);
 	}
 
 	/**
-	 * Create a plot with setting the default color, font, and margin. The default size is 640x480.
+	 * Create a plot with the initial values
+	 * <ul>
+	 * <li>cacheable: true</li>
+	 * <li>color: BLACK</li>
+	 * <li>font: Serif PLAIN 12</li>
+	 * <li>margin: extra 12 on left, top, right, bottom</li>
+	 * <li>sizeMode: FillContainerSizeMode(1)</li>
+	 * <li>containerSize: 640x480</li>
+	 * <ul>
 	 * 
 	 * @return
 	 */
@@ -159,6 +166,8 @@ public class ElementFactory {
 		plot.getMargin().setExtraLeft(12);
 		plot.getMargin().setExtraBottom(12);
 		plot.getMargin().setExtraRight(12);
+		plot.setSizeMode(new FillContainerSizeMode(1));
+		plot.setContainerSize(new Dimension(640, 480));
 
 		applyProfile(plot);
 		Plot plotProxy = proxy(plot, Plot.class);
@@ -237,9 +246,8 @@ public class ElementFactory {
 
 	/**
 	 * Create n Axes which share the same tick manager. The position of the axis on index 0 is
-	 * {@link AxisPosition#NEGATIVE_SIDE}, the position of the axis on index 1 is
-	 * {@link AxisPosition#POSITIVE_SIDE}. All the created axes must be added to a plot by
-	 * {@link Plot#addXAxes(Axis[])} or {@link Plot#addYAxes(Axis[])}
+	 * {@link AxisPosition#NEGATIVE_SIDE}, the position of the axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}.
+	 * All the created axes must be added to a plot by {@link Plot#addXAxes(Axis[])} or {@link Plot#addYAxes(Axis[])}
 	 * 
 	 * @return axes in an array
 	 */
@@ -364,13 +372,13 @@ public class ElementFactory {
 		return createXYGraph(new ArrayPair(xarray, yarray), name);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow,
-			double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh) {
+	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow, double[] xErrorHigh,
+			double[] yErrorLow, double[] yErrorHigh) {
 		return createXYGraph(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh, null);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow,
-			double[] xErrorHigh, double[] yErrorLow, double[] yErrorHigh, String name) {
+	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow, double[] xErrorHigh,
+			double[] yErrorLow, double[] yErrorHigh, String name) {
 		ArrayPair errorX = null;
 		if (xErrorLow != null && xErrorHigh != null) {
 			errorX = new ArrayPair(xErrorLow, xErrorHigh);
