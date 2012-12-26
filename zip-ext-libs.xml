@@ -10,6 +10,7 @@
 	<dependencySets>
 		<dependencySet>
 			<includes>
+				<include>org.slf4j:slf4j-api</include>
 				<include>com.lowagie:itext</include>
 				<include>org.apache.xmlgraphics:xmlgraphics-commons</include>
 			</includes>
