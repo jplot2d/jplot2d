@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>jplot2d</artifactId>
 		<groupId>org.jplot2d</groupId>
-		<version>0.7.0</version>
+		<version>0.7.1</version>
 	</parent>
 
 	<artifactId>jplot2d-swt</artifactId>
@@ -17,7 +17,6 @@
 				<configuration>
 					<descriptors>
 						<descriptor>../jar-jplot2d-dependencies.xml</descriptor>
-						<descriptor>../zip-ext-libs.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
