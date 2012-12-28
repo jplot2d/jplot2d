@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,6 +18,8 @@
  */
 package org.jplot2d.swing.proptable.editor;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -27,22 +29,25 @@ import java.util.Locale;
  */
 public class FloatEditor extends FormattedEditor {
 
-    private static NumberFormat getFloatFormat() {
-        NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
-        format.setMaximumFractionDigits(8);
-        return format;
-    }
+	private static NumberFormat getFloatFormat() {
+		DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+		symbols.setNaN("NaN");
+		format.setDecimalFormatSymbols(symbols);
+		format.setMaximumFractionDigits(8);
+		return format;
+	}
 
-    public FloatEditor() {
-        super(getFloatFormat());
-    }
+	public FloatEditor() {
+		super(getFloatFormat());
+	}
 
-    @Override
-    public Object getValue() {
-        Object v = super.getValue();
-        if (v instanceof Number) {
-            return new Float(((Number) v).floatValue());
-        }
-        return v;
-    }
+	@Override
+	public Object getValue() {
+		Object v = super.getValue();
+		if (v instanceof Number) {
+			return new Float(((Number) v).floatValue());
+		}
+		return v;
+	}
 }

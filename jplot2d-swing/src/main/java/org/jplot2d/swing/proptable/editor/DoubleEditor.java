@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,6 +18,8 @@
  */
 package org.jplot2d.swing.proptable.editor;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -28,7 +30,10 @@ import java.util.Locale;
 public class DoubleEditor extends FormattedEditor {
 
 	private static NumberFormat getDoubleFormat() {
-		NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+		DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+		symbols.setNaN("NaN");
+		format.setDecimalFormatSymbols(symbols);
 		format.setMaximumFractionDigits(16);
 		return format;
 	}
