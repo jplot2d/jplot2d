@@ -201,7 +201,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			/* all axis is LOG and contain no positive data, do nothing */
 
 			notify(new RangeSelectionNotice("Axes [" + getAxesShortId()
-					+ "] contain no valide data, auto range ignored."));
+					+ "] contain no valid data, auto range ignored."));
 			return;
 		}
 
