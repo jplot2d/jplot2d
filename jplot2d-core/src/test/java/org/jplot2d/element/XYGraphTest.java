@@ -37,11 +37,11 @@ public class XYGraphTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(XYGraph.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component",
-				"XY Graph Plotter");
+				"XY Graph");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
 				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
 				"fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("XY Graph Plotter"), "name",
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("XY Graph"), "name",
 				"symbolVisible", "symbolShape", "symbolSize", "symbolColor", "lineVisible",
 				"lineStroke", "chartType", "fillEnabled", "fillPaint", "fillClosureType",
 				"errorbarCapSize");
