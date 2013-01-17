@@ -1,28 +1,27 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.data;
 
 import org.jplot2d.util.Range;
 
 /**
- * Immutable. This class keep (x,y) data pairs and compute data feature such as max/min, NaN
- * indexes.
+ * Immutable. This class keep (x,y) data pairs and compute data feature such as max/min, NaN indexes.
  * 
  * @author Jingjing Li
  */
@@ -73,22 +72,13 @@ public final class XYGraphData implements GraphData {
 		this(xy, errorX, errorY, null, null);
 	}
 
-	public XYGraphData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range xboundary,
-			Range yboundary) {
+	private XYGraphData(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, Range xboundary, Range yboundary) {
 		_xy = xy;
 		_errorX = errorX;
 		_errorY = errorY;
 		_xboundary = xboundary;
 		_yboundary = yboundary;
 		extractDataFeature();
-	}
-
-	public XYGraphData setXBoundary(Range xboundary) {
-		return setBoundary(xboundary, null);
-	}
-
-	public XYGraphData setYBoundary(Range yboundary) {
-		return setBoundary(null, yboundary);
 	}
 
 	public XYGraphData setBoundary(Range xboundary, Range yboundary) {

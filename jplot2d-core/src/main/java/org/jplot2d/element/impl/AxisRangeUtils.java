@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * 
+ * Copyright 2010-2013 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -37,14 +34,14 @@ import org.jplot2d.util.Range;
 class AxisRangeUtils {
 
 	/**
-	 * The depth of zoom-in is controlled by this constant. The precision limit of double is
-	 * 0x1.0p-52. 65536x to ensure the ticks look like even-distributed.
+	 * The depth of zoom-in is controlled by this constant. The precision limit of double is 0x1.0p-52. 65536x to ensure
+	 * the ticks look like even-distributed.
 	 */
 	protected static final double PRECISIONLIMIT = 0x1.0p-36;
 
 	/**
-	 * The default precision limit when range == 0. This make the range is large enough to produce
-	 * tick labels within 4 digits.
+	 * The default precision limit when range == 0. This make the range is large enough to produce tick labels within 4
+	 * digits.
 	 */
 	protected static final double DIGI4LIMIT = 0.004;
 
@@ -70,14 +67,13 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * Create a set of virtual NormalTransform correspond to NPTs of the given axes. The virtual
-	 * NormalTransform will try to remove the offset to minimize the double calculation round error.
+	 * Create a set of virtual NormalTransform correspond to NPTs of the given axes. The virtual NormalTransform will
+	 * try to remove the offset to minimize the double calculation round error.
 	 * 
 	 * @param axes
 	 * @return
 	 */
-	static Map<AxisTransformEx, NormalTransform> createVirtualTransformMap(
-			Collection<AxisTransformEx> axes) {
+	static Map<AxisTransformEx, NormalTransform> createVirtualTransformMap(Collection<AxisTransformEx> axes) {
 
 		if (axes.size() == 0) {
 			return Collections.emptyMap();
@@ -111,8 +107,7 @@ class AxisRangeUtils {
 		return result;
 	}
 
-	private static Map<AxisTransformEx, NormalTransform> createNormalTransformMap(
-			Collection<AxisTransformEx> axes) {
+	private static Map<AxisTransformEx, NormalTransform> createNormalTransformMap(Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> vtMap = new LinkedHashMap<AxisTransformEx, NormalTransform>();
 		for (AxisTransformEx axis : axes) {
 			vtMap.put(axis, axis.getNormalTransform());
@@ -121,17 +116,14 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * Adjust the given range and to make sure all corresponding user range only contain valid
-	 * values.
+	 * Adjust the given range and to make sure all corresponding user range only contain valid values.
 	 * <ul>
-	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.
-	 * </li>
-	 * <li>If all corresponding world range of layers are valid, the given norm range is returned
-	 * without any adjustment.</li>
-	 * <li>If any corresponding world range of layers spans over invalid value, the end of given
-	 * range is adjusted inward to the valid boundary.</li>
-	 * <li>If the given range start/end at INFINITY, then "nearest data" well be found instead of
-	 * the valid boundary.
+	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.</li>
+	 * <li>If all corresponding world range of layers are valid, the given norm range is returned without any
+	 * adjustment.</li>
+	 * <li>If any corresponding world range of layers spans over invalid value, the end of given range is adjusted
+	 * inward to the valid boundary.</li>
+	 * <li>If the given range start/end at INFINITY, then "nearest data" well be found instead of the valid boundary.
 	 * <ul>
 	 * <li>If there is no valid data inside the valid range, <code>null</code> will be returned.</li>
 	 * <li>A margin is appended on the "nearest data" end.</li>
@@ -141,25 +133,23 @@ class AxisRangeUtils {
 	 * 
 	 * @param range
 	 *            The caller should guarantee pLo < pHi
-	 * @return a RangeStatus contain the adjusted normalized range. The RangeAdjustTag status
-	 *         indicate if the given range is adjusted.
+	 * @return a RangeStatus contain the adjusted normalized range. The RangeAdjustTag status indicate if the given
+	 *         range is adjusted.
 	 */
-	static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes,
-			boolean findNearsetData) {
+	static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes, boolean findNearsetData) {
 		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return validateNormalRange(range, axisMap, findNearsetData);
 	}
 
 	/**
-	 * Find a nice norm range inside the given range and to make sure all corresponding user range
-	 * only contain valid values.
+	 * Find a nice norm range inside the given range and to make sure all corresponding user range only contain valid
+	 * values.
 	 * <ul>
-	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.
-	 * </li>
-	 * <li>If all corresponding world range of layers are valid, the given norm range is returned
-	 * without any adjustment.</li>
-	 * <li>If any corresponding world range of layers spans over invalid value, the end of given
-	 * range is adjusted inward to the data that most close to boundary.
+	 * <li>If there is no intersection among the given range and valid boundaries, null is returned.</li>
+	 * <li>If all corresponding world range of layers are valid, the given norm range is returned without any
+	 * adjustment.</li>
+	 * <li>If any corresponding world range of layers spans over invalid value, the end of given range is adjusted
+	 * inward to the data that most close to boundary.
 	 * <ul>
 	 * <li>If there is no valid data inside the valid range, <code>null</code> will be returned.</li>
 	 * <li>A margin is appended on the "nearest data" end.</li>
@@ -169,11 +159,10 @@ class AxisRangeUtils {
 	 * 
 	 * @param range
 	 *            The caller should guarantee pLo < pHi
-	 * @return a RangeStatus contain the nice normalized range. The RangeAdjustTag status indicate
-	 *         if the given range is adjusted.
+	 * @return a RangeStatus contain the nice normalized range. The RangeAdjustTag status indicate if the given range is
+	 *         adjusted.
 	 */
-	static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap,
-			boolean findNearsetData) {
+	static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap, boolean findNearsetData) {
 
 		if (range.isInverted()) {
 			throw new IllegalArgumentException();
@@ -184,8 +173,7 @@ class AxisRangeUtils {
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
 			// virtual normal range of the axis type boundary
-			Range aprange = me.getValue().convToNR(
-					me.getKey().getType().getBoundary(ax.getTransform()));
+			Range aprange = me.getValue().convToNR(me.getKey().getType().getBoundary(ax.getTransform()));
 			pbnds = pbnds.intersect(aprange);
 		}
 
@@ -194,8 +182,7 @@ class AxisRangeUtils {
 			return null;
 		}
 		/*
-		 * The pbnds may be not null if a round error cause an intersection. In this case, the
-		 * pbnds.span() is 0.
+		 * The pbnds may be not null if a round error cause an intersection. In this case, the pbnds.span() is 0.
 		 */
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			Range urange = me.getValue().convFromNR(pbnds);
@@ -237,8 +224,8 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * If there is no data point in the given range, null is returned. The range on the end of found
-	 * data point will expand by a margin factor.
+	 * If there is no data point in the given range, null is returned. The range on the end of found data point will
+	 * expand by a margin factor.
 	 * 
 	 * @param pbnds
 	 *            The caller guarantee this is valid on all axes.
@@ -249,8 +236,8 @@ class AxisRangeUtils {
 	 *            indicate the high data should be found
 	 * @return
 	 */
-	private static Range findDataRange(Range pbnds, Map<AxisTransformEx, NormalTransform> axisMap,
-			boolean findLoData, boolean findHiData) {
+	private static Range findDataRange(Range pbnds, Map<AxisTransformEx, NormalTransform> axisMap, boolean findLoData,
+			boolean findHiData) {
 
 		// the physical adjusted range that find the data edge
 		Range padRange = null;
@@ -268,11 +255,11 @@ class AxisRangeUtils {
 				Range wDRange = new Range.Double();
 				if (layer.getXAxisTransform() == arm) {
 					for (GraphEx dp : layer.getGraph()) {
-						wDRange = dp.getData().setXBoundary(urange).getXRange().union(wDRange);
+						wDRange = dp.getData().setBoundary(urange, null).getXRange().union(wDRange);
 					}
 				} else if (layer.getYAxisTransform() == arm) {
 					for (GraphEx dp : layer.getGraph()) {
-						wDRange = dp.getData().setYBoundary(urange).getYRange().union(wDRange);
+						wDRange = dp.getData().setBoundary(null, urange).getYRange().union(wDRange);
 					}
 				}
 				if (wDRange != null) {
@@ -306,10 +293,8 @@ class AxisRangeUtils {
 					pXdRange = new Range.Double(pLo, pHi);
 				} else {
 					Range wr = vnt.convFromNR(new Range.Double(pLo, pHi));
-					NormalTransform npt = arm.getType().getDefaultTransformType()
-							.createNormalTransform(wr);
-					Range exnpr = new Range.Double(-arm.getMarginFactor(),
-							1 + arm.getMarginFactor());
+					NormalTransform npt = arm.getType().getDefaultTransformType().createNormalTransform(wr);
+					Range exnpr = new Range.Double(-arm.getMarginFactor(), 1 + arm.getMarginFactor());
 					Range exwr = npt.convFromNR(exnpr);
 					pXdRange = vnt.convToNR(exwr);
 				}
@@ -330,8 +315,8 @@ class AxisRangeUtils {
 			return null;
 		}
 
-		return new Range.Double((findLoData) ? padRange.getMin() : pbnds.getStart(),
-				(findHiData) ? padRange.getMax() : pbnds.getEnd());
+		return new Range.Double((findLoData) ? padRange.getMin() : pbnds.getStart(), (findHiData) ? padRange.getMax()
+				: pbnds.getEnd());
 
 	}
 
@@ -343,17 +328,15 @@ class AxisRangeUtils {
 	 * @param pHi
 	 *            the normalized range high value
 	 * @param lockedAxes
-	 * @return the new range that satisfy the precision limit. The status object is
-	 *         PrecisionException if the range is adjusted.
+	 * @return the new range that satisfy the precision limit. The status object is PrecisionException if the range is
+	 *         adjusted.
 	 */
-	static RangeStatus<PrecisionState> ensurePrecision(Range prange,
-			Collection<AxisTransformEx> axes) {
+	static RangeStatus<PrecisionState> ensurePrecision(Range prange, Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return ensurePrecision(prange, axisMap);
 	}
 
-	static RangeStatus<PrecisionState> ensurePrecision(Range prange,
-			Map<AxisTransformEx, NormalTransform> vtMap) {
+	static RangeStatus<PrecisionState> ensurePrecision(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -407,9 +390,7 @@ class AxisRangeUtils {
 			double avg = (pLo + pHi) / 2;
 			pLo = avg - minRange / 2;
 			pHi = avg + minRange / 2;
-			ex = new PrecisionState(
-					"The range has been adjusted to satisfy the precision limit for axis "
-							+ minRangeId);
+			ex = new PrecisionState("The range has been adjusted to satisfy the precision limit for axis " + minRangeId);
 		}
 
 		if (ex != null) {
@@ -431,14 +412,12 @@ class AxisRangeUtils {
 		return result;
 	}
 
-	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange,
-			Collection<AxisTransformEx> axes) {
+	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> vtMap = createNormalTransformMap(axes);
 		return ensureCircleSpan(prange, vtMap);
 	}
 
-	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange,
-			Map<AxisTransformEx, NormalTransform> vtMap) {
+	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -469,9 +448,7 @@ class AxisRangeUtils {
 			double avg = (pLo + pHi) / 2;
 			pLo = avg - maxRange / 2;
 			pHi = avg + maxRange / 2;
-			ex = new PrecisionState(
-					"The range has been adjusted to satisfy the circle limit for axis "
-							+ maxRangeId);
+			ex = new PrecisionState("The range has been adjusted to satisfy the circle limit for axis " + maxRangeId);
 		}
 
 		return new RangeStatus<PrecisionState>(pLo, pHi, ex);
