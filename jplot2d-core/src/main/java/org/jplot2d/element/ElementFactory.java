@@ -25,6 +25,8 @@ import java.awt.Font;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
+import org.jplot2d.data.Byte2dImageData;
+import org.jplot2d.data.ImageData;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
@@ -34,9 +36,12 @@ import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.HLineAnnotationImpl;
 import org.jplot2d.element.impl.HStripAnnotationImpl;
+import org.jplot2d.element.impl.ImageMappingEx;
+import org.jplot2d.element.impl.ImageMappingImpl;
 import org.jplot2d.element.impl.LayerImpl;
 import org.jplot2d.element.impl.LegendEx;
 import org.jplot2d.element.impl.LegendItemEx;
+import org.jplot2d.element.impl.ImageGraphImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
@@ -579,4 +584,52 @@ public class ElementFactory {
 	public BasicStroke createStroke(float width, float[] dash) {
 		return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0f);
 	}
+
+	public ImageGraph createImageGraph(byte[][] byte2d) {
+		return createImageGraph(byte2d, null);
+	}
+
+	public ImageGraph createImageGraph(byte[][] byte2d, String name) {
+		return createImageGraph(new Byte2dImageData(byte2d), name);
+	}
+
+	/**
+	 * Create an image graph.
+	 * 
+	 * @return an image graph
+	 */
+	public ImageGraph createImageGraph(ImageData data, String name) {
+
+		ImageMapping im = createImageMapping();
+		DummyEnvironment env = (DummyEnvironment) im.getEnvironment();
+		ImageMappingEx ime = (ImageMappingEx) ((ElementAddition) im).getImpl();
+
+		ImageGraphImpl graph = new ImageGraphImpl();
+		graph.setMapping(ime);
+		graph.setData(data);
+		graph.setName(name);
+		applyProfile(graph);
+		ImageGraph gpProxy = proxy(graph, ImageGraph.class);
+
+		env.registerComponent(graph, gpProxy);
+		return gpProxy;
+
+	}
+
+	/**
+	 * Create an image mapping.
+	 * 
+	 * @return an image mapping
+	 */
+	public ImageMapping createImageMapping() {
+		ImageMappingImpl impl = new ImageMappingImpl();
+		applyProfile(impl);
+		ImageMapping proxy = proxy(impl, ImageMapping.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerElement(impl, proxy);
+
+		return proxy;
+	}
+
 }
