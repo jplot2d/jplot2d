@@ -28,7 +28,7 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public AxisTransformEx getYAxisTransform();
 
-	public GraphEx[] getGraph();
+	public GraphEx[] getGraphs();
 
 	public int indexOf(GraphEx graph);
 

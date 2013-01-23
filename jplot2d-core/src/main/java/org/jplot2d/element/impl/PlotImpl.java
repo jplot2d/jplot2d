@@ -18,7 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
@@ -768,7 +767,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// add legend items
 		LegendEx enabledLegend = getEnabledLegend();
-		for (GraphEx gp : lx.getGraph()) {
+		for (GraphEx gp : lx.getGraphs()) {
 			enabledLegend.addLegendItem(gp.getLegendItem());
 		}
 	}
@@ -790,7 +789,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		// remove legend items
-		for (GraphEx gp : lx.getGraph()) {
+		for (GraphEx gp : lx.getGraphs()) {
 			getLegend().removeLegendItem(gp.getLegendItem());
 		}
 	}
