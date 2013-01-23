@@ -123,7 +123,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return graphs.get(index);
 	}
 
-	public GraphEx[] getGraph() {
+	public GraphEx[] getGraphs() {
 		return graphs.toArray(new GraphEx[graphs.size()]);
 	}
 

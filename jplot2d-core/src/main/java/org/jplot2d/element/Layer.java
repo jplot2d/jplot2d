@@ -47,7 +47,7 @@ public interface Layer extends PComponent {
 	 * @return all graph of this layer.
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	public Graph[] getGraph();
+	public Graph[] getGraphs();
 
 	/**
 	 * Adds a graph to this layer.

@@ -286,7 +286,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					} else {
 						yRange = yat.getRange();
 					}
-					for (GraphEx dp : layer.getGraph()) {
+					for (GraphEx dp : layer.getGraphs()) {
 						GraphData dataInBounds = dp.getData().setBoundary(urange, yRange);
 						wDRange = dataInBounds.getXRange().union(wDRange);
 						if (dataInBounds.hasPointOutsideXBounds()) {
@@ -301,7 +301,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 					} else {
 						xRange = xat.getRange();
 					}
-					for (GraphEx dp : layer.getGraph()) {
+					for (GraphEx dp : layer.getGraphs()) {
 						GraphData dataInBounds = dp.getData().setBoundary(xRange, urange);
 						wDRange = dataInBounds.getYRange().union(wDRange);
 						if (dataInBounds.hasPointOutsideYBounds()) {

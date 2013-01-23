@@ -157,14 +157,14 @@ public class PlotImplTest {
 
 		LayerEx layer0 = mock(LayerEx.class);
 		when(layer0.canContributeToParent()).thenReturn(false);
-		when(layer0.getGraph()).thenReturn(new GraphEx[0]);
+		when(layer0.getGraphs()).thenReturn(new GraphEx[0]);
 		p.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertFalse(p.isRedrawNeeded());
 
 		LayerEx layer1 = mock(LayerEx.class);
 		when(layer1.canContributeToParent()).thenReturn(true);
-		when(layer1.getGraph()).thenReturn(new GraphEx[0]);
+		when(layer1.getGraphs()).thenReturn(new GraphEx[0]);
 		p.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
 				.getAxisTransform());
 		assertTrue(p.isRedrawNeeded());
