@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,7 +23,7 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.data.GraphData;
 
 /**
- * A graph to draw Graph data in a viewport of layer.
+ * A graph to draw Graph data in a viewport of layer. It always has an associated legend item, show in a legend.
  * 
  * @author Jingjing Li
  * 
@@ -32,14 +32,6 @@ public interface Graph extends PComponent {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();
-
-	/**
-	 * Returns the legend item associated with this graph.
-	 * 
-	 * @return the legend item
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public LegendItem getLegendItem();
 
 	/**
 	 * Returns the graph data that this graph will draw.

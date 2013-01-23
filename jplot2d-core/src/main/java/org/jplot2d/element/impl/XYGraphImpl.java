@@ -50,6 +50,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	private static final float ARROW_HEAD_LENGTH = ARROW_LENGTH / 4;
 
+	private final LegendItemEx legendItem;
+
 	private XYGraphData graph;
 
 	private boolean symbolVisible = false;
@@ -66,8 +68,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
 
-	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT,
-			BasicStroke.JOIN_MITER);
+	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
 	private boolean fillEnabled;
 
@@ -78,7 +79,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	private float errorbarCapSize;
 
 	public XYGraphImpl() {
-		super(new XYLegendItemImpl());
+		legendItem = new XYLegendItemImpl();
+		legendItem.setParent(this);
 	}
 
 	public XYLegendItemEx getLegendItem() {
@@ -194,10 +196,6 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		}
 	}
 
-	public void thisEffectiveFontChanged() {
-		// font change has no effect
-	}
-
 	public BasicStroke getLineStroke() {
 		return lineStroke;
 	}
@@ -241,6 +239,17 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	public void setErrorbarCapSize(float size) {
 		errorbarCapSize = size;
 		redraw();
+	}
+
+	@Override
+	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		XYGraphImpl result = (XYGraphImpl) super.copyStructure(orig2copyMap);
+
+		if (orig2copyMap != null) {
+			orig2copyMap.put(getLegendItem(), result.getLegendItem());
+		}
+
+		return result;
 	}
 
 	@Override
@@ -335,14 +344,12 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 			if (data.xErrorSize != 0) {
 				for (int i = 0; i < data.xErrorSize; i++) {
-					drawErrorBarX(g, data.xBuf[i], data.yBuf[i], data.xLowBuf[i], data.xHighBuf[i],
-							(float) scale);
+					drawErrorBarX(g, data.xBuf[i], data.yBuf[i], data.xLowBuf[i], data.xHighBuf[i], (float) scale);
 				}
 			}
 			if (data.yErrorSize != 0) {
 				for (int i = 0; i < data.yErrorSize; i++) {
-					drawErrorBarY(g, data.xBuf[i], data.yBuf[i], data.yLowBuf[i], data.yHighBuf[i],
-							(float) scale);
+					drawErrorBarY(g, data.xBuf[i], data.yBuf[i], data.yLowBuf[i], data.yHighBuf[i], (float) scale);
 
 				}
 			}
@@ -500,8 +507,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		}
 	}
 
-	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize, XYGraphEx graph,
-			double scale) {
+	static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize, XYGraphEx graph, double scale) {
 		// set line stroke
 		g.setStroke(GraphicsUtil.scaleStroke(graph.getLineStroke(), scale));
 		// draw lines
@@ -555,8 +561,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	 *            the number of points
 	 * @param graph
 	 */
-	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y, int lsize,
-			XYGraphEx graph, double scale) {
+	private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y, int lsize, XYGraphEx graph, double scale) {
 		int nsize = lsize * 2 - 1;
 		float[] xout = new float[nsize];
 		float[] yout = new float[nsize];
@@ -577,8 +582,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	}
 
 	/**
-	 * Draw a mark at the requested location. This routine is used by LineCartesianGraph and
-	 * LineKey.
+	 * Draw a mark at the requested location. This routine is used by LineCartesianGraph and LineKey.
 	 * 
 	 * @param g
 	 *            Graphics object
@@ -589,8 +593,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	 * @param graph
 	 *            line attribute
 	 */
-	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph,
-			Color[] colors, double scale) {
+	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph, Color[] colors,
+			double scale) {
 
 		if (graph.getSymbolShape() == SymbolShape.DOT) {
 			// use 0 width stroke to draw dot marks

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,7 +21,6 @@ package org.jplot2d.element.impl;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * @author Jingjing Li
@@ -31,11 +30,8 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 
 	private static Point2D LOCATION = new Point2D.Double();
 
-	protected final LegendItemEx legendItem;
+	protected GraphImpl() {
 
-	protected GraphImpl(LegendItemEx legendItem) {
-		this.legendItem = legendItem;
-		legendItem.setParent(this);
 	}
 
 	public String getId() {
@@ -64,10 +60,6 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 		return (LayerEx) super.getParent();
 	}
 
-	public LegendItemEx getLegendItem() {
-		return legendItem;
-	}
-
 	public Point2D getLocation() {
 		return LOCATION;
 	}
@@ -84,15 +76,8 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 		}
 	}
 
-	@Override
-	public ComponentEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		GraphImpl result = (GraphImpl) super.copyStructure(orig2copyMap);
-
-		if (orig2copyMap != null) {
-			orig2copyMap.put(getLegendItem(), result.getLegendItem());
-		}
-
-		return result;
+	public void thisEffectiveFontChanged() {
+		// font change has no effect
 	}
 
 }

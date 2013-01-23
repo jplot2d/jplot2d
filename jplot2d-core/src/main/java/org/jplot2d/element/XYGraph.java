@@ -22,6 +22,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Paint;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.data.XYGraphData;
@@ -60,26 +62,30 @@ public interface XYGraph extends Graph {
 		 */
 		SELF,
 		/**
-		 * Close the line by project the 1st point and last point to left axis, to construct a
-		 * closed area.
+		 * Close the line by project the 1st point and last point to left axis, to construct a closed area.
 		 */
 		LEFT,
 		/**
-		 * Close the line by project the 1st point and last point to right axis, to construct a
-		 * closed area.
+		 * Close the line by project the 1st point and last point to right axis, to construct a closed area.
 		 */
 		RIGHT,
 		/**
-		 * Close the line by project the 1st point and last point to top axis, to construct a closed
-		 * area.
+		 * Close the line by project the 1st point and last point to top axis, to construct a closed area.
 		 */
 		TOP,
 		/**
-		 * Close the line by project the 1st point and last point to bottom axis, to construct a
-		 * closed area.
+		 * Close the line by project the 1st point and last point to bottom axis, to construct a closed area.
 		 */
 		BOTTOM
 	}
+
+	/**
+	 * Returns the legend item associated with this graph.
+	 * 
+	 * @return the legend item
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public LegendItem getLegendItem();
 
 	public XYGraphData getData();
 
