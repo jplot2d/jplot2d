@@ -767,8 +767,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// add legend items
 		LegendEx enabledLegend = getEnabledLegend();
-		for (GraphEx gp : lx.getGraphs()) {
-			enabledLegend.addLegendItem(gp.getLegendItem());
+		for (GraphEx gx : lx.getGraphs()) {
+			if (gx instanceof XYGraphEx) {
+				enabledLegend.addLegendItem(((XYGraphEx) gx).getLegendItem());
+			}
 		}
 	}
 
@@ -789,8 +791,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		// remove legend items
-		for (GraphEx gp : lx.getGraphs()) {
-			getLegend().removeLegendItem(gp.getLegendItem());
+		for (GraphEx gx : lx.getGraphs()) {
+			if (gx instanceof XYGraphEx) {
+				getLegend().removeLegendItem(((XYGraphEx) gx).getLegendItem());
+			}
 		}
 	}
 

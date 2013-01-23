@@ -128,22 +128,22 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void addGraph(Graph graph) {
-		GraphEx gp = (GraphEx) graph;
-		graphs.add(gp);
-		gp.setParent(this);
+		GraphEx gx = (GraphEx) graph;
+		graphs.add(gx);
+		gx.setParent(this);
 
 		// add legend item
-		if (getParent() != null) {
-			getParent().getEnabledLegend().addLegendItem(gp.getLegendItem());
+		if (getParent() != null && gx instanceof XYGraphEx) {
+			getParent().getEnabledLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
 		}
 
-		if (gp.canContributeToParent()) {
+		if (gx.canContributeToParent()) {
 			redraw();
-		} else if (gp.canContribute()) {
+		} else if (gx.canContribute()) {
 			rerender();
 		}
 
-		if (gp.isVisible()) {
+		if (gx.isVisible()) {
 			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
 				xarm.getLockGroup().reAutoRange();
 			}
@@ -154,22 +154,22 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void removeGraph(Graph graph) {
-		GraphEx gp = (GraphEx) graph;
-		graphs.remove(gp);
-		gp.setParent(null);
+		GraphEx gx = (GraphEx) graph;
+		graphs.remove(gx);
+		gx.setParent(null);
 
 		// remove legend item
-		if (getParent() != null) {
-			getParent().getLegend().removeLegendItem(gp.getLegendItem());
+		if (getParent() != null && gx instanceof XYGraphEx) {
+			getParent().getLegend().removeLegendItem(((XYGraphEx) gx).getLegendItem());
 		}
 
-		if (gp.canContributeToParent()) {
+		if (gx.canContributeToParent()) {
 			redraw();
-		} else if (gp.canContribute()) {
+		} else if (gx.canContribute()) {
 			rerender();
 		}
 
-		if (gp.isVisible()) {
+		if (gx.isVisible()) {
 			if (xarm.getLockGroup().isAutoRange()) {
 				xarm.getLockGroup().reAutoRange();
 			}

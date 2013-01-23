@@ -31,7 +31,7 @@ public abstract class ElementImpl implements ElementEx {
 
 	protected ElementEx parent;
 
-	public Environment getEnvironment() {
+	public final Environment getEnvironment() {
 		throw new UnsupportedOperationException();
 	}
 
