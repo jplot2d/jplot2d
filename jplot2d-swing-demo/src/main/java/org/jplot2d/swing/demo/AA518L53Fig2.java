@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.Graph;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
@@ -113,7 +112,7 @@ public class AA518L53Fig2 {
 		// solid line
 		double[] solx = { 10, 2000000 };
 		double[] soly = { 0.09, 900 };
-		Graph sol = ef.createXYGraph(solx, soly);
+		XYGraph sol = ef.createXYGraph(solx, soly);
 		sol.setColor(Color.BLUE);
 		sol.getLegendItem().setVisible(false);
 		ulayer.addGraph(sol);
