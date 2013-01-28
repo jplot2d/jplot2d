@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -33,6 +33,7 @@ import org.jplot2d.element.Layer;
 import org.jplot2d.element.Annotation;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
+import org.jplot2d.element.XYGraph;
 
 /**
  * A adapter that convert plot to TreeModel.
@@ -113,8 +114,8 @@ public class PlotTreeModel implements TreeModel {
 		} else if (parent instanceof Layer) {
 			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			int gpNum = layer.getGraph().length;
-			int markerNum = layer.getAnnotations().length;
+			int gpNum = layer.getGraphs().length;
+			int annNum = layer.getAnnotations().length;
 			if (index == 0) {
 				return layer.getXAxisTransform();
 			}
@@ -126,11 +127,11 @@ public class PlotTreeModel implements TreeModel {
 				return layer.getGraph(index - start);
 			}
 			start += gpNum;
-			if (start <= index && index < start + markerNum) {
+			if (start <= index && index < start + annNum) {
 				return layer.getAnnotation(index - start);
 			}
-		} else if (parent instanceof Graph) {
-			Graph gp = (Graph) parent;
+		} else if (parent instanceof XYGraph) {
+			XYGraph gp = (XYGraph) parent;
 			if (index == 0) {
 				return gp.getLegendItem();
 			}
@@ -160,10 +161,10 @@ public class PlotTreeModel implements TreeModel {
 		} else if (parent instanceof Layer) {
 			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			int gpNum = layer.getGraph().length;
-			int markerNum = layer.getAnnotations().length;
-			return 2 + gpNum + markerNum;
-		} else if (parent instanceof Graph) {
+			int gpNum = layer.getGraphs().length;
+			int annNum = layer.getAnnotations().length;
+			return 2 + gpNum + annNum;
+		} else if (parent instanceof XYGraph) {
 			// legend item
 			return 1;
 		}
@@ -241,8 +242,8 @@ public class PlotTreeModel implements TreeModel {
 		} else if (parent instanceof Layer) {
 			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			Graph[] graphs = layer.getGraph();
-			Annotation[] markers = layer.getAnnotations();
+			Graph[] graphs = layer.getGraphs();
+			Annotation[] anns = layer.getAnnotations();
 			if (child == layer.getXAxisTransform()) {
 				return 0;
 			}
@@ -255,15 +256,15 @@ public class PlotTreeModel implements TreeModel {
 					return start + i;
 				}
 			}
-			start += markers.length;
-			for (int i = 0; i < markers.length; i++) {
-				if (markers[i] == child) {
+			start += anns.length;
+			for (int i = 0; i < anns.length; i++) {
+				if (anns[i] == child) {
 					return start + i;
 				}
 			}
-		} else if (parent instanceof Graph) {
+		} else if (parent instanceof XYGraph) {
 			// legend item
-			if (child == ((Graph) parent).getLegendItem()) {
+			if (child == ((XYGraph) parent).getLegendItem()) {
 				return 0;
 			}
 		}
