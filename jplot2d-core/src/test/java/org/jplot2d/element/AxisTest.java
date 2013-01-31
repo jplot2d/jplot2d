@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -40,13 +40,11 @@ public class AxisTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Axis.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Axis");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation",
-				"position", "axisLineWidth", "gridLines", "minorGridLines", "tickVisible",
-				"tickSide", "tickHeight", "minorTickHeight", "tickLineWidth", "labelVisible",
-				"labelSide", "labelOrientation", "labelColor");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation", "position", "axisLineWidth",
+				"gridLines", "minorGridLines", "tickVisible", "tickSide", "tickHeight", "minorTickHeight",
+				"tickLineWidth", "labelVisible", "labelSide", "labelOrientation", "labelColor");
 	}
 
 	/**
@@ -99,54 +97,6 @@ public class AxisTest {
 		assertSame(group.getEnvironment(), arm.getEnvironment());
 		assertSame(group.getParent(), arm);
 		assertArrayEquals(group.getRangeManagers(), new AxisTransform[] { arm });
-	}
-
-	@Test
-	public void testAddAndRemoveAxis() {
-		Plot sp = factory.createSubplot();
-		Axis xaxis = factory.createAxis();
-		Axis yaxis = factory.createAxis();
-		AxisTickManager xtm = xaxis.getTickManager();
-		AxisTickManager ytm = yaxis.getTickManager();
-		AxisTransform xarm = xtm.getAxisTransform();
-		AxisTransform yarm = ytm.getAxisTransform();
-		AxisRangeLockGroup xag = xarm.getLockGroup();
-		AxisRangeLockGroup yag = yarm.getLockGroup();
-
-		sp.addXAxis(xaxis);
-		sp.addYAxis(yaxis);
-
-		assertSame(xaxis.getTickManager(), xtm);
-		assertSame(yaxis.getTickManager(), ytm);
-		assertSame(xtm.getAxisTransform(), xarm);
-		assertSame(ytm.getAxisTransform(), yarm);
-		assertSame(xarm.getLockGroup(), xag);
-		assertSame(yarm.getLockGroup(), yag);
-		assertSame(xtm.getEnvironment(), sp.getEnvironment());
-		assertSame(ytm.getEnvironment(), sp.getEnvironment());
-		assertSame(xarm.getEnvironment(), sp.getEnvironment());
-		assertSame(yarm.getEnvironment(), sp.getEnvironment());
-		assertSame(xag.getEnvironment(), sp.getEnvironment());
-		assertSame(yag.getEnvironment(), sp.getEnvironment());
-
-		sp.removeXAxis(xaxis);
-		sp.removeYAxis(yaxis);
-
-		// the axis range manager and axis lock group should be removed together
-		assertSame(xaxis.getTickManager(), xtm);
-		assertSame(yaxis.getTickManager(), ytm);
-		assertSame(xtm.getAxisTransform(), xarm);
-		assertSame(ytm.getAxisTransform(), yarm);
-		assertSame(xarm.getLockGroup(), xag);
-		assertSame(yarm.getLockGroup(), yag);
-		assertNotSame(xaxis.getEnvironment(), sp.getEnvironment());
-		assertNotSame(yaxis.getEnvironment(), sp.getEnvironment());
-		assertSame(xaxis.getEnvironment(), xtm.getEnvironment());
-		assertSame(yaxis.getEnvironment(), ytm.getEnvironment());
-		assertSame(xtm.getEnvironment(), xarm.getEnvironment());
-		assertSame(ytm.getEnvironment(), yarm.getEnvironment());
-		assertSame(xarm.getEnvironment(), xag.getEnvironment());
-		assertSame(yarm.getEnvironment(), yag.getEnvironment());
 	}
 
 	@Test
@@ -234,8 +184,7 @@ public class AxisTest {
 		assertNotSame(yva.getEnvironment(), sp.getEnvironment());
 
 		assertSame(ytm.getAxisTransform(), xtm.getAxisTransform());
-		assertArrayEquals(xtm.getAxisTransform().getTickManagers(), new AxisTickManager[] { xtm,
-				ytm });
+		assertArrayEquals(xtm.getAxisTransform().getTickManagers(), new AxisTickManager[] { xtm, ytm });
 		assertSame(xtm.getAxisTransform().getEnvironment(), sp.getEnvironment());
 
 		// remove x axis
