@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -289,7 +289,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	public void addAxis(AxisEx axis) {
-		axes.add((AxisEx) axis);
+		axes.add(axis);
 		if (axes.size() == 1) {
 			parent = axes.get(0);
 		} else {
