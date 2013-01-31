@@ -18,11 +18,22 @@
  */
 package org.jplot2d.element;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
+
 /**
  * @author Jingjing Li
  * 
  */
 public interface ImageMapping extends Element {
+
+	/**
+	 * Returns all ImageGraph whose mapping are controlled by this ImageMapping.
+	 * 
+	 * @return all ImageGraph whose mapping are controlled by this ImageMapping
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	ImageGraph[] getGraphs();
 
 	// public IntensityMappingAlgorithm getIntensityMappingAlgorithm();
 
