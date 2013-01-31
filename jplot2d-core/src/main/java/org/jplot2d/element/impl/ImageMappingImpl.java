@@ -4,8 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.element.Element;
-import org.jplot2d.env.Environment;
+import org.jplot2d.element.ImageGraph;
 
 public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
@@ -39,6 +38,28 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 			throw new Error(e);
 		}
 		return new InvokeStep(method);
+	}
+
+	public void addImageGraph(ImageGraphEx graph) {
+		graphs.add(graph);
+		if (graphs.size() == 1) {
+			parent = graphs.get(0);
+		} else {
+			parent = null;
+		}
+	}
+
+	public void removeImageGraph(ImageGraphEx graph) {
+		graphs.remove(graph);
+		if (graphs.size() == 1) {
+			parent = graphs.get(0);
+		} else {
+			parent = null;
+		}
+	}
+
+	public ImageGraph[] getGraphs() {
+		return graphs.toArray(new ImageGraph[graphs.size()]);
 	}
 
 }

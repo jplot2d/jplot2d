@@ -28,4 +28,8 @@ public interface ImageMappingEx extends ImageMapping {
 
 	public ImageGraphEx getParent();
 
+	public void addImageGraph(ImageGraphEx graph);
+
+	public void removeImageGraph(ImageGraphEx graph);
+
 }

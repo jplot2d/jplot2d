@@ -28,7 +28,7 @@ import org.jplot2d.data.ImageData;
  * 
  */
 @PropertyGroup("Image")
-public interface ImageGraph extends PComponent {
+public interface ImageGraph extends Graph {
 
 	@Hierarchy(HierarchyOp.GET)
 	public Layer getParent();
@@ -45,7 +45,5 @@ public interface ImageGraph extends PComponent {
 	public void setMapping(ImageMapping mapping);
 
 	public ImageData getData();
-
-	public void setData(ImageData graph);
 
 }

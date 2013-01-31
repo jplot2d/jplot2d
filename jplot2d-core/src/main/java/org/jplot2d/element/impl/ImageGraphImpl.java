@@ -7,18 +7,24 @@ import org.jplot2d.element.ImageMapping;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 
+	private ImageMappingEx mapping;
+
 	public ImageGraphImpl() {
 		super();
 	}
 
 	public ImageMapping getMapping() {
-		// TODO Auto-generated method stub
-		return null;
+		return mapping;
 	}
 
 	public void setMapping(ImageMapping mapping) {
-		// TODO Auto-generated method stub
-		
+		if (this.mapping != null) {
+			this.mapping.removeImageGraph(this);
+		}
+		this.mapping = (ImageMappingEx) mapping;
+		if (this.mapping != null) {
+			this.mapping.addImageGraph(this);
+		}
 	}
 
 	public ImageData getData() {
