@@ -21,7 +21,9 @@ package org.jplot2d.element;
 import static org.jplot2d.util.TestUtils.*;
 import static org.junit.Assert.*;
 
+import org.jplot2d.data.ImageData;
 import org.jplot2d.env.InterfaceInfo;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,13 +34,14 @@ import org.junit.Test;
  */
 public class LayerTest {
 
+	private static final ElementFactory factory = ElementFactory.getInstance();
+
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Layer.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "location", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 	}
 
 	@Test
@@ -53,19 +56,56 @@ public class LayerTest {
 	}
 
 	@Test
-	public void testAddLayer() {
-		ElementFactory ef = ElementFactory.getInstance();
-		Plot p = ef.createPlot();
+	public void testAddAndRemoveXYGraph() {
+		Layer layer = factory.createLayer();
+		XYGraph graphA = factory.createXYGraph(new double[0], new double[0], "");
+		XYGraph graphB = factory.createXYGraph(new double[0], new double[0], "");
 
-		Axis xaxis = ef.createAxis();
-		Axis yaxis = ef.createAxis();
-		Layer layer = ef.createLayer();
-		p.addXAxis(xaxis);
-		p.addYAxis(yaxis);
-		p.addLayer(layer, xaxis, yaxis);
+		layer.addGraph(graphA);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphA });
+		layer.addGraph(graphB);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphA, graphB });
 
-		System.out.println(layer.getBounds());
+		layer.removeGraph(graphA);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphB });
+		layer.removeGraph(graphB);
+		assertArrayEquals(layer.getGraphs(), new Graph[0]);
 
+		assertNotSame(graphA.getEnvironment(), layer.getEnvironment());
+		assertNotSame(graphB.getEnvironment(), layer.getEnvironment());
+	}
+
+	@Test
+	@Ignore
+	public void testAddAndRemoveImageGraph() {
+		Layer layer = factory.createLayer();
+		ImageGraph graphA = factory.createImageGraph((ImageData) null, "");
+		ImageGraph graphB = factory.createImageGraph((ImageData) null, "");
+		ImageMapping mappingA = graphA.getMapping();
+		ImageMapping mappingB = graphB.getMapping();
+
+		layer.addGraph(graphA);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphA });
+		layer.addGraph(graphB);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphA, graphB });
+
+		assertSame(graphA.getMapping(), mappingA);
+		assertSame(graphB.getMapping(), mappingB);
+		assertSame(mappingA.getEnvironment(), layer.getEnvironment());
+		assertSame(mappingB.getEnvironment(), layer.getEnvironment());
+
+		layer.removeGraph(graphA);
+		assertArrayEquals(layer.getGraphs(), new Graph[] { graphB });
+		layer.removeGraph(graphB);
+		assertArrayEquals(layer.getGraphs(), new Graph[0]);
+
+		// the axis range manager and axis lock group should be removed together
+		assertSame(graphA.getMapping(), mappingA);
+		assertSame(graphB.getMapping(), mappingB);
+		assertNotSame(graphA.getEnvironment(), layer.getEnvironment());
+		assertNotSame(graphB.getEnvironment(), layer.getEnvironment());
+		assertSame(graphA.getEnvironment(), mappingA.getEnvironment());
+		assertSame(graphB.getEnvironment(), mappingB.getEnvironment());
 	}
 
 }

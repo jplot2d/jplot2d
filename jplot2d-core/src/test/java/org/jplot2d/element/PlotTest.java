@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -37,12 +37,10 @@ public class PlotTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Plot.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Plot");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Plot"), "sizeMode",
-				"containerSize", "scale", "layoutDirector", "preferredContentSize", "location",
-				"contentSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Plot"), "sizeMode", "containerSize", "scale",
+				"layoutDirector", "preferredContentSize", "location", "contentSize");
 	}
 
 	@Test
@@ -60,6 +58,25 @@ public class PlotTest {
 		} catch (IllegalArgumentException e) {
 
 		}
+	}
+
+	@Test
+	public void testAddLayer() {
+		ElementFactory ef = ElementFactory.getInstance();
+		Plot p = ef.createPlot();
+
+		Axis xaxis = ef.createAxis();
+		Axis yaxis = ef.createAxis();
+		Layer layer = ef.createLayer();
+		p.addXAxis(xaxis);
+		p.addYAxis(yaxis);
+
+		p.addLayer(layer, xaxis, yaxis);
+		assertArrayEquals(p.getLayers(), new Layer[] { layer });
+
+		p.removeLayer(layer);
+		assertArrayEquals(p.getLayers(), new Layer[0]);
+
 	}
 
 }
