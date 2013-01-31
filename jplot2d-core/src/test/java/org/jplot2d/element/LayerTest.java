@@ -106,4 +106,27 @@ public class LayerTest {
 		assertSame(graphB.getEnvironment(), mappingB.getEnvironment());
 	}
 
+	/**
+	 * Attaching to an axis before join an environment will throw an exception
+	 */
+	@Test
+	public void testLayerAttachAxis() {
+		AxisTransform xaxis = factory.createAxisTransform();
+		AxisTransform yaxis = factory.createAxisTransform();
+		Layer layer = factory.createLayer();
+
+		try {
+			layer.setXAxisTransform(xaxis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+		try {
+			layer.setYAxisTransform(yaxis);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+	}
+
 }
