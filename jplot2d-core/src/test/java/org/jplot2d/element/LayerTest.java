@@ -45,9 +45,7 @@ public class LayerTest {
 
 	@Test
 	public void testCreateLayer() {
-		ElementFactory ef = ElementFactory.getInstance();
-
-		Layer layer = ef.createLayer();
+		Layer layer = factory.createLayer();
 
 		assertNull(layer.getSize());
 		assertNull(layer.getBounds());
