@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -170,10 +170,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 
 		if (gx.isVisible()) {
-			if (xarm.getLockGroup().isAutoRange()) {
+			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
 				xarm.getLockGroup().reAutoRange();
 			}
-			if (yarm.getLockGroup().isAutoRange()) {
+			if (yarm != null && yarm.getLockGroup().isAutoRange()) {
 				yarm.getLockGroup().reAutoRange();
 			}
 		}
