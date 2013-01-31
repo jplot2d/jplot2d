@@ -47,9 +47,8 @@ public class PlotTest {
 
 	@Test
 	public void testTitle() {
-		ElementFactory ef = ElementFactory.getInstance();
-		Plot p = ef.createPlot();
-		Title title = ef.createTitle("title");
+		Plot p = factory.createPlot();
+		Title title = factory.createTitle("title");
 
 		p.addTitle(title);
 		assertSame(title.getEnvironment(), p.getEnvironment());
@@ -116,12 +115,11 @@ public class PlotTest {
 
 	@Test
 	public void testAddRemoveLayer() {
-		ElementFactory ef = ElementFactory.getInstance();
-		Plot p = ef.createPlot();
+		Plot p = factory.createPlot();
 
-		Axis xaxis = ef.createAxis();
-		Axis yaxis = ef.createAxis();
-		Layer layer = ef.createLayer();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
+		Layer layer = factory.createLayer();
 		p.addXAxis(xaxis);
 		p.addYAxis(yaxis);
 

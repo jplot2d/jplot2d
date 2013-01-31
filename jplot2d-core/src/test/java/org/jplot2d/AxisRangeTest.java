@@ -38,20 +38,20 @@ import org.junit.Test;
  */
 public class AxisRangeTest {
 
+	private static final ElementFactory factory = ElementFactory.getInstance();
+
 	@Test
 	public void testReAutoRangeWhenAddingGraph() {
-		ElementFactory ef = ElementFactory.getInstance();
+		Plot plot = factory.createPlot();
 
-		Plot plot = ef.createPlot();
-
-		Axis xaxis = ef.createAxis();
-		Axis yaxis = ef.createAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
-		Layer layer0 = ef.createLayer();
+		Layer layer0 = factory.createLayer();
 		plot.addLayer(layer0, xaxis, yaxis);
 
 		PlotEnvironment env = new PlotEnvironment(false);
@@ -60,12 +60,12 @@ public class AxisRangeTest {
 		checkAxisTickRange(xaxis, -1, 1);
 		checkAxisTickRange(yaxis, -1, 1);
 
-		XYGraph graph0 = ef.createXYGraph(new double[] { 0, 1 }, new double[] { 0, 1 }, "lineA");
+		XYGraph graph0 = factory.createXYGraph(new double[] { 0, 1 }, new double[] { 0, 1 }, "lineA");
 		layer0.addGraph(graph0);
 		checkAxisTickRange(xaxis, -0.1, 1.1);
 		checkAxisTickRange(yaxis, -0.1, 1.1);
 
-		XYGraph graph1 = ef.createXYGraph(new double[] { 2, 3 }, new double[] { 2, 3 }, "lineB");
+		XYGraph graph1 = factory.createXYGraph(new double[] { 2, 3 }, new double[] { 2, 3 }, "lineB");
 		layer0.addGraph(graph1);
 		checkAxisTickRange(xaxis, -0.5, 3.5);
 		checkAxisTickRange(yaxis, -0.5, 3.5);
@@ -73,12 +73,10 @@ public class AxisRangeTest {
 
 	@Test
 	public void testReAutoRangeWhenAddingLayer() {
-		ElementFactory ef = ElementFactory.getInstance();
+		Plot plot = factory.createPlot();
 
-		Plot plot = ef.createPlot();
-
-		Axis xaxis = ef.createAxis();
-		Axis yaxis = ef.createAxis();
+		Axis xaxis = factory.createAxis();
+		Axis yaxis = factory.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 		yaxis.getTitle().setText("y axis");
@@ -90,15 +88,15 @@ public class AxisRangeTest {
 		checkAxisTickRange(xaxis, -1, 1);
 		checkAxisTickRange(yaxis, -1, 1);
 
-		Layer layer0 = ef.createLayer();
-		XYGraph graph0 = ef.createXYGraph(new double[] { 0, 1 }, new double[] { 0, 1 }, "lineA");
+		Layer layer0 = factory.createLayer();
+		XYGraph graph0 = factory.createXYGraph(new double[] { 0, 1 }, new double[] { 0, 1 }, "lineA");
 		layer0.addGraph(graph0);
 		plot.addLayer(layer0, xaxis, yaxis);
 		checkAxisTickRange(xaxis, -0.1, 1.1);
 		checkAxisTickRange(yaxis, -0.1, 1.1);
 
-		Layer layer1 = ef.createLayer();
-		XYGraph graph1 = ef.createXYGraph(new double[] { 2, 3 }, new double[] { 2, 3 }, "lineB");
+		Layer layer1 = factory.createLayer();
+		XYGraph graph1 = factory.createXYGraph(new double[] { 2, 3 }, new double[] { 2, 3 }, "lineB");
 		layer1.addGraph(graph1);
 		plot.addLayer(layer1, xaxis, yaxis);
 		checkAxisTickRange(xaxis, -0.5, 3.5);
@@ -107,9 +105,9 @@ public class AxisRangeTest {
 
 	@Test
 	public void testSwitchTransformType() {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		Plot plot = factory.createPlot();
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = factory.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 
@@ -151,19 +149,19 @@ public class AxisRangeTest {
 	 */
 	@Test
 	public void testSwitchTransformType2() {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		Plot plot = factory.createPlot();
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
+		Axis xaxis = factory.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		Axis yaxis = factory.createAxis();
 		yaxis.getTitle().setText("y axis");
 		plot.addYAxis(yaxis);
 
 		XYGraphData graphData = new XYGraphData(new ArrayPair(new double[] { 0, 2, 4, 6, 8, 10 }, new double[] { 0,
 				0.6, 1, 0.4, 0.5, 0.8 }));
-		XYGraph graph = ElementFactory.getInstance().createXYGraph(graphData);
-		Layer layer0 = ElementFactory.getInstance().createLayer();
+		XYGraph graph = factory.createXYGraph(graphData);
+		Layer layer0 = factory.createLayer();
 
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis, yaxis);
