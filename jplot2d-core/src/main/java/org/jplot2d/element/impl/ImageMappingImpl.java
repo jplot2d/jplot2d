@@ -5,10 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.element.ImageGraph;
+import org.jplot2d.image.ColorMap;
+import org.jplot2d.image.IntensityMappingAlgorithm;
 
 public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	private List<ImageGraphEx> graphs = new ArrayList<ImageGraphEx>();
+
+	private IntensityMappingAlgorithm ima;
+
+	private ColorMap colorMap;
 
 	public ImageGraphEx getParent() {
 		return (ImageGraphEx) parent;
@@ -60,6 +66,22 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public ImageGraph[] getGraphs() {
 		return graphs.toArray(new ImageGraph[graphs.size()]);
+	}
+
+	public IntensityMappingAlgorithm getIMA() {
+		return ima;
+	}
+
+	public void setIMA(IntensityMappingAlgorithm ima) {
+		this.ima = ima;
+	}
+
+	public ColorMap getColorMap() {
+		return colorMap;
+	}
+
+	public void setColorMap(ColorMap colorMap) {
+		this.colorMap = colorMap;
 	}
 
 }
