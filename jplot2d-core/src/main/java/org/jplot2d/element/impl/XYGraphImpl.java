@@ -52,7 +52,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	private final LegendItemEx legendItem;
 
-	private XYGraphData graph;
+	private XYGraphData data;
 
 	private boolean symbolVisible = false;
 
@@ -96,12 +96,29 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	}
 
 	public XYGraphData getData() {
-		return graph;
+		return data;
 	}
 
-	public void setData(XYGraphData graph) {
-		this.graph = graph;
-		redraw();
+	public void setData(XYGraphData data) {
+		this.data = data;
+
+		if (this.canContributeToParent()) {
+			redraw();
+		} else if (this.canContribute()) {
+			rerender();
+		}
+
+		if (getParent() != null && this.canContribute()) {
+			AxisTransformEx xarm = getParent().getXAxisTransform();
+			AxisTransformEx yarm = getParent().getYAxisTransform();
+
+			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
+				xarm.getLockGroup().reAutoRange();
+			}
+			if (yarm != null && yarm.getLockGroup().isAutoRange()) {
+				yarm.getLockGroup().reAutoRange();
+			}
+		}
 	}
 
 	public boolean isSymbolVisible() {
@@ -258,7 +275,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 		XYGraphImpl dp = (XYGraphImpl) src;
 
-		this.graph = dp.graph;
+		this.data = dp.data;
 		this.symbolVisible = dp.symbolVisible;
 		this.lineVisible = dp.lineVisible;
 		this.chartType = dp.chartType;

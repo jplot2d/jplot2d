@@ -69,6 +69,11 @@ public class AxisRangeTest {
 		layer0.addGraph(graph1);
 		checkAxisTickRange(xaxis, -0.5, 3.5);
 		checkAxisTickRange(yaxis, -0.5, 3.5);
+
+		graph1.setData(new XYGraphData(new ArrayPair(new double[] { 4, 5 }, new double[] { 4, 5 })));
+		checkAxisTickRange(xaxis, -0.5, 5.5);
+		checkAxisTickRange(yaxis, -0.5, 5.5);
+
 	}
 
 	@Test
@@ -101,6 +106,11 @@ public class AxisRangeTest {
 		plot.addLayer(layer1, xaxis, yaxis);
 		checkAxisTickRange(xaxis, -0.5, 3.5);
 		checkAxisTickRange(yaxis, -0.5, 3.5);
+
+		graph1.setData(new XYGraphData(new ArrayPair(new double[] { 4, 5 }, new double[] { 4, 5 })));
+		checkAxisTickRange(xaxis, -0.5, 5.5);
+		checkAxisTickRange(yaxis, -0.5, 5.5);
+
 	}
 
 	@Test
