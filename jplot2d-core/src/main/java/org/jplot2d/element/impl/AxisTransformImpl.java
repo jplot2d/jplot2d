@@ -236,7 +236,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 		for (AxisTickManagerEx atm : tickManagers) {
 			for (AxisEx axis : atm.getAxes()) {
-				axis.redraw();
+				ComponentImpl.redraw(axis);
 			}
 		}
 		for (LayerEx layer : layers) {
@@ -329,8 +329,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	 * @param urange
 	 *            the range to be set
 	 * @param appendMargin
-	 *            true to indicate a margin should be appended to the given range, to derive a
-	 *            actual range.
+	 *            true to indicate a margin should be appended to the given range, to derive a actual range.
 	 */
 	private void setRange(Range urange, boolean appendMargin) {
 
@@ -338,8 +337,8 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 			throw new IllegalArgumentException("Range cannot start or end at NaN.");
 		}
 
-		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils
-				.createVirtualTransformMap(Arrays.asList(group.getRangeManagers()));
+		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils.createVirtualTransformMap(Arrays.asList(group
+				.getRangeManagers()));
 
 		NormalTransform vnt = vtMap.get(this);
 		Range pr = vnt.convToNR(urange);
@@ -361,8 +360,8 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 		if (!pRange.equals(pr)) {
 			notify(new RangeAdjustedToValueBoundsNotice(getFullId()
-					+ ": the given range contains invalid value, range adjusted to ["
-					+ ntf.convFromNR(pLo) + ", " + ntf.convFromNR(pHi) + "]"));
+					+ ": the given range contains invalid value, range adjusted to [" + ntf.convFromNR(pLo) + ", "
+					+ ntf.convFromNR(pHi) + "]"));
 		}
 
 		/* ensurePrecision */

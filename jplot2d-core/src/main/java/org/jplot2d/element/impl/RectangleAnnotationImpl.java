@@ -68,9 +68,7 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 			double valueX = getXPtoW(locX);
 			double valueXEnd = getXPtoW(endX);
 			xrange = new Range.Double(valueX, valueXEnd);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 		if (locY != y) {
 			this.locY = y;
@@ -78,9 +76,7 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 			double valueY = getYPtoW(locY);
 			double valueYEnd = getYPtoW(endY);
 			yrange = new Range.Double(valueY, valueYEnd);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -96,8 +92,8 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 			return null;
 		}
 
-		return new Rectangle2D.Double(Math.min(paperWidth, 0), Math.min(paperHeight, 0),
-				Math.abs(paperWidth), Math.abs(paperHeight));
+		return new Rectangle2D.Double(Math.min(paperWidth, 0), Math.min(paperHeight, 0), Math.abs(paperWidth),
+				Math.abs(paperHeight));
 	}
 
 	public Rectangle2D getSelectableBounds() {
@@ -164,9 +160,7 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 		double endY = getYWtoP(yrange.getEnd());
 		paperHeight = endY - locY;
 
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public Paint getFillPaint() {

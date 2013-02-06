@@ -37,11 +37,6 @@ public interface LayerEx extends Layer, ContainerEx {
 	public int indexOf(AnnotationEx annotation);
 
 	/**
-	 * Called by {@link PlotEx} to notify the paper transform is changed.
-	 */
-	public void parentPaperTransformChanged();
-
-	/**
 	 * Called by {@link AxisTransformEx} to notify that x/y transform is changed.
 	 */
 	public void transformChanged();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -43,7 +43,7 @@ public class PlotImplTest {
 	public void testAddXAxis() {
 		PlotImpl p = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
-		when(axis.canContributeToParent()).thenReturn(true);
+		when(axis.canContribute()).thenReturn(true);
 
 		try {
 			p.addXAxis(axis);
@@ -79,7 +79,7 @@ public class PlotImplTest {
 	public void testAddYAxis() {
 		PlotImpl p = new PlotImpl();
 		AxisEx axis = mock(AxisEx.class);
-		when(axis.canContributeToParent()).thenReturn(true);
+		when(axis.canContribute()).thenReturn(true);
 
 		try {
 			p.addYAxis(axis);
@@ -119,71 +119,104 @@ public class PlotImplTest {
 		PlotImpl p = new PlotImpl();
 		p.setCacheable(true);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
+		// set location on an empty plot does not redraw
 		p.setLocation(0, 0);
 		assertFalse(p.isRedrawNeeded());
 		p.setLocation(1, 1);
+		assertFalse(p.isRedrawNeeded());
+
+		// parent paper transform changed on an empty plot does not redraw
+		p.parentPaperTransformChanged();
+		assertFalse(p.isRedrawNeeded());
+
+		TitleEx title = mock(TitleEx.class);
+		when(title.isVisible()).thenReturn(true);
+		when(title.canContribute()).thenReturn(true);
+		when(((ComponentEx) title).getParent()).thenReturn(p);
+		p.addTitle(title);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
+
+		p.setLocation(1, 2);
+		assertTrue(p.isRedrawNeeded());
+		p.setRedrawNeeded(false);
 
 		p.parentPaperTransformChanged();
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
 		AxisEx xaxis = mock(AxisEx.class);
 		AxisTickManagerEx xatm = mock(AxisTickManagerEx.class);
 		AxisTransformEx xarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx xalg = mock(AxisRangeLockGroupEx.class);
-		when(xaxis.canContributeToParent()).thenReturn(true);
+		when(xaxis.isVisible()).thenReturn(true);
+		when(xaxis.canContribute()).thenReturn(true);
 		when(xaxis.getTickManager()).thenReturn(xatm);
 		when(xatm.getAxisTransform()).thenReturn(xarm);
 		when(xarm.getLockGroup()).thenReturn(xalg);
+		when(((ComponentEx) xaxis).getParent()).thenReturn(p);
 		p.addXAxis(xaxis);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
 		AxisEx yaxis = mock(AxisEx.class);
 		AxisTickManagerEx yatm = mock(AxisTickManagerEx.class);
 		AxisTransformEx yarm = mock(AxisTransformEx.class);
 		AxisRangeLockGroupEx yalg = mock(AxisRangeLockGroupEx.class);
-		when(yaxis.canContributeToParent()).thenReturn(true);
+		when(yaxis.isVisible()).thenReturn(true);
+		when(yaxis.canContribute()).thenReturn(true);
 		when(yaxis.getTickManager()).thenReturn(yatm);
 		when(yatm.getAxisTransform()).thenReturn(yarm);
 		when(yarm.getLockGroup()).thenReturn(yalg);
+		when(((ComponentEx) yaxis).getParent()).thenReturn(p);
 		p.addYAxis(yaxis);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
+		// add an empty layer
 		LayerEx layer0 = mock(LayerEx.class);
-		when(layer0.canContributeToParent()).thenReturn(false);
+		when(layer0.isVisible()).thenReturn(true);
+		when(layer0.canContribute()).thenReturn(false);
 		when(layer0.getGraphs()).thenReturn(new GraphEx[0]);
-		p.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
-				.getAxisTransform());
+		when(layer0.getComponents()).thenReturn(new ComponentEx[0]);
+		when(((ComponentEx) layer0).getParent()).thenReturn(p);
+		p.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 		assertFalse(p.isRedrawNeeded());
 
+		GraphEx graph1 = mock(GraphEx.class);
+		when(graph1.isVisible()).thenReturn(true);
+		when(graph1.canContribute()).thenReturn(true);
 		LayerEx layer1 = mock(LayerEx.class);
-		when(layer1.canContributeToParent()).thenReturn(true);
-		when(layer1.getGraphs()).thenReturn(new GraphEx[0]);
-		p.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager()
-				.getAxisTransform());
+		when(layer1.isVisible()).thenReturn(true);
+		when(layer1.canContribute()).thenReturn(false);
+		when(layer1.getGraphs()).thenReturn(new GraphEx[] { graph1 });
+		when(layer1.getComponents()).thenReturn(new ComponentEx[] { graph1 });
+		when(((ComponentEx) graph1).getParent()).thenReturn(layer1);
+		when(((ComponentEx) layer1).getParent()).thenReturn(p);
+		p.addLayer(layer1, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
 		p.removeLayer(layer1);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
 		p.removeLayer(layer0);
 		assertFalse(p.isRedrawNeeded());
 
 		p.removeXAxis(xaxis);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
 
 		p.removeYAxis(yaxis);
 		assertTrue(p.isRedrawNeeded());
-		p.clearRedrawNeeded();
+		p.setRedrawNeeded(false);
+
+		p.removeTitle(title);
+		assertTrue(p.isRedrawNeeded());
+		p.setRedrawNeeded(false);
 	}
 
 	/**
@@ -329,22 +362,19 @@ public class PlotImplTest {
 		assertSame(p2.getLegend(), orig2copyMap.get(p.getLegend()));
 		assertSame(p2.getSubplot(0), orig2copyMap.get(p.getSubplot(0)));
 		assertSame(p2.getXAxis(0), orig2copyMap.get(p.getXAxis(0)));
-		assertSame(p2.getXAxis(0).getTickManager(),
-				orig2copyMap.get(p.getXAxis(0).getTickManager()));
+		assertSame(p2.getXAxis(0).getTickManager(), orig2copyMap.get(p.getXAxis(0).getTickManager()));
 		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(),
 				orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform()));
 		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform().getLockGroup(),
 				orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform().getLockGroup()));
 		assertSame(p2.getYAxis(0), orig2copyMap.get(p.getYAxis(0)));
-		assertSame(p2.getYAxis(0).getTickManager(),
-				orig2copyMap.get(p.getYAxis(0).getTickManager()));
+		assertSame(p2.getYAxis(0).getTickManager(), orig2copyMap.get(p.getYAxis(0).getTickManager()));
 		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform(),
 				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform()));
 		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform().getLockGroup(),
 				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform().getLockGroup()));
 		assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
-		assertSame(p2.getLayer(0).getGraph(0),
-				orig2copyMap.get(p.getLayer(0).getGraph(0)));
+		assertSame(p2.getLayer(0).getGraph(0), orig2copyMap.get(p.getLayer(0).getGraph(0)));
 
 		// check parent
 		assertSame(p2, p2.getMargin().getParent());
@@ -352,18 +382,15 @@ public class PlotImplTest {
 		assertSame(p2, p2.getSubplot(0).getParent());
 		assertSame(p2, p2.getXAxis(0).getParent());
 		assertSame(p2.getXAxis(0), p2.getXAxis(0).getTickManager().getParent());
-		assertSame(p2.getXAxis(0).getTickManager(), p2.getXAxis(0).getTickManager()
-				.getAxisTransform().getParent());
-		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(), p2.getXAxis(0)
-				.getTickManager().getAxisTransform().getLockGroup().getParent());
+		assertSame(p2.getXAxis(0).getTickManager(), p2.getXAxis(0).getTickManager().getAxisTransform().getParent());
+		assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(), p2.getXAxis(0).getTickManager()
+				.getAxisTransform().getLockGroup().getParent());
 		assertSame(p2, p2.getYAxis(0).getParent());
 		assertSame(p2, p2.getLayer(0).getParent());
 		assertSame(p2.getLayer(0), p2.getLayer(0).getGraph(0).getParent());
 		// check link
-		assertSame(p2.getLayer(0).getXAxisTransform(), p2.getXAxis(0).getTickManager()
-				.getAxisTransform());
-		assertSame(p2.getLayer(0).getYAxisTransform(), p2.getYAxis(0).getTickManager()
-				.getAxisTransform());
+		assertSame(p2.getLayer(0).getXAxisTransform(), p2.getXAxis(0).getTickManager().getAxisTransform());
+		assertSame(p2.getLayer(0).getYAxisTransform(), p2.getYAxis(0).getTickManager().getAxisTransform());
 
 	}
 

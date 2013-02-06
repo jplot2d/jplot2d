@@ -59,9 +59,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		if (locX != x) {
 			this.locX = x;
 			valueX = getXPtoW(locX);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -84,8 +82,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		if (lineWidth < 2) {
 			lineWidth = 2;
 		}
-		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getHeight(),
-				lineWidth);
+		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getHeight(), lineWidth);
 	}
 
 	public PaperTransform getPaperTransform() {
@@ -112,9 +109,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 
 	public void relocate() {
 		locX = getXWtoP(valueX);
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public BasicStroke getStroke() {

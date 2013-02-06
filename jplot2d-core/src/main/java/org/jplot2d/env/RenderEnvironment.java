@@ -50,23 +50,20 @@ public class RenderEnvironment extends PlotEnvironment {
 	 */
 	protected final Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 
-	private final List<Renderer> rendererList = Collections
-			.synchronizedList(new ArrayList<Renderer>());
+	private final List<Renderer> rendererList = Collections.synchronizedList(new ArrayList<Renderer>());
 
 	protected static volatile File defaultExportDirectory;
 
 	private volatile File exportDirectory;
 
-	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>(
-			Integer.MAX_VALUE);
+	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
 
 	/**
 	 * Construct a environment to render the given plot.
 	 * 
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed within a single
-	 *            thread, such as servlet. if <code>true</code>, all plot properties can be safely
-	 *            changed by multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single thread, such as
+	 *            servlet. if <code>true</code>, all plot properties can be safely changed by multiple threads.
 	 */
 	public RenderEnvironment(boolean threadSafe) {
 		super(threadSafe);
@@ -97,8 +94,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
 
 		try {
-			renderer.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps,
-					subcompsMap);
+			renderer.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
 		} finally {
 			end();
 		}
@@ -111,7 +107,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		makeUndoMemento();
 
 		if (plotImpl.isRerenderNeeded()) {
-			plotImpl.clearRerenderNeeded();
+			plotImpl.setRerenderNeeded(false);
 			renderOnCommit();
 		}
 	}
@@ -130,8 +126,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Returns a cacheable component map with unmodified components' uid filled in the given list.
-	 * The returned map contains the top plot, even if the plot is uncacheable.
+	 * Returns a cacheable component map with unmodified components' uid filled in the given list. The returned map
+	 * contains the top plot, even if the plot is uncacheable.
 	 * 
 	 * @param umCachableComps
 	 *            a list will be filled with unmodified components' uid
@@ -139,8 +135,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	 */
 	private Map<ComponentEx, ComponentEx> getCacheableCompMap(List<ComponentEx> umCachableComps) {
 		/*
-		 * when adding a cacheable component, the requireRedraw is not called on it. So we must
-		 * figure out what components are unmodified.
+		 * when adding a cacheable component, the requireRedraw is not called on it. So we must figure out what
+		 * components are unmodified.
 		 */
 		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 
@@ -159,7 +155,7 @@ public class RenderEnvironment extends PlotEnvironment {
 			cacheableCompMap.put(comp, copy);
 			// unmodified components
 			if (((ComponentEx) comp).isRedrawNeeded()) {
-				((ComponentEx) comp).clearRedrawNeeded();
+				((ComponentEx) comp).setRedrawNeeded(false);
 			} else {
 				umCachableComps.add(comp);
 			}
@@ -169,8 +165,7 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * @return a map key is safe copy of cacheable components and values is safe copies of key's
-	 *         subcomponents.
+	 * @return a map key is safe copy of cacheable components and values is safe copies of key's subcomponents.
 	 */
 	private Map<ComponentEx, ComponentEx[]> getSubcompsMap() {
 		// build sub-component map
@@ -199,8 +194,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Sets the default export directory. If the given directory is relative path, it's relative to
-	 * user's home directory. The default export directory is persisted within a session.
+	 * Sets the default export directory. If the given directory is relative path, it's relative to user's home
+	 * directory. The default export directory is persisted within a session.
 	 */
 	public static void setDefaultExportDirectory(String dir) {
 		File dirFile;
@@ -221,8 +216,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Returns the export directory for this PlotXY. If this directory is null, the global default
-	 * directory will be used when exporting a plot.
+	 * Returns the export directory for this PlotXY. If this directory is null, the global default directory will be
+	 * used when exporting a plot.
 	 * 
 	 * @see #getDefaultExportDirectory()
 	 */
@@ -231,9 +226,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Sets the export directory for this PlotXY. If the directory is null, the global default
-	 * directory will be used when exporting a plot. If the given directory is a relative path, it's
-	 * relative to user's home directory.
+	 * Sets the export directory for this PlotXY. If the directory is null, the global default directory will be used
+	 * when exporting a plot. If the given directory is a relative path, it's relative to user's home directory.
 	 * 
 	 * @see #setDefaultExportDirectory(String)
 	 */
@@ -257,8 +251,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	/**
 	 * Returns the absolute pathname string for the given file name.
 	 * 
-	 * If the given file name is already absolute, then the pathname string is simply returned.
-	 * Otherwise the default export directory is used as parent pathname.
+	 * If the given file name is already absolute, then the pathname string is simply returned. Otherwise the default
+	 * export directory is used as parent pathname.
 	 */
 	private File getExportFile(String filename) {
 		File file = new File(filename);
@@ -314,8 +308,8 @@ public class RenderEnvironment extends PlotEnvironment {
 		copyMap.clear();
 
 		/*
-		 * only when no history and all renderer is sync renderer and the component renderer is
-		 * caller run, the deepCopy can be omitted.
+		 * only when no history and all renderer is sync renderer and the component renderer is caller run, the deepCopy
+		 * can be omitted.
 		 */
 		PlotEx plotRenderSafeCopy = (PlotEx) plotImpl.copyStructure(copyMap);
 		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
@@ -413,8 +407,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * copy the memento back to working environment. This method create a copy of memento, and
-	 * assign the copy as working plotImpl.
+	 * copy the memento back to working environment. This method create a copy of memento, and assign the copy as
+	 * working plotImpl.
 	 * 
 	 * @param memento
 	 *            the memento to be copied from

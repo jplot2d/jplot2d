@@ -10,9 +10,8 @@ public interface PlotEx extends Plot, ContainerEx {
 	public PlotEx getParent();
 
 	/**
-	 * Determines whether this plot is valid. A plot is valid when it is correctly sized and
-	 * positioned within its parent plot and all its axes, titles, legend and subplot are also
-	 * valid.
+	 * Determines whether this plot is valid. A plot is valid when it is correctly sized and positioned within its
+	 * parent plot and all its axes, titles, legend and subplot are also valid.
 	 * 
 	 * @return <code>true</code> if the component is valid, <code>false</code> otherwise
 	 * @see #validate
@@ -21,8 +20,8 @@ public interface PlotEx extends Plot, ContainerEx {
 	public boolean isValid();
 
 	/**
-	 * Invalidates this component. This component and all parents above it are marked as needing to
-	 * be laid out. This method can be called often, so it needs to execute quickly.
+	 * Invalidates this component. This component and all parents above it are marked as needing to be laid out. This
+	 * method can be called often, so it needs to execute quickly.
 	 * 
 	 * @see #validate
 	 */
@@ -35,9 +34,22 @@ public interface PlotEx extends Plot, ContainerEx {
 	 */
 	public void validate();
 
+	/**
+	 * Returns the flag that indicate if this plot is needed to be re-rendered. This flag will control if rendering
+	 * process is executed by all renderers of a RenderEnvironment.
+	 * 
+	 * @return the flag that indicate if this plot is needed to be re-rendered
+	 */
 	public boolean isRerenderNeeded();
 
-	public void clearRerenderNeeded();
+	/**
+	 * Mark or clear the flag that indicate this plot artifact need to be re-rendered. Any component changes which do
+	 * not require redraw and require re-render the plot can call this method. eg, when a cacheable component removed.
+	 * 
+	 * @param flag
+	 *            the flag that indicate this plot artifact need to be re-rendered
+	 */
+	public void setRerenderNeeded(boolean flag);
 
 	public Notifier getNotifier();
 
@@ -49,8 +61,7 @@ public interface PlotEx extends Plot, ContainerEx {
 	public void setNotifier(Notifier notifier);
 
 	/**
-	 * Apply all pending changes on this plot. After this method is called, all axis range and
-	 * layout are valid.
+	 * Apply all pending changes on this plot. After this method is called, all axis range and layout are valid.
 	 */
 	public void commit();
 
@@ -59,8 +70,8 @@ public interface PlotEx extends Plot, ContainerEx {
 	public LegendEx getLegend();
 
 	/**
-	 * Return an enable legend who can host legend items for this plot. This method always return a
-	 * legend. If all legend is disabled, the top level legend is returned.
+	 * Return an enable legend who can host legend items for this plot. This method always return a legend. If all
+	 * legend is disabled, the top level legend is returned.
 	 * 
 	 * @return an enable legend
 	 */
@@ -89,11 +100,10 @@ public interface PlotEx extends Plot, ContainerEx {
 	public void parentPaperTransformChanged();
 
 	/**
-	 * Sets the content size by layout director. All layers in this plot have the same viewport
-	 * size.
+	 * Sets the content size by layout director. All layers in this plot have the same viewport size.
 	 * <p>
-	 * The layout manager guarantee this method is called after setting plot margin, and no matter
-	 * if the content size is changed.
+	 * The layout manager guarantee this method is called after setting plot margin, and no matter if the content size
+	 * is changed.
 	 * 
 	 * @param csize
 	 *            the content size
@@ -108,8 +118,8 @@ public interface PlotEx extends Plot, ContainerEx {
 	public Dimension2D getContentConstrant();
 
 	/**
-	 * Impose contents constraint on this plot. This method is called by a plot's layout director,
-	 * when laying out subplots of the plot.
+	 * Impose contents constraint on this plot. This method is called by a plot's layout director, when laying out
+	 * subplots of the plot.
 	 * 
 	 * @param constraint
 	 *            the contents constraint

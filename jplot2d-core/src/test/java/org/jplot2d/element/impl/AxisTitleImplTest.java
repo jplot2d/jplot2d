@@ -38,6 +38,8 @@ public class AxisTitleImplTest {
 		title.setVAlign(VAlign.BOTTOM);
 
 		AxisEx axis = mock(AxisEx.class);
+		when(axis.isVisible()).thenReturn(true);
+		when(axis.canContribute()).thenReturn(true);
 		when(axis.getEffectiveColor()).thenReturn(Color.BLACK);
 		when(axis.getEffectiveFontName()).thenReturn("Lucida Bright");
 		when(axis.getEffectiveFontStyle()).thenReturn(Font.PLAIN);
@@ -50,50 +52,50 @@ public class AxisTitleImplTest {
 		title.setColor(Color.BLACK);
 		title.setVAlign(VAlign.BOTTOM);
 		verify(axis, never()).invalidateThickness();
-		verify(axis, never()).redraw();
+		verify(axis, never()).setRedrawNeeded(true);
 
 		title.setFontName("Roman");
 		verify(axis, times(1)).invalidateThickness();
-		verify(axis, times(1)).redraw();
+		verify(axis, times(1)).setRedrawNeeded(true);
 		title.setFontStyle(Font.BOLD);
 		verify(axis, times(2)).invalidateThickness();
-		verify(axis, times(2)).redraw();
+		verify(axis, times(2)).setRedrawNeeded(true);
 		title.setFontSize(10.0f);
 		verify(axis, times(3)).invalidateThickness();
-		verify(axis, times(3)).redraw();
+		verify(axis, times(3)).setRedrawNeeded(true);
 		title.setText("AxA");
 		verify(axis, times(4)).invalidateThickness();
-		verify(axis, times(4)).redraw();
+		verify(axis, times(4)).setRedrawNeeded(true);
 		title.setColor(Color.RED);
 		verify(axis, times(4)).invalidateThickness();
-		verify(axis, times(5)).redraw();
+		verify(axis, times(5)).setRedrawNeeded(true);
 		title.setVAlign(VAlign.TOP);
 		verify(axis, times(4)).invalidateThickness();
-		verify(axis, times(6)).redraw();
+		verify(axis, times(6)).setRedrawNeeded(true);
 
 		title.setVisible(false);
 		verify(axis, times(5)).invalidateThickness();
-		verify(axis, times(7)).redraw();
+		verify(axis, times(7)).setRedrawNeeded(true);
 		title.setFontName("Lucida Bright");
 		title.setFontStyle(Font.PLAIN);
 		title.setFontSize(12.0f);
 		title.setColor(Color.BLACK);
 		title.setVAlign(VAlign.BOTTOM);
 		verify(axis, times(5)).invalidateThickness();
-		verify(axis, times(7)).redraw();
+		verify(axis, times(7)).setRedrawNeeded(true);
 		title.setVisible(true);
 		verify(axis, times(6)).invalidateThickness();
-		verify(axis, times(8)).redraw();
+		verify(axis, times(8)).setRedrawNeeded(true);
 
 		title.setFont(new Font("Roman", Font.BOLD, 10));
 		verify(axis, times(7)).invalidateThickness();
-		verify(axis, times(9)).redraw();
+		verify(axis, times(9)).setRedrawNeeded(true);
 		title.setFont(null);
 		verify(axis, times(8)).invalidateThickness();
-		verify(axis, times(10)).redraw();
+		verify(axis, times(10)).setRedrawNeeded(true);
 		title.setFontScale(1.6f);
 		verify(axis, times(9)).invalidateThickness();
-		verify(axis, times(11)).redraw();
+		verify(axis, times(11)).setRedrawNeeded(true);
 	}
 
 }

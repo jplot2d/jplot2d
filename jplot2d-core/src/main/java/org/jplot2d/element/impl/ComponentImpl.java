@@ -75,12 +75,8 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return Collections.emptyMap();
 	}
 
-	public boolean canContributeToParent() {
-		return isVisible() && !isCacheable();
-	}
-
 	public boolean canContribute() {
-		return isVisible();
+		return true;
 	}
 
 	public boolean isVisible() {
@@ -88,12 +84,9 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void setVisible(boolean visible) {
+		redrawCascade(this);
 		this.visible = visible;
-		if (canContributeToParent()) {
-			redraw();
-		} else if (canContribute()) {
-			rerender();
-		}
+		redrawCascade(this);
 	}
 
 	public boolean isCacheable() {
@@ -101,13 +94,15 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public void setCacheable(boolean cacheMode) {
+		// uncacheable -> cacheable:
+		// 1. eliminate this component from its cacheable parent, mark need redraw,
+		// 2. put redraw flag on this component
+		// cacheable -> uncacheable:
+		// 1. put redraw flag on this component
+		// 2. put redraw flag on its cacheable parent
+		redraw(this);
 		this.cacheable = cacheMode;
-		redraw();
-		if (cacheable) {
-			if (getParent() != null) {
-				getParent().redraw();
-			}
-		}
+		redraw(this);
 	}
 
 	public boolean isSelectable() {
@@ -294,22 +289,68 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 		return redrawNeeded;
 	}
 
-	public void redraw() {
-		if (!cacheable && getParent() != null) {
-			getParent().redraw();
-		} else {
-			redrawNeeded = true;
-			rerender();
+	public void setRedrawNeeded(boolean flag) {
+		redrawNeeded = flag;
+	}
+
+	/**
+	 * Mark redraw flag on cacheable parent and re-render flag on root plot when the given component is added, or to be
+	 * removed. All sub-components are marked cascadedly.
+	 * 
+	 * @param comp
+	 *            the component added, or to be removed.
+	 */
+	protected static void redrawCascade(ComponentEx comp) {
+		redraw(comp);
+
+		if (comp instanceof ContainerEx) {
+			for (ComponentEx subcomp : ((ContainerEx) comp).getComponents()) {
+				redraw(subcomp);
+			}
 		}
 	}
 
-	public void clearRedrawNeeded() {
-		redrawNeeded = false;
+	/**
+	 * Mark redraw flag on cacheable parent and re-render flag on root plot when the given component is changed
+	 * 
+	 * @param comp
+	 *            the component changed
+	 */
+	protected static void redraw(ComponentEx comp) {
+		if (comp.isVisible() && comp.canContribute()) {
+			markRedraw(comp);
+		}
 	}
 
-	public void rerender() {
-		if (getParent() != null) {
-			getParent().rerender();
+	/**
+	 * Mark redraw flag on cacheable parent and re-render flag on root plot. Only the visible component can be marked.
+	 * The property canContribute is not considered.
+	 * 
+	 * @param comp
+	 *            the component changed
+	 */
+	private static void markRedraw(ComponentEx comp) {
+		if (comp.isVisible()) {
+			if (!comp.isCacheable() && comp.getParent() != null) {
+				markRedraw(comp.getParent());
+			} else {
+				comp.setRedrawNeeded(true);
+				markRerender(comp);
+			}
+		}
+	}
+
+	/**
+	 * Mark re-render flag on root plot of the given component.
+	 * 
+	 * @param comp
+	 *            the component
+	 */
+	private static void markRerender(ComponentEx comp) {
+		if (comp.getParent() != null) {
+			markRerender(comp.getParent());
+		} else if (comp instanceof PlotEx) {
+			((PlotEx) comp).setRerenderNeeded(true);
 		}
 	}
 

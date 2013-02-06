@@ -54,15 +54,11 @@ public abstract class AnnotationImpl extends ComponentImpl implements Annotation
 	}
 
 	public void thisEffectiveColorChanged() {
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public void thisEffectiveFontChanged() {
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public final void setLocation(Point2D p) {
@@ -71,26 +67,22 @@ public abstract class AnnotationImpl extends ComponentImpl implements Annotation
 
 	protected double getXWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getXAxisTransform().getNormalTransform().convToNR(v)
-				* layer.getSize().getWidth();
+		return layer.getXAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getWidth();
 	}
 
 	protected double getYWtoP(double v) {
 		LayerEx layer = getParent();
-		return layer.getYAxisTransform().getNormalTransform().convToNR(v)
-				* layer.getSize().getHeight();
+		return layer.getYAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getHeight();
 	}
 
 	protected double getXPtoW(double v) {
 		LayerEx layer = getParent();
-		return layer.getXAxisTransform().getNormalTransform()
-				.convFromNR(v / layer.getSize().getWidth());
+		return layer.getXAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getWidth());
 	}
 
 	protected double getYPtoW(double v) {
 		LayerEx layer = getParent();
-		return layer.getYAxisTransform().getNormalTransform()
-				.convFromNR(v / layer.getSize().getHeight());
+		return layer.getYAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getHeight());
 	}
 
 }

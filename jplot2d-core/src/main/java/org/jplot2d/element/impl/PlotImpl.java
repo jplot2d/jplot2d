@@ -219,7 +219,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			this.locX = locX;
 			this.locY = locY;
 			pxf = null;
-			redraw();
+
+			// all its sub-components should redraw, even the cacheable sub-component
+			redrawCascade(this);
 		}
 	}
 
@@ -273,14 +275,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void parentPaperTransformChanged() {
 		pxf = null;
-		redraw();
+		redrawCascade(this);
 
-		/* Axis, Title, Legend and Annotation do not cache their paper transform */
+		/* Layer, Axis, Title, Legend do not cache their paper transform */
 
-		// notify all layers
-		for (LayerEx layer : layers) {
-			layer.parentPaperTransformChanged();
-		}
 		// notify all subplots
 		for (PlotEx sp : subplots) {
 			sp.parentPaperTransformChanged();
@@ -366,16 +364,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return rerenderNeeded;
 	}
 
-	public void rerender() {
-		if (getParent() != null) {
-			getParent().rerender();
-		} else {
-			rerenderNeeded = true;
-		}
-	}
-
-	public void clearRerenderNeeded() {
-		rerenderNeeded = false;
+	public void setRerenderNeeded(boolean flag) {
+		rerenderNeeded = flag;
 	}
 
 	public Notifier getNotifier() {
@@ -505,11 +495,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		titles.add(tx);
 		tx.setParent(this);
 
-		if (tx.canContributeToParent()) {
-			redraw();
-		} else if (tx.canContribute()) {
-			rerender();
-		}
+		redrawCascade(tx);
+
 		if (tx.canContribute() && tx.getPosition() != null) {
 			invalidate();
 		}
@@ -518,14 +505,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public void removeTitle(Title title) {
 		TitleEx tx = (TitleEx) title;
 
+		redrawCascade(tx);
+
 		titles.remove(tx);
 		tx.setParent(null);
 
-		if (tx.canContributeToParent()) {
-			redraw();
-		} else if (tx.canContribute()) {
-			rerender();
-		}
 		if (tx.canContribute() && tx.getPosition() != null) {
 			invalidate();
 		}
@@ -572,11 +556,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		ax.setParent(this);
 		ax.setOrientation(AxisOrientation.HORIZONTAL);
 
-		if (ax.canContributeToParent()) {
-			redraw();
-		} else if (ax.canContribute()) {
-			rerender();
-		}
+		redrawCascade(ax);
+
 		if (ax.canContribute()) {
 			invalidate();
 		}
@@ -599,11 +580,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		ax.setParent(this);
 		ax.setOrientation(AxisOrientation.VERTICAL);
 
-		if (ax.canContributeToParent()) {
-			redraw();
-		} else if (ax.canContribute()) {
-			rerender();
-		}
+		redrawCascade(ax);
+
 		if (ax.canContribute()) {
 			invalidate();
 		}
@@ -637,11 +615,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			ax.setParent(this);
 			ax.setOrientation(AxisOrientation.HORIZONTAL);
 
-			if (ax.canContributeToParent()) {
-				redraw();
-			} else if (ax.canContribute()) {
-				rerender();
-			}
+			redrawCascade(ax);
+
 			if (ax.canContribute()) {
 				invalidate();
 			}
@@ -676,11 +651,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			ax.setParent(this);
 			ax.setOrientation(AxisOrientation.VERTICAL);
 
-			if (ax.canContributeToParent()) {
-				redraw();
-			} else if (ax.canContribute()) {
-				rerender();
-			}
+			redrawCascade(ax);
+
 			if (ax.canContribute()) {
 				invalidate();
 			}
@@ -689,8 +661,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void removeXAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
-		ax.setParent(null);
+
+		redrawCascade(ax);
+
 		xAxis.remove(ax);
+		ax.setParent(null);
 
 		if (ax.getTickManager().getParent() == null) {
 			// quit the tick manager if axis is not its only member
@@ -704,11 +679,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			ax.getTickManager().getAxisTransform().setLockGroup(null);
 		}
 
-		if (ax.canContributeToParent()) {
-			redraw();
-		} else if (ax.canContribute()) {
-			rerender();
-		}
 		if (ax.canContribute()) {
 			invalidate();
 		}
@@ -716,8 +686,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void removeYAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
-		ax.setParent(null);
+
+		redrawCascade(ax);
+
 		yAxis.remove(ax);
+		ax.setParent(null);
 
 		if (ax.getTickManager().getParent() == null) {
 			// quit the tick manager if axis is not its only member
@@ -731,11 +704,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			ax.getTickManager().getAxisTransform().setLockGroup(null);
 		}
 
-		if (ax.canContributeToParent()) {
-			redraw();
-		} else if (ax.canContribute()) {
-			rerender();
-		}
 		if (ax.canContribute()) {
 			invalidate();
 		}
@@ -759,11 +727,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		lx.setParent(this);
 		lx.setAxesTransform(xRangeManager, yRangeManager);
 
-		if (lx.canContributeToParent()) {
-			redraw();
-		} else if (lx.canContribute()) {
-			rerender();
-		}
+		redrawCascade(lx);
 
 		// add legend items
 		LegendEx enabledLegend = getEnabledLegend();
@@ -780,15 +744,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void removeLayer(Layer layer) {
 		LayerEx lx = (LayerEx) layer;
+
+		redrawCascade(lx);
+
 		layers.remove(lx);
 		lx.setParent(null);
 		lx.setAxesTransform(null, null);
-
-		if (lx.canContributeToParent()) {
-			redraw();
-		} else if (lx.canContribute()) {
-			rerender();
-		}
 
 		// remove legend items
 		for (GraphEx gx : lx.getGraphs()) {
@@ -815,11 +776,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		subplots.add(sp);
 		sp.setParent(this);
 
-		if (sp.canContributeToParent()) {
-			redraw();
-		} else if (sp.canContribute()) {
-			rerender();
-		}
+		redrawCascade(sp);
 
 		if (sp.isVisible()) {
 			invalidate();
@@ -838,14 +795,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void removeSubplot(Plot subplot) {
 		PlotEx sp = (PlotEx) subplot;
+
+		redrawCascade(sp);
+
 		subplots.remove(sp);
 		sp.setParent(null);
-
-		if (sp.canContributeToParent()) {
-			redraw();
-		} else if (sp.canContribute()) {
-			rerender();
-		}
 
 		LayoutDirector ld = getLayoutDirector();
 		if (ld != null) {
@@ -856,57 +810,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	public boolean canContributeToParent() {
-		if (!isVisible() || isCacheable()) {
-			return false;
-		}
-		for (AxisEx vpa : xAxis) {
-			if (vpa.canContributeToParent()) {
-				return true;
-			}
-		}
-		for (AxisEx vpa : yAxis) {
-			if (vpa.canContributeToParent()) {
-				return true;
-			}
-		}
-		for (LayerEx layer : layers) {
-			if (layer.canContributeToParent()) {
-				return true;
-			}
-		}
-		for (PlotEx sp : subplots) {
-			if (sp.canContributeToParent()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public boolean canContribute() {
-		if (!isVisible()) {
-			return false;
-		}
-		for (AxisEx vpa : xAxis) {
-			if (vpa.canContribute()) {
-				return true;
-			}
-		}
-		for (AxisEx vpa : yAxis) {
-			if (vpa.canContribute()) {
-				return true;
-			}
-		}
-		for (LayerEx layer : layers) {
-			if (layer.canContribute()) {
-				return true;
-			}
-		}
-		for (PlotEx sp : subplots) {
-			if (sp.canContribute()) {
-				return true;
-			}
-		}
 		return false;
 	}
 
@@ -1032,7 +936,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		/*
-		 * Axis a special component. Its length can be set by layout manager, but its thick depends on its internal
+		 * Axis is a special component. Its length can be set by layout manager, but its thick depends on its internal
 		 * status, such as tick height, labels. The auto range must be re-calculated after all axes length are set. So
 		 * we cannot use deep-first validate tree. we must layout all subplots, then calculate auto range, then
 		 * calculate thickness of all axes.

@@ -98,6 +98,7 @@ public class PlotEnvironment extends Environment {
 
 		this.notifier = notifier;
 		plotImpl.setNotifier(notifier);
+		plotImpl.setRerenderNeeded(true);
 
 		oldEnv.endCommand();
 		endCommand();
