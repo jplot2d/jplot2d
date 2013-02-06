@@ -98,17 +98,9 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return null;
 	}
 
-	public void parentPaperTransformChanged() {
-		redrawChildren();
-	}
-
 	public void transformChanged() {
-		redrawChildren();
-	}
-
-	private void redrawChildren() {
 		for (GraphEx graph : graphs) {
-			graph.redraw();
+			redraw(graph);
 		}
 		for (AnnotationEx annotation : annotations) {
 			annotation.relocate();
@@ -116,7 +108,18 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public ComponentEx[] getComponents() {
-		return graphs.toArray(new ComponentEx[graphs.size()]);
+		int size = graphs.size() + annotations.size();
+		ComponentEx[] comps = new ComponentEx[size];
+
+		int n = 0;
+		for (int i = 0; i < graphs.size(); i++) {
+			comps[n++] = graphs.get(i);
+		}
+		for (int i = 0; i < annotations.size(); i++) {
+			comps[n++] = annotations.get(i);
+		}
+
+		return comps;
 	}
 
 	public Graph getGraph(int index) {
@@ -137,11 +140,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			getParent().getEnabledLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
 		}
 
-		if (gx.canContributeToParent()) {
-			redraw();
-		} else if (gx.canContribute()) {
-			rerender();
-		}
+		redrawCascade(gx);
 
 		if (gx.isVisible()) {
 			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
@@ -155,18 +154,15 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 	public void removeGraph(Graph graph) {
 		GraphEx gx = (GraphEx) graph;
+
+		redrawCascade(gx);
+
 		graphs.remove(gx);
 		gx.setParent(null);
 
 		// remove legend item
 		if (getParent() != null && gx instanceof XYGraphEx) {
 			getParent().getLegend().removeLegendItem(((XYGraphEx) gx).getLegendItem());
-		}
-
-		if (gx.canContributeToParent()) {
-			redraw();
-		} else if (gx.canContribute()) {
-			rerender();
 		}
 
 		if (gx.isVisible()) {
@@ -196,51 +192,23 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		annotations.add(mex);
 		mex.setParent(this);
 
-		if (mex.canContributeToParent()) {
-			redraw();
-		} else if (mex.canContribute()) {
-			rerender();
-		}
+		redrawCascade(mex);
 	}
 
 	public void removeAnnotation(Annotation annotation) {
 		AnnotationEx annx = (AnnotationEx) annotation;
 
+		redrawCascade(annx);
+
 		annotations.remove(annx);
 		annx.setParent(null);
-
-		if (annx.canContributeToParent()) {
-			redraw();
-		} else if (annx.canContribute()) {
-			rerender();
-		}
 	}
 
 	public int indexOf(AnnotationEx annotation) {
 		return annotations.indexOf(annotation);
 	}
 
-	public boolean canContributeToParent() {
-		if (!isVisible() || isCacheable()) {
-			return false;
-		}
-		for (GraphEx graph : graphs) {
-			if (graph.isVisible() && !graph.isCacheable()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public boolean canContribute() {
-		if (!isVisible()) {
-			return false;
-		}
-		for (GraphEx graph : graphs) {
-			if (graph.isVisible()) {
-				return true;
-			}
-		}
 		return false;
 	}
 
