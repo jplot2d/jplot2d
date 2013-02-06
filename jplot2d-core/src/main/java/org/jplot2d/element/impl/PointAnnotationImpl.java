@@ -68,9 +68,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 			this.locY = locY;
 			valueX = getXPtoW(locX);
 			valueY = getYPtoW(locY);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -90,8 +88,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 		if (getParent() == null) {
 			return null;
 		} else {
-			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(),
-					getLocation().getY());
+			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(), getLocation().getY());
 			if (angle != 0) {
 				pxf = pxf.rotate(angle / 180 * Math.PI);
 			}
@@ -126,8 +123,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setValuePoint(double x, double y) {
 		this.valueX = x;
 		this.valueY = y;
-		if (getParent() != null && getParent().getXAxisTransform() != null
-				&& getParent().getYAxisTransform() != null) {
+		if (getParent() != null && getParent().getXAxisTransform() != null && getParent().getYAxisTransform() != null) {
 			relocate();
 		}
 	}
@@ -139,9 +135,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setHAlign(HAlign hAlign) {
 		this.hAlign = hAlign;
 		label = null;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public VAlign getVAlign() {
@@ -151,9 +145,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setVAlign(VAlign vAlign) {
 		this.vAlign = vAlign;
 		label = null;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public double getAngle() {
@@ -162,9 +154,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 
 	public void setAngle(double angle) {
 		this.angle = angle;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public String getText() {
@@ -182,9 +172,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setTextModel(MathElement model) {
 		this.textModel = model;
 		label = null;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	/**
@@ -193,9 +181,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void relocate() {
 		locX = getXWtoP(valueX);
 		locY = getYWtoP(valueY);
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 }

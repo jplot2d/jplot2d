@@ -75,15 +75,13 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	private boolean layoutItemsNeeded;
 
 	/**
-	 * If this legend is enabled, or top level legend, the collection contains all items managed by
-	 * this legend, include items pushed by disabled legend of subplots. If this legend is disabled,
-	 * the collection is empty.
+	 * If this legend is enabled, or top level legend, the collection contains all items managed by this legend, include
+	 * items pushed by disabled legend of subplots. If this legend is disabled, the collection is empty.
 	 */
 	private final Collection<LegendItemEx> items = new ArrayList<LegendItemEx>();
 
 	/**
-	 * The visible item count. only be maintained when this legend is enabled or is top level
-	 * legend.
+	 * The visible item count. only be maintained when this legend is enabled or is top level legend.
 	 */
 	private int visibleItemNum;
 
@@ -122,7 +120,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	 * Only contribute contents when it has visible items.
 	 */
 	public boolean canContribute() {
-		return isVisible() && isEnabled() && visibleItemNum > 0;
+		return isEnabled() && visibleItemNum > 0;
 	}
 
 	public void setVisible(boolean visible) {
@@ -133,7 +131,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void thisEffectiveColorChanged() {
-		redraw();
+		redraw(this);
 	}
 
 	public void thisEffectiveFontChanged() {
@@ -188,7 +186,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (this.locX != locX || this.locY != locY) {
 			this.locX = locX;
 			this.locY = locY;
-			redraw();
+			redraw(this);
 		}
 	}
 
@@ -284,7 +282,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		this.columns = columns;
 
 		sizeCalculationNeeded = true;
-		redraw();
+		redraw(this);
 	}
 
 	public double getRowSpacingFactor() {
@@ -302,7 +300,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setBorderVisible(boolean visible) {
 		borderVisible = visible;
-		redraw();
+		redraw(this);
 	}
 
 	public LegendItemEx[] getItems() {
@@ -317,7 +315,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			maxItemSize = null;
 			sizeCalculationNeeded = true;
 			if (isVisible()) {
-				redraw();
+				redraw(this);
 			}
 		}
 	}
@@ -331,7 +329,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 				maxItemSize = null;
 			}
 			sizeCalculationNeeded = true;
-			redraw();
+			redraw(this);
 		}
 	}
 
@@ -345,12 +343,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			decVisibleItemNum();
 		}
 		sizeCalculationNeeded = true;
-		redraw();
+		redraw(this);
 	}
 
 	private boolean isItemVisible(LegendItemEx item) {
-		return item.isVisible() && item.getTextModel() != null
-				&& item.getTextModel() != MathElement.EMPTY;
+		return item.isVisible() && item.getTextModel() != null && item.getTextModel() != MathElement.EMPTY;
 	}
 
 	private void incVisibleItemNum() {
@@ -370,7 +367,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void itemSizeChanged(LegendItemEx item) {
 		maxItemSize = null;
 		sizeCalculationNeeded = true;
-		redraw();
+		redraw(this);
 	}
 
 	@Override
@@ -481,10 +478,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			}
 			}
 
-			width = (getMaxItemSize().getWidth() + COLUMN_SPACE) * columns - COLUMN_SPACE + 2
-					* HORIZONTAL_BORDER;
-			height = getMaxItemSize().getHeight() * rows + getMaxItemSize().getHeight()
-					* rowSpacingFactor * (rows - 1) + 2 * VERTICAL_BORDER;
+			width = (getMaxItemSize().getWidth() + COLUMN_SPACE) * columns - COLUMN_SPACE + 2 * HORIZONTAL_BORDER;
+			height = getMaxItemSize().getHeight() * rows + getMaxItemSize().getHeight() * rowSpacingFactor * (rows - 1)
+					+ 2 * VERTICAL_BORDER;
 
 			sizeCalculationNeeded = false;
 			layoutItemsNeeded = true;
@@ -512,8 +508,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		Dimension2D lisize = getMaxItemSize();
 
 		// the max possible columns
-		double maxColumns = (width - 2 * HORIZONTAL_BORDER + COLUMN_SPACE)
-				/ (lisize.getWidth() + COLUMN_SPACE);
+		double maxColumns = (width - 2 * HORIZONTAL_BORDER + COLUMN_SPACE) / (lisize.getWidth() + COLUMN_SPACE);
 		int ncol = (int) maxColumns;
 		if (ncol < 1) {
 			ncol = 1;
@@ -569,8 +564,8 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			lipx[i] = HORIZONTAL_BORDER + i * getMaxItemSize().getWidth() + i * COLUMN_SPACE;
 		}
 		for (int i = 0; i < rows; i++) {
-			lipy[i] = VERTICAL_BORDER + (rows - i - 0.5) * getMaxItemSize().getHeight()
-					+ (rows - 1 - i) * getMaxItemSize().getHeight() * rowSpacingFactor;
+			lipy[i] = VERTICAL_BORDER + (rows - i - 0.5) * getMaxItemSize().getHeight() + (rows - 1 - i)
+					* getMaxItemSize().getHeight() * rowSpacingFactor;
 		}
 
 		Rectangle2D bounds = getBounds();

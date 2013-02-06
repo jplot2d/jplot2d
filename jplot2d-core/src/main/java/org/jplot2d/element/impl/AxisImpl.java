@@ -188,12 +188,12 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	public void thisEffectiveColorChanged() {
-		redraw();
+		redraw(this);
 	}
 
 	public void thisEffectiveFontChanged() {
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public Point2D getLocation() {
@@ -204,7 +204,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		if (getLocation().getX() != locX || getLocation().getY() != locY) {
 			this.locX = locX;
 			this.locY = locY;
-			redraw();
+			redraw(this);
 		}
 	}
 
@@ -243,8 +243,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		if (getParent() == null) {
 			return null;
 		} else {
-			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(),
-					getLocation().getY());
+			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(), getLocation().getY());
 			if (getOrientation() == AxisOrientation.VERTICAL) {
 				pxf = pxf.rotate(Math.PI / 2);
 			}
@@ -309,7 +308,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setAxisLineWidth(float width) {
 		this.axisLineWidth = width;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isGridLines() {
@@ -318,7 +317,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setGridLines(boolean showGridLines) {
 		this.showGridLines = showGridLines;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isMinorGridLines() {
@@ -327,7 +326,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setMinorGridLines(boolean showGridLines) {
 		this.showMinorGridLines = showGridLines;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isTickVisible() {
@@ -337,7 +336,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setTickVisible(boolean visible) {
 		this.tickVisible = visible;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public AxisTickSide getTickSide() {
@@ -347,7 +346,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setTickSide(AxisTickSide side) {
 		this.tickSide = side;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public double getTickHeight() {
@@ -357,7 +356,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setTickHeight(double height) {
 		this.tickHeight = height;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public double getMinorTickHeight() {
@@ -374,7 +373,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setTickLineWidth(float width) {
 		this.tickLineWidth = width;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isLabelVisible() {
@@ -384,7 +383,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLabelVisible(boolean visible) {
 		this.labelVisible = visible;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public AxisOrientation getLabelOrientation() {
@@ -394,7 +393,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLabelOrientation(AxisOrientation orientation) {
 		this.labelOrientation = orientation;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	private boolean isLabelSameOrientation() {
@@ -408,7 +407,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setLabelSide(AxisLabelSide side) {
 		this.labelSide = side;
 		invalidateThickness();
-		redraw();
+		redraw(this);
 	}
 
 	public Color getLabelColor() {
@@ -417,7 +416,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	public void setLabelColor(Color color) {
 		this.labelColor = color;
-		redraw();
+		redraw(this);
 	}
 
 	private Font getActualLabelFont() {
@@ -431,7 +430,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	public void setActualFont(Font font) {
 		if (!font.equals(this.actualLabelFont)) {
 			this.actualLabelFont = font;
-			redraw();
+			redraw(this);
 		}
 	}
 
@@ -455,8 +454,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * Mark the thickness is invalid. Changing tick height, label strings label font or orientation
-	 * will call this method
+	 * Mark the thickness is invalid. Changing tick height, label strings label font or orientation will call this
+	 * method
 	 */
 	public void invalidateThickness() {
 		thicknessCalculationNeeded = true;
@@ -567,14 +566,13 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	/**
-	 * Traverse all labels to find the Maximum Width. The width is calculated by axis effective
-	 * font, not shrunk actual font.
+	 * Traverse all labels to find the Maximum Width. The width is calculated by axis effective font, not shrunk actual
+	 * font.
 	 * 
 	 * @return the maximum label width.
 	 */
 	private double getLabelsMaxPaperWidth() {
-		Dimension2D[] labelsSize = getLabelsPaperSize(getTickManager().getLabelModels(),
-				getEffectiveFont());
+		Dimension2D[] labelsSize = getLabelsPaperSize(getTickManager().getLabelModels(), getEffectiveFont());
 		double maxWidth = 0;
 		double maxHeight = 0;
 		for (int i = 0; i < labelsSize.length; i++) {
@@ -597,8 +595,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		Dimension2D[] ss = new Dimension2D[labels.length];
 
 		for (int i = 0; i < labels.length; i++) {
-			MathLabel labelDrawer = new MathLabel(labels[i], labelFont, VAlign.MIDDLE,
-					HAlign.CENTER);
+			MathLabel labelDrawer = new MathLabel(labels[i], labelFont, VAlign.MIDDLE, HAlign.CENTER);
 			Rectangle2D rect = labelDrawer.getBounds();
 			ss[i] = new DoubleDimension2D(rect.getWidth(), rect.getHeight());
 		}
@@ -706,16 +703,14 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		int mvslen = Array.getLength(mvs);
 
 		/*
-		 * implement notes: grid lines must be drawn before ticks, otherwise the tick may be
-		 * overlapped.
+		 * implement notes: grid lines must be drawn before ticks, otherwise the tick may be overlapped.
 		 */
 		if (showGridLines && tvslen > 0) {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
-			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 2,
-					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-					new float[] { 2.0f, 2.0f }, 0.0f);
+			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 2, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
 			Color c = getEffectiveColor();
@@ -735,9 +730,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			Stroke oldStroke = g.getStroke();
 			Color oldColor = g.getColor();
 
-			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 4,
-					BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f,
-					new float[] { 2.0f, 2.0f }, 0.0f);
+			Stroke gridLineStroke = new BasicStroke(((BasicStroke) oldStroke).getLineWidth() / 4, BasicStroke.CAP_BUTT,
+					BasicStroke.JOIN_MITER, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f);
 			g.setStroke(gridLineStroke);
 
 			Color c = getEffectiveColor();

@@ -220,8 +220,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	private Font getEffectiveFont() {
 		float size = getEffectiveFontSize();
-		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size)
-				.deriveFont(size);
+		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size).deriveFont(size);
 	}
 
 	public String getText() {
@@ -253,7 +252,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
 	private void redraw() {
 		if (getParent() != null) {
-			getParent().redraw();
+			ComponentImpl.redraw(getParent());
 		}
 	}
 

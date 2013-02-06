@@ -102,11 +102,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	public void setData(XYGraphData data) {
 		this.data = data;
 
-		if (this.canContributeToParent()) {
-			redraw();
-		} else if (this.canContribute()) {
-			rerender();
-		}
+		redraw(this);
 
 		if (getParent() != null && this.canContribute()) {
 			AxisTransformEx xarm = getParent().getXAxisTransform();
@@ -127,7 +123,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setSymbolVisible(boolean symbolVisible) {
 		this.symbolVisible = symbolVisible;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isLineVisible() {
@@ -136,7 +132,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setLineVisible(boolean lineVisible) {
 		this.lineVisible = lineVisible;
-		redraw();
+		redraw(this);
 	}
 
 	/**
@@ -154,7 +150,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	 */
 	public void setChartType(ChartType chartType) {
 		this.chartType = chartType;
-		redraw();
+		redraw(this);
 	}
 
 	public SymbolShape getSymbolShape() {
@@ -163,7 +159,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setSymbolShape(SymbolShape symbolShape) {
 		this.symbolShape = symbolShape;
-		redraw();
+		redraw(this);
 	}
 
 	public float getSymbolSize() {
@@ -172,7 +168,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setSymbolSize(float size) {
 		this.symbolSize = size;
-		redraw();
+		redraw(this);
 		getLegendItem().graphSymbolSizeChanged();
 	}
 
@@ -182,7 +178,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setSymbolColor(Color color) {
 		symbolColor = color;
-		redraw();
+		redraw(this);
 	}
 
 	public Color getEffectiveSymbolColor() {
@@ -209,7 +205,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void thisEffectiveColorChanged() {
 		if (isLineVisible() || (isSymbolVisible() && getSymbolColor() == null)) {
-			redraw();
+			redraw(this);
 		}
 	}
 
@@ -219,7 +215,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setLineStroke(BasicStroke stroke) {
 		this.lineStroke = stroke;
-		redraw();
+		redraw(this);
 	}
 
 	public boolean isFillEnabled() {
@@ -228,7 +224,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setFillEnabled(boolean fillEnabled) {
 		this.fillEnabled = fillEnabled;
-		redraw();
+		redraw(this);
 	}
 
 	public Paint getFillPaint() {
@@ -237,7 +233,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setFillPaint(Paint paint) {
 		this.fillPaint = paint;
-		redraw();
+		redraw(this);
 	}
 
 	public FillClosureType getFillClosureType() {
@@ -246,7 +242,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setFillClosureType(FillClosureType type) {
 		this.fillClosureType = type;
-		redraw();
+		redraw(this);
 	}
 
 	public float getErrorbarCapSize() {
@@ -255,7 +251,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void setErrorbarCapSize(float size) {
 		errorbarCapSize = size;
-		redraw();
+		redraw(this);
 	}
 
 	@Override

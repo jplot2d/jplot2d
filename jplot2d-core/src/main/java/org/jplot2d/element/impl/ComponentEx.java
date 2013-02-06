@@ -40,15 +40,8 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public Map<Element, Element> getMooringMap();
 
 	/**
-	 * Returns <code>true</code> if this component can contribute visible parts to its parent. Notice cacheable
-	 * component does not contribute to its parent.
-	 * 
-	 * @return the indicator
-	 */
-	public boolean canContributeToParent();
-
-	/**
-	 * Returns <code>true</code> if this component can contribute visible parts to plot rendering artifact.
+	 * Returns <code>true</code> if this component can contribute visible parts to plot rendering artifact when this
+	 * component is visible. Subcomponents are not considered.
 	 * 
 	 * @return the indicator
 	 */
@@ -96,22 +89,12 @@ public interface ComponentEx extends PComponent, ElementEx {
 	public boolean isRedrawNeeded();
 
 	/**
-	 * Mark this component need to be redrawn, eg. when color changed. If this component is not cacheable, this method
-	 * will be called on its parent, until reach a cacheable component, then mark it as redraw-needed, and call
-	 * {@link #rerender()}.
+	 * Mark or clear the flag that indicate this component need to be redrawn, eg. when color changed.
+	 * 
+	 * @param flag
+	 *            the flag that indicate this component need to be redrawn
 	 */
-	public void redraw();
-
-	/**
-	 * Clear the redraw needed flag.
-	 */
-	public void clearRedrawNeeded();
-
-	/**
-	 * Mark the plot artifact need to be re-rendered. eg, when a cacheable component changed. This method will be called
-	 * on its parent, until reach the root plot.
-	 */
-	public void rerender();
+	public void setRedrawNeeded(boolean flag);
 
 	/**
 	 * Draw this component only. All its children is not drawn.

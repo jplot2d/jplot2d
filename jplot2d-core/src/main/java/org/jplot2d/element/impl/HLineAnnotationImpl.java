@@ -59,9 +59,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		if (locY != y) {
 			this.locY = y;
 			valueY = getYPtoW(locY);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -84,8 +82,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		if (lineWidth < 2) {
 			lineWidth = 2;
 		}
-		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getWidth(),
-				lineWidth);
+		return new Rectangle2D.Double(0, -lineWidth / 2, getParent().getSize().getWidth(), lineWidth);
 	}
 
 	public PaperTransform getPaperTransform() {
@@ -112,9 +109,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 
 	public void relocate() {
 		locY = getYWtoP(valueY);
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public BasicStroke getStroke() {

@@ -84,7 +84,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public boolean canContribute() {
-		return isVisible() && textModel != null;
+		return textModel != null;
 	}
 
 	public void setVisible(boolean visible) {
@@ -110,16 +110,12 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void thisEffectiveColorChanged() {
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public void thisEffectiveFontChanged() {
 		label = null;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public String getText() {
@@ -137,9 +133,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	public void setTextModel(MathElement model) {
 		this.textModel = model;
 		label = null;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public HAlign getHAlign() {
@@ -150,9 +144,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 		if (this.hAlign != hAlign) {
 			this.hAlign = hAlign;
 			label = null;
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -164,9 +156,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 		if (this.vAlign != vAlign) {
 			this.vAlign = vAlign;
 			label = null;
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 

@@ -68,9 +68,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 			double valueX = getXPtoW(locX);
 			double valueEnd = getXPtoW(endX);
 			range = new Range.Double(valueX, valueEnd);
-			if (isVisible()) {
-				redraw();
-			}
+			redraw(this);
 		}
 	}
 
@@ -87,8 +85,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 		}
 
 		if (paperThickness >= 0) {
-			return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(),
-					paperThickness);
+			return new Rectangle2D.Double(0, -paperThickness, getParent().getSize().getHeight(), paperThickness);
 		} else {
 			return new Rectangle2D.Double(0, 0, getParent().getSize().getHeight(), -paperThickness);
 		}
@@ -132,9 +129,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 		locX = getXWtoP(range.getStart());
 		double endX = getXWtoP(range.getEnd());
 		paperThickness = endX - locX;
-		if (isVisible()) {
-			redraw();
-		}
+		redraw(this);
 	}
 
 	public Paint getFillPaint() {
@@ -162,11 +157,10 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 		} else {
 			Rectangle2D strip;
 			if (paperThickness > 0) {
-				strip = new Rectangle2D.Double(locX, 0, paperThickness, getParent().getSize()
-						.getHeight());
+				strip = new Rectangle2D.Double(locX, 0, paperThickness, getParent().getSize().getHeight());
 			} else {
-				strip = new Rectangle2D.Double(locX + paperThickness, 0, -paperThickness,
-						getParent().getSize().getHeight());
+				strip = new Rectangle2D.Double(locX + paperThickness, 0, -paperThickness, getParent().getSize()
+						.getHeight());
 			}
 			g.fill(strip);
 		}
