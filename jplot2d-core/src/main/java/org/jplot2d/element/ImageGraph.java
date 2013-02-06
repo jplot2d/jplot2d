@@ -46,4 +46,6 @@ public interface ImageGraph extends Graph {
 
 	public ImageData getData();
 
+	public void setData(ImageData data);
+
 }

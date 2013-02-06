@@ -89,7 +89,7 @@ public interface XYGraph extends Graph {
 
 	public XYGraphData getData();
 
-	public void setData(XYGraphData graph);
+	public void setData(XYGraphData data);
 
 	/**
 	 * Returns the text displayed in the legend item

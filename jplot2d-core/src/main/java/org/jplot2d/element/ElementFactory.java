@@ -607,7 +607,6 @@ public class ElementFactory {
 		ImageGraphImpl graph = new ImageGraphImpl();
 		graph.setMapping(ime);
 		graph.setData(data);
-		graph.setName(name);
 		applyProfile(graph);
 		ImageGraph gpProxy = proxy(graph, ImageGraph.class);
 
