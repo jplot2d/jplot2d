@@ -301,11 +301,12 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	 *            the component added, or to be removed.
 	 */
 	protected static void redrawCascade(ComponentEx comp) {
-		redraw(comp);
-
-		if (comp instanceof ContainerEx) {
-			for (ComponentEx subcomp : ((ContainerEx) comp).getComponents()) {
-				redraw(subcomp);
+		if (comp.isVisible()) {
+			redraw(comp);
+			if (comp instanceof ContainerEx) {
+				for (ComponentEx subcomp : ((ContainerEx) comp).getComponents()) {
+					redrawCascade(subcomp);
+				}
 			}
 		}
 	}
