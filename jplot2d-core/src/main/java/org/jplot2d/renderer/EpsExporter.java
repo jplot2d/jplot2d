@@ -58,7 +58,6 @@ public class EpsExporter extends Renderer {
 
 	@Override
 	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();

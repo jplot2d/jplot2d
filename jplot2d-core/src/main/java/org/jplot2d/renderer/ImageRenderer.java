@@ -24,7 +24,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -189,7 +188,7 @@ public abstract class ImageRenderer extends Renderer {
 	}
 
 	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
+			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -199,16 +198,7 @@ public abstract class ImageRenderer extends Renderer {
 			result = runSingleRender(size, subcompsMap.get(plot));
 		} else {
 			ImageAssemblyInfo ainfo;
-			if (cacheableCompMap.size() - unmodifiedCacheableComps.size() == 1) {
-				/*
-				 * avoid pooled thread when there is only one modified cacheable component
-				 */
-				ainfo = runCompRender(COMPONENT_RENDERING_CALLER_RUN_EXECUTOR, cacheableCompMap,
-						unmodifiedCacheableComps, subcompsMap);
-			} else {
-				ainfo = runCompRender(executor, cacheableCompMap, unmodifiedCacheableComps, subcompsMap);
-			}
-
+			ainfo = runCompRender(executor, cacheableCompMap, subcompsMap);
 			result = assembleResult(size, ainfo);
 		}
 
@@ -274,7 +264,7 @@ public abstract class ImageRenderer extends Renderer {
 	 * @return
 	 */
 	protected final ImageAssemblyInfo runCompRender(Executor executor, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> umCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
+			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
 		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
@@ -284,7 +274,7 @@ public abstract class ImageRenderer extends Renderer {
 			/*
 			 * the component may be set to cacheable, while stay unmodified
 			 */
-			if (umCacheableComps.contains(comp) && compCachedFutureMap.contains(comp)) {
+			if (!ccopy.isRedrawNeeded() && compCachedFutureMap.contains(comp)) {
 				ainfo.put(comp, compCachedFutureMap.getBounds(comp), compCachedFutureMap.getFuture(comp));
 			} else {
 				// create a new Component Render task

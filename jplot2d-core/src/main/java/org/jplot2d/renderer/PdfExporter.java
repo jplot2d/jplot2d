@@ -72,7 +72,6 @@ public class PdfExporter extends Renderer {
 
 	@Override
 	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps,
 			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
@@ -83,8 +82,8 @@ public class PdfExporter extends Renderer {
 			writer = PdfWriter.getInstance(document, os);
 		} catch (DocumentException e) {
 			/*
-			 * should not happen but if it happens it should be notified to the integration instead
-			 * of leaving it half-done and tell nothing.
+			 * should not happen but if it happens it should be notified to the integration instead of leaving it
+			 * half-done and tell nothing.
 			 */
 			throw new RuntimeException("Error creating PDF document", e);
 		}

@@ -89,12 +89,8 @@ public class RenderEnvironment extends PlotEnvironment {
 	public void exportPlot(Renderer renderer) {
 		begin();
 
-		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
-		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
-		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
-
 		try {
-			renderer.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
+			render(new Renderer[] { renderer });
 		} finally {
 			end();
 		}
@@ -106,37 +102,30 @@ public class RenderEnvironment extends PlotEnvironment {
 
 		makeUndoMemento();
 
-		if (plotImpl.isRerenderNeeded()) {
-			plotImpl.setRerenderNeeded(false);
-			renderOnCommit();
+		if (!plotImpl.isRerenderNeeded()) {
+			return;
 		}
+
+		plotImpl.setRerenderNeeded(false);
+
+		// clear redraw flag
+		for (ElementEx element : copyMap.keySet()) {
+			if (element instanceof ComponentEx) {
+				((ComponentEx) element).setRedrawNeeded(false);
+			}
+		}
+
+		render(getRenderers());
 	}
 
 	/**
 	 * Redraw the plot in this environment.
 	 */
-	protected void renderOnCommit() {
-		List<ComponentEx> umCachableComps = new ArrayList<ComponentEx>();
-		Map<ComponentEx, ComponentEx> cacheableCompMap = getCacheableCompMap(umCachableComps);
-		Map<ComponentEx, ComponentEx[]> subcompsMap = getSubcompsMap();
+	protected void render(Renderer[] renderers) {
 
-		for (Renderer r : getRenderers()) {
-			r.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, umCachableComps, subcompsMap);
-		}
-	}
-
-	/**
-	 * Returns a cacheable component map with unmodified components' uid filled in the given list. The returned map
-	 * contains the top plot, even if the plot is uncacheable.
-	 * 
-	 * @param umCachableComps
-	 *            a list will be filled with unmodified components' uid
-	 * @return a map that key is uid of value and value is cacheable components
-	 */
-	private Map<ComponentEx, ComponentEx> getCacheableCompMap(List<ComponentEx> umCachableComps) {
 		/*
-		 * when adding a cacheable component, the requireRedraw is not called on it. So we must figure out what
-		 * components are unmodified.
+		 * a map that key is uid of value and value is cacheable components, contains the top plot, even if the plot is
+		 * uncacheable.
 		 */
 		Map<ComponentEx, ComponentEx> cacheableCompMap = new LinkedHashMap<ComponentEx, ComponentEx>();
 
@@ -152,22 +141,12 @@ public class RenderEnvironment extends PlotEnvironment {
 		for (ComponentEx comp : ccl) {
 			ComponentEx copy = (ComponentEx) copyMap.get(comp);
 			assert (copy != null) : "Null copy of Component " + comp;
-			cacheableCompMap.put(comp, copy);
-			// unmodified components
-			if (((ComponentEx) comp).isRedrawNeeded()) {
-				((ComponentEx) comp).setRedrawNeeded(false);
-			} else {
-				umCachableComps.add(comp);
+			if (isShowing(comp)) {
+				cacheableCompMap.put(comp, copy);
 			}
 		}
 
-		return cacheableCompMap;
-	}
-
-	/**
-	 * @return a map key is safe copy of cacheable components and values is safe copies of key's subcomponents.
-	 */
-	private Map<ComponentEx, ComponentEx[]> getSubcompsMap() {
+		/* a map key is safe copy of cacheable components and values is safe copies of key's subcomponents. */
 		// build sub-component map
 		Map<ComponentEx, ComponentEx[]> subcompsMap = new HashMap<ComponentEx, ComponentEx[]>();
 		for (Map.Entry<ComponentEx, List<ComponentEx>> me : subComponentMap.entrySet()) {
@@ -183,7 +162,27 @@ public class RenderEnvironment extends PlotEnvironment {
 			subcompsMap.put((ComponentEx) copyMap.get(key), copys);
 		}
 
-		return subcompsMap;
+		for (Renderer r : renderers) {
+			r.render((PlotEx) copyMap.get(plotImpl), cacheableCompMap, subcompsMap);
+		}
+	}
+
+	/**
+	 * Determines whether the component is showing on plot. This means that the component must be visible, and it must
+	 * be in a container that is visible and showing.
+	 * 
+	 * @param comp
+	 *            the component
+	 * @return whether the component is showing
+	 */
+	private static boolean isShowing(ComponentEx comp) {
+		if (!comp.isVisible()) {
+			return false;
+		} else if (comp.getParent() != null) {
+			return isShowing(comp.getParent());
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -381,7 +380,8 @@ public class RenderEnvironment extends PlotEnvironment {
 
 		restore(memento);
 
-		renderOnCommit();
+		plotImpl.setRerenderNeeded(false);
+		render(getRenderers());
 
 		end();
 	}
@@ -401,7 +401,8 @@ public class RenderEnvironment extends PlotEnvironment {
 
 		restore(memento);
 
-		renderOnCommit();
+		plotImpl.setRerenderNeeded(false);
+		render(getRenderers());
 
 		end();
 	}

@@ -46,17 +46,15 @@ public abstract class Renderer {
 	 * @param plot
 	 *            the plot to be rendered
 	 * @param cacheableCompMap
-	 *            A map contains all cacheable components which can iterate in z-order. The value is cacheable component
-	 *            will be rendered. The key is unique identifier of every value. The map contains the top plot, even if
-	 *            the plot is uncacheable.
-	 * @param unmodifiedCacheableComps
-	 *            A collection of unique identifier of unmodified cacheable components
+	 *            A map contains all visible cacheable components which can iterate in z-order. The value is cacheable
+	 *            component will be rendered. The key is unique identifier of every value. The map contains the top
+	 *            plot, even if the plot is uncacheable.
 	 * @param subcompsMap
-	 *            the key is cacheable component, include uncacheable top plot. the value is all key's sub-components in
-	 *            z-order, include the key itself.
+	 *            the key is cacheable component, include uncacheable root plot. the value is all key's visible
+	 *            sub-components in z-order, include the key itself.
 	 */
 	public abstract void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap);
+			Map<ComponentEx, ComponentEx[]> subcompsMap);
 
 	/**
 	 * Returns a rectangle that completely enclose the given component.
