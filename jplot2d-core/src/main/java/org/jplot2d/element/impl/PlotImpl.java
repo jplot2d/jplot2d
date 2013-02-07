@@ -84,7 +84,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private boolean valid = true;
 
-	private boolean rerenderNeeded = true;
+	private boolean rerenderNeeded;
 
 	private Notifier notifier;
 
