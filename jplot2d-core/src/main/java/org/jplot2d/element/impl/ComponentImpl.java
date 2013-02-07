@@ -57,7 +57,7 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 
 	protected PropertyChangeSupport _changes = new PropertyChangeSupport(this);
 
-	private boolean redrawNeeded = true;;
+	private boolean redrawNeeded;
 
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		_changes.addPropertyChangeListener(l);
