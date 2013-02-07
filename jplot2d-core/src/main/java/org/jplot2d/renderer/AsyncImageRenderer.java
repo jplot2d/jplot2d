@@ -20,7 +20,6 @@ package org.jplot2d.renderer;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -192,7 +191,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 	@Override
 	public final void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Collection<ComponentEx> unmodifiedCacheableComps, Map<ComponentEx, ComponentEx[]> subcompsMap) {
+			Map<ComponentEx, ComponentEx[]> subcompsMap) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -202,7 +201,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 			callable = new SingleRendererCallable(size, subcompsMap.get(plot));
 		} else {
 			// run cacheable component renderer
-			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap, unmodifiedCacheableComps, subcompsMap);
+			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap, subcompsMap);
 			callable = new RenderAssemblyCallable(size, ainfo);
 		}
 
