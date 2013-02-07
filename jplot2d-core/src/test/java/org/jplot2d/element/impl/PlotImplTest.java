@@ -118,8 +118,7 @@ public class PlotImplTest {
 	public void testRedraw() {
 		PlotImpl p = new PlotImpl();
 		p.setCacheable(true);
-		assertTrue(p.isRedrawNeeded());
-		p.setRedrawNeeded(false);
+		assertFalse(p.isRedrawNeeded());
 
 		// set location on an empty plot does not redraw
 		p.setLocation(0, 0);
