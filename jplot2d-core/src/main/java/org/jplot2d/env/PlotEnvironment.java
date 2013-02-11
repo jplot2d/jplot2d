@@ -183,8 +183,6 @@ public class PlotEnvironment extends Environment {
 		fireChangeProcessed();
 
 		makeUndoMemento();
-
-		// Sort components in cacheable blocks, for getSelectableCompnentAt and getPlotAt methods
 		buildComponentCacheBlock();
 
 		render();
@@ -208,12 +206,12 @@ public class PlotEnvironment extends Environment {
 	 * Sort components in cacheable blocks.
 	 */
 	protected void buildComponentCacheBlock() {
-		/**
+		/*
 		 * Contains all visible cacheable components in z-order. include uncacheable root plot.
 		 */
 		List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
 
-		/**
+		/*
 		 * The key is copy of cacheable components or uncacheable root plot; the value is copy of key's visible
 		 * uncacheable descendants, include the key itself, in z-order.
 		 */
