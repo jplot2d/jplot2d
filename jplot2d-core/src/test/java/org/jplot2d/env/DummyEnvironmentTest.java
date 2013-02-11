@@ -34,9 +34,8 @@ import org.junit.Test;
 public class DummyEnvironmentTest {
 
 	/**
-	 * Test method for
-	 * {@link PlotEnvironment#componentAdded(org.jplot2d.element.PComponent, java.util.Map)}
-	 * . When a cacheable component added, verify the order.
+	 * Test method for {@link PlotEnvironment#componentAdded(org.jplot2d.element.PComponent, java.util.Map)} . When a
+	 * cacheable component added, verify the order.
 	 */
 	@Test
 	public void testRegisterComponent() {
@@ -48,10 +47,6 @@ public class DummyEnvironmentTest {
 			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
-			assertEquals(denv.cacheableComponentList.size(), 0);
-			assertEquals(denv.subComponentMap.size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).get(0), compA);
 		}
 
 		// register cacheable component
@@ -62,10 +57,6 @@ public class DummyEnvironmentTest {
 			when(compA.isCacheable()).thenReturn(true);
 			denv.registerComponent(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
-			assertEquals(denv.cacheableComponentList.size(), 1);
-			assertEquals(denv.subComponentMap.size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).get(0), compA);
 		}
 
 		// register cacheable component with uncacheable child
@@ -81,11 +72,6 @@ public class DummyEnvironmentTest {
 			denv.registerComponent(compA, proxyA);
 			denv.registerComponent(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
-			assertEquals(denv.cacheableComponentList.size(), 1);
-			assertEquals(denv.subComponentMap.size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).size(), 2);
-			assertEquals(denv.subComponentMap.get(compA).get(0), compA);
-			assertEquals(denv.subComponentMap.get(compA).get(1), compAA);
 		}
 
 		// register cacheable component which has a cacheable child
@@ -101,12 +87,6 @@ public class DummyEnvironmentTest {
 			denv.registerComponent(compA, proxyA);
 			denv.registerComponent(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
-			assertEquals(denv.cacheableComponentList.size(), 2);
-			assertEquals(denv.subComponentMap.size(), 2);
-			assertEquals(denv.subComponentMap.get(compA).size(), 1);
-			assertEquals(denv.subComponentMap.get(compA).get(0), compA);
-			assertEquals(denv.subComponentMap.get(compAA).size(), 1);
-			assertEquals(denv.subComponentMap.get(compAA).get(0), compAA);
 		}
 
 	}

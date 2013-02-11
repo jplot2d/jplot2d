@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,11 +19,9 @@
 package org.jplot2d.env;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,18 +78,7 @@ public abstract class Environment {
 	/**
 	 * A impl to proxy map that contains all element in this environment.
 	 */
-	protected final Map<ElementEx, Element> proxyMap = new HashMap<ElementEx, Element>();
-
-	/**
-	 * Contains all cacheable components in z-order.
-	 */
-	protected final List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
-
-	/**
-	 * The key is cacheable components or uncacheable top component; the value is key's uncacheable descendants, include
-	 * the key itself, in z-order.
-	 */
-	protected final Map<ComponentEx, List<ComponentEx>> subComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
+	protected final Map<ElementEx, Element> proxyMap = new LinkedHashMap<ElementEx, Element>();
 
 	private final List<ElementChangeListener> plotStructureListenerList = Collections
 			.synchronizedList(new ArrayList<ElementChangeListener>());
@@ -119,33 +106,6 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Remove the orphan element from this environment, and create a dummy environment for it.
-	 * 
-	 * @param impl
-	 * @return
-	 */
-	Environment removeOrphan(ElementEx impl) {
-
-		Map<ElementEx, Element> removedProxyMap = new HashMap<ElementEx, Element>();
-
-		removedProxyMap.put(impl, proxyMap.remove(impl));
-
-		// remove the elements whoes parent has been removed
-		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
-		while (ite.hasNext()) {
-			Entry<ElementEx, Element> e = ite.next();
-			if (removedProxyMap.containsKey(e.getKey().getParent())) {
-				removedProxyMap.put(e.getKey(), e.getValue());
-				ite.remove();
-			}
-		}
-
-		DummyEnvironment result = createDummyEnvironment();
-		result.proxyMap.putAll(removedProxyMap);
-		return result;
-	}
-
-	/**
 	 * Called after a component has been added to this environment, and its parent has been set.
 	 * 
 	 * @param element
@@ -154,14 +114,8 @@ public abstract class Environment {
 	 *            the environment of the added element
 	 */
 	void elementAdded(ElementEx element, Environment env) {
-
 		proxyMap.putAll(env.proxyMap);
-		addOrder(cacheableComponentList, env.cacheableComponentList);
-		subComponentMap.putAll(env.subComponentMap);
-
 		env.proxyMap.clear();
-		env.cacheableComponentList.clear();
-		env.subComponentMap.clear();
 	}
 
 	/**
@@ -174,26 +128,8 @@ public abstract class Environment {
 	 *            the environment of the added component
 	 */
 	void componentAdded(ComponentEx comp, Environment env) {
-
 		proxyMap.putAll(env.proxyMap);
-		addOrder(cacheableComponentList, env.cacheableComponentList);
-		subComponentMap.putAll(env.subComponentMap);
-
-		/* merge uncacheable component tree */
-		if (!comp.isCacheable()) {
-			PComponent cc = getCacheableAncestor(comp);
-			if (cc != comp) {
-				/*
-				 * remove the added top uncacheable component and add it to the list of its parent
-				 */
-				addOrder(subComponentMap.get(cc), subComponentMap.remove(comp));
-			}
-		}
-
 		env.proxyMap.clear();
-		env.cacheableComponentList.clear();
-		env.subComponentMap.clear();
-
 		fireComponentAdded((PComponent) getProxy(comp));
 	}
 
@@ -209,66 +145,26 @@ public abstract class Environment {
 	}
 
 	/**
-	 * Called when a component has been removed from its parent
+	 * Called when a element has been removed from its parent
 	 * 
-	 * @param oldParent
 	 * @param comp
 	 *            the removed component
 	 * @return a DummyEnvironment hosts the removed component and descendants.
 	 */
-	DummyEnvironment componentRemoved(ComponentEx oldParent, ComponentEx comp) {
+	DummyEnvironment componentRemoved(ElementEx comp) {
 
-		Map<ElementEx, Element> removedProxyMap = new HashMap<ElementEx, Element>();
-		List<ComponentEx> removedCacheableComponentList = new ArrayList<ComponentEx>();
-		Map<ComponentEx, List<ComponentEx>> removedSubComponentMap = new HashMap<ComponentEx, List<ComponentEx>>();
-
-		// remove all cacheable descendants
-		Iterator<ComponentEx> itc = cacheableComponentList.iterator();
-		while (itc.hasNext()) {
-			ComponentEx c = itc.next();
-			if (isAncestor(comp, c)) {
-				itc.remove();
-				removedCacheableComponentList.add(c);
-
-				List<ComponentEx> removedSubcomps = subComponentMap.remove(c);
-				removedSubComponentMap.put(c, removedSubcomps);
-			}
-		}
-
-		// remove all the uncacheable descendants
-		if (!comp.isCacheable()) {
-			List<ComponentEx> removedUncacheableComps = new ArrayList<ComponentEx>();
-			// all the possible uncacheable descendants
-			ComponentEx cacheableParent = getCacheableAncestor(oldParent);
-			List<ComponentEx> possibleDesList = subComponentMap.get(cacheableParent);
-
-			Iterator<ComponentEx> it = possibleDesList.iterator();
-			while (it.hasNext()) {
-				ComponentEx c = it.next();
-				if (isAncestor(comp, c)) {
-					it.remove();
-					removedUncacheableComps.add(c);
-				}
-			}
-
-			// put top uncacheable component to subComponentMap
-			removedSubComponentMap.put(comp, removedUncacheableComps);
-		}
+		DummyEnvironment result = createDummyEnvironment();
 
 		// remove all elements whoes parent has been removed
 		Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
 		while (ite.hasNext()) {
 			Entry<ElementEx, Element> e = ite.next();
 			if (isAncestor(comp, e.getKey())) {
-				removedProxyMap.put(e.getKey(), e.getValue());
+				result.proxyMap.put(e.getKey(), e.getValue());
 				ite.remove();
 			}
 		}
 
-		DummyEnvironment result = createDummyEnvironment();
-		result.proxyMap.putAll(removedProxyMap);
-		result.cacheableComponentList.addAll(removedCacheableComponentList);
-		result.subComponentMap.putAll(removedSubComponentMap);
 		return result;
 	}
 
@@ -286,74 +182,6 @@ public abstract class Environment {
 			return true;
 		} else {
 			return isAncestor(a, c.getParent());
-		}
-	}
-
-	/**
-	 * Called when a component z-order has been changed.
-	 */
-	void componentZOrderChanged(ComponentEx comp) {
-		if (comp.isCacheable()) {
-			// update order of cacheable Components
-			updateOrder(cacheableComponentList);
-		} else {
-			// update order within its cacheable parent
-			PComponent cc = getCacheableAncestor(comp);
-			List<ComponentEx> subComps = subComponentMap.get(cc);
-			updateOrder(subComps);
-		}
-	}
-
-	/**
-	 * Called when a component's cache mode has been changed.
-	 * 
-	 * @param comp
-	 */
-	void componentCacheModeChanged(ComponentEx comp) {
-		/* cache mode changed should not trigger a redraw */
-
-		if (comp.getParent() == null) {
-			if (comp.isCacheable()) {
-				addOrder(0, cacheableComponentList, comp);
-			} else {
-				cacheableComponentList.remove(comp);
-			}
-		} else {
-
-			if (comp.isCacheable()) {
-				/* component changed from uncacheable to cacheable */
-
-				List<ComponentEx> descendant = new ArrayList<ComponentEx>();
-				// all the possible uncacheable descendants
-				PComponent cacheableParent = getCacheableAncestor(comp.getParent());
-				List<ComponentEx> possibleDesList = subComponentMap.get(cacheableParent);
-
-				Iterator<ComponentEx> it = possibleDesList.iterator();
-				while (it.hasNext()) {
-					ComponentEx c = it.next();
-					if (isAncestor(comp, c)) {
-						it.remove();
-						descendant.add(c);
-					}
-				}
-
-				/* insert to cacheable list and put into subComponentMap */
-				// cacheable parent
-				int cpi = cacheableComponentList.indexOf(cacheableParent);
-				addOrder(cpi + 1, cacheableComponentList, comp);
-				subComponentMap.put(comp, descendant);
-
-			} else {
-				/* component changed from cacheable to uncacheable */
-
-				cacheableComponentList.remove(comp);
-				List<ComponentEx> subcomps = subComponentMap.remove(comp);
-				PComponent newParent = getCacheableAncestor(comp);
-				List<ComponentEx> newSubcompList = subComponentMap.get(newParent);
-				newSubcompList.addAll(subcomps);
-
-				updateOrder(newSubcompList);
-			}
 		}
 	}
 
@@ -377,50 +205,6 @@ public abstract class Environment {
 			} else {
 				return getCacheableAncestor(parent);
 			}
-		}
-	}
-
-	/**
-	 * append the comp to the end of list, then sort by zorder
-	 */
-	protected static void addOrder(List<ComponentEx> list, ComponentEx comp) {
-		list.add(comp);
-		updateOrder(list);
-	}
-
-	/**
-	 * Insert the comp to the position of the list, then sort by zorder
-	 */
-	protected static void addOrder(int index, List<ComponentEx> list, ComponentEx comp) {
-		list.add(index, comp);
-		updateOrder(list);
-	}
-
-	/**
-	 * append the comps to the end of list, then sort by zorder
-	 */
-	private static void addOrder(List<ComponentEx> list, List<ComponentEx> comps) {
-		list.addAll(comps);
-		updateOrder(list);
-	}
-
-	/**
-	 * update the list order;
-	 */
-	protected static void updateOrder(List<ComponentEx> list) {
-
-		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
-		Comparator<PComponent> zComparator = new Comparator<PComponent>() {
-
-			public int compare(PComponent o1, PComponent o2) {
-				return o1.getZOrder() - o2.getZOrder();
-			}
-		};
-		Arrays.sort(comps, zComparator);
-
-		list.clear();
-		for (ComponentEx comp : comps) {
-			list.add(comp);
 		}
 	}
 

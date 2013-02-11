@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,13 +25,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * Export plot image to a EPS stream or file.
@@ -57,8 +57,7 @@ public class EpsExporter extends Renderer {
 	}
 
 	@Override
-	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -70,10 +69,8 @@ public class EpsExporter extends Renderer {
 			throw new RuntimeException("Error exporting EPS", e);
 		}
 
-		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
-			ComponentEx ccopy = me.getValue();
-
-			ComponentEx[] sublist = subcompsMap.get(ccopy);
+		for (CacheBlock cb : cacheBlockList) {
+			List<ComponentEx> sublist = cb.getSubcomps();
 			for (ComponentEx subcomp : sublist) {
 				subcomp.draw(g);
 			}

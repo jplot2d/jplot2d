@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -40,6 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * Since Graphics can draw image, It's possible to render all cacheable component individually, then assemble them
@@ -89,7 +89,7 @@ public abstract class ImageRenderer extends Renderer {
 
 	private static class CompRenderCallable implements Callable<BufferedImage> {
 
-		private final ComponentEx[] comps;
+		private final List<ComponentEx> comps;
 
 		private final ImageFactory imageFactory;
 
@@ -101,7 +101,7 @@ public abstract class ImageRenderer extends Renderer {
 		 * @param imageFactory
 		 * @param bounds
 		 */
-		public CompRenderCallable(ComponentEx[] comps, ImageFactory imageFactory, Rectangle bounds) {
+		public CompRenderCallable(List<ComponentEx> comps, ImageFactory imageFactory, Rectangle bounds) {
 			this.comps = comps;
 			this.imageFactory = imageFactory;
 			this.bounds = bounds;
@@ -187,18 +187,17 @@ public abstract class ImageRenderer extends Renderer {
 		this.executor = executor;
 	}
 
-	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
 		BufferedImage result;
 		// If the plot has no cacheable component, run renderer directly
-		if (subcompsMap.size() == 1) {
-			result = runSingleRender(size, subcompsMap.get(plot));
+		if (cacheBlockList.size() == 1) {
+			result = runSingleRender(size, cacheBlockList.get(0).getSubcomps());
 		} else {
 			ImageAssemblyInfo ainfo;
-			ainfo = runCompRender(executor, cacheableCompMap, subcompsMap);
+			ainfo = runCompRender(executor, cacheBlockList);
 			result = assembleResult(size, ainfo);
 		}
 
@@ -225,7 +224,7 @@ public abstract class ImageRenderer extends Renderer {
 		renderingFinishedListenerList.remove(listener);
 	}
 
-	protected final BufferedImage runSingleRender(Dimension size, ComponentEx[] sublist) {
+	protected final BufferedImage runSingleRender(Dimension size, List<ComponentEx> sublist) {
 		if (Thread.interrupted()) {
 			return null;
 		}
@@ -263,13 +262,12 @@ public abstract class ImageRenderer extends Renderer {
 	 *            Z-order.
 	 * @return
 	 */
-	protected final ImageAssemblyInfo runCompRender(Executor executor, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+	protected final ImageAssemblyInfo runCompRender(Executor executor, List<CacheBlock> cacheBlockList) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
-		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
-			ComponentEx comp = me.getKey();
-			ComponentEx ccopy = me.getValue();
+		for (CacheBlock cb : cacheBlockList) {
+			ComponentEx comp = cb.getUid();
+			ComponentEx ccopy = cb.getComp();
 
 			/*
 			 * the component may be set to cacheable, while stay unmodified
@@ -279,7 +277,7 @@ public abstract class ImageRenderer extends Renderer {
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
-				ComponentEx[] sublist = subcompsMap.get(ccopy);
+				List<ComponentEx> sublist = cb.getSubcomps();
 				CompRenderCallable compRenderCallable = new CompRenderCallable(sublist, imageFactory, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(compRenderCallable);
 

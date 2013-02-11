@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,9 +18,6 @@
  */
 package org.jplot2d.env;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
@@ -37,8 +34,7 @@ public class DummyEnvironment extends Environment {
 	}
 
 	/**
-	 * Register new created element to this environment. The proxy object will
-	 * associate with this environment.
+	 * Register new created element to this environment. The proxy object will associate with this environment.
 	 * 
 	 * @param element
 	 * @param proxy
@@ -51,33 +47,14 @@ public class DummyEnvironment extends Environment {
 	}
 
 	/**
-	 * This method is called when component factory create a component proxy.
-	 * Every new created component has an associated environment. The
-	 * environment must be initialized by this method.
+	 * This method is called when component factory create a component proxy. Every new created component has an
+	 * associated environment. The environment must be initialized by this method.
 	 * 
 	 * @param comp
 	 * @param proxy
 	 */
 	public void registerComponent(ComponentEx comp, PComponent proxy) {
 		registerElement(comp, proxy);
-
-		if (comp.isCacheable()) {
-			addOrder(cacheableComponentList, comp);
-			// create a subComponentMap entry
-			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-			subComps.add(comp);
-			subComponentMap.put(comp, subComps);
-		} else if (comp.getParent() == null) {
-			// create a subComponentMap entry
-			List<ComponentEx> subComps = new ArrayList<ComponentEx>();
-			subComps.add(comp);
-			subComponentMap.put(comp, subComps);
-		} else {
-			ComponentEx cc = getCacheableAncestor(comp);
-			// add to list in subComponentMap
-			List<ComponentEx> subComps = subComponentMap.get(cc);
-			addOrder(subComps, comp);
-		}
 	}
 
 	@Override

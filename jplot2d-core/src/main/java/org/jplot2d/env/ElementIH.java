@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -404,7 +404,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 
 			// finish the removing
 			if (throwable == null) {
-				cenv = penv.componentRemoved((ComponentEx) impl, cimpl);
+				cenv = penv.componentRemoved(cimpl);
 				// update environment for the removing component
 				for (Element proxy : cenv.proxyMap.values()) {
 					((ElementAddition) proxy).setEnvironment(cenv);
@@ -494,7 +494,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 			}
 			// remove the old child if it's orphan
 			if (oldRef != null && ((Joinable) oldRef).getPrim() == null) {
-				Environment nenv = env.removeOrphan((ElementEx) oldRef);
+				Environment nenv = env.componentRemoved((ElementEx) oldRef);
 				// update environment for the removing component
 				for (Element proxy : nenv.proxyMap.values()) {
 					((ElementAddition) proxy).setEnvironment(nenv);
@@ -688,13 +688,6 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} finally {
-			if (impl instanceof ComponentEx) {
-				if (method.getName().equals("setCacheable")) {
-					environment.componentCacheModeChanged((ComponentEx) impl);
-				} else if (method.getName().equals("setZOrder")) {
-					environment.componentZOrderChanged((ComponentEx) impl);
-				}
-			}
 
 		}
 	}
