@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,10 +22,12 @@ import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.env.PlotEnvironment.CacheBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +55,7 @@ public abstract class Renderer {
 	 *            the key is cacheable component, include uncacheable root plot. the value is all key's visible
 	 *            sub-components in z-order, include the key itself.
 	 */
-	public abstract void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap);
+	public abstract void render(PlotEx plot, List<CacheBlock> cacheBlockList);
 
 	/**
 	 * Returns a rectangle that completely enclose the given component.
