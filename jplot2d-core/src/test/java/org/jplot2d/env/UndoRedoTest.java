@@ -55,28 +55,28 @@ public class UndoRedoTest {
 	public void undoPropertyTest() {
 		Plot plot = ef.createPlot();
 		PlotEx plotImpl0 = (PlotEx) ((ElementAddition) plot).getImpl();
-		RenderEnvironment env = new RenderEnvironment(false);
+		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getColor(), Color.BLACK);
 		assertSame(env.plot, plot);
 		assertSame(env.plotImpl, plotImpl0);
-		assertEquals(env.getCopyMap().size(), 3);
-		assertTrue(env.getCopyMap().containsKey(plotImpl0));
-		assertTrue(env.getCopyMap().containsKey(plotImpl0.getMargin()));
-		assertTrue(env.getCopyMap().containsKey(plotImpl0.getLegend()));
-		PlotEx safeCopy0 = (PlotEx) env.getCopyMap().get(plotImpl0);
+		assertEquals(env.copyMap.size(), 3);
+		assertTrue(env.copyMap.containsKey(plotImpl0));
+		assertTrue(env.copyMap.containsKey(plotImpl0.getMargin()));
+		assertTrue(env.copyMap.containsKey(plotImpl0.getLegend()));
+		PlotEx safeCopy0 = (PlotEx) env.copyMap.get(plotImpl0);
 		assertFalse(env.canRedo());
 		assertFalse(env.canUndo());
 
 		// step 1 : change color to RED
 		plot.setColor(Color.RED);
 		assertEquals(plot.getColor(), Color.RED);
-		assertTrue(env.getCopyMap().containsKey(plotImpl0));
-		assertTrue(env.getCopyMap().containsKey(plotImpl0.getMargin()));
-		assertTrue(env.getCopyMap().containsKey(plotImpl0.getLegend()));
+		assertTrue(env.copyMap.containsKey(plotImpl0));
+		assertTrue(env.copyMap.containsKey(plotImpl0.getMargin()));
+		assertTrue(env.copyMap.containsKey(plotImpl0.getLegend()));
 
-		PlotEx safeCopy1 = (PlotEx) env.getCopyMap().get(plotImpl0);
+		PlotEx safeCopy1 = (PlotEx) env.copyMap.get(plotImpl0);
 		assertNotSame(safeCopy0, safeCopy1);
 		assertNotSame(safeCopy0.getMargin(), safeCopy1.getMargin());
 		assertNotSame(safeCopy0.getLegend(), safeCopy1.getLegend());
@@ -89,11 +89,11 @@ public class UndoRedoTest {
 		assertEquals(plot.getColor(), Color.BLACK);
 		PlotEx plotImpl2 = (PlotEx) ((ElementAddition) plot).getImpl();
 		assertNotSame(plotImpl0, plotImpl2);
-		assertTrue(env.getCopyMap().containsKey(plotImpl2));
-		assertTrue(env.getCopyMap().containsKey(plotImpl2.getMargin()));
-		assertTrue(env.getCopyMap().containsKey(plotImpl2.getLegend()));
+		assertTrue(env.copyMap.containsKey(plotImpl2));
+		assertTrue(env.copyMap.containsKey(plotImpl2.getMargin()));
+		assertTrue(env.copyMap.containsKey(plotImpl2.getLegend()));
 
-		PlotEx safeCopy2 = (PlotEx) env.getCopyMap().get(plotImpl2);
+		PlotEx safeCopy2 = (PlotEx) env.copyMap.get(plotImpl2);
 		assertSame(safeCopy2, safeCopy0);
 		assertSame(safeCopy2.getMargin(), safeCopy0.getMargin());
 		assertSame(safeCopy2.getLegend(), safeCopy0.getLegend());
@@ -106,11 +106,11 @@ public class UndoRedoTest {
 		assertEquals(plot.getColor(), Color.RED);
 		PlotEx plotImpl3 = (PlotEx) ((ElementAddition) plot).getImpl();
 		assertNotSame(plotImpl2, plotImpl3);
-		assertTrue(env.getCopyMap().containsKey(plotImpl3));
-		assertTrue(env.getCopyMap().containsKey(plotImpl3.getMargin()));
-		assertTrue(env.getCopyMap().containsKey(plotImpl3.getLegend()));
+		assertTrue(env.copyMap.containsKey(plotImpl3));
+		assertTrue(env.copyMap.containsKey(plotImpl3.getMargin()));
+		assertTrue(env.copyMap.containsKey(plotImpl3.getLegend()));
 
-		PlotEx safeCopy3 = (PlotEx) env.getCopyMap().get(plotImpl3);
+		PlotEx safeCopy3 = (PlotEx) env.copyMap.get(plotImpl3);
 		assertSame(safeCopy3, safeCopy1);
 		assertSame(safeCopy3.getMargin(), safeCopy1.getMargin());
 		assertSame(safeCopy3.getLegend(), safeCopy1.getLegend());
@@ -123,7 +123,7 @@ public class UndoRedoTest {
 	@Test
 	public void undoAddTitleTest() {
 		Plot plot = ef.createPlot();
-		RenderEnvironment env = new RenderEnvironment(false);
+		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getTitles().length, 0);
@@ -150,7 +150,7 @@ public class UndoRedoTest {
 	@Test
 	public void undoAddAxisTest() {
 		Plot plot = ef.createPlot();
-		RenderEnvironment env = new RenderEnvironment(false);
+		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(plot.getXAxes().length, 0);
@@ -198,7 +198,7 @@ public class UndoRedoTest {
 	public void undoAxisRangeTest() {
 		Plot plot = ef.createPlot();
 		PlotEx plotImpl0 = (PlotEx) ((ElementAddition) plot).getImpl();
-		RenderEnvironment env = new RenderEnvironment(false);
+		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(plot);
 
 		assertEquals(env.changeHistory.getCSN(), 1);
@@ -208,21 +208,20 @@ public class UndoRedoTest {
 		plot.addXAxis(xaxis);
 
 		assertEquals(env.changeHistory.getCSN(), 2);
-		PlotEx safeCopy2 = (PlotEx) env.getCopyMap().get(plotImpl0);
+		PlotEx safeCopy2 = (PlotEx) env.copyMap.get(plotImpl0);
 		checkRange(safeCopy2.getXAxis(0).getTickManager().getAxisTransform().getRange(), -1, 1);
 
 		// set new range
 		xaxis.getTickManager().getAxisTransform().setRange(new Range.Double(20, 30));
 
 		assertEquals(env.changeHistory.getCSN(), 3);
-		PlotEx safeCopy3 = (PlotEx) env.getCopyMap().get(plotImpl0);
+		PlotEx safeCopy3 = (PlotEx) env.copyMap.get(plotImpl0);
 
 		assertNotSame(safeCopy2, safeCopy3);
 		assertNotSame(safeCopy2.getXAxis(0), safeCopy3.getXAxis(0));
-		assertNotSame(safeCopy2.getXAxis(0).getTickManager(), safeCopy3.getXAxis(0)
-				.getTickManager());
-		assertNotSame(safeCopy2.getXAxis(0).getTickManager().getAxisTransform(), safeCopy3
-				.getXAxis(0).getTickManager().getAxisTransform());
+		assertNotSame(safeCopy2.getXAxis(0).getTickManager(), safeCopy3.getXAxis(0).getTickManager());
+		assertNotSame(safeCopy2.getXAxis(0).getTickManager().getAxisTransform(), safeCopy3.getXAxis(0).getTickManager()
+				.getAxisTransform());
 
 		checkRange(safeCopy2.getXAxis(0).getTickManager().getAxisTransform().getRange(), -1, 1);
 		checkRange(safeCopy3.getXAxis(0).getTickManager().getAxisTransform().getRange(), 20, 30);

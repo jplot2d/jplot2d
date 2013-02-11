@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,7 +21,7 @@ package org.jplot2d.renderer;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +29,7 @@ import java.util.concurrent.FutureTask;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * This renderer assemble all cacheable component in a individual thread asynchronously.
@@ -57,9 +58,9 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 		private final Dimension size;
 
-		private final ComponentEx[] complist;
+		private final List<ComponentEx> complist;
 
-		public SingleRendererCallable(Dimension size, ComponentEx[] complist) {
+		public SingleRendererCallable(Dimension size, List<ComponentEx> complist) {
 			this.size = size;
 			this.complist = complist;
 		}
@@ -190,18 +191,17 @@ public class AsyncImageRenderer extends ImageRenderer {
 	}
 
 	@Override
-	public final void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+	public final void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
 		CancelableRendererCallable callable;
-		if (subcompsMap.size() == 1) {
+		if (cacheBlockList.size() == 1) {
 			// If the plot has no cacheable component, run renderer directly
-			callable = new SingleRendererCallable(size, subcompsMap.get(plot));
+			callable = new SingleRendererCallable(size, cacheBlockList.get(0).getSubcomps());
 		} else {
 			// run cacheable component renderer
-			ImageAssemblyInfo ainfo = runCompRender(executor, cacheableCompMap, subcompsMap);
+			ImageAssemblyInfo ainfo = runCompRender(executor, cacheBlockList);
 			callable = new RenderAssemblyCallable(size, ainfo);
 		}
 

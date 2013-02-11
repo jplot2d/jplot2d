@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,11 +25,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.PlotEx;
+import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -71,8 +71,7 @@ public class PdfExporter extends Renderer {
 	}
 
 	@Override
-	public void render(PlotEx plot, Map<ComponentEx, ComponentEx> cacheableCompMap,
-			Map<ComponentEx, ComponentEx[]> subcompsMap) {
+	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
 
 		Dimension size = getDeviceBounds(plot).getSize();
 
@@ -95,10 +94,8 @@ public class PdfExporter extends Renderer {
 		PdfContentByte cb = writer.getDirectContent();
 		Graphics2D g = cb.createGraphics(size.width, size.height);
 
-		for (Map.Entry<ComponentEx, ComponentEx> me : cacheableCompMap.entrySet()) {
-			ComponentEx ccopy = me.getValue();
-
-			ComponentEx[] sublist = subcompsMap.get(ccopy);
+		for (CacheBlock cblock : cacheBlockList) {
+			List<ComponentEx> sublist = cblock.getSubcomps();
 			for (ComponentEx subcomp : sublist) {
 				subcomp.draw(g);
 			}
