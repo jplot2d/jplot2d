@@ -157,7 +157,7 @@ public class PlotEnvironmentTest {
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
 		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
-		denv.registerComponent(containerA, proxyA);
+		denv.registerElement(containerA, proxyA);
 		env.componentAdded(containerA, denv);
 
 		for (ElementEx element : env.proxyMap.keySet()) {
@@ -182,7 +182,7 @@ public class PlotEnvironmentTest {
 		ContainerEx containerA = new ContainerStub();
 		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
 		containerA.setCacheable(true);
-		denv.registerComponent(containerA, proxyA);
+		denv.registerElement(containerA, proxyA);
 		env.componentAdded(containerA, denv);
 
 		for (ElementEx element : env.proxyMap.keySet()) {
@@ -198,7 +198,7 @@ public class PlotEnvironmentTest {
 		DummyEnvironment denvAA = new DummyEnvironment(false);
 		ComponentEx compAA = new ComponentStub();
 		PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
-		denvAA.registerComponent(compAA, proxyAA);
+		denvAA.registerElement(compAA, proxyAA);
 		// link parent
 		compAA.setParent(containerA);
 		env.componentAdded(compAA, denvAA);
@@ -220,8 +220,8 @@ public class PlotEnvironmentTest {
 		PComponent proxyBA = ElementFactory.proxy(compBA, PComponent.class);
 		containerB.setCacheable(true);
 		compBA.setParent(containerB);
-		denvB.registerComponent(containerB, proxyB);
-		denvB.registerComponent(compBA, proxyBA);
+		denvB.registerElement(containerB, proxyB);
+		denvB.registerElement(compBA, proxyBA);
 		env.componentAdded(containerB, denvB);
 
 		for (ElementEx element : env.proxyMap.keySet()) {
