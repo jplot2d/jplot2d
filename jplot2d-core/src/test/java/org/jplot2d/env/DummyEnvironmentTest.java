@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -45,7 +45,7 @@ public class DummyEnvironmentTest {
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
 			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
-			denv.registerComponent(compA, proxyA);
+			denv.registerElement(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 		}
 
@@ -55,7 +55,7 @@ public class DummyEnvironmentTest {
 			ComponentEx compA = mock(ComponentEx.class);
 			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
-			denv.registerComponent(compA, proxyA);
+			denv.registerElement(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 		}
 
@@ -69,8 +69,8 @@ public class DummyEnvironmentTest {
 			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			assertEquals(compAA.getParent(), compA);
-			denv.registerComponent(compA, proxyA);
-			denv.registerComponent(compAA, proxyAA);
+			denv.registerElement(compA, proxyA);
+			denv.registerElement(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
 		}
 
@@ -84,8 +84,8 @@ public class DummyEnvironmentTest {
 			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			when(compAA.isCacheable()).thenReturn(true);
-			denv.registerComponent(compA, proxyA);
-			denv.registerComponent(compAA, proxyAA);
+			denv.registerElement(compA, proxyA);
+			denv.registerElement(compAA, proxyAA);
 			assertEquals(denv.proxyMap.size(), 2);
 		}
 

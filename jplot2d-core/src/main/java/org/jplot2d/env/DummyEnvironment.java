@@ -18,9 +18,7 @@
  */
 package org.jplot2d.env;
 
-import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Element;
-import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
 
 /**
@@ -34,7 +32,9 @@ public class DummyEnvironment extends Environment {
 	}
 
 	/**
-	 * Register new created element to this environment. The proxy object will associate with this environment.
+	 * Register new created element to this environment. This method is called when element factory create a element
+	 * proxy. Every new created element has an associated environment. The proxy object will associate with this
+	 * environment.
 	 * 
 	 * @param element
 	 * @param proxy
@@ -44,17 +44,6 @@ public class DummyEnvironment extends Environment {
 			((ElementAddition) proxy).setEnvironment(this);
 		}
 		proxyMap.put(element, proxy);
-	}
-
-	/**
-	 * This method is called when component factory create a component proxy. Every new created component has an
-	 * associated environment. The environment must be initialized by this method.
-	 * 
-	 * @param comp
-	 * @param proxy
-	 */
-	public void registerComponent(ComponentEx comp, PComponent proxy) {
-		registerElement(comp, proxy);
 	}
 
 	@Override
