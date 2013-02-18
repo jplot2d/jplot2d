@@ -27,7 +27,7 @@ import org.jplot2d.util.Range;
  */
 public abstract class ImageData implements GraphData {
 
-	protected int imgWidth, imgHeight;
+	private int imgWidth, imgHeight;
 
 	protected Range xboundary;
 
@@ -48,6 +48,23 @@ public abstract class ImageData implements GraphData {
 	private double xmin, xmax;
 
 	private double ymin, ymax;
+
+	protected ImageData(int w, int h, Range xboundary, Range yboundary) {
+		this.imgWidth = w;
+		this.imgHeight = h;
+		this.xboundary = xboundary;
+		this.yboundary = yboundary;
+
+		updateRanges();
+	}
+
+	public int getWidth() {
+		return imgWidth;
+	}
+
+	public int getHeight() {
+		return imgHeight;
+	}
 
 	protected void updateRanges() {
 		xmin = xRefVal - (xRefPixel - 0.5) * xDelta;

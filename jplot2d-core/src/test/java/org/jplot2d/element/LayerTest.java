@@ -75,8 +75,8 @@ public class LayerTest {
 	@Test
 	public void testAddAndRemoveImageGraph() {
 		Layer layer = factory.createLayer();
-		ImageGraph graphA = factory.createImageGraph((ImageData) null, "");
-		ImageGraph graphB = factory.createImageGraph((ImageData) null, "");
+		ImageGraph graphA = factory.createImageGraph((ImageData) null);
+		ImageGraph graphB = factory.createImageGraph((ImageData) null);
 		ImageMapping mappingA = graphA.getMapping();
 		ImageMapping mappingB = graphB.getMapping();
 
