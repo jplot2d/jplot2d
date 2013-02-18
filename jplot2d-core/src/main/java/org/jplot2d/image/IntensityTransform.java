@@ -21,12 +21,12 @@ package org.jplot2d.image;
 import java.awt.image.LookupTable;
 
 /**
- * The color map to convert intensity raster to displayable raster
+ * The intensity transform to enhance images
  * 
  * @author Jingjing Li
  * 
  */
-public interface ColorMap {
+public interface IntensityTransform {
 
 	public LookupTable getColorTable();
 
