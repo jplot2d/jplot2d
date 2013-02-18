@@ -50,7 +50,7 @@ public class ImageGraphTest {
 	 */
 	@Test
 	public void testCreateImageGraph() {
-		ImageGraph graph = factory.createImageGraph((ImageData) null, "");
+		ImageGraph graph = factory.createImageGraph((ImageData) null);
 
 		assertNull(graph.getSize());
 		assertNull(graph.getBounds());

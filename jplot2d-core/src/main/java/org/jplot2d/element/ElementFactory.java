@@ -25,8 +25,10 @@ import java.awt.Font;
 import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
-import org.jplot2d.data.Byte2dImageData;
+import org.jplot2d.data.ByteDataBuffer;
+import org.jplot2d.data.FloatDataBuffer;
 import org.jplot2d.data.ImageData;
+import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
 import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
@@ -586,11 +588,13 @@ public class ElementFactory {
 	}
 
 	public ImageGraph createImageGraph(byte[][] byte2d) {
-		return createImageGraph(byte2d, null);
+		return createImageGraph(new SingleBandImageData(new ByteDataBuffer.Array2D(byte2d), byte2d[0].length,
+				byte2d.length));
 	}
 
-	public ImageGraph createImageGraph(byte[][] byte2d, String name) {
-		return createImageGraph(new Byte2dImageData(byte2d), name);
+	public ImageGraph createImageGraph(float[][] float2d) {
+		return createImageGraph(new SingleBandImageData(new FloatDataBuffer.Array2D(float2d), float2d[0].length,
+				float2d.length));
 	}
 
 	/**
@@ -598,7 +602,7 @@ public class ElementFactory {
 	 * 
 	 * @return an image graph
 	 */
-	public ImageGraph createImageGraph(ImageData data, String name) {
+	public ImageGraph createImageGraph(ImageData data) {
 
 		ImageMapping im = createImageMapping();
 		DummyEnvironment env = (DummyEnvironment) im.getEnvironment();

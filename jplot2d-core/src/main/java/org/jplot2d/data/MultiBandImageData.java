@@ -25,36 +25,17 @@ import org.jplot2d.util.Range;
  * 
  * @author Jingjing Li
  */
-public class Byte2dImageData extends ImageData {
+public abstract class MultiBandImageData extends ImageData {
 
-	private byte[][] byte2d;
+	private final ImageDataBuffer[] dataBuffer;
 
-	/**
-	 * Construct an ImageGraphData with the given size and data array.
-	 * 
-	 * @param w
-	 *            The width (in pixels) of the region of image data.
-	 * @param h
-	 *            The height (in pixels) of the region of image data.
-	 * @param dataArray
-	 *            The byte array for the DataBuffer.
-	 */
-	public Byte2dImageData(byte[][] byte2d) {
-		this(byte2d, null, null);
+	protected MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, Range xboundary, Range yboundary) {
+		super(w, h, xboundary, yboundary);
+		this.dataBuffer = dataBuffer;
 	}
 
-	private Byte2dImageData(byte[][] byte2d, Range xboundary, Range yboundary) {
-		this.byte2d = byte2d;
-		this.xboundary = xboundary;
-		this.yboundary = yboundary;
-
-		imgHeight = byte2d.length;
-		imgWidth = byte2d[0].length;
-		updateRanges();
-	}
-
-	public Byte2dImageData setBoundary(Range xboundary, Range yboundary) {
-		return new Byte2dImageData(byte2d, xboundary, yboundary);
+	public ImageDataBuffer[] getDataBuffer() {
+		return dataBuffer;
 	}
 
 }
