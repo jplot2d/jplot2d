@@ -40,6 +40,14 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 	public double[] getLimits();
 
 	/**
+	 * Returns the number of significant bits that the input data should match. When apply the
+	 * limits, the generated unsigned short array should match the bits number.
+	 * 
+	 * @return the number of significant bits
+	 */
+	public int getInputDataBits();
+
+	/**
 	 * Apply intensity transform and bias/gain
 	 * 
 	 * @param raster
@@ -47,8 +55,8 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 	public void processImage(WritableRaster raster);
 
 	/**
-	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be duplicated to meet the
-	 * output band number.
+	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be
+	 * duplicated to meet the output band number.
 	 * 
 	 * @param raster
 	 * @return
