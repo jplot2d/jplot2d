@@ -18,18 +18,41 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+
 import org.jplot2d.element.ImageMapping;
 
 /**
  * @author Jingjing Li
  * 
  */
-public interface ImageMappingEx extends ImageMapping {
+public interface ImageMappingEx extends ImageMapping, ElementEx {
 
 	public ImageGraphEx getParent();
 
 	public void addImageGraph(ImageGraphEx graph);
 
 	public void removeImageGraph(ImageGraphEx graph);
+
+	public void calcLimits();
+
+	public double[] getLimits();
+
+	/**
+	 * Apply intensity transform and bias/gain
+	 * 
+	 * @param raster
+	 */
+	public void processImage(WritableRaster raster);
+
+	/**
+	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be duplicated to meet the
+	 * output band number.
+	 * 
+	 * @param raster
+	 * @return
+	 */
+	public BufferedImage colorImage(WritableRaster raster);
 
 }

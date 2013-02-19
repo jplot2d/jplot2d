@@ -21,7 +21,8 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.image.ColorMap;
-import org.jplot2d.image.IntensityMappingAlgorithm;
+import org.jplot2d.image.IntensityTransform;
+import org.jplot2d.image.LimitsAlgorithm;
 
 /**
  * @author Jingjing Li
@@ -38,19 +39,31 @@ public interface ImageMapping extends Element {
 	ImageGraph[] getGraphs();
 
 	/**
-	 * Returns the IntensityMappingAlgorithm
+	 * Returns the LimitsAlgorithm
 	 * 
-	 * @return the IntensityMappingAlgorithm
+	 * @return the LimitsAlgorithm
 	 */
-	public IntensityMappingAlgorithm getIMA();
+	public LimitsAlgorithm getLimitsAlgorithm();
 
 	/**
-	 * Sets the IntensityMappingAlgorithm
+	 * Sets the LimitsAlgorithm
 	 * 
-	 * @param ima
-	 *            the Intensity Mapping Algorithm
+	 * @param algo
+	 *            the LimitsAlgorithm
 	 */
-	public void setIMA(IntensityMappingAlgorithm ima);
+	public void setLimitsAlgorithm(LimitsAlgorithm algo);
+
+	public IntensityTransform getIntensityTransform();
+
+	public void setIntensityTransform(IntensityTransform it);
+
+	public double getBias();
+
+	public void setBias(double bias);
+
+	public double getGain();
+
+	public void setGain(double gain);
 
 	/**
 	 * Returns the lookup table for displaying the intensity raster.

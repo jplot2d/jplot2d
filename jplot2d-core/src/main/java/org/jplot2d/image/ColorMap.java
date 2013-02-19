@@ -18,6 +18,7 @@
  */
 package org.jplot2d.image;
 
+import java.awt.image.ColorModel;
 import java.awt.image.LookupTable;
 
 /**
@@ -28,6 +29,15 @@ import java.awt.image.LookupTable;
  */
 public interface ColorMap {
 
-	public LookupTable getColorTable();
+	/**
+	 * The bits of input range of lookup table.
+	 * 
+	 * @return the bits of input range
+	 */
+	public int getInputBits();
+	
+	public ColorModel getColorModel();
+
+	public LookupTable getLookupTable();
 
 }

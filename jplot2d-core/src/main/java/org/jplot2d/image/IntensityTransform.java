@@ -28,6 +28,20 @@ import java.awt.image.LookupTable;
  */
 public interface IntensityTransform {
 
-	public LookupTable getColorTable();
+	/**
+	 * The bits of input range of this transform.
+	 * 
+	 * @return the bits of input range
+	 */
+	public int getInputBits();
+
+	/**
+	 * The bits of output range of this transform.
+	 * 
+	 * @return the bits of input range
+	 */
+	public int getOutputBits();
+
+	public LookupTable getLookupTable();
 
 }
