@@ -27,20 +27,7 @@ import org.jplot2d.transform.PaperTransform;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 
-	/**
-	 * The number of significant bits after applying limits. The max number is 16, for ushort data buffer.
-	 */
-	private static final int RAW_BITS = 14;
-
-	/** size of a lookup table for full short range */
-	private static final int LOOKUP_SIZE = 1 << RAW_BITS; // 16384
-
-	/** maximum image value allowed */
-	private static final int LOOKUP_MAX = LOOKUP_SIZE - 1;
-
 	private static ColorSpace grayCS = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-	private static ColorModel ushortGrayCM = new ComponentColorModel(grayCS, new int[] { RAW_BITS }, false, true,
-			Transparency.OPAQUE, DataBuffer.TYPE_USHORT);
 
 	private ImageMappingEx mapping;
 	private ImageData data;
@@ -121,7 +108,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		if (data instanceof SingleBandImageData) {
 			ImageDataBuffer idb = ((SingleBandImageData) data).getDataBuffer();
 			if (idb instanceof FloatDataBuffer) {
-				raster = zscaleLimits(((FloatDataBuffer) idb), xoff, yoff, width, height, limits[0], limits[1]);
+				raster = zscaleLimits(((FloatDataBuffer) idb), xoff, yoff, width, height,
+						limits[0], limits[1]);
 			}
 		}
 
@@ -135,15 +123,19 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		Dimension2D paperSize = getParent().getSize();
 		double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
 		double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
-		double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getXcdelt();
-		double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getYcdelt();
-		AffineTransform at = new AffineTransform(xscale, 0.0, 0.0, -yscale, xorig, yorig);
-		AffineTransformOp axop = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth()
+				* data.getXcdelt();
+		double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight()
+				* data.getYcdelt();
+		AffineTransform scaleAT = AffineTransform.getScaleInstance(xscale, yscale);
+		AffineTransformOp axop = new AffineTransformOp(scaleAT, AffineTransformOp.TYPE_BILINEAR);
 		raster = axop.filter(raster, null);
 
+		// apply color mapping
 		BufferedImage image = mapping.colorImage(raster);
 
-		g.drawImage(image, 0, 0, null);
+		AffineTransform at = new AffineTransform(1, 0.0, 0.0, -1, xorig, yorig);
+		g.drawRenderedImage(image, at);
 
 		g.dispose();
 	}
@@ -156,17 +148,21 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 	 * @param highCut
 	 * @return
 	 */
-	private static WritableRaster zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h, double lowCut,
-			double highCut) {
-		double scale = LOOKUP_SIZE / (highCut - lowCut); // scale to short range
+	private WritableRaster zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h,
+			double lowCut, double highCut) {
+
+		int outputRange = 1 << mapping.getInputDataBits();
+		int outputMax = outputRange - 1;
+
+		double scale = outputRange / (highCut - lowCut); // scale to short range
 
 		short[] result = new short[w * h];
 		int n = 0;
 		for (int r = yoff; r < yoff + h; r++) {
 			for (int c = xoff; c < xoff + w; c++) {
 				double scaled = (dbuf.getDouble(c, r) - lowCut) * scale;
-				if (scaled > LOOKUP_MAX) {
-					result[n] = (short) LOOKUP_MAX;
+				if (scaled > outputMax) {
+					result[n] = (short) outputMax;
 				} else if (scaled < 0) {
 					result[n] = 0;
 				} else if (scaled > 0) {
@@ -178,6 +174,9 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 			}
 		}
 
+		ColorModel ushortGrayCM = new ComponentColorModel(grayCS,
+				new int[] { mapping.getInputDataBits() }, false, true, Transparency.OPAQUE,
+				DataBuffer.TYPE_USHORT);
 		// create a SampleModel for short data
 		SampleModel sampleModel = ushortGrayCM.createCompatibleSampleModel(w, h);
 		// and a DataBuffer with the image data

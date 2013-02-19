@@ -8,7 +8,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
-import java.awt.image.LookupOp;
 import java.awt.image.WritableRaster;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,10 +22,16 @@ import org.jplot2d.image.MinMaxAlgorithm;
 
 public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
+	/**
+	 * The max number of significant bits after applying limits. The max number is 16, for unsigned
+	 * short data buffer.
+	 */
+	private static final int MAX_BITS = 16;
+
 	private static ColorSpace grayCS = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 
-	private static ColorModel byteGrayCM = new ComponentColorModel(grayCS, new int[] { 8 }, false, true,
-			Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+	private static ColorModel byteGrayCM = new ComponentColorModel(grayCS, new int[] { 8 }, false,
+			true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
 
 	private List<ImageGraphEx> graphs = new ArrayList<ImageGraphEx>();
 
@@ -38,9 +43,9 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	private IntensityTransform intensityTransform;
 
-	private double bias;
+	private double bias = 0.5;
 
-	private double gain;
+	private double gain = 0.5;
 
 	public ImageGraphEx getParent() {
 		return (ImageGraphEx) parent;
@@ -156,27 +161,61 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		this.limits = imapping.limits;
 	}
 
+	public int getInputDataBits() {
+		int bits = 8;
+		if (colorMap != null) {
+			bits = colorMap.getInputBits();
+		}
+		if (intensityTransform != null || gain != 0.5 || bias != 0.5) {
+			bits += 6;
+		}
+		if (bits > MAX_BITS) {
+			bits = MAX_BITS;
+		}
+		return bits;
+	}
+
+	private int getOutputDataBits() {
+		int bits = 8;
+		if (colorMap != null) {
+			bits = colorMap.getInputBits();
+		}
+		if (bits > MAX_BITS) {
+			bits = MAX_BITS;
+		}
+		return bits;
+	}
+
 	public void processImage(WritableRaster raster) {
 		if (intensityTransform != null) {
-			LookupOp intensityLookup = new LookupOp(intensityTransform.getLookupTable(), null);
-			intensityLookup.filter(raster, raster);
+			// TODO: create a lookup table
+			// input bits: getInputDataBits()
+			// output bits: getOutputDataBits()
 		}
 	}
 
 	public BufferedImage colorImage(WritableRaster raster) {
+		ColorModel ushortGrayCM = new ComponentColorModel(grayCS,
+				new int[] { getOutputDataBits() }, false, true, Transparency.OPAQUE,
+				DataBuffer.TYPE_USHORT);
+
+		BufferedImage input = new BufferedImage(ushortGrayCM, raster, false, null);
+
 		ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
-		ColorModel colorCM = new DirectColorModel(cs, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0, false,
-				DataBuffer.TYPE_INT);
+		ColorModel colorCM = new DirectColorModel(cs, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0,
+				false, DataBuffer.TYPE_INT);
 
 		ColorConvertOp colorConv = new ColorConvertOp(grayCS, cs, null);
-		WritableRaster destRaster = colorCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
-		colorConv.filter(raster, destRaster);
+		WritableRaster destRaster = colorCM.createCompatibleWritableRaster(raster.getWidth(),
+				raster.getHeight());
+		BufferedImage dest = new BufferedImage(colorCM, destRaster, false, null);
+		colorConv.filter(input, dest);
 
 		// and finally apply the color lookup table
 		// LookupOp colorLookup = new LookupOp(_colorLookupTable, null);
 		// colorLookup.filter(colorImage, colorImage);
 
-		return new BufferedImage(colorCM, destRaster, false, null);
+		return dest;
 	}
 
 }

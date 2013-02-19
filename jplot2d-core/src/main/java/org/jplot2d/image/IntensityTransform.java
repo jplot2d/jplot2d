@@ -18,8 +18,6 @@
  */
 package org.jplot2d.image;
 
-import java.awt.image.LookupTable;
-
 /**
  * The intensity transform to enhance images
  * 
@@ -28,20 +26,6 @@ import java.awt.image.LookupTable;
  */
 public interface IntensityTransform {
 
-	/**
-	 * The bits of input range of this transform.
-	 * 
-	 * @return the bits of input range
-	 */
-	public int getInputBits();
-
-	/**
-	 * The bits of output range of this transform.
-	 * 
-	 * @return the bits of input range
-	 */
-	public int getOutputBits();
-
-	public LookupTable getLookupTable();
+	public double transform(double v);
 
 }
