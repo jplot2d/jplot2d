@@ -279,7 +279,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		/* Layer, Axis, Title, Legend do not cache their paper transform */
 
-		// notify all subplots
+		// notify all subplots to update their paper transform
 		for (PlotEx sp : subplots) {
 			sp.parentPaperTransformChanged();
 		}
@@ -1001,6 +1001,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			this.parentPaperTransformChanged();
 		}
 
+		calcPendingImageMappingLimits();
 	}
 
 	/**
@@ -1138,6 +1139,34 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 		for (PlotEx sp : plot.getSubplots()) {
 			calcLegendSize(sp);
+		}
+	}
+
+	/**
+	 * Re-autorange on all AxisLockGroups whoes autorange are true.
+	 */
+	private void calcPendingImageMappingLimits() {
+		Set<ImageMappingEx> ims = new HashSet<ImageMappingEx>();
+		fillImageMappings(this, ims);
+
+		for (ImageMappingEx im : ims) {
+			im.calcLimits();
+		}
+	}
+
+	/**
+	 * find all AxisLockGroups in the given plot and fill them into the given set.
+	 */
+	private static void fillImageMappings(PlotEx plot, Set<ImageMappingEx> ims) {
+		for (LayerEx layer : plot.getLayers()) {
+			for (GraphEx graph : layer.getGraphs()) {
+				if (graph instanceof ImageGraphEx) {
+					ims.add(((ImageGraphEx) graph).getMapping());
+				}
+			}
+		}
+		for (PlotEx sp : plot.getSubplots()) {
+			fillImageMappings(sp, ims);
 		}
 	}
 

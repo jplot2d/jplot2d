@@ -26,4 +26,6 @@ import org.jplot2d.element.ImageGraph;
  */
 public interface ImageGraphEx extends ImageGraph, GraphEx {
 
+	public ImageMappingEx getMapping();
+
 }
