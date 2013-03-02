@@ -28,4 +28,6 @@ public interface ImageGraphEx extends ImageGraph, GraphEx {
 
 	public ImageMappingEx getMapping();
 
+	public void mappingChanged();
+
 }

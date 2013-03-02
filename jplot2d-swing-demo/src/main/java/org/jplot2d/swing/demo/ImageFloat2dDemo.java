@@ -38,6 +38,12 @@ public class ImageFloat2dDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		plot(0.4);
+		plot(0.5);
+		plot(0.6);
+	}
+	
+	public static void plot(double gain) {
 		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 
@@ -66,5 +72,6 @@ public class ImageFloat2dDemo {
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis, yaxis);
 
+		graph.getMapping().setGain(gain);
 	}
 }

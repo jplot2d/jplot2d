@@ -18,9 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-
 import org.jplot2d.element.ImageMapping;
 
 /**
@@ -40,27 +37,26 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 	public double[] getLimits();
 
 	/**
-	 * Returns the number of significant bits that the input data should match. When apply the
-	 * limits, the generated unsigned short array should match the bits number.
+	 * Returns the number of significant bits that the ILUT index should match. When applying the
+	 * limits, the generated values should match the ILUT indexes.
 	 * 
 	 * @return the number of significant bits
 	 */
-	public int getInputDataBits();
+	public int getILUTInputBits();
 
 	/**
-	 * Apply intensity transform and bias/gain
+	 * Returns the number of significant bits that the ILUT output range. When creating image, the
+	 * color model bit should match this value.
 	 * 
-	 * @param raster
+	 * @return the number of significant bits
 	 */
-	public void processImage(WritableRaster raster);
+	public int getILUTOutputBits();
 
 	/**
-	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be
-	 * duplicated to meet the output band number.
+	 * Returns the ILUT for processing data, for applying intensity transform and bias/gain.
 	 * 
-	 * @param raster
 	 * @return
 	 */
-	public BufferedImage colorImage(WritableRaster raster);
+	public short[] getILUT();
 
 }

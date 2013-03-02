@@ -1,14 +1,5 @@
 package org.jplot2d.element.impl;
 
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DirectColorModel;
-import java.awt.image.WritableRaster;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +18,6 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	 * short data buffer.
 	 */
 	private static final int MAX_BITS = 16;
-
-	private static ColorSpace grayCS = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-
-	private static ColorModel byteGrayCM = new ComponentColorModel(grayCS, new int[] { 8 }, false,
-			true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
 
 	private List<ImageGraphEx> graphs = new ArrayList<ImageGraphEx>();
 
@@ -125,6 +111,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public void setIntensityTransform(IntensityTransform it) {
 		this.intensityTransform = it;
+		redrawGraphs();
 	}
 
 	public double getBias() {
@@ -133,6 +120,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public void setBias(double bias) {
 		this.bias = bias;
+		redrawGraphs();
 	}
 
 	public double getGain() {
@@ -141,6 +129,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public void setGain(double gain) {
 		this.gain = gain;
+		redrawGraphs();
 	}
 
 	public ColorMap getColorMap() {
@@ -149,6 +138,13 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public void setColorMap(ColorMap colorMap) {
 		this.colorMap = colorMap;
+		redrawGraphs();
+	}
+
+	private void redrawGraphs() {
+		for (ImageGraphEx graph : graphs) {
+			graph.mappingChanged();
+		}
 	}
 
 	@Override
@@ -157,17 +153,20 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 		ImageMappingImpl imapping = (ImageMappingImpl) src;
 		this.algo = imapping.algo;
-		this.colorMap = imapping.colorMap;
 		this.limits = imapping.limits;
+		this.intensityTransform = imapping.intensityTransform;
+		this.bias = imapping.bias;
+		this.gain = imapping.gain;
+		this.colorMap = imapping.colorMap;
 	}
 
-	public int getInputDataBits() {
+	public int getILUTInputBits() {
 		int bits = 8;
 		if (colorMap != null) {
 			bits = colorMap.getInputBits();
 		}
 		if (intensityTransform != null || gain != 0.5 || bias != 0.5) {
-			bits += 6;
+			bits += 2;
 		}
 		if (bits > MAX_BITS) {
 			bits = MAX_BITS;
@@ -175,7 +174,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		return bits;
 	}
 
-	private int getOutputDataBits() {
+	public int getILUTOutputBits() {
 		int bits = 8;
 		if (colorMap != null) {
 			bits = colorMap.getInputBits();
@@ -186,36 +185,49 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		return bits;
 	}
 
-	public void processImage(WritableRaster raster) {
-		if (intensityTransform != null) {
-			// TODO: create a lookup table
-			// input bits: getInputDataBits()
-			// output bits: getOutputDataBits()
+	public short[] getILUT() {
+		if (intensityTransform == null && gain == 0.5 && bias == 0.5) {
+			return null;// do nothing
 		}
-	}
+		// create a lookup table
+		// input bits: getInputDataBits()
+		// output bits: getOutputDataBits()
 
-	public BufferedImage colorImage(WritableRaster raster) {
-		ColorModel ushortGrayCM = new ComponentColorModel(grayCS,
-				new int[] { getOutputDataBits() }, false, true, Transparency.OPAQUE,
-				DataBuffer.TYPE_USHORT);
+		// the LUT index range is [0, lutIndexes], plus repeat the last value
+		int lutIndexes = 1 << getILUTInputBits();
 
-		BufferedImage input = new BufferedImage(ushortGrayCM, raster, false, null);
+		// the output range is [0, outputRange - 1]
+		int outputRange = 1 << getILUTOutputBits();
 
-		ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB);
-		ColorModel colorCM = new DirectColorModel(cs, 24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0,
-				false, DataBuffer.TYPE_INT);
+		short[] lut = new short[lutIndexes + 2];
+		for (int i = 0; i <= lutIndexes; i++) {
+			// t range is [0, 1]
+			double t = (double) i / lutIndexes;
+			if (intensityTransform != null) {
+				t = intensityTransform.transform(t);
+			}
+			if (bias != 0.5) {
+				t = t / ((1.0 / bias - 2.0) * (1.0 - t) + 1.0);
+			}
+			if (gain != 0.5) {
+				double f = (1.0 / gain - 2.0) * (1.0 - 2 * t);
+				if (t < 0.5) {
+					t = t / (f + 1.0);
+				} else {
+					t = (f - t) / (f - 1.0);
+				}
+			}
+			int v = (int) (outputRange * t);
+			if (v < 0) {
+				v = 0;
+			} else if (v >= outputRange) {
+				v = outputRange - 1;
+			}
+			lut[i] = (byte) (v);
+		}
+		lut[lutIndexes + 1] = lut[lutIndexes];
 
-		ColorConvertOp colorConv = new ColorConvertOp(grayCS, cs, null);
-		WritableRaster destRaster = colorCM.createCompatibleWritableRaster(raster.getWidth(),
-				raster.getHeight());
-		BufferedImage dest = new BufferedImage(colorCM, destRaster, false, null);
-		colorConv.filter(input, dest);
-
-		// and finally apply the color lookup table
-		// LookupOp colorLookup = new LookupOp(_colorLookupTable, null);
-		// colorLookup.filter(colorImage, colorImage);
-
-		return dest;
+		return lut;
 	}
 
 }
