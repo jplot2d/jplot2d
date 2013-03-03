@@ -21,13 +21,18 @@ package org.jplot2d.data;
 import org.jplot2d.util.Range;
 
 /**
- * Image data represented by a byte 2d array.
+ * An image data which the value of each pixel is a component samples.
  * 
  * @author Jingjing Li
  */
-public abstract class MultiBandImageData extends ImageData {
+public class MultiBandImageData extends ImageData {
 
 	private final ImageDataBuffer[] dataBuffer;
+
+	public MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h) {
+		super(w, h, null, null);
+		this.dataBuffer = dataBuffer;
+	}
 
 	protected MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, Range xboundary, Range yboundary) {
 		super(w, h, xboundary, yboundary);
@@ -36,6 +41,10 @@ public abstract class MultiBandImageData extends ImageData {
 
 	public ImageDataBuffer[] getDataBuffer() {
 		return dataBuffer;
+	}
+
+	public MultiBandImageData setBoundary(Range xboundary, Range yboundary) {
+		return new MultiBandImageData(getDataBuffer(), getWidth(), getHeight(), xboundary, yboundary);
 	}
 
 }

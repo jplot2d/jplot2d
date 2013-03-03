@@ -30,14 +30,26 @@ import java.awt.image.LookupTable;
 public interface ColorMap {
 
 	/**
-	 * The bits of input range of lookup table.
+	 * The max number of significant bits of input range of lookup table. The max number is 15,
+	 * means 32768 color mapping.
+	 */
+	public static final int MAX_INPUT_BITS = 15;
+
+	/**
+	 * The number of significant bits of input range of lookup table. Usually this value is 8, means
+	 * 256 color mapping. The max value is 15, means 32768 color mapping.
 	 * 
-	 * @return the bits of input range
+	 * @return the bits array of input range
 	 */
 	public int getInputBits();
-	
-	public ColorModel getColorModel();
 
 	public LookupTable getLookupTable();
+
+	/**
+	 * The color model for the lookup result.
+	 * 
+	 * @return The color model for the lookup result.
+	 */
+	public ColorModel getColorModel();
 
 }

@@ -21,7 +21,7 @@ package org.jplot2d.data;
 import org.jplot2d.util.Range;
 
 /**
- * An image in which the value of each pixel is a single sample. It carries only intensity information.
+ * An image data which the value of each pixel is a single sample. It carries only intensity information.
  * 
  * @author Jingjing Li
  */

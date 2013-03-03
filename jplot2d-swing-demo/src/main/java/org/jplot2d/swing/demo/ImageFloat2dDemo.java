@@ -18,6 +18,13 @@
  */
 package org.jplot2d.swing.demo;
 
+import java.awt.color.ColorSpace;
+import java.awt.image.ByteLookupTable;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DirectColorModel;
+import java.awt.image.LookupTable;
+
 import javax.swing.JFrame;
 
 import org.jplot2d.element.Axis;
@@ -25,6 +32,7 @@ import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.ImageGraph;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.image.ColorMap;
 import org.jplot2d.sizing.AutoPackSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 
@@ -34,16 +42,41 @@ import org.jplot2d.swing.JPlot2DFrame;
  */
 public class ImageFloat2dDemo {
 
+	public static class RgbColormap implements ColorMap {
+
+		private LookupTable lut;
+
+		public RgbColormap() {
+			byte[] la = new byte[256];
+			for (int i = 0; i < 256; i++) {
+				la[i] = (byte) i;
+			}
+			lut = new ByteLookupTable(0, new byte[][] { la, la, la });
+		}
+
+		public int getInputBits() {
+			return 8;
+		}
+
+		public LookupTable getLookupTable() {
+			return lut;
+		}
+
+		public ColorModel getColorModel() {
+			return new DirectColorModel(24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0);
+		}
+
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		plot(0.4);
-		plot(0.5);
-		plot(0.6);
+		plot(0.5, null);
+		plot(0.5, new RgbColormap());
 	}
-	
-	public static void plot(double gain) {
+
+	public static void plot(double gain, ColorMap map) {
 		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 
@@ -73,5 +106,6 @@ public class ImageFloat2dDemo {
 		plot.addLayer(layer0, xaxis, yaxis);
 
 		graph.getMapping().setGain(gain);
+		graph.getMapping().setColorMap(map);
 	}
 }
