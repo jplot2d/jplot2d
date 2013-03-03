@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jplot2d.data.ImageData;
 import org.jplot2d.data.ImageDataBuffer;
+import org.jplot2d.data.MultiBandImageData;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.transform.NormalTransform;
@@ -98,9 +99,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		Shape clip = getPaperTransform().getPtoD(getBounds());
 		g.setClip(clip);
 
-		ColorModel ushortGrayCM = new ComponentColorModel(grayCS,
-				new int[] { mapping.getILUTOutputBits() }, false, true, Transparency.OPAQUE,
-				DataBuffer.TYPE_USHORT);
+		ColorModel ushortGrayCM = new ComponentColorModel(grayCS, new int[] { mapping.getILUTOutputBits() }, false,
+				true, Transparency.OPAQUE, DataBuffer.TYPE_USHORT);
 
 		double[] limits = mapping.getLimits();
 
@@ -124,7 +124,17 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 			DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
 			// create a raster
 			raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+		} else if (data instanceof MultiBandImageData) {
+			ImageDataBuffer[] idbs = ((MultiBandImageData) data).getDataBuffer();
+			int bands = idbs.length;
+			short[][] result = new short[bands][];
+			for (int band = 0; band < bands; band++) {
+				result[band] = zscaleLimits(idbs[band], xoff, yoff, width, height, limits[0], limits[1]);
+			}
 
+			SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_USHORT, width, height, bands);
+			DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
+			raster = Raster.createWritableRaster(sm, dbuffer, null);
 		}
 
 		// zoom raster to device size
@@ -134,18 +144,16 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		Dimension2D paperSize = getParent().getSize();
 		double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
 		double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
-		double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth()
-				* data.getXcdelt();
-		double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight()
-				* data.getYcdelt();
+		double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getXcdelt();
+		double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getYcdelt();
 		AffineTransform scaleAT = AffineTransform.getScaleInstance(xscale, yscale);
 		AffineTransformOp axop = new AffineTransformOp(scaleAT, AffineTransformOp.TYPE_BILINEAR);
 		raster = axop.filter(raster, null);
 
 		// apply color mapping
-
 		BufferedImage image = colorImage(ushortGrayCM, raster);
 
+		// draw the image
 		AffineTransform at = new AffineTransform(1, 0.0, 0.0, -1, xorig, yorig);
 		g.drawRenderedImage(image, at);
 
@@ -160,8 +168,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 	 * @param highCut
 	 * @return
 	 */
-	private short[] zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h,
-			double lowCut, double highCut) {
+	private short[] zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h, double lowCut, double highCut) {
 
 		int outputRange = 1 << mapping.getILUTInputBits();
 		double scale = outputRange / (highCut - lowCut);
@@ -174,8 +181,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 				for (int c = xoff; c < xoff + w; c++) {
 					double scaled = (dbuf.getDouble(c, r) - lowCut) * scale;
 					/*
-					 * the scaled value may slightly larger than outputRange or slightly small than
-					 * 0. the ilutIndex range is [0, outputRange]
+					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
+					 * range is [0, outputRange]
 					 */
 					int ilutIndex = (int) scaled;
 					if (ilutIndex >= outputRange) {
@@ -189,14 +196,15 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 				for (int c = xoff; c < xoff + w; c++) {
 					double scaled = (dbuf.getDouble(c, r) - lowCut) * scale;
 					/*
-					 * the scaled value may slightly larger than outputRange or slightly small than
-					 * 0. the ilutIndex range is [0, outputRange]
+					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
+					 * range is [0, outputRange]
 					 */
 					int ilutIndex = (int) scaled;
 					double idelta = ilutIndex - ilutIndex;
 
-					int a = lut[ilutIndex] & 0xff;
-					int b = lut[ilutIndex + 1] & 0xff;
+					// the LUT output bits is no more than 15, the & 0xffff can omit.
+					int a = lut[ilutIndex];
+					int b = lut[ilutIndex + 1];
 					result[n++] = (short) (a + idelta * (b - a));
 				}
 			}
@@ -206,14 +214,15 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 	}
 
 	/**
-	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be
-	 * duplicated to meet the output band number.
+	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be duplicated to meet the
+	 * output band number.
 	 * 
 	 * @param cm
 	 * @param raster
 	 * @return
 	 */
 	private BufferedImage colorImage(ColorModel cm, WritableRaster raster) {
+
 		if (mapping.getColorMap() == null) {
 			// assembly a BufferedImage
 			return new BufferedImage(cm, raster, false, null);
@@ -221,7 +230,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 
 		ColorModel destCM = mapping.getColorMap().getColorModel();
 
-		// duplicate the source band to color map bands
+		// duplicate the source band to as many bands as the number of dest CM
 		if (raster.getSampleModel().getNumBands() == 1) {
 			int destNumComps = destCM.getNumComponents();
 			if (destNumComps > 1) {
@@ -239,17 +248,15 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 				}
 
 				SampleModel scm = raster.getSampleModel();
-				SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(),
-						scm.getHeight(), destNumComps);
+				SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(), scm.getHeight(),
+						destNumComps);
 				DataBufferUShort dbuffer = new DataBufferUShort(dupDataArray, singleBandSize);
 				raster = Raster.createWritableRaster(dupSM, dbuffer, null);
-
 			}
 		}
 
-		// lookup to dest image
-		WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(),
-				raster.getHeight());
+		// lookup and create a BufferedImage
+		WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
 		LookupOp op = new LookupOp(mapping.getColorMap().getLookupTable(), null);
 		op.filter(raster, destRaster);
 

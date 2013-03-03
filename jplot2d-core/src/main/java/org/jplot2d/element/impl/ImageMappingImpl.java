@@ -14,8 +14,7 @@ import org.jplot2d.image.MinMaxAlgorithm;
 public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	/**
-	 * The max number of significant bits after applying limits. The max number is 16, for unsigned
-	 * short data buffer.
+	 * The max number of significant bits after applying limits. The max number is 16, for unsigned short data buffer.
 	 */
 	private static final int MAX_BITS = 16;
 
@@ -137,6 +136,9 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	}
 
 	public void setColorMap(ColorMap colorMap) {
+		if (colorMap.getInputBits() > ColorMap.MAX_INPUT_BITS) {
+			throw new IllegalArgumentException("The colormap input bits is large than MAX_INPUT_BITS.");
+		}
 		this.colorMap = colorMap;
 		redrawGraphs();
 	}
@@ -161,10 +163,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	}
 
 	public int getILUTInputBits() {
-		int bits = 8;
-		if (colorMap != null) {
-			bits = colorMap.getInputBits();
-		}
+		int bits = getILUTOutputBits();
 		if (intensityTransform != null || gain != 0.5 || bias != 0.5) {
 			bits += 2;
 		}
@@ -175,23 +174,22 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	}
 
 	public int getILUTOutputBits() {
-		int bits = 8;
-		if (colorMap != null) {
-			bits = colorMap.getInputBits();
+		if (colorMap == null) {
+			return 8;
+		} else {
+			return colorMap.getInputBits();
 		}
-		if (bits > MAX_BITS) {
-			bits = MAX_BITS;
-		}
-		return bits;
 	}
 
 	public short[] getILUT() {
+
 		if (intensityTransform == null && gain == 0.5 && bias == 0.5) {
-			return null;// do nothing
+			return null;
 		}
-		// create a lookup table
-		// input bits: getInputDataBits()
-		// output bits: getOutputDataBits()
+
+		/*
+		 * create a lookup table. The input bits is getInputDataBits(). The output bits is getOutputDataBits()
+		 */
 
 		// the LUT index range is [0, lutIndexes], plus repeat the last value
 		int lutIndexes = 1 << getILUTInputBits();
@@ -223,7 +221,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 			} else if (v >= outputRange) {
 				v = outputRange - 1;
 			}
-			lut[i] = (byte) (v);
+			lut[i] = (short) (v);
 		}
 		lut[lutIndexes + 1] = lut[lutIndexes];
 
