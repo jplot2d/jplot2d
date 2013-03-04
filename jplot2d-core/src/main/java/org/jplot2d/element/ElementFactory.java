@@ -27,7 +27,6 @@ import java.lang.reflect.Proxy;
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.ByteDataBuffer;
 import org.jplot2d.data.FloatDataBuffer;
-import org.jplot2d.data.ImageData;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
@@ -602,7 +601,7 @@ public class ElementFactory {
 	 * 
 	 * @return an image graph
 	 */
-	public ImageGraph createImageGraph(ImageData data) {
+	public ImageGraph createImageGraph(SingleBandImageData data) {
 
 		ImageMapping im = createImageMapping();
 		DummyEnvironment env = (DummyEnvironment) im.getEnvironment();

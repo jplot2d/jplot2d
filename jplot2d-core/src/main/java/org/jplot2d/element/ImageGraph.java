@@ -21,17 +21,16 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.data.ImageData;
+import org.jplot2d.data.SingleBandImageData;
 
 /**
+ * A graph to display a pseudo-color image. Its data is a single band intensity values.
+ * 
  * @author Jingjing Li
  * 
  */
 @PropertyGroup("Image")
 public interface ImageGraph extends Graph {
-
-	@Hierarchy(HierarchyOp.GET)
-	public Layer getParent();
 
 	/**
 	 * Returns the mapping of this image.
@@ -44,8 +43,8 @@ public interface ImageGraph extends Graph {
 	@Hierarchy(HierarchyOp.JOIN)
 	public void setMapping(ImageMapping mapping);
 
-	public ImageData getData();
+	public SingleBandImageData getData();
 
-	public void setData(ImageData data);
+	public void setData(SingleBandImageData data);
 
 }
