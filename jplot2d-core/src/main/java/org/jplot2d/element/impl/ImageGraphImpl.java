@@ -19,9 +19,7 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.util.Map;
 
-import org.jplot2d.data.ImageData;
 import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.data.MultiBandImageData;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.transform.NormalTransform;
@@ -32,7 +30,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 	private static ColorSpace grayCS = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 
 	private ImageMappingEx mapping;
-	private ImageData data;
+	private SingleBandImageData data;
 
 	public ImageGraphImpl() {
 		super();
@@ -52,11 +50,11 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		}
 	}
 
-	public ImageData getData() {
+	public SingleBandImageData getData() {
 		return data;
 	}
 
-	public void setData(ImageData data) {
+	public void setData(SingleBandImageData data) {
 		this.data = data;
 	}
 
@@ -113,29 +111,15 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		double yval = data.getYRange().getMin();
 
 		// apply limits to generate a raster
-		WritableRaster raster = null;
-		if (data instanceof SingleBandImageData) {
-			ImageDataBuffer idb = ((SingleBandImageData) data).getDataBuffer();
-			short[] result = zscaleLimits(idb, xoff, yoff, width, height, limits[0], limits[1]);
+		ImageDataBuffer idb = ((SingleBandImageData) data).getDataBuffer();
+		short[] result = zscaleLimits(idb, xoff, yoff, width, height, limits[0], limits[1]);
 
-			// create a SampleModel for short data
-			SampleModel sampleModel = ushortGrayCM.createCompatibleSampleModel(width, height);
-			// and a DataBuffer with the image data
-			DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
-			// create a raster
-			raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
-		} else if (data instanceof MultiBandImageData) {
-			ImageDataBuffer[] idbs = ((MultiBandImageData) data).getDataBuffer();
-			int bands = idbs.length;
-			short[][] result = new short[bands][];
-			for (int band = 0; band < bands; band++) {
-				result[band] = zscaleLimits(idbs[band], xoff, yoff, width, height, limits[0], limits[1]);
-			}
-
-			SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_USHORT, width, height, bands);
-			DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
-			raster = Raster.createWritableRaster(sm, dbuffer, null);
-		}
+		// create a SampleModel for short data
+		SampleModel sampleModel = ushortGrayCM.createCompatibleSampleModel(width, height);
+		// and a DataBuffer with the image data
+		DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
+		// create a raster
+		WritableRaster raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
 
 		// zoom raster to device size
 		PaperTransform pxf = getPaperTransform();
