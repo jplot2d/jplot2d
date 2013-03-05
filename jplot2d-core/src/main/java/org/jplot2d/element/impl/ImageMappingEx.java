@@ -28,6 +28,8 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 
 	public ImageGraphEx getParent();
 
+	public ImageGraphEx[] getGraphs();
+
 	public void addImageGraph(ImageGraphEx graph);
 
 	public void removeImageGraph(ImageGraphEx graph);
@@ -37,16 +39,16 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 	public double[] getLimits();
 
 	/**
-	 * Returns the number of significant bits that the ILUT index should match. When applying the
-	 * limits, the generated values should match the ILUT indexes.
+	 * Returns the number of significant bits that the ILUT index should match. When applying the limits, the generated
+	 * values should match the ILUT indexes.
 	 * 
 	 * @return the number of significant bits
 	 */
 	public int getILUTInputBits();
 
 	/**
-	 * Returns the number of significant bits that the ILUT output range. When creating image, the
-	 * color model bit should match this value.
+	 * Returns the number of significant bits that the ILUT output range. When creating image, the color model bit
+	 * should match this value.
 	 * 
 	 * @return the number of significant bits
 	 */
