@@ -36,7 +36,7 @@ public interface ImageMapping extends Element {
 	 * @return all ImageGraph whose mapping are controlled by this ImageMapping
 	 */
 	@Hierarchy(HierarchyOp.GETARRAY)
-	ImageGraph[] getGraphs();
+	public ImageGraph[] getGraphs();
 
 	/**
 	 * Returns the LimitsAlgorithm

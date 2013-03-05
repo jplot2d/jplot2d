@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jplot2d.data.ImageData;
-import org.jplot2d.element.ImageGraph;
 import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
@@ -80,8 +79,8 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		}
 	}
 
-	public ImageGraph[] getGraphs() {
-		return graphs.toArray(new ImageGraph[graphs.size()]);
+	public ImageGraphEx[] getGraphs() {
+		return graphs.toArray(new ImageGraphEx[graphs.size()]);
 	}
 
 	public LimitsAlgorithm getLimitsAlgorithm() {
