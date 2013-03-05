@@ -14,6 +14,7 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferUShort;
 import java.awt.image.LookupOp;
+import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
@@ -26,8 +27,6 @@ import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
-
-	private static ColorSpace grayCS = ColorSpace.getInstance(ColorSpace.CS_GRAY);
 
 	private ImageMappingEx mapping;
 	private SingleBandImageData data;
@@ -97,9 +96,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		Shape clip = getPaperTransform().getPtoD(getBounds());
 		g.setClip(clip);
 
-		ColorModel ushortGrayCM = new ComponentColorModel(grayCS, new int[] { mapping.getILUTOutputBits() }, false,
-				true, Transparency.OPAQUE, DataBuffer.TYPE_USHORT);
-
 		double[] limits = mapping.getLimits();
 
 		// find a proper region to process
@@ -115,7 +111,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		short[] result = zscaleLimits(idb, xoff, yoff, width, height, limits[0], limits[1]);
 
 		// create a SampleModel for short data
-		SampleModel sampleModel = ushortGrayCM.createCompatibleSampleModel(width, height);
+		SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width,
+				new int[] { 0 });
 		// and a DataBuffer with the image data
 		DataBufferUShort dbuffer = new DataBufferUShort(result, width * height);
 		// create a raster
@@ -135,7 +132,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		raster = axop.filter(raster, null);
 
 		// apply color mapping
-		BufferedImage image = colorImage(ushortGrayCM, raster);
+		BufferedImage image = colorImage(mapping.getILUTOutputBits(), raster);
 
 		// draw the image
 		AffineTransform at = new AffineTransform(1, 0.0, 0.0, -1, xorig, yorig);
@@ -201,50 +198,56 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 	 * Apply the color LUT to the given raster. If the given raster only has a band, it will be duplicated to meet the
 	 * output band number.
 	 * 
-	 * @param cm
+	 * @param bits
+	 *            the number of bits for the single band raster
 	 * @param raster
 	 * @return
 	 */
-	private BufferedImage colorImage(ColorModel cm, WritableRaster raster) {
+	private BufferedImage colorImage(int bits, WritableRaster raster) {
 
+		int destNumComps;
 		if (mapping.getColorMap() == null) {
-			// assembly a BufferedImage
-			return new BufferedImage(cm, raster, false, null);
+			destNumComps = 3;
+		} else {
+			destNumComps = mapping.getColorMap().getColorModel().getNumComponents();
 		}
-
-		ColorModel destCM = mapping.getColorMap().getColorModel();
 
 		// duplicate the source band to as many bands as the number of dest CM
-		if (raster.getSampleModel().getNumBands() == 1) {
-			int destNumComps = destCM.getNumComponents();
-			if (destNumComps > 1) {
+		if (destNumComps > 1) {
 
-				// create a new raster which has duplicate bands
-				short[] singleBandData = ((DataBufferUShort) raster.getDataBuffer()).getData();
-				int singleBandSize = ((DataBufferUShort) raster.getDataBuffer()).getSize();
+			// create a new raster which has duplicate bands
+			short[] singleBandData = ((DataBufferUShort) raster.getDataBuffer()).getData();
+			int singleBandSize = ((DataBufferUShort) raster.getDataBuffer()).getSize();
 
-				int bits = cm.getComponentSize(0);
-				int[] bitsArray = new int[destNumComps];
-				short[][] dupDataArray = new short[destNumComps][];
-				for (int i = 0; i < destNumComps; i++) {
-					bitsArray[i] = bits;
-					dupDataArray[i] = singleBandData;
-				}
-
-				SampleModel scm = raster.getSampleModel();
-				SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(), scm.getHeight(),
-						destNumComps);
-				DataBufferUShort dbuffer = new DataBufferUShort(dupDataArray, singleBandSize);
-				raster = Raster.createWritableRaster(dupSM, dbuffer, null);
+			int[] bitsArray = new int[destNumComps];
+			short[][] dupDataArray = new short[destNumComps][];
+			for (int i = 0; i < destNumComps; i++) {
+				bitsArray[i] = bits;
+				dupDataArray[i] = singleBandData;
 			}
+
+			SampleModel scm = raster.getSampleModel();
+			SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(), scm.getHeight(), destNumComps);
+			DataBufferUShort dbuffer = new DataBufferUShort(dupDataArray, singleBandSize);
+			raster = Raster.createWritableRaster(dupSM, dbuffer, null);
 		}
 
-		// lookup and create a BufferedImage
-		WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
-		LookupOp op = new LookupOp(mapping.getColorMap().getLookupTable(), null);
-		op.filter(raster, destRaster);
+		if (mapping.getColorMap() == null) {
+			// assembly a BufferedImage with sRGB color sapce
+			int[] bitsArray = new int[] { bits, bits, bits };
+			ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), bitsArray, false,
+					true, Transparency.OPAQUE, raster.getSampleModel().getDataType());
 
-		return new BufferedImage(destCM, destRaster, false, null);
+			return new BufferedImage(destCM, raster, false, null);
+		} else {
+			// lookup and create a BufferedImage
+			ColorModel destCM = mapping.getColorMap().getColorModel();
+			WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
+			LookupOp op = new LookupOp(mapping.getColorMap().getLookupTable(), null);
+			op.filter(raster, destRaster);
+
+			return new BufferedImage(destCM, destRaster, false, null);
+		}
 
 	}
 
