@@ -92,10 +92,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 			return;
 		}
 
-		Graphics2D g = (Graphics2D) graphics.create();
-		Shape clip = getPaperTransform().getPtoD(getBounds());
-		g.setClip(clip);
-
 		double[] limits = mapping.getLimits();
 
 		// find a proper region to process
@@ -131,10 +127,14 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		AffineTransformOp axop = new AffineTransformOp(scaleAT, AffineTransformOp.TYPE_BILINEAR);
 		raster = axop.filter(raster, null);
 
-		// apply color mapping
+		// apply pseudo-color mapping
 		BufferedImage image = colorImage(mapping.getILUTOutputBits(), raster);
 
 		// draw the image
+		Graphics2D g = (Graphics2D) graphics.create();
+		Shape clip = getPaperTransform().getPtoD(getBounds());
+		g.setClip(clip);
+
 		AffineTransform at = new AffineTransform(1, 0.0, 0.0, -1, xorig, yorig);
 		g.drawRenderedImage(image, at);
 

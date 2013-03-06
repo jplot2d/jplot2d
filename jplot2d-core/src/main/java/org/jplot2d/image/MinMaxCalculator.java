@@ -18,9 +18,9 @@
  */
 package org.jplot2d.image;
 
-import org.jplot2d.data.ImageData;
+import java.awt.Dimension;
+
 import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.data.SingleBandImageData;
 
 /**
  * The limits calculator to produce the upper and lower limits to the min and max values.
@@ -34,15 +34,14 @@ public class MinMaxCalculator implements LimitsCalculator {
 
 	}
 
-	public double[] calcLimits(ImageData[] dataArray) {
+	public double[] calcLimits(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
 		double min = Double.NaN;
 		double max = Double.NaN;
-		for (ImageData data : dataArray) {
+		for (int i = 0; i < dbufs.length; i++) {
+			ImageDataBuffer dbuf = dbufs[i];
+			Dimension size = sizeArray[i];
 			double[] minmax = null;
-			if (data instanceof SingleBandImageData) {
-				ImageDataBuffer dbuf = ((SingleBandImageData) data).getDataBuffer();
-				minmax = dbuf.calcMinMax(data.getWidth(), data.getHeight());
-			}
+			minmax = dbuf.calcMinMax(size.width, size.height);
 
 			if (minmax != null) {
 				double dmin = minmax[0];

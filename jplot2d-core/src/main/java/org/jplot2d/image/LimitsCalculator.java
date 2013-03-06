@@ -18,7 +18,9 @@
  */
 package org.jplot2d.image;
 
-import org.jplot2d.data.ImageData;
+import java.awt.Dimension;
+
+import org.jplot2d.data.ImageDataBuffer;
 
 /**
  * @author Jingjing Li
@@ -26,6 +28,6 @@ import org.jplot2d.data.ImageData;
  */
 public interface LimitsCalculator {
 
-	public double[] calcLimits(ImageData[] dataArray);
+	public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray);
 
 }

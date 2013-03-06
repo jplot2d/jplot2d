@@ -1,10 +1,12 @@
 package org.jplot2d.element.impl;
 
+import java.awt.Dimension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jplot2d.data.ImageData;
+import org.jplot2d.data.ImageDataBuffer;
+import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
@@ -92,11 +94,14 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	}
 
 	public void calcLimits() {
-		ImageData[] ids = new ImageData[graphs.size()];
+		ImageDataBuffer[] ids = new ImageDataBuffer[graphs.size()];
+		Dimension[] sizeArray = new Dimension[graphs.size()];
 		for (int i = 0; i < ids.length; i++) {
-			ids[i] = graphs.get(i).getData();
+			SingleBandImageData data = graphs.get(i).getData();
+			ids[i] = graphs.get(i).getData().getDataBuffer();
+			sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
 		}
-		limits = algo.getCalculator().calcLimits(ids);
+		limits = algo.getCalculator().calcLimits(ids, sizeArray);
 	}
 
 	public double[] getLimits() {
