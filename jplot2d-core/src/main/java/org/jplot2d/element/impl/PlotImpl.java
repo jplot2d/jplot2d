@@ -1147,9 +1147,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private void calcPendingImageMappingLimits() {
 		Set<ImageMappingEx> ims = new HashSet<ImageMappingEx>();
-		fillImageMappings(this, ims);
+		Set<RGBImageMappingEx> rgbims = new HashSet<RGBImageMappingEx>();
+		fillImageMappings(this, ims, rgbims);
 
 		for (ImageMappingEx im : ims) {
+			im.calcLimits();
+		}
+		for (RGBImageMappingEx im : rgbims) {
 			im.calcLimits();
 		}
 	}
@@ -1157,16 +1161,19 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
-	private static void fillImageMappings(PlotEx plot, Set<ImageMappingEx> ims) {
+	private static void fillImageMappings(PlotEx plot, Set<ImageMappingEx> ims, Set<RGBImageMappingEx> rgbims) {
 		for (LayerEx layer : plot.getLayers()) {
 			for (GraphEx graph : layer.getGraphs()) {
 				if (graph instanceof ImageGraphEx) {
 					ims.add(((ImageGraphEx) graph).getMapping());
 				}
+				if (graph instanceof RGBImageGraphEx) {
+					rgbims.add(((RGBImageGraphEx) graph).getMapping());
+				}
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
-			fillImageMappings(sp, ims);
+			fillImageMappings(sp, ims, rgbims);
 		}
 	}
 
