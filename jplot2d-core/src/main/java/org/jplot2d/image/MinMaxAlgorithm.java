@@ -34,4 +34,8 @@ public class MinMaxAlgorithm implements LimitsAlgorithm {
 		return new MinMaxCalculator();
 	}
 
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
 }

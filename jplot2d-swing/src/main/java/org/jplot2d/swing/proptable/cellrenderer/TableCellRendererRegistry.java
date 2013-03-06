@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,7 +23,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
@@ -34,16 +33,14 @@ import java.util.Map;
 
 import javax.swing.table.TableCellRenderer;
 
-import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.swing.proptable.property.Property;
 import org.jplot2d.tex.MathElement;
-import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.Range;
 
 /**
- * A registry to keep the map between property type and TableCellRenderer. Warning: the internal map
- * is not synchronized.
+ * A registry to keep the map between property type and TableCellRenderer. Warning: the internal map is not
+ * synchronized.
  * 
  * @author Jingjing Li
  * 
@@ -51,6 +48,8 @@ import org.jplot2d.util.Range;
 public class TableCellRendererRegistry implements TableCellRendererFactory {
 
 	private Map<Class<?>, TableCellRenderer> typeRendererMap;
+
+	private TableCellRenderer defaultCellRenderer = new StringCellRenderer<Object>();
 
 	public TableCellRendererRegistry() {
 		typeRendererMap = new HashMap<Class<?>, TableCellRenderer>();
@@ -66,15 +65,18 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 	}
 
 	public TableCellRenderer createTableCellRenderer(Property<?> property) {
-		return typeRendererMap.get(property.getType());
+		TableCellRenderer result = typeRendererMap.get(property.getType());
+		if (result == null) {
+			result = defaultCellRenderer;
+		}
+		return result;
 	}
 
 	/**
-	 * Adds default renderers. This method is called by the constructor but may be called later to
-	 * reset any customizations made through the <code>registerRenderer</code> methods.
+	 * Adds default renderers. This method is called by the constructor but may be called later to reset any
+	 * customizations made through the <code>registerRenderer</code> methods.
 	 * <p>
-	 * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging
-	 * custom defaults.
+	 * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging custom defaults.
 	 */
 	public void registerDefaults() {
 		typeRendererMap.clear();
@@ -106,10 +108,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		// others
 		registerRenderer(Range.class, new RangeCellRenderer());
 		registerRenderer(MathElement.class, new MathCellRenderer());
-		registerRenderer(LayoutDirector.class, new StringCellRenderer<Object>());
-		registerRenderer(AxisTickTransform.class, new StringCellRenderer<Object>());
 		registerRenderer(BasicStroke.class, new BasicStrokeCellRenderer());
-		registerRenderer(Paint.class, new StringCellRenderer<Object>());
 
 		// Objct renderer
 		registerRenderer(Object.class, new ObjectCellRenderer());

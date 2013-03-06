@@ -29,9 +29,12 @@ import org.jplot2d.element.AxisTransform;
 import org.jplot2d.element.AxisTickManager;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Graph;
+import org.jplot2d.element.ImageGraph;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Annotation;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.RGBImageGraph;
+import org.jplot2d.element.RGBImageMapping;
 import org.jplot2d.element.Title;
 import org.jplot2d.element.XYGraph;
 
@@ -135,6 +138,25 @@ public class PlotTreeModel implements TreeModel {
 			if (index == 0) {
 				return gp.getLegendItem();
 			}
+		} else if (parent instanceof ImageGraph) {
+			ImageGraph gp = (ImageGraph) parent;
+			if (index == 0) {
+				return gp.getMapping();
+			}
+		} else if (parent instanceof RGBImageGraph) {
+			RGBImageGraph gp = (RGBImageGraph) parent;
+			if (index == 0) {
+				return gp.getMapping();
+			}
+		} else if (parent instanceof RGBImageMapping) {
+			RGBImageMapping mapping = (RGBImageMapping) parent;
+			if (index == 0) {
+				return mapping.getRedTransform();
+			} else if (index == 1) {
+				return mapping.getGreenTransform();
+			} else if (index == 2) {
+				return mapping.getBlueTransform();
+			}
 		}
 		return null;
 	}
@@ -167,6 +189,15 @@ public class PlotTreeModel implements TreeModel {
 		} else if (parent instanceof XYGraph) {
 			// legend item
 			return 1;
+		} else if (parent instanceof ImageGraph) {
+			// ImageMapping
+			return 1;
+		} else if (parent instanceof RGBImageGraph) {
+			// RGBImageMapping
+			return 1;
+		} else if (parent instanceof RGBImageMapping) {
+			// RGB band transform
+			return 3;
 		}
 		return 0;
 	}
@@ -267,14 +298,33 @@ public class PlotTreeModel implements TreeModel {
 			if (child == ((XYGraph) parent).getLegendItem()) {
 				return 0;
 			}
+		} else if (parent instanceof ImageGraph) {
+			// legend item
+			if (child == ((ImageGraph) parent).getMapping()) {
+				return 0;
+			}
+		} else if (parent instanceof RGBImageGraph) {
+			// legend item
+			if (child == ((RGBImageGraph) parent).getMapping()) {
+				return 0;
+			}
+		} else if (parent instanceof RGBImageMapping) {
+			// legend item
+			if (child == ((RGBImageMapping) parent).getRedTransform()) {
+				return 0;
+			} else if (child == ((RGBImageMapping) parent).getGreenTransform()) {
+				return 1;
+			} else if (child == ((RGBImageMapping) parent).getBlueTransform()) {
+				return 2;
+			}
 		}
 		return -1;
 	}
 
 	public boolean isLeaf(Object node) {
 		if (node instanceof Plot || node instanceof Axis || node instanceof AxisTickManager
-				|| node instanceof AxisTransform || node instanceof Layer
-				|| node instanceof Graph) {
+				|| node instanceof AxisTransform || node instanceof Layer || node instanceof Graph
+				|| node instanceof RGBImageMapping) {
 			return false;
 		} else {
 			return true;
