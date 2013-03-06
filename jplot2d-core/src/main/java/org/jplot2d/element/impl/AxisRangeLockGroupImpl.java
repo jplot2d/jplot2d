@@ -35,8 +35,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	private static Range NORM_PHYSICAL_RANGE = new Range.Double(0.0, 1.0);
 
-	private static Range INFINITY_PHYSICAL_RANGE = new Range.Double(Double.NEGATIVE_INFINITY,
-			Double.POSITIVE_INFINITY);
+	private static Range INFINITY_PHYSICAL_RANGE = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
 	/**
 	 * The unitive axis type. can be null is this lock group contains more than one axis type
@@ -53,10 +52,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	public String getId() {
 		return "LockGroup@" + Integer.toHexString(System.identityHashCode(this));
-	}
-
-	public String getShortId() {
-		return getFullId();
 	}
 
 	public String getFullId() {
@@ -192,8 +187,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	 */
 	private void autoRange() {
 
-		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils
-				.createVirtualTransformMap(arms);
+		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils.createVirtualTransformMap(arms);
 
 		RangeStatus<Boolean> pRange = calcNiceVirtualRange(vtMap);
 
@@ -245,17 +239,16 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	}
 
 	/**
-	 * Find a nice norm-physical range to make sure all corresponding user range only contain valid
-	 * values.
+	 * Find a nice norm-physical range to make sure all corresponding user range only contain valid values.
 	 * <ul>
-	 * <li>If any corresponding world range of layer span invalid value, the physical end of given
-	 * range is adjusted inward to match the data that most close to boundary.</li>
+	 * <li>If any corresponding world range of layer span invalid value, the physical end of given range is adjusted
+	 * inward to match the data that most close to boundary.</li>
 	 * <li>If there is no valid data inside the given range, <code>null</code> will be returned.</li>
 	 * <li>No margin added to the result.</li>
 	 * </ul>
 	 * 
-	 * @return a RangeStatus contain the nice norm-physical range. The Boolean status to indicate if
-	 *         there are some data points outside the value bounds
+	 * @return a RangeStatus contain the nice norm-physical range. The Boolean status to indicate if there are some data
+	 *         points outside the value bounds
 	 */
 	private RangeStatus<Boolean> calcNiceVirtualRange(Map<AxisTransformEx, NormalTransform> vtMap) {
 
@@ -366,8 +359,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		Range validRange = AxisRangeUtils.validateNormalRange(range, arms, false);
 		if (!validRange.equals(range)) {
-			notify(new RangeAdjustedToValueBoundsNotice(
-					"Range exceed valid boundary, has been adjusted."));
+			notify(new RangeAdjustedToValueBoundsNotice("Range exceed valid boundary, has been adjusted."));
 		}
 
 		RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(validRange, arms);
@@ -428,8 +420,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		/* find nice range */
 		Range pRange = validateNormalRange(NORM_PHYSICAL_RANGE);
 		/*
-		 * if the current physical range contains no valid data, find valid data at all range (like
-		 * auto range)
+		 * if the current physical range contains no valid data, find valid data at all range (like auto range)
 		 */
 		if (pRange == null) {
 			pRange = validateNormalRange(INFINITY_PHYSICAL_RANGE);
@@ -445,8 +436,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				ax.setNormalTransfrom(ax.getTransform().createNormalTransform(nwr));
 			}
 
-			notify(new RangeAdjustedToValueBoundsNotice(
-					"All axes contain no valid data, range set to default range."));
+			notify(new RangeAdjustedToValueBoundsNotice("All axes contain no valid data, range set to default range."));
 			return;
 		}
 
@@ -474,8 +464,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		for (AxisTransformEx ax : arms) {
 			Range wr = ax.getNormalTransform().convFromNR(pRange);
 			// set the inverted nature
-			if (ax.getType().getDefaultWorldRange(ax.getTransform()).isInverted() != (wr
-					.isInverted() ^ ax.isInverted())) {
+			if (ax.getType().getDefaultWorldRange(ax.getTransform()).isInverted() != (wr.isInverted() ^ ax.isInverted())) {
 				wr = wr.invert();
 			}
 			ax.setNormalTransfrom(ax.getTransform().createNormalTransform(wr));
@@ -497,12 +486,10 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				coreAxis.setCoreRange(coreRange);
 			} else {
 				if (!pRange.equals(NORM_PHYSICAL_RANGE)) {
-					notify(new RangeAdjustedToValueBoundsNotice(
-							"Some axes contain invalid value, range adjusted."));
+					notify(new RangeAdjustedToValueBoundsNotice("Some axes contain invalid value, range adjusted."));
 				}
 
-				RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(
-						NORM_PHYSICAL_RANGE, arms);
+				RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(NORM_PHYSICAL_RANGE, arms);
 				if (rs.getStatus() != null) {
 					notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
 				}
@@ -521,6 +508,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		return AxisRangeUtils.validateNormalRange(range, arms, true);
 	}
 
+	/**
+	 * Returns short id of axes managed by this lock group.
+	 */
 	private String getAxesShortId() {
 		StringBuilder sb = new StringBuilder();
 		for (AxisTransformEx rm : arms) {

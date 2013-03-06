@@ -56,19 +56,6 @@ public abstract class ElementImpl implements ElementEx {
 		}
 	}
 
-	public String getShortId() {
-		if (parent != null) {
-			String pid = parent.getShortId();
-			if (pid == null) {
-				return getId();
-			} else {
-				return getId() + "." + pid;
-			}
-		} else {
-			return getId();
-		}
-	}
-
 	public void notify(Notice msg) {
 		if ((getParent() != null)) {
 			getParent().notify(msg);

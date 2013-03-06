@@ -49,13 +49,6 @@ public interface ElementEx extends Element {
 	public String getFullId();
 
 	/**
-	 * Returns the short id of this component. The short id is like full id, without the root Plot
-	 * 
-	 * @return the short id of this component.
-	 */
-	public String getShortId();
-
-	/**
 	 * Return the invoke step to get this object from its parent.
 	 * 
 	 * @return the invoke step

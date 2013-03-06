@@ -28,6 +28,15 @@ public interface AxisEx extends Axis, ComponentEx {
 
 	public PlotEx getParent();
 
+	/**
+	 * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots. The 1st id
+	 * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
+	 * root plot.
+	 * 
+	 * @return the short id of this axis.
+	 */
+	public String getShortId();
+
 	public AxisTickManagerEx getTickManager();
 
 	/**
@@ -46,18 +55,17 @@ public interface AxisEx extends Axis, ComponentEx {
 	public PaperTransform getPaperTransform();
 
 	/**
-	 * Moves this plot component to a new location. The origin of the new location is specified by
-	 * point <code>p</code>. Point2D <code>p</code> is given in the parent's paper coordinate space.
+	 * Moves this plot component to a new location. The origin of the new location is specified by point <code>p</code>.
+	 * Point2D <code>p</code> is given in the parent's paper coordinate space.
 	 * 
 	 * @param p
-	 *            the point defining the origin of the new location, given in the coordinate space
-	 *            of this component's parent
+	 *            the point defining the origin of the new location, given in the coordinate space of this component's
+	 *            parent
 	 */
 	public void setLocation(double locX, double locY);
 
 	/**
-	 * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)} to set the
-	 * orientation of this axis.
+	 * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)} to set the orientation of this axis.
 	 * 
 	 * @param orientation
 	 *            the orientation
