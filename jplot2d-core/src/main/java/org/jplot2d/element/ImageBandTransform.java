@@ -20,6 +20,8 @@ package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+import org.jplot2d.annotation.Property;
+import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 
@@ -29,6 +31,7 @@ import org.jplot2d.image.LimitsAlgorithm;
  * @author Jingjing Li
  * 
  */
+@PropertyGroup("Image Band Transform")
 public interface ImageBandTransform extends Element {
 
 	@Hierarchy(HierarchyOp.GET)
@@ -39,6 +42,7 @@ public interface ImageBandTransform extends Element {
 	 * 
 	 * @return the LimitsAlgorithm
 	 */
+	@Property(order = 0)
 	public LimitsAlgorithm getLimitsAlgorithm();
 
 	/**
@@ -49,14 +53,17 @@ public interface ImageBandTransform extends Element {
 	 */
 	public void setLimitsAlgorithm(LimitsAlgorithm algo);
 
+	@Property(order = 1)
 	public IntensityTransform getIntensityTransform();
 
 	public void setIntensityTransform(IntensityTransform it);
 
+	@Property(order = 2)
 	public double getBias();
 
 	public void setBias(double bias);
 
+	@Property(order = 3)
 	public double getGain();
 
 	public void setGain(double gain);
