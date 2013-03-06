@@ -60,6 +60,20 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
 		return (RGBImageGraphEx) parent;
 	}
 
+	public String getId() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("RGBImageMapping(");
+		for (RGBImageGraphEx graph : graphs) {
+			sb.append(graph.getId()).append(',');
+		}
+		sb.replace(sb.length() - 1, sb.length(), ")");
+		return sb.toString();
+	}
+
+	public String getFullId() {
+		return "RGBImageMapping@" + Integer.toHexString(System.identityHashCode(this));
+	}
+
 	public InvokeStep getInvokeStepFormParent() {
 		if (graphs.size() == 0) {
 			return null;

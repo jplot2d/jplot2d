@@ -35,6 +35,10 @@ import org.jplot2d.transform.PaperTransform;
  */
 public class ContainerStub extends ContainerImpl {
 
+	public String getId() {
+		return null;
+	}
+
 	public PaperTransform getPaperTransform() {
 		return null;
 	}

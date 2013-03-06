@@ -83,6 +83,14 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		legendItem.setParent(this);
 	}
 
+	public String getId() {
+		if (getParent() != null) {
+			return "XYGraph" + getParent().indexOf(this);
+		} else {
+			return "XYGraph@" + Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
 	public XYLegendItemEx getLegendItem() {
 		return (XYLegendItemEx) legendItem;
 	}

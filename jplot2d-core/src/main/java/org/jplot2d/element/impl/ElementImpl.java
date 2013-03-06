@@ -43,11 +43,6 @@ public abstract class ElementImpl implements ElementEx {
 		this.parent = parent;
 	}
 
-	public String getId() {
-		return this.getClass().getSimpleName() + "@"
-				+ Integer.toHexString(System.identityHashCode(this));
-	}
-
 	public String getFullId() {
 		if (parent != null) {
 			return getId() + "." + parent.getFullId();

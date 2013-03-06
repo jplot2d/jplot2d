@@ -34,6 +34,10 @@ import org.jplot2d.element.impl.InvokeStep;
  */
 public class ComponentStub extends ComponentImpl {
 
+	public String getId() {
+		return null;
+	}
+
 	public Point2D getLocation() {
 		return null;
 	}

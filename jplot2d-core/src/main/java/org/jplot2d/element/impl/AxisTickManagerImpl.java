@@ -45,8 +45,8 @@ import org.jplot2d.util.Range;
 /**
  * Manage tick values and labels of multiple axes.
  * <p>
- * Implementation Notes: This class has some internal cache for properties of its axes to trace the
- * values valid conditions. The {@link #calcTicks()} can detect if ticks need to be recalculated.
+ * Implementation Notes: This class has some internal cache for properties of its axes to trace the values valid
+ * conditions. The {@link #calcTicks()} can detect if ticks need to be recalculated.
  * 
  * @author Jingjing Li
  * 
@@ -218,7 +218,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			int xidx = axisTransform.indexOfTickManager(this);
 			return "Tick" + xidx + "." + axisTransform.getFullId();
 		} else {
-			return super.getId();
+			return "AxisTickManager@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
@@ -271,8 +271,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * update tick algorithm when axis type or tick transform changed.
 	 */
 	private void updateTickAlgorithm() {
-		TickAlgorithm ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(),
-				getTickTransform());
+		TickAlgorithm ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(), getTickTransform());
 		if (ta == null) {
 			setTickTransform(null);
 			ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(), null);
@@ -572,8 +571,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		for (AxisEx axis : axes) {
 			AxisStatus axisStatus = axisStatusMap.get(axis);
 			if (axisStatus == null) { // new axis
-				axisStatus = new AxisStatus(axis.getLength(), isLabelSameOrientation(axis),
-						axis.getEffectiveFont());
+				axisStatus = new AxisStatus(axis.getLength(), isLabelSameOrientation(axis), axis.getEffectiveFont());
 				axisStatusMap.put(axis, axisStatus);
 			} else { // re-create axisStatus if changed
 				boolean labelSameOrientation = isLabelSameOrientation(axis);
@@ -591,8 +589,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 					newStatus = true;
 				}
 				if (newStatus) {
-					axisStatus = new AxisStatus(axis.getLength(), labelSameOrientation,
-							axis.getEffectiveFont());
+					axisStatus = new AxisStatus(axis.getLength(), labelSameOrientation, axis.getEffectiveFont());
 					axisStatusMap.put(axis, axisStatus);
 				}
 			}
@@ -607,19 +604,16 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		Object values, mvalues;
 		if (autoValues) {
 			if (autoInterval) {
-				if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged
-						|| propNumberChanged || minorNumberChanged || _tickAlgorithmChanged
-						|| _axisCircularRangeChanged || _rangeChanged) {
-					tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1
-							: minorNumber);
+				if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged || propNumberChanged
+						|| minorNumberChanged || _tickAlgorithmChanged || _axisCircularRangeChanged || _rangeChanged) {
+					tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1 : minorNumber);
 					interval = tickCalculator.getInterval();
 					actualMinorNumber = tickCalculator.getMinorNumber();
 				}
 			} else {
-				if (autoValuesChanged || intervalChanged || minorNumberChanged
-						|| _tickAlgorithmChanged || _axisCircularRangeChanged || _rangeChanged) {
-					tickCalculator.calcValuesByTickInterval(interval, offset, autoMinorNumber ? -1
-							: minorNumber);
+				if (autoValuesChanged || intervalChanged || minorNumberChanged || _tickAlgorithmChanged
+						|| _axisCircularRangeChanged || _rangeChanged) {
+					tickCalculator.calcValuesByTickInterval(interval, offset, autoMinorNumber ? -1 : minorNumber);
 					actualMinorNumber = tickCalculator.getMinorNumber();
 				}
 			}
@@ -681,8 +675,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 
 		/* shrink labels */
-		if (_valuesChanged || labelsChanged || _labelMaxDensityChanged || _axisCircularRangeChanged
-				|| _trfChanged) {
+		if (_valuesChanged || labelsChanged || _labelMaxDensityChanged || _axisCircularRangeChanged || _trfChanged) {
 			shrinkLabelFonts();
 		}
 		_labelMaxDensityChanged = _trfChanged = _axisCircularRangeChanged = false;
@@ -707,16 +700,15 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	/**
-	 * calculate interval from given range, tick number, label height and label format. This will
-	 * set the interval, the values and the label density.
+	 * calculate interval from given range, tick number, label height and label format. This will set the interval, the
+	 * values and the label density.
 	 */
 	private void calcAutoTicks() {
 
 		/* Nothing changed */
-		if (!(autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged
-				|| propNumberChanged || minorNumberChanged || autoLabelFormatChanged
-				|| labelFormatChanged || _labelMaxDensityChanged || _tickAlgorithmChanged
-				|| _trfChanged || _rangeChanged)) {
+		if (!(autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged || propNumberChanged
+				|| minorNumberChanged || autoLabelFormatChanged || labelFormatChanged || _labelMaxDensityChanged
+				|| _tickAlgorithmChanged || _trfChanged || _rangeChanged)) {
 			return;
 		}
 
@@ -737,8 +729,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1 : minorNumber);
 			values = tickCalculator.getValues();
 			if (autoLabelFormat) {
-				labelTextFormat = tickCalculator
-						.calcAutoLabelTextFormat(getCanonicalValues(values));
+				labelTextFormat = tickCalculator.calcAutoLabelTextFormat(getCanonicalValues(values));
 				labelFormat = tickCalculator.calcAutoLabelFormat(getCanonicalValues(values));
 			}
 			autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat, labelFormat);
@@ -815,8 +806,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * @param labelInterval
 	 * @return
 	 */
-	private static MathElement[] calcLabels(MathElement[] fixedLabels, MathElement[] autoLabels,
-			int labelInterval) {
+	private static MathElement[] calcLabels(MathElement[] fixedLabels, MathElement[] autoLabels, int labelInterval) {
 		int fixedLabelsLength = (fixedLabels == null) ? 0 : fixedLabels.length;
 		int autoLabelsLength = (autoLabels == null) ? 0 : autoLabels.length;
 		int length = (int) Math.floor((double) (autoLabelsLength - 1) / labelInterval) + 1;
@@ -855,8 +845,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 *            must not be null
 	 */
 	private void changeLabelFormat(Format textFormat, String format) {
-		if (labelTextFormat != textFormat
-				&& (labelTextFormat == null || !labelTextFormat.equals(textFormat))) {
+		if (labelTextFormat != textFormat && (labelTextFormat == null || !labelTextFormat.equals(textFormat))) {
 			labelTextFormat = textFormat;
 			labelFormatChanged = true;
 		}
@@ -882,8 +871,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	private Font shrinkLabelFont(AxisStatus axisStatus) {
 		Font font = axisStatus.getLabelFont();
 
-		double density = getLabelsDensity(axisNormalTransform, axisStatus.getAxisLength(), values,
-				labels, font, axisStatus.isLabelSameOrientation());
+		double density = getLabelsDensity(axisNormalTransform, axisStatus.getAxisLength(), values, labels, font,
+				axisStatus.isLabelSameOrientation());
 		if (Double.isInfinite(density)) { // when axis length is zero
 			return font;
 		}
@@ -892,8 +881,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		int count = 0;
 		while (density > 1) {
 			font = font.deriveFont((float) (font.getSize2D() / ((density > 1.1) ? density : 1.1)));
-			density = getLabelsDensity(axisNormalTransform, axisStatus.getAxisLength(), values,
-					labels, font, axisStatus.isLabelSameOrientation());
+			density = getLabelsDensity(axisNormalTransform, axisStatus.getAxisLength(), values, labels, font,
+					axisStatus.isLabelSameOrientation());
 
 			if (oldDensity / density >= 1.1) {
 				oldDensity = density;
@@ -915,8 +904,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	private double getMaxLabelsDensity(NormalTransform nxf, Object tickValues, MathElement[] labels) {
 		double maxDensity = 0;
 		for (AxisEx axis : axes) {
-			double density = getLabelsDensity(nxf, axis.getLength(), tickValues, labels,
-					axis.getEffectiveFont(), isLabelSameOrientation(axis));
+			double density = getLabelsDensity(nxf, axis.getLength(), tickValues, labels, axis.getEffectiveFont(),
+					isLabelSameOrientation(axis));
 			if (maxDensity < density) {
 				maxDensity = density;
 			}
@@ -935,8 +924,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * @param labelSameOrientation
 	 * @return
 	 */
-	private double getLabelsDensity(NormalTransform nxf, double axisLength, Object tickValues,
-			MathElement[] labels, Font labelFont, boolean labelSameOrientation) {
+	private double getLabelsDensity(NormalTransform nxf, double axisLength, Object tickValues, MathElement[] labels,
+			Font labelFont, boolean labelSameOrientation) {
 
 		if (Array.getLength(tickValues) == 0) {
 			return 0;
@@ -951,11 +940,9 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		double ticA = transTickToPaper(nxf, axisLength, Array.getDouble(tickValues, 0));
 		if (labelSameOrientation) {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = transTickToPaper(nxf, axisLength,
-						Array.getDouble(tickValues, i * labelInterval));
+				double ticB = transTickToPaper(nxf, axisLength, Array.getDouble(tickValues, i * labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
-				double desity = (labelsSize[i - 1].getWidth() / 2 + labelsSize[i].getWidth() / 2 + blankWidth)
-						/ deltaD;
+				double desity = (labelsSize[i - 1].getWidth() / 2 + labelsSize[i].getWidth() / 2 + blankWidth) / deltaD;
 				if (maxDensity < desity) {
 					maxDensity = desity;
 				}
@@ -963,8 +950,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			}
 		} else {
 			for (int i = 1; i < labelsSize.length; i++) {
-				double ticB = transTickToPaper(nxf, axisLength,
-						Array.getDouble(tickValues, i * labelInterval));
+				double ticB = transTickToPaper(nxf, axisLength, Array.getDouble(tickValues, i * labelInterval));
 				double deltaD = Math.abs(ticB - ticA);
 				double desity = (labelsSize[i - 1].getHeight() / 2 + labelsSize[i].getHeight() / 2 + blankWidth)
 						/ deltaD;
@@ -997,8 +983,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	}
 
 	/**
-	 * Calculate the canonical values of the given values. The canonical values will be used to
-	 * produce labels.
+	 * Calculate the canonical values of the given values. The canonical values will be used to produce labels.
 	 * 
 	 * @param values
 	 *            the tick values
@@ -1096,15 +1081,13 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			Format labelTextFormat;
 			String labelFormat;
 			if (autoLabelFormat) {
-				labelTextFormat = tickCalculator
-						.calcAutoLabelTextFormat(getCanonicalValues(values));
+				labelTextFormat = tickCalculator.calcAutoLabelTextFormat(getCanonicalValues(values));
 				labelFormat = tickCalculator.calcAutoLabelFormat(getCanonicalValues(values));
 			} else {
 				labelTextFormat = this.labelTextFormat;
 				labelFormat = this.labelFormat;
 			}
-			MathElement[] autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat,
-					labelFormat);
+			MathElement[] autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat, labelFormat);
 			MathElement[] labels = calcLabels(null, autoLabels, labelInterval);
 
 			NormalTransform trf = txfType.createNormalTransform(r);

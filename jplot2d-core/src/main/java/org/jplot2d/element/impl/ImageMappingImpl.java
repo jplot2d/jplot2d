@@ -38,7 +38,13 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	}
 
 	public String getId() {
-		return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
+		StringBuilder sb = new StringBuilder();
+		sb.append("ImageMapping(");
+		for (ImageGraphEx graph : graphs) {
+			sb.append(graph.getId()).append(',');
+		}
+		sb.replace(sb.length() - 1, sb.length(), ")");
+		return sb.toString();
 	}
 
 	public String getFullId() {

@@ -32,6 +32,14 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 		super();
 	}
 
+	public String getId() {
+		if (getParent() != null) {
+			return "RGBImageGraph" + getParent().indexOf(this);
+		} else {
+			return "RGBImageGraph@" + Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
 	public RGBImageMappingEx getMapping() {
 		return mapping;
 	}

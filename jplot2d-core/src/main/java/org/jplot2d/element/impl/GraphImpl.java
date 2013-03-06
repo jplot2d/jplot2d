@@ -34,14 +34,6 @@ public abstract class GraphImpl extends ComponentImpl implements GraphEx {
 
 	}
 
-	public String getId() {
-		if (getParent() != null) {
-			return "Graph" + getParent().indexOf(this);
-		} else {
-			return "Graph@" + Integer.toHexString(System.identityHashCode(this));
-		}
-	}
-
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
 			return null;

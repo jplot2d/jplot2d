@@ -26,11 +26,16 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
 	}
 
 	public String getId() {
-		return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
-	}
-
-	public String getFullId() {
-		return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
+		if (getParent() != null) {
+			if (this == getParent().getRedTransform()) {
+				return "ImageBandTransform(Red)";
+			} else if (this == getParent().getGreenTransform()) {
+				return "ImageBandTransform(Green)";
+			} else if (this == getParent().getBlueTransform()) {
+				return "ImageBandTransform(Blue)";
+			}
+		}
+		return "ImageBandTransform@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
 	public InvokeStep getInvokeStepFormParent() {
