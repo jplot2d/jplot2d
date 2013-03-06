@@ -213,10 +213,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		return sb.toString();
 	}
 
-	public String getShortId() {
-		return getFullId();
-	}
-
 	public String getFullId() {
 		if (axisTransform != null) {
 			int xidx = axisTransform.indexOfTickManager(this);

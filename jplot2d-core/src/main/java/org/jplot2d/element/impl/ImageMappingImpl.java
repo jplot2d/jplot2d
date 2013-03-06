@@ -41,10 +41,6 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
-	public String getShortId() {
-		return getFullId();
-	}
-
 	public String getFullId() {
 		return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
 	}

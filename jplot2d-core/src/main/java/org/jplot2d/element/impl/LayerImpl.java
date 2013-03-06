@@ -52,6 +52,19 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		}
 	}
 
+	public String getShortId() {
+		if (getParent() != null) {
+			String pid = getParent().getShortId();
+			if (pid == null) {
+				return getId();
+			} else {
+				return getId() + "." + pid;
+			}
+		} else {
+			return getId();
+		}
+	}
+
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
 			return null;

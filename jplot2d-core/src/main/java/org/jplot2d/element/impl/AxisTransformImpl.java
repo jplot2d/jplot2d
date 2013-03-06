@@ -83,10 +83,6 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		return sb.toString();
 	}
 
-	public String getShortId() {
-		return getFullId();
-	}
-
 	public String getFullId() {
 		if (group != null) {
 			int xidx = group.indexOfRangeManager(this);

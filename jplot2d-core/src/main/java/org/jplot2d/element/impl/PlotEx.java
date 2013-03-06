@@ -10,6 +10,15 @@ public interface PlotEx extends Plot, ContainerEx {
 	public PlotEx getParent();
 
 	/**
+	 * Returns the short id of this plot. The short id is composed of series of ids concatenated with dots. The 1st id
+	 * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
+	 * root plot.
+	 * 
+	 * @return the short id of this plot.
+	 */
+	public String getShortId();
+
+	/**
 	 * Determines whether this plot is valid. A plot is valid when it is correctly sized and positioned within its
 	 * parent plot and all its axes, titles, legend and subplot are also valid.
 	 * 

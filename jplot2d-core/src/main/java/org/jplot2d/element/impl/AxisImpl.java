@@ -147,6 +147,19 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		return "Axis@" + Integer.toHexString(System.identityHashCode(this));
 	}
 
+	public String getShortId() {
+		if (getParent() != null) {
+			String pid = getParent().getShortId();
+			if (pid == null) {
+				return getId();
+			} else {
+				return getId() + "." + pid;
+			}
+		} else {
+			return getId();
+		}
+	}
+
 	public InvokeStep getInvokeStepFormParent() {
 		if (parent == null) {
 			return null;

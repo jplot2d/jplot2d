@@ -24,6 +24,15 @@ public interface LayerEx extends Layer, ContainerEx {
 
 	public PlotEx getParent();
 
+	/**
+	 * Returns the short id of this layer. The short id is composed of series of ids concatenated with dots. The 1st id
+	 * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
+	 * root plot.
+	 * 
+	 * @return the short id of this layer.
+	 */
+	public String getShortId();
+
 	public AxisTransformEx getXAxisTransform();
 
 	public AxisTransformEx getYAxisTransform();
