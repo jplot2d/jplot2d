@@ -34,4 +34,15 @@ public interface RGBImageMappingEx extends RGBImageMapping, ElementEx {
 
 	public void removeImageGraph(RGBImageGraphEx graph);
 
+	public ImageBandTransformEx getRedTransform();
+
+	public ImageBandTransformEx getGreenTransform();
+
+	public ImageBandTransformEx getBlueTransform();
+
+	/**
+	 * Calculate limits for all bands.
+	 */
+	public void calcLimits();
+
 }

@@ -21,7 +21,6 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.data.ImageData;
 import org.jplot2d.data.MultiBandImageData;
 
 /**
@@ -46,6 +45,6 @@ public interface RGBImageGraph extends Graph {
 
 	public MultiBandImageData getData();
 
-	public void setData(ImageData data);
+	public void setData(MultiBandImageData data);
 
 }

@@ -18,10 +18,8 @@
  */
 package org.jplot2d.swing.demo;
 
-import java.awt.color.ColorSpace;
 import java.awt.image.ByteLookupTable;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.LookupTable;
 
@@ -32,6 +30,7 @@ import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.ImageGraph;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.RGBImageGraph;
 import org.jplot2d.image.ColorMap;
 import org.jplot2d.sizing.AutoPackSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
@@ -74,6 +73,7 @@ public class ImageFloat2dDemo {
 	public static void main(String[] args) {
 		plot(0.5, null);
 		plot(0.5, new RgbColormap());
+		plotRGB(0.7);
 	}
 
 	public static void plot(double gain, ColorMap map) {
@@ -108,4 +108,37 @@ public class ImageFloat2dDemo {
 		graph.getMapping().setGain(gain);
 		graph.getMapping().setColorMap(map);
 	}
+
+	public static void plotRGB(double gain) {
+		Plot plot = ElementFactory.getInstance().createPlot();
+		plot.setSizeMode(new AutoPackSizeMode());
+
+		JFrame frame = new JPlot2DFrame(plot);
+		frame.setSize(640, 480);
+		frame.setVisible(true);
+
+		Axis xaxis = ElementFactory.getInstance().createAxis();
+		xaxis.getTitle().setText("x axis");
+		plot.addXAxis(xaxis);
+		Axis yaxis = ElementFactory.getInstance().createAxis();
+		yaxis.getTitle().setText("y axis");
+		plot.addYAxis(yaxis);
+
+		// create a float2d array
+		float[][] f2d = new float[1024][1024];
+		for (int i = 0; i < 1024; i++) {
+			for (int j = 0; j < 1024; j++) {
+				f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
+			}
+		}
+
+		RGBImageGraph graph = ElementFactory.getInstance().createRGBImageGraph(f2d, f2d, f2d);
+		Layer layer0 = ElementFactory.getInstance().createLayer();
+
+		layer0.addGraph(graph);
+		plot.addLayer(layer0, xaxis, yaxis);
+
+		graph.getMapping().getRedTransform().setGain(gain);
+	}
+
 }

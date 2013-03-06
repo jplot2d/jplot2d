@@ -27,6 +27,8 @@ import java.lang.reflect.Proxy;
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.ByteDataBuffer;
 import org.jplot2d.data.FloatDataBuffer;
+import org.jplot2d.data.ImageDataBuffer;
+import org.jplot2d.data.MultiBandImageData;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
@@ -46,6 +48,9 @@ import org.jplot2d.element.impl.ImageGraphImpl;
 import org.jplot2d.element.impl.PlotImpl;
 import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.AxisTransformImpl;
+import org.jplot2d.element.impl.RGBImageGraphImpl;
+import org.jplot2d.element.impl.RGBImageMappingEx;
+import org.jplot2d.element.impl.RGBImageMappingImpl;
 import org.jplot2d.element.impl.RectangleAnnotationImpl;
 import org.jplot2d.element.impl.SymbolAnnotationImpl;
 import org.jplot2d.element.impl.TitleImpl;
@@ -597,7 +602,7 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create an image graph.
+	 * Create an single band image graph.
 	 * 
 	 * @return an image graph
 	 */
@@ -615,7 +620,6 @@ public class ElementFactory {
 
 		env.registerElement(graph, gpProxy);
 		return gpProxy;
-
 	}
 
 	/**
@@ -630,6 +634,54 @@ public class ElementFactory {
 
 		DummyEnvironment env = new DummyEnvironment(threadSafe);
 		env.registerElement(impl, proxy);
+
+		return proxy;
+	}
+
+	public RGBImageGraph createRGBImageGraph(float[][] red2d, float[][] green2d, float[][] blue2d) {
+		ImageDataBuffer redBuffer = new FloatDataBuffer.Array2D(red2d);
+		ImageDataBuffer greenBuffer = new FloatDataBuffer.Array2D(green2d);
+		ImageDataBuffer blueBuffer = new FloatDataBuffer.Array2D(blue2d);
+		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
+				red2d[0].length, red2d.length));
+	}
+
+	/**
+	 * Create an single band image graph.
+	 * 
+	 * @return an image graph
+	 */
+	public RGBImageGraph createRGBImageGraph(MultiBandImageData data) {
+
+		RGBImageMapping im = createRGBImageMapping();
+		DummyEnvironment env = (DummyEnvironment) im.getEnvironment();
+		RGBImageMappingEx ime = (RGBImageMappingEx) ((ElementAddition) im).getImpl();
+
+		RGBImageGraphImpl graph = new RGBImageGraphImpl();
+		graph.setMapping(ime);
+		graph.setData(data);
+		applyProfile(graph);
+		RGBImageGraph gpProxy = proxy(graph, RGBImageGraph.class);
+
+		env.registerElement(graph, gpProxy);
+		return gpProxy;
+	}
+
+	/**
+	 * Create an image mapping.
+	 * 
+	 * @return an image mapping
+	 */
+	public RGBImageMapping createRGBImageMapping() {
+		RGBImageMappingImpl impl = new RGBImageMappingImpl();
+		applyProfile(impl);
+		RGBImageMapping proxy = proxy(impl, RGBImageMapping.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerElement(impl, proxy);
+		env.registerElement(impl.getRedTransform(), proxy(impl.getRedTransform(), ImageBandTransform.class));
+		env.registerElement(impl.getGreenTransform(), proxy(impl.getGreenTransform(), ImageBandTransform.class));
+		env.registerElement(impl.getBlueTransform(), proxy(impl.getBlueTransform(), ImageBandTransform.class));
 
 		return proxy;
 	}

@@ -18,6 +18,9 @@
  */
 package org.jplot2d.element.impl;
 
+import java.awt.Dimension;
+
+import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.element.ImageBandTransform;
 
 /**
@@ -27,5 +30,24 @@ import org.jplot2d.element.ImageBandTransform;
 public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
 
 	public RGBImageMappingEx getParent();
+
+	/**
+	 * Returns the number of significant bits that the ILUT index should match. When applying the limits, the generated
+	 * values should match the ILUT indexes.
+	 * 
+	 * @return the number of significant bits
+	 */
+	public int getILUTInputBits();
+
+	/**
+	 * Returns the ILUT for processing data, for applying intensity transform and bias/gain.
+	 * 
+	 * @return
+	 */
+	public byte[] getILUT();
+
+	public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
+
+	public double[] getLimits();
 
 }
