@@ -22,7 +22,7 @@ import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
 import static org.junit.Assert.*;
 
-import org.jplot2d.data.ImageData;
+import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class ImageGraphTest {
 	 */
 	@Test
 	public void testCreateImageGraph() {
-		ImageGraph graph = factory.createImageGraph((ImageData) null);
+		ImageGraph graph = factory.createImageGraph((SingleBandImageData) null);
 
 		assertNull(graph.getSize());
 		assertNull(graph.getBounds());

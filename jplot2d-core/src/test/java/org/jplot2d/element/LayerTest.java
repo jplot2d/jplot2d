@@ -21,7 +21,7 @@ package org.jplot2d.element;
 import static org.jplot2d.util.TestUtils.*;
 import static org.junit.Assert.*;
 
-import org.jplot2d.data.ImageData;
+import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
 
@@ -75,8 +75,8 @@ public class LayerTest {
 	@Test
 	public void testAddAndRemoveImageGraph() {
 		Layer layer = factory.createLayer();
-		ImageGraph graphA = factory.createImageGraph((ImageData) null);
-		ImageGraph graphB = factory.createImageGraph((ImageData) null);
+		ImageGraph graphA = factory.createImageGraph((SingleBandImageData) null);
+		ImageGraph graphB = factory.createImageGraph((SingleBandImageData) null);
 		ImageMapping mappingA = graphA.getMapping();
 		ImageMapping mappingB = graphB.getMapping();
 
