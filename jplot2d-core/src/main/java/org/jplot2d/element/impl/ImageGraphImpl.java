@@ -35,6 +35,14 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		super();
 	}
 
+	public String getId() {
+		if (getParent() != null) {
+			return "ImageGraph" + getParent().indexOf(this);
+		} else {
+			return "ImageGraph@" + Integer.toHexString(System.identityHashCode(this));
+		}
+	}
+
 	public ImageMappingEx getMapping() {
 		return mapping;
 	}

@@ -30,6 +30,10 @@ import org.jplot2d.element.impl.InvokeStep;
  */
 public class ElementStub extends ElementImpl {
 
+	public String getId() {
+		return null;
+	}
+
 	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
 		return this;
 	}

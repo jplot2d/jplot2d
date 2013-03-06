@@ -65,7 +65,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
 	public String getId() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Transform(");
+		sb.append("AxisTransform");
 		for (AxisTickManagerEx tick : tickManagers) {
 			sb.append("(");
 			for (AxisEx axis : tick.getAxes()) {
@@ -79,16 +79,16 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 			sb.append(layer.getShortId()).append(',');
 		}
 		sb.deleteCharAt(sb.length() - 1);
-		sb.append("))");
+		sb.append(")");
 		return sb.toString();
 	}
 
 	public String getFullId() {
 		if (group != null) {
 			int xidx = group.indexOfRangeManager(this);
-			return "Range" + xidx + "." + group.getFullId();
+			return "AxisTransform" + xidx + "." + group.getFullId();
 		} else {
-			return super.getId();
+			return "AxisTransform@" + Integer.toHexString(System.identityHashCode(this));
 		}
 	}
 
