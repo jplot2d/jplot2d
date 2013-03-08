@@ -133,15 +133,11 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
 			return null;
 		}
 
-		/*
-		 * create a lookup table. The input bits is getInputDataBits(). The output bits is getOutputDataBits()
-		 */
-
 		// the LUT index range is [0, lutIndexes], plus repeat the last value
 		int lutIndexes = 1 << getILUTInputBits();
 
 		// the output range is [0, 255]
-		int outputRange = 255;
+		int outputRange = 256;
 
 		byte[] lut = new byte[lutIndexes + 2];
 		for (int i = 0; i <= lutIndexes; i++) {

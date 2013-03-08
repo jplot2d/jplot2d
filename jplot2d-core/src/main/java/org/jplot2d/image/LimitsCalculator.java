@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import org.jplot2d.data.ImageDataBuffer;
 
 /**
+ * The limits calculator to produce the upper and lower limits according to the given ImageDataBuffer.
+ * 
  * @author Jingjing Li
  * 
  */

@@ -26,7 +26,13 @@ import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 
 /**
- * Defines the transform for a band of image.
+ * This class defines how to transform a band of image. The transformation takes these steps:
+ * <ol>
+ * <li>Apply limit algorithm</li>
+ * <li>Apply intensity transform</li>
+ * <li>Apply bias/gain. method of Schlick{@link <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>(C. Schlick,
+ * Fast Alternatives to Perlin's Bias and Gain Functions)</a>}</li>
+ * </ol>
  * 
  * @author Jingjing Li
  * 

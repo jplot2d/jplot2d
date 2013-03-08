@@ -40,7 +40,9 @@ public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
 	public int getILUTInputBits();
 
 	/**
-	 * Returns the ILUT for processing data, for applying intensity transform and bias/gain.
+	 * Returns a ILUT for processing data, for applying intensity transform and bias/gain. The input bits is
+	 * getInputDataBits(). The output bits is 256. If there is no intensity transform or bias/gain tweak, returns
+	 * <code>null</code>.
 	 * 
 	 * @return
 	 */
