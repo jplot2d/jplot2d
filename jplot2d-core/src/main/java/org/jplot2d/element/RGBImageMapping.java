@@ -22,7 +22,11 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * This class defines LimitsAlgorithm and ImageBandTransform for R,G,B bands.
+ * This class defines how to transform 3 bands to a RGB image. The transformation take these steps:
+ * <ol>
+ * <li>Apply band transform on R,G,B bands, see {@link ImageBandTransform}</li>
+ * <li>zoom to correct size for display</li>
+ * </ol>
  * 
  * @author Jingjing Li
  * 
