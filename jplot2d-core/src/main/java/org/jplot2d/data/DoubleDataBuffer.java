@@ -18,7 +18,7 @@
  */
 package org.jplot2d.data;
 
-import java.nio.FloatBuffer;
+import java.nio.DoubleBuffer;
 
 /**
  * This class extends ImageDataBuffer and stores data internally as floats.
@@ -26,9 +26,9 @@ import java.nio.FloatBuffer;
  * @author Jingjing Li
  * 
  */
-public abstract class FloatDataBuffer extends ImageDataBuffer {
+public abstract class DoubleDataBuffer extends ImageDataBuffer {
 
-	public FloatDataBuffer(ImageMaskBuffer mask) {
+	public DoubleDataBuffer(ImageMaskBuffer mask) {
 		super(mask);
 	}
 
@@ -36,84 +36,84 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 		return get(x, y);
 	}
 
-	public abstract float get(int x, int y);
+	public abstract double get(int x, int y);
 
-	public static class Array extends FloatDataBuffer {
-		private final float[] data;
+	public static class Array extends DoubleDataBuffer {
+		private final double[] data;
 		private final int offset;
 
-		public Array(float[] data) {
+		public Array(double[] data) {
 			this(data, 0, null);
 		}
 
-		public Array(float[] data, ImageMaskBuffer mask) {
+		public Array(double[] data, ImageMaskBuffer mask) {
 			this(data, 0, mask);
 		}
 
-		public Array(float[] data, int offset, ImageMaskBuffer mask) {
+		public Array(double[] data, int offset, ImageMaskBuffer mask) {
 			super(mask);
 			this.data = data;
 			this.offset = offset;
 		}
 
-		public float get(int x, int y) {
+		public double get(int x, int y) {
 			return data[offset + x + y];
 		}
 
 	}
 
-	public static class Array2D extends FloatDataBuffer {
-		private final float[][] data;
+	public static class Array2D extends DoubleDataBuffer {
+		private final double[][] data;
 		private final int xoffset, yoffset;
 
-		public Array2D(float[][] data) {
+		public Array2D(double[][] data) {
 			this(data, 0, 0, null);
 		}
 
-		public Array2D(float[][] data, ImageMaskBuffer mask) {
+		public Array2D(double[][] data, ImageMaskBuffer mask) {
 			this(data, 0, 0, mask);
 		}
 
-		public Array2D(float[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
+		public Array2D(double[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
 			super(mask);
 			this.data = data;
 			this.xoffset = xoffset;
 			this.yoffset = yoffset;
 		}
 
-		public float get(int x, int y) {
+		public double get(int x, int y) {
 			return data[yoffset + y][xoffset + x];
 		}
 
 	}
 
-	public static class NioBuffer extends FloatDataBuffer {
-		private final FloatBuffer data;
+	public static class NioBuffer extends DoubleDataBuffer {
+		private final DoubleBuffer data;
 		private final int offset;
 
-		public NioBuffer(FloatBuffer data) {
+		public NioBuffer(DoubleBuffer data) {
 			this(data, 0, null);
 		}
 
-		public NioBuffer(FloatBuffer data, ImageMaskBuffer mask) {
+		public NioBuffer(DoubleBuffer data, ImageMaskBuffer mask) {
 			this(data, 0, mask);
 		}
 
-		public NioBuffer(FloatBuffer data, int offset, ImageMaskBuffer mask) {
+		public NioBuffer(DoubleBuffer data, int offset, ImageMaskBuffer mask) {
 			super(mask);
 			this.data = data;
 			this.offset = offset;
 		}
 
-		public float get(int x, int y) {
+		public double get(int x, int y) {
 			return data.get(offset + x + y);
 		}
 
 	}
 
 	public double[] calcMinMax(int w, int h) {
-		float min = Float.NaN;
-		float max = Float.NaN;
+		double min = Double.NaN;
+		double max = Double.NaN;
 
 		/* find the 1st non-Nan idx and value */
 		int m = -1;
@@ -121,7 +121,7 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
-				float v = get(i, j);
+				double v = get(i, j);
 				if (!isMasked(i, j) && v == v) {
 					min = v;
 					max = v;
@@ -143,8 +143,8 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 		m++;
 		for (int j = n; j < h; j++) {
 			for (int i = m; i < w; i++) {
-				float v = get(i, j);
-				if (!isMasked(i, j) && (v != Float.POSITIVE_INFINITY) && (v != Float.NEGATIVE_INFINITY)) {
+				double v = get(i, j);
+				if (!isMasked(i, j) && (v != Double.POSITIVE_INFINITY) && (v != Double.NEGATIVE_INFINITY)) {
 					if (min > v) {
 						min = v;
 					}

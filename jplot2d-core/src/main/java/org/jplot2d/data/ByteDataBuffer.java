@@ -20,7 +20,17 @@ package org.jplot2d.data;
 
 import java.nio.ByteBuffer;
 
-public abstract class ByteDataBuffer implements ImageDataBuffer {
+/**
+ * This class extends ImageDataBuffer and stores data internally as bytes.
+ * 
+ * @author Jingjing Li
+ * 
+ */
+public abstract class ByteDataBuffer extends ImageDataBuffer {
+
+	public ByteDataBuffer(ImageMaskBuffer mask) {
+		super(mask);
+	}
 
 	public double getDouble(int x, int y) {
 		return get(x, y);
@@ -30,83 +40,75 @@ public abstract class ByteDataBuffer implements ImageDataBuffer {
 
 	public static class Array extends ByteDataBuffer {
 		private final byte[] data;
-		private final boolean[] mask;
+		private final int offset;
 
 		public Array(byte[] data) {
-			this.data = data;
-			this.mask = null;
+			this(data, 0, null);
 		}
 
-		public Array(byte[] data, boolean[] mask) {
+		public Array(byte[] data, ImageMaskBuffer mask) {
+			this(data, 0, mask);
+		}
+
+		public Array(byte[] data, int offset, ImageMaskBuffer mask) {
+			super(mask);
 			this.data = data;
-			this.mask = mask;
+			this.offset = offset;
 		}
 
 		public byte get(int x, int y) {
-			return data[x + y];
+			return data[offset + x + y];
 		}
 
-		public boolean isMasked(int x, int y) {
-			if (mask == null) {
-				return false;
-			} else {
-				return mask[x + y];
-			}
-		}
 	}
 
 	public static class Array2D extends ByteDataBuffer {
 		private final byte[][] data;
-		private final boolean[][] mask;
+		private final int xoffset, yoffset;
 
 		public Array2D(byte[][] data) {
-			this.data = data;
-			this.mask = null;
+			this(data, 0, 0, null);
 		}
 
-		public Array2D(byte[][] data, boolean[][] mask) {
+		public Array2D(byte[][] data, ImageMaskBuffer mask) {
+			this(data, 0, 0, mask);
+		}
+
+		public Array2D(byte[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
+			super(mask);
 			this.data = data;
-			this.mask = mask;
+			this.xoffset = xoffset;
+			this.yoffset = yoffset;
 		}
 
 		public byte get(int x, int y) {
-			return data[y][x];
+			return data[yoffset + y][xoffset + x];
 		}
 
-		public boolean isMasked(int x, int y) {
-			if (mask == null) {
-				return false;
-			} else {
-				return mask[y][x];
-			}
-		}
 	}
 
 	public static class NioBuffer extends ByteDataBuffer {
 		private final ByteBuffer data;
-		private final boolean[] mask;
+		private final int offset;
 
 		public NioBuffer(ByteBuffer data) {
-			this.data = data;
-			this.mask = null;
+			this(data, 0, null);
 		}
 
-		public NioBuffer(ByteBuffer data, boolean[] mask) {
+		public NioBuffer(ByteBuffer data, ImageMaskBuffer mask) {
+			this(data, 0, mask);
+		}
+
+		public NioBuffer(ByteBuffer data, int offset, ImageMaskBuffer mask) {
+			super(mask);
 			this.data = data;
-			this.mask = mask;
+			this.offset = offset;
 		}
 
 		public byte get(int x, int y) {
-			return data.get(x + y);
+			return data.get(offset + x + y);
 		}
 
-		public boolean isMasked(int x, int y) {
-			if (mask == null) {
-				return false;
-			} else {
-				return mask[x + y];
-			}
-		}
 	}
 
 	public double[] calcMinMax(int w, int h) {
