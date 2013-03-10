@@ -26,9 +26,12 @@ import java.lang.reflect.Proxy;
 
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.ByteDataBuffer;
+import org.jplot2d.data.DoubleDataBuffer;
 import org.jplot2d.data.FloatDataBuffer;
 import org.jplot2d.data.ImageDataBuffer;
+import org.jplot2d.data.IntDataBuffer;
 import org.jplot2d.data.MultiBandImageData;
+import org.jplot2d.data.ShortDataBuffer;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.AxisImpl;
@@ -596,9 +599,23 @@ public class ElementFactory {
 				byte2d.length));
 	}
 
+	public ImageGraph createImageGraph(short[][] short2d) {
+		return createImageGraph(new SingleBandImageData(new ShortDataBuffer.Array2D(short2d), short2d[0].length,
+				short2d.length));
+	}
+
+	public ImageGraph createImageGraph(int[][] int2d) {
+		return createImageGraph(new SingleBandImageData(new IntDataBuffer.Array2D(int2d), int2d[0].length, int2d.length));
+	}
+
 	public ImageGraph createImageGraph(float[][] float2d) {
 		return createImageGraph(new SingleBandImageData(new FloatDataBuffer.Array2D(float2d), float2d[0].length,
 				float2d.length));
+	}
+
+	public ImageGraph createImageGraph(double[][] double2d) {
+		return createImageGraph(new SingleBandImageData(new DoubleDataBuffer.Array2D(double2d), double2d[0].length,
+				double2d.length));
 	}
 
 	/**
@@ -638,10 +655,42 @@ public class ElementFactory {
 		return proxy;
 	}
 
+	public RGBImageGraph createRGBImageGraph(byte[][] red2d, byte[][] green2d, byte[][] blue2d) {
+		ImageDataBuffer redBuffer = new ByteDataBuffer.Array2D(red2d);
+		ImageDataBuffer greenBuffer = new ByteDataBuffer.Array2D(green2d);
+		ImageDataBuffer blueBuffer = new ByteDataBuffer.Array2D(blue2d);
+		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
+				red2d[0].length, red2d.length));
+	}
+
+	public RGBImageGraph createRGBImageGraph(short[][] red2d, short[][] green2d, short[][] blue2d) {
+		ImageDataBuffer redBuffer = new ShortDataBuffer.Array2D(red2d);
+		ImageDataBuffer greenBuffer = new ShortDataBuffer.Array2D(green2d);
+		ImageDataBuffer blueBuffer = new ShortDataBuffer.Array2D(blue2d);
+		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
+				red2d[0].length, red2d.length));
+	}
+
+	public RGBImageGraph createRGBImageGraph(int[][] red2d, int[][] green2d, int[][] blue2d) {
+		ImageDataBuffer redBuffer = new IntDataBuffer.Array2D(red2d);
+		ImageDataBuffer greenBuffer = new IntDataBuffer.Array2D(green2d);
+		ImageDataBuffer blueBuffer = new IntDataBuffer.Array2D(blue2d);
+		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
+				red2d[0].length, red2d.length));
+	}
+
 	public RGBImageGraph createRGBImageGraph(float[][] red2d, float[][] green2d, float[][] blue2d) {
 		ImageDataBuffer redBuffer = new FloatDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new FloatDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new FloatDataBuffer.Array2D(blue2d);
+		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
+				red2d[0].length, red2d.length));
+	}
+
+	public RGBImageGraph createRGBImageGraph(double[][] red2d, double[][] green2d, double[][] blue2d) {
+		ImageDataBuffer redBuffer = new DoubleDataBuffer.Array2D(red2d);
+		ImageDataBuffer greenBuffer = new DoubleDataBuffer.Array2D(green2d);
+		ImageDataBuffer blueBuffer = new DoubleDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
 				red2d[0].length, red2d.length));
 	}
