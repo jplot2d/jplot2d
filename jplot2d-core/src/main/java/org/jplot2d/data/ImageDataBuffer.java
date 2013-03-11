@@ -59,7 +59,7 @@ public abstract class ImageDataBuffer {
 	 */
 	public boolean isMasked(int x, int y) {
 		if (mask == null) {
-			return true;
+			return false;
 		} else {
 			return mask.isMasked(x, y);
 		}
