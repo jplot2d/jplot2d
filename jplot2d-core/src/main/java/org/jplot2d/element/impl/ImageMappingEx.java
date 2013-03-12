@@ -34,6 +34,14 @@ public interface ImageMappingEx extends ImageMapping, ElementEx {
 
 	public void removeImageGraph(ImageGraphEx graph);
 
+	/**
+	 * Called by ImageGraphEx when its data changed, to notify the limits need to be recalculated.
+	 */
+	public void recalcLimits();
+
+	/**
+	 * Called by PlotEx.commit() to calculate limits if needed
+	 */
 	public void calcLimits();
 
 	public double[] getLimits();

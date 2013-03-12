@@ -48,6 +48,14 @@ public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
 	 */
 	public byte[] getILUT();
 
+	/**
+	 * Called by RGBImageGraphEx when its data changed, to notify the limits of this band need to be recalculated.
+	 */
+	public void recalcLimits();
+
+	/**
+	 * Calculate limits if needed
+	 */
 	public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
 
 	public double[] getLimits();

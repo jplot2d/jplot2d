@@ -41,7 +41,7 @@ public interface RGBImageMappingEx extends RGBImageMapping, ElementEx {
 	public ImageBandTransformEx getBlueTransform();
 
 	/**
-	 * Calculate limits for all bands.
+	 * Called by PlotEx.commit() to calculate limits for bands if needed
 	 */
 	public void calcLimits();
 

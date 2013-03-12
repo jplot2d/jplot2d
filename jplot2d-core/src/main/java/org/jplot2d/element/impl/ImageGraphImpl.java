@@ -63,6 +63,9 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 
 	public void setData(SingleBandImageData data) {
 		this.data = data;
+
+		mapping.recalcLimits();
+		redraw(this);
 	}
 
 	public void thisEffectiveColorChanged() {
@@ -101,6 +104,11 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx {
 		}
 
 		double[] limits = mapping.getLimits();
+
+		// limits is null means there is no valid data
+		if (limits == null) {
+			return;
+		}
 
 		// find a proper region to process
 		int xoff = 0;

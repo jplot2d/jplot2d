@@ -145,8 +145,8 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
 			MultiBandImageData data = graphs.get(i).getData();
 			ImageDataBuffer[] dbBands = data.getDataBuffer();
 			redBuffers[i] = dbBands[0];
-			greenBuffers[i] = dbBands[0];
-			blueBuffers[i] = dbBands[0];
+			greenBuffers[i] = dbBands[1];
+			blueBuffers[i] = dbBands[2];
 			sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
 		}
 		redTransform.calcLimits(redBuffers, sizeArray);
