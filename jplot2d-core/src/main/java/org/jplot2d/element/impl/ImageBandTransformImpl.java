@@ -21,6 +21,8 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
 
 	private double gain = 0.5;
 
+	private boolean calcLimitsNeeded;
+
 	public RGBImageMappingEx getParent() {
 		return (RGBImageMappingEx) parent;
 	}
@@ -109,10 +111,22 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
 		this.intensityTransform = imapping.intensityTransform;
 		this.bias = imapping.bias;
 		this.gain = imapping.gain;
+		this.calcLimitsNeeded = imapping.calcLimitsNeeded;
+	}
+
+	public void recalcLimits() {
+		calcLimitsNeeded = true;
 	}
 
 	public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray) {
-		limits = algo.getCalculator().calcLimits(dataBuffers, sizeArray);
+		if (calcLimitsNeeded || limits == null) {
+			double[] newlimits = algo.getCalculator().calcLimits(dataBuffers, sizeArray);
+
+			if (limits == null || newlimits == null || limits[0] != newlimits[0] || limits[1] != newlimits[1]) {
+				limits = newlimits;
+				redrawGraphs();
+			}
+		}
 	}
 
 	public double[] getLimits() {

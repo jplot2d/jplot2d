@@ -23,8 +23,6 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	private LimitsAlgorithm algo = new MinMaxAlgorithm();
 
-	private ColorMap colorMap;
-
 	private double[] limits;
 
 	private IntensityTransform intensityTransform;
@@ -32,6 +30,10 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 	private double bias = 0.5;
 
 	private double gain = 0.5;
+
+	private ColorMap colorMap;
+
+	private boolean calcLimitsNeeded;
 
 	public ImageGraphEx getParent() {
 		return (ImageGraphEx) parent;
@@ -95,15 +97,28 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		this.algo = algo;
 	}
 
+	public void recalcLimits() {
+		calcLimitsNeeded = true;
+	}
+
 	public void calcLimits() {
-		ImageDataBuffer[] ids = new ImageDataBuffer[graphs.size()];
-		Dimension[] sizeArray = new Dimension[graphs.size()];
-		for (int i = 0; i < ids.length; i++) {
-			SingleBandImageData data = graphs.get(i).getData();
-			ids[i] = graphs.get(i).getData().getDataBuffer();
-			sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
+		if (calcLimitsNeeded || limits == null) {
+			calcLimitsNeeded = false;
+
+			ImageDataBuffer[] ids = new ImageDataBuffer[graphs.size()];
+			Dimension[] sizeArray = new Dimension[graphs.size()];
+			for (int i = 0; i < ids.length; i++) {
+				SingleBandImageData data = graphs.get(i).getData();
+				ids[i] = graphs.get(i).getData().getDataBuffer();
+				sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
+			}
+			double[] newlimits = algo.getCalculator().calcLimits(ids, sizeArray);
+
+			if (limits == null || newlimits == null || limits[0] != newlimits[0] || limits[1] != newlimits[1]) {
+				limits = newlimits;
+				redrawGraphs();
+			}
 		}
-		limits = algo.getCalculator().calcLimits(ids, sizeArray);
 	}
 
 	public double[] getLimits() {
@@ -166,6 +181,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		this.bias = imapping.bias;
 		this.gain = imapping.gain;
 		this.colorMap = imapping.colorMap;
+		this.calcLimitsNeeded = imapping.calcLimitsNeeded;
 	}
 
 	public int getILUTInputBits() {

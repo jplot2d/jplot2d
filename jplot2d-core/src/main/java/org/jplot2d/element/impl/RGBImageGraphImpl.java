@@ -59,7 +59,19 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 	}
 
 	public void setData(MultiBandImageData data) {
+		ImageDataBuffer[] olddata = this.data.getDataBuffer();
 		this.data = data;
+
+		if (data.getDataBuffer()[0] != olddata[0]) {
+			mapping.getRedTransform().recalcLimits();
+		}
+		if (data.getDataBuffer()[1] != olddata[1]) {
+			mapping.getGreenTransform().recalcLimits();
+		}
+		if (data.getDataBuffer()[2] != olddata[2]) {
+			mapping.getBlueTransform().recalcLimits();
+		}
+		redraw(this);
 	}
 
 	public void thisEffectiveColorChanged() {
@@ -155,6 +167,8 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 	 */
 	private byte[] zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h, ImageBandTransformEx ztrans) {
 
+		// TODO: ztrans.getLimits() may returns null
+		
 		double lowCut = ztrans.getLimits()[0];
 		double highCut = ztrans.getLimits()[1];
 
