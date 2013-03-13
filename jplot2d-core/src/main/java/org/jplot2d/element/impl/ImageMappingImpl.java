@@ -14,11 +14,6 @@ import org.jplot2d.image.MinMaxAlgorithm;
 
 public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
-	/**
-	 * The max number of significant bits after applying limits. The max number is 16, for unsigned short data buffer.
-	 */
-	private static final int MAX_BITS = 16;
-
 	private List<ImageGraphEx> graphs = new ArrayList<ImageGraphEx>();
 
 	private LimitsAlgorithm algo = new MinMaxAlgorithm();
@@ -184,70 +179,12 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 		this.calcLimitsNeeded = imapping.calcLimitsNeeded;
 	}
 
-	public int getILUTInputBits() {
-		int bits = getILUTOutputBits();
-		if (intensityTransform != null || gain != 0.5 || bias != 0.5) {
-			bits += 2;
-		}
-		if (bits > MAX_BITS) {
-			bits = MAX_BITS;
-		}
-		return bits;
-	}
-
 	public int getILUTOutputBits() {
 		if (colorMap == null) {
 			return 8;
 		} else {
 			return colorMap.getInputBits();
 		}
-	}
-
-	public short[] getILUT() {
-
-		if (intensityTransform == null && gain == 0.5 && bias == 0.5) {
-			return null;
-		}
-
-		/*
-		 * create a lookup table. The input bits is getInputDataBits(). The output bits is getOutputDataBits()
-		 */
-
-		// the LUT index range is [0, lutIndexes], plus repeat the last value
-		int lutIndexes = 1 << getILUTInputBits();
-
-		// the output range is [0, outputRange - 1]
-		int outputRange = 1 << getILUTOutputBits();
-
-		short[] lut = new short[lutIndexes + 2];
-		for (int i = 0; i <= lutIndexes; i++) {
-			// t range is [0, 1]
-			double t = (double) i / lutIndexes;
-			if (intensityTransform != null) {
-				t = intensityTransform.transform(t);
-			}
-			if (bias != 0.5) {
-				t = t / ((1.0 / bias - 2.0) * (1.0 - t) + 1.0);
-			}
-			if (gain != 0.5) {
-				double f = (1.0 / gain - 2.0) * (1.0 - 2 * t);
-				if (t < 0.5) {
-					t = t / (f + 1.0);
-				} else {
-					t = (f - t) / (f - 1.0);
-				}
-			}
-			int v = (int) (outputRange * t);
-			if (v < 0) {
-				v = 0;
-			} else if (v >= outputRange) {
-				v = outputRange - 1;
-			}
-			lut[i] = (short) (v);
-		}
-		lut[lutIndexes + 1] = lut[lutIndexes];
-
-		return lut;
 	}
 
 }
