@@ -18,29 +18,18 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Dimension;
-
-import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.element.ImageBandTransform;
-
 /**
+ * Class implements this interface means it maintains a intermediate cache.
+ * 
  * @author Jingjing Li
  * 
  */
-public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
-
-	public RGBImageMappingEx getParent();
+public interface IntermediateCacheEx {
 
 	/**
-	 * Called by RGBImageGraphEx when its data changed, to notify the limits of this band need to be recalculated.
+	 * Create a cache holder to keep intermediate calculation result. This method is called by PlotEnvironment.commit(),
+	 * before create thread-safe copy for renderers.
 	 */
-	public void recalcLimits();
-
-	/**
-	 * Calculate limits if needed
-	 */
-	public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
-
-	public double[] getLimits();
+	public void createCacheHolder();
 
 }

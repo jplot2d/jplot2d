@@ -23,10 +23,12 @@ import org.jplot2d.element.RGBImageMapping;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
-public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
+public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, IntermediateCacheEx {
 
 	private RGBImageMappingEx mapping;
 	private MultiBandImageData data;
+
+	private ImageZscaleCache.Key[] cacheHolder = new ImageZscaleCache.Key[3];
 
 	public RGBImageGraphImpl() {
 		super();
@@ -59,16 +61,16 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 	}
 
 	public void setData(MultiBandImageData data) {
-		ImageDataBuffer[] olddata = this.data.getDataBuffer();
+		ImageDataBuffer[] olddata = (this.data == null) ? null : this.data.getDataBuffer();
 		this.data = data;
 
-		if (data.getDataBuffer()[0] != olddata[0]) {
+		if (olddata == null || data.getDataBuffer()[0] != olddata[0]) {
 			mapping.getRedTransform().recalcLimits();
 		}
-		if (data.getDataBuffer()[1] != olddata[1]) {
+		if (olddata == null || data.getDataBuffer()[1] != olddata[1]) {
 			mapping.getGreenTransform().recalcLimits();
 		}
-		if (data.getDataBuffer()[2] != olddata[2]) {
+		if (olddata == null || data.getDataBuffer()[2] != olddata[2]) {
 			mapping.getBlueTransform().recalcLimits();
 		}
 		redraw(this);
@@ -80,6 +82,19 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 
 	public void mappingChanged() {
 		redraw(this);
+	}
+
+	public void createCacheHolder() {
+		ImageBandTransformEx redTrans = mapping.getRedTransform();
+		ImageBandTransformEx greenTrans = mapping.getGreenTransform();
+		ImageBandTransformEx blueTrans = mapping.getBlueTransform();
+		cacheHolder[0] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
+				redTrans.getLimits(), redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
+		cacheHolder[1] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
+				greenTrans.getLimits(), greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(),
+				8);
+		cacheHolder[2] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
+				blueTrans.getLimits(), blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
 	}
 
 	@Override
@@ -109,9 +124,19 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 			return;
 		}
 
+		ImageBandTransformEx redTrans = mapping.getRedTransform();
+		ImageBandTransformEx greenTrans = mapping.getGreenTransform();
+		ImageBandTransformEx blueTrans = mapping.getBlueTransform();
+		double[] redLimits = mapping.getRedTransform().getLimits();
+		double[] greenLimits = mapping.getGreenTransform().getLimits();
+		double[] blueLimits = mapping.getBlueTransform().getLimits();
+
+		// limits is null means there is no valid data
+		if (redLimits == null && greenLimits == null && blueLimits == null) {
+			return;
+		}
+
 		// find a proper region to process
-		int xoff = 0;
-		int yoff = 0;
 		int width = data.getWidth();
 		int height = data.getHeight();
 		double xval = data.getXRange().getMin();
@@ -122,9 +147,12 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 		ImageDataBuffer[] idbs = ((MultiBandImageData) data).getDataBuffer();
 		int bands = idbs.length;
 		byte[][] result = new byte[bands][];
-		result[0] = zscaleLimits(idbs[0], xoff, yoff, width, height, mapping.getRedTransform());
-		result[1] = zscaleLimits(idbs[1], xoff, yoff, width, height, mapping.getGreenTransform());
-		result[2] = zscaleLimits(idbs[2], xoff, yoff, width, height, mapping.getBlueTransform());
+		result[0] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, redLimits,
+				redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
+		result[1] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, greenLimits,
+				greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
+		result[2] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, blueLimits,
+				blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
 
 		SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_BYTE, width, height, bands);
 		DataBufferByte dbuffer = new DataBufferByte(result, width * height);
@@ -155,64 +183,6 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx {
 		g.drawRenderedImage(image, at);
 
 		g.dispose();
-	}
-
-	/**
-	 * Apply the cuts and linear scale the array to a unsigned short array
-	 * 
-	 * @param array
-	 * @param lowCut
-	 * @param highCut
-	 * @return
-	 */
-	private byte[] zscaleLimits(ImageDataBuffer dbuf, int xoff, int yoff, int w, int h, ImageBandTransformEx ztrans) {
-
-		// TODO: ztrans.getLimits() may returns null
-		
-		double lowCut = ztrans.getLimits()[0];
-		double highCut = ztrans.getLimits()[1];
-
-		int outputRange = 1 << ztrans.getILUTInputBits();
-		double scale = outputRange / (highCut - lowCut);
-
-		byte[] result = new byte[w * h];
-		int n = 0;
-		byte[] lut = ztrans.getILUT();
-		if (lut == null) {
-			for (int r = yoff; r < yoff + h; r++) {
-				for (int c = xoff; c < xoff + w; c++) {
-					double scaled = (dbuf.getDouble(c, r) - lowCut) * scale;
-					/*
-					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
-					 * range is [0, outputRange]
-					 */
-					int ilutIndex = (int) scaled;
-					if (ilutIndex >= outputRange) {
-						ilutIndex = outputRange - 1;
-					}
-					result[n++] = (byte) ilutIndex;
-				}
-			}
-		} else {
-			for (int r = yoff; r < yoff + h; r++) {
-				for (int c = xoff; c < xoff + w; c++) {
-					double scaled = (dbuf.getDouble(c, r) - lowCut) * scale;
-					/*
-					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
-					 * range is [0, outputRange]
-					 */
-					int ilutIndex = (int) scaled;
-					double idelta = ilutIndex - ilutIndex;
-
-					// the LUT output is unsigned byte, apply the 0xff bit mask.
-					int a = lut[ilutIndex] & 0xff;
-					int b = lut[ilutIndex + 1] & 0xff;
-					result[n++] = (byte) (a + idelta * (b - a));
-				}
-			}
-		}
-
-		return result;
 	}
 
 }

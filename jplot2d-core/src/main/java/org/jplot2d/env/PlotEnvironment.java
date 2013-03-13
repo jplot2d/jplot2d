@@ -33,6 +33,7 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.element.impl.IntermediateCacheEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notifier;
@@ -182,7 +183,16 @@ public class PlotEnvironment extends Environment {
 		plotImpl.commit();
 		fireChangeProcessed();
 
+		// create cache holder
+		for (ElementEx element : proxyMap.keySet()) {
+			if (element instanceof IntermediateCacheEx) {
+				((IntermediateCacheEx) element).createCacheHolder();
+			}
+		}
+
+		// fill copyMap and copyProxyMap
 		makeUndoMemento();
+		// fill cacheBlockList
 		buildComponentCacheBlock();
 
 		render();

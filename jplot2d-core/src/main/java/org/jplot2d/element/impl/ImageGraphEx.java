@@ -28,6 +28,9 @@ public interface ImageGraphEx extends ImageGraph, GraphEx {
 
 	public ImageMappingEx getMapping();
 
+	/**
+	 * Notify this graph that the mapping limits or LUT changed.
+	 */
 	public void mappingChanged();
 
 }
