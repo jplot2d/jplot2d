@@ -75,6 +75,12 @@ public class PlotEnvironment extends Environment {
 	}
 
 	/**
+	 * Keep hard references to cache holder objects.
+	 */
+	@SuppressWarnings("unused")
+	private List<Object> cacheHolders;
+
+	/**
 	 * the key is impl element, the value is copy of element (for renderer thread safe)
 	 */
 	protected Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
@@ -184,11 +190,13 @@ public class PlotEnvironment extends Environment {
 		fireChangeProcessed();
 
 		// create cache holder
+		List<Object> holders = new ArrayList<Object>();
 		for (ElementEx element : proxyMap.keySet()) {
 			if (element instanceof IntermediateCacheEx) {
-				((IntermediateCacheEx) element).createCacheHolder();
+				holders.add(((IntermediateCacheEx) element).createCacheHolder());
 			}
 		}
+		this.cacheHolders = holders;
 
 		// fill copyMap and copyProxyMap
 		makeUndoMemento();

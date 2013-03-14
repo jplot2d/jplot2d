@@ -28,8 +28,6 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 	private RGBImageMappingEx mapping;
 	private MultiBandImageData data;
 
-	private ImageZscaleCache.Key[] cacheHolder = new ImageZscaleCache.Key[3];
-
 	public RGBImageGraphImpl() {
 		super();
 	}
@@ -84,7 +82,8 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 		redraw(this);
 	}
 
-	public void createCacheHolder() {
+	public Object createCacheHolder() {
+		ImageZscaleCache.Key[] cacheHolder = new ImageZscaleCache.Key[3];
 		ImageBandTransformEx redTrans = mapping.getRedTransform();
 		ImageBandTransformEx greenTrans = mapping.getGreenTransform();
 		ImageBandTransformEx blueTrans = mapping.getBlueTransform();
@@ -95,6 +94,8 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 				8);
 		cacheHolder[2] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
 				blueTrans.getLimits(), blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
+
+		return cacheHolder;
 	}
 
 	@Override
