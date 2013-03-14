@@ -32,9 +32,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
 	private ImageMappingEx mapping;
 	private SingleBandImageData data;
 
-	@SuppressWarnings("unused")
-	private ImageZscaleCache.Key cacheHolder;
-
 	public ImageGraphImpl() {
 		super();
 	}
@@ -81,8 +78,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
 		redraw(this);
 	}
 
-	public void createCacheHolder() {
-		cacheHolder = ImageZscaleCache.createCacheFor(data.getDataBuffer(), data.getWidth(), data.getHeight(),
+	public Object createCacheHolder() {
+		return ImageZscaleCache.createCacheFor(data.getDataBuffer(), data.getWidth(), data.getHeight(),
 				mapping.getLimits(), mapping.getIntensityTransform(), mapping.getBias(), mapping.getGain(),
 				mapping.getILUTOutputBits());
 	}
