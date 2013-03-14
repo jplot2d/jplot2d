@@ -28,8 +28,11 @@ public interface IntermediateCacheEx {
 
 	/**
 	 * Create a cache holder to keep intermediate calculation result. This method is called by PlotEnvironment.commit(),
-	 * before create thread-safe copy for renderers.
+	 * before create thread-safe copy for renderers. The PlotEnvironment will keep hard reference to the returned
+	 * Object. Usually the returned object is used as key of WeakHashMap.
+	 * 
+	 * @return an object to that PlotEnvironment should keep reference
 	 */
-	public void createCacheHolder();
+	public Object createCacheHolder();
 
 }
