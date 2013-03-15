@@ -114,62 +114,103 @@ def layer(*args, **kwargs):
 
 
 def xygraph(*args, **kwargs):
-    gp = None
+    graph = None
     
     if len(args) == 1:
-        if isinstance(args[0], XYGraph) :
-            gp = jplot2d_default_element_factory.createXYGraph(args[0]);
+        if isinstance(args[0], XYGraphData) :
+            graph = jplot2d_default_element_factory.createXYGraph(args[0]);
         elif isinstance(args[0], ArrayPair) :
-            gp = jplot2d_default_element_factory.createXYGraph(args[0]);
+            graph = jplot2d_default_element_factory.createXYGraph(args[0]);
 
     elif len(args) == 2:
         if isinstance(args[0], PyArray) and isinstance(args[1], PyArray) :
-            gp = jplot2d_default_element_factory.createXYGraph(args[0], args[1]);
-        elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
-            and (isinstance(args[1], list) or isinstance(args[1], tuple)):
-            return xygraph(args[0], args[1], 'd', **kwargs);
+            graph = jplot2d_default_element_factory.createXYGraph(args[0], args[1]);
+        elif (isinstance(args[0], list) or isinstance(args[0], tuple)) and (isinstance(args[1], list) or isinstance(args[1], tuple)):
+            graph = jplot2d_default_element_factory.createXYGraph(array(args[0], 'd'), array(args[1], 'd'));
 
     elif len(args) == 3:
-        if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair) :
-            gp = jplot2d_default_element_factory.createXYGraph(args[0], args[1], args[2]);
-        elif (isinstance(args[0], list) or isinstance(args[0], tuple)) \
-            and (isinstance(args[1], list) or isinstance(args[1], tuple)) and isinstance(args[2], str) :
-                t = args[2]
-                gp = jplot2d_default_element_factory.createXYGraph(array(args[0], t), array(args[1], t));
+        if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair):
+            graph = jplot2d_default_element_factory.createXYGraph(args[0], args[1], args[2]);                
 
     elif len(args) == 6:
-        return xygraph(*(args + ('d',)), **kwargs)
-        
-    elif len(args) == 7 and isinstance(args[6], str):
         argserror = 0
         ali = [None] * 6 
         for i in range(0, 6):
             if isinstance(args[i], PyArray):
                 ali[i] = args[i]
             elif isinstance(args[i], list) or isinstance(args[i], tuple):
-                ali[i] = array(args[i], args[6])
+                ali[i] = array(args[i], 'd')
             elif not args[i] == None:
                 argserror = 1
                 break;
         
         if (argserror == 0):
-            gp = jplot2d_default_element_factory.createXYGraph(*ali);
+            graph = jplot2d_default_element_factory.createXYGraph(*ali);
 
             
-    if gp == None:
+    if graph == None:
         amsg = ''
         for arg in args:
             amsg += str(type(arg))
         raise TypeError, "illegal args " + amsg
     
-    gpinfo = InterfaceInfo.loadInterfaceInfo(XYGraph)
+    ginfo = InterfaceInfo.loadInterfaceInfo(XYGraph)
     for key in kwargs:
-        if gpinfo.isWritableProp(key):
-            jplot2d_set_prop(gpinfo, gp, key, kwargs[key])
+        if ginfo.isWritableProp(key):
+            jplot2d_set_prop(ginfo, graph, key, kwargs[key])
         else:
             raise AttributeError, "XYGraph has no attribute " + key
 
-    return gp
+    return graph
+
+
+def imagegraph(*args, **kwargs):
+    graph = None
+    
+    if len(args) == 1:
+        if isinstance(args[0], PyArray):
+            graph = jplot2d_default_element_factory.createImageGraph(args[0]);
+
+    if graph == None:
+        amsg = ''
+        for arg in args:
+            amsg += str(type(arg))
+        raise TypeError, "illegal args " + amsg
+    
+    ginfo = InterfaceInfo.loadInterfaceInfo(ImageGraph)
+    for key in kwargs:
+        if ginfo.isWritableProp(key):
+            jplot2d_set_prop(ginfo, graph, key, kwargs[key])
+        else:
+            raise AttributeError, "ImageGraph has no attribute " + key
+
+    return graph
+
+
+def rgbimagegraph(*args, **kwargs):
+    graph = None
+    
+    if len(args) == 1:
+        if isinstance(args[0], MultiBandImageData):
+            graph = jplot2d_default_element_factory.createRGBImageGraph(args[0]);
+    elif len(args) == 3:
+        if isinstance(args[0], ArrayPair) and isinstance(args[1], ArrayPair) and isinstance(args[2], ArrayPair):
+            graph = jplot2d_default_element_factory.createRGBImageGraph(args[0], args[1], args[2]);
+
+    if graph == None:
+        amsg = ''
+        for arg in args:
+            amsg += str(type(arg))
+        raise TypeError, "illegal args " + amsg
+    
+    ginfo = InterfaceInfo.loadInterfaceInfo(RGBImageGraph)
+    for key in kwargs:
+        if ginfo.isWritableProp(key):
+            jplot2d_set_prop(ginfo, graph, key, kwargs[key])
+        else:
+            raise AttributeError, "RGBImageGraph has no attribute " + key
+
+    return graph
 
 
 def hlineannotation(y, *args, **kwargs):
