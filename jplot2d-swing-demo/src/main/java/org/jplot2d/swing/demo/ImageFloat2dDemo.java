@@ -73,7 +73,7 @@ public class ImageFloat2dDemo {
 	public static void main(String[] args) {
 		plot(0.5, null);
 		plot(0.5, new RgbColormap());
-		plotRGB(0.7);
+		plotRGB();
 	}
 
 	public static void plot(double gain, ColorMap map) {
@@ -109,7 +109,7 @@ public class ImageFloat2dDemo {
 		graph.getMapping().setColorMap(map);
 	}
 
-	public static void plotRGB(double gain) {
+	public static void plotRGB() {
 		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 
@@ -125,20 +125,16 @@ public class ImageFloat2dDemo {
 		plot.addYAxis(yaxis);
 
 		// create a float2d array
-		float[][] f2d = new float[1024][1024];
-		for (int i = 0; i < 1024; i++) {
-			for (int j = 0; j < 1024; j++) {
-				f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
-			}
-		}
+		float[][] r2d = new float[][] { { 0, 1 }, { 2, 3 } };
+		float[][] g2d = new float[][] { { 3, 0 }, { 1, 2 } };
+		float[][] b2d = new float[][] { { 2, 3 }, { 0, 1 } };
 
-		RGBImageGraph graph = ElementFactory.getInstance().createRGBImageGraph(f2d, f2d, f2d);
+		RGBImageGraph graph = ElementFactory.getInstance().createRGBImageGraph(r2d, g2d, b2d);
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis, yaxis);
 
-		graph.getMapping().getRedTransform().setGain(gain);
 	}
 
 }

@@ -150,9 +150,9 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 		byte[][] result = new byte[bands][];
 		result[0] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, redLimits,
 				redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
-		result[1] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, greenLimits,
+		result[1] = (byte[]) ImageZscaleCache.getValue(idbs[1], width, height, greenLimits,
 				greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
-		result[2] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, blueLimits,
+		result[2] = (byte[]) ImageZscaleCache.getValue(idbs[2], width, height, blueLimits,
 				blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
 
 		SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_BYTE, width, height, bands);

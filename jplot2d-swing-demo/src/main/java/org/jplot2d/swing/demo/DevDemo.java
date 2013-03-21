@@ -37,6 +37,7 @@ import org.jplot2d.sizing.AutoPackSizeMode;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.transform.TransformType;
+import org.jplot2d.util.SymbolShape;
 
 /**
  * @author Jingjing Li
@@ -75,6 +76,11 @@ public class DevDemo {
 
 		layer0.addGraph(gp);
 		plot.addLayer(layer0, xaxis, yaxis);
+		
+		gp.setSymbolVisible(true);
+		gp.setSymbolShape(SymbolShape.CIRCLE);
+		
+		gp.setSymbolSize(14);
 		
 //		plot.getLegend().setPosition(null);
 //		plot.getLegend().setMovable(true);

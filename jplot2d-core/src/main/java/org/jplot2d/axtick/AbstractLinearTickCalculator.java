@@ -62,7 +62,7 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 	 */
 	protected DoubleInterval calcInterval(int tickNumber) {
 
-		if (_start == _end) {
+		if (start == end) {
 			throw new IllegalArgumentException(
 					"The range span must be great than zero");
 		}
@@ -74,12 +74,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		}
 
 		double lo, hi;
-		if (_end > _start) {
-			lo = _start;
-			hi = _end;
+		if (end > start) {
+			lo = start;
+			hi = end;
 		} else {
-			lo = _end;
-			hi = _start;
+			lo = end;
+			hi = start;
 		}
 		tickNumber = Math.abs(tickNumber);
 
@@ -150,15 +150,15 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		if (interval == 0 || Double.isNaN(interval))
 			throw new IllegalArgumentException("delta cannot be zero or NaN");
 
-		boolean inverted = _start > _end;
+		boolean inverted = start > end;
 
 		double lo, hi;
 		if (!inverted) {
-			lo = _start;
-			hi = _end;
+			lo = start;
+			hi = end;
 		} else {
-			lo = _end;
-			hi = _start;
+			lo = end;
+			hi = start;
 		}
 		double d = interval;
 
@@ -225,12 +225,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		}
 
 		double lo, hi;
-		if (_end > _start) {
-			lo = _start;
-			hi = _end;
+		if (end > start) {
+			lo = start;
+			hi = end;
 		} else {
-			lo = _end;
-			hi = _start;
+			lo = end;
+			hi = start;
 		}
 		tickNumber = Math.abs(tickNumber);
 
@@ -260,12 +260,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 			xHi = _interval * iHiB;
 		}
 
-		if (_end > _start) {
-			_start = xLo;
-			_end = xHi;
+		if (end > start) {
+			start = xLo;
+			end = xHi;
 		} else {
-			_start = xHi;
-			_end = xLo;
+			start = xHi;
+			end = xLo;
 		}
 
 	}
@@ -273,12 +273,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 	public void expandRangeByTickInterval(double interval) {
 
 		double lo, hi;
-		if (_end > _start) {
-			lo = _start;
-			hi = _end;
+		if (end > start) {
+			lo = start;
+			hi = end;
 		} else {
-			lo = _end;
-			hi = _start;
+			lo = end;
+			hi = start;
 		}
 		double d = Math.abs(interval);
 
@@ -290,12 +290,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		double xHi = d * iHi;
 
 		_interval = d;
-		if (_end > _start) {
-			_start = xLo;
-			_end = xHi;
+		if (end > start) {
+			start = xLo;
+			end = xHi;
 		} else {
-			_start = xHi;
-			_end = xLo;
+			start = xHi;
+			end = xLo;
 		}
 
 	}
