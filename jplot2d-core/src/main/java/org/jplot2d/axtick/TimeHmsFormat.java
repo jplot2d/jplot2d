@@ -54,6 +54,7 @@ public class TimeHmsFormat extends Format {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	private StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
 
 		boolean negative = false;

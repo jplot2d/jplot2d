@@ -209,6 +209,7 @@ public abstract class TickCalculator {
 	 *            the value to be formatted.
 	 * @return A formatted string.
 	 */
+	@SuppressWarnings("resource")
 	protected MathElement format(String format, Object v) {
 
 		boolean hasMConversion = false;

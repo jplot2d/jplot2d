@@ -713,6 +713,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 		for (int i = 0; i < n; i++) {
 			cal.setTimeInMillis(Array.getLong(values, i));
 
+			@SuppressWarnings("resource")
 			String texString = new Formatter(locale).format(format, cal).toString();
 			if (texString.indexOf('$') == -1) {
 				labels[i] = new MathElement.Mtext(texString);

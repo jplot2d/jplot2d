@@ -35,7 +35,7 @@ public class DateAxisType extends AxisType {
 
 	private static final DateAxisType DEFAULT = new DateAxisType(TimeZone.getDefault(), Locale.getDefault());
 
-	private static final DateAxisType GMT_US = new DateAxisType(TimeZone.getTimeZone("GMT"), Locale.US);
+	private static final DateAxisType UTC_US = new DateAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
 
 	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
 
@@ -55,8 +55,8 @@ public class DateAxisType extends AxisType {
 	 * 
 	 * @return
 	 */
-	public static DateAxisType getGMT() {
-		return GMT_US;
+	public static DateAxisType getUTC() {
+		return UTC_US;
 	}
 
 	public static DateAxisType getInstance(TimeZone zone, Locale aLocale) {

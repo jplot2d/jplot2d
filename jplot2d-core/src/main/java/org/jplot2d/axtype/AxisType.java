@@ -43,7 +43,7 @@ public abstract class AxisType {
 
 	public static final AxisType DATE = DateAxisType.getDefault();
 
-	public static final AxisType DATE_GMT_US = DateAxisType.getGMT();
+	public static final AxisType DATE_UTC_US = DateAxisType.getUTC();
 
 	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
 
