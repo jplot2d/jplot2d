@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -41,7 +41,9 @@ public abstract class AxisType {
 
 	public static final AxisType NUMBER = NumberAxisType.getInstance();
 
-	public static final AxisType DATE = DateAxisType.getInstance();
+	public static final AxisType DATE = DateAxisType.getDefault();
+
+	public static final AxisType DATE_GMT_US = DateAxisType.getGMT();
 
 	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
 

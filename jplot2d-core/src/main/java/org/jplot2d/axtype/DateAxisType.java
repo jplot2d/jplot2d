@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,6 +18,9 @@
  */
 package org.jplot2d.axtype;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transform.AxisTickTransform;
@@ -30,14 +33,39 @@ import org.jplot2d.util.Range;
  */
 public class DateAxisType extends AxisType {
 
+	private static final DateAxisType DEFAULT = new DateAxisType(TimeZone.getDefault(), Locale.getDefault());
+
+	private static final DateAxisType GMT_US = new DateAxisType(TimeZone.getTimeZone("GMT"), Locale.US);
+
 	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
 
-	public static DateAxisType getInstance() {
-		return new DateAxisType();
+	private final DateTickAlgorithm algo;
+
+	/**
+	 * Returns a DateAxisType with default zone and local
+	 * 
+	 * @return
+	 */
+	public static DateAxisType getDefault() {
+		return DEFAULT;
 	}
 
-	private DateAxisType() {
-		super("DATE");
+	/**
+	 * Returns a DateAxisType with GMT zone and US local
+	 * 
+	 * @return
+	 */
+	public static DateAxisType getGMT() {
+		return GMT_US;
+	}
+
+	public static DateAxisType getInstance(TimeZone zone, Locale aLocale) {
+		return new DateAxisType(zone, aLocale);
+	}
+
+	private DateAxisType(TimeZone zone, Locale locale) {
+		super("DATE-" + zone.getID() + "-" + locale.toString());
+		algo = DateTickAlgorithm.getInstance(zone, locale);
 	}
 
 	@Override
@@ -70,7 +98,7 @@ public class DateAxisType extends AxisType {
 			return null;
 		}
 
-		return DateTickAlgorithm.getInstance();
+		return algo;
 	}
 
 }

@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -106,22 +106,6 @@ public class TickUtilsTest {
 				TickUtils.calcLabelFormatStr(new double[] { -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0 }));
 		assertEquals("%.0f",
 				TickUtils.calcLabelFormatStr(new double[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }));
-	}
-
-	@Test
-	public void testFormat() {
-		assertEquals("3.14 $10^2$", TickUtils.format("%.2m", 314.159).toString());
-		assertEquals("3.1 $10^64$", TickUtils.format("%.1m", 3.14159e64).toString());
-		assertEquals("-3.1 $10^64$", TickUtils.format("%.1m", -3.14159e64).toString());
-		assertEquals("-3.1 $10^{-64}$", TickUtils.format("%.1m", -3.14159e-64).toString());
-		assertEquals("$10^64$", TickUtils.format("%.0m", 1e64).toString());
-		assertEquals("+1 $10^64$", TickUtils.format("%+.0m", 1e64).toString());
-		assertEquals("-1 $10^64$", TickUtils.format("%+.0m", -1e64).toString());
-		assertEquals("3.142", TickUtils.format("%.3m", 3.14159).toString());
-		assertEquals("0.000", TickUtils.format("%.3m", 0.0).toString());
-
-		assertEquals("01/01/70", TickUtils.format("%tm/%<td/%<ty", 1L).toString());
-		assertEquals("01-01-70", TickUtils.format("%tm-%<td-%<ty", 1L).toString());
 	}
 
 }

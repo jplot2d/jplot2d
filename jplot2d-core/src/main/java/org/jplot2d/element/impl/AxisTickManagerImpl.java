@@ -32,7 +32,6 @@ import java.util.Map;
 import org.jplot2d.axtick.RangeAdvisor;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtick.TickCalculator;
-import org.jplot2d.axtick.TickUtils;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
@@ -826,18 +825,12 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	/**
 	 * Calculate label from values and format.
 	 */
-	private static MathElement[] calcAutoLabels(Object values, Format textFormat, String format) {
-		MathElement[] labels = new MathElement[Array.getLength(values)];
+	private MathElement[] calcAutoLabels(Object values, Format textFormat, String format) {
 		if (textFormat == null) {
-			for (int i = 0; i < labels.length; i++) {
-				labels[i] = TickUtils.format(format, Array.get(values, i));
-			}
+			return tickCalculator.formatValues(format, values);
 		} else {
-			for (int i = 0; i < labels.length; i++) {
-				labels[i] = TickUtils.format(textFormat, Array.get(values, i));
-			}
+			return tickCalculator.formatValues(textFormat, values);
 		}
-		return labels;
 	}
 
 	/**
