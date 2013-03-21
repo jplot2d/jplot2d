@@ -18,20 +18,43 @@
  */
 package org.jplot2d.env;
 
+import java.util.prefs.Preferences;
+
 import org.jplot2d.element.Element;
 
 /**
- * Define default properties which can be used to initialize the new created
- * plot component.
+ * Define default properties which can be used to initialize the new created plot component.
  * 
  * @author Jingjing Li
  * 
  */
 public class Profile {
 
+	Preferences pref;
+
+	public Profile() {
+		pref = Preferences.userRoot().node("org/jplot2d");
+	}
+
+	/**
+	 * Apply profile to the given element
+	 * 
+	 * @param element
+	 */
 	public void applyTo(Element element) {
 		// TODO not implemented yet
 
+	}
+
+	/**
+	 * Returns a element instance who can proxy get/set values from/to this profile.
+	 * 
+	 * @param elementInterface
+	 *            the element interface
+	 * @return
+	 */
+	public <T extends Element> T getProxyBean(Class<T> elementInterface) {
+		return null;
 	}
 
 }

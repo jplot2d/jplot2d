@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -34,13 +34,13 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 	/**
 	 * Always be positive
 	 */
-	protected double _interval;
+	protected double interval;
 
-	protected int _minorNumber;
+	protected int minorNumber;
 
-	protected double[] _tickValues;
+	protected double[] tickValues;
 
-	protected double[] _minorValues;
+	protected double[] minorValues;
 
 	protected void setRange(double start, double end) {
 		/* the start or end may be NaN if the main axis start/end at 0 */
@@ -49,7 +49,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 
 	public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
 		calcReciprocal(minorTickNumber);
-		if (_tickValues == null) {
+		if (tickValues == null) {
 			calcAsLinear(tickNumber, minorTickNumber);
 		}
 	}
@@ -57,7 +57,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 	@Override
 	public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
 		calcReciprocal(minorTickNumber);
-		if (_tickValues == null) {
+		if (tickValues == null) {
 			calcAsLinear(interval, offset, minorTickNumber);
 		}
 	}
@@ -65,30 +65,30 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 	private void calcReciprocal(int minorTickNumber) {
 		double farv;
 		double mf = 0;
-		double absStart = Math.abs(_start);
-		double absEnd = Math.abs(_end);
-		if (Math.signum(_start) == Math.signum(_end)) {
+		double absStart = Math.abs(start);
+		double absEnd = Math.abs(end);
+		if (Math.signum(start) == Math.signum(end)) {
 			mf = (absStart > absEnd) ? absStart / absEnd : absEnd / absStart;
 			if (mf < LINEAR_MULIPLE_THRESHOLD) {
-				_tickValues = null;
-				_minorValues = null;
+				tickValues = null;
+				minorValues = null;
 				return;
 			} else {
 				if (absStart > absEnd) {
-					farv = _end;
+					farv = end;
 				} else {
-					farv = _start;
+					farv = start;
 				}
 			}
-		} else if (Double.isNaN(_start)) {
-			farv = _end;
-		} else if (Double.isNaN(_end)) {
-			farv = _start;
+		} else if (Double.isNaN(start)) {
+			farv = end;
+		} else if (Double.isNaN(end)) {
+			farv = start;
 		} else {
 			if (absStart > absEnd) {
-				farv = _end;
+				farv = end;
 			} else {
-				farv = _start;
+				farv = start;
 			}
 		}
 
@@ -98,48 +98,48 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(farv, farv * mf);
 		tc.calcValuesByTickNumber(3, minorTickNumber);
-		this._minorNumber = tc.getMinorNumber();
-		this._tickValues = tc.getValues();
-		this._minorValues = tc.getMinorValues();
+		this.minorNumber = tc.getMinorNumber();
+		this.tickValues = tc.getValues();
+		this.minorValues = tc.getMinorValues();
 
 	}
 
 	private void calcAsLinear(int tickNumber, int minorTickNumber) {
 		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
-		tc.setRange(_start, _end);
+		tc.setRange(start, end);
 		tc.calcValuesByTickNumber(tickNumber, minorTickNumber);
-		this._minorNumber = tc.getMinorNumber();
-		this._tickValues = tc.getValues();
-		this._minorValues = tc.getMinorValues();
+		this.minorNumber = tc.getMinorNumber();
+		this.tickValues = tc.getValues();
+		this.minorValues = tc.getMinorValues();
 	}
 
 	private void calcAsLinear(double interval, double offset, int minorTickNumber) {
 		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
-		tc.setRange(_start, _end);
+		tc.setRange(start, end);
 		tc.calcValuesByTickInterval(interval, offset, minorTickNumber);
-		this._minorNumber = tc.getMinorNumber();
-		this._tickValues = tc.getValues();
-		this._minorValues = tc.getMinorValues();
+		this.minorNumber = tc.getMinorNumber();
+		this.tickValues = tc.getValues();
+		this.minorValues = tc.getMinorValues();
 	}
 
 	@Override
 	public double getInterval() {
-		return _interval;
+		return interval;
 	}
 
 	@Override
 	public int getMinorNumber() {
-		return _minorNumber;
+		return minorNumber;
 	}
 
 	@Override
 	public double[] getValues() {
-		return _tickValues;
+		return tickValues;
 	}
 
 	@Override
 	public double[] getMinorValues() {
-		return _minorValues;
+		return minorValues;
 	}
 
 	public String calcAutoLabelFormat(Object values) {
