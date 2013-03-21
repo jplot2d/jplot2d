@@ -18,6 +18,8 @@
  */
 package org.jplot2d.axtick;
 
+import java.util.Locale;
+
 import org.jplot2d.util.Range;
 
 /**
@@ -46,35 +48,8 @@ public abstract class DoubleTickCalculator extends TickCalculator {
 		this.end = end;
 	}
 
-	/**
-	 * Calculate the tick values by the given interval and minor ticks number. The minor ticks number is a proposed
-	 * value, and may be different from actual minor ticks number returned by {@link #getMinorNumber()}.
-	 * 
-	 * @param interval
-	 * @param offset
-	 * @param minorTickNumber
-	 *            if the given number is {@link #AUTO_MINORTICK_NUMBER}, the tick number is derived from interval.
-	 */
-	public abstract void calcValuesByTickInterval(double interval, double offset, int minorTickNumber);
-
-	/**
-	 * @return the tick interval.
-	 */
-	public abstract double getInterval();
-
-	/**
-	 * @return the actual minor tick number.
-	 */
-	public abstract int getMinorNumber();
-
-	/**
-	 * @return the tick values in ascend order
-	 */
 	public abstract double[] getValues();
 
-	/**
-	 * @return the minor tick values in ascend order
-	 */
 	public abstract double[] getMinorValues();
 
 	/**
@@ -123,13 +98,97 @@ public abstract class DoubleTickCalculator extends TickCalculator {
 	}
 
 	public boolean isValidFormat(String format) {
-		format = TickUtils.convFCm2e(format);
+		format = convFCm2e(format);
 		try {
 			String.format(format, 1d);
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
+	}
+
+	public String calcLabelFormatString(Object valueArray) {
+
+		double[] values = (double[]) valueArray;
+
+		int minMag = Integer.MAX_VALUE;
+		int maxMag = Integer.MIN_VALUE;
+		/* number of significant digits */
+		int maxPrec = 0;
+		/* number of fraction digits */
+		int maxFractionDigits = 0;
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == 0 || Double.isNaN(values[i]) || Double.isInfinite(values[i])) {
+				continue;
+			}
+
+			double v = Math.abs(values[i]);
+
+			String s = String.format((Locale) null, "%.14e", v);
+			int eidx = s.lastIndexOf('e');
+			int ensi = eidx + 1; // the start index of exponent number
+			if (s.charAt(ensi) == '+') {
+				ensi++;
+			}
+			int mag = Integer.parseInt(s.substring(ensi));
+			/* number of significant digits, eg. the pp1 for 1.1 is 2 */
+			int pp1 = -1;
+			for (int ci = eidx - 1; ci >= 0; ci--) {
+				if (s.charAt(ci) != '0') {
+					pp1 = ci;
+					break;
+				}
+			}
+
+			if (minMag > mag) {
+				minMag = mag;
+			}
+			if (maxMag < mag) {
+				maxMag = mag;
+			}
+
+			if (maxPrec < pp1) {
+				maxPrec = pp1;
+			}
+			if (maxFractionDigits < pp1 - mag - 1) {
+				maxFractionDigits = pp1 - mag - 1;
+			}
+		}
+
+		/* the number of 0 we can save */
+		int n0;
+		if (minMag >= 0) {
+			n0 = maxMag - maxPrec + 1;
+		} else if (maxMag <= 0) {
+			n0 = -minMag;
+		} else {
+			n0 = maxMag - minMag;
+		}
+
+		if (n0 < 4 && minMag >= -4 && maxMag < 6) {
+			return "%." + maxFractionDigits + "f";
+		} else {
+			return "%." + (maxPrec - 1) + "m";
+		}
+
+	}
+
+	/**
+	 * Convert Format Conversion 'm' to 'e'. If the the input format is not 'm' conversion, the string is return
+	 * untouched.
+	 * 
+	 * @param format
+	 *            the format string.
+	 * @return the new format string.
+	 */
+	public static String convFCm2e(String format) {
+		int mathConversionIdx = format.indexOf("m", 1);
+		if (mathConversionIdx != -1) {
+			StringBuffer newFormat = new StringBuffer(format);
+			newFormat.setCharAt(mathConversionIdx, 'e');
+			format = newFormat.toString();
+		}
+		return format;
 	}
 
 }

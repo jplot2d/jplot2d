@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -25,37 +25,33 @@ import org.jplot2d.util.NumberArrayUtils;
  * @author Jingjing Li
  * 
  */
-public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
-		implements RangeAdvisor {
+public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 
 	/**
 	 * Always be positive
 	 */
-	protected double _interval;
+	protected double interval;
 
-	protected int _minorNumber;
+	protected int minorNumber;
 
-	protected double[] _tickValues;
+	protected double[] tickValues;
 
-	protected double[] _minorValues;
+	protected double[] minorValues;
 
 	/**
 	 * @param start
 	 * @param end
 	 */
 	protected void setRange(double start, double end) {
-		if (Double.isNaN(start) || Double.isInfinite(start)
-				|| Double.isNaN(end) || Double.isInfinite(end)) {
-			throw new IllegalArgumentException("Invalid range [" + start + ","
-					+ end + "].");
+		if (Double.isNaN(start) || Double.isInfinite(start) || Double.isNaN(end) || Double.isInfinite(end)) {
+			throw new IllegalArgumentException("Invalid range [" + start + "," + end + "].");
 		}
 		super.setRange(start, end);
 	}
 
 	/**
-	 * Calculate the nice interval based on the range and proposed tick number.
-	 * Besides the return value, this method also update the internal interval
-	 * variable.
+	 * Calculate the nice interval based on the range and proposed tick number. Besides the return value, this method
+	 * also update the internal interval variable.
 	 * 
 	 * @param tickNumber
 	 * @return
@@ -63,12 +59,10 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 	protected DoubleInterval calcInterval(int tickNumber) {
 
 		if (start == end) {
-			throw new IllegalArgumentException(
-					"The range span must be great than zero");
+			throw new IllegalArgumentException("The range span must be great than zero");
 		}
 		if (tickNumber <= 0) {
-			throw new IllegalArgumentException(
-					"The ticks number must be great than zero");
+			throw new IllegalArgumentException("The ticks number must be great than zero");
 		} else if (tickNumber == 1) {
 			tickNumber = 2;
 		}
@@ -99,10 +93,10 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 
 		/* tickNumB < tickNumber < tickNumA */
 		if (tickNumA - tickNumber <= tickNumber - tickNumB) {
-			_interval = itvA.doubleValue();
+			interval = itvA.doubleValue();
 			return itvA;
 		} else {
-			_interval = itvB.doubleValue();
+			interval = itvB.doubleValue();
 			return itvB;
 		}
 
@@ -117,17 +111,16 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 	 */
 	protected abstract DoubleInterval[] calcCandidateInterval(double rough);
 
-	public void calcValuesByTickInterval(double interval, double offset,
-			int minorTickNumber) {
-		_interval = Math.abs(interval);
+	public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
+		interval = Math.abs(interval);
 
 		if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
-			_minorNumber = calcMinorNumber(interval);
+			minorNumber = calcMinorNumber(interval);
 		} else {
-			_minorNumber = minorTickNumber;
+			minorNumber = minorTickNumber;
 		}
 
-		calcValues(_interval, offset, _minorNumber);
+		calcValues(interval, offset, minorNumber);
 	}
 
 	/**
@@ -144,8 +137,7 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 	 * @param offset
 	 * @param minorTickNumber
 	 */
-	protected void calcValues(double interval, double offset,
-			int minorTickNumber) {
+	protected void calcValues(double interval, double offset, int minorTickNumber) {
 
 		if (interval == 0 || Double.isNaN(interval))
 			throw new IllegalArgumentException("delta cannot be zero or NaN");
@@ -162,14 +154,12 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		}
 		double d = interval;
 
-		double expandLo = lo - Math.abs(lo) * DOUBLE_PRECISION_TOLERANCE
-				- offset;
-		double expandHi = hi + Math.abs(hi) * DOUBLE_PRECISION_TOLERANCE
-				- offset;
+		double expandLo = lo - Math.abs(lo) * DOUBLE_PRECISION_TOLERANCE - offset;
+		double expandHi = hi + Math.abs(hi) * DOUBLE_PRECISION_TOLERANCE - offset;
 		long iLo = (long) Math.ceil(expandLo / d);
 		long iHi = (long) Math.floor(expandHi / d);
 		int tickNum = (int) (iHi - iLo + 1);
-		_tickValues = new double[tickNum];
+		tickValues = new double[tickNum];
 
 		double minorInterval = d / (minorTickNumber + 1);
 
@@ -177,41 +167,40 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 			long miLo = (long) Math.ceil(expandLo / minorInterval);
 			long miHi = (long) Math.floor(expandHi / minorInterval);
 			int mTickNum = (int) (miHi - miLo + 1);
-			_minorValues = new double[mTickNum];
+			minorValues = new double[mTickNum];
 			int mvi = 0;
 			for (long mi = miLo; mi <= miHi; mi++) {
-				_minorValues[mvi++] = minorInterval * mi + offset;
+				minorValues[mvi++] = minorInterval * mi + offset;
 			}
 		} else {
 			double lowMargine = -expandLo + d * iLo;
 			double hiMargine = expandHi - d * iHi;
 			int minorNumBeforeLow = (int) (lowMargine / minorInterval);
 			int minorNumAfterHi = (int) (hiMargine / minorInterval);
-			_minorValues = new double[(minorNumBeforeLow + (tickNum - 1)
-					* minorTickNumber + minorNumAfterHi)];
+			minorValues = new double[(minorNumBeforeLow + (tickNum - 1) * minorTickNumber + minorNumAfterHi)];
 			int mvi = 0;
 			int tvi = 0;
 			double v = d * iLo + offset;
 			for (int im = minorNumBeforeLow; im > 0; im--) {
-				_minorValues[mvi++] = v - minorInterval * im;
+				minorValues[mvi++] = v - minorInterval * im;
 			}
 			for (long i = iLo;;) {
 				v = d * i + offset;
-				_tickValues[tvi++] = v;
+				tickValues[tvi++] = v;
 				if (i++ == iHi) {
 					break;
 				}
 				for (int im = 1; im <= minorTickNumber; im++) {
-					_minorValues[mvi++] = v + minorInterval * im;
+					minorValues[mvi++] = v + minorInterval * im;
 				}
 			}
 			for (int im = 1; im <= minorNumAfterHi; im++) {
-				_minorValues[mvi++] = v + minorInterval * im;
+				minorValues[mvi++] = v + minorInterval * im;
 			}
 
 			if (inverted) {
-				_tickValues = NumberArrayUtils.reverse(_tickValues);
-				_minorValues = NumberArrayUtils.reverse(_minorValues);
+				tickValues = NumberArrayUtils.reverse(tickValues);
+				minorValues = NumberArrayUtils.reverse(minorValues);
 			}
 		}
 	}
@@ -251,13 +240,13 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		double xLo, xHi;
 		/* tickNumB < tickNumber < tickNumA */
 		if (tickNumA - tickNumber <= tickNumber - tickNumB) {
-			_interval = itvA.doubleValue();
-			xLo = _interval * iLoA;
-			xHi = _interval * iHiA;
+			interval = itvA.doubleValue();
+			xLo = interval * iLoA;
+			xHi = interval * iHiA;
 		} else {
-			_interval = itvB.doubleValue();
-			xLo = _interval * iLoB;
-			xHi = _interval * iHiB;
+			interval = itvB.doubleValue();
+			xLo = interval * iLoB;
+			xHi = interval * iHiB;
 		}
 
 		if (end > start) {
@@ -289,7 +278,7 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 		double xLo = d * iLo;
 		double xHi = d * iHi;
 
-		_interval = d;
+		interval = d;
 		if (end > start) {
 			start = xLo;
 			end = xHi;
@@ -302,22 +291,22 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator
 
 	@Override
 	public double getInterval() {
-		return _interval;
+		return interval;
 	}
 
 	@Override
 	public int getMinorNumber() {
-		return _minorNumber;
+		return minorNumber;
 	}
 
 	@Override
 	public double[] getValues() {
-		return _tickValues;
+		return tickValues;
 	}
 
 	@Override
 	public double[] getMinorValues() {
-		return _minorValues;
+		return minorValues;
 	}
 
 }

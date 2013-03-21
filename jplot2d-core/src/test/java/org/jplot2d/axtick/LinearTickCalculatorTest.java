@@ -66,57 +66,43 @@ public class LinearTickCalculatorTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link LinearTickCalculator#calcValuesByTickNumber(int, int)}
+	 * Test method for {@link LinearTickCalculator#calcValuesByTickNumber(int, int)}
 	 */
 	@Test
 	public void testNiceLinearTicks() {
-		checkDoubleArray(niceLinearTicks(-1.6, 1.6, 10), -1.5, -1.0, -0.5, 0,
-				0.5, 1.0, 1.5);
-		checkDoubleArray(niceLinearTicks(-1.499, 1.499, 10), -1.4, -1.2, -1.0,
-				-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4);
-		checkDoubleArray(niceLinearTicks(1.6, -1.6, 10), 1.5, 1.0, 0.5, 0,
-				-0.5, -1.0, -1.5);
-		checkDoubleArray(niceLinearTicks(1.499, -1.499, 10), 1.4, 1.2, 1.0,
-				0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6, -0.8, -1.0, -1.2, -1.4);
-		checkDoubleArray(niceLinearTicks(1E10, 1E10 + 1, 10), 1.0E10,
-				1.00000000001E10, 1.00000000002E10, 1.00000000003E10,
-				1.00000000004E10, 1.00000000005E10, 1.00000000006E10,
-				1.00000000007E10, 1.00000000008E10, 1.00000000009E10,
-				1.0000000001E10);
-		checkDoubleArray(niceLinearTicks(10, 60, 11), 10.0, 15.0, 20.0, 25.0,
-				30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0);
-		checkDoubleArray(niceLinearTicks(10, 60.00000000000001, 11), 10.0,
-				15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0);
+		checkDoubleArray(niceLinearTicks(-1.6, 1.6, 10), -1.5, -1.0, -0.5, 0, 0.5, 1.0, 1.5);
+		checkDoubleArray(niceLinearTicks(-1.499, 1.499, 10), -1.4, -1.2, -1.0, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4,
+				0.6, 0.8, 1.0, 1.2, 1.4);
+		checkDoubleArray(niceLinearTicks(1.6, -1.6, 10), 1.5, 1.0, 0.5, 0, -0.5, -1.0, -1.5);
+		checkDoubleArray(niceLinearTicks(1.499, -1.499, 10), 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0, -0.2, -0.4, -0.6,
+				-0.8, -1.0, -1.2, -1.4);
+		checkDoubleArray(niceLinearTicks(1E10, 1E10 + 1, 10), 1.0E10, 1.00000000001E10, 1.00000000002E10,
+				1.00000000003E10, 1.00000000004E10, 1.00000000005E10, 1.00000000006E10, 1.00000000007E10,
+				1.00000000008E10, 1.00000000009E10, 1.0000000001E10);
+		checkDoubleArray(niceLinearTicks(10, 60, 11), 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0);
+		checkDoubleArray(niceLinearTicks(10, 60.00000000000001, 11), 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0,
+				50.0, 55.0, 60.0);
 	}
 
 	/**
-	 * Test method for
-	 * {@link LinearTickCalculator#calcValuesByTickInterval(double, double, int)}
+	 * Test method for {@link LinearTickCalculator#calcValuesByTickInterval(double, double, int)}
 	 */
 	@Test
 	public void testLinearInterval() {
 		linearTC.setRange(-1.6, 1.6);
 		linearTC.calcValuesByTickInterval(0.4, 0, 0);
-		checkDoubleArray(linearTC.getValues(), -1.6, -1.2, -0.8, -0.4, 0, 0.4,
-				0.8, 1.2, 1.6);
+		checkDoubleArray(linearTC.getValues(), -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6);
 		checkDoubleArray(linearTC.getMinorValues());
 		linearTC.calcValuesByTickInterval(0.4, 0, 1);
-		checkDoubleArray(linearTC.getValues(), -1.6, -1.2, -0.8, -0.4, 0, 0.4,
-				0.8, 1.2, 1.6);
-		checkDoubleArray(linearTC.getMinorValues(), -1.4, -1.0, -0.6, -0.2,
-				0.2, 0.6, 1.0, 1.4);
+		checkDoubleArray(linearTC.getValues(), -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6);
+		checkDoubleArray(linearTC.getMinorValues(), -1.4, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.4);
 		linearTC.calcValuesByTickInterval(0.4, 0.2, 1);
-		checkDoubleArray(linearTC.getValues(), -1.4, -1.0, -0.6, -0.2, 0.2,
-				0.6, 1.0, 1.4);
-		checkDoubleArray(linearTC.getMinorValues(), -1.6, -1.2, -0.8, -0.4, 0,
-				0.4, 0.8, 1.2, 1.6);
+		checkDoubleArray(linearTC.getValues(), -1.4, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.4);
+		checkDoubleArray(linearTC.getMinorValues(), -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6);
 		linearTC.calcValuesByTickInterval(0.4, -0.1, 3);
-		checkDoubleArray(linearTC.getValues(), -1.3, -0.9, -0.5, -0.1, 0.3,
-				0.7, 1.1, 1.5);
-		checkDoubleArray(linearTC.getMinorValues(), -1.6, -1.5, -1.4, -1.2,
-				-1.1, -1.0, -0.8, -0.7, -0.6, -0.4, -0.3, -0.2, 0, 0.1, 0.2,
-				0.4, 0.5, 0.6, 0.8, 0.9, 1.0, 1.2, 1.3, 1.4, 1.6);
+		checkDoubleArray(linearTC.getValues(), -1.3, -0.9, -0.5, -0.1, 0.3, 0.7, 1.1, 1.5);
+		checkDoubleArray(linearTC.getMinorValues(), -1.6, -1.5, -1.4, -1.2, -1.1, -1.0, -0.8, -0.7, -0.6, -0.4, -0.3,
+				-0.2, 0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 0.9, 1.0, 1.2, 1.3, 1.4, 1.6);
 
 		linearTC.setRange(0, 50);
 		linearTC.calcValuesByTickInterval(10, 3, 1);
@@ -173,66 +159,4 @@ public class LinearTickCalculatorTest {
 		assertEquals(linearTC.getMinorNumber(), 0);
 	}
 
-	@Test
-	public void testCalcLabelFormatStrForLinear() {
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1000,
-				2000, 3000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1200,
-				1200, 1300 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 10000,
-				20000, 30000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] {
-				110000, 120000, 130000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] {
-				123000, 124000, 125000 }));
-		assertEquals("%.4m", TickUtils.calcLabelFormatStr(new double[] {
-				1234500, 1234600, 1234700 }));
-
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1000,
-				2000, 3000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1200,
-				1200, 1300 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 10000,
-				20000, 30000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new long[] { 110000,
-				120000, 130000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 123000,
-				124000, 125000 }));
-		assertEquals("%.4m", TickUtils.calcLabelFormatStr(new long[] { 1234500,
-				1234600, 1234700 }));
-
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 1, 10,
-				100, 1000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 12,
-				120, 1200, 12000 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 1, 10,
-				100, 1000, 10000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] { 12,
-				120, 1200, 12000, 120000 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 12,
-				123, 1200, 12000, 120000 }));
-
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 1, 10,
-				100, 1000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 12, 120,
-				1200, 12000 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new long[] { 1, 10,
-				100, 1000, 10000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new long[] { 12, 120,
-				1200, 12000, 120000 }));
-		assertEquals("%d", TickUtils.calcLabelFormatStr(new long[] { 12, 123,
-				1200, 12000, 120000 }));
-
-		assertEquals("%.2f", TickUtils.calcLabelFormatStr(new double[] { 0.11,
-				1.1, 11, 110 }));
-		assertEquals("%.0m", TickUtils.calcLabelFormatStr(new double[] { 0.1,
-				10, 1000 }));
-		assertEquals("%.1m", TickUtils.calcLabelFormatStr(new double[] { 0.11,
-				1.1, 11, 110, 1100 }));
-
-		assertEquals("%.1f", TickUtils.calcLabelFormatStr(new double[] { -0.2,
-				0, 0.2, 0.4, 0.6, 0.8, 1.0 }));
-		assertEquals("%.0f", TickUtils.calcLabelFormatStr(new double[] { 2, 4,
-				6, 8, 10, 12, 14, 16, 18, 20 }));
-	}
 }

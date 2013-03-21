@@ -22,34 +22,18 @@ import static org.junit.Assert.*;
 
 import java.text.Format;
 
-import org.jplot2d.util.Range;
 import org.junit.Test;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class TickCalculatorTest {
+public class DoubleTickCalculatorTest {
 
-	private static TickCalculator tc = new TickCalculator() {
-
-		@Override
-		public Range getRange() {
-			return null;
-		}
-
-		@Override
-		public void setRange(Range range) {
-
-		}
+	private static DoubleTickCalculator tc = new DoubleTickCalculator() {
 
 		@Override
 		public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
-
-		}
-
-		@Override
-		public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
 
 		}
 
@@ -64,27 +48,17 @@ public class TickCalculatorTest {
 		}
 
 		@Override
-		public Object getValues() {
+		public double[] getValues() {
 			return null;
 		}
 
 		@Override
-		public Object getMinorValues() {
-			return null;
-		}
-
-		@Override
-		public int[] getInRangeValuesIdx(Object v) {
+		public double[] getMinorValues() {
 			return null;
 		}
 
 		@Override
 		public Format calcLabelTextFormat(Object values) {
-			return null;
-		}
-
-		@Override
-		public String calcLabelFormatString(Object values) {
 			return null;
 		}
 
@@ -97,6 +71,12 @@ public class TickCalculatorTest {
 		public boolean isValidFormat(String format) {
 			return false;
 		}
+
+		@Override
+		public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
+
+		}
+
 	};
 
 	@Test
@@ -147,6 +127,29 @@ public class TickCalculatorTest {
 
 		assertEquals("01/01/70", tc.format("%tm/%<td/%<ty", 1L).toString());
 		assertEquals("01-01-70", tc.format("%tm-%<td-%<ty", 1L).toString());
+	}
+
+	@Test
+	public void testCalcLabelFormatStrForLinear() {
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 1000, 2000, 3000 }));
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 1200, 1200, 1300 }));
+		assertEquals("%.0m", tc.calcLabelFormatString(new double[] { 10000, 20000, 30000 }));
+		assertEquals("%.1m", tc.calcLabelFormatString(new double[] { 110000, 120000, 130000 }));
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 123000, 124000, 125000 }));
+		assertEquals("%.4m", tc.calcLabelFormatString(new double[] { 1234500, 1234600, 1234700 }));
+
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 1, 10, 100, 1000 }));
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 12, 120, 1200, 12000 }));
+		assertEquals("%.0m", tc.calcLabelFormatString(new double[] { 1, 10, 100, 1000, 10000 }));
+		assertEquals("%.1m", tc.calcLabelFormatString(new double[] { 12, 120, 1200, 12000, 120000 }));
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 12, 123, 1200, 12000, 120000 }));
+
+		assertEquals("%.2f", tc.calcLabelFormatString(new double[] { 0.11, 1.1, 11, 110 }));
+		assertEquals("%.0m", tc.calcLabelFormatString(new double[] { 0.1, 10, 1000 }));
+		assertEquals("%.1m", tc.calcLabelFormatString(new double[] { 0.11, 1.1, 11, 110, 1100 }));
+
+		assertEquals("%.1f", tc.calcLabelFormatString(new double[] { -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0 }));
+		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 }));
 	}
 
 }

@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -24,8 +24,7 @@ import java.lang.reflect.Array;
 import java.util.Locale;
 
 /**
- * This calculator works on seconds, and accept a TickUnitConverter, in case of
- * the input data is not in seconds.
+ * This calculator works on seconds, and accept a TickUnitConverter, in case of the input data is not in seconds.
  * 
  * @author Jingjing Li
  * 
@@ -123,17 +122,15 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 		TimeHmsInterval intv = (TimeHmsInterval) calcInterval(tickNumber);
 
 		if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
-			if (intv.getCoefficient() == 1
-					&& (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.HOUR)) {
-				_minorNumber = 0;
+			if (intv.getCoefficient() == 1 && (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.HOUR)) {
+				minorNumber = 0;
 			} else {
-				_minorNumber = TickUtils.calcMinorNumber(intv.getCoefficient(),
-						3);
+				minorNumber = calcMinorNumber(intv.getCoefficient(), 3);
 			}
 		} else {
-			_minorNumber = minorTickNumber;
+			minorNumber = minorTickNumber;
 		}
-		calcValues(_interval, 0, _minorNumber);
+		calcValues(interval, 0, minorNumber);
 	}
 
 	@Override
@@ -149,8 +146,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 			double coefficient = itv / Math.pow(10, mag);
 			double s1dcoef = Math.round(coefficient);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / coefficient - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -161,8 +157,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 			double secs = itv;
 			double s1dcoef = Math.round(secs);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / secs - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -173,8 +168,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 			double minutes = itv / Unit.MINUTE.time;
 			double s1dcoef = Math.round(minutes);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / minutes - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -185,8 +179,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 			double hours = itv / Unit.HOUR.time;
 			double s1dcoef = Math.round(hours);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / hours - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -198,12 +191,12 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 		if (s1dInterval == 0) {
 			return 0;
 		} else {
-			return TickUtils.calcMinorNumber(s1dInterval, 3);
+			return calcMinorNumber(s1dInterval, 3);
 		}
 
 	}
 
-	public TimeHmsFormat calcAutoLabelTextFormat(Object values) {
+	public TimeHmsFormat calcLabelTextFormat(Object values) {
 		return new TimeHmsFormat(tuc, calcSigFraDigits(values));
 	}
 
@@ -254,7 +247,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 		return -1;
 	}
 
-	public String calcAutoLabelFormat(Object values) {
+	public String calcLabelFormatString(Object values) {
 		return "";
 	}
 

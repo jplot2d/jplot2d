@@ -21,8 +21,8 @@ package org.jplot2d.axtick;
 import java.text.Format;
 
 /**
- * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone, with a end tick
- * value is multiple of the other end. The reasonable multiplying factor is 4.
+ * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone, with a end tick value is multiple
+ * of the other end. The reasonable multiplying factor is 4.
  * 
  * @author Jingjing Li
  * 
@@ -142,16 +142,12 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
 		return minorValues;
 	}
 
-	public String calcAutoLabelFormat(Object values) {
-		return TickUtils.calcLabelFormatStr((double[]) values);
-	}
-
-	public Format calcAutoLabelTextFormat(Object canonicalValues) {
+	public Format calcLabelTextFormat(Object canonicalValues) {
 		return null;
 	}
 
 	public String getLabelFormate() {
-		return TickUtils.calcLabelFormatStr(getValues());
+		return calcLabelFormatString(getValues());
 	}
 
 }

@@ -42,7 +42,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 0);
 		checkDoubleArray(hmsTC.getValues(), 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
 				0.7, 0.8, 0.9, 1.0);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(1));
 		checkFormat(format, hmsTC.getValues(), "00:00:00.0", "00:00:00.1",
 				"00:00:00.2", "00:00:00.3", "00:00:00.4", "00:00:00.5",
@@ -55,7 +55,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 4);
 		checkDoubleArray(hmsTC.getValues(), 0, 5, 10, 15, 20, 25, 30, 35, 40,
 				45, 50, 55, 60);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "00:00:05",
 				"00:00:10", "00:00:15", "00:00:20", "00:00:25", "00:00:30",
@@ -68,7 +68,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 4);
 		checkDoubleArray(hmsTC.getValues(), 0, 300, 600, 900, 1200, 1500, 1800,
 				2100, 2400, 2700, 3000, 3300, 3600);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "00:05:00",
 				"00:10:00", "00:15:00", "00:20:00", "00:25:00", "00:30:00",
@@ -82,7 +82,7 @@ public class TimeHmsTickCalculatorTest {
 		checkDoubleArray(hmsTC.getValues(), 0, 2 * 3600, 4 * 3600, 6 * 3600,
 				8 * 3600, 10 * 3600, 12 * 3600, 14 * 3600, 16 * 3600,
 				18 * 3600, 20 * 3600, 22 * 3600, 24 * 3600);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "02:00:00",
 				"04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00",
@@ -101,7 +101,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 0);
 		checkDoubleArray(hmsTC.getValues(), 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
 				0.7, 0.8, 0.9, 1.0);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(1));
 		checkFormat(format, hmsTC.getValues(), "00:00:00.0", "00:00:00.1",
 				"00:00:00.2", "00:00:00.3", "00:00:00.4", "00:00:00.5",
@@ -114,7 +114,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 4);
 		checkDoubleArray(hmsTC.getValues(), 0, 5, 10, 15, 20, 25, 30, 35, 40,
 				45, 50, 55, 60);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "00:00:05",
 				"00:00:10", "00:00:15", "00:00:20", "00:00:25", "00:00:30",
@@ -127,7 +127,7 @@ public class TimeHmsTickCalculatorTest {
 		assertEquals(hmsTC.getMinorNumber(), 4);
 		checkDoubleArray(hmsTC.getValues(), 0, 300, 600, 900, 1200, 1500, 1800,
 				2100, 2400, 2700, 3000, 3300, 3600);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "00:05:00",
 				"00:10:00", "00:15:00", "00:20:00", "00:25:00", "00:30:00",
@@ -141,7 +141,7 @@ public class TimeHmsTickCalculatorTest {
 		checkDoubleArray(hmsTC.getValues(), 0, 2 * 3600, 4 * 3600, 6 * 3600,
 				8 * 3600, 10 * 3600, 12 * 3600, 14 * 3600, 16 * 3600,
 				18 * 3600, 20 * 3600, 22 * 3600, 24 * 3600);
-		format = hmsTC.calcAutoLabelTextFormat(hmsTC.getValues());
+		format = hmsTC.calcLabelTextFormat(hmsTC.getValues());
 		assertEquals(format, new TimeHmsFormat(0));
 		checkFormat(format, hmsTC.getValues(), "00:00:00", "02:00:00",
 				"04:00:00", "06:00:00", "08:00:00", "10:00:00", "12:00:00",
