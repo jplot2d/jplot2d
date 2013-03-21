@@ -19,8 +19,7 @@
 package org.jplot2d.axtick;
 
 /**
- * A TickCalculator to display in hh:mm:ss.xxxx format. The input unit is
- * decimal degree.
+ * A TickCalculator to display in hh:mm:ss.xxxx format. The input unit is decimal degree.
  * 
  * @author Jingjing Li
  * 

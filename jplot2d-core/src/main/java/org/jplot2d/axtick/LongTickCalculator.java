@@ -18,6 +18,8 @@
  */
 package org.jplot2d.axtick;
 
+import java.util.Locale;
+
 import org.jplot2d.util.Range;
 
 /**
@@ -70,6 +72,10 @@ public abstract class LongTickCalculator extends TickCalculator {
 		}
 	}
 
+	public abstract long[] getValues();
+
+	public abstract long[] getMinorValues();
+
 	/**
 	 * Calculate the tick values by the given interval and minor ticks number. The minor ticks number is a proposed
 	 * value, and may be different from actual minor ticks number returned by {@link #getMinorNumber()}.
@@ -112,6 +118,51 @@ public abstract class LongTickCalculator extends TickCalculator {
 			System.arraycopy(m, 0, result, 0, j);
 			return result;
 		}
+	}
+
+	public String calcLabelFormatString(Object valueArray) {
+
+		long[] values = (long[]) valueArray;
+
+		int maxMag = Integer.MIN_VALUE;
+		/* number of significant digits */
+		int maxPrec = 0;
+
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == 0) {
+				continue;
+			}
+
+			long v = Math.abs(values[i]);
+
+			int mag = (int) Math.floor(Math.log10(v));
+			if (maxMag < mag) {
+				maxMag = mag;
+			}
+
+			String s = String.format((Locale) null, "%d", v);
+			/* number of significant digits. eg. pp1 for 1100 is 2 */
+			int pp1 = 0;
+			for (int ci = s.length() - 1; ci >= 0; ci--) {
+				if (s.charAt(ci) != '0') {
+					pp1 = ci + 1;
+					break;
+				}
+			}
+
+			if (maxPrec < pp1) {
+				maxPrec = pp1;
+			}
+		}
+
+		/* the number of 0 we can save */
+		int n0 = maxMag - maxPrec + 1;
+		if (n0 < 4 && maxMag < 6) {
+			return "%d";
+		} else {
+			return "%." + (maxPrec - 1) + "m";
+		}
+
 	}
 
 }

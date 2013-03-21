@@ -23,11 +23,9 @@ import java.text.Format;
 import org.jplot2d.util.NumberArrayUtils;
 
 /**
- * The Log tick calculate its exponent with linear tick calculator, with this
- * exceptions:
+ * The Log tick calculate its exponent with linear tick calculator, with this exceptions:
  * <ul>
- * <li>The minimal exponent interval is 1. In this case, the minor tick number
- * is always 9</li>
+ * <li>The minimal exponent interval is 1. In this case, the minor tick number is always 9</li>
  * </ul>
  * 
  * 
@@ -51,11 +49,9 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	 * @param end
 	 */
 	protected void setRange(double start, double end) {
-		if (Double.isNaN(start) || Double.isInfinite(start)
-				|| Double.isNaN(end) || Double.isInfinite(end) || start <= 0
-				|| end <= 0) {
-			throw new IllegalArgumentException("Invalid range [" + start + ","
-					+ end + "].");
+		if (Double.isNaN(start) || Double.isInfinite(start) || Double.isNaN(end) || Double.isInfinite(end)
+				|| start <= 0 || end <= 0) {
+			throw new IllegalArgumentException("Invalid range [" + start + "," + end + "].");
 		}
 		super.setRange(start, end);
 
@@ -74,8 +70,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	 */
 	protected int calcInterval(int tickNumber) {
 		if (tickNumber <= 0) {
-			throw new IllegalArgumentException(
-					"tickNumber must be great than zero");
+			throw new IllegalArgumentException("tickNumber must be great than zero");
 		} else if (tickNumber == 1) {
 			tickNumber = 2;
 		}
@@ -120,8 +115,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 
 		if (length == 0) {
 			/*
-			 * we should use linear tick strategy, so calculating _minorValues
-			 * does not make sense
+			 * we should use linear tick strategy, so calculating _minorValues does not make sense
 			 */
 			_minorValues = new double[0];
 			return;
@@ -171,33 +165,28 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 		if (expInterval == 1) {
 			calcValuesExp1();
 		} else {
-			expCalculator.calcValuesByTickInterval(expInterval, 0,
-					minorTickNumber);
+			expCalculator.calcValuesByTickInterval(expInterval, 0, minorTickNumber);
 			_tickValues = new double[expCalculator.getValues().length];
 			_minorValues = new double[expCalculator.getMinorValues().length];
 			for (int i = 0; i < _tickValues.length; i++) {
 				_tickValues[i] = Math.pow(10, expCalculator.getValues()[i]);
 			}
 			for (int i = 0; i < _minorValues.length; i++) {
-				_minorValues[i] = Math.pow(10,
-						expCalculator.getMinorValues()[i]);
+				_minorValues[i] = Math.pow(10, expCalculator.getMinorValues()[i]);
 			}
 		}
 	}
 
 	private void calcAsLinear(int tickNumber, int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance()
-				.createCalculator();
+		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(start, end);
 		tc.calcValuesByTickNumber(tickNumber, minorTickNumber);
 		this._tickValues = tc.getValues();
 		this._minorValues = tc.getMinorValues();
 	}
 
-	private void calcAsLinear(double interval, double offset,
-			int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance()
-				.createCalculator();
+	private void calcAsLinear(double interval, double offset, int minorTickNumber) {
+		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
 		tc.setRange(start, end);
 		tc.calcValuesByTickInterval(interval, offset, minorTickNumber);
 		this._tickValues = tc.getValues();
@@ -207,8 +196,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	public void expandRangeByTickNumber(int tickNumber) {
 
 		if (tickNumber <= 0) {
-			throw new IllegalArgumentException(
-					"tickNumber must be great than zero");
+			throw new IllegalArgumentException("tickNumber must be great than zero");
 		} else if (tickNumber == 1) {
 			tickNumber = 2;
 		}
@@ -226,8 +214,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	public void expandRangeByTickInterval(double interval) {
 
 		if (interval < 0) {
-			throw new IllegalArgumentException(
-					"LOG axis only accept a positive interval.");
+			throw new IllegalArgumentException("LOG axis only accept a positive interval.");
 		}
 
 		int expi = Math.abs(new Int10expn(interval).getExponent());
@@ -263,11 +250,9 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	}
 
 	@Override
-	public void calcValuesByTickInterval(double interval, double offset,
-			int minorTickNumber) {
+	public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
 		if (interval < 0) {
-			throw new IllegalArgumentException(
-					"LOG axis only accept a positive interval.");
+			throw new IllegalArgumentException("LOG axis only accept a positive interval.");
 		}
 
 		int expInterval = new Int10expn(interval).getExponent();
@@ -278,8 +263,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 
 		calcValues(expInterval, minorTickNumber);
 
-		if (_tickValues.length == 0
-				|| (_tickValues.length == 1 && _minorValues.length == 0)) {
+		if (_tickValues.length == 0 || (_tickValues.length == 1 && _minorValues.length == 0)) {
 			calcAsLinear(interval, offset, minorTickNumber);
 		} else {
 			if (minorTickNumber == 0) {
@@ -299,8 +283,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 
 	@Override
 	public int getMinorNumber() {
-		return (expCalculator.getInterval() == 1) ? 9 : expCalculator
-				.getMinorNumber();
+		return (expCalculator.getInterval() == 1) ? 9 : expCalculator.getMinorNumber();
 	}
 
 	@Override
@@ -314,21 +297,11 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 	}
 
 	public String getLabelFormate() {
-		return TickUtils.calcLabelFormatStr(getValues());
+		return calcLabelFormatString(getValues());
 	}
 
-	public Format calcAutoLabelTextFormat(Object canonicalValues) {
+	public Format calcLabelTextFormat(Object canonicalValues) {
 		return null;
-	}
-
-	/**
-	 * Calculate a proper format string to format the given values.
-	 * 
-	 * @param values
-	 * @return
-	 */
-	public String calcAutoLabelFormat(Object values) {
-		return TickUtils.calcLabelFormatStr((double[]) values);
 	}
 
 }

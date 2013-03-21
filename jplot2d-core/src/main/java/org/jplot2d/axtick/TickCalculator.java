@@ -79,12 +79,60 @@ public abstract class TickCalculator {
 	public abstract int getMinorNumber();
 
 	/**
-	 * @return the tick values in ascend order
+	 * Find a proper minor tick number according to the given major interval and proposal minor tick number.
+	 * 
+	 * @param majorInterval
+	 * @param minorNumber
+	 *            the proposed minor tick number
+	 * @return the proper minor tick number
+	 */
+	protected int calcMinorNumber(int majorInterval, int minorNumber) {
+
+		/* significant digits of interval */
+		int sdi = majorInterval;
+		/* the scale in 10^n */
+		while (sdi > 10 && sdi % 10 == 0) {
+			sdi /= 10;
+		}
+
+		int minorInterval = sdi / (minorNumber + 1);
+		if (minorInterval == 0) {
+			minorInterval++;
+		}
+		int itvA = 1, itvB = sdi;
+		for (int itv = minorInterval; itv > 1; itv--) {
+			if (sdi % itv == 0) {
+				itvA = itv;
+				break;
+			}
+		}
+		for (int itv = minorInterval + 1; itv < sdi; itv++) {
+			if (sdi % itv == 0) {
+				itvB = itv;
+				break;
+			}
+		}
+		int tickNumA = sdi / itvA - 1;
+		int tickNumB = sdi / itvB - 1;
+
+		if (tickNumB == 0) {
+			return tickNumA;
+		}
+		/* tickNumB < tickNumber < tickNumA, tend to less */
+		if (tickNumA - minorNumber < minorNumber - tickNumB) {
+			return tickNumA;
+		} else {
+			return tickNumB;
+		}
+	}
+
+	/**
+	 * @return the tick values
 	 */
 	public abstract Object getValues();
 
 	/**
-	 * @return the minor tick values in ascend order
+	 * @return the minor tick values
 	 */
 	public abstract Object getMinorValues();
 
@@ -104,7 +152,7 @@ public abstract class TickCalculator {
 	 * @param values
 	 * @return a text format object
 	 */
-	public abstract Format calcAutoLabelTextFormat(Object values);
+	public abstract Format calcLabelTextFormat(Object values);
 
 	/**
 	 * Calculate a proper format string to format the labels on given values.
@@ -112,7 +160,7 @@ public abstract class TickCalculator {
 	 * @param values
 	 * @return
 	 */
-	public abstract String calcAutoLabelFormat(Object values);
+	public abstract String calcLabelFormatString(Object values);
 
 	/**
 	 * Returns a proper format string to format the labels on ticks values returned by {@link #getValues()}. Some

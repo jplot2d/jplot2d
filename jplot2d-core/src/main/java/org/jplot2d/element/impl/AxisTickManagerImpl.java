@@ -642,8 +642,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 		/* calculate auto format & labels form values */
 		if (autoLabelFormat && (_valuesChanged || autoLabelFormatChanged)) {
-			Format atf = tickCalculator.calcAutoLabelTextFormat(getCanonicalValues(values));
-			String alf = tickCalculator.calcAutoLabelFormat(getCanonicalValues(values));
+			Format atf = tickCalculator.calcLabelTextFormat(getCanonicalValues(values));
+			String alf = tickCalculator.calcLabelFormatString(getCanonicalValues(values));
 			changeLabelFormat(atf, alf);
 		}
 		autoLabelFormatChanged = false;
@@ -728,8 +728,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1 : minorNumber);
 			values = tickCalculator.getValues();
 			if (autoLabelFormat) {
-				labelTextFormat = tickCalculator.calcAutoLabelTextFormat(getCanonicalValues(values));
-				labelFormat = tickCalculator.calcAutoLabelFormat(getCanonicalValues(values));
+				labelTextFormat = tickCalculator.calcLabelTextFormat(getCanonicalValues(values));
+				labelFormat = tickCalculator.calcLabelFormatString(getCanonicalValues(values));
 			}
 			autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat, labelFormat);
 			labels = calcLabels(fixedLabels, autoLabels, labelInterval);
@@ -1074,8 +1074,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			Format labelTextFormat;
 			String labelFormat;
 			if (autoLabelFormat) {
-				labelTextFormat = tickCalculator.calcAutoLabelTextFormat(getCanonicalValues(values));
-				labelFormat = tickCalculator.calcAutoLabelFormat(getCanonicalValues(values));
+				labelTextFormat = tickCalculator.calcLabelTextFormat(getCanonicalValues(values));
+				labelFormat = tickCalculator.calcLabelFormatString(getCanonicalValues(values));
 			} else {
 				labelTextFormat = this.labelTextFormat;
 				labelFormat = this.labelFormat;

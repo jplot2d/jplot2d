@@ -43,7 +43,7 @@ public class ArcDmsTickCalculatorTest {
         checkDoubleArray(admsTC.getValues(), 0, 0.1 / 3600, 0.2 / 3600,
                 0.3 / 3600, 0.4 / 3600, 0.5 / 3600, 0.6 / 3600, 0.7 / 3600,
                 0.8 / 3600, 0.9 / 3600, 1.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(1));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200.0\u2033",
                 "00\u00b000\u203200.1\u2033", "00\u00b000\u203200.2\u2033",
@@ -60,7 +60,7 @@ public class ArcDmsTickCalculatorTest {
                 15.0 / 3600, 20.0 / 3600, 25.0 / 3600, 30.0 / 3600,
                 35.0 / 3600, 40.0 / 3600, 45.0 / 3600, 50.0 / 3600,
                 55.0 / 3600, 60.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "00\u00b000\u203205\u2033", "00\u00b000\u203210\u2033",
@@ -78,7 +78,7 @@ public class ArcDmsTickCalculatorTest {
                 900.0 / 3600, 1200.0 / 3600, 1500.0 / 3600, 1800.0 / 3600,
                 2100.0 / 3600, 2400.0 / 3600, 2700.0 / 3600, 3000.0 / 3600,
                 3300.0 / 3600, 3600.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "00\u00b005\u203200\u2033", "00\u00b010\u203200\u2033",
@@ -94,7 +94,7 @@ public class ArcDmsTickCalculatorTest {
         assertEquals(admsTC.getMinorNumber(), 2);
         checkDoubleArray(admsTC.getValues(), 0, 30, 60, 90, 120, 150, 180, 210,
                 240, 270, 300, 330, 360);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "30\u00b000\u203200\u2033", "60\u00b000\u203200\u2033",
@@ -117,7 +117,7 @@ public class ArcDmsTickCalculatorTest {
         checkDoubleArray(admsTC.getValues(), 0, 0.1 / 3600, 0.2 / 3600,
                 0.3 / 3600, 0.4 / 3600, 0.5 / 3600, 0.6 / 3600, 0.7 / 3600,
                 0.8 / 3600, 0.9 / 3600, 1.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(1));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200.0\u2033",
                 "00\u00b000\u203200.1\u2033", "00\u00b000\u203200.2\u2033",
@@ -134,7 +134,7 @@ public class ArcDmsTickCalculatorTest {
                 15.0 / 3600, 20.0 / 3600, 25.0 / 3600, 30.0 / 3600,
                 35.0 / 3600, 40.0 / 3600, 45.0 / 3600, 50.0 / 3600,
                 55.0 / 3600, 60.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "00\u00b000\u203205\u2033", "00\u00b000\u203210\u2033",
@@ -152,7 +152,7 @@ public class ArcDmsTickCalculatorTest {
                 900.0 / 3600, 1200.0 / 3600, 1500.0 / 3600, 1800.0 / 3600,
                 2100.0 / 3600, 2400.0 / 3600, 2700.0 / 3600, 3000.0 / 3600,
                 3300.0 / 3600, 3600.0 / 3600);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "00\u00b005\u203200\u2033", "00\u00b010\u203200\u2033",
@@ -168,7 +168,7 @@ public class ArcDmsTickCalculatorTest {
         assertEquals(admsTC.getMinorNumber(), 2);
         checkDoubleArray(admsTC.getValues(), 0, 30, 60, 90, 120, 150, 180, 210,
                 240, 270, 300, 330, 360);
-        format = admsTC.calcAutoLabelTextFormat(admsTC.getValues());
+        format = admsTC.calcLabelTextFormat(admsTC.getValues());
         assertEquals(format, new ArcDmsFormat(0));
         checkFormat(format, admsTC.getValues(), "00\u00b000\u203200\u2033",
                 "30\u00b000\u203200\u2033", "60\u00b000\u203200\u2033",

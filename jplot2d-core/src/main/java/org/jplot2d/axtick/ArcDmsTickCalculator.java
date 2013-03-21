@@ -1,20 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -130,17 +130,15 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 		ArcDmsInterval intv = (ArcDmsInterval) calcInterval(tickNumber);
 
 		if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
-			if (intv.getCoefficient() == 1
-					&& (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.DEGREE)) {
-				_minorNumber = 0;
+			if (intv.getCoefficient() == 1 && (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.DEGREE)) {
+				minorNumber = 0;
 			} else {
-				_minorNumber = TickUtils.calcMinorNumber(intv.getCoefficient(),
-						3);
+				minorNumber = calcMinorNumber(intv.getCoefficient(), 3);
 			}
 		} else {
-			_minorNumber = minorTickNumber;
+			minorNumber = minorTickNumber;
 		}
-		calcValues(_interval, 0, _minorNumber);
+		calcValues(interval, 0, minorNumber);
 	}
 
 	@Override
@@ -148,37 +146,34 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 
 		int s1dInterval;
 
-		if (_interval < Unit.SECOND.angle) {
-			int mag = (int) Math.floor(Math.log10(_interval));
-			double coefficient = _interval / Math.pow(10, mag);
+		if (interval < Unit.SECOND.angle) {
+			int mag = (int) Math.floor(Math.log10(interval));
+			double coefficient = interval / Math.pow(10, mag);
 			double s1dcoef = Math.round(coefficient);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / coefficient - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
 			} else {
 				s1dInterval = (int) s1dcoef;
 			}
-		} else if (_interval < Unit.MINUTE.angle) {
-			double secs = _interval / Unit.SECOND.angle;
+		} else if (interval < Unit.MINUTE.angle) {
+			double secs = interval / Unit.SECOND.angle;
 			double s1dcoef = Math.round(secs);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / secs - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
 			} else {
 				s1dInterval = (int) s1dcoef;
 			}
-		} else if (_interval < Unit.DEGREE.angle) {
-			double minutes = _interval / Unit.MINUTE.angle;
+		} else if (interval < Unit.DEGREE.angle) {
+			double minutes = interval / Unit.MINUTE.angle;
 			double s1dcoef = Math.round(minutes);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / minutes - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -186,11 +181,10 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 				s1dInterval = (int) s1dcoef;
 			}
 		} else {
-			double degrees = _interval / Unit.DEGREE.angle;
+			double degrees = interval / Unit.DEGREE.angle;
 			double s1dcoef = Math.round(degrees);
 			/*
-			 * if the coefficient contains more than 1 significant digit, ignore
-			 * the minor number
+			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
 			if (Math.abs(s1dcoef / degrees - 1) > DOUBLE_PRECISION_TOLERANCE) {
 				s1dInterval = 0;
@@ -202,12 +196,12 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 		if (s1dInterval == 0) {
 			return 0;
 		} else {
-			return TickUtils.calcMinorNumber(s1dInterval, 3);
+			return calcMinorNumber(s1dInterval, 3);
 		}
 
 	}
 
-	public ArcDmsFormat calcAutoLabelTextFormat(Object values) {
+	public ArcDmsFormat calcLabelTextFormat(Object values) {
 		if (values instanceof long[]) {
 			return new ArcDmsFormat(0);
 		}
@@ -257,7 +251,7 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 		return -1;
 	}
 
-	public String calcAutoLabelFormat(Object values) {
+	public String calcLabelFormatString(Object values) {
 		return "";
 	}
 

@@ -1,35 +1,33 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+/**
+ * Copyright 2010-2013 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
 /**
- * This class represent a number in c x 10^n form. c is a integer and in range
- * between -9 and 9.
+ * This class represent a number in c x 10^n form. c is a integer and in range between -9 and 9.
  * 
  * @author Jingjing Li
  */
 public final class DateInterval {
 
 	public enum Unit {
-		MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(
-				1000L * 3600 * 24), WEEK(1000L * 3600 * 24 * 7), MONTH(
-				1000L * 3600 * 24 * 30), YEAR(1000L * 3600 * 24 * 30 * 12);
+		MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(1000L * 3600 * 24), WEEK(
+				1000L * 3600 * 24 * 7), MONTH(1000L * 3600 * 24 * 30), YEAR(1000L * 3600 * 24 * 30 * 12);
 
 		public final long time;
 

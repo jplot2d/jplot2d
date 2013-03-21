@@ -369,7 +369,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 			if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
 				minorTickNumber = 3;
 			}
-			minorNumber = TickUtils.calcMinorNumber(dateInterval.getValue(), minorTickNumber);
+			minorNumber = calcMinorNumber(dateInterval.getValue(), minorTickNumber);
 		}
 		calcValues();
 	}
@@ -400,11 +400,11 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 		return calcLabelFormat(dateInterval.getUnit(), umax);
 	}
 
-	public Format calcAutoLabelTextFormat(Object canonicalValues) {
+	public Format calcLabelTextFormat(Object canonicalValues) {
 		return null;
 	}
 
-	public String calcAutoLabelFormat(Object values) {
+	public String calcLabelFormatString(Object values) {
 		if (((long[]) values).length == 0) {
 			return "";
 		}
