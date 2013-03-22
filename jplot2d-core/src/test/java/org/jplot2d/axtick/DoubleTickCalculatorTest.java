@@ -68,11 +68,6 @@ public class DoubleTickCalculatorTest {
 		}
 
 		@Override
-		public boolean isValidFormat(String format) {
-			return false;
-		}
-
-		@Override
 		public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
 
 		}
@@ -80,57 +75,7 @@ public class DoubleTickCalculatorTest {
 	};
 
 	@Test
-	public void testMinorNumber() {
-		assertEquals(tc.calcMinorNumber(1, 0), 0);
-		assertEquals(tc.calcMinorNumber(1, 1), 0);
-		assertEquals(tc.calcMinorNumber(2, 0), 0);
-		assertEquals(tc.calcMinorNumber(2, 1), 1);
-		assertEquals(tc.calcMinorNumber(2, 2), 1);
-		assertEquals(tc.calcMinorNumber(5, 0), 0);
-		assertEquals(tc.calcMinorNumber(5, 1), 4);
-		assertEquals(tc.calcMinorNumber(5, 4), 4);
-		assertEquals(tc.calcMinorNumber(10, 0), 0);
-		assertEquals(tc.calcMinorNumber(10, 1), 1);
-		assertEquals(tc.calcMinorNumber(10, 2), 1);
-		assertEquals(tc.calcMinorNumber(10, 3), 4);
-		assertEquals(tc.calcMinorNumber(10, 4), 4);
-		assertEquals(tc.calcMinorNumber(10, 6), 4);
-		assertEquals(tc.calcMinorNumber(10, 7), 9);
-		assertEquals(tc.calcMinorNumber(10, 9), 9);
-		assertEquals(tc.calcMinorNumber(10, 10), 9);
-		assertEquals(tc.calcMinorNumber(6, 0), 0);
-		assertEquals(tc.calcMinorNumber(6, 1), 1);
-		assertEquals(tc.calcMinorNumber(6, 2), 2);
-		assertEquals(tc.calcMinorNumber(6, 3), 2);
-		assertEquals(tc.calcMinorNumber(6, 4), 5);
-		assertEquals(tc.calcMinorNumber(12, 0), 0);
-		assertEquals(tc.calcMinorNumber(12, 1), 1);
-		assertEquals(tc.calcMinorNumber(12, 2), 2);
-		assertEquals(tc.calcMinorNumber(12, 3), 3);
-		assertEquals(tc.calcMinorNumber(12, 4), 3);
-		assertEquals(tc.calcMinorNumber(12, 5), 5);
-		assertEquals(tc.calcMinorNumber(12, 8), 5);
-		assertEquals(tc.calcMinorNumber(12, 9), 11);
-	}
-
-	@Test
-	public void testFormat() {
-		assertEquals("3.14 $10^2$", tc.format("%.2m", 314.159).toString());
-		assertEquals("3.1 $10^64$", tc.format("%.1m", 3.14159e64).toString());
-		assertEquals("-3.1 $10^64$", tc.format("%.1m", -3.14159e64).toString());
-		assertEquals("-3.1 $10^{-64}$", tc.format("%.1m", -3.14159e-64).toString());
-		assertEquals("$10^64$", tc.format("%.0m", 1e64).toString());
-		assertEquals("+1 $10^64$", tc.format("%+.0m", 1e64).toString());
-		assertEquals("-1 $10^64$", tc.format("%+.0m", -1e64).toString());
-		assertEquals("3.142", tc.format("%.3m", 3.14159).toString());
-		assertEquals("0.000", tc.format("%.3m", 0.0).toString());
-
-		assertEquals("01/01/70", tc.format("%tm/%<td/%<ty", 1L).toString());
-		assertEquals("01-01-70", tc.format("%tm-%<td-%<ty", 1L).toString());
-	}
-
-	@Test
-	public void testCalcLabelFormatStrForLinear() {
+	public void testCalcLabelFormatString() {
 		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 1000, 2000, 3000 }));
 		assertEquals("%.0f", tc.calcLabelFormatString(new double[] { 1200, 1200, 1300 }));
 		assertEquals("%.0m", tc.calcLabelFormatString(new double[] { 10000, 20000, 30000 }));

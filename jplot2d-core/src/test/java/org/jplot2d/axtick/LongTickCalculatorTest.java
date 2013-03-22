@@ -79,7 +79,7 @@ public class LongTickCalculatorTest {
 	};
 
 	@Test
-	public void testCalcLabelFormatStrForLinear() {
+	public void testCalcLabelFormatString() {
 		assertEquals("%d", tc.calcLabelFormatString(new long[] { 1000, 2000, 3000 }));
 		assertEquals("%d", tc.calcLabelFormatString(new long[] { 1200, 1200, 1300 }));
 		assertEquals("%.0m", tc.calcLabelFormatString(new long[] { 10000, 20000, 30000 }));
