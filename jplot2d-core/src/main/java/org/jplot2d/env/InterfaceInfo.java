@@ -37,10 +37,9 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * This class extract properties from method declaration, rather than using java introspector. The
- * property annotation is defined on getter. if a sub-interface override a getter, the overriding
- * method will take effect. The setter method type must match the getter return type. setter methods
- * with same name but different argument type are not allowed.
+ * This class extract properties from method declaration, rather than using java introspector. The property annotation
+ * is defined on getter. if a sub-interface override a getter, the overriding method will take effect. The setter method
+ * type must match the getter return type. setter methods with same name but different argument type are not allowed.
  * 
  * @author Jingjing Li
  * 
@@ -53,6 +52,9 @@ public class InterfaceInfo {
 
 	private static Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<Class<?>, InterfaceInfo>();
 
+	/**
+	 * property name to PropertyInfo map
+	 */
 	private final Map<String, PropertyInfo> piMap;
 
 	private final Map<Method, Method> propWriteReadMap = new HashMap<Method, Method>();
@@ -62,18 +64,20 @@ public class InterfaceInfo {
 	/** listener get add remove Methods */
 	private final Collection<Method> listenerGarMethods = new HashSet<Method>();
 
+	/**
+	 * Hierarchy annotated Method to HierarchyOp map
+	 */
 	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
 
 	private Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<String, PropertyInfo[]>();
 
 	/**
-	 * Load interface info for the given interface and its parents.The subclass may hide the info of
-	 * its superclass. For example, if a sub-interface only redeclare a getter, the info will report
-	 * the property is read-only.
+	 * Load interface info for the given interface and its parents.The subclass may hide the info of its superclass. For
+	 * example, if a sub-interface only redeclare a getter, the info will report the property is read-only.
 	 * 
 	 * @param interfaceClass
 	 */
-	public static InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
+	public static synchronized InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
 		InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
 		if (iinfo == null) {
 			iinfo = new InterfaceInfo(interfaceClass);
@@ -121,35 +125,33 @@ public class InterfaceInfo {
 		Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<String, List<PropertyInfo>>();
 
 		for (PropertyInfo p : piMap.values()) {
-			if (p.getPropertyType() != null) {
-				Method readMethod = p.getReadMethod();
-				Method writeMethod = p.getWriteMethod();
-				if (readMethod != null) {
-					Property pann = readMethod.getAnnotation(Property.class);
-					if (pann != null) {
-						if (pann.displayName().length() > 0) {
-							p.setDisplayName(pann.displayName());
-						}
-						if (pann.description().length() > 0) {
-							p.setShortDescription(pann.description());
-						}
-						p.setOrder(pann.order());
-						PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(
-								PropertyGroup.class);
-						if (pg != null) {
-							List<PropertyInfo> pis = pilGroupMap.get(pg.value());
-							if (pis == null) {
-								pis = new ArrayList<PropertyInfo>();
-								pilGroupMap.put(pg.value(), pis);
-							}
-							pis.add(p);
-						}
-					}
 
-					propReadMethods.add(readMethod);
-					if (writeMethod != null) {
-						propWriteReadMap.put(writeMethod, readMethod);
+			Method readMethod = p.getReadMethod();
+			Method writeMethod = p.getWriteMethod();
+			if (readMethod != null) {
+				Property pann = readMethod.getAnnotation(Property.class);
+				if (pann != null) {
+					if (pann.displayName().length() > 0) {
+						p.setDisplayName(pann.displayName());
 					}
+					if (pann.description().length() > 0) {
+						p.setShortDescription(pann.description());
+					}
+					p.setOrder(pann.order());
+					PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
+					if (pg != null) {
+						List<PropertyInfo> pis = pilGroupMap.get(pg.value());
+						if (pis == null) {
+							pis = new ArrayList<PropertyInfo>();
+							pilGroupMap.put(pg.value(), pis);
+						}
+						pis.add(p);
+					}
+				}
+
+				propReadMethods.add(readMethod);
+				if (writeMethod != null) {
+					propWriteReadMap.put(writeMethod, readMethod);
 				}
 			}
 		}
@@ -170,25 +172,12 @@ public class InterfaceInfo {
 
 	}
 
+	public PropertyInfo[] getPropertyInfos() {
+		return piMap.values().toArray(new PropertyInfo[piMap.size()]);
+	}
+
 	public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
 		return pisGroupMap;
-	}
-
-	public Class<?> getPropWriteMethodType(String propName) {
-		if (piMap.containsKey(propName)) {
-			Method m = piMap.get(propName).getWriteMethod();
-			if (m != null) {
-				return m.getParameterTypes()[0];
-			}
-		}
-		return null;
-	}
-
-	public boolean isWritableProp(String propName) {
-		if (piMap.containsKey(propName)) {
-			return piMap.get(propName).getWriteMethod() != null;
-		}
-		return false;
 	}
 
 	/**
@@ -289,8 +278,7 @@ public class InterfaceInfo {
 	 * @return An array of PropertyDescriptors, with the order of getter declared.
 	 * @throws IntrospectionException
 	 */
-	private static Map<String, PropertyInfo> getPropertyInfo(Method[] methods)
-			throws IntrospectionException {
+	private static Map<String, PropertyInfo> getPropertyInfo(Method[] methods) throws IntrospectionException {
 
 		Map<String, Method> pdReaderMap = new LinkedHashMap<String, Method>();
 		Map<String, Method> pdWriterMap = new HashMap<String, Method>();
@@ -362,10 +350,9 @@ public class InterfaceInfo {
 	}
 
 	/**
-	 * Utility method to take a string and convert it to normal Java variable name capitalization.
-	 * This normally means converting the first character from upper case to lower case, but in the
-	 * (unusual) special case when there is more than one character and both the first and second
-	 * characters are upper case, we leave it alone.
+	 * Utility method to take a string and convert it to normal Java variable name capitalization. This normally means
+	 * converting the first character from upper case to lower case, but in the (unusual) special case when there is
+	 * more than one character and both the first and second characters are upper case, we leave it alone.
 	 * <p>
 	 * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays as "URL".
 	 * 
@@ -377,8 +364,7 @@ public class InterfaceInfo {
 		if (name == null || name.length() == 0) {
 			return name;
 		}
-		if (name.length() > 1 && Character.isUpperCase(name.charAt(1))
-				&& Character.isUpperCase(name.charAt(0))) {
+		if (name.length() > 1 && Character.isUpperCase(name.charAt(1)) && Character.isUpperCase(name.charAt(0))) {
 			return name;
 		}
 		char chars[] = name.toCharArray();

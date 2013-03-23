@@ -22,6 +22,8 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 
 /**
+ * Information of a property. If a property is read-only, {@link #getWriteMethod()} will return <code>null</code>.
+ * 
  * @author Jingjing Li
  * 
  */
@@ -54,9 +56,9 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	/**
 	 * Gets the Class object for the property.
 	 * 
-	 * @return The Java type info for the property. Note that the "Class" object may describe a
-	 *         built-in Java type such as "int". The result may be "null" if this is an indexed
-	 *         property that does not support non-indexed access.
+	 * @return The Java type info for the property. Note that the "Class" object may describe a built-in Java type such
+	 *         as "int". The result may be "null" if this is an indexed property that does not support non-indexed
+	 *         access.
 	 *         <p>
 	 *         This is the type that will be returned by the ReadMethod.
 	 */
@@ -67,8 +69,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	/**
 	 * Gets the method that should be used to read the property value.
 	 * 
-	 * @return The method that should be used to read the property value. May return null if the
-	 *         property can't be read.
+	 * @return The method that should be used to read the property value. May return null if the property can't be read.
 	 */
 	public Method getReadMethod() {
 		return readMethod;
@@ -77,8 +78,8 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	/**
 	 * Gets the method that should be used to write the property value.
 	 * 
-	 * @return The method that should be used to write the property value. May return null if the
-	 *         property can't be written.
+	 * @return The method that should be used to write the property value. May return null if the property can't be
+	 *         written.
 	 */
 	public Method getWriteMethod() {
 		return writeMethod;
@@ -87,8 +88,8 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	/**
 	 * Gets the localized display name of this feature.
 	 * 
-	 * @return The localized display name for the property/method/event. This defaults to the same
-	 *         as its programmatic name from getName.
+	 * @return The localized display name for the property/method/event. This defaults to the same as its programmatic
+	 *         name from getName.
 	 */
 	public String getDisplayName() {
 		if (displayName == null) {
@@ -110,8 +111,8 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	/**
 	 * Gets the short description of this feature.
 	 * 
-	 * @return A localized short description associated with this property/method/event. This
-	 *         defaults to be the display name.
+	 * @return A localized short description associated with this property/method/event. This defaults to be the display
+	 *         name.
 	 */
 	public String getShortDescription() {
 		if (shortDescription == null) {
@@ -121,8 +122,8 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	}
 
 	/**
-	 * You can associate a short descriptive string with a feature. Normally these descriptive
-	 * strings should be less than about 40 characters.
+	 * You can associate a short descriptive string with a feature. Normally these descriptive strings should be less
+	 * than about 40 characters.
 	 * 
 	 * @param text
 	 *            A (localized) short description to be associated with this property/method/event.
@@ -140,42 +141,42 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	}
 
 	/**
-	 * Returns the property type that corresponds to the read and write method. The type precedence
-	 * is given to the readMethod.
+	 * Returns the property type that corresponds to the read and write method. The type precedence is given to the
+	 * readMethod. If both read and write methods are null, IntrospectionException is thrown.
 	 * 
-	 * @return the type of the property descriptor or null if both read and write methods are null.
+	 * @return the type of the property descriptor.
 	 * @throws IntrospectionException
 	 *             if the read or write method is invalid
 	 */
-	private Class<?> findPropertyType(Method readMethod, Method writeMethod)
-			throws IntrospectionException {
+	private Class<?> findPropertyType(Method readMethod, Method writeMethod) throws IntrospectionException {
 		Class<?> propertyType = null;
-		try {
-			if (readMethod != null) {
-				Class<?>[] params = readMethod.getParameterTypes();
-				if (params.length != 0) {
-					throw new IntrospectionException("bad read method arg count: " + readMethod);
-				}
-				propertyType = readMethod.getReturnType();
-				if (propertyType == Void.TYPE) {
-					throw new IntrospectionException("read method " + readMethod.getName()
-							+ " returns void");
-				}
+
+		if (readMethod != null) {
+			Class<?>[] params = readMethod.getParameterTypes();
+			if (params.length != 0) {
+				throw new IntrospectionException("bad read method arg count: " + readMethod);
 			}
-			if (writeMethod != null) {
-				Class<?> params[] = writeMethod.getParameterTypes();
-				if (params.length != 1) {
-					throw new IntrospectionException("bad write method arg count: " + writeMethod);
-				}
-				if (propertyType != null && propertyType != params[0]) {
-					throw new IntrospectionException("type mismatch between read and write methods");
-				}
-				propertyType = params[0];
+			propertyType = readMethod.getReturnType();
+			if (propertyType == Void.TYPE) {
+				throw new IntrospectionException("read method " + readMethod.getName() + " returns void");
 			}
-		} catch (IntrospectionException ex) {
-			throw ex;
 		}
-		return propertyType;
+		if (writeMethod != null) {
+			Class<?> params[] = writeMethod.getParameterTypes();
+			if (params.length != 1) {
+				throw new IntrospectionException("bad write method arg count: " + writeMethod);
+			}
+			if (propertyType != null && propertyType != params[0]) {
+				throw new IntrospectionException("type mismatch between read and write methods");
+			}
+			propertyType = params[0];
+		}
+
+		if (propertyType == null) {
+			throw new IntrospectionException("Both read and write methods are null");
+		} else {
+			return propertyType;
+		}
 	}
 
 	public int compareTo(PropertyInfo o) {
