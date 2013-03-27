@@ -53,7 +53,7 @@ public class InterfaceInfo {
 	private static Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<Class<?>, InterfaceInfo>();
 
 	/**
-	 * property name to PropertyInfo map
+	 * property name to PropertyInfo map. It contains all properties no matter if it has @property annotation.
 	 */
 	private final Map<String, PropertyInfo> piMap;
 
@@ -138,6 +138,8 @@ public class InterfaceInfo {
 						p.setShortDescription(pann.description());
 					}
 					p.setOrder(pann.order());
+					// only writable property can be in profile
+					p.setProfile(pann.profile() && writeMethod != null);
 					PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
 					if (pg != null) {
 						List<PropertyInfo> pis = pilGroupMap.get(pg.value());
@@ -172,12 +174,28 @@ public class InterfaceInfo {
 
 	}
 
-	public PropertyInfo[] getPropertyInfos() {
-		return piMap.values().toArray(new PropertyInfo[piMap.size()]);
-	}
-
 	public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
 		return pisGroupMap;
+	}
+
+	public Map<String, PropertyInfo[]> getProfilePropertyInfoGroupMap() {
+		Map<String, PropertyInfo[]> result = new LinkedHashMap<String, PropertyInfo[]>();
+
+		for (Map.Entry<String, PropertyInfo[]> me : pisGroupMap.entrySet()) {
+			String group = me.getKey();
+			List<PropertyInfo> ppl = new ArrayList<PropertyInfo>();
+			for (PropertyInfo pi : me.getValue()) {
+				if (pi.isProfile()) {
+					ppl.add(pi);
+				}
+			}
+			if (ppl.size() > 0) {
+				PropertyInfo[] pps = ppl.toArray(new PropertyInfo[ppl.size()]);
+				result.put(group, pps);
+			}
+		}
+
+		return result;
 	}
 
 	/**

@@ -18,7 +18,10 @@
  */
 package org.jplot2d.env;
 
-import java.util.prefs.BackingStoreException;
+import java.awt.Color;
+import java.awt.Paint;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.prefs.Preferences;
 
 import org.jplot2d.element.Element;
@@ -30,6 +33,8 @@ import org.jplot2d.element.Element;
  * 
  */
 public class PrefsProfile implements Profile {
+
+	private static Object IGNORE = new Object();
 
 	private Preferences pref;
 
@@ -55,31 +60,91 @@ public class PrefsProfile implements Profile {
 	 * @param element
 	 */
 	public void applyTo(Element element) {
-		Class<?> eif = null;
-		Class<?>[] interfaces = element.getClass().getInterfaces();
-		for (int i = 0; i < interfaces.length; i++) {
-			eif = getElementInterface(interfaces[i]);
-		}
+		Class<?> eif = getElementInterface(element.getClass());
 
 		if (eif == null) {
 			return;
 		}
 
-		String nodeName = eif.getSimpleName();
+		Preferences node = pref.node(eif.getSimpleName());
 
-		boolean nodeExist = false;
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(eif);
+		for (PropertyInfo[] pinfos : iinfo.getPropertyInfoGroupMap().values()) {
+			for (PropertyInfo pinfo : pinfos) {
+				String pname = pinfo.getName();
+				Method reader = pinfo.getReadMethod();
+
+				if (pinfo.getWriteMethod() != null) {
+					try {
+						Object oldValue = reader.invoke(element);
+						String pvalue = node.get(pname, null);
+						if (pvalue == null) {
+							// populate the preference
+							node.put(pname, toString(oldValue));
+						} else if (!toString(oldValue).equals(pvalue)) {
+							// apply the preference value
+							Method writter = pinfo.getWriteMethod();
+							Class<?> ptype = pinfo.getPropertyType();
+							Object v = parse(pvalue, ptype);
+							if (v != IGNORE) {
+								writter.invoke(element, v);
+							}
+						}
+					} catch (IllegalArgumentException e) {
+
+					} catch (IllegalAccessException e) {
+
+					} catch (InvocationTargetException e) {
+
+					}
+				}
+			}
+		}
+
+	}
+
+	private String toString(Object obj) {
+		if (obj instanceof Color) {
+			return "0x" + Integer.toHexString(((Color) obj).getRGB());
+		}
+		return String.valueOf(obj);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Object parse(String s, Class ptype) {
+		if (s.equals("null")) {
+			return null;
+		} else if (ptype == String.class) {
+			return s;
+		}
+
 		try {
-			nodeExist = pref.nodeExists(nodeName);
-		} catch (BackingStoreException e) {
+			if (ptype == Boolean.TYPE) {
+				return Boolean.parseBoolean(s);
+			} else if (ptype == Byte.TYPE) {
+				return Byte.parseByte(s);
+			} else if (ptype == Short.TYPE) {
+				return Short.parseShort(s);
+			} else if (ptype == Integer.TYPE) {
+				return Integer.parseInt(s);
+			} else if (ptype == Long.TYPE) {
+				return Long.parseLong(s);
+			} else if (ptype == Float.TYPE) {
+				return Float.parseFloat(s);
+			} else if (ptype == Double.TYPE) {
+				return Double.parseDouble(s);
+			} else if (ptype.isEnum()) {
+				return Enum.valueOf(ptype, s);
+			}
+
+			if (ptype == Paint.class) {
+				return Color.decode(s);
+			}
+		} catch (Exception e) {
+
 		}
 
-		Preferences epref = pref.node(nodeName);
-		if (!nodeExist) {
-			initElementPrefs(eif, epref, element);
-		} else {
-			applyElementPrefs(eif, epref, element);
-		}
-
+		return IGNORE;
 	}
 
 	/**
@@ -100,32 +165,6 @@ public class PrefsProfile implements Profile {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Initiate the given pref node with the element instance
-	 * 
-	 * @param node
-	 * @param element
-	 */
-	private static void initElementPrefs(Class<?> eif, Preferences node, Element element) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Apply the given pref node with the element instance
-	 * 
-	 * @param node
-	 * @param element
-	 */
-	private static void applyElementPrefs(Class<?> eif, Preferences node, Element element) {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(eif);
-		for (PropertyInfo pinfo : iinfo.getPropertyInfos()) {
-			if (pinfo.getWriteMethod() != null) {
-				
-			}
-		}
 	}
 
 	/**

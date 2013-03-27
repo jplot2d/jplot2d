@@ -36,6 +36,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	private String displayName;
 	private String shortDescription;
 	private int order;
+	private boolean profile;
 
 	public PropertyInfo(String pname, Method reader, Method writer) throws IntrospectionException {
 		name = pname;
@@ -138,6 +139,14 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public boolean isProfile() {
+		return profile;
+	}
+
+	public void setProfile(boolean profile) {
+		this.profile = profile;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 
 import org.jplot2d.element.Title;
 import org.jplot2d.util.TestUtils;
@@ -40,12 +41,32 @@ public class InterfaceInfoTest {
 	 */
 	@Test
 	public void testloadAllInterface() throws ClassNotFoundException {
-		Class<?>[] classes = TestUtils
-				.getClassesInPackage("org.jplot2d.element");
+		Class<?>[] classes = TestUtils.getClassesInPackage("org.jplot2d.element");
 		for (Class<?> cls : classes) {
 			InterfaceInfo.loadInterfaceInfo(cls);
 		}
 
+	}
+
+	@Test
+	public void testProfileParser() throws ClassNotFoundException {
+		HashSet<Class<?>> props = new HashSet<Class<?>>();
+		Class<?>[] classes = TestUtils.getClassesInPackage("org.jplot2d.element");
+		for (Class<?> cls : classes) {
+			InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(cls);
+			for (PropertyInfo[] pinfos : iinfo.getPropertyInfoGroupMap().values()) {
+				for (PropertyInfo pinfo : pinfos) {
+					if (pinfo.getWriteMethod() != null) {
+						Class<?> ptype = pinfo.getPropertyType();
+						props.add(ptype);
+						// System.out.println(cls.getSimpleName() + "\t" + pinfo.getName() + "\t" + ptype);
+					}
+				}
+			}
+		}
+		for (Class<?> cls : props) {
+			// System.out.println(cls);
+		}
 	}
 
 	/**
@@ -58,8 +79,7 @@ public class InterfaceInfoTest {
 	public void testTitle() throws SecurityException, NoSuchMethodException {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Title.class);
 		Method getLocationMethod = Title.class.getMethod("getLocation");
-		Method setLocationMethod = Title.class.getMethod("setLocation",
-				Point2D.class);
+		Method setLocationMethod = Title.class.getMethod("setLocation", Point2D.class);
 		assertTrue(iinfo.isPropReadMethod(getLocationMethod));
 		assertTrue(iinfo.isPropWriteMethod(setLocationMethod));
 	}
