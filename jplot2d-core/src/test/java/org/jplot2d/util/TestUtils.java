@@ -27,12 +27,15 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -87,8 +90,7 @@ public class TestUtils {
 		assertEquals(d.getHeight(), height, Math.abs(height) * 1e-12);
 	}
 
-	public static void checkRectangle2D(Rectangle2D d, double x, double y, double width,
-			double height) {
+	public static void checkRectangle2D(Rectangle2D d, double x, double y, double width, double height) {
 		assertEquals(d.getX(), x, Math.abs(x) * 1e-12);
 		assertEquals(d.getY(), y, Math.abs(y) * 1e-12);
 		assertEquals(d.getWidth(), width, Math.abs(width) * 1e-12);
@@ -212,38 +214,44 @@ public class TestUtils {
 	public static Class[] getClassesInPackage(String pckgname) throws ClassNotFoundException {
 		ArrayList<Class> classes = new ArrayList<Class>();
 		// Get a File object for the package
-		File directory = null;
-		try {
-			ClassLoader cld = Thread.currentThread().getContextClassLoader();
-			if (cld == null) {
-				throw new ClassNotFoundException("Can't get class loader.");
-			}
-			String path = pckgname.replace('.', '/');
-			URL resource = cld.getResource(path);
-			if (resource == null) {
-				throw new ClassNotFoundException("No resource for " + path);
-			}
-			directory = new File(resource.getFile());
-		} catch (NullPointerException x) {
-			throw new ClassNotFoundException(pckgname + " (" + directory
-					+ ") does not appear to be a valid package");
+
+		ClassLoader cld = Thread.currentThread().getContextClassLoader();
+		if (cld == null) {
+			throw new ClassNotFoundException("Can't get class loader.");
 		}
-		if (directory.exists()) {
-			// Get the list of the files contained in the package
-			String[] files = directory.list();
-			for (int i = 0; i < files.length; i++) {
-				// we are only interested in .class files
-				if (files[i].endsWith(".class")) {
-					// removes the .class extension
-					classes.add(Class.forName(pckgname + '.'
-							+ files[i].substring(0, files[i].length() - 6)));
-				}
+		String path = pckgname.replace('.', '/');
+		Enumeration<URL> resources = null;
+		try {
+			resources = cld.getResources(path);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		if (resources == null || !resources.hasMoreElements()) {
+			throw new ClassNotFoundException("No resource for " + path);
+		}
+		while (resources.hasMoreElements()) {
+			URL url = resources.nextElement();
+			File directory = null;
+			try {
+				directory = new File(url.toURI());
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
 			}
-		} else {
-			throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
+			if (directory.exists()) {
+				// Get the list of the files contained in the package
+				String[] files = directory.list();
+				for (int i = 0; i < files.length; i++) {
+					// we are only interested in .class files
+					if (files[i].endsWith(".class")) {
+						// removes the .class extension
+						classes.add(Class.forName(pckgname + '.' + files[i].substring(0, files[i].length() - 6)));
+					}
+				}
+			} else {
+				throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
+			}
 		}
 
 		return classes.toArray(new Class[classes.size()]);
 	}
-
 }
