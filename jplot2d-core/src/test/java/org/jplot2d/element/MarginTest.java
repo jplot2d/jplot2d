@@ -36,8 +36,11 @@ public class MarginTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(PlotMargin.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Margin");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Margin"), "autoLeft",
-				"autoRight", "autoBottom", "autoTop", "left", "right", "bottom", "top",
-				"extraLeft", "extraRight", "extraBottom", "extraTop");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Margin"), "autoLeft", "autoRight", "autoBottom",
+				"autoTop", "left", "right", "bottom", "top", "extraLeft", "extraRight", "extraBottom", "extraTop");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Margin");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Margin"), "extraLeft", "extraRight",
+				"extraBottom", "extraTop");
 	}
 }

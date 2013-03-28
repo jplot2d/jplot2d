@@ -27,12 +27,12 @@ import java.util.prefs.Preferences;
 import org.jplot2d.element.Element;
 
 /**
- * Profile can persist in java Preferences.
+ * StyleConfiguration who can persist in java Preferences.
  * 
  * @author Jingjing Li
  * 
  */
-public class PrefsProfile implements Profile {
+public class StylePreferences implements StyleConfiguration {
 
 	private static Object IGNORE = new Object();
 
@@ -41,7 +41,7 @@ public class PrefsProfile implements Profile {
 	/**
 	 * Create a profile who store data in Preferences node "org/jplot2d/profile/default".
 	 */
-	public PrefsProfile() {
+	public StylePreferences() {
 		pref = Preferences.userRoot().node("org/jplot2d/profile/default");
 	}
 
@@ -50,7 +50,7 @@ public class PrefsProfile implements Profile {
 	 * 
 	 * @param profileName
 	 */
-	public PrefsProfile(String pathName) {
+	public StylePreferences(String pathName) {
 		pref = Preferences.userRoot().node(pathName);
 	}
 
@@ -69,7 +69,7 @@ public class PrefsProfile implements Profile {
 		Preferences node = pref.node(eif.getSimpleName());
 
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(eif);
-		for (PropertyInfo[] pinfos : iinfo.getPropertyInfoGroupMap().values()) {
+		for (PropertyInfo[] pinfos : iinfo.getProfilePropertyInfoGroupMap().values()) {
 			for (PropertyInfo pinfo : pinfos) {
 				String pname = pinfo.getName();
 				Method reader = pinfo.getReadMethod();

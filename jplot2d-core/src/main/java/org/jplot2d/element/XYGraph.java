@@ -96,7 +96,7 @@ public interface XYGraph extends Graph {
 	 * 
 	 * @return the text
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public String getName();
 
 	/**
@@ -117,7 +117,7 @@ public interface XYGraph extends Graph {
 	 * 
 	 * @return the symbol shape
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public SymbolShape getSymbolShape();
 
 	/**
@@ -162,7 +162,7 @@ public interface XYGraph extends Graph {
 	/**
 	 * @return the chart type
 	 */
-	@Property(order = 12)
+	@Property(order = 12, styleable = false)
 	public ChartType getChartType();
 
 	/**
@@ -173,12 +173,12 @@ public interface XYGraph extends Graph {
 	 */
 	public void setChartType(ChartType chartType);
 
-	@Property(order = 20)
+	@Property(order = 20, styleable = false)
 	public boolean isFillEnabled();
 
 	public void setFillEnabled(boolean fillEnabled);
 
-	@Property(order = 21)
+	@Property(order = 21, styleable = false)
 	public Paint getFillPaint();
 
 	public void setFillPaint(Paint paint);
@@ -188,7 +188,7 @@ public interface XYGraph extends Graph {
 	 * 
 	 * @return the closure type
 	 */
-	@Property(order = 22)
+	@Property(order = 22, styleable = false)
 	public FillClosureType getFillClosureType();
 
 	/**

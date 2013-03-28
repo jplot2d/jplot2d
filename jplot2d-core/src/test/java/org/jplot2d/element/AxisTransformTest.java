@@ -38,6 +38,8 @@ public class AxisTransformTest {
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Transform");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Transform"), "type", "transform", "inverted",
 				"autoMargin", "marginFactor", "coreRange", "range");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet());
 	}
 
 }

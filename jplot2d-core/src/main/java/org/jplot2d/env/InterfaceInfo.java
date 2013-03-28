@@ -139,7 +139,7 @@ public class InterfaceInfo {
 					}
 					p.setOrder(pann.order());
 					// only writable property can be in profile
-					p.setProfile(pann.profile() && writeMethod != null);
+					p.setProfile(pann.styleable() && writeMethod != null);
 					PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
 					if (pg != null) {
 						List<PropertyInfo> pis = pilGroupMap.get(pg.value());

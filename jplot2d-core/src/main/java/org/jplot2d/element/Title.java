@@ -45,9 +45,9 @@ public interface Title extends TextComponent, MovableComponent {
 	public Position getPosition();
 
 	/**
-	 * Sets the position of this title. Possible value is FREE, TOPLEFT, TOPCENTER, TOPRIGHT,
-	 * BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT. Only when position is <code>FREE</code>, the title can
-	 * be located by {@link #setLocation(Point2D)}, {@link #setHAlign()}, {@link #setVAlign()} .
+	 * Sets the position of this title. Possible value is FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER,
+	 * BOTTOMRIGHT. Only when position is <code>FREE</code>, the title can be located by {@link #setLocation(Point2D)},
+	 * {@link #setHAlign()}, {@link #setVAlign()} .
 	 * 
 	 * @param position
 	 *            the position of this title.
@@ -55,18 +55,18 @@ public interface Title extends TextComponent, MovableComponent {
 	public void setPosition(Position position);
 
 	/**
-	 * Gets the location of this legend.
+	 * Gets the location of this title.
 	 * 
 	 * @return an instance of <code>Point</code> representing the base point of this title
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public Point2D getLocation();
 
 	/**
 	 * Moves this title to a new location.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
+	 * defined.
 	 * 
 	 * @param loc
 	 *            the base point of the title
@@ -78,15 +78,15 @@ public interface Title extends TextComponent, MovableComponent {
 	 * 
 	 * @return the horizontal alignment.
 	 */
-	@Property(order = 3)
+	@Property(order = 3, styleable = false)
 	public HAlign getHAlign();
 
 	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the
-	 * base point is on the left of this title.
+	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the base point is on
+	 * the left of this title.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
+	 * defined.
 	 * 
 	 * @param halign
 	 *            horizontal alignment.
@@ -98,15 +98,15 @@ public interface Title extends TextComponent, MovableComponent {
 	 * 
 	 * @return the vertical alignment.
 	 */
-	@Property(order = 4)
+	@Property(order = 4, styleable = false)
 	public VAlign getVAlign();
 
 	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the
-	 * base point is on the top of this title.
+	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the base point is on the
+	 * top of this title.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
+	 * defined.
 	 * 
 	 * @param valign
 	 *            The vertical alignment.
@@ -122,9 +122,8 @@ public interface Title extends TextComponent, MovableComponent {
 	public double getGapFactor();
 
 	/**
-	 * Sets the ratio of gap to its height. The gap is under the title when its position is TOPLEFT,
-	 * TOPCENTER, TOPRIGHT. The gap is above the title when its position is BOTTOMLEFT,
-	 * BOTTOMCENTER, BOTTOMRIGHT.
+	 * Sets the ratio of gap to its height. The gap is under the title when its position is TOPLEFT, TOPCENTER,
+	 * TOPRIGHT. The gap is above the title when its position is BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT.
 	 */
 	public void setGapFactor(double factor);
 

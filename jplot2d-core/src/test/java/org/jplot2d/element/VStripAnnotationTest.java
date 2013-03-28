@@ -40,12 +40,18 @@ public class VStripAnnotationTest {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(VStripAnnotation.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
 				"Vertical Strip Annotation");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "location", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Vertical Strip Annotation"),
-				"valueRange", "fillPaint");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Vertical Strip Annotation"), "valueRange",
+				"fillPaint");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation",
+				"Vertical Strip Annotation");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Vertical Strip Annotation"), "fillPaint");
 	}
 
 	@Test

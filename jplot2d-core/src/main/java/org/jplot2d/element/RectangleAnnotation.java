@@ -38,7 +38,7 @@ public interface RectangleAnnotation extends Annotation {
 	 * 
 	 * @return the x value range of this annotation
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public Range getXValueRange();
 
 	/**
@@ -54,7 +54,7 @@ public interface RectangleAnnotation extends Annotation {
 	 * 
 	 * @return the y value range of this annotation
 	 */
-	@Property(order = 1)
+	@Property(order = 1, styleable = false)
 	public Range getYValueRange();
 
 	/**
@@ -74,8 +74,7 @@ public interface RectangleAnnotation extends Annotation {
 	public Paint getFillPaint();
 
 	/**
-	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is
-	 * semi-transparent grey.
+	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is semi-transparent grey.
 	 * 
 	 * @param stroke
 	 *            the <code>Paint</code> to be used to fill the annotation strip

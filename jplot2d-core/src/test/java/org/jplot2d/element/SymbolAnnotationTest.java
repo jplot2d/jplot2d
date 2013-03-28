@@ -35,18 +35,22 @@ public class SymbolAnnotationTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(SymbolAnnotation.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
-				"Point Annotation", "Text", "Symbol Annotation");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "location", "size", "bounds");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation", "Point Annotation",
+				"Text", "Symbol Annotation");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint",
-				"angle");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign",
-				"VAlign");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape",
-				"symbolSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint", "angle");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign", "VAlign");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape", "symbolSize");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation", "Text",
+				"Symbol Annotation");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Text"), "HAlign", "VAlign");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Symbol Annotation"), "symbolSize");
 	}
 
 }

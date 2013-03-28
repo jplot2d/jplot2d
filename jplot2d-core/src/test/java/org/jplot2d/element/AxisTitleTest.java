@@ -36,8 +36,12 @@ public class AxisTitleTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTitle.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "AxisTitle");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("AxisTitle"), "visible",
-				"color", "fontName", "fontStyle", "fontSize", "fontScale", "text");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("AxisTitle"), "visible", "color", "fontName",
+				"fontStyle", "fontSize", "fontScale", "text");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "AxisTitle");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("AxisTitle"), "visible", "color", "fontName",
+				"fontStyle", "fontSize", "fontScale");
 	}
 
 }

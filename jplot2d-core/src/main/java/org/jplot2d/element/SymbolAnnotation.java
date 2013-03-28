@@ -36,7 +36,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	 * 
 	 * @return the symbol shape of this annotation
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public SymbolShape getSymbolShape();
 
 	/**
