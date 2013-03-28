@@ -45,8 +45,8 @@ public interface Legend extends MovableComponent {
 	public boolean isEnabled();
 
 	/**
-	 * Set to <code>true</code> to let this legend to host items. Otherwise the items will be
-	 * displayed in parent legend. The disabled legend will not show.
+	 * Set to <code>true</code> to let this legend to host items. Otherwise the items will be displayed in parent
+	 * legend. The disabled legend will not show.
 	 * 
 	 * @param enabled
 	 */
@@ -61,9 +61,8 @@ public interface Legend extends MovableComponent {
 	public Position getPosition();
 
 	/**
-	 * Sets the position of this legend. Only when position is <code>Position.FREE</code> , the
-	 * legend can be located by {@link #setLocation(Point2D)}, {@link #setHAlign()} ,
-	 * {@link #setVAlign()}.
+	 * Sets the position of this legend. Only when position is <code>Position.FREE</code> , the legend can be located by
+	 * {@link #setLocation(Point2D)}, {@link #setHAlign()} , {@link #setVAlign()}.
 	 * 
 	 * @param position
 	 *            the position of this legend.
@@ -75,12 +74,12 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return an instance of <code>Point</code> representing the base point of this legend
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public Point2D getLocation();
 
 	/**
-	 * Moves this legend to a new location. Setting legend to a new location will change legend
-	 * position to {@link Position#FREE}
+	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
+	 * {@link Position#FREE}
 	 * 
 	 * @param loc
 	 *            the base point of this legend
@@ -88,8 +87,8 @@ public interface Legend extends MovableComponent {
 	public void setLocation(Point2D loc);
 
 	/**
-	 * Moves this legend to a new location. Setting legend to a new location will change legend
-	 * position to {@link Position#FREE}
+	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
+	 * {@link Position#FREE}
 	 * 
 	 * @param x
 	 *            the x-coordinate of the new location
@@ -103,15 +102,15 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the horizontal alignment.
 	 */
-	@Property(order = 3)
+	@Property(order = 3, styleable = false)
 	public HAlign getHAlign();
 
 	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the
-	 * base point is on the left of this legend.
+	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the base point is on
+	 * the left of this legend.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
+	 * defined.
 	 * 
 	 * @param halign
 	 *            horizontal alignment.
@@ -123,15 +122,15 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the vertical alignment.
 	 */
-	@Property(order = 4)
+	@Property(order = 4, styleable = false)
 	public VAlign getVAlign();
 
 	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the
-	 * base point is on the top of this legend.
+	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the base point is on the
+	 * top of this legend.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the
-	 * behavior is not defined.
+	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
+	 * defined.
 	 * 
 	 * @param valign
 	 *            The vertical alignment.
@@ -143,7 +142,7 @@ public interface Legend extends MovableComponent {
 	 * 
 	 * @return the number of columns
 	 */
-	@Property(order = 5)
+	@Property(order = 5, styleable = false)
 	public int getColumns();
 
 	/**
