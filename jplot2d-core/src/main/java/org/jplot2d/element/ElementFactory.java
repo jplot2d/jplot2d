@@ -63,7 +63,7 @@ import org.jplot2d.element.impl.XYGraphImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
-import org.jplot2d.env.Profile;
+import org.jplot2d.env.StyleConfiguration;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.util.Range;
 
@@ -104,7 +104,7 @@ public class ElementFactory {
 	 * @param profile
 	 * @return an instance of ComponentFactory
 	 */
-	public static ElementFactory getInstance(Profile profile) {
+	public static ElementFactory getInstance(StyleConfiguration profile) {
 		return new ElementFactory(false, profile);
 	}
 
@@ -115,15 +115,15 @@ public class ElementFactory {
 	 * @param profile
 	 * @return an instance of ComponentFactory
 	 */
-	public static ElementFactory getThreadSafeInstance(Profile profile) {
+	public static ElementFactory getThreadSafeInstance(StyleConfiguration profile) {
 		return new ElementFactory(true, profile);
 	}
 
 	private final boolean threadSafe;
 
-	private final Profile profile;
+	private final StyleConfiguration profile;
 
-	protected ElementFactory(boolean threadSafe, Profile profile) {
+	protected ElementFactory(boolean threadSafe, StyleConfiguration profile) {
 		this.threadSafe = threadSafe;
 		this.profile = profile;
 	}

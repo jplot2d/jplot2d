@@ -22,9 +22,8 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * Subplot has a content area in the center, surrounded by margin area. The margin area holds axes,
- * title and legend. Besides the margin, there are also extra margins. The extra margin plus the
- * margin will be the total margin.
+ * Subplot has a content area in the center, surrounded by margin area. The margin area holds axes, title and legend.
+ * Besides the margin, there are also extra margins. The extra margin plus the margin will be the total margin.
  * 
  * @author Jingjing Li
  * 
@@ -37,7 +36,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public boolean isAutoLeft();
 
 	/**
@@ -45,7 +44,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	@Property(order = 1)
+	@Property(order = 1, styleable = false)
 	public boolean isAutoRight();
 
 	/**
@@ -53,7 +52,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public boolean isAutoBottom();
 
 	/**
@@ -61,7 +60,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return <code>true</code> if the margin is a auto chose nice value
 	 */
-	@Property(order = 3)
+	@Property(order = 3, styleable = false)
 	public boolean isAutoTop();
 
 	/**
@@ -105,7 +104,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return the actual margin value
 	 */
-	@Property(order = 4)
+	@Property(order = 4, styleable = false)
 	public double getLeft();
 
 	/**
@@ -113,7 +112,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return the actual margin value
 	 */
-	@Property(order = 5)
+	@Property(order = 5, styleable = false)
 	public double getRight();
 
 	/**
@@ -121,7 +120,7 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return the actual margin value
 	 */
-	@Property(order = 6)
+	@Property(order = 6, styleable = false)
 	public double getBottom();
 
 	/**
@@ -129,36 +128,36 @@ public interface PlotMargin extends Element {
 	 * 
 	 * @return the actual margin value
 	 */
-	@Property(order = 7)
+	@Property(order = 7, styleable = false)
 	public double getTop();
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
-	 * <code>false</code>, otherwise the value will be set by layout manager.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
+	 * otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginLeft
 	 */
 	public void setLeft(double marginLeft);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
-	 * <code>false</code>, otherwise the value will be set by layout manager.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
+	 * otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginRight
 	 */
 	public void setRight(double marginRight);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
-	 * <code>false</code>, otherwise the value will be set by layout manager.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
+	 * otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginBottom
 	 */
 	public void setBottom(double marginBottom);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is
-	 * <code>false</code>, otherwise the value will be set by layout manager.
+	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
+	 * otherwise the value will be set by layout manager.
 	 * 
 	 * @param marginTop
 	 */

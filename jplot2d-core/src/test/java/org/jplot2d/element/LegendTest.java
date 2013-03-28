@@ -36,12 +36,16 @@ public class LegendTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Legend.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Legend");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend"), "enabled",
-				"position", "location", "HAlign", "VAlign", "columns", "rowSpacingFactor",
-				"borderVisible", "movable");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend"), "enabled", "position", "location",
+				"HAlign", "VAlign", "columns", "rowSpacingFactor", "borderVisible", "movable");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Legend");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Legend"), "enabled", "position",
+				"rowSpacingFactor", "borderVisible", "movable");
 	}
 
 }

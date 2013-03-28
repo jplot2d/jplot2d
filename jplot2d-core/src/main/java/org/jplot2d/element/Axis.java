@@ -47,8 +47,8 @@ public interface Axis extends PComponent {
 	public void setTickManager(AxisTickManager tickManager);
 
 	/**
-	 * Orientation is a read-only property. It just show the orientation of this axis after it has
-	 * been add as a X/Y axis.
+	 * Orientation is a read-only property. It just show the orientation of this axis after it has been add as a X/Y
+	 * axis.
 	 * 
 	 * @return orientation of this axis
 	 */
@@ -56,8 +56,7 @@ public interface Axis extends PComponent {
 	public AxisOrientation getOrientation();
 
 	/**
-	 * Return the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for y axis,
-	 * PlotConstant.BOTTOM or PlotConstant.TOP for x axis.
+	 * Return the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
 	 * 
 	 * @return the position of the axis in the plot.
 	 */
@@ -65,9 +64,7 @@ public interface Axis extends PComponent {
 	public AxisPosition getPosition();
 
 	/**
-	 * Set the position of the axis: PlotConstant.LEFT or PlotConstant.RIGHT for y axis,
-	 * PlotConstant.BOTTOM or PlotConstant.TOP for x axis. Only can be set when autoPosition is not
-	 * True.
+	 * Set the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
 	 * 
 	 * @param position
 	 *            the position of the axis in the plot.

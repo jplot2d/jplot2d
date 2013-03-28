@@ -36,14 +36,19 @@ public class RectangleAnnotationTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(RectangleAnnotation.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
-				"Rectangle Annotation");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "location", "size", "bounds");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation", "Rectangle Annotation");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Rectangle Annotation"),
-				"XValueRange", "YValueRange", "fillPaint");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Rectangle Annotation"), "XValueRange",
+				"YValueRange", "fillPaint");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation",
+				"Rectangle Annotation");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Rectangle Annotation"), "fillPaint");
 	}
 
 	@Test

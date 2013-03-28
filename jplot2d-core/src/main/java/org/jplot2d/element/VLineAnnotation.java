@@ -37,7 +37,7 @@ public interface VLineAnnotation extends Annotation {
 	 * 
 	 * @return the value of this annotation
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public double getValue();
 
 	/**

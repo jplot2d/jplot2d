@@ -36,7 +36,9 @@ public class LegendItemTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(LegendItem.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Legend Item");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend Item"), "visible",
-				"symbolSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Legend Item"), "visible", "symbolSize");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Legend Item");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Legend Item"), "symbolSize");
 	}
 }

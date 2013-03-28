@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,45 +20,30 @@ package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
-import static org.junit.Assert.assertNull;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
 
 /**
- * Those test cases test methods on Title.
+ * Those test cases test methods on Axis and AxisRangeManager.
  * 
  * @author Jingjing Li
  * 
  */
-public class XYGraphTest {
+public class AnnotationTest {
 
 	@Test
 	public void testInterfaceInfo() {
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(XYGraph.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "XY Graph");
+		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Annotation.class);
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
 				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("XY Graph"), "name", "symbolVisible", "symbolShape",
-				"symbolSize", "symbolColor", "lineVisible", "lineStroke", "chartType", "fillEnabled", "fillPaint",
-				"fillClosureType", "errorbarCapSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
 
-		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "XY Graph");
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
 				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
-		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("XY Graph"), "symbolVisible", "symbolSize",
-				"symbolColor", "lineVisible", "lineStroke", "errorbarCapSize");
-	}
-
-	@Test
-	public void testCreateGraph() {
-		ElementFactory ef = ElementFactory.getInstance();
-
-		XYGraph graph = ef.createXYGraph(new double[0], new double[0]);
-
-		assertNull(graph.getSize());
-		assertNull(graph.getBounds());
-		assertNull(graph.getSelectableBounds());
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
 	}
 
 }

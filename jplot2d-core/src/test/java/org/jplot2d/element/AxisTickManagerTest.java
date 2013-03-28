@@ -36,10 +36,12 @@ public class AxisTickManagerTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisTickManager.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Tick Manager");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Tick Manager"),
-				"tickTransform", "range", "autoTickValues", "fixedTickValues", "fixedMinorTickValues",
-				"autoTickInterval", "tickInterval", "tickOffset", "ticks", "autoAdjustTicks",
-				"autoMinorTicks", "minorTicks", "tickValues", "minorTickValues", "labelInterval", "autoLabelFormat",
-				"labelTextFormat", "labelFormat", "fixedLabelStrings", "labelStrings");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Tick Manager"), "tickTransform", "range",
+				"autoTickValues", "fixedTickValues", "fixedMinorTickValues", "autoTickInterval", "tickInterval",
+				"tickOffset", "ticks", "autoAdjustTicks", "autoMinorTicks", "minorTicks", "tickValues",
+				"minorTickValues", "labelInterval", "autoLabelFormat", "labelTextFormat", "labelFormat",
+				"fixedLabelStrings", "labelStrings");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet());
 	}
 }

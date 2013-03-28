@@ -34,8 +34,7 @@ import org.jplot2d.tex.MathElement;
 public interface AxisTitle extends Element {
 
 	/**
-	 * Determines whether this title should be visible when its parent is visible. AxisTitle are
-	 * initially visible.
+	 * Determines whether this title should be visible when its parent is visible. AxisTitle are initially visible.
 	 * 
 	 * @return <code>true</code> if the title is visible, <code>false</code> otherwise
 	 * @see #setVisible
@@ -55,8 +54,8 @@ public interface AxisTitle extends Element {
 	/**
 	 * Gets the foreground color of this component.
 	 * 
-	 * @return this component's foreground color; if this component does not have a foreground
-	 *         color, the foreground color of its parent is returned
+	 * @return this component's foreground color; if this component does not have a foreground color, the foreground
+	 *         color of its parent is returned
 	 * @see #setColor
 	 */
 	@Property(order = 1)
@@ -66,9 +65,8 @@ public interface AxisTitle extends Element {
 	 * Sets the foreground color of this component.
 	 * 
 	 * @param c
-	 *            the color to become this component's foreground color; if this parameter is
-	 *            <code>null</code> then this component will inherit the foreground color of its
-	 *            parent
+	 *            the color to become this component's foreground color; if this parameter is <code>null</code> then
+	 *            this component will inherit the foreground color of its parent
 	 * @see #getColor
 	 */
 	public void setColor(Color c);
@@ -152,16 +150,15 @@ public interface AxisTitle extends Element {
 	 * 
 	 * @return a String
 	 */
-	@Property(order = 6, displayName = "text", description = "Can be TeX math string")
+	@Property(order = 6, description = "Can be TeX math string", styleable = false)
 	public String getText();
 
 	/**
-	 * Defines the single line of text to be displayed. The string can be in TeX-like syntax. A pair
-	 * of "$" mark into math mode and out math mode. In math mode, Greek letter can be inputed as
-	 * \alpha, \beta, etc. Superscripts (up high) and subscripts (down low) can be inputed by using
-	 * "^" and "_". Notice that ^ and _ apply only to the next single character. If you want several
-	 * things to be superscripted or subscripted, just enclose them in braces. eg: "plain text
-	 * $x_\alpha^{2y}$".
+	 * Defines the single line of text to be displayed. The string can be in TeX-like syntax. A pair of "$" mark into
+	 * math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc. Superscripts (up
+	 * high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply only to the next
+	 * single character. If you want several things to be superscripted or subscripted, just enclose them in braces. eg:
+	 * "plain text $x_\alpha^{2y}$".
 	 * 
 	 * @param text
 	 */
@@ -175,12 +172,11 @@ public interface AxisTitle extends Element {
 	public MathElement getTextModel();
 
 	/**
-	 * Defines lines of math text to be displayed. The math model can be parsed from a TeX-like
-	 * string . A pair of "$" mark into math mode and out math mode. In math mode, Greek letter can
-	 * be inputed as \alpha, \beta, etc. Superscripts (up high) and subscripts (down low) can be
-	 * inputed by using "^" and "_". Notice that ^ and _ apply only to the next single character. If
-	 * you want several things to be superscripted or subscripted, just enclose them in braces. eg:
-	 * "plain text $x_\alpha^{2y}$".
+	 * Defines lines of math text to be displayed. The math model can be parsed from a TeX-like string . A pair of "$"
+	 * mark into math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc.
+	 * Superscripts (up high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply
+	 * only to the next single character. If you want several things to be superscripted or subscripted, just enclose
+	 * them in braces. eg: "plain text $x_\alpha^{2y}$".
 	 * 
 	 * @param model
 	 *            the math model

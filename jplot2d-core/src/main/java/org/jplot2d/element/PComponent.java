@@ -31,8 +31,8 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.transform.PaperTransform;
 
 /**
- * A <em>component</em> is an object having a graphical representation that can be drawn on the
- * renderer and that can interact with the user.
+ * A <em>component</em> is an object having a graphical representation that can be drawn on the renderer and that can
+ * interact with the user.
  * 
  * @author Jingjing Li
  * 
@@ -49,8 +49,7 @@ public interface PComponent extends Element {
 	public PComponent getParent();
 
 	/**
-	 * Determines whether this component should be visible when its parent is visible. Components
-	 * are initially visible.
+	 * Determines whether this component should be visible when its parent is visible. Components are initially visible.
 	 * 
 	 * @return <code>true</code> if the component is visible, <code>false</code> otherwise
 	 * @see #setVisible
@@ -84,8 +83,7 @@ public interface PComponent extends Element {
 	public void setCacheable(boolean mode);
 
 	/**
-	 * Returns <code>true</code> if the component is selectable by mouse. Only selectable component
-	 * can be movable.
+	 * Returns <code>true</code> if the component is selectable by mouse. Only selectable component can be movable.
 	 * 
 	 * @return <code>true</code> if selectable
 	 */
@@ -119,8 +117,8 @@ public interface PComponent extends Element {
 	/**
 	 * Gets the foreground color of this component.
 	 * 
-	 * @return this component's foreground color; if this component does not have a foreground
-	 *         color, the foreground color of its parent is returned
+	 * @return this component's foreground color; if this component does not have a foreground color, the foreground
+	 *         color of its parent is returned
 	 * @see #setColor
 	 */
 	@Property(order = 4)
@@ -130,9 +128,8 @@ public interface PComponent extends Element {
 	 * Sets the foreground color of this component.
 	 * 
 	 * @param c
-	 *            the color to become this component's foreground color; if this parameter is
-	 *            <code>null</code> then this component will inherit the foreground color of its
-	 *            parent
+	 *            the color to become this component's foreground color; if this parameter is <code>null</code> then
+	 *            this component will inherit the foreground color of its parent
 	 * @see #getColor
 	 */
 	public void setColor(Color c);
@@ -214,10 +211,9 @@ public interface PComponent extends Element {
 	/**
 	 * Returns the location of this component.
 	 * 
-	 * @return an instance of <code>Point</code> representing the base point in its parent's paper
-	 *         coordinate space
+	 * @return an instance of <code>Point</code> representing the base point in its parent's paper coordinate space
 	 */
-	@Property(order = 9)
+	@Property(order = 9, styleable = false)
 	public Point2D getLocation();
 
 	/**
@@ -225,7 +221,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return
 	 */
-	@Property(order = 10)
+	@Property(order = 10, styleable = false)
 	public Dimension2D getSize();
 
 	/**
@@ -233,21 +229,20 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the paper bounds of this component.
 	 */
-	@Property(order = 11)
+	@Property(order = 11, styleable = false)
 	public Rectangle2D getBounds();
 
 	/**
-	 * Returns the selectable bounds relative to its location. The selectable bound may be slightly
-	 * larger than the bounds, for easy selection by mouse. The units of bounds is pt (1/72 inch)
+	 * Returns the selectable bounds relative to its location. The selectable bound may be slightly larger than the
+	 * bounds, for easy selection by mouse. The units of bounds is pt (1/72 inch)
 	 * 
 	 * @return the paper bounds of this component.
 	 */
 	public Rectangle2D getSelectableBounds();
 
 	/**
-	 * Returns the paper transform of this component, which can be used to convert between device
-	 * coordinate and paper coordinate inside this component. The original point of paper coordinate
-	 * is bottom-left corner.
+	 * Returns the paper transform of this component, which can be used to convert between device coordinate and paper
+	 * coordinate inside this component. The original point of paper coordinate is bottom-left corner.
 	 * 
 	 * @return
 	 */

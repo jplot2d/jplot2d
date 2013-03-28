@@ -18,6 +18,8 @@
  */
 package org.jplot2d.element;
 
+import java.awt.geom.Point2D;
+
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;

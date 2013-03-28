@@ -35,16 +35,15 @@ public interface TextComponent extends PComponent {
 	 * 
 	 * @return a String
 	 */
-	@Property(order = 0, displayName = "text", description = "Can be TeX math string")
+	@Property(order = 0, description = "Can be TeX math string", styleable = false)
 	public String getText();
 
 	/**
-	 * Defines the single line of text to be displayed. The string can be in TeX-like syntax. A pair
-	 * of "$" mark into math mode and out math mode. In math mode, Greek letter can be inputed as
-	 * \alpha, \beta, etc. Superscripts (up high) and subscripts (down low) can be inputed by using
-	 * "^" and "_". Notice that ^ and _ apply only to the next single character. If you want several
-	 * things to be superscripted or subscripted, just enclose them in braces. eg: "plain text
-	 * $x_\alpha^{2y}$".
+	 * Defines the single line of text to be displayed. The string can be in TeX-like syntax. A pair of "$" mark into
+	 * math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc. Superscripts (up
+	 * high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply only to the next
+	 * single character. If you want several things to be superscripted or subscripted, just enclose them in braces. eg:
+	 * "plain text $x_\alpha^{2y}$".
 	 * 
 	 * @param text
 	 */
@@ -58,12 +57,11 @@ public interface TextComponent extends PComponent {
 	public MathElement getTextModel();
 
 	/**
-	 * Defines lines of math text to be displayed. The math model can be parsed from a TeX-like
-	 * string . A pair of "$" mark into math mode and out math mode. In math mode, Greek letter can
-	 * be inputed as \alpha, \beta, etc. Superscripts (up high) and subscripts (down low) can be
-	 * inputed by using "^" and "_". Notice that ^ and _ apply only to the next single character. If
-	 * you want several things to be superscripted or subscripted, just enclose them in braces. eg:
-	 * "plain text $x_\alpha^{2y}$".
+	 * Defines lines of math text to be displayed. The math model can be parsed from a TeX-like string . A pair of "$"
+	 * mark into math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc.
+	 * Superscripts (up high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply
+	 * only to the next single character. If you want several things to be superscripted or subscripted, just enclose
+	 * them in braces. eg: "plain text $x_\alpha^{2y}$".
 	 * 
 	 * @param model
 	 *            the math model
@@ -77,8 +75,8 @@ public interface TextComponent extends PComponent {
 	public HAlign getHAlign();
 
 	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the
-	 * title is on the left of the base point.
+	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the title is on the
+	 * left of the base point.
 	 * 
 	 * @param hAlign
 	 *            the horizontal alignment.
@@ -92,8 +90,8 @@ public interface TextComponent extends PComponent {
 	public VAlign getVAlign();
 
 	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the
-	 * title is on the top of the base point
+	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
+	 * the base point
 	 * 
 	 * @param vAlign
 	 *            the vertical alignment.

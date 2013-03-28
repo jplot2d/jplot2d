@@ -37,12 +37,16 @@ public class TitleTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(Title.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Text", "Title");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible",
-				"cacheable", "selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize",
-				"fontScale", "size", "bounds");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
+				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Title"), "position",
-				"location", "HAlign", "VAlign", "gapFactor", "movable");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Title"), "position", "location", "HAlign",
+				"VAlign", "gapFactor", "movable");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Title");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Title"), "position", "gapFactor", "movable");
 	}
 
 	@Test

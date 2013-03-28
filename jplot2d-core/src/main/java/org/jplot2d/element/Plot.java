@@ -52,7 +52,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public SizeMode getSizeMode();
 
 	/**
@@ -68,7 +68,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return the container size
 	 */
-	@Property(order = 1)
+	@Property(order = 1, styleable = false)
 	public Dimension2D getContainerSize();
 
 	/**
@@ -86,7 +86,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return the scale of this plot
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public double getScale();
 
 	/**
@@ -126,7 +126,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return the layout director for this plot.
 	 */
-	@Property(order = 10)
+	@Property(order = 10, styleable = false)
 	public LayoutDirector getLayoutDirector();
 
 	/**
@@ -193,7 +193,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return an instance of <code>Point</code> representing the base point of this plot
 	 */
-	@Property(order = 13)
+	@Property(order = 13, styleable = false)
 	public Point2D getLocation();
 
 	/**
@@ -217,7 +217,7 @@ public interface Plot extends PComponent {
 	 * 
 	 * @return the rectangle of content area.
 	 */
-	@Property(order = 14)
+	@Property(order = 14, styleable = false)
 	public Dimension2D getContentSize();
 
 	/**

@@ -43,6 +43,11 @@ public class PlotTest {
 				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Plot"), "sizeMode", "containerSize", "scale",
 				"layoutDirector", "preferredContentSize", "location", "contentSize");
+
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Plot");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
+				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Plot"), "preferredContentSize");
 	}
 
 	@Test

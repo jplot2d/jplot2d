@@ -37,7 +37,7 @@ public interface PointAnnotation extends Annotation {
 	 * 
 	 * @return the x,y values location
 	 */
-	@Property(order = 1)
+	@Property(order = 1, styleable = false)
 	public Point2D getValuePoint();
 
 	/**
@@ -53,12 +53,11 @@ public interface PointAnnotation extends Annotation {
 	 * 
 	 * @return the rotation angle value
 	 */
-	@Property(order = 2)
+	@Property(order = 2, styleable = false)
 	public double getAngle();
 
 	/**
-	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock
-	 * wise direction.
+	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock wise direction.
 	 * 
 	 * @param angle
 	 *            the rotation angle

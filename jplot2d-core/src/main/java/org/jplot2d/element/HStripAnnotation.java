@@ -38,7 +38,7 @@ public interface HStripAnnotation extends Annotation {
 	 * 
 	 * @return the value range of this annotation
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public Range getValueRange();
 
 	/**
@@ -58,8 +58,7 @@ public interface HStripAnnotation extends Annotation {
 	public Paint getFillPaint();
 
 	/**
-	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is
-	 * semi-transparent grey.
+	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is semi-transparent grey.
 	 * 
 	 * @param stroke
 	 *            the <code>Paint</code> to be used to fill the annotation strip

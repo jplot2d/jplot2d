@@ -18,30 +18,31 @@
  */
 package org.jplot2d.env;
 
-import org.jplot2d.element.Element;
+import static org.junit.Assert.*;
+
+import org.jplot2d.element.Axis;
+import org.jplot2d.element.Layer;
+import org.jplot2d.element.Plot;
+import org.jplot2d.element.impl.AxisImpl;
+import org.jplot2d.element.impl.LayerImpl;
+import org.jplot2d.element.impl.PlotImpl;
+import org.junit.Test;
 
 /**
- * Define default properties which can be used to initialize the new created plot component.
- * 
  * @author Jingjing Li
  * 
  */
-public interface Profile {
+public class StylePreferencesTest {
 
 	/**
-	 * Apply profile to the given element
+	 * Test loadInterfaceInfo for all interfaces will throw no exception.
 	 * 
-	 * @param element
+	 * @throws ClassNotFoundException
 	 */
-	public void applyTo(Element element);
-
-	/**
-	 * Returns a element instance who can proxy get/set values from/to this profile.
-	 * 
-	 * @param elementInterface
-	 *            the element interface
-	 * @return
-	 */
-	public <T extends Element> T getProxyBean(Class<T> elementInterface);
-
+	@Test
+	public void testloadAllInterface() throws ClassNotFoundException {
+		assertEquals(StylePreferences.getElementInterface(PlotImpl.class), Plot.class);
+		assertEquals(StylePreferences.getElementInterface(AxisImpl.class), Axis.class);
+		assertEquals(StylePreferences.getElementInterface(LayerImpl.class), Layer.class);
+	}
 }
