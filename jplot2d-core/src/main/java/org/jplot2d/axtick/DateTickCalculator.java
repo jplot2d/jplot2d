@@ -79,8 +79,43 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 		}
 		tickNumber = Math.abs(tickNumber);
 
-		DateInterval itvA, itvB;
 		double rough = (double) (hi - lo) / (tickNumber - 1);
+		DateInterval[] itvAB = calcCandidateIntervals(rough);
+		DateInterval itvA = itvAB[0];
+		DateInterval itvB = itvAB[1];
+
+		long iLoA = lo / itvA.getTimeInMillis();
+		long iHiA = hi / itvA.getTimeInMillis();
+		if (hi % itvA.getTimeInMillis() != 0) {
+			iHiA++;
+		}
+		int tickNumA = (int) (iHiA - iLoA + 1);
+		long iLoB = lo / itvB.getTimeInMillis();
+		long iHiB = hi / itvB.getTimeInMillis();
+		if (hi % itvB.getTimeInMillis() != 0) {
+			iHiB++;
+		}
+		int tickNumB = (int) (iHiB - iLoB + 1);
+
+		/* tickNumB < tickNumber < tickNumA */
+		if (tickNumA - tickNumber <= tickNumber - tickNumB) {
+			return itvA;
+		} else {
+			return itvB;
+		}
+
+	}
+
+	/**
+	 * Calculate 2 candidate DateInterval based on rough interval in milliseconds
+	 * 
+	 * @param interval
+	 *            the rough interval in milliseconds
+	 * @return 2 candidate DateInterval in a array
+	 */
+	protected static DateInterval[] calcCandidateIntervals(double rough) {
+		DateInterval itvA, itvB;
+
 		if (rough < 1000) {
 			int scale;
 			if (rough < 10) {
@@ -192,26 +227,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 			}
 		}
 
-		long iLoA = lo / itvA.getTime();
-		long iHiA = hi / itvA.getTime();
-		if (hi % itvA.getTime() != 0) {
-			iHiA++;
-		}
-		int tickNumA = (int) (iHiA - iLoA + 1);
-		long iLoB = lo / itvB.getTime();
-		long iHiB = hi / itvB.getTime();
-		if (hi % itvB.getTime() != 0) {
-			iHiB++;
-		}
-		int tickNumB = (int) (iHiB - iLoB + 1);
-
-		/* tickNumB < tickNumber < tickNumA */
-		if (tickNumA - tickNumber <= tickNumber - tickNumB) {
-			return itvA;
-		} else {
-			return itvB;
-		}
-
+		return new DateInterval[] { itvA, itvB };
 	}
 
 	/**
@@ -375,7 +391,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 	}
 
 	public double getInterval() {
-		return dateInterval.getTime();
+		return dateInterval.getTimeInMillis();
 	}
 
 	public int getMinorNumber() {

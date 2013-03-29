@@ -26,9 +26,12 @@ package org.jplot2d.axtick;
 public final class DateInterval {
 
 	public enum Unit {
-		MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(1000L * 3600 * 24), WEEK(
+		MICROSECOND(0), MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(1000L * 3600 * 24), WEEK(
 				1000L * 3600 * 24 * 7), MONTH(1000L * 3600 * 24 * 30), YEAR(1000L * 3600 * 24 * 30 * 12);
 
+		/**
+		 * the time in milliseconds
+		 */
 		public final long time;
 
 		private Unit(long time) {
@@ -37,37 +40,37 @@ public final class DateInterval {
 
 	};
 
-	private final Unit _unit;
+	private final Unit unit;
 
-	private final int _v;
+	private final int v;
 
 	public DateInterval(Unit unit, int value) {
-		_unit = unit;
-		_v = value;
+		this.unit = unit;
+		this.v = value;
 	}
 
 	public DateInterval(long interval) {
 		if (interval < Unit.SECOND.time) {
-			_unit = Unit.MILLISECOND;
-			_v = (int) interval;
+			unit = Unit.MILLISECOND;
+			v = (int) interval;
 		} else if (interval < Unit.MINUTE.time) {
-			_unit = Unit.SECOND;
-			_v = (int) (interval / Unit.SECOND.time);
+			unit = Unit.SECOND;
+			v = (int) (interval / Unit.SECOND.time);
 		} else if (interval < Unit.HOUR.time) {
-			_unit = Unit.MINUTE;
-			_v = (int) (interval / Unit.MINUTE.time);
+			unit = Unit.MINUTE;
+			v = (int) (interval / Unit.MINUTE.time);
 		} else if (interval < Unit.DAY.time) {
-			_unit = Unit.HOUR;
-			_v = (int) (interval / Unit.HOUR.time);
+			unit = Unit.HOUR;
+			v = (int) (interval / Unit.HOUR.time);
 		} else if (interval < Unit.MONTH.time) {
-			_unit = Unit.DAY;
-			_v = (int) (interval / Unit.DAY.time);
+			unit = Unit.DAY;
+			v = (int) (interval / Unit.DAY.time);
 		} else if (interval < Unit.YEAR.time) {
-			_unit = Unit.MONTH;
-			_v = (int) (interval / Unit.MONTH.time);
+			unit = Unit.MONTH;
+			v = (int) (interval / Unit.MONTH.time);
 		} else {
-			_unit = Unit.YEAR;
-			_v = (int) (interval / Unit.YEAR.time);
+			unit = Unit.YEAR;
+			v = (int) (interval / Unit.YEAR.time);
 		}
 	}
 
@@ -75,18 +78,26 @@ public final class DateInterval {
 	 * @return the coefficient
 	 */
 	public Unit getUnit() {
-		return _unit;
+		return unit;
 	}
 
 	/**
 	 * @return the exponent
 	 */
 	public int getValue() {
-		return _v;
+		return v;
 	}
 
-	public long getTime() {
-		return _v * _unit.time;
+	public long getTimeInMillis() {
+		return v * unit.time;
+	}
+
+	public long getTimeInMicros() {
+		if (unit == Unit.MICROSECOND) {
+			return v;
+		} else {
+			return v * unit.time * 1000;
+		}
 	}
 
 	public boolean equals(Object obj) {
@@ -94,14 +105,14 @@ public final class DateInterval {
 			return false;
 		}
 		DateInterval ien = (DateInterval) obj;
-		return getTime() == ien.getTime();
+		return getValue() == ien.getValue() && getUnit() == ien.getUnit();
 	}
 
 	public int hashCode() {
-		return (int) (getTime() ^ (getTime() >>> 32));
+		return (int) (getValue() ^ (getUnit().ordinal() << 28));
 	}
 
 	public String toString() {
-		return String.valueOf(_v) + _unit;
+		return String.valueOf(v) + unit;
 	}
 }
