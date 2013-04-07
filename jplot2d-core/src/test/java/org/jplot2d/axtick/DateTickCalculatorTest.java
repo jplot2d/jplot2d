@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class DateTickCalculatorTest {
 
-	private static TimeZone zone = TimeZone.getTimeZone("GMT");
+	private static TimeZone zone = TimeZone.getTimeZone("UTC");
 
 	private static Locale locale = Locale.US;
 
@@ -205,7 +205,7 @@ public class DateTickCalculatorTest {
 	 */
 	@Test
 	public void testDateTicks() {
-		TimeZone zone = TimeZone.getTimeZone("GMT");
+		TimeZone zone = TimeZone.getTimeZone("UTC");
 		Locale locale = Locale.US;
 		Calendar start = Calendar.getInstance(zone, locale);
 		Calendar end = Calendar.getInstance(zone, locale);
@@ -310,7 +310,7 @@ public class DateTickCalculatorTest {
 	 */
 	@Test
 	public void testExpandRangeByTicksNumber() {
-		TimeZone zone = TimeZone.getTimeZone("GMT");
+		TimeZone zone = TimeZone.getTimeZone("UTC");
 		Locale locale = Locale.US;
 		Calendar start = Calendar.getInstance(zone, locale);
 		Calendar end = Calendar.getInstance(zone, locale);
@@ -354,7 +354,7 @@ public class DateTickCalculatorTest {
 	 */
 	@Test
 	public void testExpandRangeByTicksInterval() {
-		TimeZone zone = TimeZone.getTimeZone("GMT");
+		TimeZone zone = TimeZone.getTimeZone("UTC");
 		Locale locale = Locale.US;
 		Calendar start = Calendar.getInstance(zone, locale);
 		Calendar end = Calendar.getInstance(zone, locale);

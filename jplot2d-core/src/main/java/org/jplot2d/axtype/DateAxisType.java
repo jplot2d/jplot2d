@@ -51,7 +51,7 @@ public class DateAxisType extends AxisType {
 	}
 
 	/**
-	 * Returns a DateAxisType with GMT zone and US local
+	 * Returns a DateAxisType with UTC zone and US local
 	 * 
 	 * @return
 	 */
