@@ -22,28 +22,28 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * A Concrete Creator for DateTickCalculator.
+ * A Concrete Creator for TAITickCalculator.
  * 
  * @author Jingjing Li
  * 
  */
-public class DateTickAlgorithm extends TickAlgorithm {
+public class TAIMicrosTickAlgorithm extends TickAlgorithm {
 
 	private TimeZone zone;
 
 	private Locale locale;
 
-	private DateTickAlgorithm(TimeZone zone, Locale aLocale) {
+	private TAIMicrosTickAlgorithm(TimeZone zone, Locale aLocale) {
 		this.zone = zone;
 		this.locale = aLocale;
 	}
 
-	public static DateTickAlgorithm getInstance(TimeZone zone, Locale aLocale) {
-		return new DateTickAlgorithm(zone, aLocale);
+	public static TAIMicrosTickAlgorithm getInstance(TimeZone zone, Locale aLocale) {
+		return new TAIMicrosTickAlgorithm(zone, aLocale);
 	}
 
-	public DateTickCalculator createCalculator() {
-		return new DateTickCalculator(zone, locale);
+	public TAIMicrosTickCalculator createCalculator() {
+		return new TAIMicrosTickCalculator(zone, locale);
 	}
 
 }
