@@ -248,7 +248,8 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 
 		Calendar t1cal = (Calendar) loCal.clone();
 		/* round up to unit */
-		if (setCalendarBelowToMin(t1cal, dateInterval.getUnit())) {
+		setCalendarBelowToMin(t1cal, dateInterval.getUnit());
+		if (t1cal.before(loCal)) {
 			add(t1cal, dateInterval.getUnit(), 1);
 		}
 
@@ -320,7 +321,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 				lo = 0;
 				hi -= lo;
 			}
-			dateInterval = new DateInterval(1);
+			dateInterval = new DateInterval(Unit.MILLISECOND, 1);
 		} else {
 			dateInterval = calcInterval(lo, hi, tickNumber);
 			expandRangeByTickInterval();
@@ -328,7 +329,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 	}
 
 	public void expandRangeByTickInterval(double interval) {
-		dateInterval = new DateInterval((long) Math.round(interval));
+		dateInterval = DateInterval.createWithMillis((long) Math.round(interval));
 		expandRangeByTickInterval();
 
 		/* if _lo == _hi and on interval boundary, the expanding has no effect */
@@ -353,8 +354,8 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 			add(loCal, dateInterval.getUnit(), -loDelta);
 		}
 
-		boolean rounddown = setCalendarBelowToMin(hiCal, dateInterval.getUnit());
-		if (rounddown) {
+		setCalendarBelowToMin(hiCal, dateInterval.getUnit());
+		if (hiCal.getTimeInMillis() < hi) {
 			add(hiCal, dateInterval.getUnit(), 1);
 		}
 		int hiDelta = distanceToIntervalBoundary(hiCal, dateInterval);
@@ -373,7 +374,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 	}
 
 	public void calcValuesByTickInterval(long interval, long offset, int minorTickNumber) {
-		calcValuesByTickInterval(new DateInterval(interval), offset, minorTickNumber);
+		calcValuesByTickInterval(DateInterval.createWithMillis(interval), offset, minorTickNumber);
 	}
 
 	private void calcValuesByTickInterval(DateInterval interval, long offset, int minorTickNumber) {
@@ -468,6 +469,9 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 		/* format string for hh:mm:ss.mmm without the % char */
 		String hms;
 		switch (uprec) {
+		case MICROSECOND:
+			hms = "tT.%<tN";
+			break;
 		case MILLISECOND:
 			hms = "tT.%<tL";
 			break;
@@ -548,99 +552,51 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 	 * @param unit
 	 * @return true if any fields below the given unit is larger than its minimal value
 	 */
-	protected static boolean setCalendarBelowToMin(Calendar cal, Unit unit) {
+	protected static void setCalendarBelowToMin(Calendar cal, Unit unit) {
 		switch (unit) {
 		case MILLISECOND:
-			return false;
+			break;
 		case SECOND:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			break;
 		case MINUTE:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			break;
 		case HOUR:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)
-					|| cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+			break;
 		case DAY:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)
-					|| cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE)
-					|| cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+			cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+			break;
 		case WEEK:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)
-					|| cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE)
-					|| cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY)
-					|| cal.get(Calendar.DAY_OF_WEEK) > cal.getMinimum(Calendar.DAY_OF_WEEK)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
-				int woy = cal.get(Calendar.WEEK_OF_YEAR);
-				cal.set(Calendar.DAY_OF_WEEK, cal.getMinimum(Calendar.DAY_OF_WEEK));
-				cal.set(Calendar.WEEK_OF_YEAR, woy);
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+			cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+			int woy = cal.get(Calendar.WEEK_OF_YEAR);
+			cal.set(Calendar.DAY_OF_WEEK, cal.getMinimum(Calendar.DAY_OF_WEEK));
+			cal.set(Calendar.WEEK_OF_YEAR, woy);
+			break;
 		case MONTH:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)
-					|| cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE)
-					|| cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY)
-					|| cal.get(Calendar.DAY_OF_MONTH) > cal.getMinimum(Calendar.DAY_OF_MONTH)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
-				cal.set(Calendar.DAY_OF_MONTH, cal.getMinimum(Calendar.DAY_OF_MONTH));
-				return true;
-			} else {
-				return false;
-			}
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+			cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+			cal.set(Calendar.DAY_OF_MONTH, cal.getMinimum(Calendar.DAY_OF_MONTH));
+			break;
 		case YEAR:
-			if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)
-					|| cal.get(Calendar.SECOND) > cal.getMinimum(Calendar.SECOND)
-					|| cal.get(Calendar.MINUTE) > cal.getMinimum(Calendar.MINUTE)
-					|| cal.get(Calendar.HOUR_OF_DAY) > cal.getMinimum(Calendar.HOUR_OF_DAY)
-					|| cal.get(Calendar.DAY_OF_YEAR) > cal.getMinimum(Calendar.DAY_OF_YEAR)) {
-				cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-				cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-				cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-				cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
-				cal.set(Calendar.DAY_OF_YEAR, cal.getMinimum(Calendar.DAY_OF_YEAR));
-				return true;
-			} else {
-				return false;
-			}
-		default:
-			return false;
+			cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+			cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+			cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+			cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+			cal.set(Calendar.DAY_OF_YEAR, cal.getMinimum(Calendar.DAY_OF_YEAR));
+			break;
 		}
 	}
 
