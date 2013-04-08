@@ -68,7 +68,7 @@ public class TAIMicrosAxisType extends AxisType {
 
 	private TAIMicrosAxisType(TimeZone zone, Locale locale) {
 		super("TAI-" + zone.getID() + "-" + locale.toString());
-		algo = TAIMicrosTickAlgorithm.getInstance(zone, locale);
+		algo = new TAIMicrosTickAlgorithm(zone, locale);
 	}
 
 	@Override

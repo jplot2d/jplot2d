@@ -33,13 +33,9 @@ public class DateTickAlgorithm extends TickAlgorithm {
 
 	private Locale locale;
 
-	private DateTickAlgorithm(TimeZone zone, Locale aLocale) {
+	public DateTickAlgorithm(TimeZone zone, Locale aLocale) {
 		this.zone = zone;
 		this.locale = aLocale;
-	}
-
-	public static DateTickAlgorithm getInstance(TimeZone zone, Locale aLocale) {
-		return new DateTickAlgorithm(zone, aLocale);
 	}
 
 	public DateTickCalculator createCalculator() {

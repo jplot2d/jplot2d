@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * A Concrete Creator for TAITickCalculator.
+ * A Concrete Creator for TAIMicrosTickCalculator.
  * 
  * @author Jingjing Li
  * 
@@ -33,13 +33,9 @@ public class TAIMicrosTickAlgorithm extends TickAlgorithm {
 
 	private Locale locale;
 
-	private TAIMicrosTickAlgorithm(TimeZone zone, Locale aLocale) {
+	public TAIMicrosTickAlgorithm(TimeZone zone, Locale aLocale) {
 		this.zone = zone;
 		this.locale = aLocale;
-	}
-
-	public static TAIMicrosTickAlgorithm getInstance(TimeZone zone, Locale aLocale) {
-		return new TAIMicrosTickAlgorithm(zone, aLocale);
 	}
 
 	public TAIMicrosTickCalculator createCalculator() {
