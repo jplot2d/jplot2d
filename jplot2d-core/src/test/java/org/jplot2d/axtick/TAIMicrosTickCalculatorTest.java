@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author Jingjing Li
  * 
  */
-public class TAITickCalculatorTest {
+public class TAIMicrosTickCalculatorTest {
 
 	private static TimeZone zone = TimeZone.getTimeZone("UTC");
 
