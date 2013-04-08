@@ -28,17 +28,17 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**
- * An axis type to present data in Date/Time format. The data is in millisecond, since January 1, 1970, 00:00:00
- * UTC.
+ * An axis type to present data in Date/Time format. The data is in TAI(International Atomic Time), microseconds since 1
+ * January 1958 00:00:00 UTC.
  * 
  * @author Jingjing Li
  * 
  */
-public class DateAxisType extends AxisType {
+public class TAIMicrosAxisType extends AxisType {
 
-	private static final DateAxisType DEFAULT = new DateAxisType(TimeZone.getDefault(), Locale.getDefault());
+	private static final TAIMicrosAxisType DEFAULT = new TAIMicrosAxisType(TimeZone.getDefault(), Locale.getDefault());
 
-	private static final DateAxisType UTC_US = new DateAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
+	private static final TAIMicrosAxisType UTC_US = new TAIMicrosAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
 
 	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
 
@@ -49,7 +49,7 @@ public class DateAxisType extends AxisType {
 	 * 
 	 * @return
 	 */
-	public static DateAxisType getDefault() {
+	public static TAIMicrosAxisType getDefault() {
 		return DEFAULT;
 	}
 
@@ -58,16 +58,16 @@ public class DateAxisType extends AxisType {
 	 * 
 	 * @return
 	 */
-	public static DateAxisType getUTC() {
+	public static TAIMicrosAxisType getUTC() {
 		return UTC_US;
 	}
 
-	public static DateAxisType getInstance(TimeZone zone, Locale aLocale) {
-		return new DateAxisType(zone, aLocale);
+	public static TAIMicrosAxisType getInstance(TimeZone zone, Locale aLocale) {
+		return new TAIMicrosAxisType(zone, aLocale);
 	}
 
-	private DateAxisType(TimeZone zone, Locale locale) {
-		super("DATE-" + zone.getID() + "-" + locale.toString());
+	private TAIMicrosAxisType(TimeZone zone, Locale locale) {
+		super("TAI-" + zone.getID() + "-" + locale.toString());
 		algo = DateTickAlgorithm.getInstance(zone, locale);
 	}
 
