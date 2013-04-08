@@ -28,8 +28,7 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**
- * An axis type to present data in Date/Time format. The data is in millisecond, since January 1, 1970, 00:00:00
- * UTC.
+ * An axis type to present data in Date/Time format. The data is in millisecond, since January 1, 1970, 00:00:00 UTC.
  * 
  * @author Jingjing Li
  * 
@@ -40,7 +39,7 @@ public class DateAxisType extends AxisType {
 
 	private static final DateAxisType UTC_US = new DateAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
 
-	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
+	private static final Range DATE_BOUNDARY = new Range.Long(Long.MIN_VALUE, Long.MAX_VALUE);
 
 	private final DateTickAlgorithm algo;
 
@@ -68,7 +67,7 @@ public class DateAxisType extends AxisType {
 
 	private DateAxisType(TimeZone zone, Locale locale) {
 		super("DATE-" + zone.getID() + "-" + locale.toString());
-		algo = DateTickAlgorithm.getInstance(zone, locale);
+		algo = new DateTickAlgorithm(zone, locale);
 	}
 
 	@Override

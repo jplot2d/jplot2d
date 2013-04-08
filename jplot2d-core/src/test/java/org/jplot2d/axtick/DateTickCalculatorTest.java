@@ -44,7 +44,7 @@ public class DateTickCalculatorTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		dateTC = DateTickAlgorithm.getInstance(zone, locale).createCalculator();
+		dateTC = new DateTickAlgorithm(zone, locale).createCalculator();
 	}
 
 	@Test

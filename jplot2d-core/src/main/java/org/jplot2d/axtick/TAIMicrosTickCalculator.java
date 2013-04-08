@@ -454,16 +454,17 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
 			cal.setTimeInMicros(Array.getLong(values, i));
 
 			@SuppressWarnings("resource")
-			String texString = new Formatter(locale).format(format, cal.calendar).toString();
-			if (cal.microsecond > 0) {
-				String microString = String.valueOf(cal.microsecond);
-				if (microString.length() == 1) {
-					microString = "00" + microString;
-				} else if (microString.length() == 2) {
-					microString = "0" + microString;
-				}
-				texString.replace("000000", microString);
+			String microString = String.valueOf(cal.microsecond);
+			if (microString.length() == 1) {
+				microString = "00" + microString;
+			} else if (microString.length() == 2) {
+				microString = "0" + microString;
 			}
+
+			String texString = new Formatter(locale).format(format, cal.calendar).toString();
+			int z6idx = texString.lastIndexOf("000000");
+			texString = texString.substring(0, z6idx) + microString + texString.substring(z6idx + 6);
+
 			if (texString.indexOf('$') == -1) {
 				labels[i] = new MathElement.Mtext(texString);
 			} else {

@@ -45,7 +45,7 @@ public class TAIMicrosTickCalculatorTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		taiTC = TAIMicrosTickAlgorithm.getInstance(zone, locale).createCalculator();
+		taiTC = new TAIMicrosTickAlgorithm(zone, locale).createCalculator();
 	}
 
 	@Test
