@@ -28,8 +28,7 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**
- * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a preferred tick
- * algorithm.
+ * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a preferred tick algorithm.
  * 
  * @author Jingjing Li
  * 
@@ -44,6 +43,8 @@ public abstract class AxisType {
 	public static final AxisType DATE = DateAxisType.getDefault();
 
 	public static final AxisType DATE_UTC_US = DateAxisType.getUTC();
+
+	public static final AxisType TAI_MICROS_UTC_US = TAIMicrosAxisType.getUTC();
 
 	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
 
@@ -65,8 +66,8 @@ public abstract class AxisType {
 	public abstract TransformType getDefaultTransformType();
 
 	/**
-	 * The boundary of the axis nature. The returned boundary is never inverted. For circular axis,
-	 * this boundary is valid limit for data values, not for displayed label values.
+	 * The boundary of the axis nature. The returned boundary is never inverted. For circular axis, this boundary is
+	 * valid limit for data values, not for displayed label values.
 	 * 
 	 * @return
 	 */
@@ -87,15 +88,13 @@ public abstract class AxisType {
 	 *            the tick transform, can be <code>null</code>
 	 * @return a TickAlgorithm
 	 */
-	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType,
-			AxisTickTransform tickTransform);
+	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform);
 
 	/**
-	 * Some axis has a circular nature, such as angle. This range is a canonical range that all
-	 * values should displayed in the range.
+	 * Some axis has a circular nature, such as angle. This range is a canonical range that all values should displayed
+	 * in the range.
 	 * 
-	 * @return a range to represent this axis' circular nature, or
-	 *         <code>null<code> if this axis is not circular
+	 * @return a range to represent this axis' circular nature, or <code>null<code> if this axis is not circular
 	 */
 	public Range getCircularRange() {
 		return null;
