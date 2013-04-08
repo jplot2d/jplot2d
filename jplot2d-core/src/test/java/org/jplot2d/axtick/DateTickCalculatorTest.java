@@ -57,36 +57,36 @@ public class DateTickCalculatorTest {
 		refCal.set(1975, 5, 19, 7, 30, 32);
 		refCal.set(Calendar.MILLISECOND, 129);
 
-		assertFalse(DateTickCalculator.setCalendarBelowToMin(cal, Unit.MILLISECOND));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.MILLISECOND);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.SECOND));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.SECOND);
 		refCal.set(Calendar.MILLISECOND, 0);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.MINUTE));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.MINUTE);
 		refCal.set(Calendar.SECOND, 0);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.HOUR));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.HOUR);
 		refCal.set(Calendar.MINUTE, 0);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.DAY));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.DAY);
 		refCal.set(Calendar.HOUR_OF_DAY, 0);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.WEEK));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.WEEK);
 		int woy = refCal.get(Calendar.WEEK_OF_YEAR);
 		refCal.set(Calendar.DAY_OF_WEEK, cal.getMinimum(Calendar.DAY_OF_WEEK));
 		refCal.set(Calendar.WEEK_OF_YEAR, woy);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.MONTH));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.MONTH);
 		refCal.set(Calendar.DAY_OF_MONTH, 1);
 		assertEquals(cal, refCal);
 
-		assertTrue(DateTickCalculator.setCalendarBelowToMin(cal, Unit.YEAR));
+		DateTickCalculator.setCalendarBelowToMin(cal, Unit.YEAR);
 		refCal.set(Calendar.DAY_OF_YEAR, cal.getMinimum(Calendar.DAY_OF_YEAR));
 		assertEquals(cal, refCal);
 	}

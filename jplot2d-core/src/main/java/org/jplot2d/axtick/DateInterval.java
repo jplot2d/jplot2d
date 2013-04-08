@@ -19,7 +19,7 @@
 package org.jplot2d.axtick;
 
 /**
- * This class represent a number in c x 10^n form. c is a integer and in range between -9 and 9.
+ * This class represent a date in unit and value.
  * 
  * @author Jingjing Li
  */
@@ -49,7 +49,9 @@ public final class DateInterval {
 		this.v = value;
 	}
 
-	public DateInterval(long interval) {
+	public static DateInterval createWithMillis(long interval) {
+		Unit unit;
+		int v;
 		if (interval < Unit.SECOND.time) {
 			unit = Unit.MILLISECOND;
 			v = (int) interval;
@@ -71,6 +73,15 @@ public final class DateInterval {
 		} else {
 			unit = Unit.YEAR;
 			v = (int) (interval / Unit.YEAR.time);
+		}
+		return new DateInterval(unit, v);
+	}
+
+	public static DateInterval createWithMicros(long interval) {
+		if (interval < 1000) {
+			return new DateInterval(Unit.MICROSECOND, (int) interval);
+		} else {
+			return createWithMillis(interval / 1000);
 		}
 	}
 
