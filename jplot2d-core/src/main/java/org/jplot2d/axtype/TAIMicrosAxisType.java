@@ -21,7 +21,7 @@ package org.jplot2d.axtype;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.jplot2d.axtick.DateTickAlgorithm;
+import org.jplot2d.axtick.TAIMicrosTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.transform.TransformType;
@@ -40,9 +40,9 @@ public class TAIMicrosAxisType extends AxisType {
 
 	private static final TAIMicrosAxisType UTC_US = new TAIMicrosAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
 
-	private static final Range DATE_BOUNDARY = new Range.Long(0, Long.MAX_VALUE);
+	private static final Range DATE_BOUNDARY = new Range.Long(Long.MIN_VALUE, Long.MAX_VALUE);
 
-	private final DateTickAlgorithm algo;
+	private final TAIMicrosTickAlgorithm algo;
 
 	/**
 	 * Returns a DateAxisType with default zone and local
@@ -68,7 +68,7 @@ public class TAIMicrosAxisType extends AxisType {
 
 	private TAIMicrosAxisType(TimeZone zone, Locale locale) {
 		super("TAI-" + zone.getID() + "-" + locale.toString());
-		algo = DateTickAlgorithm.getInstance(zone, locale);
+		algo = TAIMicrosTickAlgorithm.getInstance(zone, locale);
 	}
 
 	@Override
