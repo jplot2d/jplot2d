@@ -156,7 +156,7 @@ public interface AxisTickManager extends Element {
 	 * @return if the tick number is auto calculated.
 	 */
 	@Property(order = 13, styleable = false)
-	public boolean getAutoTickInterval();
+	public boolean isAutoTickInterval();
 
 	/**
 	 * Set to <code>true</code> to indicate the tick interval need to be auto calculated, or <code>false</code> to
@@ -227,7 +227,7 @@ public interface AxisTickManager extends Element {
 	 * @return if the tick number is auto calculated.
 	 */
 	@Property(order = 17, styleable = false)
-	public boolean getAutoAdjustTicks();
+	public boolean isAutoAdjustTicks();
 
 	/**
 	 * Set to true to allow the tick number to be automatically reduced to avoid tick label overlaps.
