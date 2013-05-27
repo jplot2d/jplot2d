@@ -138,6 +138,13 @@ public interface AxisTitle extends Element {
 	public void setFontScale(float scale);
 
 	/**
+	 * Returns the effective font of this axis title.
+	 * 
+	 * @return the effective font of this axis title
+	 */
+	public Font getEffectiveFont();
+	
+	/**
 	 * Sets the font name, style and size for this component.
 	 * 
 	 * @param font

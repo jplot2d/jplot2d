@@ -60,13 +60,6 @@ public interface ComponentEx extends PComponent, ElementEx {
 
 	public float getEffectiveFontSize();
 
-	/**
-	 * Returns the effective font of this component.
-	 * 
-	 * @return the effective font of this component
-	 */
-	public Font getEffectiveFont();
-
 	public void parentEffectiveColorChanged();
 
 	public void parentEffectiveFontChanged();

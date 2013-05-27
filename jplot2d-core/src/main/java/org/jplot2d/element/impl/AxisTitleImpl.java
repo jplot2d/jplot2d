@@ -218,7 +218,7 @@ public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 		}
 	}
 
-	private Font getEffectiveFont() {
+	public Font getEffectiveFont() {
 		float size = getEffectiveFontSize();
 		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size).deriveFont(size);
 	}
