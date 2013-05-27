@@ -337,7 +337,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
-	public boolean getAutoAdjustTicks() {
+	public boolean isAutoAdjustTicks() {
 		return autoAdjustNumber;
 	}
 
@@ -355,7 +355,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		propNumberChanged = true;
 	}
 
-	public boolean getAutoTickInterval() {
+	public boolean isAutoTickInterval() {
 		return autoInterval;
 	}
 
