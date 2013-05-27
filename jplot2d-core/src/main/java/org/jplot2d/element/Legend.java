@@ -32,10 +32,6 @@ import org.jplot2d.annotation.PropertyGroup;
 @PropertyGroup("Legend")
 public interface Legend extends MovableComponent {
 
-	public enum Position {
-		FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT, LEFTTOP, LEFTMIDDLE, LEFTBOTTOM, RIGHTTOP, RIGHTMIDDLE, RIGHTBOTTOM
-	};
-
 	/**
 	 * Returns <code>true</code> if this legend is enabled. By default, the legend is enabled.
 	 * 
@@ -58,7 +54,7 @@ public interface Legend extends MovableComponent {
 	 * @return the position.
 	 */
 	@Property(order = 1)
-	public Position getPosition();
+	public LegendPosition getPosition();
 
 	/**
 	 * Sets the position of this legend. Only when position is <code>Position.FREE</code> , the legend can be located by
@@ -67,7 +63,7 @@ public interface Legend extends MovableComponent {
 	 * @param position
 	 *            the position of this legend.
 	 */
-	public void setPosition(Position position);
+	public void setPosition(LegendPosition position);
 
 	/**
 	 * Gets the location of this legend.
@@ -79,7 +75,7 @@ public interface Legend extends MovableComponent {
 
 	/**
 	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
-	 * {@link Position#FREE}
+	 * {@link LegendPosition#FREE}
 	 * 
 	 * @param loc
 	 *            the base point of this legend
@@ -88,7 +84,7 @@ public interface Legend extends MovableComponent {
 
 	/**
 	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
-	 * {@link Position#FREE}
+	 * {@link LegendPosition#FREE}
 	 * 
 	 * @param x
 	 *            the x-coordinate of the new location

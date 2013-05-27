@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.TitlePosition;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
@@ -39,7 +40,7 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class TitleImpl extends ComponentImpl implements TitleEx {
 
-	private Position position = Position.TOPCENTER;
+	private TitlePosition position = TitlePosition.TOPCENTER;
 
 	private double locX, locY;
 
@@ -89,7 +90,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (textModel != null && getPosition() != Position.FREE && getParent() != null) {
+		if (textModel != null && getPosition() != TitlePosition.FREE && getParent() != null) {
 			getParent().invalidate();
 		}
 	}
@@ -169,13 +170,13 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 		}
 	}
 
-	public Position getPosition() {
+	public TitlePosition getPosition() {
 		return position;
 	}
 
-	public void setPosition(Position position) {
+	public void setPosition(TitlePosition position) {
 		if (position == null) {
-			position = Position.FREE;
+			position = TitlePosition.FREE;
 		}
 		if (this.position != position) {
 			this.position = position;
