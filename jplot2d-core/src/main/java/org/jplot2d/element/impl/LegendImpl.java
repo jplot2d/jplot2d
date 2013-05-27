@@ -30,6 +30,7 @@ import java.util.Collection;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.LegendPosition;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.util.DoubleDimension2D;
@@ -54,7 +55,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	private double width, height;
 
-	private Position position = Position.BOTTOMCENTER;
+	private LegendPosition position = LegendPosition.BOTTOMCENTER;
 
 	private HAlign halign = HAlign.CENTER;
 
@@ -125,7 +126,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (isEnabled() && visibleItemNum > 0 && getPosition() != Position.FREE) {
+		if (isEnabled() && visibleItemNum > 0 && getPosition() != LegendPosition.FREE) {
 			getParent().invalidate();
 		}
 	}
@@ -179,7 +180,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
 	public void setLocation(double locX, double locY) {
 		directLocation(locX, locY);
-		setPosition(Position.FREE);
+		setPosition(LegendPosition.FREE);
 	}
 
 	public void directLocation(double locX, double locY) {
@@ -190,13 +191,13 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 	}
 
-	public Position getPosition() {
+	public LegendPosition getPosition() {
 		return position;
 	}
 
-	public void setPosition(Position position) {
+	public void setPosition(LegendPosition position) {
 		if (position == null) {
-			position = Position.FREE;
+			position = LegendPosition.FREE;
 		}
 		if (this.position != position) {
 			this.position = position;

@@ -26,6 +26,7 @@ import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.TitlePosition;
 import org.jplot2d.element.Title;
 import org.jplot2d.sizing.AutoPackSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
@@ -54,7 +55,7 @@ public class AutoPackSizeDemo {
 		Title copyRight = ef.createTitle("\u00A9 2012 jplot2d project (LGPL)");
 		copyRight.setFontScale(1);
 		copyRight.setColor(Color.BLUE.darker());
-		copyRight.setPosition(Title.Position.BOTTOMRIGHT);
+		copyRight.setPosition(TitlePosition.BOTTOMRIGHT);
 		plot.addTitle(copyRight);
 
 		JFrame frame = new JPlot2DFrame(plot);

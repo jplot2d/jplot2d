@@ -32,17 +32,13 @@ import org.jplot2d.annotation.PropertyGroup;
 @PropertyGroup("Title")
 public interface Title extends TextComponent, MovableComponent {
 
-	public static enum Position {
-		FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT
-	};
-
 	/**
 	 * Gets the current position of this title in a layer.
 	 * 
 	 * @return the position.
 	 */
 	@Property(order = 1)
-	public Position getPosition();
+	public TitlePosition getPosition();
 
 	/**
 	 * Sets the position of this title. Possible value is FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER,
@@ -52,7 +48,7 @@ public interface Title extends TextComponent, MovableComponent {
 	 * @param position
 	 *            the position of this title.
 	 */
-	public void setPosition(Position position);
+	public void setPosition(TitlePosition position);
 
 	/**
 	 * Gets the location of this title.
