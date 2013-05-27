@@ -201,6 +201,13 @@ public interface PComponent extends Element {
 	public void setFontScale(float scale);
 
 	/**
+	 * Returns the effective font of this component.
+	 * 
+	 * @return the effective font of this component
+	 */
+	public Font getEffectiveFont();
+
+	/**
 	 * Sets the font name, style and size for this component.
 	 * 
 	 * @param font
