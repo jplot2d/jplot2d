@@ -165,6 +165,8 @@ public abstract class Environment {
 			}
 		}
 
+		fireComponentRemoved((PComponent) getProxy(comp));
+
 		return result;
 	}
 
@@ -226,6 +228,16 @@ public abstract class Environment {
 			ElementChangeEvent evt = new ElementChangeEvent(this, element);
 			for (ElementChangeListener lsnr : ls) {
 				lsnr.componentRemoving(evt);
+			}
+		}
+	}
+
+	private void fireComponentRemoved(PComponent element) {
+		ElementChangeListener[] ls = getElementChangeListeners();
+		if (ls.length > 0) {
+			ElementChangeEvent evt = new ElementChangeEvent(this, element);
+			for (ElementChangeListener lsnr : ls) {
+				lsnr.componentRemoved(evt);
 			}
 		}
 	}
