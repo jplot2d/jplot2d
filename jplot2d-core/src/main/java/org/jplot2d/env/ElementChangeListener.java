@@ -45,6 +45,14 @@ public interface ElementChangeListener extends EventListener {
 	void componentRemoving(ElementChangeEvent event);
 
 	/**
+	 * Called after a component is removed form its container
+	 * 
+	 * @param event
+	 *            the ElementChangeEvent. The element of this event is the removed component
+	 */
+	void componentRemoved(ElementChangeEvent event);
+
+	/**
 	 * Called after properties of an element is changed.
 	 * 
 	 * @param event
