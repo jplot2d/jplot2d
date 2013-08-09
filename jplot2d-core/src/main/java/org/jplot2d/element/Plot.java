@@ -213,9 +213,9 @@ public interface Plot extends PComponent {
 	public void setLocation(double locX, double locY);
 
 	/**
-	 * Returns the rectangle of content area.
+	 * Returns the size of content area.
 	 * 
-	 * @return the rectangle of content area.
+	 * @return the size of content area.
 	 */
 	@Property(order = 14, styleable = false)
 	public Dimension2D getContentSize();
