@@ -50,7 +50,7 @@ import org.jplot2d.swing.interaction.InteractionListener;
  * @author Jingjing Li
  * 
  */
-public class JPlot2DComponent extends JComponent implements HierarchyListener {
+public class JPlot2DComponent extends JComponent implements HierarchyListener, RenderingFinishedListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,6 +59,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	private final RenderEnvironment env;
 
 	private ImageRenderer r;
+
+	private int ifsn;
 
 	private volatile BufferedImage image;
 
@@ -69,8 +71,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	private final InteractionListener ial;
 
 	/**
-	 * Construct a JComponent to display the given plot in its center. The plot properties can be
-	 * safely by multiple threads.
+	 * Construct a JComponent to display the given plot in its center. The plot properties can be safely by multiple
+	 * threads.
 	 * 
 	 * @param plot
 	 *            the plot to be display
@@ -85,9 +87,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed within a single
-	 *            thread. if <code>true</code>, all plot properties can be safely changed by
-	 *            multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single thread. if
+	 *            <code>true</code>, all plot properties can be safely changed by multiple threads.
 	 */
 	public JPlot2DComponent(Plot plot, boolean threadSafe) {
 		this(createRenderEnvironment(threadSafe));
@@ -107,8 +108,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 	}
 
 	/**
-	 * Construct a JComponent to display a plot in its center. The plot has been assigned to the
-	 * given RenderEnvironment.
+	 * Construct a JComponent to display a plot in its center. The plot has been assigned to the given
+	 * RenderEnvironment.
 	 * 
 	 * @param env
 	 *            the RenderEnvironment
@@ -182,24 +183,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 		if ((event.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
 			if (this.isDisplayable()) {
 				r = createImageRenderer();
-
-				r.addRenderingFinishedListener(new RenderingFinishedListener() {
-					private long ifsn;
-
-					public void renderingFinished(RenderingFinishedEvent event) {
-						long fsn = event.getFsn();
-						if (fsn < ifsn) {
-							logger.info("[R] Rendering finished in wrong order, drop F." + fsn
-									+ " Current frame is " + ifsn);
-							return;
-						}
-						ifsn = fsn;
-
-						image = (BufferedImage) event.getResult();
-						repaint();
-					}
-
-				});
+				r.addRenderingFinishedListener(this);
 				env.addRenderer(r);
 			} else {
 				env.removeRenderer(r);
@@ -207,9 +191,21 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener {
 		}
 	}
 
+	public void renderingFinished(RenderingFinishedEvent event) {
+		int sn = event.getSN();
+		if (sn < ifsn) {
+			logger.info("[R] Rendering finished in wrong order, drop R." + sn + " Current result is " + ifsn);
+			return;
+		}
+
+		ifsn = sn;
+		image = (BufferedImage) event.getResult();
+		repaint();
+	}
+
 	protected ImageRenderer createImageRenderer() {
-		return new AsyncImageRenderer(new GraphicsConfigurationCompatibleImageFactory(
-				this.getGraphicsConfiguration(), getPlotBackground()));
+		return new AsyncImageRenderer(new GraphicsConfigurationCompatibleImageFactory(this.getGraphicsConfiguration(),
+				getPlotBackground()));
 	}
 
 	/**

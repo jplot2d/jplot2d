@@ -42,26 +42,32 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * Add ability to cancel component rendering futures.
 	 */
-	private interface CancelableRendererCallable extends Callable<BufferedImage> {
+	private abstract class CancelableRendererCallable implements Callable<BufferedImage> {
+
+		protected final int sn;
+		protected final Dimension size;
+
+		public CancelableRendererCallable(int sn, Dimension size) {
+			this.sn = sn;
+			this.size = size;
+		}
 
 		/**
 		 * Cancel its component rendering tasks.
 		 */
-		public void cancel();
+		public abstract void cancel();
 
 	}
 
 	/**
 	 * This callable render whole plot in a single thread
 	 */
-	private final class SingleRendererCallable implements CancelableRendererCallable {
-
-		private final Dimension size;
+	private final class SingleRendererCallable extends CancelableRendererCallable {
 
 		private final List<ComponentEx> complist;
 
-		public SingleRendererCallable(Dimension size, List<ComponentEx> complist) {
-			this.size = size;
+		public SingleRendererCallable(int sn, Dimension size, List<ComponentEx> complist) {
+			super(sn, size);
 			this.complist = complist;
 		}
 
@@ -78,19 +84,17 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/**
 	 * This callable assemble component rendering futures.
 	 */
-	private final class RenderAssemblyCallable implements CancelableRendererCallable {
-
-		private final Dimension size;
+	private final class RenderAssemblyCallable extends CancelableRendererCallable {
 
 		private final ImageAssemblyInfo ainfo;
 
-		private RenderAssemblyCallable(Dimension size, ImageAssemblyInfo ainfo) {
-			this.size = size;
+		private RenderAssemblyCallable(int sn, Dimension size, ImageAssemblyInfo ainfo) {
+			super(sn, size);
 			this.ainfo = ainfo;
 		}
 
 		public BufferedImage call() throws Exception {
-			return assembleResult(size, ainfo);
+			return assembleResult(sn, size, ainfo);
 		}
 
 		public void cancel() {
@@ -106,18 +110,15 @@ public class AsyncImageRenderer extends ImageRenderer {
 	 */
 	private final class AsyncImageRendererTask extends FutureTask<BufferedImage> {
 
-		protected final long fsn;
-
 		private final CancelableRendererCallable callable;
 
-		public AsyncImageRendererTask(long fsn, CancelableRendererCallable callable) {
+		public AsyncImageRendererTask(CancelableRendererCallable callable) {
 			super(callable);
-			this.fsn = fsn;
 			this.callable = callable;
 		}
 
-		public long getFsn() {
-			return fsn;
+		public int getSN() {
+			return callable.sn;
 		}
 
 		protected final void done() {
@@ -132,11 +133,11 @@ public class AsyncImageRenderer extends ImageRenderer {
 			} catch (InterruptedException e) {
 				// should not happen. Normal cancellation will set the internal state to CANCELLED
 			} catch (ExecutionException e) {
-				logger.warn("Renderer exception, drop F." + fsn, e);
+				logger.warn("Renderer exception, drop R." + getSN(), e);
 			}
 			if (result != null) {
 				try {
-					fireRenderingFinished(fsn, result);
+					fireRenderingFinished(getSN(), result);
 				} catch (Exception e) {
 					logger.warn("RenderingFinishedListener Error", e);
 				}
@@ -150,22 +151,22 @@ public class AsyncImageRenderer extends ImageRenderer {
 			if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
 				synchronized (renderLock) {
 					/*
-					 * the renderers in the queue are on fsn order. We can't guarantee the current renderer exist in the
+					 * the renderers in the queue are on sn order. We can't guarantee the current renderer exist in the
 					 * queue. A renderer may be done, before this method is called, a new renderer may be created and
 					 * added to the queue, and sweep all old renderer(SURPASS mode), include this. The renderer queue is
 					 * not empty on this point, because removal are guarded by renderLock.
 					 */
-					if (renderTaskQueue.peek().getFsn() > fsn) {
+					if (renderTaskQueue.peek().getSN() > getSN()) {
 						return;
 					}
 					for (;;) {
 						AsyncImageRendererTask renderer = renderTaskQueue.poll();
-						if (renderer.getFsn() == fsn) {
+						if (renderer.getSN() == getSN()) {
 							break;
 						}
 						/* cancel old renderer */
-						if (renderer.getFsn() < fsn && renderer.cancel(true)) {
-							logger.info("Renderer {} finished. Cancel the old renderer {}", fsn, renderer.getFsn());
+						if (renderer.getSN() < getSN() && renderer.cancel(true)) {
+							logger.info("Renderer {} finished. Cancel the old renderer {}", getSN(), renderer.getSN());
 						}
 					}
 				}
@@ -180,7 +181,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 	private volatile RendererCancelPolicy cancelPolicy = RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER;
 
-	/** synchronized area for fsn and renderer task queue */
+	/** synchronized area for renderer task queue */
 	private Object renderLock = new Object();
 
 	/** synchronized by renderLock */
@@ -198,14 +199,16 @@ public class AsyncImageRenderer extends ImageRenderer {
 		CancelableRendererCallable callable;
 		if (cacheBlockList.size() == 1) {
 			// If the plot has no cacheable component, run renderer directly
-			callable = new SingleRendererCallable(size, cacheBlockList.get(0).getSubcomps());
+			callable = new SingleRendererCallable(fsn++, size, cacheBlockList.get(0).getSubcomps());
 		} else {
 			// run cacheable component renderer
 			ImageAssemblyInfo ainfo = runCompRender(executor, cacheBlockList);
-			callable = new RenderAssemblyCallable(size, ainfo);
+			callable = new RenderAssemblyCallable(fsn++, size, ainfo);
 		}
 
 		synchronized (renderLock) {
+			AsyncImageRendererTask task = new AsyncImageRendererTask(callable);
+
 			/* remove all renderers from queue and cancel them */
 			if (cancelPolicy == RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER) {
 				for (;;) {
@@ -214,13 +217,13 @@ public class AsyncImageRenderer extends ImageRenderer {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger.info("Render task {} to be exec. Cancel the running render task {}", fsn, rtask.getFsn());
+						logger.info("Render task {} to be exec. Cancel the running render task {}", task.getSN(),
+								rtask.getSN());
 					}
 				}
 			}
 
 			// add new task
-			AsyncImageRendererTask task = new AsyncImageRendererTask(fsn++, callable);
 			renderTaskQueue.offer(task);
 			executor.execute(task);
 		}
