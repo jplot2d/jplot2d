@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,7 +20,6 @@ package org.jplot2d.renderer;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,10 +31,10 @@ import javax.imageio.ImageIO;
  * @author Jingjing Li
  * 
  */
-public class PngFileExporter extends ImageRenderer implements RenderingFinishedListener {
+public class PngFileExporter extends ImageExporter {
 
-	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(
-			BufferedImage.TYPE_INT_RGB, Color.WHITE);
+	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
+			Color.WHITE);
 
 	private final File file;
 
@@ -50,12 +49,12 @@ public class PngFileExporter extends ImageRenderer implements RenderingFinishedL
 	public PngFileExporter(ImageFactory imageFactory, File file) {
 		super(imageFactory);
 		this.file = file;
-		addRenderingFinishedListener(this);
 	}
 
-	public void renderingFinished(RenderingFinishedEvent event) {
+	protected void fireRenderingFinished(int sn, BufferedImage img) {
+		super.fireRenderingFinished(sn, img);
 		try {
-			ImageIO.write((RenderedImage) event.getResult(), "PNG", file);
+			ImageIO.write(img, "PNG", file);
 		} catch (IOException e) {
 			throw new RuntimeException("Png file I/O exception", e);
 		}
