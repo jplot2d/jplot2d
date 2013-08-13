@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,40 +20,31 @@ package org.jplot2d.renderer;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.imageio.ImageIO;
 
 /**
- * Export plot image to a png output stream.
+ * Export plot image to a BufferedImage object.
  * 
  * @author Jingjing Li
  * 
  */
-public class PngStreamExporter extends ImageExporter {
+public class ImageExporter extends ImageRenderer {
 
-	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
-			Color.WHITE);
+	private BufferedImage image;
 
-	private final OutputStream out;
-
-	public PngStreamExporter(OutputStream out) {
-		this(INT_RGB_IMAGEFACTORY, out);
+	public ImageExporter(int imageType, Color bgColor) {
+		this(new BufferedImageFactory(imageType, bgColor));
 	}
 
-	public PngStreamExporter(ImageFactory imageFactory, final OutputStream out) {
+	public ImageExporter(ImageFactory imageFactory) {
 		super(imageFactory);
-		this.out = out;
 	}
 
-	protected void fireRenderingFinished(int sn, BufferedImage img) {
-		super.fireRenderingFinished(sn, img);
-		try {
-			ImageIO.write(img, "PNG", out);
-		} catch (IOException e) {
-			throw new RuntimeException("Png out I/O exception", e);
-		}
+	protected void fireRenderingFinished(int fsn, BufferedImage img) {
+		this.image = img;
+	}
+
+	public BufferedImage getImage() {
+		return image;
 	}
 
 }
