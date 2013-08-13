@@ -24,17 +24,17 @@ package org.jplot2d.renderer;
  */
 public class RenderingFinishedEvent {
 
-	private final long fsn;
+	private final int sn;
 
 	private final Object result;
 
-	public RenderingFinishedEvent(long fsn, Object result) {
-		this.fsn = fsn;
+	public RenderingFinishedEvent(int sn, Object result) {
+		this.sn = sn;
 		this.result = result;
 	}
 
-	public long getFsn() {
-		return fsn;
+	public int getSN() {
+		return sn;
 	}
 
 	public Object getResult() {

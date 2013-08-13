@@ -58,8 +58,8 @@ import org.jplot2d.swt.interaction.MenuHandler;
  * @author Jingjing Li
  * 
  */
-public class JPlot2DComposite extends Composite implements ControlListener, DisposeListener,
-		PaintListener, RenderingFinishedListener {
+public class JPlot2DComposite extends Composite implements ControlListener, DisposeListener, PaintListener,
+		RenderingFinishedListener {
 
 	static Logger logger = Logger.getLogger("org.jplot2d.swt");
 
@@ -67,7 +67,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private ImageRenderer r;
 
-	private long ifsn;
+	private int ifsn;
 
 	private volatile BufferedImage bi;
 
@@ -86,8 +86,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	};
 
 	/**
-	 * Construct a Composite to display the given plot in its center. The plot properties can be
-	 * safely modified by multiple threads.
+	 * Construct a Composite to display the given plot in its center. The plot properties can be safely modified by
+	 * multiple threads.
 	 * 
 	 * @param parent
 	 *            a widget which will be the parent of the new instance (cannot be null)
@@ -106,9 +106,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 * @param plot
 	 *            the plot to be display
 	 * @param threadSafe
-	 *            if <code>false</code>, all plot properties can only be changed within a single
-	 *            thread. if <code>true</code>, all plot properties can be safely changed by
-	 *            multiple threads.
+	 *            if <code>false</code>, all plot properties can only be changed within a single thread. if
+	 *            <code>true</code>, all plot properties can be safely changed by multiple threads.
 	 */
 	public JPlot2DComposite(Composite parent, Plot plot, boolean threadSafe) {
 		this(parent, createRenderEnvironment(threadSafe));
@@ -127,8 +126,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	/**
-	 * Construct a Composite to display a plot in its center. The plot has been assigned to the
-	 * given RenderEnvironment.
+	 * Construct a Composite to display a plot in its center. The plot has been assigned to the given RenderEnvironment.
 	 * 
 	 * @param parent
 	 *            a widget which will be the parent of the new instance (cannot be null)
@@ -160,13 +158,12 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	public void renderingFinished(RenderingFinishedEvent event) {
-		long fsn = event.getFsn();
-		if (fsn < ifsn) {
-			logger.info("[R] Rendering finished in wrong order, drop F." + fsn
-					+ " Current frame is " + ifsn);
+		int sn = event.getSN();
+		if (sn < ifsn) {
+			logger.info("[R] Rendering finished in wrong order, drop R." + sn + " Current result is " + ifsn);
 			return;
 		}
-		ifsn = fsn;
+		ifsn = sn;
 
 		bi = (BufferedImage) event.getResult();
 
@@ -181,8 +178,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	}
 
 	protected ImageRenderer createImageRenderer() {
-		return new AsyncImageRenderer(new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
-				getPlotBackground()));
+		return new AsyncImageRenderer(new BufferedImageFactory(BufferedImage.TYPE_INT_RGB, getPlotBackground()));
 	}
 
 	public void controlMoved(ControlEvent e) {
@@ -242,15 +238,14 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	protected static ImageData convertToSWT(BufferedImage bufferedImage) {
 		if (bufferedImage.getColorModel() instanceof DirectColorModel) {
 			DirectColorModel colorModel = (DirectColorModel) bufferedImage.getColorModel();
-			PaletteData palette = new PaletteData(colorModel.getRedMask(),
-					colorModel.getGreenMask(), colorModel.getBlueMask());
+			PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(),
+					colorModel.getBlueMask());
 			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
 					colorModel.getPixelSize(), palette);
 			for (int y = 0; y < data.height; y++) {
 				for (int x = 0; x < data.width; x++) {
 					int rgb = bufferedImage.getRGB(x, y);
-					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF,
-							rgb & 0xFF));
+					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF));
 					data.setPixel(x, y, pixel);
 					if (colorModel.hasAlpha()) {
 						data.setAlpha(x, y, (rgb >> 24) & 0xFF);
