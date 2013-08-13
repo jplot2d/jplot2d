@@ -162,6 +162,15 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	}
 
 	/**
+	 * Returns the current image displayed in this component.
+	 * 
+	 * @return the current image
+	 */
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	/**
 	 * Returns the x offset where the plot image draw.
 	 * 
 	 * @return the x offset of the plot image
