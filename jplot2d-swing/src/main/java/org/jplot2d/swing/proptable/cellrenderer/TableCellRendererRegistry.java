@@ -66,7 +66,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 
 	public TableCellRenderer createTableCellRenderer(Property<?> property) {
 		TableCellRenderer result = typeRendererMap.get(property.getType());
-		if (result == null) {
+		if (result == null && property.getType().isInterface()) {
 			result = defaultCellRenderer;
 		}
 		return result;
@@ -87,11 +87,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(double.class, new DoubleCellRenderer());
 		registerRenderer(Double.class, new DoubleCellRenderer());
 
-		// number array renderer
-		registerRenderer(float[].class, new ObjectCellRenderer());
-		registerRenderer(double[].class, new ObjectCellRenderer());
-
-		// geom renderer
+		// geometry renderer
 		registerRenderer(Point.class, new PointCellRenderer());
 		registerRenderer(Point2D.class, new Point2DCellRenderer());
 		registerRenderer(Dimension.class, new DimensionCellRenderer());
@@ -110,8 +106,12 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		registerRenderer(MathElement.class, new MathCellRenderer());
 		registerRenderer(BasicStroke.class, new BasicStrokeCellRenderer());
 
-		// Objct renderer
+		// Object renderer
 		registerRenderer(Object.class, new ObjectCellRenderer());
+		// number array renderer
+		registerRenderer(float[].class, new ObjectCellRenderer());
+		registerRenderer(double[].class, new ObjectCellRenderer());
+		// String array renderer
 		registerRenderer(String[].class, new StringArrayCellRenderer());
 
 	}
