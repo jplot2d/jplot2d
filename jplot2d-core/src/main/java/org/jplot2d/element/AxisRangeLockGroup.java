@@ -24,8 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * A group of axes who are pinned together. When one axis changes its range, all axes follow the
- * change together.
+ * A group of axes who are pinned together. When one axis changes its range, all axes follow the change together.
  * 
  * @author Jingjing Li
  * 
@@ -42,13 +41,30 @@ public interface AxisRangeLockGroup extends Element {
 	public boolean isAutoRange();
 
 	/**
-	 * If true set the range of the axis group to allow to display the minimum and maximum value of
-	 * the Layer.
+	 * If true set the range of the axis group to allow to display the minimum and maximum value of the Layer.
 	 * 
 	 * @param isAutoRange
 	 *            the flag.
 	 */
 	public void setAutoRange(boolean autoRange);
+
+	/**
+	 * Returns <code>true</code> if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
+	 * {@link Plot#zoomYRange(double, double)}. By default an AxisRangeLockGroup is zoomable.
+	 * 
+	 * @return if this AxisRangeLockGroup can be zoomed
+	 */
+	@Property(order = 1)
+	public boolean isZoomable();
+
+	/**
+	 * Sets if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
+	 * {@link Plot#zoomYRange(double, double)}.
+	 * 
+	 * @param zoomable
+	 *            the flag
+	 */
+	public void setZoomable(boolean zoomable);
 
 	/**
 	 * Zoom the given range to entire axis

@@ -46,6 +46,8 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	private boolean autoRange = true;
 
+	private boolean zoomable = true;
+
 	private List<AxisTransformEx> arms = new ArrayList<AxisTransformEx>();
 
 	private boolean autoRangeNeeded = true;
@@ -88,6 +90,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		this.type = alg.type;
 		this.prim = alg.prim;
 		this.autoRange = alg.autoRange;
+		this.zoomable = alg.zoomable;
 		this.autoRangeNeeded = alg.autoRangeNeeded;
 	}
 
@@ -165,6 +168,14 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	public void setAutoRange(boolean autoRange) {
 		this.autoRange = autoRange;
+	}
+
+	public boolean isZoomable() {
+		return this.zoomable;
+	}
+
+	public void setZoomable(boolean zoomable) {
+		this.zoomable = zoomable;
 	}
 
 	public void reAutoRange() {

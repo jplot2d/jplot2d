@@ -1187,18 +1187,30 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		zoomRange(yarlgs, start, end);
 	}
 
+	/**
+	 * @return all zoomable AxisRangeLockGroup
+	 */
 	private Set<AxisRangeLockGroupEx> getXAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		for (AxisEx axis : xAxis) {
-			algs.add(axis.getTickManager().getAxisTransform().getLockGroup());
+			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+			if (alg.isZoomable()) {
+				algs.add(alg);
+			}
 		}
 		return algs;
 	}
 
+	/**
+	 * @return all zoomable AxisRangeLockGroup
+	 */
 	private Set<AxisRangeLockGroupEx> getYAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		for (AxisEx axis : yAxis) {
-			algs.add(axis.getTickManager().getAxisTransform().getLockGroup());
+			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+			if (alg.isZoomable()) {
+				algs.add(alg);
+			}
 		}
 		return algs;
 	}
