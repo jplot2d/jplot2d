@@ -404,7 +404,8 @@ public interface Plot extends PComponent {
 	void removeSubplot(Plot subplot);
 
 	/**
-	 * Zoom the given range to entire X axis
+	 * Zoom the given range to entire X axis. The behavior is like, creating a temporary AxisRangeLockGroup to group all
+	 * AxisRangeLockGroups which zoomable are <code>true</code> in this plot, and zoom the range on it.
 	 * 
 	 * @param start
 	 *            the normalized start
@@ -414,7 +415,8 @@ public interface Plot extends PComponent {
 	public void zoomXRange(double start, double end);
 
 	/**
-	 * Zoom the given range to entire Y axis
+	 * Zoom the given range to entire Y axis. The behavior is like, creating a temporary AxisRangeLockGroup to group all
+	 * AxisRangeLockGroups which zoomable are <code>true</code> in this plot, and zoom the range on it.
 	 * 
 	 * @param start
 	 *            the normalized start
@@ -424,12 +426,12 @@ public interface Plot extends PComponent {
 	public void zoomYRange(double start, double end);
 
 	/**
-	 * Adaptive zoom the x range.
+	 * Adaptive zoom the x range for all axes in this plot. Only axes whoes AxisRangeLockGroups is zoomable are zoomed.
 	 */
 	public void adaptiveZoomX();
 
 	/**
-	 * Adaptive zoom the y range.
+	 * Adaptive zoom the y range for all axes in this plot. Only axes whoes AxisRangeLockGroups is zoomable are zoomed.
 	 */
 	public void adaptiveZoomY();
 
