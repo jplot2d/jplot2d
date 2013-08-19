@@ -353,7 +353,7 @@ public class PlotTreeModel implements TreeModel {
 		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
 		TreeModelEvent e = new TreeModelEvent(this, new TreePath(root));
 		for (int i = listeners.length - 1; i >= 0; i--) {
-			((TreeModelListener) listeners[i]).treeStructureChanged(e);
+			listeners[i].treeStructureChanged(e);
 		}
 	}
 

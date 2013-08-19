@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swing.outline;
 
-import java.awt.CardLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,9 +26,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -43,29 +41,21 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.swing.components.ShowPropertiesAction;
 
 /**
- * The PlotOutlineManager manage a plot tree. It register itself to PlotXYEngine as an
- * ElementChangeListener. Whenever a plot property changed, this PlotOutline will notify the
- * registered ShowPropertiesAction to refresh its contents. Also when user choose a new tree node,
- * this PlotOutline will notify the registered ShowPropertiesAction to show the properties.
+ * The PlotOutlineManager manage a plot tree. It register itself to PlotXYEngine as an ElementChangeListener. Whenever a
+ * plot property changed, this PlotOutline will notify the registered ShowPropertiesAction to refresh its contents. Also
+ * when user choose a new tree node, this PlotOutline will notify the registered ShowPropertiesAction to show the
+ * properties.
  * 
  * @author Jingjing Li
  * 
  */
 public class PlotOutline implements ElementChangeListener {
 
-	private static String PLOT_CLOSED_MSG = "Plot has been closed.";
-
 	private final Plot _plot;
-
-	private final JPanel _panel;
-
-	private final CardLayout _cardLayout = new CardLayout();
 
 	private final PlotTreeModel _treeModel;
 
 	private final PlotTree _plotTree;
-
-	private final JTextArea _msgPane;
 
 	private boolean _modified;
 
@@ -98,38 +88,33 @@ public class PlotOutline implements ElementChangeListener {
 
 		_plotTree.expandAll(new TreePath(_treeModel.getRoot()), Plot.class);
 
-		_msgPane = new JTextArea(PLOT_CLOSED_MSG);
-		_msgPane.setLineWrap(true);
-		_msgPane.setEditable(false);
-
-		_panel = new JPanel(_cardLayout);
-		_panel.add(_msgPane, "message");
-		_panel.add(_plotTree, "tree");
-		_cardLayout.show(_panel, "tree");
-
 		env.addElementChangeListener(this);
 	}
 
 	public JComponent getComponent() {
-		return _panel;
+		return _plotTree;
 	}
 
-	public void close() {
-		_cardLayout.show(_panel, "message");
-	}
-
-	public void componentAdded(ElementChangeEvent evt) {
+	public void componentAdded(final ElementChangeEvent evt) {
 		_modified = true;
-		_treeModel.fireTreeStructureChanged(evt.getElement());
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				_treeModel.fireTreeStructureChanged(evt.getElement());
+			}
+		});
 	}
 
 	public void componentRemoving(ElementChangeEvent evt) {
 
 	}
 
-	public void componentRemoved(ElementChangeEvent evt) {
+	public void componentRemoved(final ElementChangeEvent evt) {
 		_modified = true;
-		_treeModel.fireTreeStructureChanged(evt.getElement());
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				_treeModel.fireTreeStructureChanged(evt.getElement());
+			}
+		});
 	}
 
 	public void propertiesChanged(ElementChangeEvent evt) {
@@ -139,11 +124,15 @@ public class PlotOutline implements ElementChangeListener {
 	public void propertyChangesProcessed(ElementChangeEvent evt) {
 		if (_modified) {
 			_modified = false;
-			TreePath path = _plotTree.getSelectionPath();
-			// if a tree node has been selected
-			if (path != null) {
-				triggerShowPanel(path);
-			}
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					TreePath path = _plotTree.getSelectionPath();
+					// if a tree node has been selected
+					if (path != null) {
+						triggerShowPanel(path);
+					}
+				}
+			});
 		}
 	}
 
