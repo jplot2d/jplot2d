@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,16 +22,13 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseClickBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
 
-public class MouseAxisAdaptiveZoomHandler extends
-		MouseClickBehaviorHandler<MouseAxisAdaptiveZoomBehavior> {
+public class MouseAxisAdaptiveZoomHandler extends MouseClickBehaviorHandler<MouseAxisAdaptiveZoomBehavior> {
 
-	public MouseAxisAdaptiveZoomHandler(MouseAxisAdaptiveZoomBehavior behavior,
-			InteractionModeHandler handler) {
+	public MouseAxisAdaptiveZoomHandler(MouseAxisAdaptiveZoomBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
 	}
 
@@ -39,14 +36,14 @@ public class MouseAxisAdaptiveZoomHandler extends
 	public boolean behaviorPerformed(int x, int y) {
 
 		Axis axis;
-		PComponent pcomp = (PComponent) handler.getValue(InteractionHandler.ACTIVE_COMPONENT_KEY);
+		PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
 		if (pcomp instanceof Axis) {
 			axis = (Axis) pcomp;
 		} else {
 			return false;
 		}
 
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Adaptive Zoom");
 
 		axis.getTickManager().getAxisTransform().getLockGroup().setAutoRange(true);

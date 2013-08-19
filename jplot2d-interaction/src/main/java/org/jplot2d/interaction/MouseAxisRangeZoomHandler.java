@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -28,7 +28,6 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.notice.UINoticeType;
 
@@ -36,14 +35,13 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 
 	private Axis axis;
 
-	public MouseAxisRangeZoomHandler(MouseAxisRangeZoomBehavior behavior,
-			InteractionModeHandler handler) {
+	public MouseAxisRangeZoomHandler(MouseAxisRangeZoomBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
 	}
 
 	@Override
 	public boolean canStartDargging(int x, int y) {
-		PComponent pcomp = (PComponent) handler.getValue(InteractionHandler.ACTIVE_COMPONENT_KEY);
+		PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
 		if (pcomp instanceof Axis) {
 			axis = (Axis) pcomp;
 			return true;
@@ -53,8 +51,8 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 	}
 
 	/**
-	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is
-	 * zoomable, and the size of zoom rectangle is at least 2x2 pixel.
+	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
+	 * size of zoom rectangle is at least 2x2 pixel.
 	 * 
 	 * @param startPoint
 	 *            the mouse point that the zoom starts
@@ -83,7 +81,7 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 		/**
 		 * Zoom-in the given marquee rectangle.
 		 */
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Axis Range Zoom");
 
 		Plot plot = axis.getParent();

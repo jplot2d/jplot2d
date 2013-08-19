@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -30,28 +30,28 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.GenericMouseEvent;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionManager;
+import org.jplot2d.interaction.PlotInteractionManager;
 import org.jplot2d.interaction.VisualFeedbackDrawer;
 import org.jplot2d.swt.JPlot2DComposite;
 
 /**
- * The interaction listener will be set as MouseListener, MouseMoveListener, MouseTrackListener,
- * MouseWheelListener
+ * The interaction listener will be set as MouseListener, MouseMoveListener, MouseTrackListener, MouseWheelListener
  * 
  * @author Jingjing Li
  * 
  */
-public class InteractionListener implements KeyListener, MouseListener, MouseMoveListener,
-		MouseTrackListener, MouseWheelListener, VisualFeedbackDrawer {
+public class InteractionListener implements KeyListener, MouseListener, MouseMoveListener, MouseTrackListener,
+		MouseWheelListener, VisualFeedbackDrawer {
 
 	private final JPlot2DComposite comp;
 
 	private final InteractionHandler ihandler;
 
-	public InteractionListener(JPlot2DComposite comp, InteractionManager imanager,
-			PlotEnvironment env) {
+	public InteractionListener(JPlot2DComposite comp, InteractionManager imanager, PlotEnvironment env) {
 		this.comp = comp;
-		ihandler = new InteractionHandler(imanager, new SwtInteractiveComp(comp, env));
-		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
+		ihandler = new InteractionHandler(imanager);
+		ihandler.putValue(PlotInteractionManager.PLOT_ENV_KEY, env);
+		ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwtInteractiveComp(comp, env));
 		ihandler.init();
 	}
 
@@ -200,8 +200,8 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMov
 			modifiers &= ~buttomMask;
 		}
 
-		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x - comp.getImageOffsetX(),
-				e.y - comp.getImageOffsetY(), e.count, button);
+		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x - comp.getImageOffsetX(), e.y
+				- comp.getImageOffsetY(), e.count, button);
 		// System.out.println(gme);
 		return gme;
 	}

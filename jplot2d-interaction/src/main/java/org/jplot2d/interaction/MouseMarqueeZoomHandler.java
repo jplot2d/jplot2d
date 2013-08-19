@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,7 +26,6 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.notice.UINoticeType;
 
@@ -42,8 +41,8 @@ public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoo
 	}
 
 	/**
-	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is
-	 * zoomable, and the size of zoom rectangle is at least 2x2 pixel.
+	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
+	 * size of zoom rectangle is at least 2x2 pixel.
 	 * 
 	 * @param startPoint
 	 *            the mouse point that the zoom starts
@@ -55,7 +54,7 @@ public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoo
 		Rectangle zrect = new Rectangle();
 		zrect.setFrameFromDiagonal(startPoint, endPoint);
 
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		Plot plot = env.getPlotAt(startPoint);
 
 		if (plot == null) {

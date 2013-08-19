@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -46,10 +46,6 @@ public class InteractionModeHandler {
 	public InteractionModeHandler(InteractionHandler ihandler, InteractionMode imode) {
 		this.imode = imode;
 		this.ihandler = ihandler;
-	}
-
-	public final InteractiveComp getInteractiveComp() {
-		return ihandler.getInteractiveComp();
 	}
 
 	/**
@@ -146,8 +142,7 @@ public class InteractionModeHandler {
 		}
 	}
 
-	private void handleMouseEvent(GenericMouseEvent e,
-			Map<MouseBehavior, MouseButtonCombination> behaviorMap) {
+	private void handleMouseEvent(GenericMouseEvent e, Map<MouseBehavior, MouseButtonCombination> behaviorMap) {
 		for (Map.Entry<MouseBehavior, MouseButtonCombination> me : behaviorMap.entrySet()) {
 			MouseBehavior behavior = me.getKey();
 			MouseButtonCombination mbc = me.getValue();
@@ -178,8 +173,8 @@ public class InteractionModeHandler {
 	 * 
 	 * @param key
 	 *            a string containing the specified <code>key</code>
-	 * @return the binding <code>Object</code> stored with this key; if there are no keys, it will
-	 *         return <code>null</code>
+	 * @return the binding <code>Object</code> stored with this key; if there are no keys, it will return
+	 *         <code>null</code>
 	 */
 	public Object getValue(String key) {
 		Object result = valueMap.get(key);
@@ -216,8 +211,7 @@ public class InteractionModeHandler {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 			return;
 		}
-		PropertyChangeEvent propertyChangeEvent = new PropertyChangeEvent(this, key, oldValue,
-				newValue);
+		PropertyChangeEvent propertyChangeEvent = new PropertyChangeEvent(this, key, oldValue, newValue);
 		for (MouseBehaviorHandler<?> handler : handlerMap.values()) {
 			if (handler instanceof PropertyChangeListener)
 				((PropertyChangeListener) handler).propertyChange(propertyChangeEvent);

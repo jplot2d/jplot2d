@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -39,17 +39,16 @@ import org.jplot2d.util.NumberUtils;
  * @author Jingjing Li
  * 
  */
-public class MouseCoordinatesTooltipHandler extends
-		MouseMoveBehaviorHandler<MouseCoordinatesTooltipBehavior> implements VisualFeedbackDrawer {
+public class MouseCoordinatesTooltipHandler extends MouseMoveBehaviorHandler<MouseCoordinatesTooltipBehavior> implements
+		VisualFeedbackDrawer {
 
 	private final InteractiveComp icomp;
 
 	private boolean show;
 
-	public MouseCoordinatesTooltipHandler(MouseCoordinatesTooltipBehavior behavior,
-			InteractionModeHandler handler) {
+	public MouseCoordinatesTooltipHandler(MouseCoordinatesTooltipBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
-		icomp = handler.getInteractiveComp();
+		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class MouseCoordinatesTooltipHandler extends
 		Point p = icomp.getCursorLocation();
 
 		// the selectable component that contains the specified point.
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		Plot plot = env.getPlotAt(p);
 
 		if (plot == null) {
@@ -163,10 +162,8 @@ public class MouseCoordinatesTooltipHandler extends
 		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
 		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
-		icomp.drawLine(g, Color.GRAY.getRGB(), (int) plotRect.getX(), p.y,
-				(int) plotRect.getMaxX(), p.y);
-		icomp.drawLine(g, Color.GRAY.getRGB(), p.x, (int) plotRect.getY(), p.x,
-				(int) plotRect.getMaxY());
+		icomp.drawLine(g, Color.GRAY.getRGB(), (int) plotRect.getX(), p.y, (int) plotRect.getMaxX(), p.y);
+		icomp.drawLine(g, Color.GRAY.getRGB(), p.x, (int) plotRect.getY(), p.x, (int) plotRect.getMaxY());
 		icomp.drawTooltip(g, sb.toString(), p.x, p.y);
 
 	}
