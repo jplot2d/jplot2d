@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -79,6 +79,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	private final InteractionListener ial;
 
+	private boolean iaEnabled;
+
 	private Runnable redrawRunner = new Runnable() {
 		public void run() {
 			redraw();
@@ -144,12 +146,8 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 		setMenu(buildMenu());
 
-		ial = buildInteractionListener();
-		addKeyListener(ial);
-		addMouseListener(ial);
-		addMouseMoveListener(ial);
-		addMouseTrackListener(ial);
-		addMouseWheelListener(ial);
+		ial = createInteractionListener();
+		setInteractionEnabled(true);
 
 		r = createImageRenderer();
 		r.addRenderingFinishedListener(this);
@@ -297,7 +295,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	 * 
 	 * @return an InteractionListener
 	 */
-	protected InteractionListener buildInteractionListener() {
+	protected InteractionListener createInteractionListener() {
 		imanager = PlotInteractionManager.getInstance();
 		imanager.setMousePreference(PlotDefaultMousePreference.getInstance());
 		return new InteractionListener(this, imanager, env);
@@ -306,4 +304,26 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 	public void setMousePreference(MousePreference prefs) {
 		imanager.setMousePreference(prefs);
 	}
+
+	public void setInteractionEnabled(boolean enabled) {
+		if (iaEnabled == enabled) {
+			return;
+		}
+
+		if (enabled) {
+			addKeyListener(ial);
+			addMouseListener(ial);
+			addMouseMoveListener(ial);
+			addMouseTrackListener(ial);
+			addMouseWheelListener(ial);
+		} else {
+			removeKeyListener(ial);
+			removeMouseListener(ial);
+			removeMouseMoveListener(ial);
+			removeMouseTrackListener(ial);
+			removeMouseWheelListener(ial);
+		}
+		iaEnabled = enabled;
+	}
+
 }
