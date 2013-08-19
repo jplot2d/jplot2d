@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -70,6 +70,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 
 	private final InteractionListener ial;
 
+	private boolean iaEnabled;
+
 	/**
 	 * Construct a JComponent to display the given plot in its center. The plot properties can be safely by multiple
 	 * threads.
@@ -121,15 +123,12 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 		setOpaque(true);
 		addHierarchyListener(this);
 
-		imanager = getInteractionManager();
+		imanager = createInteractionManager();
 
 		ial = new InteractionListener(this, imanager, env);
 		setFocusable(true);
 		requestFocusInWindow();
-		addKeyListener(ial);
-		addMouseListener(ial);
-		addMouseMotionListener(ial);
-		addMouseWheelListener((MouseWheelListener) ial);
+		setInteractionEnabled(true);
 	}
 
 	/**
@@ -222,7 +221,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	 * 
 	 * @return an InteractionManager
 	 */
-	protected InteractionManager getInteractionManager() {
+	protected InteractionManager createInteractionManager() {
 		InteractionManager result = PlotInteractionManager.getInstance();
 		result.setMousePreference(PlotDefaultMousePreference.getInstance());
 		return result;
@@ -231,4 +230,24 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	public void setMousePreference(MousePreference prefs) {
 		imanager.setMousePreference(prefs);
 	}
+
+	public void setInteractionEnabled(boolean enabled) {
+		if (iaEnabled == enabled) {
+			return;
+		}
+
+		if (enabled) {
+			addKeyListener(ial);
+			addMouseListener(ial);
+			addMouseMotionListener(ial);
+			addMouseWheelListener((MouseWheelListener) ial);
+		} else {
+			removeKeyListener(ial);
+			removeMouseListener(ial);
+			removeMouseMotionListener(ial);
+			removeMouseWheelListener((MouseWheelListener) ial);
+		}
+		iaEnabled = enabled;
+	}
+
 }
