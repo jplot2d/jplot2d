@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -30,8 +30,8 @@ import org.jplot2d.element.MovableComponent;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.transform.PaperTransform;
 
-public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior>
-		implements PropertyChangeListener, VisualFeedbackDrawer {
+public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior> implements
+		PropertyChangeListener, VisualFeedbackDrawer {
 
 	private InteractiveComp icomp;
 
@@ -46,27 +46,25 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 	private Point toPoint;
 
-	public MouseMoveComponentHandler(MouseMoveComponentBehavior behavior,
-			InteractionModeHandler handler) {
+	public MouseMoveComponentHandler(MouseMoveComponentBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
-		icomp = handler.getInteractiveComp();
+		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(InteractionHandler.ACTIVE_COMPONENT_KEY)) {
+		if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_KEY)) {
 			PComponent acomp = (PComponent) evt.getNewValue();
 			if (acomp instanceof MovableComponent && ((MovableComponent) acomp).isMovable()) {
-				handler.putValue(InteractionHandler.ACTIVE_COMPONENT_MOVABLE_KEY, Boolean.TRUE);
+				handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, Boolean.TRUE);
 			} else {
-				handler.putValue(InteractionHandler.ACTIVE_COMPONENT_MOVABLE_KEY, null);
+				handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, null);
 			}
 		}
 	}
 
 	@Override
 	public boolean canStartDargging(int x, int y) {
-		Boolean movable = (Boolean) handler
-				.getValue(InteractionHandler.ACTIVE_COMPONENT_MOVABLE_KEY);
+		Boolean movable = (Boolean) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY);
 		if (movable != null && movable) {
 			return true;
 		} else {
@@ -76,7 +74,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
 	@Override
 	public void draggingStarted(int x, int y) {
-		pcomp = (MovableComponent) handler.getValue(InteractionHandler.ACTIVE_COMPONENT_KEY);
+		pcomp = (MovableComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
 		/* object selected start move operation */
 		startPoint = new Point(x, y);
 		boundsShape = getDeviceBounds(pcomp);
@@ -122,8 +120,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 		double xoff = toPoint.x - startPoint.x;
 		double yoff = toPoint.y - startPoint.y;
 
-		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(
-				boundsShape);
+		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(boundsShape);
 
 		icomp.drawShape(g, Color.RED.getRGB(), shape);
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -20,7 +20,6 @@ package org.jplot2d.interaction;
 
 import java.beans.PropertyChangeEvent;
 
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.interaction.InteractiveComp.CursorStyle;
@@ -37,8 +36,8 @@ public class CursorFeedbackHandler extends ValueChangeHandler<CursorFeedbackBeha
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		InteractiveComp icomp = handler.getInteractiveComp();
-		if (evt.getPropertyName().equals(InteractionHandler.ACTIVE_COMPONENT_MOVABLE_KEY)) {
+		InteractiveComp icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
+		if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY)) {
 			Boolean movable = (Boolean) evt.getNewValue();
 			if (movable != null && movable) {
 				icomp.setCursor(CursorStyle.MOVE_CURSOR);

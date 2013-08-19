@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -30,6 +30,7 @@ import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.interaction.GenericMouseEvent;
 import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionManager;
+import org.jplot2d.interaction.PlotInteractionManager;
 import org.jplot2d.interaction.VisualFeedbackDrawer;
 import org.jplot2d.swing.JPlot2DComponent;
 
@@ -39,8 +40,8 @@ import org.jplot2d.swing.JPlot2DComponent;
  * @author Jingjing Li
  * 
  */
-public class InteractionListener implements KeyListener, MouseListener, MouseMotionListener,
-		MouseWheelListener, VisualFeedbackDrawer {
+public class InteractionListener implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener,
+		VisualFeedbackDrawer {
 
 	private final JPlot2DComponent comp;
 
@@ -48,12 +49,12 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
 
 	private final InteractionHandler ihandler;
 
-	public InteractionListener(JPlot2DComponent comp, InteractionManager imanager,
-			RenderEnvironment env) {
+	public InteractionListener(JPlot2DComponent comp, InteractionManager imanager, RenderEnvironment env) {
 		this.comp = comp;
 		popup = new PopupMenu(env);
-		ihandler = new InteractionHandler(imanager, new SwingInteractiveComp(comp, env));
-		ihandler.putValue(InteractionHandler.PLOT_ENV_KEY, env);
+		ihandler = new InteractionHandler(imanager);
+		ihandler.putValue(PlotInteractionManager.PLOT_ENV_KEY, env);
+		ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwingInteractiveComp(comp, env));
 		ihandler.init();
 	}
 
@@ -126,8 +127,8 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		ihandler.mouseWheelMoved(new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e
-				.getY(), e.getWheelRotation(), e.getButton()));
+		ihandler.mouseWheelMoved(new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(), e
+				.getWheelRotation(), e.getButton()));
 	}
 
 	public void draw(Object graphics) {
@@ -142,9 +143,8 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
 	 * @return GenericMouseEvent
 	 */
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
-		GenericMouseEvent gme = new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX()
-				- comp.getImageOffsetX(), e.getY() - comp.getImageOffsetY(), e.getClickCount(),
-				e.getButton());
+		GenericMouseEvent gme = new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX() - comp.getImageOffsetX(),
+				e.getY() - comp.getImageOffsetY(), e.getClickCount(), e.getButton());
 		// System.out.println(gme);
 		return gme;
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,7 +25,6 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseWheelBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
@@ -38,7 +37,7 @@ public class MouseWheelZoomHandler extends MouseWheelBehaviorHandler<MouseWheelZ
 
 	@Override
 	public boolean behaviorPerformed(int x, int y, int wheelRotation) {
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		Plot plot = env.getPlotAt(new Point(x, y));
 		if (plot == null) {
 			return false;

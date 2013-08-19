@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,10 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This class handle the mouse actions that can respond to user's mouse events like left-click,
- * double-click, right-click. The mouse event will translate to application level behavior, such as
- * select an object, select data points in a layer, zoom in/out, etc. The translation can be
- * configured by register and unregister the binding between application behavior to mouse events.
+ * This class handle the mouse actions that can respond to user's mouse events like left-click, double-click,
+ * right-click. The mouse event will translate to application level behavior, such as select an object, select data
+ * points in a layer, zoom in/out, etc. The translation can be configured by register and unregister the binding between
+ * application behavior to mouse events.
  * <p>
  * Notice: most methods in this class is not thread-safe. They should be called within EDT.
  * 
@@ -38,15 +38,7 @@ import java.util.Map;
  */
 public class InteractionHandler implements VisualFeedbackDrawer {
 
-	public static final String PLOT_ENV_KEY = "PLOT_ENV";
-
-	public static final String ACTIVE_COMPONENT_KEY = "ACTIVE_COMPONENT";
-
-	public static final String ACTIVE_COMPONENT_MOVABLE_KEY = "ACTIVE_COMPONENT_MOVABLE";
-
 	private final InteractionManager imanager;
-
-	private final InteractiveComp icomp;
 
 	private InteractionModeHandler modeHandler;
 
@@ -55,14 +47,14 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 	private final Map<String, Object> valueMap = new HashMap<String, Object>();
 
 	/**
-	 * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold,
-	 * until all buttons will be released.
+	 * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will
+	 * be released.
 	 */
 	private int mouseSigDragState = 0;
 
 	/**
-	 * Keep all buttons which were pressed at the time of the last mouse drag within threshold,
-	 * until all buttons will be released.
+	 * Keep all buttons which were pressed at the time of the last mouse drag within threshold, until all buttons will
+	 * be released.
 	 */
 	private int mouseTrivialDragState = 0;
 
@@ -71,17 +63,12 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 	 */
 	private Point lastPoint;
 
-	public InteractionHandler(InteractionManager imanager, InteractiveComp icomp) {
+	public InteractionHandler(InteractionManager imanager) {
 		this.imanager = imanager;
-		this.icomp = icomp;
 	}
 
 	protected final InteractionManager getInteractionManager() {
 		return imanager;
-	}
-
-	protected final InteractiveComp getInteractiveComp() {
-		return icomp;
 	}
 
 	/**
@@ -148,8 +135,7 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 		modeHandler.mouseReleased(e);
 
 		if ((mouseTrivialDragState & ~mouseSigDragState & e.getButton()) != 0) {
-			e = new GenericMouseEvent(MouseEvent.MOUSE_CLICKED, e.getModifiers(), e.getX(),
-					e.getY(), 1, e.getButton());
+			e = new GenericMouseEvent(MouseEvent.MOUSE_CLICKED, e.getModifiers(), e.getX(), e.getY(), 1, e.getButton());
 			mouseClicked(e);
 		}
 
@@ -182,8 +168,8 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 
 	/**
 	 * @param e
-	 *            the negative count values if the mouse wheel was rotated up/away from the user,
-	 *            and positive count values if the mouse wheel was rotated down/ towards the user
+	 *            the negative count values if the mouse wheel was rotated up/away from the user, and positive count
+	 *            values if the mouse wheel was rotated down/ towards the user
 	 */
 	public void mouseWheelMoved(GenericMouseEvent e) {
 		modeHandler.mouseWheelMoved(e);
@@ -224,8 +210,8 @@ public class InteractionHandler implements VisualFeedbackDrawer {
 	 * 
 	 * @param key
 	 *            a string containing the specified <code>key</code>
-	 * @return the binding <code>Object</code> stored with this key; if there are no keys, it will
-	 *         return <code>null</code>
+	 * @return the binding <code>Object</code> stored with this key; if there are no keys, it will return
+	 *         <code>null</code>
 	 * @see Action#getValue
 	 */
 	public Object getValue(String key) {

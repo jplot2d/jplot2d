@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,7 +25,6 @@ import java.awt.geom.Rectangle2D;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionHandler;
 import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.interaction.MouseDragBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
@@ -42,7 +41,7 @@ public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> 
 
 	@Override
 	public boolean canStartDargging(int x, int y) {
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		plot = env.getPlotAt(new Point(x, y));
 		return (plot != null);
 	}
@@ -63,7 +62,7 @@ public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> 
 		/**
 		 * pan the given distance
 		 */
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Pan");
 
 		Dimension2D csize = plot.getContentSize();

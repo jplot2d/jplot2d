@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,14 +26,14 @@ import org.jplot2d.element.PComponent;
 import org.jplot2d.env.PlotEnvironment;
 
 /**
- * This handler activate / deactivate component while mouse moving. It set the interaction handler's
- * mode according to the component which mouse moving on.
+ * This handler activate / deactivate component while mouse moving. It set the interaction handler's mode according to
+ * the component which mouse moving on.
  * 
  * @author Jingjing Li
  * 
  */
-public class MouseActivateComponentHandler extends
-		MouseMoveBehaviorHandler<MouseActivateComponentBehavior> implements VisualFeedbackDrawer {
+public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<MouseActivateComponentBehavior> implements
+		VisualFeedbackDrawer {
 
 	private final InteractiveComp icomp;
 
@@ -44,10 +44,9 @@ public class MouseActivateComponentHandler extends
 
 	private Shape activeBounds;
 
-	public MouseActivateComponentHandler(MouseActivateComponentBehavior behavior,
-			InteractionModeHandler handler) {
+	public MouseActivateComponentHandler(MouseActivateComponentBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
-		icomp = handler.getInteractiveComp();
+		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class MouseActivateComponentHandler extends
 		}
 
 		// the selectable component that contains the specified point.
-		PlotEnvironment penv = (PlotEnvironment) handler.getValue(InteractionHandler.PLOT_ENV_KEY);
+		PlotEnvironment penv = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		PComponent newComp = penv.getSelectableCompnentAt(new Point(x, y));
 
 		if (activeComponent == newComp) {
@@ -69,11 +68,11 @@ public class MouseActivateComponentHandler extends
 			activeComponent = newComp;
 			activeBounds = getDeviceBounds(activeComponent);
 			// activate((Graphics2D) ccomp.getGraphics());
-			handler.putValue(InteractionHandler.ACTIVE_COMPONENT_KEY, activeComponent);
+			handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, activeComponent);
 		} else {
 			activeComponent = null;
 			activeBounds = null;
-			handler.putValue(InteractionHandler.ACTIVE_COMPONENT_KEY, null);
+			handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, null);
 		}
 
 		icomp.repaint();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,8 +22,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
-		MouseDragBehaviorHandler<B> implements VisualFeedbackDrawer {
+public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends MouseDragBehaviorHandler<B> implements
+		VisualFeedbackDrawer {
 
 	private Point marqueeStart;
 
@@ -33,7 +33,7 @@ public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
 
 	public MouseMarqueeHandler(B behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
-		icomp = handler.getInteractiveComp();
+		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
 	}
 
 	@Override
@@ -74,8 +74,7 @@ public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends
 		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
 		marqueeRect.setFrameFromDiagonal(marqueeStart, marqueeEnd);
 
-		icomp.drawRectangle(g, Color.GRAY.getRGB(), marqueeRect.x, marqueeRect.y,
-				marqueeRect.width, marqueeRect.height);
+		icomp.drawRectangle(g, Color.GRAY.getRGB(), marqueeRect.x, marqueeRect.y, marqueeRect.width, marqueeRect.height);
 	}
 
 	/**

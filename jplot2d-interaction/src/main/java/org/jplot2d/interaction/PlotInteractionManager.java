@@ -23,13 +23,21 @@ import org.jplot2d.interaction.InteractionMode;
 import org.jplot2d.interaction.MouseBehavior;
 
 /**
- * The interaction manager for PlotXY. Other applications that using plot as their renderer engine
- * should not extends this manager, they should write their own interaction manager.
+ * The interaction manager for PlotXY. Other applications that using plot as their renderer engine should not extends
+ * this manager, they should write their own interaction manager.
  * 
  * @author Jingjing Li
  * 
  */
 public final class PlotInteractionManager extends InteractionManager {
+
+	public static final String PLOT_ENV_KEY = "PLOT_ENV";
+
+	public static final String INTERACTIVE_COMP_KEY = "INTERACTIVE_COMP";
+
+	public static final String ACTIVE_COMPONENT_KEY = "ACTIVE_COMPONENT";
+
+	public static final String ACTIVE_COMPONENT_MOVABLE_KEY = "ACTIVE_COMPONENT_MOVABLE";
 
 	private static final PlotInteractionManager instance = new PlotInteractionManager();
 
@@ -73,8 +81,7 @@ public final class PlotInteractionManager extends InteractionManager {
 		// define behaviors
 
 		activeComponentBehavior = new MouseActivateComponentBehavior("ActivateComponent");
-		showCoordinatesTooltipBehavior = new MouseCoordinatesTooltipBehavior(
-				"UpdateCoordinatesTooltip");
+		showCoordinatesTooltipBehavior = new MouseCoordinatesTooltipBehavior("UpdateCoordinatesTooltip");
 		moveComponentBehavior = new MouseMoveComponentBehavior("MoveComponent");
 
 		axisPanBehavior = new MouseAxisPanBehavior("Pan on axis");
@@ -92,10 +99,9 @@ public final class PlotInteractionManager extends InteractionManager {
 		wheelFinerZoomBehavior = new MouseWheelFinerZoomBehavior("WheelFinerZoom");
 
 		// set available behaviors for mode
-		defaultMode.setAvailableMouseBehaviors(activeComponentBehavior,
-				showCoordinatesTooltipBehavior, moveComponentBehavior, axisPanBehavior,
-				panBehavior, axisAdaptiveZoomBehavior, adaptiveZoomBehavior, axisRangeZoomBehavior,
-				marqueeZoomBehavior, axisWheelZoomBehavior, wheelZoomBehavior,
+		defaultMode.setAvailableMouseBehaviors(activeComponentBehavior, showCoordinatesTooltipBehavior,
+				moveComponentBehavior, axisPanBehavior, panBehavior, axisAdaptiveZoomBehavior, adaptiveZoomBehavior,
+				axisRangeZoomBehavior, marqueeZoomBehavior, axisWheelZoomBehavior, wheelZoomBehavior,
 				axisWheelFinerZoomBehavior, wheelFinerZoomBehavior);
 
 		defaultMode.setValueChangeBehaviors(new CursorFeedbackBehavior());
