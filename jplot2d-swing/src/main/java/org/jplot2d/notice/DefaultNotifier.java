@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,18 +23,17 @@ import java.awt.Component;
 import javax.swing.JOptionPane;
 
 import org.jplot2d.notice.LoggingNotifier;
-import org.jplot2d.notice.Notifier;
 import org.jplot2d.notice.Notice;
 import org.jplot2d.notice.NoticeType;
 
 /**
- * The default waning manager for plot. Warnings generated from mouse interaction will show in a
- * dialog. Others will log to java log.
+ * The default notifier for plot. Warnings generated from mouse interaction will show in a dialog. Others will log to
+ * java log.
  * 
  * @author Jingjing Li
  * 
  */
-public class DefaultNotifier extends Notifier {
+public class DefaultNotifier extends AbstractNotifier {
 
 	private final Component plotComp;
 
@@ -43,7 +42,7 @@ public class DefaultNotifier extends Notifier {
 	}
 
 	@Override
-	protected void showNotices(NoticeType type) {
+	public void showNotices(NoticeType type) {
 		if (notices.size() == 0) {
 			return;
 		}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,12 +22,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This manage write all plot waning messages to java log.
+ * This notifier write all messages to java log.
  * 
  * @author Jingjing Li
  * 
  */
-public class LoggingNotifier extends Notifier {
+public class LoggingNotifier extends AbstractNotifier {
 
 	private static final LoggingNotifier instance = new LoggingNotifier();
 
@@ -42,7 +42,7 @@ public class LoggingNotifier extends Notifier {
 	}
 
 	@Override
-	protected void showNotices(NoticeType type) {
+	public void showNotices(NoticeType type) {
 		logNotices(notices.toArray(new Notice[notices.size()]));
 	}
 
