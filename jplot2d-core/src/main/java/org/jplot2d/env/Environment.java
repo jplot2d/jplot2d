@@ -328,19 +328,19 @@ public abstract class Environment {
 		return new BatchToken(batchDepth, batchSND);
 	}
 
-	protected boolean verifyBatchToken(BatchToken token) {
+	private boolean verifyBatchToken(BatchToken token) {
 		return token.match(batchDepth, batchSND);
 	}
 
 	/**
-	 * Begin a batch updating. In this mode, all update on environment will not send redraw command to renderers, until
-	 * endBatch is called.
+	 * Begin a batch block. In this mode, all update on plot will not be processed, until endBatch is called. If this
+	 * environment is thread-safe, this method also lock the ReentrantLock, will block other thread call this method.
 	 * 
 	 * @param msg
 	 *            the short description about the batch
 	 * @return a batch token
 	 */
-	final public BatchToken beginBatch(String msg) {
+	public final BatchToken beginBatch(String msg) {
 		beginCommand(msg);
 		return createBatchToken();
 	}
@@ -351,7 +351,7 @@ public abstract class Environment {
 	 * @param token
 	 *            the token gotten from beginBatch
 	 */
-	final public void endBatch(BatchToken token) {
+	public final void endBatch(BatchToken token) {
 		endBatch(token, null);
 	}
 
@@ -363,7 +363,7 @@ public abstract class Environment {
 	 * @param type
 	 *            the type for notice processor
 	 */
-	final public void endBatch(BatchToken token, NoticeType type) {
+	public final void endBatch(BatchToken token, NoticeType type) {
 		begin();
 
 		if (!verifyBatchToken(token)) {
@@ -378,12 +378,21 @@ public abstract class Environment {
 	}
 
 	/**
+	 * The calling to method must be surrounded by {@link #begin()} and {@link #end()}.
+	 * 
+	 * @return if this environment is in batch mode.
+	 */
+	protected final boolean isBatch() {
+		return batchDepth > 0;
+	}
+
+	/**
 	 * A light weight version of beginBatch, without creating the batch token.
 	 * 
 	 * @param msg
 	 *            the message for logging
 	 */
-	final void beginCommand(String msg) {
+	protected final void beginCommand(String msg) {
 		begin();
 
 		++batchSND[batchDepth];
@@ -397,7 +406,7 @@ public abstract class Environment {
 	 * A light weight version of beginBatch, without verifying a batch token. This method is called from element proxy
 	 * invocation handler every time a method of the proxy is called.
 	 */
-	final void endCommand() {
+	protected final void endCommand() {
 		endCommand(null);
 	}
 
@@ -426,7 +435,7 @@ public abstract class Environment {
 	/**
 	 * The begin of a block wrapper, to synchronize calling.
 	 */
-	void begin() {
+	protected final void begin() {
 		if (lock != null) {
 			lock.lock();
 		}
@@ -435,7 +444,7 @@ public abstract class Environment {
 	/**
 	 * The end of a block wrapper, to synchronize calling.
 	 */
-	void end() {
+	protected final void end() {
 		if (lock != null) {
 			lock.unlock();
 		}
