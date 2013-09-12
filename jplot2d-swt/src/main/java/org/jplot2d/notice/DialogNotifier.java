@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,25 +21,21 @@ package org.jplot2d.notice;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
-import org.jplot2d.notice.Notifier;
-import org.jplot2d.notice.Notice;
-import org.jplot2d.notice.NoticeType;
 
 /**
  * @author Jingjing Li
  * 
  */
-public class DialogNotifier extends Notifier {
+public class DialogNotifier extends AbstractNotifier {
 
 	private final MessageBox msgbox;
 
 	public DialogNotifier(Composite plotComp) {
-		msgbox = new MessageBox(plotComp.getShell(), SWT.OK | SWT.ICON_WARNING
-				| SWT.APPLICATION_MODAL);
+		msgbox = new MessageBox(plotComp.getShell(), SWT.OK | SWT.ICON_WARNING | SWT.APPLICATION_MODAL);
 	}
 
 	@Override
-	protected void showNotices(NoticeType type) {
+	public void showNotices(NoticeType type) {
 		if (notices.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			for (Notice wm : notices) {
