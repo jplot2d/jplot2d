@@ -18,34 +18,46 @@
  */
 package org.jplot2d.notice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This interface receive and process plot waning messages.
+ * This abstract class receive and process plot waning messages.
  * 
  * @author Jingjing Li
  * 
  */
-public interface Notifier {
+public abstract class AbstractNotifier implements Notifier {
+
+	protected final List<Notice> notices = new ArrayList<Notice>();
 
 	/**
 	 * Application call this method to add notices. This method can called multiple times.
 	 * 
 	 * @param notice
 	 */
-	public void notify(Notice notice);
+	public final void notify(Notice notice) {
+		notices.add(notice);
+	}
 
 	/**
 	 * Discard all exist notices
 	 */
-	public void reset();
+	public final void reset() {
+		notices.clear();
+	}
 
 	/**
 	 * Application call this method to show the notices. All notices in the queue are treated as the given notice type.
 	 */
-	public void processNotices(NoticeType type);
+	public final void processNotices(NoticeType type) {
+		showNotices(type);
+		reset();
+	}
 
 	/**
 	 * To be overridden to show notices
 	 */
-	public void showNotices(NoticeType type);
+	public abstract void showNotices(NoticeType type);
 
 }

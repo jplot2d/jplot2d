@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,15 +22,13 @@ import java.awt.Component;
 
 import javax.swing.JOptionPane;
 
-import org.jplot2d.notice.Notifier;
-import org.jplot2d.notice.Notice;
-import org.jplot2d.notice.NoticeType;
-
 /**
+ * This notifier will show notice messages in a dialog.
+ * 
  * @author Jingjing Li
  * 
  */
-public class DialogNotifier extends Notifier {
+public class DialogNotifier extends AbstractNotifier {
 
 	private final Component plotComp;
 
@@ -39,7 +37,7 @@ public class DialogNotifier extends Notifier {
 	}
 
 	@Override
-	protected void showNotices(NoticeType type) {
+	public void showNotices(NoticeType type) {
 		if (notices.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			for (Notice wm : notices) {
