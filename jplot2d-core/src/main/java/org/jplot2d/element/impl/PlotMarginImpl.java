@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -29,12 +29,15 @@ import org.jplot2d.element.Plot;
  */
 public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneable {
 
-	private boolean autoMarginTop = true, autoMarginLeft = true, autoMarginBottom = true,
-			autoMarginRight = true;
+	private boolean autoMarginTop = true, autoMarginLeft = true, autoMarginBottom = true, autoMarginRight = true;
 
 	private double marginTop, marginLeft, marginBottom, marginRight;
 
 	private double extraTop, extraLeft, extraBottom, extraRight;
+
+	public PlotEx getParent() {
+		return (PlotEx) parent;
+	}
 
 	public String getId() {
 		if (getParent() != null) {
@@ -76,18 +79,22 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneab
 
 	public void setAutoTop(boolean auto) {
 		autoMarginTop = auto;
+		getParent().invalidate();
 	}
 
 	public void setAutoLeft(boolean auto) {
 		autoMarginLeft = auto;
+		getParent().invalidate();
 	}
 
 	public void setAutoBottom(boolean auto) {
 		autoMarginBottom = auto;
+		getParent().invalidate();
 	}
 
 	public void setAutoRight(boolean auto) {
 		autoMarginRight = auto;
+		getParent().invalidate();
 	}
 
 	public double getTop() {
@@ -108,17 +115,41 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneab
 
 	public void setTop(double marginTop) {
 		this.marginTop = marginTop;
+		this.autoMarginTop = false;
+		getParent().invalidate();
 	}
 
 	public void setLeft(double marginLeft) {
 		this.marginLeft = marginLeft;
+		this.autoMarginLeft = false;
+		getParent().invalidate();
 	}
 
 	public void setBottom(double marginBottom) {
 		this.marginBottom = marginBottom;
+		this.autoMarginBottom = false;
+		getParent().invalidate();
 	}
 
 	public void setRight(double marginRight) {
+		this.marginRight = marginRight;
+		this.autoMarginRight = false;
+		getParent().invalidate();
+	}
+
+	public void directTop(double marginTop) {
+		this.marginTop = marginTop;
+	}
+
+	public void directLeft(double marginLeft) {
+		this.marginLeft = marginLeft;
+	}
+
+	public void directBottom(double marginBottom) {
+		this.marginBottom = marginBottom;
+	}
+
+	public void directRight(double marginRight) {
 		this.marginRight = marginRight;
 	}
 
@@ -140,18 +171,22 @@ public class PlotMarginImpl extends ElementImpl implements PlotMarginEx, Cloneab
 
 	public void setExtraTop(double marginTop) {
 		this.extraTop = marginTop;
+		getParent().invalidate();
 	}
 
 	public void setExtraLeft(double marginLeft) {
 		this.extraLeft = marginLeft;
+		getParent().invalidate();
 	}
 
 	public void setExtraBottom(double marginBottom) {
 		this.extraBottom = marginBottom;
+		getParent().invalidate();
 	}
 
 	public void setExtraRight(double marginRight) {
 		this.extraRight = marginRight;
+		getParent().invalidate();
 	}
 
 	@Override
