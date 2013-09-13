@@ -36,9 +36,8 @@ public class AxisRangeLockGroupTest {
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(AxisRangeLockGroup.class);
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Range Lock Group");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Range Lock Group"), "autoRange");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Range Lock Group"), "autoRange", "zoomable");
 
-		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Axis Range Lock Group");
-		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Axis Range Lock Group"), "autoRange");
+		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet());
 	}
 }
