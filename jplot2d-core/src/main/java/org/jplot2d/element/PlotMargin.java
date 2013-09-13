@@ -132,32 +132,32 @@ public interface PlotMargin extends Element {
 	public double getTop();
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
-	 * otherwise the value will be set by layout manager.
+	 * Sets the left margin value. Setting a new value will disable auto margin calculation and make
+	 * {@link #isAutoLeft()} returns <code>false</code>.
 	 * 
 	 * @param marginLeft
 	 */
 	public void setLeft(double marginLeft);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
-	 * otherwise the value will be set by layout manager.
+	 * Sets the right margin value. Setting a new value will disable auto margin calculation and make
+	 * {@link #isAutoRight()} returns <code>false</code>.
 	 * 
 	 * @param marginRight
 	 */
 	public void setRight(double marginRight);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
-	 * otherwise the value will be set by layout manager.
+	 * Sets the bottom margin value. Setting a new value will disable auto margin calculation and make
+	 * {@link #isAutoBottom()} returns <code>false</code>.
 	 * 
 	 * @param marginBottom
 	 */
 	public void setBottom(double marginBottom);
 
 	/**
-	 * Sets the margin value. The value can only be set by user when {@link #isAutoLeft()} is <code>false</code>,
-	 * otherwise the value will be set by layout manager.
+	 * Sets the top margin value. Setting a new value will disable auto margin calculation and make {@link #isAutoTop()}
+	 * returns <code>false</code>.
 	 * 
 	 * @param marginTop
 	 */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,5 +25,27 @@ import org.jplot2d.element.PlotMargin;
  * 
  */
 public interface PlotMarginEx extends PlotMargin, ElementEx {
+
+	public PlotEx getParent();
+
+	/**
+	 * Called by LayoutDirector to set the top value when {@link #isAutoTop()} is true.
+	 */
+	public void directTop(double marginTop);
+
+	/**
+	 * Called by LayoutDirector to set the top value when {@link #isAutoLeft()} is true.
+	 */
+	public void directLeft(double marginLeft);
+
+	/**
+	 * Called by LayoutDirector to set the top value when {@link #isAutoBottom()} is true.
+	 */
+	public void directBottom(double marginBottom);
+
+	/**
+	 * Called by LayoutDirector to set the top value when {@link #isAutoRight()} is true.
+	 */
+	public void directRight(double marginRight);
 
 }

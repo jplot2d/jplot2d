@@ -92,8 +92,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			plot.setSize(width, height);
 		} else {
 			double contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
-			double contentHeight = plot.getSize().getHeight() - margin.getTop()
-					- margin.getBottom();
+			double contentHeight = plot.getSize().getHeight() - margin.getTop() - margin.getBottom();
 			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
 				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
 			}
@@ -169,7 +168,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setLeft(mLeft);
+		plot.getMargin().directLeft(mLeft);
 
 		return mLeft + margin.getExtraLeft();
 	}
@@ -204,7 +203,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setRight(mRight);
+		plot.getMargin().directRight(mRight);
 
 		return mRight + margin.getExtraRight();
 	}
@@ -251,7 +250,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setTop(mTop);
+		plot.getMargin().directTop(mTop);
 
 		return mTop + margin.getExtraTop();
 	}
@@ -298,14 +297,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 
-		plot.getMargin().setBottom(mBottom);
+		plot.getMargin().directBottom(mBottom);
 
 		return mBottom + margin.getExtraBottom();
 	}
 
 	/**
-	 * Calculate the margin of the given plot. The legend size can be calculated by pre-setting its
-	 * length constraint.
+	 * Calculate the margin of the given plot. The legend size can be calculated by pre-setting its length constraint.
 	 * 
 	 * @param plot
 	 * @param ais
@@ -607,10 +605,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
 	}
 
 	/**
-	 * Calculate the preferred content size of the given plot. The default implementation returns
-	 * the plot.getPreferredContentSize(), which can be override by subclass to consider nested
-	 * subplots. The returned size may be <code>null</code> if there is no enough information to
-	 * derive a value.
+	 * Calculate the preferred content size of the given plot. The default implementation returns the
+	 * plot.getPreferredContentSize(), which can be override by subclass to consider nested subplots. The returned size
+	 * may be <code>null</code> if there is no enough information to derive a value.
 	 * 
 	 * @param plot
 	 * @return the preferred content size
