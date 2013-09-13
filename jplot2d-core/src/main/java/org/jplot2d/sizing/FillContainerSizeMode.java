@@ -5,8 +5,7 @@ import java.awt.geom.Dimension2D;
 import org.jplot2d.element.impl.PlotEx;
 
 /**
- * The scale is kept. The plot size will automatically fit the container size. The plot content size
- * is changed as well.
+ * The plot size will automatically fit the container size. The plot content size is changed as well.
  */
 public class FillContainerSizeMode extends SizeMode {
 
@@ -14,6 +13,12 @@ public class FillContainerSizeMode extends SizeMode {
 
 	private final double scale;
 
+	/**
+	 * The scale is fixed.
+	 * 
+	 * @param scale
+	 *            the scale
+	 */
 	public FillContainerSizeMode(double scale) {
 		super(false);
 		this.targetSize = null;
@@ -21,14 +26,25 @@ public class FillContainerSizeMode extends SizeMode {
 	}
 
 	/**
-	 * The scale is calculated toward target size. The chart aspect ratio will automatically fit the
-	 * container. The plot size is changed as well. The laying out is working on outer-to-inner
-	 * mode.
+	 * The scale is calculated toward target size. The chart aspect ratio will automatically fit the container. The plot
+	 * size is changed as well. The laying out is working on outer-to-inner mode.
+	 * 
+	 * @param targetSize
+	 *            the target size
 	 */
 	public FillContainerSizeMode(Dimension2D targetSize) {
 		super(false);
 		this.targetSize = targetSize;
 		this.scale = 1;
+	}
+
+	/**
+	 * Returns the target size. If the scale is fixed, returns <code>null</code>
+	 * 
+	 * @return the target size
+	 */
+	public Dimension2D getTargetSize() {
+		return targetSize;
 	}
 
 	public Result update(PlotEx plot) {
@@ -59,8 +75,7 @@ public class FillContainerSizeMode extends SizeMode {
 		if (targetSize == null) {
 			return "Fill container with scale " + scale;
 		} else {
-			return "Fill container with target size " + targetSize.getWidth() + "x"
-					+ targetSize.getHeight();
+			return "Fill container with target size " + targetSize.getWidth() + "x" + targetSize.getHeight();
 		}
 	}
 
