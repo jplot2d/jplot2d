@@ -37,7 +37,7 @@ public interface AxisRangeLockGroup extends Element {
 	 * 
 	 * @return true if the axis is in autorange status
 	 */
-	@Property(order = 0)
+	@Property(order = 0, styleable = false)
 	public boolean isAutoRange();
 
 	/**
@@ -54,7 +54,7 @@ public interface AxisRangeLockGroup extends Element {
 	 * 
 	 * @return if this AxisRangeLockGroup can be zoomed
 	 */
-	@Property(order = 1)
+	@Property(order = 1, styleable = false)
 	public boolean isZoomable();
 
 	/**
