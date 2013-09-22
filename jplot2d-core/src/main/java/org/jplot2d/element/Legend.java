@@ -20,6 +20,8 @@ package org.jplot2d.element;
 
 import java.awt.geom.Point2D;
 
+import org.jplot2d.annotation.Hierarchy;
+import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
@@ -186,5 +188,13 @@ public interface Legend extends MovableComponent {
 	public boolean isMovable();
 
 	public void setMovable(boolean movable);
+
+	/**
+	 * Returns all legend items managed by this legend
+	 * 
+	 * @return items managed by this legend
+	 */
+	@Hierarchy(HierarchyOp.GETARRAY)
+	public LegendItem[] getItems();
 
 }
