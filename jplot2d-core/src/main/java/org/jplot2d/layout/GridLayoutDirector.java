@@ -27,17 +27,17 @@ import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
- * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio
- * of their preferedContentSize.
+ * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio of their
+ * preferedContentSize.
  * 
  * @author Jingjing Li
  * 
  */
 public class GridLayoutDirector extends SimpleLayoutDirector {
 
-	private final double hgap = 0;
+	private final double hgap;
 
-	private final double vgap = 0;
+	private final double vgap;
 
 	private Map<PlotEx, GridCellGeom> plotsPreferredContentsGeomMap = new HashMap<PlotEx, GridCellGeom>();
 
@@ -56,6 +56,34 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		}
 
 		return glaMap;
+	}
+
+	/**
+	 * Create a GridLayoutDirector with 0 horizontal gap and 0 vertical gap.
+	 */
+	public GridLayoutDirector() {
+		this(0, 0);
+	}
+
+	/**
+	 * Create a GridLayoutDirector with the given horizontal gap and vertical gap.
+	 * 
+	 * @param hgap
+	 *            the horizontal gap
+	 * @param vgap
+	 *            the vertical gap
+	 */
+	public GridLayoutDirector(double hgap, double vgap) {
+		this.hgap = hgap;
+		this.vgap = vgap;
+	}
+
+	public double getHGap() {
+		return hgap;
+	}
+
+	public double getVGap() {
+		return vgap;
 	}
 
 	public void invalidateLayout(PlotEx plot) {
@@ -166,10 +194,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
-			double width = contentGeom.getWidth(col) + marginGeom.getLeft(col)
-					+ marginGeom.getRight(col);
-			double Height = contentGeom.getHeight(row) + marginGeom.getTop(row)
-					+ marginGeom.getBottom(row);
+			double width = contentGeom.getWidth(col) + marginGeom.getLeft(col) + marginGeom.getRight(col);
+			double Height = contentGeom.getHeight(row) + marginGeom.getTop(row) + marginGeom.getBottom(row);
 			if (colWidthMap.get(col) == null || colWidthMap.get(col) < width) {
 				colWidthMap.put(col, width);
 			}
@@ -229,8 +255,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 	}
 
 	/**
-	 * calculate the margin (from grid bounds to data area bounds) for every row and columns of
-	 * subplots in the given plot.
+	 * calculate the margin (from grid bounds to data area bounds) for every row and columns of subplots in the given
+	 * plot.
 	 * 
 	 * @return the margin
 	 */
