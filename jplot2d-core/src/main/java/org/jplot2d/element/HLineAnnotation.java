@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,50 +18,12 @@
  */
 package org.jplot2d.element;
 
-import java.awt.BasicStroke;
-
-import org.jplot2d.annotation.Property;
-import org.jplot2d.annotation.PropertyGroup;
-
 /**
  * A horizontal line annotation to highlight a value.
  * 
  * @author Jingjing Li
  * 
  */
-@PropertyGroup("Horizontal Line Annotation")
-public interface HLineAnnotation extends Annotation {
-
-	/**
-	 * Returns the value of this annotation
-	 * 
-	 * @return the value of this annotation
-	 */
-	@Property(order = 0, styleable = false)
-	public double getValue();
-
-	/**
-	 * Sets the value of this annotation
-	 * 
-	 * @param value
-	 *            the value of this annotation
-	 */
-	public void setValue(double value);
-
-	/**
-	 * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
-	 * 
-	 * @return the <code>BasicStroke</code>
-	 */
-	@Property(order = 1)
-	public BasicStroke getStroke();
-
-	/**
-	 * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
-	 * 
-	 * @param stroke
-	 *            the <code>BasicStroke</code> to be used to draw the annotation line
-	 */
-	public void setStroke(BasicStroke stroke);
+public interface HLineAnnotation extends LineAnnotation {
 
 }
