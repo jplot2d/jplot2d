@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -36,19 +36,18 @@ public class VLineAnnotationTest {
 	@Test
 	public void testInterfaceInfo() {
 		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(VLineAnnotation.class);
-		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation",
-				"Vertical Line Annotation");
+		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Annotation", "Line Annotation");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
 				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Vertical Line Annotation"), "value", "stroke");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Line Annotation"), "value", "stroke");
 
 		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation",
-				"Vertical Line Annotation");
+				"Line Annotation");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
 				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Vertical Line Annotation"), "stroke");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Line Annotation"), "stroke");
 	}
 
 	@Test
