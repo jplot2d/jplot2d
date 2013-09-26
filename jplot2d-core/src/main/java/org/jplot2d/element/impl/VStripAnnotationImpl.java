@@ -41,7 +41,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 
 	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double locX = Double.NaN;
+	private double locX;
 
 	private double paperThickness;
 
@@ -126,14 +126,10 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public void relocate() {
-		calcLocation();
-		redraw(this);
-	}
-
-	private void calcLocation() {
 		locX = getXWtoP(range.getStart());
 		double endX = getXWtoP(range.getEnd());
 		paperThickness = endX - locX;
+		redraw(this);
 	}
 
 	public Paint getFillPaint() {
@@ -151,10 +147,6 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
-
-		if (Double.isNaN(locX)) {
-			calcLocation();
-		}
 
 		if (paperThickness == 0) {
 			Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());

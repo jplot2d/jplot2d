@@ -37,7 +37,7 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotationEx {
 
-	private double locY = Double.NaN;
+	private double locY;
 
 	private double valueY;
 
@@ -129,11 +129,6 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		g.setClip(getParent().getBounds());
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
-
-		// calculate locY
-		if (Double.isNaN(locY)) {
-			locY = getYWtoP(valueY);
-		}
 
 		Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
 		g.draw(line);

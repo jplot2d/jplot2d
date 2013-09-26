@@ -263,11 +263,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public PaperTransform getPaperTransform() {
 		if (pxf == null) {
-			if (getParent() == null) {
+			if (getParent() != null) {
+				pxf = getParent().getPaperTransform().translate(locX, locY);
+			} else if (contentSize == null) {
+				return null;
+			} else {
 				pxf = new PaperTransform(margin.getLeft() + margin.getExtraLeft(), contentSize.getHeight()
 						+ margin.getTop() + margin.getExtraTop(), scale);
-			} else {
-				pxf = getParent().getPaperTransform().translate(locX, locY);
 			}
 		}
 		return pxf;
