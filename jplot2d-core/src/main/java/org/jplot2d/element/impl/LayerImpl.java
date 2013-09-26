@@ -153,7 +153,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			getParent().getEnabledLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
 		}
 
-		redrawCascade(gx);
+		redraw(gx);
 
 		if (gx.isVisible()) {
 			if (xarm != null && xarm.getLockGroup().isAutoRange()) {
@@ -168,7 +168,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public void removeGraph(Graph graph) {
 		GraphEx gx = (GraphEx) graph;
 
-		redrawCascade(gx);
+		redraw(gx);
 
 		graphs.remove(gx);
 		gx.setParent(null);
@@ -205,13 +205,15 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		annotations.add(mex);
 		mex.setParent(this);
 
-		redrawCascade(mex);
+		if (getPaperTransform() != null) {
+			mex.relocate();
+		}
 	}
 
 	public void removeAnnotation(Annotation annotation) {
 		AnnotationEx annx = (AnnotationEx) annotation;
 
-		redrawCascade(annx);
+		redraw(annx);
 
 		annotations.remove(annx);
 		annx.setParent(null);

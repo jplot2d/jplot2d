@@ -37,7 +37,7 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotationEx {
 
-	private double locX = Double.NaN;
+	private double locX;
 
 	private double valueX;
 
@@ -129,11 +129,6 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		g.setClip(getParent().getBounds());
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
-
-		// // calculate locY
-		if (Double.isNaN(locX)) {
-			locX = getXWtoP(valueX);
-		}
 
 		Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
 		g.draw(line);

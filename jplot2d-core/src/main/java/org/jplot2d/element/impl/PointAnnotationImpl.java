@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -36,7 +36,7 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public abstract class PointAnnotationImpl extends AnnotationImpl implements PointAnnotationEx {
 
-	private double locX, locY;
+	protected double locX, locY;
 
 	private double valueX, valueY;
 

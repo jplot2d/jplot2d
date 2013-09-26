@@ -81,7 +81,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
 
-		g.translate(getLocation().getX(), getLocation().getY());
+		g.translate(locX, locY);
 		g.scale(1.0, -1.0);
 		g.rotate(-Math.PI * angle / 180.0);
 
@@ -98,6 +98,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		super.copyFrom(src);
 
 		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
+		this.gap = tc.gap;
 	}
 
 }

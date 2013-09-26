@@ -41,7 +41,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 
 	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double locY = Double.NaN;
+	private double locY;
 
 	private double paperThickness;
 
@@ -126,14 +126,10 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public void relocate() {
-		calcLocation();
-		redraw(this);
-	}
-
-	private void calcLocation() {
 		locY = getYWtoP(range.getStart());
 		double endY = getYWtoP(range.getEnd());
 		paperThickness = endY - locY;
+		redraw(this);
 	}
 
 	public Paint getFillPaint() {
@@ -151,10 +147,6 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
-
-		if (Double.isNaN(locY)) {
-			calcLocation();
-		}
 
 		if (paperThickness == 0) {
 			Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
