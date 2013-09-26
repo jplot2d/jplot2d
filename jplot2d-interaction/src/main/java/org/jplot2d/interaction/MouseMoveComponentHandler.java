@@ -89,7 +89,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 	@Override
 	public void draggingFinished(int x, int y) {
 		/* finish move */
-		if (startPoint.equals(toPoint)) {
+		if (startPoint.x == x && startPoint.y == y) {
 			return;
 		}
 
