@@ -24,37 +24,77 @@ import org.junit.Test;
 
 /**
  * @author Jingjing Li
- *
+ * 
  */
-public class ChangeHistoryTest {
+public class UndoManagerTest {
 
 	@Test
-	public void testChangHistory() {
-		UndoManager<Integer> ch = new UndoManager<Integer>(5);
+	public void testUndoManager0() {
+		UndoManager<Integer> ch = new UndoManager<Integer>();
 		assertNull(ch.current());
 		assertFalse(ch.canUndo());
 		assertFalse(ch.canRedo());
 		assertEquals(ch.getUndoSize(), 0);
-		
+
 		ch.add(1);
 		assertEquals(ch.current().intValue(), 1);
 		assertFalse(ch.canUndo());
 		assertFalse(ch.canRedo());
 		assertEquals(ch.getUndoSize(), 0);
-		
+
+		ch.add(2);
+		assertEquals(ch.current().intValue(), 2);
+		assertFalse(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 0);
+
+	}
+
+	@Test
+	public void testUndoManager2() {
+		UndoManager<Integer> ch = new UndoManager<Integer>(2);
+		assertNull(ch.current());
+		assertFalse(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 0);
+
+		ch.add(1);
+		assertEquals(ch.current().intValue(), 1);
+		assertFalse(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 0);
+
 		ch.add(2);
 		assertEquals(ch.current().intValue(), 2);
 		assertTrue(ch.canUndo());
 		assertFalse(ch.canRedo());
 		assertEquals(ch.getUndoSize(), 1);
-		
+
 		int u = ch.undo();
 		assertEquals(u, 1);
 		assertEquals(ch.current().intValue(), 1);
 		assertFalse(ch.canUndo());
 		assertTrue(ch.canRedo());
 		assertEquals(ch.getUndoSize(), 0);
-		
+
+		ch.add(2);
+		assertEquals(ch.current().intValue(), 2);
+		assertTrue(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 1);
+
+		ch.add(3);
+		assertEquals(ch.current().intValue(), 3);
+		assertTrue(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 2);
+
+		ch.add(4);
+		assertEquals(ch.current().intValue(), 4);
+		assertTrue(ch.canUndo());
+		assertFalse(ch.canRedo());
+		assertEquals(ch.getUndoSize(), 2);
+
 	}
-	
+
 }
