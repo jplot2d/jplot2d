@@ -90,7 +90,7 @@ public class PlotEnvironment extends Environment {
 	 */
 	protected Map<ElementEx, Element> copyProxyMap;
 
-	protected final UndoManager<UndoMemento> changeHistory = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
+	protected final UndoManager<UndoMemento> undoManager = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
 
 	/**
 	 * Contains all visible cacheable components in z-order. include uncacheable root plot.
@@ -322,7 +322,7 @@ public class PlotEnvironment extends Environment {
 			me.getValue().copyFrom(me.getKey());
 		}
 
-		if (changeHistory.getCapacity() > 0) {
+		if (undoManager.getCapacity() > 0) {
 			// build copy to proxy map
 			copyProxyMap = new LinkedHashMap<ElementEx, Element>();
 			for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
@@ -332,18 +332,35 @@ public class PlotEnvironment extends Environment {
 				copyProxyMap.put(copye, proxy);
 			}
 
-			changeHistory.add(new UndoMemento(plotCopy, copyProxyMap));
+			undoManager.add(new UndoMemento(plotCopy, copyProxyMap));
 		}
 	}
 
 	/* ====================== Undo/Redo ====================== */
 
-	public int getHistoryCapacity() {
+	/**
+	 * Returns the maximum number of reversible operations.
+	 * 
+	 * @return the maximum number of reversible operations
+	 */
+	public int getUndoLevels() {
 		begin();
-		int capacity = changeHistory.getCapacity();
+		int capacity = undoManager.getCapacity();
 		end();
 
 		return capacity;
+	}
+
+	/**
+	 * Sets the maximum number of reversible operations.
+	 * 
+	 * @param levels
+	 *            the maximum number of reversible operations
+	 */
+	public void setUndoLevels(int levels) {
+		begin();
+		undoManager.setCapacity(levels);
+		end();
 	}
 
 	/**
@@ -353,7 +370,7 @@ public class PlotEnvironment extends Environment {
 	 */
 	public boolean canUndo() {
 		begin();
-		boolean b = changeHistory.canUndo();
+		boolean b = undoManager.canUndo();
 		end();
 
 		return b;
@@ -366,7 +383,7 @@ public class PlotEnvironment extends Environment {
 	 */
 	public boolean canRedo() {
 		begin();
-		boolean b = changeHistory.canRedo();
+		boolean b = undoManager.canRedo();
 		end();
 
 		return b;
@@ -380,7 +397,7 @@ public class PlotEnvironment extends Environment {
 	public void undo() {
 		begin();
 
-		UndoMemento memento = changeHistory.undo();
+		UndoMemento memento = undoManager.undo();
 		if (memento == null) {
 			throw new RuntimeException("Cannot undo");
 		}
@@ -402,7 +419,7 @@ public class PlotEnvironment extends Environment {
 	public void redo() {
 		begin();
 
-		UndoMemento memento = changeHistory.redo();
+		UndoMemento memento = undoManager.redo();
 		if (memento == null) {
 			throw new RuntimeException("Cannot redo");
 		}
