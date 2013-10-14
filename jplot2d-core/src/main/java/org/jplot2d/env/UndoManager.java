@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,38 +18,47 @@
  */
 package org.jplot2d.env;
 
-import java.util.Deque;
-import java.util.LinkedList;
-
 /**
  * Maintains a queue of undo sets, a current set, and a redo sets.
  * 
  * @author Jingjing Li
  * 
  */
-public class UndoManager<T> {
+public class UndoManager<E> {
+
+	private static class Entry<E> {
+		E element;
+		Entry<E> next;
+		Entry<E> previous;
+
+		Entry(E element, Entry<E> next, Entry<E> previous) {
+			this.element = element;
+			this.next = next;
+			this.previous = previous;
+		}
+	}
 
 	/**
-	 * Changeset SN.
+	 * Change set SN.
 	 */
 	private int csn;
 
-	private T cur;
+	private Entry<E> header = new Entry<E>(null, null, null);
+
+	private int curIdx = -1;
+
+	private Entry<E> cur = header;
 
 	/**
 	 * The capacity of undo stack. Default is 0.
 	 */
 	private int capacity;
 
-	private Deque<T> undoQue = new LinkedList<T>();
-
-	private Deque<T> redoQue = new LinkedList<T>();
-
 	/**
 	 * Construct a ChangeHistory with capacity 0.
 	 */
 	public UndoManager() {
-
+		header.next = header.previous = header;
 	}
 
 	/**
@@ -61,6 +70,7 @@ public class UndoManager<T> {
 	 *             if the specified capacity is negative
 	 */
 	public UndoManager(int capacity) throws IllegalArgumentException {
+		this();
 		if (capacity < 0) {
 			throw new IllegalArgumentException("Illegal Capacity: " + capacity);
 		}
@@ -70,7 +80,7 @@ public class UndoManager<T> {
 	/**
 	 * Returns the capacity of undo stack.
 	 * 
-	 * @return
+	 * @return the capacity of undo stack
 	 */
 	public int getCapacity() {
 		return capacity;
@@ -80,33 +90,32 @@ public class UndoManager<T> {
 	 * Sets the The capacity of undo stack. The default capacity is 0.
 	 * 
 	 * @param capacity
+	 *            the capacity of undo stack
 	 */
 	public void setCapacity(int capacity) {
-		int pollout = undoQue.size() - capacity;
-		if (pollout > 0) {
-			for (int i = 0; i < pollout; i++) {
-				undoQue.pollLast();
-			}
+		if (capacity < 0) {
+			throw new IllegalArgumentException("Illegal Capacity: " + capacity);
 		}
+
 		this.capacity = capacity;
 	}
 
 	/**
 	 * Returns the possible undo steps. The size dose not count the current change set.
 	 * 
-	 * @return
+	 * @return the possible undo steps
 	 */
 	public int getUndoSize() {
-		return undoQue.size();
+		return curIdx == -1 ? 0 : curIdx;
 	}
 
 	/**
-	 * Return the current cset.
+	 * Return the current change set.
 	 * 
-	 * @return
+	 * @return the current change set
 	 */
-	public T current() {
-		return cur;
+	public E current() {
+		return cur == header ? null : cur.element;
 	}
 
 	/**
@@ -119,44 +128,53 @@ public class UndoManager<T> {
 	}
 
 	/**
-	 * Add the given cset into this history.
+	 * Add the given change set as current, and push old change set into history.
 	 * 
 	 * @param cs
 	 *            the change set
 	 * @return the change SN
 	 */
-	public void add(T cs) {
-		if (cur != null) {
-			undoQue.push(cur);
-			if (undoQue.size() > capacity) {
-				undoQue.pollLast();
-			}
-		}
-		redoQue.clear();
-		cur = cs;
+	public void add(E cs) {
 		csn++;
+
+		if (curIdx == 0 && capacity == 0) {
+			cur.element = cs;
+			return;
+		}
+
+		cur = new Entry<E>(cs, header, cur);
+		cur.previous.next = cur;
+		cur.next.previous = cur;
+		curIdx++;
+
+		// remove the oldest change sets to satisfy capacity
+		while (curIdx > capacity) {
+			header.next = header.next.next;
+			header.next.next.previous = header;
+			curIdx--;
+		}
 	}
 
 	/**
 	 * Returns <code>true</code> if undo is possible.
 	 * 
-	 * @return
+	 * @return <code>true</code> if undo is possible
 	 */
 	public boolean canUndo() {
-		return undoQue.size() > 0;
+		return cur != header && cur.previous != header;
 	}
 
 	/**
-	 * Move the cset before the current set to current, and return it.
+	 * Move the change set before the current set to current, and return it.
 	 * 
-	 * @return
+	 * @return the previous change set
 	 */
-	public T undo() {
+	public E undo() {
 		if (canUndo()) {
 			csn--;
-			redoQue.push(cur);
-			cur = undoQue.pop();
-			return cur;
+			curIdx--;
+			cur = cur.previous;
+			return cur.element;
 		}
 		return null;
 	}
@@ -164,24 +182,24 @@ public class UndoManager<T> {
 	/**
 	 * Returns <code>true</code> if redo is possible.
 	 * 
-	 * @return
+	 * @return <code>true</code> if redo is possible
 	 */
 	public boolean canRedo() {
-		return redoQue.size() > 0;
+		return cur != null && cur.next != header;
 	}
 
 	/**
-	 * Returns the next cset after the current cset. Returns <code>null</code> if there is no next
-	 * cset.
+	 * Returns the next change set after the current change set. Returns <code>null</code> if there is no next change
+	 * set.
 	 * 
-	 * @return
+	 * @return the next change set
 	 */
-	public T redo() {
+	public E redo() {
 		if (canRedo()) {
 			csn++;
-			undoQue.push(cur);
-			cur = redoQue.pop();
-			return cur;
+			curIdx++;
+			cur = cur.next;
+			return cur.element;
 		}
 		return null;
 	}
