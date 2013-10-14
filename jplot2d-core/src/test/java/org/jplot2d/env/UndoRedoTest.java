@@ -201,20 +201,20 @@ public class UndoRedoTest {
 		PlotEnvironment env = new PlotEnvironment(false);
 		env.setPlot(plot);
 
-		assertEquals(env.changeHistory.getCSN(), 1);
+		assertEquals(env.undoManager.getCSN(), 1);
 
 		Axis xaxis = ef.createAxis();
 		xaxis.getTitle().setText("x axis");
 		plot.addXAxis(xaxis);
 
-		assertEquals(env.changeHistory.getCSN(), 2);
+		assertEquals(env.undoManager.getCSN(), 2);
 		PlotEx safeCopy2 = (PlotEx) env.copyMap.get(plotImpl0);
 		checkRange(safeCopy2.getXAxis(0).getTickManager().getAxisTransform().getRange(), -1, 1);
 
 		// set new range
 		xaxis.getTickManager().getAxisTransform().setRange(new Range.Double(20, 30));
 
-		assertEquals(env.changeHistory.getCSN(), 3);
+		assertEquals(env.undoManager.getCSN(), 3);
 		PlotEx safeCopy3 = (PlotEx) env.copyMap.get(plotImpl0);
 
 		assertNotSame(safeCopy2, safeCopy3);
@@ -228,7 +228,7 @@ public class UndoRedoTest {
 
 		env.undo();
 
-		assertEquals(env.changeHistory.getCSN(), 2);
+		assertEquals(env.undoManager.getCSN(), 2);
 		checkRange(xaxis.getTickManager().getAxisTransform().getRange(), -1, 1);
 	}
 }
