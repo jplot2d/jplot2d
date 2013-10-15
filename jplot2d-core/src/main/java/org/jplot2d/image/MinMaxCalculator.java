@@ -35,6 +35,10 @@ public class MinMaxCalculator implements LimitsCalculator {
 	}
 
 	public double[] calcLimits(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
+		return calcMinMax(dbufs, sizeArray);
+	}
+
+	public static double[] calcMinMax(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
 		double min = Double.NaN;
 		double max = Double.NaN;
 		for (int i = 0; i < dbufs.length; i++) {

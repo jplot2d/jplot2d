@@ -32,6 +32,27 @@ public abstract class ByteDataBuffer extends ImageDataBuffer {
 		super(mask);
 	}
 
+	@Override
+	public byte getByte(int x, int y) {
+		return get(x, y);
+	}
+
+	@Override
+	public short getShort(int x, int y) {
+		return get(x, y);
+	}
+
+	@Override
+	public int getInt(int x, int y) {
+		return get(x, y);
+	}
+
+	@Override
+	public float getFloat(int x, int y) {
+		return get(x, y);
+	}
+
+	@Override
 	public double getDouble(int x, int y) {
 		return get(x, y);
 	}
@@ -111,6 +132,24 @@ public abstract class ByteDataBuffer extends ImageDataBuffer {
 
 	}
 
+	@Override
+	public double countValid(int w, int h) {
+		if (mask == null) {
+			return w * h;
+		} else {
+			int count = 0;
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					if (!isMasked(i, j)) {
+						count++;
+					}
+				}
+			}
+			return count;
+		}
+	}
+
+	@Override
 	public double[] calcMinMax(int w, int h) {
 
 		byte min = Byte.MAX_VALUE;
