@@ -32,6 +32,27 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 		super(mask);
 	}
 
+	@Override
+	public byte getByte(int x, int y) {
+		return (byte) get(x, y);
+	}
+
+	@Override
+	public short getShort(int x, int y) {
+		return (short) get(x, y);
+	}
+
+	@Override
+	public int getInt(int x, int y) {
+		return (int) get(x, y);
+	}
+
+	@Override
+	public float getFloat(int x, int y) {
+		return get(x, y);
+	}
+
+	@Override
 	public double getDouble(int x, int y) {
 		return get(x, y);
 	}
@@ -111,6 +132,34 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 
 	}
 
+	@Override
+	public double countValid(int w, int h) {
+		int count = 0;
+		if (!hasMasks()) {
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					float v = get(i, j);
+					if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+						count++;
+					}
+				}
+			}
+		} else {
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					if (!isMasked(i, j)) {
+						float v = get(i, j);
+						if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+							count++;
+						}
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
 	public double[] calcMinMax(int w, int h) {
 		float min = Float.NaN;
 		float max = Float.NaN;
@@ -122,7 +171,7 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
 				float v = get(i, j);
-				if (!isMasked(i, j) && v == v) {
+				if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
 					min = v;
 					max = v;
 					m = i;
@@ -144,7 +193,7 @@ public abstract class FloatDataBuffer extends ImageDataBuffer {
 		for (int j = n; j < h; j++) {
 			for (int i = m; i < w; i++) {
 				float v = get(i, j);
-				if (!isMasked(i, j) && (v != Float.POSITIVE_INFINITY) && (v != Float.NEGATIVE_INFINITY)) {
+				if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
 					if (min > v) {
 						min = v;
 					}

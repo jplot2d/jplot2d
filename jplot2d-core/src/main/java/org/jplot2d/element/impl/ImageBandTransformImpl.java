@@ -66,6 +66,7 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
 
 	public void setLimitsAlgorithm(LimitsAlgorithm algo) {
 		this.algo = algo;
+		redrawGraphs();
 	}
 
 	public IntensityTransform getIntensityTransform() {

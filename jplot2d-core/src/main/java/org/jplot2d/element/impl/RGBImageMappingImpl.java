@@ -150,8 +150,8 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
 			sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
 		}
 		redTransform.calcLimits(redBuffers, sizeArray);
-		greenTransform.calcLimits(redBuffers, sizeArray);
-		blueTransform.calcLimits(redBuffers, sizeArray);
+		greenTransform.calcLimits(greenBuffers, sizeArray);
+		blueTransform.calcLimits(blueBuffers, sizeArray);
 	}
 
 }

@@ -90,6 +90,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 	public void setLimitsAlgorithm(LimitsAlgorithm algo) {
 		this.algo = algo;
+		redrawGraphs();
 	}
 
 	public void recalcLimits() {

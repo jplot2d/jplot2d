@@ -32,6 +32,26 @@ public abstract class DoubleDataBuffer extends ImageDataBuffer {
 		super(mask);
 	}
 
+	@Override
+	public byte getByte(int x, int y) {
+		return (byte) get(x, y);
+	}
+
+	@Override
+	public short getShort(int x, int y) {
+		return (short) get(x, y);
+	}
+
+	@Override
+	public int getInt(int x, int y) {
+		return (int) get(x, y);
+	}
+
+	@Override
+	public float getFloat(int x, int y) {
+		return (float) get(x, y);
+	}
+
 	public double getDouble(int x, int y) {
 		return get(x, y);
 	}
@@ -111,6 +131,34 @@ public abstract class DoubleDataBuffer extends ImageDataBuffer {
 
 	}
 
+	@Override
+	public double countValid(int w, int h) {
+		int count = 0;
+		if (!hasMasks()) {
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					double v = get(i, j);
+					if (v == v && v != Double.POSITIVE_INFINITY && v != Double.NEGATIVE_INFINITY) {
+						count++;
+					}
+				}
+			}
+		} else {
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					if (!isMasked(i, j)) {
+						double v = get(i, j);
+						if (v == v && v != Double.POSITIVE_INFINITY && v != Double.NEGATIVE_INFINITY) {
+							count++;
+						}
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
 	public double[] calcMinMax(int w, int h) {
 		double min = Double.NaN;
 		double max = Double.NaN;
@@ -122,7 +170,7 @@ public abstract class DoubleDataBuffer extends ImageDataBuffer {
 		for (int j = 0; j < h; j++) {
 			for (int i = 0; i < w; i++) {
 				double v = get(i, j);
-				if (!isMasked(i, j) && v == v) {
+				if (!isMasked(i, j) && v == v && v != Double.POSITIVE_INFINITY && v != Double.NEGATIVE_INFINITY) {
 					min = v;
 					max = v;
 					m = i;
@@ -144,7 +192,7 @@ public abstract class DoubleDataBuffer extends ImageDataBuffer {
 		for (int j = n; j < h; j++) {
 			for (int i = m; i < w; i++) {
 				double v = get(i, j);
-				if (!isMasked(i, j) && (v != Double.POSITIVE_INFINITY) && (v != Double.NEGATIVE_INFINITY)) {
+				if (!isMasked(i, j) && v == v && v != Double.POSITIVE_INFINITY && v != Double.NEGATIVE_INFINITY) {
 					if (min > v) {
 						min = v;
 					}
