@@ -21,7 +21,7 @@ package org.jplot2d.transform;
 import org.jplot2d.util.Range;
 
 /**
- * Immutable! Transform between value range and normalized range.
+ * Immutable! Transform between value range and normalized range [0, 1].
  */
 public abstract class NormalTransform {
 
@@ -46,6 +46,10 @@ public abstract class NormalTransform {
 
 	public abstract NormalTransform zoom(Range npr);
 
+	public boolean isInverted() {
+		return getScale() < 0;
+	}
+
 	public abstract NormalTransform invert();
 
 	/**
@@ -67,13 +71,13 @@ public abstract class NormalTransform {
 	public abstract double convFromNR(double p);
 
 	public Range convToNR(Range wrange) {
-		return new Range.Double(convToNR(wrange.getStart()), wrange.isStartIncluded(),
-				convToNR(wrange.getEnd()), wrange.isEndIncluded());
+		return new Range.Double(convToNR(wrange.getStart()), wrange.isStartIncluded(), convToNR(wrange.getEnd()),
+				wrange.isEndIncluded());
 	}
 
 	public Range convFromNR(Range prange) {
-		return new Range.Double(convFromNR(prange.getStart()), prange.isStartIncluded(),
-				convFromNR(prange.getEnd()), prange.isEndIncluded());
+		return new Range.Double(convFromNR(prange.getStart()), prange.isStartIncluded(), convFromNR(prange.getEnd()),
+				prange.isEndIncluded());
 	}
 
 	/**
