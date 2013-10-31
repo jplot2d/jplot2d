@@ -119,13 +119,13 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	}
 
 	public boolean isInverted() {
-		// TODO Auto-generated method stub
-		return false;
+		return ntf.isInverted();
 	}
 
 	public void setInverted(boolean flag) {
-		// TODO Auto-generated method stub
-
+		if (ntf.isInverted() != flag) {
+			setNormalTransfrom(ntf.invert());
+		}
 	}
 
 	public boolean isAutoMargin() {
@@ -298,13 +298,18 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		return coreRange;
 	}
 
-	public void setCoreRange(Range range) {
-		if (range == null) {
-
+	public void setCoreRange(Range crange) {
+		if (crange == null) {
+			coreRange = null;
 		} else {
-			setRange(range, true);
+			if (crange.isInverted() != ntf.isInverted()) {
+				crange = crange.invert();
+			}
+			if (!crange.equals(coreRange)) {
+				coreRange = crange;
+				setRange(coreRange, true);
+			}
 		}
-		coreRange = range;
 	}
 
 	public Range getRange() {
@@ -312,11 +317,12 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	}
 
 	public void setRange(Range urange) {
-		if (urange.isInverted() != ntf.getValueRange().isInverted()) {
+		if (urange.isInverted() != ntf.isInverted()) {
 			urange = urange.invert();
 		}
-
-		setRange(urange, false);
+		if (!urange.equals(getRange())) {
+			setRange(urange, false);
+		}
 	}
 
 	/**

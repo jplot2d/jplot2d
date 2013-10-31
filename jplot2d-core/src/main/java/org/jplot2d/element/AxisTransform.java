@@ -70,26 +70,25 @@ public interface AxisTransform extends Element {
 	public void setTransform(TransformType txfType);
 
 	/**
-	 * Returns if the displaying is "inverted": (right-left) for abscissa, (top-bottom) for ordinate.
+	 * Returns <code>true</code> if this AxisTransform is inverted.
 	 * 
-	 * @return if flag=true the displaying is "inverted" , if flag=false the displaying is "normal"
+	 * @return <code>true</code> if this AxisTransform is inverted
 	 */
 	@Property(order = 2, styleable = false)
 	public boolean isInverted();
 
 	/**
-	 * Sets <code>false</code> to make this axis (and data) have "normal" displaying (left-right) for abscissa,
-	 * (bottom-top) for ordinate, or <code>true</code> to have "inverted" displaying (right-left) for abscissa,
-	 * (top-bottom) for ordinate.
+	 * Sets <code>false</code> to make this AxisTransform have "normal" displaying, or <code>true</code> to have
+	 * "inverted" displaying.
 	 * 
 	 * @param flag
-	 *            if flag is <code>true</code> the displaying is "inverted", if flag is <code>false</code> the
-	 *            displaying is "normal"
+	 *            if flag is <code>true</code> this AxisTransform is inverted, if flag is <code>false</code> this
+	 *            AxisTransform is normal
 	 */
 	public void setInverted(boolean flag);
 
 	/**
-	 * Returns <code>true</code> if the margin is extended to axis major tick automatically. The minimal margin is
+	 * Returns <code>true</code> if the margin is extended to an axis major tick automatically. The minimal margin is
 	 * controlled by {@link #getMarginFactor()}
 	 * 
 	 * @return <code>true</code> if the margin is auto-selected
@@ -98,7 +97,7 @@ public interface AxisTransform extends Element {
 	public boolean isAutoMargin();
 
 	/**
-	 * Controls if the the margin is extended to axis major tick automatically.
+	 * Controls if the the margin is extended to an axis major tick automatically.
 	 * 
 	 * @param autoMargin
 	 *            the switch
@@ -122,7 +121,8 @@ public interface AxisTransform extends Element {
 	public void setMarginFactor(double factor);
 
 	/**
-	 * Return the core range of the axis.
+	 * Return the core range of the AxisTransform. The returned range will be negative (start > end) if this
+	 * AxisTransform is inverted.
 	 * 
 	 * @return the core range
 	 */
@@ -130,8 +130,9 @@ public interface AxisTransform extends Element {
 	public Range getCoreRange();
 
 	/**
-	 * Set the core range of the axis. The range will expand according to the settings of autoMargin and marginFactor,
-	 * and derive an actual range. All locked axes will change with this axis.
+	 * Set the core range of the AxisTransform. The range will expand according to the settings of autoMargin and
+	 * marginFactor, and derive an actual range. The given range can be positive (start < end) or negative (start >
+	 * end). It has not effect on the inverted property. All locked axes will follow the change of this axis.
 	 * <p>
 	 * If user want set actual range directly by {@link #setRange(Range)}, The coreRange will be set to
 	 * <code>null</code> automatically.
@@ -142,7 +143,8 @@ public interface AxisTransform extends Element {
 	public void setCoreRange(Range range);
 
 	/**
-	 * Return the range of the axis. The range must be positive (start < end) even if the axis is inverted.
+	 * Return the range of the AxisTransform. The returned range will be negative (start > end) if this AxisTransform is
+	 * inverted.
 	 * 
 	 * @return the actual range displayed
 	 */
@@ -150,25 +152,26 @@ public interface AxisTransform extends Element {
 	public Range getRange();
 
 	/**
-	 * Set the actual range displayed in the axis. All locked axes will change with this axis.
+	 * Set the actual range displayed in the AxisTransform. The given range can be positive (start < end) or negative
+	 * (start > end). It has not effect on the inverted property. All locked axes will follow the change of this axis.
 	 * <p>
 	 * The coreRange is set to <code>null</code> after calling this method.
 	 * 
 	 * @param range
-	 *            the actual range to be set. The range must be positive (start < end) even if the axis is inverted.
+	 *            the actual range to be set.
 	 */
 	public void setRange(Range range);
 
 	/**
-	 * Returns the normal transform of this axis
+	 * Returns the normal transform of this AxisTransform
 	 * 
 	 * @return the normal transform
 	 */
 	public NormalTransform getNormalTransform();
 
 	/**
-	 * Returns the lock group to that this axis group belongs. A axis group must has a lock group, which have this axis
-	 * group at least.
+	 * Returns the lock group to that this AxisTransform belongs. A AxisTransform must has a lock group, which have this
+	 * AxisTransform at least.
 	 * 
 	 * @return
 	 */
@@ -194,7 +197,7 @@ public interface AxisTransform extends Element {
 	public AxisTickManager[] getTickManagers();
 
 	/**
-	 * Returns all layers attaching to this axis group.
+	 * Returns all layers attaching to this AxisTransform.
 	 * 
 	 * @return
 	 */

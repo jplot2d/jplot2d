@@ -474,10 +474,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		for (AxisTransformEx ax : arms) {
 			Range wr = ax.getNormalTransform().convFromNR(pRange);
-			// set the inverted nature
-			if (ax.getType().getDefaultWorldRange(ax.getTransform()).isInverted() != (wr.isInverted() ^ ax.isInverted())) {
-				wr = wr.invert();
-			}
 			ax.setNormalTransfrom(ax.getTransform().createNormalTransform(wr));
 		}
 
