@@ -378,21 +378,77 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray) {
+	/**
+	 * Create a XYGraph with the given x/y array.
+	 * 
+	 * @param xarray
+	 *            the x data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yarray
+	 *            the y data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @return a XYGraph object
+	 */
+	public XYGraph createXYGraph(Object xarray, Object yarray) {
 		return createXYGraph(new ArrayPair(xarray, yarray));
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray, String name) {
+	/**
+	 * Create a XYGraph with the given x/y array.
+	 * 
+	 * @param xarray
+	 *            the x data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yarray
+	 *            the y data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param name
+	 *            the name of created XYGraph, can display in legend
+	 * @return a XYGraph object
+	 */
+	public XYGraph createXYGraph(Object xarray, Object yarray, String name) {
 		return createXYGraph(new ArrayPair(xarray, yarray), name);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow, double[] xErrorHigh,
-			double[] yErrorLow, double[] yErrorHigh) {
+	/**
+	 * Create a XYGraph with the given x/y array, x low/high error array and y low/high error array.
+	 * 
+	 * @param xarray
+	 *            the x data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yarray
+	 *            the y data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param xErrorLow
+	 *            the x low error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param xErrorHigh
+	 *            the x high error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yErrorLow
+	 *            the y low error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yErrorHigh
+	 *            the y high error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @return a XYGraph object
+	 */
+	public XYGraph createXYGraph(Object xarray, Object yarray, Object xErrorLow, Object xErrorHigh, Object yErrorLow,
+			Object yErrorHigh) {
 		return createXYGraph(xarray, yarray, xErrorLow, xErrorHigh, yErrorLow, yErrorHigh, null);
 	}
 
-	public XYGraph createXYGraph(double[] xarray, double[] yarray, double[] xErrorLow, double[] xErrorHigh,
-			double[] yErrorLow, double[] yErrorHigh, String name) {
+	/**
+	 * Create a XYGraph with the given x/y array, x low/high error array and y low/high error array.
+	 * 
+	 * @param xarray
+	 *            the x data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yarray
+	 *            the y data array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param xErrorLow
+	 *            the x low error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param xErrorHigh
+	 *            the x high error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yErrorLow
+	 *            the y low error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param yErrorHigh
+	 *            the y high error array, can be byte[], short[], int[], long[], float[] or double[]
+	 * @param name
+	 *            the name of created XYGraph, can display in legend
+	 * @return a XYGraph object
+	 */
+	public XYGraph createXYGraph(Object xarray, Object yarray, Object xErrorLow, Object xErrorHigh, Object yErrorLow,
+			Object yErrorHigh, String name) {
 		ArrayPair errorX = null;
 		if (xErrorLow != null && xErrorHigh != null) {
 			errorX = new ArrayPair(xErrorLow, xErrorHigh);
@@ -404,33 +460,80 @@ public class ElementFactory {
 		return createXYGraph(new ArrayPair(xarray, yarray), errorX, errorY, name);
 	}
 
+	/**
+	 * Create a XYGraph with the given ArrayPair.
+	 * 
+	 * @param xy
+	 *            the x/y ArrayPair
+	 * @return a XYGraph object
+	 */
 	public XYGraph createXYGraph(ArrayPair xy) {
 		return createXYGraph(new XYGraphData(xy));
 	}
 
+	/**
+	 * Create a XYGraph with the given x/y ArrayPair.
+	 * 
+	 * @param xy
+	 *            the x/y ArrayPair
+	 * @param name
+	 *            the name of created XYGraph, can display in legend
+	 * @return a XYGraph object
+	 */
 	public XYGraph createXYGraph(ArrayPair xy, String name) {
 		return createXYGraph(new XYGraphData(xy), name);
 	}
 
+	/**
+	 * Create a XYGraph with the given x/y ArrayPair, x low/high error ArrayPair and y low/high error ArrayPair.
+	 * 
+	 * @param xy
+	 *            the x/y ArrayPair
+	 * @param errorX
+	 *            the x low/high error ArrayPair
+	 * @param errorY
+	 *            the y low/high error ArrayPair
+	 * @return a XYGraph object
+	 */
 	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY) {
 		return createXYGraph(new XYGraphData(xy, errorX, errorY));
 	}
 
+	/**
+	 * Create a XYGraph with the given x/y ArrayPair, x low/high error ArrayPair and y low/high error ArrayPair.
+	 * 
+	 * @param xy
+	 *            the x/y ArrayPair
+	 * @param errorX
+	 *            the x low/high error ArrayPair
+	 * @param errorY
+	 *            the y low/high error ArrayPair
+	 * @param name
+	 *            the name of created XYGraph, can display in legend
+	 * @return a XYGraph object
+	 */
 	public XYGraph createXYGraph(ArrayPair xy, ArrayPair errorX, ArrayPair errorY, String name) {
 		return createXYGraph(new XYGraphData(xy, errorX, errorY), name);
 	}
 
+	/**
+	 * Create a XYGraph with the given graph data
+	 * 
+	 * @param data
+	 *            the graph to be plotted
+	 * @return a XYGraph
+	 */
 	public XYGraph createXYGraph(XYGraphData data) {
 		return createXYGraph(data, null);
 	}
 
 	/**
-	 * Create a XYGraph with the given graph and name
+	 * Create a XYGraph with the given graph data and name
 	 * 
 	 * @param data
 	 *            the graph to be plotted
 	 * @param name
-	 *            the name
+	 *            the name of created XYGraph, can display in legend
 	 * @return a XYGraph
 	 */
 	public XYGraph createXYGraph(XYGraphData data, String name) {
