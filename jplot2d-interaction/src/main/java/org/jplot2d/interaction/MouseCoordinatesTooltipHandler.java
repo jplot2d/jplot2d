@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisTransform;
+import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractiveComp.CursorStyle;
@@ -111,12 +111,10 @@ public class MouseCoordinatesTooltipHandler extends MouseMoveBehaviorHandler<Mou
 		}
 
 		Set<AxisTransform> xats = new HashSet<AxisTransform>();
-		for (Axis axis : plot.getXAxes()) {
-			xats.add(axis.getTickManager().getAxisTransform());
-		}
 		Set<AxisTransform> yats = new HashSet<AxisTransform>();
-		for (Axis axis : plot.getYAxes()) {
-			yats.add(axis.getTickManager().getAxisTransform());
+		for (Layer layer : plot.getLayers()) {
+			xats.add(layer.getXAxisTransform());
+			yats.add(layer.getYAxisTransform());
 		}
 
 		StringBuilder sb = new StringBuilder();

@@ -1194,8 +1194,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private Set<AxisRangeLockGroupEx> getXAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
-		for (AxisEx axis : xAxis) {
-			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+		for (LayerEx layer : layers) {
+			AxisRangeLockGroupEx alg = layer.getXAxisTransform().getLockGroup();
 			if (alg.isZoomable()) {
 				algs.add(alg);
 			}
@@ -1208,8 +1208,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private Set<AxisRangeLockGroupEx> getYAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
-		for (AxisEx axis : yAxis) {
-			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+		for (LayerEx layer : layers) {
+			AxisRangeLockGroupEx alg = layer.getYAxisTransform().getLockGroup();
 			if (alg.isZoomable()) {
 				algs.add(alg);
 			}
