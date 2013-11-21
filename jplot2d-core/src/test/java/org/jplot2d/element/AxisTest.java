@@ -42,9 +42,9 @@ public class AxisTest {
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Component", "Axis");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
 				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation", "position", "axisLineWidth",
-				"gridLines", "minorGridLines", "tickVisible", "tickSide", "tickHeight", "minorTickHeight",
-				"tickLineWidth", "labelVisible", "labelSide", "labelOrientation", "labelColor");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis"), "orientation", "length", "position",
+				"axisLineWidth", "gridLines", "minorGridLines", "tickVisible", "tickSide", "tickHeight",
+				"minorTickHeight", "tickLineWidth", "labelVisible", "labelSide", "labelOrientation", "labelColor");
 
 		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Axis");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",

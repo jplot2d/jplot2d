@@ -73,13 +73,6 @@ public interface AxisEx extends Axis, ComponentEx {
 	public void setOrientation(AxisOrientation orientation);
 
 	/**
-	 * Returns the length of this axis.
-	 * 
-	 * @return the length
-	 */
-	public double getLength();
-
-	/**
 	 * Set the length for this axis.
 	 * 
 	 * @param length

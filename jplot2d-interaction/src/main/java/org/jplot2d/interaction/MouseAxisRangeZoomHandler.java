@@ -19,13 +19,10 @@
 package org.jplot2d.interaction;
 
 import java.awt.Point;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Point2D;
 
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
-import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionModeHandler;
@@ -61,17 +58,11 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 	 */
 	protected void handleMarquee(Point startPoint, Point endPoint) {
 
-		double start, end;
-		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-			start = startPoint.x;
-			end = endPoint.x;
-		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			start = startPoint.y;
-			end = endPoint.y;
-		} else {
-			throw new Error();
-		}
+		Point2D spp = axis.getPaperTransform().getDtoP(startPoint);
+		Point2D epp = axis.getPaperTransform().getDtoP(endPoint);
 
+		double start = spp.getX();
+		double end = epp.getX();
 		if (start > end) {
 			double temp = end;
 			end = start;
@@ -84,21 +75,8 @@ public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRang
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("Axis Range Zoom");
 
-		Plot plot = axis.getParent();
-
-		Dimension2D csize = plot.getContentSize();
-		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
-
-		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-			double npxStart = (start - plotRect.getX()) / plotRect.getWidth();
-			double npxEnd = (end - plotRect.getX()) / plotRect.getWidth();
-			axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
-		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			double npyStart = 1 - (end - plotRect.getY()) / plotRect.getHeight();
-			double npyEnd = 1 - (start - plotRect.getY()) / plotRect.getHeight();
-			axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npyStart, npyEnd);
-		}
+		double length = axis.getLength();
+		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start / length, end / length);
 
 		env.endBatch(token, UINoticeType.getInstance());
 

@@ -36,6 +36,14 @@ public interface Axis extends PComponent {
 	public Plot getParent();
 
 	/**
+	 * Returns the title of this axis.
+	 * 
+	 * @return the title of this axis
+	 */
+	@Hierarchy(HierarchyOp.GET)
+	public AxisTitle getTitle();
+
+	/**
 	 * Returns the tick manager of this axis.
 	 * 
 	 * @return the tick manager of this axis
@@ -56,11 +64,19 @@ public interface Axis extends PComponent {
 	public AxisOrientation getOrientation();
 
 	/**
+	 * Returns the paper length of this axis.
+	 * 
+	 * @return the paper length
+	 */
+	@Property(order = 1)
+	public double getLength();
+
+	/**
 	 * Return the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
 	 * 
 	 * @return the position of the axis in the plot.
 	 */
-	@Property(order = 1)
+	@Property(order = 2)
 	public AxisPosition getPosition();
 
 	/**
@@ -76,7 +92,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the axis line width
 	 */
-	@Property(order = 2)
+	@Property(order = 3)
 	public float getAxisLineWidth();
 
 	/**
@@ -92,7 +108,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return true if the grid line is displayed
 	 */
-	@Property(order = 3, displayName = "Grid Lines")
+	@Property(order = 4, displayName = "Grid Lines")
 	public boolean isGridLines();
 
 	/**
@@ -108,7 +124,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return true if the minor grid line is displayed
 	 */
-	@Property(order = 4, displayName = "Minor Grid Lines")
+	@Property(order = 5, displayName = "Minor Grid Lines")
 	public boolean isMinorGridLines();
 
 	/**
@@ -124,7 +140,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
-	@Property(order = 5)
+	@Property(order = 6)
 	public boolean isTickVisible();
 
 	/**
@@ -137,7 +153,7 @@ public interface Axis extends PComponent {
 	/**
 	 * Return the direction of the ticks
 	 */
-	@Property(order = 6)
+	@Property(order = 7)
 	public AxisTickSide getTickSide();
 
 	/**
@@ -150,7 +166,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the height of the ticks
 	 */
-	@Property(order = 7)
+	@Property(order = 8)
 	public double getTickHeight();
 
 	/**
@@ -166,7 +182,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the height of the minor ticks.
 	 */
-	@Property(order = 8)
+	@Property(order = 9)
 	public double getMinorTickHeight();
 
 	/**
@@ -182,7 +198,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the axis line width
 	 */
-	@Property(order = 9)
+	@Property(order = 10)
 	public float getTickLineWidth();
 
 	/**
@@ -198,7 +214,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return if the tick mark is shown or not
 	 */
-	@Property(order = 10)
+	@Property(order = 11)
 	public boolean isLabelVisible();
 
 	/**
@@ -211,7 +227,7 @@ public interface Axis extends PComponent {
 	/**
 	 * Return the position of the label of the ticks
 	 */
-	@Property(order = 11)
+	@Property(order = 12)
 	public AxisLabelSide getLabelSide();
 
 	/**
@@ -226,7 +242,7 @@ public interface Axis extends PComponent {
 	 *         0 HORIZONTAL<br>
 	 *         1 VERTICAL
 	 */
-	@Property(order = 12)
+	@Property(order = 13)
 	public AxisOrientation getLabelOrientation();
 
 	/**
@@ -242,7 +258,7 @@ public interface Axis extends PComponent {
 	 * 
 	 * @return the color of the labels
 	 */
-	@Property(order = 13)
+	@Property(order = 14)
 	public Color getLabelColor();
 
 	/**
@@ -252,13 +268,5 @@ public interface Axis extends PComponent {
 	 *            the color of the labels
 	 */
 	public void setLabelColor(Color color);
-
-	/**
-	 * Returns the title of this axis.
-	 * 
-	 * @return the title of this axis
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public AxisTitle getTitle();
 
 }

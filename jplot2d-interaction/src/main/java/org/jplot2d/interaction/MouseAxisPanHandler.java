@@ -18,13 +18,9 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
-
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
-import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionModeHandler;
@@ -70,7 +66,7 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 			offset = x - oldv;
 			oldv = x;
 		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			offset = y - oldv;
+			offset = oldv - y;
 			oldv = y;
 		} else {
 			throw new Error();
@@ -82,13 +78,8 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("MarqueeZoom");
 
-		Plot plot = axis.getParent();
-
-		Dimension2D csize = plot.getContentSize();
-		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
-
-		double npxStart = -offset / plotRect.getWidth();
+		double scale = axis.getPaperTransform().getScale();
+		double npxStart = -offset / (axis.getLength() * scale);
 		double npxEnd = 1 + npxStart;
 		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
 

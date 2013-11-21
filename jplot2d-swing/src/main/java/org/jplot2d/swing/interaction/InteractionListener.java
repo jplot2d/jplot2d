@@ -127,8 +127,7 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		ihandler.mouseWheelMoved(new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX(), e.getY(), e
-				.getWheelRotation(), e.getButton()));
+		ihandler.mouseWheelMoved(getGenericMouseEvent(e));
 	}
 
 	public void draw(Object graphics) {
@@ -143,8 +142,14 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
 	 * @return GenericMouseEvent
 	 */
 	private GenericMouseEvent getGenericMouseEvent(MouseEvent e) {
+		int count;
+		if (e instanceof MouseWheelEvent) {
+			count = ((MouseWheelEvent) e).getWheelRotation();
+		} else {
+			count = e.getClickCount();
+		}
 		GenericMouseEvent gme = new GenericMouseEvent(e.getID(), e.getModifiersEx(), e.getX() - comp.getImageOffsetX(),
-				e.getY() - comp.getImageOffsetY(), e.getClickCount(), e.getButton());
+				e.getY() - comp.getImageOffsetY(), count, e.getButton());
 		// System.out.println(gme);
 		return gme;
 	}
