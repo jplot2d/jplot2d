@@ -194,14 +194,21 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMov
 			break;
 		}
 
-		if (eid == GenericMouseEvent.MOUSE_PRESSED) {
+		int count = e.count;
+		switch (eid) {
+		case GenericMouseEvent.MOUSE_WHEEL:
+			count = -count;
+			break;
+		case GenericMouseEvent.MOUSE_PRESSED:
 			modifiers |= buttomMask;
-		} else if (eid == GenericMouseEvent.MOUSE_RELEASED) {
+			break;
+		case GenericMouseEvent.MOUSE_RELEASED:
 			modifiers &= ~buttomMask;
+			break;
 		}
 
 		GenericMouseEvent gme = new GenericMouseEvent(eid, modifiers, e.x - comp.getImageOffsetX(), e.y
-				- comp.getImageOffsetY(), e.count, button);
+				- comp.getImageOffsetY(), count, button);
 		// System.out.println(gme);
 		return gme;
 	}
