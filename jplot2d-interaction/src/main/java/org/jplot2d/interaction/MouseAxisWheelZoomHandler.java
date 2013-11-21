@@ -18,13 +18,11 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
-import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.interaction.InteractionModeHandler;
@@ -55,23 +53,12 @@ public class MouseAxisWheelZoomHandler extends MouseWheelBehaviorHandler<MouseAx
 			scale = 1.0 / 2;
 		}
 
+		Point2D pp = axis.getPaperTransform().getDtoP(new Point(x, y));
+
 		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		BatchToken token = env.beginBatch("AxisWheelZoom");
 
-		Plot plot = axis.getParent();
-
-		Dimension2D csize = plot.getContentSize();
-		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
-
-		double npv;
-		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-			npv = (x - plotRect.getX()) / plotRect.getWidth();
-		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			npv = 1 - (y - plotRect.getY()) / plotRect.getHeight();
-		} else {
-			throw new Error();
-		}
+		double npv = pp.getX() / axis.getLength();
 		double start = npv * (1 - scale);
 		double end = start + scale;
 
