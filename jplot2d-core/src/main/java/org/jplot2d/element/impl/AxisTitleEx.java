@@ -23,6 +23,7 @@ import java.awt.geom.Dimension2D;
 
 import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
 
 /**
  * @author Jingjing Li
@@ -31,8 +32,23 @@ import org.jplot2d.element.VAlign;
 public interface AxisTitleEx extends AxisTitle, ElementEx {
 
 	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
-	 * eg, TOP means the title is on the top of the base point
+	 * Returns the math model of this component.
+	 * 
+	 * @return the math model
+	 */
+	public MathElement getTextModel();
+
+	/**
+	 * Sets the math model of this component.
+	 * 
+	 * @param model
+	 *            the math model
+	 */
+	public void setTextModel(MathElement model);
+
+	/**
+	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
+	 * the base point
 	 * 
 	 * @param vAlign
 	 *            the vertical alignment.
@@ -50,14 +66,11 @@ public interface AxisTitleEx extends AxisTitle, ElementEx {
 	 * Draw this component only. All its children is not drawn.
 	 * 
 	 * @param g
-	 *            to the Graphics2D drawing. The transformation of this
-	 *            component is not applied.
-	 * @param xt
+	 *            to the Graphics2D drawing. The transformation of this component is not applied.
+	 * @param x
 	 *            the x position
-	 * @param titleOffset
+	 * @param y
 	 *            the y position
-	 * @param titleVAlign
-	 *            the vertical alignment
 	 */
 	public void draw(Graphics2D g, double x, double y);
 

@@ -23,7 +23,6 @@ import java.awt.Font;
 
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
-import org.jplot2d.tex.MathElement;
 
 /**
  * A component who represent a text string. The text string can be a math element.
@@ -143,7 +142,7 @@ public interface AxisTitle extends Element {
 	 * @return the effective font of this axis title
 	 */
 	public Font getEffectiveFont();
-	
+
 	/**
 	 * Sets the font name, style and size for this component.
 	 * 
@@ -170,24 +169,5 @@ public interface AxisTitle extends Element {
 	 * @param text
 	 */
 	public void setText(String text);
-
-	/**
-	 * Returns the math model of this component.
-	 * 
-	 * @return the math model
-	 */
-	public MathElement getTextModel();
-
-	/**
-	 * Defines lines of math text to be displayed. The math model can be parsed from a TeX-like string . A pair of "$"
-	 * mark into math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc.
-	 * Superscripts (up high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply
-	 * only to the next single character. If you want several things to be superscripted or subscripted, just enclose
-	 * them in braces. eg: "plain text $x_\alpha^{2y}$".
-	 * 
-	 * @param model
-	 *            the math model
-	 */
-	public void setTextModel(MathElement model);
 
 }
