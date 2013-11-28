@@ -22,14 +22,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
@@ -87,8 +84,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	private MathLabel getLabel() {
 		if (label == null && getLegend() != null && getLegend().getEffectiveFont().getSize2D() > 0) {
-			label = new MathLabel(getTextModel(), getLegend().getEffectiveFont(), VAlign.MIDDLE,
-					HAlign.LEFT);
+			label = new MathLabel(getTextModel(), getLegend().getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
 		}
 		return label;
 	}
@@ -194,37 +190,17 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	private void drawSymbol(Graphics2D g, float x, float y, Color color) {
 		XYGraphEx graph = getParent();
 
-		if (graph.getSymbolShape() == SymbolShape.DOT) {
-			// use 0 width stroke to draw dot marks
-			BasicStroke markStroke = new BasicStroke(0);
-			g.setStroke(markStroke);
-			g.setColor(color);
-			Shape dot = new Line2D.Float(x, y, x, y);
-			g.draw(dot);
-		} else {
-			// use half of line stroke to draw marks
-			float lw = graph.getLineStroke().getLineWidth() / 2;
-			g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-			g.setColor(color);
+		// use half of line stroke to draw marks
+		float lw = graph.getLineStroke().getLineWidth() / 2;
+		g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		g.setColor(color);
 
-			float actSymbolSize = getEffectiveSymbolSize();
-			AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
-			maf.scale(actSymbolSize, actSymbolSize);
+		float actSymbolSize = getEffectiveSymbolSize();
+		AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
+		maf.scale(actSymbolSize, actSymbolSize);
 
-			SymbolShape ss = graph.getSymbolShape();
-			Iterator<Shape> dit = ss.getDrawShapeIterator();
-			while (dit.hasNext()) {
-				Shape s = maf.createTransformedShape(dit.next());
-				g.draw(s);
-			}
-
-			Iterator<Shape> fit = ss.getFillShapeIterator();
-			while (fit.hasNext()) {
-				Shape s = maf.createTransformedShape(fit.next());
-				g.fill(s);
-			}
-		}
-
+		SymbolShape ss = graph.getSymbolShape();
+		ss.draw(g, maf);
 	}
 
 	private void drawLabel(Graphics2D g) {
