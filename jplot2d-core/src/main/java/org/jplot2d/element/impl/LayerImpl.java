@@ -258,6 +258,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	public void setAxesTransform(AxisTransform xaxis, AxisTransform yaxis) {
 		setXAxisTransform(xaxis);
 		setYAxisTransform(yaxis);
+
+		if (xaxis != null && yaxis != null) {
+			transformChanged();
+		}
 	}
 
 	@Override
