@@ -27,7 +27,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.jplot2d.data.XYGraphData;
@@ -60,7 +59,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	private ChartType chartType = ChartType.LINECHART;
 
-	private SymbolShape symbolShape = SymbolShape.DOT;
+	private SymbolShape symbolShape = SymbolShape.CIRCLE;
 
 	private float symbolSize = 8.0f;
 
@@ -617,52 +616,25 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 	static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph, Color[] colors,
 			double scale) {
 
-		if (graph.getSymbolShape() == SymbolShape.DOT) {
-			// use 0 width stroke to draw dot marks
-			BasicStroke markStroke = new BasicStroke(0);
-			g.setStroke(markStroke);
+		// use half of line stroke to draw marks
+		double lw = graph.getLineStroke().getLineWidth() * scale / 2;
+		g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 
-			for (int i = 0; i < npoints; i++) {
-				/* not draw mark if the point is brought to clip border */
-				if (colors[i] == null) {
-					continue;
-				}
-				g.setColor(colors[i]);
-				Shape dot = new Line2D.Float(xp[i], yp[i], xp[i], yp[i]);
-				g.draw(dot);
+		SymbolShape ss = graph.getSymbolShape();
+		for (int i = 0; i < npoints; i++) {
+			/* not draw mark if the point is brought to clip border */
+			if (colors[i] == null) {
+				continue;
 			}
-		} else {
-			// use half of line stroke to draw marks
-			double lw = graph.getLineStroke().getLineWidth() * scale / 2;
-			g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 
-			SymbolShape ss = graph.getSymbolShape();
-			for (int i = 0; i < npoints; i++) {
-				/* not draw mark if the point is brought to clip border */
-				if (colors[i] == null) {
-					continue;
-				}
+			g.setColor(colors[i]);
 
-				g.setColor(colors[i]);
+			double safScale = scale * graph.getSymbolSize();
+			AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
+			maf.scale(safScale, -safScale);
 
-				double safScale = scale * graph.getSymbolSize();
-				AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
-				maf.scale(safScale, -safScale);
-
-				Iterator<Shape> dit = ss.getDrawShapeIterator();
-				while (dit.hasNext()) {
-					Shape s = maf.createTransformedShape(dit.next());
-					g.draw(s);
-				}
-
-				Iterator<Shape> fit = ss.getFillShapeIterator();
-				while (fit.hasNext()) {
-					Shape s = maf.createTransformedShape(fit.next());
-					g.fill(s);
-				}
-
-			}
+			ss.draw(g, maf);
 		}
-
 	}
+
 }
