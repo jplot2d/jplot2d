@@ -21,7 +21,7 @@ package org.jplot2d.data;
 import java.nio.DoubleBuffer;
 
 /**
- * This class extends ImageDataBuffer and stores data internally as floats.
+ * This class extends ImageDataBuffer and stores data internally as doubles.
  * 
  * @author Jingjing Li
  * 
