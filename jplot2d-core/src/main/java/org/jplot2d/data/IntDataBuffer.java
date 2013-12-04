@@ -21,7 +21,7 @@ package org.jplot2d.data;
 import java.nio.IntBuffer;
 
 /**
- * This class extends ImageDataBuffer and stores data internally as bytes.
+ * This class extends ImageDataBuffer and stores data internally as integers.
  * 
  * @author Jingjing Li
  * 
