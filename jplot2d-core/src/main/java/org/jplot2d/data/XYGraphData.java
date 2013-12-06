@@ -58,9 +58,9 @@ public final class XYGraphData implements GraphData {
 
 	private double _ymax = Double.NaN;
 
-	private Range _xboundary;
+	private final Range _xboundary;
 
-	private Range _yboundary;
+	private final Range _yboundary;
 
 	private boolean hasPointOutsideXBounds, hasPointOutsideYBounds;
 
@@ -81,7 +81,7 @@ public final class XYGraphData implements GraphData {
 		extractDataFeature();
 	}
 
-	public XYGraphData setBoundary(Range xboundary, Range yboundary) {
+	public XYGraphData applyBoundary(Range xboundary, Range yboundary) {
 		return new XYGraphData(_xy, _errorX, _errorY, xboundary, yboundary);
 	}
 

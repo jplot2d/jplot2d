@@ -30,12 +30,18 @@ public class SingleBandImageData extends ImageData {
 	private final ImageDataBuffer dataBuffer;
 
 	public SingleBandImageData(ImageDataBuffer dataBuffer, int w, int h) {
-		super(w, h, null, null);
+		super(w, h, new ImageCoordinateReference(), null, null);
 		this.dataBuffer = dataBuffer;
 	}
 
-	protected SingleBandImageData(ImageDataBuffer dataBuffer, int w, int h, Range xboundary, Range yboundary) {
-		super(w, h, xboundary, yboundary);
+	public SingleBandImageData(ImageDataBuffer dataBuffer, int w, int h, ImageCoordinateReference cr) {
+		super(w, h, cr, null, null);
+		this.dataBuffer = dataBuffer;
+	}
+
+	protected SingleBandImageData(ImageDataBuffer dataBuffer, int w, int h, ImageCoordinateReference cr, Range xboundary,
+			Range yboundary) {
+		super(w, h, cr, xboundary, yboundary);
 		this.dataBuffer = dataBuffer;
 	}
 
@@ -43,8 +49,13 @@ public class SingleBandImageData extends ImageData {
 		return dataBuffer;
 	}
 
-	public SingleBandImageData setBoundary(Range xboundary, Range yboundary) {
-		return new SingleBandImageData(getDataBuffer(), getWidth(), getHeight(), xboundary, yboundary);
+	public SingleBandImageData applyCoordinateReference(ImageCoordinateReference cr) {
+		return new SingleBandImageData(getDataBuffer(), getWidth(), getHeight(), cr, getXRange(), getYRange());
+	}
+
+	public SingleBandImageData applyBoundary(Range xboundary, Range yboundary) {
+		return new SingleBandImageData(getDataBuffer(), getWidth(), getHeight(), getCoordinateReference(), xboundary,
+				yboundary);
 	}
 
 }

@@ -30,12 +30,18 @@ public class MultiBandImageData extends ImageData {
 	private final ImageDataBuffer[] dataBuffer;
 
 	public MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h) {
-		super(w, h, null, null);
+		super(w, h, new ImageCoordinateReference(), null, null);
 		this.dataBuffer = dataBuffer;
 	}
 
-	protected MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, Range xboundary, Range yboundary) {
-		super(w, h, xboundary, yboundary);
+	public MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, ImageCoordinateReference cr) {
+		super(w, h, cr, null, null);
+		this.dataBuffer = dataBuffer;
+	}
+
+	protected MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, ImageCoordinateReference cr,
+			Range xboundary, Range yboundary) {
+		super(w, h, cr, xboundary, yboundary);
 		this.dataBuffer = dataBuffer;
 	}
 
@@ -43,8 +49,13 @@ public class MultiBandImageData extends ImageData {
 		return dataBuffer;
 	}
 
-	public MultiBandImageData setBoundary(Range xboundary, Range yboundary) {
-		return new MultiBandImageData(getDataBuffer(), getWidth(), getHeight(), xboundary, yboundary);
+	public MultiBandImageData applyCoordinateReference(ImageCoordinateReference cr) {
+		return new MultiBandImageData(getDataBuffer(), getWidth(), getHeight(), cr, getXRange(), getYRange());
+	}
+
+	public MultiBandImageData applyBoundary(Range xboundary, Range yboundary) {
+		return new MultiBandImageData(getDataBuffer(), getWidth(), getHeight(), getCoordinateReference(), xboundary,
+				yboundary);
 	}
 
 }

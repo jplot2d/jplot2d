@@ -21,37 +21,28 @@ package org.jplot2d.data;
 import org.jplot2d.util.Range;
 
 /**
- * Immutable. This class keep (x,y) data pairs and compute data feature such as max/min, NaN indexes.
+ * Immutable. This class keep (x,y) image data and compute data feature such as max/min, NaN indexes.
  * 
  * @author Jingjing Li
  */
 public abstract class ImageData implements GraphData {
 
-	private int imgWidth, imgHeight;
+	private final int imgWidth, imgHeight;
 
-	protected Range xboundary;
+	protected final Range xboundary;
 
-	protected Range yboundary;
+	protected final Range yboundary;
 
-	protected double xRefVal = 0.0;
-
-	protected double xRefPixel = 0.5;
-
-	protected double xDelta = 1;
-
-	protected double yRefVal = 0.0;
-
-	protected double yRefPixel = 0.5;
-
-	protected double yDelta = 1;
+	protected final ImageCoordinateReference coordref;
 
 	private double xmin, xmax;
 
 	private double ymin, ymax;
 
-	protected ImageData(int w, int h, Range xboundary, Range yboundary) {
+	protected ImageData(int w, int h, ImageCoordinateReference cr, Range xboundary, Range yboundary) {
 		this.imgWidth = w;
 		this.imgHeight = h;
+		this.coordref = new ImageCoordinateReference(cr);
 		this.xboundary = xboundary;
 		this.yboundary = yboundary;
 
@@ -67,10 +58,10 @@ public abstract class ImageData implements GraphData {
 	}
 
 	protected void updateRanges() {
-		xmin = xRefVal - (xRefPixel - 0.5) * xDelta;
-		xmax = xmin + imgWidth * xDelta;
-		ymin = yRefVal - (yRefPixel - 0.5) * yDelta;
-		ymax = ymin + imgHeight * yDelta;
+		xmin = coordref.xRefVal - (coordref.xRefPixel - 0.5) * coordref.xDelta;
+		xmax = xmin + imgWidth * coordref.xDelta;
+		ymin = coordref.yRefVal - (coordref.yRefPixel - 0.5) * coordref.yDelta;
+		ymax = ymin + imgHeight * coordref.yDelta;
 
 		if (!inXBoundary(xmin)) {
 			xmin = xboundary.getMin();
@@ -116,23 +107,19 @@ public abstract class ImageData implements GraphData {
 		return false;
 	}
 
+	public ImageCoordinateReference getCoordinateReference() {
+		return new ImageCoordinateReference(coordref);
+	}
+
+	public abstract ImageData applyCoordinateReference(ImageCoordinateReference cr);
+
 	/**
 	 * Get the coordinate reference value of the X axis
 	 * 
 	 * @return the coordinate reference value of the X axis
 	 */
 	public double getXcrval() {
-		return xRefVal;
-	}
-
-	/**
-	 * Set the coordinate reference value of the X axis
-	 * 
-	 * @param xcrval
-	 *            the coordinate reference value of the X axis
-	 */
-	public void setXcrval(double xcrval) {
-		xRefVal = xcrval;
+		return coordref.xRefVal;
 	}
 
 	/**
@@ -141,17 +128,7 @@ public abstract class ImageData implements GraphData {
 	 * @return the coordinate reference value of the Y axis
 	 */
 	public double getYcrval() {
-		return yRefVal;
-	}
-
-	/**
-	 * Set the coordinate reference value of the Y axis
-	 * 
-	 * @param ycrval
-	 *            the coordinate reference value of the Y axis
-	 */
-	public void setYcrval(double ycrval) {
-		yRefVal = ycrval;
+		return coordref.yRefVal;
 	}
 
 	/**
@@ -160,17 +137,7 @@ public abstract class ImageData implements GraphData {
 	 * @return the coordinate reference pixel in the X axis
 	 */
 	public double getXcrpix() {
-		return xRefPixel;
-	}
-
-	/**
-	 * Set the coordinate reference pixel in the X axis
-	 * 
-	 * @param xcrpix
-	 *            the coordinate reference pixel in the X axis
-	 */
-	public void setXcrpix(double xcrpix) {
-		xRefPixel = xcrpix;
+		return coordref.xRefPixel;
 	}
 
 	/**
@@ -179,17 +146,7 @@ public abstract class ImageData implements GraphData {
 	 * @return the coordinate reference pixel in the Y axis
 	 */
 	public double getYcrpix() {
-		return yRefPixel;
-	}
-
-	/**
-	 * Set the coordinate reference pixel in the Y axis
-	 * 
-	 * @param ycrpix
-	 *            the coordinate reference pixel in the Y axis
-	 */
-	public void setYcrpix(double ycrpix) {
-		yRefPixel = ycrpix;
+		return coordref.yRefPixel;
 	}
 
 	/**
@@ -198,17 +155,7 @@ public abstract class ImageData implements GraphData {
 	 * @return the pixel size in the X direction
 	 */
 	public double getXcdelt() {
-		return xDelta;
-	}
-
-	/**
-	 * Set the pixel size in the X direction
-	 * 
-	 * @param xcdelt
-	 *            the pixel size in the X direction
-	 */
-	public void setXcdelt(double xcdelt) {
-		xDelta = xcdelt;
+		return coordref.xDelta;
 	}
 
 	/**
@@ -217,17 +164,7 @@ public abstract class ImageData implements GraphData {
 	 * @return the pixel size in the Y direction
 	 */
 	public double getYcdelt() {
-		return yDelta;
-	}
-
-	/**
-	 * Set the pixel size in the Y direction
-	 * 
-	 * @param ycdelt
-	 *            the pixel size in the Y direction
-	 */
-	public void setYcdelt(double ydelt) {
-		yDelta = ydelt;
+		return coordref.yDelta;
 	}
 
 }
