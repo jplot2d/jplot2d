@@ -255,11 +255,11 @@ class AxisRangeUtils {
 				Range wDRange = new Range.Double();
 				if (layer.getXAxisTransform() == arm) {
 					for (GraphEx dp : layer.getGraphs()) {
-						wDRange = dp.getData().setBoundary(urange, null).getXRange().union(wDRange);
+						wDRange = dp.getData().applyBoundary(urange, null).getXRange().union(wDRange);
 					}
 				} else if (layer.getYAxisTransform() == arm) {
 					for (GraphEx dp : layer.getGraphs()) {
-						wDRange = dp.getData().setBoundary(null, urange).getYRange().union(wDRange);
+						wDRange = dp.getData().applyBoundary(null, urange).getYRange().union(wDRange);
 					}
 				}
 				if (wDRange != null) {

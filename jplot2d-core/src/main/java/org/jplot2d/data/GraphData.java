@@ -37,7 +37,7 @@ public interface GraphData {
 	 *            the new boundary to apply
 	 * @return a new GraphData instance
 	 */
-	public GraphData setBoundary(Range xboundary, Range yboundary);
+	public GraphData applyBoundary(Range xboundary, Range yboundary);
 
 	/**
 	 * Returns x range which contains all valid data in x boundary. If there is no valid data in x boundary, the empty
