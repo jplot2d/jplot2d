@@ -40,35 +40,34 @@ public abstract class MouseBehaviorHandler<B extends MouseBehavior> {
 	}
 
 	/**
-	 * Processes the key pressed event. Returns true if the event is processed correctly and should
-	 * not be passed on to other behaviors. Returns false if this behavior does not process the
-	 * event. returns true.
+	 * Notify that the registered modifiers key is entered. Returns <code>true</code> if the event is processed
+	 * correctly and should not be passed on to other behaviors. Returns <code>false</code> if this behavior does not
+	 * process the event. By default, returns <code>false</code>.
 	 * 
-	 * @return
-	 * 
+	 * @return <code>true</code> if the event is processed correctly
 	 */
 	public boolean enterModifiersKey() {
 		return false;
 	}
 
 	/**
-	 * Processes the key released event. Returns true if the event is processed correctly and should
-	 * not be passed on to other behaviors. Returns false if this behavior does not process the
-	 * event. returns true.
+	 * Notify that the registered modifiers key is exited. Returns <code>true</code> if the event is processed correctly
+	 * and should not be passed on to other behaviors. Returns <code>false</code> if this behavior does not process the
+	 * event. By default, returns <code>false</code>.
 	 * 
-	 * @return
+	 * @return <code>true</code> if the event is processed correctly
 	 */
 	public boolean exitModifiersKey() {
 		return false;
 	}
 
 	/**
-	 * Processes the mouse event. Returns true if the event is processed correctly and should not be
-	 * passed on to other behaviors. Returns false if this behavior does not process the event.
-	 * returns true.
+	 * Processes the mouse event. Returns <code>true</code> if the event is processed correctly and should not be passed
+	 * on to other behaviors. Returns <code>false</code> if this behavior does not process the event.
 	 * 
 	 * @param e
 	 *            the mouse event
+	 * @return <code>true</code> if the event is processed correctly
 	 */
 	public abstract boolean processMouseEvent(GenericMouseEvent e);
 
