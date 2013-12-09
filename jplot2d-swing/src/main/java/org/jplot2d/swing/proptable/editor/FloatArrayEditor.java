@@ -19,7 +19,6 @@
 package org.jplot2d.swing.proptable.editor;
 
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 import org.jplot2d.util.NumberArrayUtils;
 
@@ -57,9 +56,9 @@ public class FloatArrayEditor extends AbstractPropertyEditor<JTextField> {
 		oldValue = (float[]) value;
 
 		if (value == null) {
-			((JTextComponent) editor).setText("");
+			editor.setText("");
 		} else {
-			((JTextComponent) editor).setText(NumberArrayUtils.toString((float[]) value));
+			editor.setText(NumberArrayUtils.toString((float[]) value));
 		}
 	}
 
