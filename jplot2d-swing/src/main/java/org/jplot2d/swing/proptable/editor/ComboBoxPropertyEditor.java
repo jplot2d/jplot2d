@@ -42,7 +42,7 @@ public class ComboBoxPropertyEditor extends AbstractPropertyEditor<JComboBox> {
 	}
 
 	public Object getValue() {
-		Object selected = ((JComboBox) editor).getSelectedItem();
+		Object selected = editor.getSelectedItem();
 		return selected;
 	}
 
