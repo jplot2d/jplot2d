@@ -39,7 +39,8 @@ import org.jplot2d.annotation.PropertyGroup;
 /**
  * This class extract properties from method declaration, rather than using java introspector. The property annotation
  * is defined on getter. if a sub-interface override a getter, the overriding method will take effect. The setter method
- * type must match the getter return type. setter methods with same name but different argument type are not allowed.
+ * type must match the getter's return type. setter methods with same name but different argument type are not allowed.
+ * The indexed getter and setter are not considered.
  * 
  * @author Jingjing Li
  * 
