@@ -16,8 +16,7 @@ from java.awt import Paint
 from java.awt.geom import Dimension2D
 from java.awt.geom import Point2D
 
-from org.python.core import PyArray
-from jarray import array
+import jarray
 
 
 jplot2d_default_element_factory = ElementFactory.getInstance()
@@ -115,8 +114,15 @@ def layer(*args, **kwargs):
 
 
 def xygraph(*args, **kwargs):
-    graph = jplot2d_default_element_factory.createXYGraph(*args);
-            
+    arglist = []
+    for arg in args:
+        if type(arg) == list or type(arg) == tuple:
+            arglist.append(jarray.array(arg, 'd'))
+        else:
+            arglist.append(arg)
+
+    graph = jplot2d_default_element_factory.createXYGraph(*arglist);
+        
     ginfo = InterfaceInfo.loadInterfaceInfo(XYGraph)
     for key in kwargs:
         if ginfo.isWritableProp(key):
