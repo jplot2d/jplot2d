@@ -26,12 +26,12 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.impl.XYGraphDataChunker.ChunkData;
 import org.jplot2d.util.GraphicsUtil;
+import org.jplot2d.util.SparseArray;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -65,7 +65,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	private Color symbolColor;
 
-	private final Map<Integer, Color> _symbolColorMap = new HashMap<Integer, Color>();
+	private final SparseArray<Color> symbolColors = new SparseArray<Color>();
 
 	private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
@@ -188,6 +188,39 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 		redraw(this);
 	}
 
+	public Color getIndSymbolColor(int idx) {
+		if (symbolColors.size() > 0) {
+			return symbolColors.get(idx);
+		} else {
+			return null;
+		}
+	}
+
+	public void setIndSymbolColor(int idx, Color color) {
+		Color oldColor = getIndSymbolColor(idx);
+		if (color == oldColor) {
+			return;
+		}
+		if (color == null || !color.equals(oldColor)) {
+			symbolColors.put(idx, color);
+			redraw(this);
+		}
+	}
+
+	public void setIndSymbolColor(int[] idxes, Color color) {
+		for (int idx : idxes) {
+			symbolColors.put(idx, color);
+		}
+		redraw(this);
+	}
+
+	public void clearIndSymbolColor() {
+		if (symbolColors.size() > 0) {
+			symbolColors.clear();
+			redraw(this);
+		}
+	}
+
 	public Color getEffectiveSymbolColor() {
 		if (getSymbolColor() != null) {
 			return getSymbolColor();
@@ -198,10 +231,8 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public Color getEffectiveSymbolColor(int idx) {
 		Color icolor = null;
-		synchronized (_symbolColorMap) {
-			if (_symbolColorMap.size() > 0) {
-				icolor = _symbolColorMap.get(idx);
-			}
+		if (symbolColors.size() > 0) {
+			icolor = symbolColors.get(idx);
 		}
 		if (icolor != null) {
 			return icolor;

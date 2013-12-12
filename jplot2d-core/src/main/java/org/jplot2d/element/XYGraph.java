@@ -144,10 +144,56 @@ public interface XYGraph extends Graph {
 	 */
 	public void setSymbolSize(float size);
 
+	/**
+	 * Returns the overall color of the symbols.
+	 * 
+	 * @return the Color of the symbols, can be <code>null</code>
+	 */
 	@Property(order = 5)
 	public Color getSymbolColor();
 
+	/**
+	 * Set the overall color of the symbols. If the given color is <code>null</code>, the color of the symbols will be
+	 * the same of the color of the line.
+	 * 
+	 * @param color
+	 *            the color of the symbols
+	 */
 	public void setSymbolColor(Color color);
+
+	/**
+	 * Returns the special color for data point idx. Or <code>null</code> if the data point use the overall symbol
+	 * color.
+	 * 
+	 * @param idx
+	 *            data point idx
+	 * @return the color for data point idx.
+	 */
+	public Color getIndSymbolColor(int idx);
+
+	/**
+	 * Sets special color to data point index. This method can be called many times to assign different color to the
+	 * given index.
+	 * 
+	 * @param idx
+	 * @param color
+	 */
+	public void setIndSymbolColor(int idx, Color color);
+
+	/**
+	 * Sets special color to data point indexes. This method can be called many times to assign different color to the
+	 * given indexes.
+	 * 
+	 * @param idxes
+	 * @param color
+	 */
+	public void setIndSymbolColor(int[] idxes, Color color);
+
+	/**
+	 * Clear individual symbol colors and reset all data point to the overall symbol color, which assigned by
+	 * {@link #setSymbolColor(Color)}
+	 */
+	public void clearIndSymbolColor();
 
 	@Property(order = 10)
 	public boolean isLineVisible();
