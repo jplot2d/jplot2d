@@ -37,8 +37,6 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotationEx {
 
-	private double locY;
-
 	private double valueY;
 
 	private BasicStroke stroke = DEFAULT_STROKE;
@@ -52,13 +50,18 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(0, locY);
+		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+			return null;
+		} else {
+			double locY = getYWtoP(valueY);
+			return new Point2D.Double(0, locY);
+		}
 	}
 
 	public void setLocation(double x, double y) {
-		if (locY != y) {
-			this.locY = y;
-			valueY = getYPtoW(locY);
+		Point2D loc = getLocation();
+		if (loc != null && loc.getY() != y) {
+			valueY = getYPtoW(y);
 			redraw(this);
 		}
 	}
@@ -86,14 +89,15 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 	}
 
 	public PaperTransform getPaperTransform() {
-		if (getParent() == null) {
+		Point2D loc = getLocation();
+		if (getParent() == null || loc == null) {
 			return null;
 		}
 		PaperTransform pxf = getParent().getPaperTransform();
 		if (pxf == null) {
 			return null;
 		}
-		return pxf.translate(0, locY);
+		return pxf.translate(0, loc.getY());
 	}
 
 	public double getValue() {
@@ -102,13 +106,6 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 
 	public void setValue(double value) {
 		this.valueY = value;
-		if (getParent() != null && getParent().getYAxisTransform() != null) {
-			relocate();
-		}
-	}
-
-	public void relocate() {
-		locY = getYWtoP(valueY);
 		redraw(this);
 	}
 
@@ -121,6 +118,11 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 	}
 
 	public void draw(Graphics2D g) {
+		Point2D loc = getLocation();
+		if (loc == null) {
+			return;
+		}
+
 		Stroke oldStroke = g.getStroke();
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
@@ -130,7 +132,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
 
-		Line2D line = new Line2D.Double(0, locY, getParent().getSize().getWidth(), locY);
+		Line2D line = new Line2D.Double(0, loc.getY(), getParent().getSize().getWidth(), loc.getY());
 		g.draw(line);
 
 		g.setTransform(oldTransform);
@@ -143,7 +145,6 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 		super.copyFrom(src);
 
 		HLineAnnotationImpl lm = (HLineAnnotationImpl) src;
-		this.locY = lm.locY;
 		this.valueY = lm.valueY;
 		this.stroke = lm.stroke;
 	}

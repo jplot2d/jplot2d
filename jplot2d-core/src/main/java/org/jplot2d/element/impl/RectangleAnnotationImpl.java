@@ -41,8 +41,6 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 
 	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double locX, locY;
-
 	private double paperWidth, paperHeight;
 
 	private Range xrange, yrange;

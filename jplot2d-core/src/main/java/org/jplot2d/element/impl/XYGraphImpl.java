@@ -325,6 +325,9 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
 	public void draw(Graphics2D graphics) {
 
+		if (getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+			return;
+		}
 		if (getData() == null) {
 			return;
 		}
