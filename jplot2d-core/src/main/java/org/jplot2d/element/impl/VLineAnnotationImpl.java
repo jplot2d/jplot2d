@@ -37,8 +37,6 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotationEx {
 
-	private double locX;
-
 	private double valueX;
 
 	private BasicStroke stroke = DEFAULT_STROKE;
@@ -52,13 +50,18 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(locX, 0);
+		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+			return null;
+		} else {
+			double locX = getXWtoP(valueX);
+			return new Point2D.Double(locX, 0);
+		}
 	}
 
 	public void setLocation(double x, double y) {
-		if (locX != x) {
-			this.locX = x;
-			valueX = getXPtoW(locX);
+		Point2D loc = getLocation();
+		if (loc != null && loc.getX() != x) {
+			valueX = getXPtoW(x);
 			redraw(this);
 		}
 	}
@@ -86,14 +89,15 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 	}
 
 	public PaperTransform getPaperTransform() {
-		if (getParent() == null) {
+		Point2D loc = getLocation();
+		if (getParent() == null || loc == null) {
 			return null;
 		}
 		PaperTransform pxf = getParent().getPaperTransform();
 		if (pxf == null) {
 			return null;
 		}
-		return pxf.translate(locX, 0).rotate(Math.PI / 2);
+		return pxf.translate(loc.getX(), 0).rotate(Math.PI / 2);
 	}
 
 	public double getValue() {
@@ -102,13 +106,6 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 
 	public void setValue(double value) {
 		this.valueX = value;
-		if (getParent() != null && getParent().getXAxisTransform() != null) {
-			relocate();
-		}
-	}
-
-	public void relocate() {
-		locX = getXWtoP(valueX);
 		redraw(this);
 	}
 
@@ -121,6 +118,11 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 	}
 
 	public void draw(Graphics2D g) {
+		Point2D loc = getLocation();
+		if (loc == null) {
+			return;
+		}
+
 		Stroke oldStroke = g.getStroke();
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
@@ -130,7 +132,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		g.setColor(getEffectiveColor());
 		g.setStroke(stroke);
 
-		Line2D line = new Line2D.Double(locX, 0, locX, getParent().getSize().getHeight());
+		Line2D line = new Line2D.Double(loc.getX(), 0, loc.getX(), getParent().getSize().getHeight());
 		g.draw(line);
 
 		g.setTransform(oldTransform);
@@ -143,7 +145,6 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 		super.copyFrom(src);
 
 		VLineAnnotationImpl lm = (VLineAnnotationImpl) src;
-		this.locX = lm.locX;
 		this.valueX = lm.valueX;
 		this.stroke = lm.stroke;
 	}

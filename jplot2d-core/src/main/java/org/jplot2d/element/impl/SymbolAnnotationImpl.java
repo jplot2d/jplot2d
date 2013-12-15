@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 import org.jplot2d.tex.MathLabel;
 import org.jplot2d.util.SymbolShape;
@@ -70,6 +71,11 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 	}
 
 	public void draw(Graphics2D g) {
+		Point2D loc = getLocation();
+		if (loc == null) {
+			return;
+		}
+
 		Shape oldClip = g.getClip();
 
 		if (label == null) {
@@ -81,7 +87,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
 
-		g.translate(locX, locY);
+		g.translate(loc.getX(), loc.getY());
 		g.scale(1.0, -1.0);
 		g.rotate(-Math.PI * angle / 180.0);
 

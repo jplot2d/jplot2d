@@ -36,8 +36,6 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 public abstract class PointAnnotationImpl extends AnnotationImpl implements PointAnnotationEx {
 
-	protected double locX, locY;
-
 	private double valueX, valueY;
 
 	private HAlign hAlign = HAlign.LEFT;
@@ -59,13 +57,18 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
+		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+			return null;
+		} else {
+			double locX = getXWtoP(valueX);
+			double locY = getYWtoP(valueY);
+			return new Point2D.Double(locX, locY);
+		}
 	}
 
 	public void setLocation(double locX, double locY) {
-		if (getLocation().getX() != locX || getLocation().getY() != locY) {
-			this.locX = locX;
-			this.locY = locY;
+		Point2D loc = getLocation();
+		if (loc != null && (loc.getX() != locX || loc.getY() != locY)) {
 			valueX = getXPtoW(locX);
 			valueY = getYPtoW(locY);
 			redraw(this);
@@ -85,10 +88,11 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	}
 
 	public PaperTransform getPaperTransform() {
-		if (getParent() == null) {
+		Point2D loc = getLocation();
+		if (getParent() == null || loc == null) {
 			return null;
 		} else {
-			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(), getLocation().getY());
+			PaperTransform pxf = getParent().getPaperTransform().translate(loc.getX(), loc.getY());
 			if (angle != 0) {
 				pxf = pxf.rotate(angle / 180 * Math.PI);
 			}
@@ -101,8 +105,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 		super.copyFrom(src);
 
 		PointAnnotationImpl tc = (PointAnnotationImpl) src;
-		this.locX = tc.locX;
-		this.locY = tc.locY;
 		this.valueX = tc.valueX;
 		this.valueY = tc.valueY;
 		this.hAlign = tc.hAlign;
@@ -123,9 +125,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setValuePoint(double x, double y) {
 		this.valueX = x;
 		this.valueY = y;
-		if (getParent() != null && getParent().getXAxisTransform() != null && getParent().getYAxisTransform() != null) {
-			relocate();
-		}
+		redraw(this);
 	}
 
 	public HAlign getHAlign() {
@@ -172,15 +172,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setTextModel(MathElement model) {
 		this.textModel = model;
 		label = null;
-		redraw(this);
-	}
-
-	/**
-	 * Recalculate the paper location by the user location
-	 */
-	public void relocate() {
-		locX = getXWtoP(valueX);
-		locY = getYWtoP(valueY);
 		redraw(this);
 	}
 

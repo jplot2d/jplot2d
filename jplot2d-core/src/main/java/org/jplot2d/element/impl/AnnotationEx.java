@@ -30,9 +30,4 @@ public interface AnnotationEx extends Annotation, ComponentEx {
 
 	public LayerEx getParent();
 
-	/**
-	 * Update the paper location when adding a new annotation or layer's axis transform changed.
-	 */
-	public void relocate();
-
 }

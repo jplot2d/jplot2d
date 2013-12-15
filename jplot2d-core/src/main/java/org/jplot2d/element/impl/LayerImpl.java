@@ -116,7 +116,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 			redraw(graph);
 		}
 		for (AnnotationEx annotation : annotations) {
-			annotation.relocate();
+			redraw(annotation);
 		}
 	}
 
@@ -201,13 +201,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 	}
 
 	public void addAnnotation(Annotation annotation) {
-		AnnotationEx mex = (AnnotationEx) annotation;
-		annotations.add(mex);
-		mex.setParent(this);
+		AnnotationEx annx = (AnnotationEx) annotation;
+		annotations.add(annx);
+		annx.setParent(this);
 
-		if (getPaperTransform() != null) {
-			mex.relocate();
-		}
+		redraw(annx);
 	}
 
 	public void removeAnnotation(Annotation annotation) {
@@ -243,6 +241,9 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (this.xarm != null) {
 			this.xarm.addLayer(this);
 		}
+		if (axis != null) {
+			transformChanged();
+		}
 	}
 
 	public void setYAxisTransform(AxisTransform axis) {
@@ -253,15 +254,14 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		if (this.yarm != null) {
 			this.yarm.addLayer(this);
 		}
+		if (axis != null) {
+			transformChanged();
+		}
 	}
 
 	public void setAxesTransform(AxisTransform xaxis, AxisTransform yaxis) {
 		setXAxisTransform(xaxis);
 		setYAxisTransform(yaxis);
-
-		if (xaxis != null && yaxis != null) {
-			transformChanged();
-		}
 	}
 
 	@Override
