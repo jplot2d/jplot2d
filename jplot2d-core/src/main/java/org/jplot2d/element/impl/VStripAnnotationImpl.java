@@ -54,7 +54,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public Point2D getLocation() {
-		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null) {
 			return null;
 		} else {
 			double locX = getXWtoP(range.getStart());
@@ -74,7 +74,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null) {
 			return null;
 		}
 		double paperThickness = getXWtoP(range.getEnd()) - getXWtoP(range.getStart());
@@ -82,7 +82,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public Rectangle2D getBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null) {
 			return null;
 		}
 
@@ -95,7 +95,7 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null) {
 			return null;
 		}
 

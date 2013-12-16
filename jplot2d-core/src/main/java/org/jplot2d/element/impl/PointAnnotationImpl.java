@@ -57,7 +57,8 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	}
 
 	public Point2D getLocation() {
-		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null
+				|| getParent().getYAxisTransform() == null) {
 			return null;
 		} else {
 			double locX = getXWtoP(valueX);

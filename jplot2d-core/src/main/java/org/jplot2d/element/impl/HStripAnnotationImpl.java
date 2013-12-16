@@ -54,7 +54,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public Point2D getLocation() {
-		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getYAxisTransform() == null) {
 			return null;
 		} else {
 			double locY = getYWtoP(range.getStart());
@@ -74,7 +74,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getYAxisTransform() == null) {
 			return null;
 		}
 		double paperThickness = getYWtoP(range.getEnd()) - getYWtoP(range.getStart());
@@ -82,7 +82,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public Rectangle2D getBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getYAxisTransform() == null) {
 			return null;
 		}
 
@@ -95,7 +95,7 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getYAxisTransform() == null) {
 			return null;
 		}
 

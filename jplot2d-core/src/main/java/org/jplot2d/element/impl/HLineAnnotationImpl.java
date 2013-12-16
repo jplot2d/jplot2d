@@ -50,7 +50,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 	}
 
 	public Point2D getLocation() {
-		if (getParent() == null || getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getYAxisTransform() == null) {
 			return null;
 		} else {
 			double locY = getYWtoP(valueY);
