@@ -41,8 +41,6 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 
 	private static Paint DEFAULT_PAINT = new Color(192, 192, 192, 128);
 
-	private double paperWidth, paperHeight;
-
 	private Range xrange, yrange;
 
 	private Paint paint = DEFAULT_PAINT;
@@ -56,49 +54,63 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 	}
 
 	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null
+				|| getParent().getYAxisTransform() == null) {
+			return null;
+		} else {
+			double locX = getXWtoP(xrange.getStart());
+			double locY = getYWtoP(yrange.getStart());
+			return new Point2D.Double(locX, locY);
+		}
 	}
 
 	public void setLocation(double x, double y) {
-		if (locX != x) {
-			this.locX = x;
-			double endX = locX + paperWidth;
-			double valueX = getXPtoW(locX);
-			double valueXEnd = getXPtoW(endX);
-			xrange = new Range.Double(valueX, valueXEnd);
+		Point2D loc = getLocation();
+		if (loc != null && loc.getX() != x) {
+			double endX = getXWtoP(xrange.getEnd()) - loc.getX() + x;
+			double valueX = getXPtoW(x);
+			double valueEnd = getXPtoW(endX);
+			xrange = new Range.Double(valueX, valueEnd);
 			redraw(this);
 		}
-		if (locY != y) {
-			this.locY = y;
-			double endY = locY + paperHeight;
-			double valueY = getYPtoW(locY);
-			double valueYEnd = getYPtoW(endY);
-			yrange = new Range.Double(valueY, valueYEnd);
+		if (loc != null && loc.getY() != y) {
+			double endY = getYWtoP(yrange.getEnd()) - loc.getY() + y;
+			double valueY = getYPtoW(y);
+			double valueEnd = getYPtoW(endY);
+			yrange = new Range.Double(valueY, valueEnd);
 			redraw(this);
 		}
 	}
 
 	public Dimension2D getSize() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null
+				|| getParent().getYAxisTransform() == null) {
 			return null;
 		}
+		double paperWidth = getXWtoP(xrange.getEnd()) - getXWtoP(xrange.getStart());
+		double paperHeight = getYWtoP(yrange.getEnd()) - getYWtoP(yrange.getStart());
 		return new DoubleDimension2D(Math.abs(paperWidth), Math.abs(paperHeight));
 	}
 
 	public Rectangle2D getBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null
+				|| getParent().getYAxisTransform() == null) {
 			return null;
 		}
-
+		double paperWidth = getXWtoP(xrange.getEnd()) - getXWtoP(xrange.getStart());
+		double paperHeight = getYWtoP(yrange.getEnd()) - getYWtoP(yrange.getStart());
 		return new Rectangle2D.Double(Math.min(paperWidth, 0), Math.min(paperHeight, 0), Math.abs(paperWidth),
 				Math.abs(paperHeight));
 	}
 
 	public Rectangle2D getSelectableBounds() {
-		if (getParent() == null || getParent().getSize() == null) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null
+				|| getParent().getYAxisTransform() == null) {
 			return null;
 		}
 
+		double paperWidth = getXWtoP(xrange.getEnd()) - getXWtoP(xrange.getStart());
+		double paperHeight = getYWtoP(yrange.getEnd()) - getYWtoP(yrange.getStart());
 		double rx = Math.min(paperWidth, 0);
 		double ry = Math.min(paperHeight, 0);
 		double rw = Math.abs(paperWidth);
@@ -117,14 +129,15 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 	}
 
 	public PaperTransform getPaperTransform() {
-		if (getParent() == null) {
+		Point2D loc = getLocation();
+		if (getParent() == null || loc == null) {
 			return null;
 		}
 		PaperTransform pxf = getParent().getPaperTransform();
 		if (pxf == null) {
 			return null;
 		}
-		return pxf.translate(locX, locY);
+		return pxf.translate(loc.getX(), loc.getY());
 	}
 
 	public Range getXValueRange() {
@@ -134,7 +147,7 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 	public void setXValueRange(Range value) {
 		this.xrange = value;
 		if (getParent() != null && getParent().getXAxisTransform() != null) {
-			relocate();
+			redraw(this);
 		}
 	}
 
@@ -145,20 +158,8 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 	public void setYValueRange(Range value) {
 		this.yrange = value;
 		if (getParent() != null && getParent().getYAxisTransform() != null) {
-			relocate();
+			redraw(this);
 		}
-	}
-
-	public void relocate() {
-		locX = getXWtoP(xrange.getStart());
-		double endX = getXWtoP(xrange.getEnd());
-		paperWidth = endX - locX;
-
-		locY = getYWtoP(yrange.getStart());
-		double endY = getYWtoP(yrange.getEnd());
-		paperHeight = endY - locY;
-
-		redraw(this);
 	}
 
 	public Paint getFillPaint() {
@@ -170,6 +171,11 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 	}
 
 	public void draw(Graphics2D g) {
+		Point2D loc = getLocation();
+		if (loc == null) {
+			return;
+		}
+
 		AffineTransform oldTransform = g.getTransform();
 		Shape oldClip = g.getClip();
 
@@ -177,19 +183,21 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 		g.setClip(getParent().getBounds());
 		g.setPaint(paint);
 
+		double paperWidth = getXWtoP(xrange.getEnd()) - getXWtoP(xrange.getStart());
+		double paperHeight = getYWtoP(yrange.getEnd()) - getYWtoP(yrange.getStart());
 		double rx = Math.min(paperWidth, 0);
 		double ry = Math.min(paperHeight, 0);
 		double rw = Math.abs(paperWidth);
 		double rh = Math.abs(paperHeight);
 
 		if (paperWidth == 0 || paperHeight == 0) {
-			Line2D line = new Line2D.Double(locX + rx, locY + ry, locX + rw, locY + rh);
+			Line2D line = new Line2D.Double(loc.getX() + rx, loc.getY() + ry, loc.getX() + rw, loc.getY() + rh);
 			Stroke oldStroke = g.getStroke();
 			g.setStroke(ZERO_WIDTH_STROKE);
 			g.draw(line);
 			g.setStroke(oldStroke);
 		} else {
-			Rectangle2D strip = new Rectangle2D.Double(locX + rx, locY + ry, rw, rh);
+			Rectangle2D strip = new Rectangle2D.Double(loc.getX() + rx, loc.getY() + ry, rw, rh);
 			g.fill(strip);
 		}
 
@@ -202,10 +210,6 @@ public class RectangleAnnotationImpl extends AnnotationImpl implements Rectangle
 		super.copyFrom(src);
 
 		RectangleAnnotationImpl lm = (RectangleAnnotationImpl) src;
-		this.locX = lm.locX;
-		this.locY = lm.locY;
-		this.paperWidth = lm.paperWidth;
-		this.paperHeight = lm.paperHeight;
 		this.xrange = lm.xrange;
 		this.yrange = lm.yrange;
 		this.paint = lm.paint;
