@@ -19,6 +19,7 @@
 package org.jplot2d.env;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import org.jplot2d.element.impl.IntermediateCacheEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notifier;
+import org.jplot2d.transform.PaperTransform;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -487,8 +489,9 @@ public class PlotEnvironment extends Environment {
 			for (int j = uccList.size() - 1; j >= 0; j--) {
 				ComponentEx ucc = uccList.get(j);
 				if (ucc.isSelectable()) {
-					Point2D p = ucc.getPaperTransform().getDtoP(dp);
-					if (ucc.getSelectableBounds().contains(p)) {
+					PaperTransform pxf = ucc.getPaperTransform();
+					Rectangle2D sbnd = ucc.getSelectableBounds();
+					if (pxf != null && sbnd != null && sbnd.contains(pxf.getDtoP(dp))) {
 						result = (PComponent) copyProxyMap.get(ucc);
 						break;
 					}

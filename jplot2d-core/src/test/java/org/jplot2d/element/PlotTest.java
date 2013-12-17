@@ -119,6 +119,18 @@ public class PlotTest {
 	}
 
 	@Test
+	public void testAddLayerWithoutAxis() {
+		Plot p = factory.createPlot();
+
+		Layer layer = factory.createLayer();
+
+		p.addLayer(layer);
+
+		assertNull(layer.getXAxisTransform());
+		assertNull(layer.getYAxisTransform());
+	}
+
+	@Test
 	public void testAddRemoveLayer() {
 		Plot p = factory.createPlot();
 

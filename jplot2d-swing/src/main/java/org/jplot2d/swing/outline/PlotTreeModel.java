@@ -119,13 +119,19 @@ public class PlotTreeModel implements TreeModel {
 			Layer layer = (Layer) parent;
 			int gpNum = layer.getGraphs().length;
 			int annNum = layer.getAnnotations().length;
-			if (index == 0) {
-				return layer.getXAxisTransform();
+			int start = 0;
+			if (layer.getXAxisTransform() != null) {
+				if (index == start) {
+					return layer.getXAxisTransform();
+				}
+				start++;
 			}
-			if (index == 1) {
-				return layer.getYAxisTransform();
+			if (layer.getXAxisTransform() != null) {
+				if (index == start) {
+					return layer.getYAxisTransform();
+				}
+				start++;
 			}
-			int start = 2;
 			if (start <= index && index < start + gpNum) {
 				return layer.getGraph(index - start);
 			}
@@ -183,9 +189,16 @@ public class PlotTreeModel implements TreeModel {
 		} else if (parent instanceof Layer) {
 			// x range manager + y range manager + graphs
 			Layer layer = (Layer) parent;
-			int gpNum = layer.getGraphs().length;
-			int annNum = layer.getAnnotations().length;
-			return 2 + gpNum + annNum;
+			int n = 0;
+			if (layer.getXAxisTransform() != null) {
+				n++;
+			}
+			if (layer.getYAxisTransform() != null) {
+				n++;
+			}
+			n += layer.getGraphs().length;
+			n += layer.getAnnotations().length;
+			return n;
 		} else if (parent instanceof XYGraph) {
 			// legend item
 			return 1;
@@ -275,13 +288,19 @@ public class PlotTreeModel implements TreeModel {
 			Layer layer = (Layer) parent;
 			Graph[] graphs = layer.getGraphs();
 			Annotation[] anns = layer.getAnnotations();
-			if (child == layer.getXAxisTransform()) {
-				return 0;
+			int start = 0;
+			if (layer.getXAxisTransform() != null) {
+				if (child == layer.getXAxisTransform()) {
+					return start;
+				}
+				start++;
 			}
-			if (child == layer.getYAxisTransform()) {
-				return 1;
+			if (layer.getYAxisTransform() != null) {
+				if (child == layer.getYAxisTransform()) {
+					return start;
+				}
+				start++;
 			}
-			int start = 2;
 			for (int i = 0; i < graphs.length; i++) {
 				if (graphs[i] == child) {
 					return start + i;

@@ -335,11 +335,22 @@ public interface Plot extends PComponent {
 	public Layer[] getLayers();
 
 	/**
+	 * Add a layer to this plot. The layer will not associate with any axis range manager. Before the layer associate
+	 * axis transform by {@link Layer#setAxesTransform(AxisTransform, AxisTransform)}, all its subcomponents are
+	 * invisible.
+	 * 
+	 * @param layer
+	 *            the layer to be added
+	 */
+	@Hierarchy(HierarchyOp.ADD)
+	public void addLayer(Layer layer);
+
+	/**
 	 * Add a layer to this plot. The layer will associate with the given X/Y axis range manager to control which part
 	 * show in the plot viewport.
 	 * 
 	 * @param layer
-	 *            the layer to be add
+	 *            the layer to be added
 	 * @param xRangeManager
 	 *            the x axis range manager
 	 * @param yRangeManager
@@ -354,7 +365,7 @@ public interface Plot extends PComponent {
 	 * xaxis.getTickManager().getRangeManager(), yaxis.getTickManager().getRangeManager())}
 	 * 
 	 * @param layer
-	 *            the layer to be add
+	 *            the layer to be added
 	 * @param xaxis
 	 *            the x axis
 	 * @param yaxis

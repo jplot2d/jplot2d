@@ -109,13 +109,29 @@ public class LayerTest {
 	}
 
 	/**
-	 * Attaching to an axis before join an environment will throw an exception
+	 * Attaching to null will throw an exception. Attaching to an axis before join an environment will throw an
+	 * exception.
 	 */
 	@Test
 	public void testLayerAttachAxis() {
+
+		Layer layer = factory.createLayer();
+
+		try {
+			layer.setXAxisTransform(null);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+		try {
+			layer.setYAxisTransform(null);
+			fail("IllegalArgumentException should be thrown.");
+		} catch (IllegalArgumentException e) {
+
+		}
+
 		AxisTransform xaxis = factory.createAxisTransform();
 		AxisTransform yaxis = factory.createAxisTransform();
-		Layer layer = factory.createLayer();
 
 		try {
 			layer.setXAxisTransform(xaxis);
