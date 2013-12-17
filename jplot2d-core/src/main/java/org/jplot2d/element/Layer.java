@@ -22,8 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport
- * to show data line and annotations.
+ * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport to show data line
+ * and annotations.
  * 
  * @author Jingjing Li
  * 
@@ -120,33 +120,35 @@ public interface Layer extends PComponent {
 	public AxisTransform getYAxisTransform();
 
 	/**
-	 * Attach this layer to the given X axis. When adding a layer to a plot, the axis must exist in
-	 * the destination environment, otherwise a exception will be thrown.
+	 * Attach this layer to the given X axis. When adding a layer to a plot, the axis must exist in the destination
+	 * environment, otherwise an exception will be thrown.
 	 * 
-	 * @param axis
+	 * @param axt
+	 *            axis transform
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setXAxisTransform(AxisTransform rangeManager);
+	public void setXAxisTransform(AxisTransform axt);
 
 	/**
-	 * Attach this layer to the given Y axis. When adding a layer to a plot, the axis must exist in
-	 * the destination environment, otherwise a exception will be thrown.
+	 * Attach this layer to the given Y axis. When adding a layer to a plot, the axis must exist in the destination
+	 * environment, otherwise an exception will be thrown.
 	 * 
-	 * @param axis
+	 * @param axt
+	 *            axis transform
 	 */
 	@Hierarchy(HierarchyOp.REF)
-	public void setYAxisTransform(AxisTransform rangeManager);
+	public void setYAxisTransform(AxisTransform axt);
 
 	/**
-	 * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes
-	 * must exist in the destination environment, otherwise a exception will be thrown.
+	 * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes must exist in the
+	 * destination environment, otherwise an exception will be thrown.
 	 * 
-	 * @param xaxis
-	 *            the x axis
-	 * @param yaxis
-	 *            the y axis
+	 * @param xaxt
+	 *            the x axis transform
+	 * @param yaxt
+	 *            the y axis transform
 	 */
 	@Hierarchy(HierarchyOp.REF2)
-	public void setAxesTransform(AxisTransform xRangeManager, AxisTransform yRangeManager);
+	public void setAxesTransform(AxisTransform xaxt, AxisTransform yaxt);
 
 }

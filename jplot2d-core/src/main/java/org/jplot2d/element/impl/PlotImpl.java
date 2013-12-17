@@ -723,11 +723,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
-	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager) {
+	public void addLayer(Layer layer) {
 		LayerEx lx = (LayerEx) layer;
 		layers.add(lx);
 		lx.setParent(this);
-		lx.setAxesTransform(xRangeManager, yRangeManager);
 
 		redrawCascade(lx);
 
@@ -738,6 +737,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 				enabledLegend.addLegendItem(((XYGraphEx) gx).getLegendItem());
 			}
 		}
+	}
+
+	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager) {
+		addLayer(layer);
+		layer.setAxesTransform(xRangeManager, yRangeManager);
 	}
 
 	public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
@@ -903,7 +907,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * @param plot
 	 * @param orig2copyMap
 	 */
-	protected static void linkLayerAndRangeManager(PlotEx plot, Map<ElementEx, ElementEx> orig2copyMap) {
+	public static void linkLayerAndRangeManager(PlotEx plot, Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
@@ -1195,9 +1199,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private Set<AxisRangeLockGroupEx> getXAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		for (LayerEx layer : layers) {
-			AxisRangeLockGroupEx alg = layer.getXAxisTransform().getLockGroup();
-			if (alg.isZoomable()) {
-				algs.add(alg);
+			if (layer.getXAxisTransform() != null) {
+				AxisRangeLockGroupEx alg = layer.getXAxisTransform().getLockGroup();
+				if (alg.isZoomable()) {
+					algs.add(alg);
+				}
 			}
 		}
 		return algs;
@@ -1209,9 +1215,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	private Set<AxisRangeLockGroupEx> getYAxisRangeLockGroup() {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		for (LayerEx layer : layers) {
-			AxisRangeLockGroupEx alg = layer.getYAxisTransform().getLockGroup();
-			if (alg.isZoomable()) {
-				algs.add(alg);
+			if (layer.getXAxisTransform() != null) {
+				AxisRangeLockGroupEx alg = layer.getYAxisTransform().getLockGroup();
+				if (alg.isZoomable()) {
+					algs.add(alg);
+				}
 			}
 		}
 		return algs;

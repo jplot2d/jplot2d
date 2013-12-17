@@ -113,8 +113,14 @@ public class MouseCoordinatesTooltipHandler extends MouseMoveBehaviorHandler<Mou
 		Set<AxisTransform> xats = new HashSet<AxisTransform>();
 		Set<AxisTransform> yats = new HashSet<AxisTransform>();
 		for (Layer layer : plot.getLayers()) {
-			xats.add(layer.getXAxisTransform());
-			yats.add(layer.getYAxisTransform());
+			AxisTransform xaxt = layer.getXAxisTransform();
+			if (xaxt != null) {
+				xats.add(xaxt);
+			}
+			AxisTransform yaxt = layer.getYAxisTransform();
+			if (xaxt != null) {
+				yats.add(yaxt);
+			}
 		}
 
 		StringBuilder sb = new StringBuilder();

@@ -76,7 +76,8 @@ public abstract class Environment {
 	protected Notifier notifier;
 
 	/**
-	 * A impl to proxy map that contains all element in this environment.
+	 * A impl to proxy map that contains all element in this environment. It's a LinkedHashMap to keep the order of
+	 * elements added. In case of the same z-order, the adding order take into account.
 	 */
 	protected final Map<ElementEx, Element> proxyMap = new LinkedHashMap<ElementEx, Element>();
 

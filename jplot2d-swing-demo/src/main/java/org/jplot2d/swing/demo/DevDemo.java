@@ -18,25 +18,22 @@
  */
 package org.jplot2d.swing.demo;
 
-import javax.swing.JFrame;
-
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
-import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.Axis;
+import org.jplot2d.element.ElementFactory;
 import org.jplot2d.element.HLineAnnotation;
 import org.jplot2d.element.HStripAnnotation;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
+import org.jplot2d.element.RectangleAnnotation;
 import org.jplot2d.element.SymbolAnnotation;
 import org.jplot2d.element.Title;
 import org.jplot2d.element.VLineAnnotation;
 import org.jplot2d.element.VStripAnnotation;
 import org.jplot2d.element.XYGraph;
 import org.jplot2d.sizing.AutoPackSizeMode;
-import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
-import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -56,7 +53,7 @@ public class DevDemo {
 		title.setFontScale(2);
 		plot.addTitle(title);
 
-		JFrame frame = new JPlot2DFrame(plot);
+		JPlot2DFrame frame = new JPlot2DFrame(plot);
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
@@ -65,44 +62,47 @@ public class DevDemo {
 		plot.addXAxis(xaxis);
 		Axis yaxis = ElementFactory.getInstance().createAxis();
 		yaxis.getTitle().setText("y axis");
-		yaxis.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
+		// yaxis.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		plot.addYAxis(yaxis);
 
-		XYGraphData graph = new XYGraphData(new ArrayPair(new double[] { 0, 0.1, 0.2 }, new double[] { 0,
-				0.1, 0.4 }), null, new ArrayPair(new double[] { 0.01, 0.01, 0.01 }, new double[] {
-				0.01, 0.01, 0.01 }));
+		XYGraphData graph = new XYGraphData(new ArrayPair(new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 }),
+				null, new ArrayPair(new double[] { 0.01, 0.01, 0.01 }, new double[] { 0.01, 0.01, 0.01 }));
 		XYGraph gp = ElementFactory.getInstance().createXYGraph(graph, "asdf");
+		System.out.print(gp.getSymbolColor());
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 
 		layer0.addGraph(gp);
-		plot.addLayer(layer0, xaxis, yaxis);
-		
+
 		gp.setSymbolVisible(true);
 		gp.setSymbolShape(SymbolShape.CIRCLE);
-		
+
 		gp.setSymbolSize(14);
-		
-//		plot.getLegend().setPosition(null);
-//		plot.getLegend().setMovable(true);
-//		plot.getLegend().setLocation(0, 20);
-//		
-//		Title t0 = ElementFactory.getInstance().createTitle("jplot2d");
-//		plot.addTitle(t0);
-//		t0.setPosition(null);
-//		t0.setMovable(true);
-//		t0.setLocation(0, 20);
 
-//		SymbolMarker sm = ElementFactory.getInstance().createSymbolMarker(0, 0.1, "marker");
-//		sm.setAngle(45);
-//		layer0.addMarker(sm);
-//		HLineMarker hlm = ElementFactory.getInstance().createHLineMarker(0.1);
-//		layer0.addMarker(hlm);
-//		VLineMarker vlm = ElementFactory.getInstance().createVLineMarker(0.1);
-//		layer0.addMarker(vlm);
-//		HStripMarker hsm = ElementFactory.getInstance().createHStripMarker(0.15, 0.15);
-//		layer0.addMarker(hsm);
-//		VStripMarker vsm = ElementFactory.getInstance().createVStripMarker(0.13, 0.15);
-//		layer0.addMarker(vsm);
+		// plot.getLegend().setPosition(null);
+		// plot.getLegend().setMovable(true);
+		// plot.getLegend().setLocation(0, 20);
+		//
+		// Title t0 = ElementFactory.getInstance().createTitle("jplot2d");
+		// plot.addTitle(t0);
+		// t0.setPosition(null);
+		// t0.setMovable(true);
+		// t0.setLocation(0, 20);
 
+		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.1, 0.1, "marker");
+		sm.setAngle(45);
+		layer0.addAnnotation(sm);
+		HLineAnnotation hlm = ElementFactory.getInstance().createHLineAnnotation(0.1);
+		layer0.addAnnotation(hlm);
+		VLineAnnotation vlm = ElementFactory.getInstance().createVLineAnnotation(0.1);
+		layer0.addAnnotation(vlm);
+		HStripAnnotation hsm = ElementFactory.getInstance().createHStripAnnotation(0.15, 0.15);
+		layer0.addAnnotation(hsm);
+		VStripAnnotation vsm = ElementFactory.getInstance().createVStripAnnotation(0.13, 0.15);
+		layer0.addAnnotation(vsm);
+		RectangleAnnotation ra = ElementFactory.getInstance().createRectangleAnnotation(0, 0, 0.05, 0.05);
+		layer0.addAnnotation(ra);
+
+		plot.addLayer(layer0);
+		layer0.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 	}
 }
