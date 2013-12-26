@@ -20,6 +20,7 @@ package org.jplot2d.swing.interaction;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.swing.components.PlotPropertiesFrame;
+import org.jplot2d.swing.print.PrintRenderer;
 
 /**
  * The popup menu support for PlotXY.
@@ -59,9 +61,9 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 	protected final String EXPORT_ACTION_COMMAND = "EXPORT";
 
 	/** Print action command. */
-	protected final String PRINT_ACTION_COMMAND = "PRINT";
+	protected final String PRINT_PAGE_SETUP_COMMAND = "PAGE_SETUP";
 
-	protected final String PRINT_IMAGE_ACTION_COMMAND = "PRINT_IMAGE";
+	protected final String PRINT_ACTION_COMMAND = "PRINT";
 
 	protected JMenuItem undoItem;
 
@@ -123,14 +125,14 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			separator = false;
 		}
 
-		JMenuItem printItem = new JMenuItem("Print ...");
+		JMenuItem pageSetupItem = new JMenuItem("Page setup ...");
+		pageSetupItem.setActionCommand(PRINT_PAGE_SETUP_COMMAND);
+		pageSetupItem.addActionListener(this);
+		super.add(pageSetupItem);
+		JMenuItem printItem = new JMenuItem("Print...");
 		printItem.setActionCommand(PRINT_ACTION_COMMAND);
 		printItem.addActionListener(this);
 		super.add(printItem);
-		JMenuItem printImageItem = new JMenuItem("Print image ...");
-		printImageItem.setActionCommand(PRINT_IMAGE_ACTION_COMMAND);
-		printImageItem.addActionListener(this);
-		super.add(printImageItem);
 		separator = true;
 
 	}
@@ -160,12 +162,16 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 			}
 			return;
 		}
-		if (command.equals(PRINT_ACTION_COMMAND)) {
-			// TODO: print the plot
+		if (command.equals(PRINT_PAGE_SETUP_COMMAND)) {
+			PrintRenderer.pageDialog();
 			return;
 		}
-		if (command.equals(PRINT_IMAGE_ACTION_COMMAND)) {
-			// TODO: print the plot image
+		if (command.equals(PRINT_ACTION_COMMAND)) {
+			try {
+				PrintRenderer.printDialog(env);
+			} catch (PrinterException e) {
+				JOptionPane.showMessageDialog(getInvoker(), e.getMessage());
+			}
 			return;
 		}
 
@@ -194,8 +200,7 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 	private static JFileChooser _saveFileChooser;
 
 	/**
-	 * Opens a file chooser and gives the user an opportunity to save the chart in PNG, JPG, EPS
-	 * format.
+	 * Opens a file chooser and gives the user an opportunity to save the chart in PNG, JPG, EPS format.
 	 * 
 	 * @throws IOException
 	 *             if there is an I/O error.
@@ -256,10 +261,8 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 	private boolean confirmOverwrite(String filename) {
 		File fFile = new File(filename);
 		if (fFile.exists()) {
-			int response = JOptionPane
-					.showConfirmDialog(getInvoker(), "Overwrite existing file?",
-							"Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
+			int response = JOptionPane.showConfirmDialog(getInvoker(), "Overwrite existing file?", "Confirm Overwrite",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (response == JOptionPane.CANCEL_OPTION) {
 				return false;
 			}
@@ -274,8 +277,7 @@ public class PopupMenu extends JPopupMenu implements ActionListener {
 		FileNameExtensionFilter PNG_FILE_FILTER = new FileNameExtensionFilter("PNG file", "png");
 		FileNameExtensionFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF file", "pdf");
 		FileNameExtensionFilter EPS_FILE_FILTER = new FileNameExtensionFilter("EPS file", "eps");
-		List<FileNameExtensionFilter> EXPORT_FILE_FILTERS = new ArrayList<FileNameExtensionFilter>(
-				2);
+		List<FileNameExtensionFilter> EXPORT_FILE_FILTERS = new ArrayList<FileNameExtensionFilter>(2);
 		EXPORT_FILE_FILTERS.add(PNG_FILE_FILTER);
 		EXPORT_FILE_FILTERS.add(PDF_FILE_FILTER);
 		EXPORT_FILE_FILTERS.add(EPS_FILE_FILTER);
