@@ -21,6 +21,7 @@ package org.jplot2d.element.impl;
 import java.awt.Dimension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -141,17 +142,28 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
 		ImageDataBuffer[] greenBuffers = new ImageDataBuffer[graphs.size()];
 		ImageDataBuffer[] blueBuffers = new ImageDataBuffer[graphs.size()];
 		Dimension[] sizeArray = new Dimension[graphs.size()];
+
+		int n = 0;
 		for (int i = 0; i < graphs.size(); i++) {
 			MultiBandImageData data = graphs.get(i).getData();
-			ImageDataBuffer[] dbBands = data.getDataBuffer();
-			redBuffers[i] = dbBands[0];
-			greenBuffers[i] = dbBands[1];
-			blueBuffers[i] = dbBands[2];
-			sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
+			if (data != null) {
+				ImageDataBuffer[] dbBands = data.getDataBuffer();
+				redBuffers[n] = dbBands[0];
+				greenBuffers[n] = dbBands[1];
+				blueBuffers[n] = dbBands[2];
+				sizeArray[n] = new Dimension(data.getWidth(), data.getHeight());
+				n++;
+			}
 		}
+		if (n != graphs.size()) {
+			redBuffers = Arrays.copyOf(redBuffers, n);
+			greenBuffers = Arrays.copyOf(greenBuffers, n);
+			blueBuffers = Arrays.copyOf(blueBuffers, n);
+			sizeArray = Arrays.copyOf(sizeArray, n);
+		}
+
 		redTransform.calcLimits(redBuffers, sizeArray);
 		greenTransform.calcLimits(greenBuffers, sizeArray);
 		blueTransform.calcLimits(blueBuffers, sizeArray);
 	}
-
 }

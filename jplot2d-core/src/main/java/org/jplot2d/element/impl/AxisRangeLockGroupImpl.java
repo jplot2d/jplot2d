@@ -291,10 +291,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 						yRange = yat.getRange();
 					}
 					for (GraphEx dp : layer.getGraphs()) {
-						GraphData dataInBounds = dp.getData().applyBoundary(urange, yRange);
-						wDRange = dataInBounds.getXRange().union(wDRange);
-						if (dataInBounds.hasPointOutsideXBounds()) {
-							dataOutsideBounds = true;
+						if (dp.getData() != null) {
+							GraphData dataInBounds = dp.getData().applyBoundary(urange, yRange);
+							wDRange = dataInBounds.getXRange().union(wDRange);
+							if (dataInBounds.hasPointOutsideXBounds()) {
+								dataOutsideBounds = true;
+							}
 						}
 					}
 				} else if (layer.getYAxisTransform() == at) {
@@ -306,10 +308,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 						xRange = xat.getRange();
 					}
 					for (GraphEx dp : layer.getGraphs()) {
-						GraphData dataInBounds = dp.getData().applyBoundary(xRange, urange);
-						wDRange = dataInBounds.getYRange().union(wDRange);
-						if (dataInBounds.hasPointOutsideYBounds()) {
-							dataOutsideBounds = true;
+						if (dp.getData() != null) {
+							GraphData dataInBounds = dp.getData().applyBoundary(xRange, urange);
+							wDRange = dataInBounds.getYRange().union(wDRange);
+							if (dataInBounds.hasPointOutsideYBounds()) {
+								dataOutsideBounds = true;
+							}
 						}
 					}
 				}

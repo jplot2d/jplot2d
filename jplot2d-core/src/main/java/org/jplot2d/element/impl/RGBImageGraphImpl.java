@@ -59,16 +59,16 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 	}
 
 	public void setData(MultiBandImageData data) {
-		ImageDataBuffer[] olddata = (this.data == null) ? null : this.data.getDataBuffer();
+		MultiBandImageData olddata = this.data;
 		this.data = data;
 
-		if (olddata == null || data.getDataBuffer()[0] != olddata[0]) {
+		if (olddata == null || data == null || data.getDataBuffer()[0] != olddata.getDataBuffer()[0]) {
 			mapping.getRedTransform().recalcLimits();
 		}
-		if (olddata == null || data.getDataBuffer()[1] != olddata[1]) {
+		if (olddata == null || data == null || data.getDataBuffer()[1] != olddata.getDataBuffer()[1]) {
 			mapping.getGreenTransform().recalcLimits();
 		}
-		if (olddata == null || data.getDataBuffer()[2] != olddata[2]) {
+		if (olddata == null || data == null || data.getDataBuffer()[2] != olddata.getDataBuffer()[2]) {
 			mapping.getBlueTransform().recalcLimits();
 		}
 		redraw(this);
@@ -83,6 +83,10 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 	}
 
 	public Object createCacheHolder() {
+		if (data == null) {
+			return null;
+		}
+
 		ImageZscaleCache.Key[] cacheHolder = new ImageZscaleCache.Key[3];
 		ImageBandTransformEx redTrans = mapping.getRedTransform();
 		ImageBandTransformEx greenTrans = mapping.getGreenTransform();
@@ -121,7 +125,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 	}
 
 	public void draw(Graphics2D graphics) {
-		if (getData() == null) {
+		if (data == null) {
 			return;
 		}
 
@@ -145,7 +149,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 
 		// apply limits to generate a raster
 		WritableRaster raster = null;
-		ImageDataBuffer[] idbs = ((MultiBandImageData) data).getDataBuffer();
+		ImageDataBuffer[] idbs = data.getDataBuffer();
 		int bands = idbs.length;
 		byte[][] result = new byte[bands][];
 		result[0] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, redLimits,

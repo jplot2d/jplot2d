@@ -79,6 +79,10 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
 	}
 
 	public Object createCacheHolder() {
+		if (data == null) {
+			return null;
+		}
+
 		return ImageZscaleCache.createCacheFor(data.getDataBuffer(), data.getWidth(), data.getHeight(),
 				mapping.getLimits(), mapping.getIntensityTransform(), mapping.getBias(), mapping.getGain(),
 				mapping.getILUTOutputBits());
@@ -107,7 +111,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
 	}
 
 	public void draw(Graphics2D graphics) {
-		if (getData() == null) {
+		if (data == null) {
 			return;
 		}
 
