@@ -195,7 +195,10 @@ public class PlotEnvironment extends Environment {
 		List<Object> holders = new ArrayList<Object>();
 		for (ElementEx element : proxyMap.keySet()) {
 			if (element instanceof IntermediateCacheEx) {
-				holders.add(((IntermediateCacheEx) element).createCacheHolder());
+				Object cacheHolder = ((IntermediateCacheEx) element).createCacheHolder();
+				if (cacheHolder != null) {
+					holders.add(cacheHolder);
+				}
 			}
 		}
 		this.cacheHolders = holders;

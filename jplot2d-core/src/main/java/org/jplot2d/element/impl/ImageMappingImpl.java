@@ -3,6 +3,7 @@ package org.jplot2d.element.impl;
 import java.awt.Dimension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jplot2d.data.ImageDataBuffer;
@@ -103,10 +104,18 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
 			ImageDataBuffer[] ids = new ImageDataBuffer[graphs.size()];
 			Dimension[] sizeArray = new Dimension[graphs.size()];
+			int n = 0;
 			for (int i = 0; i < ids.length; i++) {
 				SingleBandImageData data = graphs.get(i).getData();
-				ids[i] = graphs.get(i).getData().getDataBuffer();
-				sizeArray[i] = new Dimension(data.getWidth(), data.getHeight());
+				if (data != null) {
+					ids[n] = data.getDataBuffer();
+					sizeArray[n] = new Dimension(data.getWidth(), data.getHeight());
+					n++;
+				}
+			}
+			if (n != graphs.size()) {
+				ids = Arrays.copyOf(ids, n);
+				sizeArray = Arrays.copyOf(sizeArray, n);
 			}
 			double[] newlimits = algo.getCalculator().calcLimits(ids, sizeArray);
 
