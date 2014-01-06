@@ -174,7 +174,7 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 		bi = (BufferedImage) event.getResult();
 
-		getDisplay().syncExec(redrawRunner);
+		getDisplay().asyncExec(redrawRunner);
 	}
 
 	/**
