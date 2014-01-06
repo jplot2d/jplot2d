@@ -60,7 +60,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 
 	private ImageRenderer r;
 
-	private int ifsn;
+	private long ifsn = -1;
 
 	private volatile BufferedImage image;
 
@@ -147,6 +147,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 
 	public void paintComponent(Graphics g) {
 		// clear background
+		((Graphics2D) g).setBackground(this.getBackground());
 		g.clearRect(0, 0, getWidth(), getHeight());
 
 		if (image != null) {
@@ -200,13 +201,22 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	}
 
 	public void renderingFinished(RenderingFinishedEvent event) {
-		int sn = event.getSN();
-		if (sn < ifsn) {
+		long sn = event.getSN();
+		boolean ok;
+		synchronized (this) {
+			if (sn > ifsn) {
+				ok = true;
+				ifsn = sn;
+			} else {
+				ok = false;
+			}
+		}
+
+		if (!ok) {
 			logger.info("[R] Rendering finished in wrong order, drop R." + sn + " Current result is " + ifsn);
 			return;
 		}
 
-		ifsn = sn;
 		image = (BufferedImage) event.getResult();
 		repaint();
 	}

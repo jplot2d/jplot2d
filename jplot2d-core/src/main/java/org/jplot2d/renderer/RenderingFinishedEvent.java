@@ -24,16 +24,16 @@ package org.jplot2d.renderer;
  */
 public class RenderingFinishedEvent {
 
-	private final int sn;
+	private final long sn;
 
 	private final Object result;
 
-	public RenderingFinishedEvent(int sn, Object result) {
+	public RenderingFinishedEvent(long sn, Object result) {
 		this.sn = sn;
 		this.result = result;
 	}
 
-	public int getSN() {
+	public long getSN() {
 		return sn;
 	}
 

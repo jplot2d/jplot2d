@@ -168,7 +168,7 @@ public abstract class ImageRenderer extends Renderer {
 	 */
 	private ImageAssemblyInfo compCachedFutureMap = new ImageAssemblyInfo();
 
-	protected int fsn;
+	protected long fsn;
 
 	private final List<RenderingFinishedListener> renderingFinishedListenerList = Collections
 			.synchronizedList(new ArrayList<RenderingFinishedListener>());
@@ -212,7 +212,7 @@ public abstract class ImageRenderer extends Renderer {
 	 * @param img
 	 *            the generated BufferedImage
 	 */
-	protected void fireRenderingFinished(int sn, BufferedImage img) {
+	protected void fireRenderingFinished(long sn, BufferedImage img) {
 		RenderingFinishedListener[] ls = renderingFinishedListenerList.toArray(new RenderingFinishedListener[0]);
 		for (RenderingFinishedListener lsnr : ls) {
 			lsnr.renderingFinished(new RenderingFinishedEvent(sn, img));
@@ -305,7 +305,7 @@ public abstract class ImageRenderer extends Renderer {
 	 *            the AssemblyInfo
 	 * @return the assembled result
 	 */
-	protected BufferedImage assembleResult(int sn, Dimension size, ImageAssemblyInfo ainfo) {
+	protected BufferedImage assembleResult(long sn, Dimension size, ImageAssemblyInfo ainfo) {
 		BufferedImage image = imageFactory.createImage(size.width, size.height);
 
 		Graphics2D g = (Graphics2D) image.getGraphics();

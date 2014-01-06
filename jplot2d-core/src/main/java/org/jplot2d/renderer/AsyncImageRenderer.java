@@ -44,10 +44,10 @@ public class AsyncImageRenderer extends ImageRenderer {
 	 */
 	private abstract class CancelableRendererCallable implements Callable<BufferedImage> {
 
-		protected final int sn;
+		protected final long sn;
 		protected final Dimension size;
 
-		public CancelableRendererCallable(int sn, Dimension size) {
+		public CancelableRendererCallable(long sn, Dimension size) {
 			this.sn = sn;
 			this.size = size;
 		}
@@ -66,7 +66,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 		private final List<ComponentEx> complist;
 
-		public SingleRendererCallable(int sn, Dimension size, List<ComponentEx> complist) {
+		public SingleRendererCallable(long sn, Dimension size, List<ComponentEx> complist) {
 			super(sn, size);
 			this.complist = complist;
 		}
@@ -88,7 +88,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 		private final ImageAssemblyInfo ainfo;
 
-		private RenderAssemblyCallable(int sn, Dimension size, ImageAssemblyInfo ainfo) {
+		private RenderAssemblyCallable(long sn, Dimension size, ImageAssemblyInfo ainfo) {
 			super(sn, size);
 			this.ainfo = ainfo;
 		}
@@ -117,7 +117,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 			this.callable = callable;
 		}
 
-		public int getSN() {
+		public long getSN() {
 			return callable.sn;
 		}
 
