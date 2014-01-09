@@ -50,4 +50,8 @@ public interface LayerEx extends Layer, ContainerEx {
 	 */
 	public void transformChanged();
 
+	public void linkXAxisTransform(AxisTransformEx axt);
+
+	public void linkYAxisTransform(AxisTransformEx axt);
+
 }

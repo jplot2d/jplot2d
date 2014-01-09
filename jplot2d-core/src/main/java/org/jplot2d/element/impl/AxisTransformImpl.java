@@ -294,6 +294,10 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 		}
 	}
 
+	public void linkLayer(LayerEx layer) {
+		layers.add(layer);
+	}
+
 	public Range getCoreRange() {
 		return coreRange;
 	}

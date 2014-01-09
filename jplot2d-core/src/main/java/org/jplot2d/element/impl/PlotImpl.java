@@ -912,11 +912,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
 				AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer.getXAxisTransform());
-				layerCopy.setXAxisTransform(xcopy);
+				layerCopy.linkXAxisTransform(xcopy);
+				xcopy.linkLayer(layerCopy);
 			}
 			if (layerCopy.getYAxisTransform() == null && layer.getYAxisTransform() != null) {
 				AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer.getYAxisTransform());
-				layerCopy.setYAxisTransform(ycopy);
+				layerCopy.linkYAxisTransform(ycopy);
+				ycopy.linkLayer(layerCopy);
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
@@ -931,7 +933,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	public void commit() {
 
-		PaperTransform oldPxf = pxf;
+		PaperTransform oldPxf = getPaperTransform();
 		double scaleResult = 0;
 
 		// set the plot size if it is decided by size mode
@@ -1003,7 +1005,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 
 		// invalidate pxf on all children
-		if (oldPxf == null || oldPxf.equals(pxf)) {
+		if (oldPxf == null || !oldPxf.equals(getPaperTransform())) {
 			this.parentPaperTransformChanged();
 		}
 

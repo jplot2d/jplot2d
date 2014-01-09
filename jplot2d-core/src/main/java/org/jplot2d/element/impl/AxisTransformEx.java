@@ -27,8 +27,7 @@ import org.jplot2d.util.Range;
  * @author Jingjing Li
  * 
  */
-public interface AxisTransformEx extends AxisTransform, ElementEx,
-		Joinable {
+public interface AxisTransformEx extends AxisTransform, ElementEx, Joinable {
 
 	public AxisTickManagerEx getParent();
 
@@ -67,6 +66,8 @@ public interface AxisTransformEx extends AxisTransform, ElementEx,
 	 *            the layer
 	 */
 	public void removeLayer(LayerEx layer);
+
+	public void linkLayer(LayerEx layer);
 
 	public Range expandRangeToTick(Range ur);
 
