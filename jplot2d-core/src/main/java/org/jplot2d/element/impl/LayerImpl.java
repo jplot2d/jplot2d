@@ -233,6 +233,14 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 		return yarm;
 	}
 
+	public void linkXAxisTransform(AxisTransformEx axt) {
+		this.xarm = axt;
+	}
+
+	public void linkYAxisTransform(AxisTransformEx axt) {
+		this.yarm = axt;
+	}
+
 	public void setXAxisTransform(AxisTransform axis) {
 		if (this.xarm != null) {
 			this.xarm.removeLayer(this);
