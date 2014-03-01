@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.ByteDataBuffer;
@@ -357,7 +358,7 @@ public class ElementFactory {
 		return proxy;
 	}
 
-	public Layer createLayer(XYGraph graph) {
+	public Layer createLayer(Graph graph) {
 		Layer layer = this.createLayer();
 		layer.addGraph(graph);
 		return layer;
@@ -759,43 +760,73 @@ public class ElementFactory {
 	}
 
 	public RGBImageGraph createRGBImageGraph(byte[][] red2d, byte[][] green2d, byte[][] blue2d) {
+		int w = red2d[0].length;
+		int h = red2d.length;
+		if (w != green2d[0].length || h != green2d.length || w != blue2d[0].length || h != blue2d.length) {
+			throw new IllegalArgumentException("Input data do not have the same dimension.");
+		}
+
 		ImageDataBuffer redBuffer = new ByteDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new ByteDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new ByteDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
-				red2d[0].length, red2d.length));
+				w, h));
 	}
 
 	public RGBImageGraph createRGBImageGraph(short[][] red2d, short[][] green2d, short[][] blue2d) {
+		int w = red2d[0].length;
+		int h = red2d.length;
+		if (w != green2d[0].length || h != green2d.length || w != blue2d[0].length || h != blue2d.length) {
+			throw new IllegalArgumentException("Input data do not have the same dimension.");
+		}
+
 		ImageDataBuffer redBuffer = new ShortDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new ShortDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new ShortDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
-				red2d[0].length, red2d.length));
+				w, h));
 	}
 
 	public RGBImageGraph createRGBImageGraph(int[][] red2d, int[][] green2d, int[][] blue2d) {
+		int w = red2d[0].length;
+		int h = red2d.length;
+		if (w != green2d[0].length || h != green2d.length || w != blue2d[0].length || h != blue2d.length) {
+			throw new IllegalArgumentException("Input data do not have the same dimension.");
+		}
+
 		ImageDataBuffer redBuffer = new IntDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new IntDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new IntDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
-				red2d[0].length, red2d.length));
+				w, h));
 	}
 
 	public RGBImageGraph createRGBImageGraph(float[][] red2d, float[][] green2d, float[][] blue2d) {
+		int w = red2d[0].length;
+		int h = red2d.length;
+		if (w != green2d[0].length || h != green2d.length || w != blue2d[0].length || h != blue2d.length) {
+			throw new IllegalArgumentException("Input data do not have the same dimension.");
+		}
+
 		ImageDataBuffer redBuffer = new FloatDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new FloatDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new FloatDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
-				red2d[0].length, red2d.length));
+				w, h));
 	}
 
 	public RGBImageGraph createRGBImageGraph(double[][] red2d, double[][] green2d, double[][] blue2d) {
+		int w = red2d[0].length;
+		int h = red2d.length;
+		if (w != green2d[0].length || h != green2d.length || w != blue2d[0].length || h != blue2d.length) {
+			throw new IllegalArgumentException("Input data do not have the same dimension.");
+		}
+
 		ImageDataBuffer redBuffer = new DoubleDataBuffer.Array2D(red2d);
 		ImageDataBuffer greenBuffer = new DoubleDataBuffer.Array2D(green2d);
 		ImageDataBuffer blueBuffer = new DoubleDataBuffer.Array2D(blue2d);
 		return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[] { redBuffer, greenBuffer, blueBuffer },
-				red2d[0].length, red2d.length));
+				w, h));
 	}
 
 	/**
@@ -836,6 +867,20 @@ public class ElementFactory {
 		env.registerElement(impl.getBlueTransform(), proxy(impl.getBlueTransform(), ImageBandTransform.class));
 
 		return proxy;
+	}
+
+	/**
+	 * Create a copy of the given component
+	 * 
+	 * @param comp
+	 *            the component to be copied.
+	 * @param copyMap
+	 *            a original element to copy element map.
+	 * @return
+	 */
+	public <T extends PComponent> T copy(T comp, Map<Element, Element> copyMap) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
