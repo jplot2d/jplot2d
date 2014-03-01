@@ -30,13 +30,11 @@ public class MultiBandImageData extends ImageData {
 	private final ImageDataBuffer[] dataBuffer;
 
 	public MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h) {
-		super(w, h, new ImageCoordinateReference(), null, null);
-		this.dataBuffer = dataBuffer;
+		this(dataBuffer, w, h, new ImageCoordinateReference(), null, null);
 	}
 
 	public MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, ImageCoordinateReference cr) {
-		super(w, h, cr, null, null);
-		this.dataBuffer = dataBuffer;
+		this(dataBuffer, w, h, cr, null, null);
 	}
 
 	protected MultiBandImageData(ImageDataBuffer[] dataBuffer, int w, int h, ImageCoordinateReference cr,
