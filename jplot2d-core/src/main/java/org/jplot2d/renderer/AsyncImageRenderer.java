@@ -144,29 +144,29 @@ public class AsyncImageRenderer extends ImageRenderer {
 			}
 
 			/*
-			 * remove this renderer and all old renderers from the queue, and cancel all old renderers. The canceling
-			 * only occur in CANCEL_AFTER_NEWER_DONE mode. In CANCEL_BEFORE_EXEC_NEWER mode, old renderers are canceled
+			 * remove this renderer and all old renderers from the queue, and cancel all old renderers. The cancelling
+			 * only occur in CANCEL_AFTER_NEWER_DONE mode. In CANCEL_BEFORE_EXEC_NEWER mode, old renderers are cancelled
 			 * and removed from the queue when new renderer is added.
 			 */
 			if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
 				synchronized (renderLock) {
 					/*
-					 * the renderers in the queue are on sn order. We can't guarantee the current renderer exist in the
-					 * queue. A renderer may be done, before this method is called, a new renderer may be created and
-					 * added to the queue, and sweep all old renderer(SURPASS mode), include this. The renderer queue is
-					 * not empty on this point, because removal are guarded by renderLock.
+					 * The tasks in the queue are on SN order. We can't guarantee the current tasks exist in the queue.
+					 * Another newer task may be done just before this method is called, and sweep all old tasks,
+					 * include this. In this case, The renderer queue might be empty.
 					 */
-					if (renderTaskQueue.peek().getSN() > getSN()) {
-						return;
-					}
-					for (;;) {
-						AsyncImageRendererTask renderer = renderTaskQueue.poll();
-						if (renderer.getSN() == getSN()) {
-							break;
-						}
-						/* cancel old renderer */
-						if (renderer.getSN() < getSN() && renderer.cancel(true)) {
-							logger.info("Renderer {} finished. Cancel the old renderer {}", getSN(), renderer.getSN());
+					AsyncImageRendererTask head = renderTaskQueue.peek();
+					if (head != null && head.getSN() <= getSN()) {
+						for (;;) {
+							AsyncImageRendererTask renderer = renderTaskQueue.poll();
+							if (renderer.getSN() == getSN()) {
+								break;
+							}
+							/* cancel old renderer */
+							if (renderer.getSN() < getSN() && renderer.cancel(true)) {
+								logger.trace("Renderer {} finished. Cancel the old renderer {}", getSN(),
+										renderer.getSN());
+							}
 						}
 					}
 				}
@@ -217,7 +217,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger.info("Render task {} to be exec. Cancel the running render task {}", task.getSN(),
+						logger.trace("Render task {} to be exec. Cancel the running render task {}", task.getSN(),
 								rtask.getSN());
 					}
 				}
