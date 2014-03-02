@@ -26,7 +26,6 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
@@ -43,6 +42,8 @@ import org.jplot2d.renderer.ImageRenderer;
 import org.jplot2d.renderer.RenderingFinishedEvent;
 import org.jplot2d.renderer.RenderingFinishedListener;
 import org.jplot2d.swing.interaction.InteractionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JComponent that display a plot in its center.
@@ -54,7 +55,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 
 	private static final long serialVersionUID = 1L;
 
-	static Logger logger = Logger.getLogger("org.jplot2d.swing");
+	static Logger logger = LoggerFactory.getLogger("org.jplot2d.swing");
 
 	private final RenderEnvironment env;
 
@@ -213,7 +214,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 		}
 
 		if (!ok) {
-			logger.info("[R] Rendering finished in wrong order, drop R." + sn + " Current result is " + ifsn);
+			logger.trace("[R] Rendering finished in wrong order, drop R." + sn + " Current result is " + ifsn);
 			return;
 		}
 
