@@ -27,6 +27,9 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.XYGraph;
+import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.renderer.AsyncImageRenderer;
+import org.jplot2d.renderer.AsyncImageRenderer.RendererCancelPolicy;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.util.Range;
@@ -47,6 +50,9 @@ public class FastUpdate {
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
+		((AsyncImageRenderer) ((RenderEnvironment) plot.getEnvironment()).getRenderers()[0])
+				.setRendererCancelPolicy(RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE);
+
 		Axis xaxis = ElementFactory.getInstance().createAxis();
 		Axis yaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
@@ -58,25 +64,22 @@ public class FastUpdate {
 
 		ArrayPair ap0 = new ArrayPair(new double[] { 0 }, new double[] { 0 });
 		ArrayPair ap1 = new ArrayPair(new double[] { 0 }, new double[] { n });
-		XYGraph graph0 = ElementFactory.getInstance()
-				.createXYGraph(ap0, "lineA");
-		XYGraph graph1 = ElementFactory.getInstance()
-				.createXYGraph(ap1, "lineB");
+		XYGraph graph0 = ElementFactory.getInstance().createXYGraph(ap0, "lineA");
+		XYGraph graph1 = ElementFactory.getInstance().createXYGraph(ap1, "lineB");
 		graph0.setLineVisible(false);
 		graph0.setSymbolVisible(true);
 		graph0.setSymbolShape(SymbolShape.SQUARE);
 		graph1.setLineVisible(false);
 		graph1.setSymbolVisible(true);
 		graph1.setSymbolShape(SymbolShape.SQUARE);
-		
-//		graph0.setCacheable(true);
-//		graph1.setCacheable(true);
+
+		// graph0.setCacheable(true);
+		// graph1.setCacheable(true);
 
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 		layer0.addGraph(graph0);
 		layer0.addGraph(graph1);
-		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis
-				.getTickManager().getAxisTransform());
+		plot.addLayer(layer0, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 
 		for (int i = 0; i < n; i++) {
 			double[] xa = new double[1];
