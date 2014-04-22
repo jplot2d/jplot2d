@@ -107,6 +107,8 @@ public class ImageFloat2dDemo {
 
 		graph.getMapping().setGain(gain);
 		graph.getMapping().setColorMap(map);
+		
+		graph.setData(null);
 	}
 
 	public static void plotRGB() {
@@ -135,6 +137,7 @@ public class ImageFloat2dDemo {
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis, yaxis);
 
+		graph.setData(null);
 	}
 
 }

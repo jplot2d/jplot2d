@@ -81,7 +81,7 @@ public class RenderEnvironment extends PlotEnvironment {
 		begin();
 
 		try {
-			render(new Renderer[] { renderer });
+			renderer.render(plotCopy, cacheBlockList);
 		} finally {
 			end();
 		}
@@ -102,14 +102,7 @@ public class RenderEnvironment extends PlotEnvironment {
 			}
 		}
 
-		render(getRenderers());
-	}
-
-	/**
-	 * Redraw the plot in this environment.
-	 */
-	private void render(Renderer[] renderers) {
-		for (Renderer r : renderers) {
+		for (Renderer r : getRenderers()) {
 			r.render(plotCopy, cacheBlockList);
 		}
 	}

@@ -18,6 +18,8 @@
  */
 package org.jplot2d.swing.demo;
 
+import java.awt.Color;
+
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.element.Axis;
@@ -33,6 +35,7 @@ import org.jplot2d.element.VLineAnnotation;
 import org.jplot2d.element.VStripAnnotation;
 import org.jplot2d.element.XYGraph;
 import org.jplot2d.sizing.AutoPackSizeMode;
+import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.util.SymbolShape;
 
@@ -44,18 +47,16 @@ public class DevDemo {
 
 	/**
 	 * @param args
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
+		//plot.setSizeMode(new FillContainerSizeMode(1));
 
 		Title title = ElementFactory.getInstance().createTitle("Title");
 		title.setFontScale(2);
 		plot.addTitle(title);
-
-		JPlot2DFrame frame = new JPlot2DFrame(plot);
-		frame.setSize(640, 480);
-		frame.setVisible(true);
 
 		Axis xaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
@@ -104,5 +105,13 @@ public class DevDemo {
 
 		plot.addLayer(layer0);
 		layer0.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
+		
+		JPlot2DFrame frame = new JPlot2DFrame(plot);
+		frame.setSize(640, 480);
+		frame.setVisible(true);
+
+		Thread.sleep(1000);
+		
+		frame.getPlotComponent().setPlotBackground(Color.RED);
 	}
 }

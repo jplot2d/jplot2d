@@ -18,8 +18,6 @@
  */
 package org.jplot2d.swing.demo;
 
-import javax.swing.JFrame;
-
 import org.jplot2d.element.ElementFactory;
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
@@ -27,10 +25,11 @@ import org.jplot2d.element.Axis;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.XYGraph;
-import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.AsyncImageRenderer.RendererCancelPolicy;
 import org.jplot2d.sizing.FillContainerSizeMode;
+import org.jplot2d.swing.ImageRendererFactory;
+import org.jplot2d.swing.JPlot2DComponent;
 import org.jplot2d.swing.JPlot2DFrame;
 import org.jplot2d.util.Range;
 import org.jplot2d.util.SymbolShape;
@@ -46,12 +45,20 @@ public class FastUpdate {
 		Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new FillContainerSizeMode(1));
 
-		JFrame frame = new JPlot2DFrame(plot);
+		JPlot2DFrame frame = new JPlot2DFrame(plot);
 		frame.setSize(640, 480);
 		frame.setVisible(true);
 
-		((AsyncImageRenderer) ((RenderEnvironment) plot.getEnvironment()).getRenderers()[0])
-				.setRendererCancelPolicy(RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE);
+		JPlot2DComponent comp = frame.getPlotComponent();
+		ImageRendererFactory irf = new JPlot2DComponent.DefaultImageRendererFactory(frame.getPlotComponent()) {
+			@Override
+			public AsyncImageRenderer createImageRenderer() {
+				AsyncImageRenderer r = super.createImageRenderer();
+				r.setRendererCancelPolicy(RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE);
+				return r;
+			}
+		};
+		comp.setImageRendererFactory(irf);
 
 		Axis xaxis = ElementFactory.getInstance().createAxis();
 		Axis yaxis = ElementFactory.getInstance().createAxis();

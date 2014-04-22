@@ -53,15 +53,39 @@ import org.slf4j.LoggerFactory;
  */
 public class JPlot2DComponent extends JComponent implements HierarchyListener, RenderingFinishedListener {
 
+	public static class DefaultImageRendererFactory implements ImageRendererFactory {
+
+		private final JPlot2DComponent comp;
+
+		public DefaultImageRendererFactory(JPlot2DComponent comp) {
+			this.comp = comp;
+		}
+
+		@Override
+		public AsyncImageRenderer createImageRenderer() {
+			return new AsyncImageRenderer(new GraphicsConfigurationCompatibleImageFactory(
+					comp.getGraphicsConfiguration(), comp.getPlotBackground()));
+		}
+
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	static Logger logger = LoggerFactory.getLogger("org.jplot2d.swing");
 
 	private final RenderEnvironment env;
 
+	private Color bgColor = Color.WHITE;
+
+	private ImageRendererFactory rendererFactory;
+
 	private ImageRenderer r;
 
+	private Object renderLock = new Object();
+
 	private long ifsn = -1;
+
+	private Object fsnLock = new Object();
 
 	private volatile BufferedImage image;
 
@@ -120,6 +144,8 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	public JPlot2DComponent(RenderEnvironment env) {
 		this.env = env;
 
+		rendererFactory = new DefaultImageRendererFactory(this);
+
 		setBackground(Color.GRAY);
 		setOpaque(true);
 		addHierarchyListener(this);
@@ -135,10 +161,86 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	/**
 	 * Returns the background color of plot. The default color is Color.WHITE.
 	 * 
-	 * @return
+	 * @return the background color of plot
 	 */
 	public Color getPlotBackground() {
-		return Color.WHITE;
+		return bgColor;
+	}
+
+	/**
+	 * Sets the background color of plot. The default color is Color.WHITE.
+	 * 
+	 * @param bgcolor
+	 *            the new background color of plot
+	 */
+	public void setPlotBackground(Color bgColor) {
+		this.bgColor = bgColor;
+		replaceRenderer();
+	}
+
+	/**
+	 * Returns the renderer factory used to create image renderers.
+	 * 
+	 * @return the current renderer factory
+	 */
+	public ImageRendererFactory getImageRendererFactory() {
+		return rendererFactory;
+	}
+
+	/**
+	 * Sets the renderer factory used to create image renderers.
+	 * 
+	 * @param rendererFactory
+	 *            the new renderer factory
+	 */
+	public void setImageRendererFactory(ImageRendererFactory rendererFactory) {
+		this.rendererFactory = rendererFactory;
+		replaceRenderer();
+	}
+
+	/**
+	 * Recreate a new renderer and re-render the plot.
+	 */
+	private void replaceRenderer() {
+		ImageRenderer lr = null;
+		synchronized (renderLock) {
+			if (r != null) {
+				env.removeRenderer(r);
+				r = createAndSetRenderer();
+				lr = r;
+			}
+		}
+		if (lr != null) {
+			env.exportPlot(lr);
+		}
+	}
+
+	/**
+	 * Create a new image renderer and add it to render environment.
+	 * 
+	 * @return
+	 */
+	private ImageRenderer createAndSetRenderer() {
+		synchronized (fsnLock) {
+			ifsn = -1;
+		}
+		ImageRenderer ir = rendererFactory.createImageRenderer();
+		ir.addRenderingFinishedListener(this);
+		env.addRenderer(ir);
+		return ir;
+	}
+
+	public void hierarchyChanged(HierarchyEvent event) {
+		if ((event.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+			synchronized (renderLock) {
+				if (this.isDisplayable()) {
+					r = createAndSetRenderer();
+				} else {
+					env.removeRenderer(r);
+					r = null;
+				}
+			}
+		}
 	}
 
 	public void setBounds(int x, int y, int width, int height) {
@@ -189,22 +291,10 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 		return yoff;
 	}
 
-	public void hierarchyChanged(HierarchyEvent event) {
-		if ((event.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
-			if (this.isDisplayable()) {
-				r = createImageRenderer();
-				r.addRenderingFinishedListener(this);
-				env.addRenderer(r);
-			} else {
-				env.removeRenderer(r);
-			}
-		}
-	}
-
 	public void renderingFinished(RenderingFinishedEvent event) {
 		long sn = event.getSN();
 		boolean ok;
-		synchronized (this) {
+		synchronized (fsnLock) {
 			if (sn > ifsn) {
 				ok = true;
 				ifsn = sn;
@@ -220,11 +310,6 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 
 		image = (BufferedImage) event.getResult();
 		repaint();
-	}
-
-	protected ImageRenderer createImageRenderer() {
-		return new AsyncImageRenderer(new GraphicsConfigurationCompatibleImageFactory(this.getGraphicsConfiguration(),
-				getPlotBackground()));
 	}
 
 	/**
