@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -19,7 +19,7 @@
 package org.jplot2d.notice;
 
 /**
- * This interface receive and process plot waning messages.
+ * This interface receive notices during command execution and process all notices at once.
  * 
  * @author Jingjing Li
  * 
@@ -27,9 +27,10 @@ package org.jplot2d.notice;
 public interface Notifier {
 
 	/**
-	 * Application call this method to add notices. This method can called multiple times.
+	 * Adds a notice to this notifier. This method can be called multiple times.
 	 * 
 	 * @param notice
+	 *            a notice to be added.
 	 */
 	public void notify(Notice notice);
 
@@ -39,13 +40,8 @@ public interface Notifier {
 	public void reset();
 
 	/**
-	 * Application call this method to show the notices. All notices in the queue are treated as the given notice type.
+	 * Process all notices. All notices in the queue are treated as the given notice type.
 	 */
 	public void processNotices(NoticeType type);
-
-	/**
-	 * To be overridden to show notices
-	 */
-	public void showNotices(NoticeType type);
 
 }

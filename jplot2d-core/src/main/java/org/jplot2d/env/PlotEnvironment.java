@@ -171,6 +171,12 @@ public class PlotEnvironment extends Environment {
 		return plot;
 	}
 
+	/**
+	 * Returns the notifier of this environment. The notifier will receive notices during command execution and process
+	 * all notices at once when command finished.
+	 * 
+	 * @return the notifier of this environment
+	 */
 	public Notifier getNotifier() {
 		Notifier result = null;
 		begin();
@@ -179,11 +185,18 @@ public class PlotEnvironment extends Environment {
 		return result;
 	}
 
+	/**
+	 * Sets the notifier of this environment. The notifier will receive notices during command execution and process all
+	 * notices at once when command finished.
+	 * 
+	 * @param notifier
+	 *            the notifier to be used in this environment
+	 */
 	public void setNotifier(Notifier notifier) {
-		beginCommand("setNotifier");
+		begin();
 		this.notifier = notifier;
 		plotImpl.setNotifier(notifier);
-		endCommand();
+		end();
 	}
 
 	@Override
