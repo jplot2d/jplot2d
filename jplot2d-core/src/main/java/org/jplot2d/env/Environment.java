@@ -371,11 +371,8 @@ public abstract class Environment {
 			throw new IllegalArgumentException("Batch token not match. " + token);
 		}
 
-		try {
-			endCommand(type);
-		} finally {
-			end();
-		}
+		endCommand(type);
+		end();
 	}
 
 	/**
@@ -404,15 +401,17 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A light weight version of beginBatch, without verifying a batch token. This method is called from element proxy
-	 * invocation handler every time a method of the proxy is called.
+	 * A light weight version of endBatch, without verifying a batch token. This method is called from element proxy
+	 * invocation handler every time a method of the proxy is called. It will never throw an exception in any
+	 * conditions.
 	 */
 	protected final void endCommand() {
 		endCommand(null);
 	}
 
 	/**
-	 * A light weight version of beginBatch, without verifying a batch token.
+	 * A light weight version of endBatch, without verifying a batch token. It will never throw an exception in any
+	 * conditions.
 	 * 
 	 * @param type
 	 *            the type for notice processor
@@ -420,17 +419,24 @@ public abstract class Environment {
 	private void endCommand(NoticeType type) {
 		logger.trace("[<] {}{}", Integer.toHexString(hashCode()), getBatchString());
 
-		try {
-			if (batchDepth == 1) {
+		if (batchDepth == 1) {
+			try {
 				commit();
+			} catch (Exception e) {
+				// ignore
 			}
-		} finally {
-			batchDepth--;
-			if (notifier != null) {
-				notifier.processNotices(type);
-			}
-			end();
 		}
+
+		if (notifier != null) {
+			try {
+				notifier.processNotices(type);
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+
+		batchDepth--;
+		end();
 	}
 
 	/**

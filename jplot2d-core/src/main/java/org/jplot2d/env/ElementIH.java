@@ -188,16 +188,9 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 				environment.elementPropertyChanged((ElementEx) impl);
 			}
 
-		} catch (Exception e) {
-			try {
-				environment.endCommand();
-			} catch (Exception e2) {
-				// ignore
-			}
-			throw e;
+		} finally {
+			environment.endCommand();
 		}
-
-		environment.endCommand();
 
 		return null;
 
