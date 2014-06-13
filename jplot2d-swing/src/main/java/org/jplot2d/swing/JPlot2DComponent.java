@@ -199,19 +199,14 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	}
 
 	/**
-	 * Recreate a new renderer and re-render the plot.
+	 * Recreate a new renderer and re-render the plot. Only when a renderer already exist.
 	 */
 	private void replaceRenderer() {
-		ImageRenderer lr = null;
 		synchronized (renderLock) {
 			if (r != null) {
 				env.removeRenderer(r);
 				r = createAndSetRenderer();
-				lr = r;
 			}
-		}
-		if (lr != null) {
-			env.exportPlot(lr);
 		}
 	}
 
@@ -227,6 +222,7 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 		ImageRenderer ir = rendererFactory.createImageRenderer();
 		ir.addRenderingFinishedListener(this);
 		env.addRenderer(ir);
+		env.exportPlot(ir);
 		return ir;
 	}
 
