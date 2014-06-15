@@ -25,7 +25,7 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.env.RenderEnvironment;
 
 /**
- * A dedicated JFrame to display a plot.
+ * A dedicated JFrame, which contains a JPlot2DComponent to display a plot.
  * 
  * @author Jingjing Li
  * 
@@ -72,8 +72,23 @@ public class JPlot2DFrame extends JFrame {
 		getContentPane().add(new JPlot2DComponent(env));
 	}
 
+	/**
+	 * Returns the JPlot2DComponent in the content pane of this JPlot2DFrame.
+	 * 
+	 * @return the JPlot2DComponent
+	 */
 	public JPlot2DComponent getPlotComponent() {
 		return (JPlot2DComponent) getContentPane().getComponent(0);
+	}
+
+	/**
+	 * Return the RenderEnvironment of the JPlot2DComponent. The RenderEnvironment generate plot images and display them
+	 * in the JPlot2DComponent.
+	 * 
+	 * @return the RenderEnvironment of the JPlot2DComponen
+	 */
+	public RenderEnvironment getRenderEnvironment() {
+		return getPlotComponent().getRenderEnvironment();
 	}
 
 }

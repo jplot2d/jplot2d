@@ -159,6 +159,16 @@ public class JPlot2DComponent extends JComponent implements HierarchyListener, R
 	}
 
 	/**
+	 * Return the RenderEnvironment of this JPlot2DComponent. The RenderEnvironment generate plot images and display
+	 * them in this component.
+	 * 
+	 * @return the RenderEnvironment of this JPlot2DComponen
+	 */
+	public RenderEnvironment getRenderEnvironment() {
+		return env;
+	}
+
+	/**
 	 * Returns the background color of plot. The default color is Color.WHITE.
 	 * 
 	 * @return the background color of plot
