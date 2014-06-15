@@ -155,6 +155,16 @@ public class JPlot2DComposite extends Composite implements ControlListener, Disp
 
 	}
 
+	/**
+	 * Return the RenderEnvironment of this JPlot2DComposite. The RenderEnvironment generate plot images and display
+	 * them in this JPlot2DComposite.
+	 * 
+	 * @return the RenderEnvironment of this JPlot2DComposite
+	 */
+	public RenderEnvironment getRenderEnvironment() {
+		return env;
+	}
+
 	public void renderingFinished(RenderingFinishedEvent event) {
 		long sn = event.getSN();
 		boolean ok;
