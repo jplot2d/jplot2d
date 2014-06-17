@@ -21,6 +21,7 @@ package org.jplot2d.notice;
 import java.awt.Component;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notice;
@@ -48,12 +49,17 @@ public class DefaultNotifier extends AbstractNotifier {
 		}
 
 		if (type instanceof UINoticeType) {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			for (Notice wm : notices) {
 				sb.append(wm.getMessage());
 				sb.append("\n");
 			}
-			JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			});
 		} else {
 			LoggingNotifier.logNotices(notices.toArray(new Notice[notices.size()]));
 		}
