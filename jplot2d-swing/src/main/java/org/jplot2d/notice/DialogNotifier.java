@@ -21,6 +21,7 @@ package org.jplot2d.notice;
 import java.awt.Component;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * This notifier will show notice messages in a dialog.
@@ -39,12 +40,17 @@ public class DialogNotifier extends AbstractNotifier {
 	@Override
 	public void showNotices(NoticeType type) {
 		if (notices.size() > 0) {
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			for (Notice wm : notices) {
 				sb.append(wm.getMessage());
 				sb.append("\n");
 			}
-			JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			});
 		}
 	}
 
