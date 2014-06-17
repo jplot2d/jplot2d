@@ -385,7 +385,9 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A light weight version of beginBatch, without creating the batch token.
+	 * A light weight version of beginBatch, without creating a batch token.
+	 * <p>
+	 * This method is called from element proxy invocation handler before a setter method of the proxy is called.
 	 * 
 	 * @param msg
 	 *            the message for logging
@@ -401,9 +403,10 @@ public abstract class Environment {
 	}
 
 	/**
-	 * A light weight version of endBatch, without verifying a batch token. This method is called from element proxy
-	 * invocation handler every time a method of the proxy is called. It will never throw an exception in any
-	 * conditions.
+	 * A light weight version of endBatch, without verifying a batch token. It will never throw an exception in any
+	 * case.
+	 * <p>
+	 * This method is called from element proxy invocation handler after a setter method of the proxy is called.
 	 */
 	protected final void endCommand() {
 		endCommand(null);
@@ -411,7 +414,7 @@ public abstract class Environment {
 
 	/**
 	 * A light weight version of endBatch, without verifying a batch token. It will never throw an exception in any
-	 * conditions.
+	 * case.
 	 * 
 	 * @param type
 	 *            the type for notice processor
@@ -423,15 +426,14 @@ public abstract class Environment {
 			try {
 				commit();
 			} catch (Exception e) {
-				// ignore
+				logger.warn("", e);
 			}
-		}
-
-		if (notifier != null) {
-			try {
-				notifier.processNotices(type);
-			} catch (Exception e) {
-				// ignore
+			if (notifier != null) {
+				try {
+					notifier.processNotices(type);
+				} catch (Exception e) {
+					logger.warn("", e);
+				}
 			}
 		}
 
