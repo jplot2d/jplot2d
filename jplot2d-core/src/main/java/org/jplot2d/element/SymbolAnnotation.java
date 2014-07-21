@@ -53,7 +53,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	 * @return the symbol size of this annotation
 	 */
 	@Property(order = 1)
-	public double getSymbolSize();
+	public float getSymbolSize();
 
 	/**
 	 * Sets the symbol shape of this annotation
@@ -61,6 +61,6 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	 * @param symbol
 	 *            the symbol size of this annotation
 	 */
-	public void setSymbolSize(double size);
+	public void setSymbolSize(float size);
 
 }
