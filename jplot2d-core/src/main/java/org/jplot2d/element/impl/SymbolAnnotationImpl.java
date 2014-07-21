@@ -32,6 +32,10 @@ import org.jplot2d.util.SymbolShape;
  */
 public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolAnnotationEx {
 
+	private SymbolShape symbolShape;
+
+	private float symbolSize = Float.NaN;
+
 	private double gap;
 
 	public String getId() {
@@ -43,23 +47,19 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 	}
 
 	public SymbolShape getSymbolShape() {
-		// TODO Auto-generated method stub
-		return null;
+		return symbolShape;
 	}
 
 	public void setSymbolShape(SymbolShape symbol) {
-		// TODO Auto-generated method stub
-
+		this.symbolShape = symbol;
 	}
 
-	public double getSymbolSize() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float getSymbolSize() {
+		return symbolSize;
 	}
 
-	public void setSymbolSize(double size) {
-		// TODO Auto-generated method stub
-
+	public void setSymbolSize(float size) {
+		this.symbolSize = size;
 	}
 
 	public double getTextGap() {
