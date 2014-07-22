@@ -67,6 +67,7 @@ import org.jplot2d.env.ElementIH;
 import org.jplot2d.env.StyleConfiguration;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.util.Range;
+import org.jplot2d.util.SymbolShape;
 
 /**
  * A factory to produce all kind of plot components.
@@ -567,6 +568,19 @@ public class ElementFactory {
 	public SymbolAnnotation createSymbolAnnotation(double x, double y, String text) {
 		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
 		annotation.setValuePoint(x, y);
+		annotation.setText(text);
+		applyProfile(annotation);
+		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
+
+		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		env.registerElement(annotation, annotationProxy);
+		return annotationProxy;
+	}
+
+	public SymbolAnnotation createSymbolAnnotation(double x, double y, SymbolShape symbol, String text) {
+		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		annotation.setSymbolShape(symbol);
 		annotation.setText(text);
 		applyProfile(annotation);
 		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);

@@ -63,4 +63,52 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	 */
 	public void setSymbolSize(float size);
 
+	/**
+	 * Returns the scale apply to effective font size to derive symbol size when symbol size is NaN.
+	 * 
+	 * @return the font scale.
+	 */
+	@Property(order = 2)
+	public float getSymbolScale();
+
+	/**
+	 * Sets the scale apply to effective font size to derive symbol size when symbol size is NaN.
+	 * 
+	 * @param scale
+	 *            the scale
+	 */
+	public void setSymbolScale(float scale);
+
+	/**
+	 * Returns the X offset of text, relative to the base point of this annotation.
+	 * 
+	 * @return the X offset of text
+	 */
+	@Property(order = 3)
+	public float getTextOffsetX();
+
+	/**
+	 * Sets the X offset of text, relative to the base point of this annotation.
+	 * 
+	 * @param offset
+	 *            the X offset of text
+	 */
+	public void setTextOffsetX(float offset);
+
+	/**
+	 * Returns the Y offset of text, relative to the base point of this annotation.
+	 * 
+	 * @return the Y offset of text
+	 */
+	@Property(order = 4)
+	public float getTextOffsetY();
+
+	/**
+	 * Sets the Y offset of text, relative to the base point of this annotation.
+	 * 
+	 * @param offset
+	 *            the Y offset of text
+	 */
+	public void setTextOffsetY(float offset);
+
 }

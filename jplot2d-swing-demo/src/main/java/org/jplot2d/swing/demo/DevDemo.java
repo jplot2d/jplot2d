@@ -19,6 +19,9 @@
 package org.jplot2d.swing.demo;
 
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.SwingUtilities;
 
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
@@ -50,7 +53,7 @@ public class DevDemo {
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		Plot plot = ElementFactory.getInstance().createPlot();
+		final Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
 		//plot.setSizeMode(new FillContainerSizeMode(1));
 
@@ -89,7 +92,7 @@ public class DevDemo {
 		// t0.setMovable(true);
 		// t0.setLocation(0, 20);
 
-		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.1, 0.1, "marker");
+		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.1, 0.1, SymbolShape.DARROW, "marker");
 		sm.setAngle(45);
 		layer0.addAnnotation(sm);
 		HLineAnnotation hlm = ElementFactory.getInstance().createHLineAnnotation(0.1);
@@ -106,12 +109,18 @@ public class DevDemo {
 		plot.addLayer(layer0);
 		layer0.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 		
-		JPlot2DFrame frame = new JPlot2DFrame(plot);
-		frame.setSize(640, 480);
-		frame.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
 
-		Thread.sleep(1000);
+			@Override
+			public void run() {
+				JPlot2DFrame frame = new JPlot2DFrame(plot);
+				frame.getPlotComponent().setPreferredSize(new Dimension(640, 480));
+				frame.pack();
+				frame.setVisible(true);				
+			}});
+
+		//Thread.sleep(1000);
 		
-		frame.getPlotComponent().setPlotBackground(Color.RED);
+		//frame.getPlotComponent().setPlotBackground(Color.RED);
 	}
 }

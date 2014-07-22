@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010, 2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -36,7 +36,9 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	private float symbolSize = Float.NaN;
 
-	private double gap;
+	private float symbolScale = 1;
+
+	private float offsetX = 1, offsetY = 0;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -62,12 +64,40 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		this.symbolSize = size;
 	}
 
-	public double getTextGap() {
-		return gap;
+	@Override
+	public float getSymbolScale() {
+		return symbolScale;
 	}
 
-	public void setTextGap(double factor) {
-		this.gap = factor;
+	@Override
+	public void setSymbolScale(float scale) {
+		this.symbolScale = scale;
+	}
+
+	public float getTextOffsetX() {
+		return offsetX;
+	}
+
+	public void setTextOffsetX(float offset) {
+		this.offsetX = offset;
+	}
+
+	public float getTextOffsetY() {
+		return offsetY;
+	}
+
+	public void setTextOffsetY(float offset) {
+		this.offsetY = offset;
+	}
+
+	private float getEffectiveSymbolSize() {
+		if (symbolShape == null) {
+			return 0;
+		} else if (!Float.isNaN(symbolSize)) {
+			return symbolSize;
+		} else {
+			return getEffectiveFontSize() * symbolScale;
+		}
 	}
 
 	public void draw(Graphics2D g) {
@@ -77,22 +107,29 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		}
 
 		Shape oldClip = g.getClip();
-
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
-
 		AffineTransform oldTransform = g.getTransform();
 
 		g.transform(getParent().getPaperTransform().getTransform());
 		g.setClip(getParent().getBounds());
-
 		g.translate(loc.getX(), loc.getY());
-		g.scale(1.0, -1.0);
-		g.rotate(-Math.PI * angle / 180.0);
-
 		g.setColor(getEffectiveColor());
 
+		// draw symbol
+		float ess = getEffectiveSymbolSize();
+		if (symbolShape != null) {
+			AffineTransform maf = AffineTransform.getScaleInstance(ess, ess);
+			symbolShape.draw(g, maf);
+		}
+
+		// draw label
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+		g.scale(1.0, -1.0);
+		g.rotate(-Math.PI * angle / 180.0);
+		float offx = offsetX * getEffectiveSymbolSize();
+		float offy = offsetY * getEffectiveSymbolSize();
+		g.translate(offx, offy);
 		label.draw(g);
 
 		g.setTransform(oldTransform);
@@ -104,7 +141,11 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		super.copyFrom(src);
 
 		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
-		this.gap = tc.gap;
+		this.symbolShape = tc.symbolShape;
+		this.symbolSize = tc.symbolSize;
+		this.symbolScale = tc.symbolScale;
+		this.offsetX = tc.offsetX;
+		this.offsetY = tc.offsetY;
 	}
 
 }
