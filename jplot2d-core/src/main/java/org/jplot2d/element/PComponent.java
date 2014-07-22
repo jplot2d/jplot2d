@@ -218,7 +218,7 @@ public interface PComponent extends Element {
 	/**
 	 * Returns the location of this component.
 	 * 
-	 * @return an instance of <code>Point</code> representing the base point in its parent's paper coordinate space
+	 * @return the base point in its parent's paper coordinate space
 	 */
 	@Property(order = 9, styleable = false)
 	public Point2D getLocation();
