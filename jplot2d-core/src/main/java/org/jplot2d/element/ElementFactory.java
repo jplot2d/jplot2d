@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -141,6 +141,10 @@ public class ElementFactory {
 		}
 	}
 
+	protected DummyEnvironment createDummyEnvironment() {
+		return new DummyEnvironment(threadSafe);
+	}
+
 	/**
 	 * Create proxy for the given impl
 	 * 
@@ -196,7 +200,7 @@ public class ElementFactory {
 		applyProfile(margin);
 		PlotMargin marginProxy = proxy(margin, PlotMargin.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(plot, plotProxy);
 		env.registerElement(legend, legendProxy);
 		env.registerElement(margin, marginProxy);
@@ -222,7 +226,7 @@ public class ElementFactory {
 		applyProfile(margin);
 		PlotMargin marginProxy = proxy(margin, PlotMargin.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(subplot, subplotProxy);
 		env.registerElement(legend, legendProxy);
 		env.registerElement(margin, marginProxy);
@@ -246,7 +250,7 @@ public class ElementFactory {
 		applyProfile(impl);
 		Title proxy = proxy(impl, Title.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(impl, proxy);
 		return proxy;
 	}
@@ -335,8 +339,7 @@ public class ElementFactory {
 		AxisTransform vaProxy = proxy(rm, AxisTransform.class);
 		AxisRangeLockGroup groupProxy = proxy(group, AxisRangeLockGroup.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(rm, vaProxy);
 		env.registerElement(group, groupProxy);
 
@@ -353,7 +356,7 @@ public class ElementFactory {
 		applyProfile(impl);
 		AxisRangeLockGroup proxy = proxy(impl, AxisRangeLockGroup.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(impl, proxy);
 
 		return proxy;
@@ -375,7 +378,7 @@ public class ElementFactory {
 		applyProfile(impl);
 		Layer proxy = proxy(impl, Layer.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(impl, proxy);
 		return proxy;
 	}
@@ -548,7 +551,7 @@ public class ElementFactory {
 		LegendItemEx li = graph.getLegendItem();
 		LegendItem liProxy = proxy(li, LegendItem.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(graph, gpProxy);
 		env.registerElement(li, liProxy);
 		return gpProxy;
@@ -560,7 +563,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -572,7 +575,19 @@ public class ElementFactory {
 		applyProfile(annotation);
 		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
+		env.registerElement(annotation, annotationProxy);
+		return annotationProxy;
+	}
+
+	public SymbolAnnotation createSymbolAnnotation(double x, double y, SymbolShape symbol) {
+		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		annotation.setSymbolShape(symbol);
+		applyProfile(annotation);
+		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
+
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -585,20 +600,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
-		env.registerElement(annotation, annotationProxy);
-		return annotationProxy;
-	}
-
-	public SymbolAnnotation createSymbolAnnotation(double x, double y, double angle, String text) {
-		SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
-		annotation.setValuePoint(x, y);
-		annotation.setAngle(angle);
-		annotation.setText(text);
-		applyProfile(annotation);
-		SymbolAnnotation annotationProxy = proxy(annotation, SymbolAnnotation.class);
-
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -616,7 +618,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		HLineAnnotation annotationProxy = proxy(annotation, HLineAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -634,7 +636,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		VLineAnnotation annotationProxy = proxy(annotation, VLineAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -654,7 +656,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		HStripAnnotation annotationProxy = proxy(annotation, HStripAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -674,7 +676,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		VStripAnnotation annotationProxy = proxy(annotation, VStripAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -699,7 +701,7 @@ public class ElementFactory {
 		applyProfile(annotation);
 		RectangleAnnotation annotationProxy = proxy(annotation, RectangleAnnotation.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
@@ -767,7 +769,7 @@ public class ElementFactory {
 		applyProfile(impl);
 		ImageMapping proxy = proxy(impl, ImageMapping.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(impl, proxy);
 
 		return proxy;
@@ -874,7 +876,7 @@ public class ElementFactory {
 		applyProfile(impl);
 		RGBImageMapping proxy = proxy(impl, RGBImageMapping.class);
 
-		DummyEnvironment env = new DummyEnvironment(threadSafe);
+		DummyEnvironment env = createDummyEnvironment();
 		env.registerElement(impl, proxy);
 		env.registerElement(impl.getRedTransform(), proxy(impl.getRedTransform(), ImageBandTransform.class));
 		env.registerElement(impl.getGreenTransform(), proxy(impl.getGreenTransform(), ImageBandTransform.class));
