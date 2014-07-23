@@ -81,13 +81,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
-	public Rectangle2D getBounds() {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
-		return label.getBounds();
-	}
-
 	public PaperTransform getPaperTransform() {
 		Point2D loc = getLocation();
 		if (getParent() == null || loc == null) {

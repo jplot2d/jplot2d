@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -80,35 +80,39 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	public void setSymbolScale(float scale);
 
 	/**
-	 * Returns the X offset of text, relative to the base point of this annotation.
+	 * Returns the X offset factor of text. The offset is relative to the base point of this annotation. The factor
+	 * apply to the half size of symbol.
 	 * 
-	 * @return the X offset of text
+	 * @return the X offset factor of text
 	 */
 	@Property(order = 3)
-	public float getTextOffsetX();
+	public float getTextOffsetFactorX();
 
 	/**
-	 * Sets the X offset of text, relative to the base point of this annotation.
+	 * Sets the X offset factor of text. The offset is relative to the base point of this annotation. The factor apply
+	 * to the half size of symbol.
 	 * 
 	 * @param offset
-	 *            the X offset of text
+	 *            the X offset factor of text
 	 */
-	public void setTextOffsetX(float offset);
+	public void setTextOffsetFactorX(float offset);
 
 	/**
-	 * Returns the Y offset of text, relative to the base point of this annotation.
+	 * Returns the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
+	 * half size of symbol.
 	 * 
-	 * @return the Y offset of text
+	 * @return the Y offset factor of text
 	 */
 	@Property(order = 4)
-	public float getTextOffsetY();
+	public float getTextOffsetFactorY();
 
 	/**
-	 * Sets the Y offset of text, relative to the base point of this annotation.
+	 * Sets the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
+	 * half size of symbol.
 	 * 
 	 * @param offset
-	 *            the Y offset of text
+	 *            the Y offset factor of text
 	 */
-	public void setTextOffsetY(float offset);
+	public void setTextOffsetFactorY(float offset);
 
 }

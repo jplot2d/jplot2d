@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.tex.MathLabel;
 import org.jplot2d.util.SymbolShape;
@@ -38,7 +39,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	private float symbolScale = 1;
 
-	private float offsetX = 1, offsetY = 0;
+	private float offsetX = 1.25f, offsetY = 0;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -54,6 +55,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	public void setSymbolShape(SymbolShape symbol) {
 		this.symbolShape = symbol;
+		redraw(this);
 	}
 
 	public float getSymbolSize() {
@@ -62,6 +64,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	public void setSymbolSize(float size) {
 		this.symbolSize = size;
+		redraw(this);
 	}
 
 	@Override
@@ -72,22 +75,25 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 	@Override
 	public void setSymbolScale(float scale) {
 		this.symbolScale = scale;
+		redraw(this);
 	}
 
-	public float getTextOffsetX() {
+	public float getTextOffsetFactorX() {
 		return offsetX;
 	}
 
-	public void setTextOffsetX(float offset) {
+	public void setTextOffsetFactorX(float offset) {
 		this.offsetX = offset;
+		redraw(this);
 	}
 
-	public float getTextOffsetY() {
+	public float getTextOffsetFactorY() {
 		return offsetY;
 	}
 
-	public void setTextOffsetY(float offset) {
+	public void setTextOffsetFactorY(float offset) {
 		this.offsetY = offset;
+		redraw(this);
 	}
 
 	private float getEffectiveSymbolSize() {
@@ -98,6 +104,29 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		} else {
 			return getEffectiveFontSize() * symbolScale;
 		}
+	}
+
+	public Rectangle2D getBounds() {
+		if (label == null) {
+			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+		}
+
+		if (symbolShape == null) {
+			return label.getBounds();
+		}
+
+		float ess = getEffectiveSymbolSize();
+		Rectangle2D sb = new Rectangle2D.Double(-ess / 2, -ess / 2, ess, ess);
+		if (getTextModel() == null) {
+			return sb;
+		}
+
+		Rectangle2D lb = label.getBounds();
+		float offx = offsetX * ess / 2;
+		float offy = offsetY * ess / 2;
+		Rectangle2D bounds = new Rectangle2D.Double(lb.getX() + offx, lb.getY() + offy, lb.getWidth(), lb.getHeight());
+		bounds.add(sb);
+		return bounds;
 	}
 
 	public void draw(Graphics2D g) {
@@ -127,8 +156,8 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		}
 		g.scale(1.0, -1.0);
 		g.rotate(-Math.PI * angle / 180.0);
-		float offx = offsetX * getEffectiveSymbolSize();
-		float offy = offsetY * getEffectiveSymbolSize();
+		float offx = offsetX * ess / 2;
+		float offy = offsetY * ess / 2;
 		g.translate(offx, offy);
 		label.draw(g);
 
