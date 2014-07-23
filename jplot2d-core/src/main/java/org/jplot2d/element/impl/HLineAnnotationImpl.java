@@ -115,6 +115,7 @@ public class HLineAnnotationImpl extends AnnotationImpl implements HLineAnnotati
 
 	public void setStroke(BasicStroke stroke) {
 		this.stroke = stroke;
+		redraw(this);
 	}
 
 	public void draw(Graphics2D g) {

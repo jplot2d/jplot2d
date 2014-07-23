@@ -202,7 +202,7 @@ public class TestUtils {
 
 	public static void checkPropertyInfoNames(PropertyInfo[] pis, String... names) {
 		if (pis.length != names.length) {
-			fail("length error [" + ArrayUtils.toString(pis) + "] [" + ArrayUtils.toString(names));
+			fail("length error [" + ArrayUtils.toString(pis) + "] [" + ArrayUtils.toString(names) + "]");
 		}
 		int length = pis.length;
 		for (int i = 0; i < length; i++) {

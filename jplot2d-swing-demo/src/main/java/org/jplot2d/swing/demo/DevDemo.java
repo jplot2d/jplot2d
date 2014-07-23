@@ -92,8 +92,8 @@ public class DevDemo {
 		// t0.setMovable(true);
 		// t0.setLocation(0, 20);
 
-		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.1, 0.1, SymbolShape.DARROW, "marker");
-		sm.setAngle(45);
+		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.06, 0.12, SymbolShape.DARROW, "marker");
+		sm.setAngle(90);
 		layer0.addAnnotation(sm);
 		HLineAnnotation hlm = ElementFactory.getInstance().createHLineAnnotation(0.1);
 		layer0.addAnnotation(hlm);
@@ -119,7 +119,9 @@ public class DevDemo {
 				frame.setVisible(true);				
 			}});
 
-		//Thread.sleep(1000);
+		Thread.sleep(5000);
+		
+		sm.setSymbolScale(2);
 		
 		//frame.getPlotComponent().setPlotBackground(Color.RED);
 	}

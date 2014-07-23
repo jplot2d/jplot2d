@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -42,7 +42,8 @@ public class SymbolAnnotationTest {
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint", "angle");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign", "VAlign");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape", "symbolSize");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape", "symbolSize",
+				"symbolScale", "textOffsetFactorX", "textOffsetFactorY");
 
 		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation", "Text",
 				"Symbol Annotation");
@@ -50,7 +51,8 @@ public class SymbolAnnotationTest {
 				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Annotation"), "movable");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Text"), "HAlign", "VAlign");
-		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Symbol Annotation"), "symbolSize");
+		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Symbol Annotation"), "symbolSize",
+				"symbolScale", "textOffsetFactorX", "textOffsetFactorY");
 	}
 
 }

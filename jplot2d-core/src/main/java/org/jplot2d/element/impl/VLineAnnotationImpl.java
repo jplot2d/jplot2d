@@ -50,7 +50,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 	}
 
 	public Point2D getLocation() {
-		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null ) {
+		if (getParent() == null || getParent().getSize() == null || getParent().getXAxisTransform() == null) {
 			return null;
 		} else {
 			double locX = getXWtoP(valueX);
@@ -115,6 +115,7 @@ public class VLineAnnotationImpl extends AnnotationImpl implements VLineAnnotati
 
 	public void setStroke(BasicStroke stroke) {
 		this.stroke = stroke;
+		redraw(this);
 	}
 
 	public void draw(Graphics2D g) {
