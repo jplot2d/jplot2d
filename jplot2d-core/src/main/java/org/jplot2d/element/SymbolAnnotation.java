@@ -80,12 +80,29 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	public void setSymbolScale(float scale);
 
 	/**
+	 * Returns the rotation angle of the text.
+	 * 
+	 * @return the rotation angle value
+	 */
+	@Property(order = 3, styleable = false)
+	public double getAngle();
+
+	/**
+	 * Set the rotation angle of the text. The angle start to count from horizontal direction and grow in counter-clock
+	 * wise direction.
+	 * 
+	 * @param angle
+	 *            the rotation angle
+	 */
+	public void setAngle(double angle);
+
+	/**
 	 * Returns the X offset factor of text. The offset is relative to the base point of this annotation. The factor
 	 * apply to the half size of symbol.
 	 * 
 	 * @return the X offset factor of text
 	 */
-	@Property(order = 3)
+	@Property(order = 4)
 	public float getTextOffsetFactorX();
 
 	/**
@@ -103,7 +120,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 	 * 
 	 * @return the Y offset factor of text
 	 */
-	@Property(order = 4)
+	@Property(order = 5)
 	public float getTextOffsetFactorY();
 
 	/**

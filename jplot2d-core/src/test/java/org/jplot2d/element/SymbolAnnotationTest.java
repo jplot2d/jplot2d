@@ -40,10 +40,10 @@ public class SymbolAnnotationTest {
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Component"), "visible", "cacheable", "selectable",
 				"ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale", "location", "size", "bounds");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Annotation"), "movable");
-		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint", "angle");
+		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Point Annotation"), "valuePoint");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Text"), "text", "HAlign", "VAlign");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Symbol Annotation"), "symbolShape", "symbolSize",
-				"symbolScale", "textOffsetFactorX", "textOffsetFactorY");
+				"symbolScale", "angle", "textOffsetFactorX", "textOffsetFactorY");
 
 		checkCollecionOrder(iinfo.getProfilePropertyInfoGroupMap().keySet(), "Component", "Annotation", "Text",
 				"Symbol Annotation");
