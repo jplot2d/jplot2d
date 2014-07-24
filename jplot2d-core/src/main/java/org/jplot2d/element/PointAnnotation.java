@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -24,7 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * A annotation which can highlight a point. The annotation can contains a text string.
+ * A annotation which can highlight a point.
  * 
  * @author Jingjing Li
  * 
@@ -49,19 +49,13 @@ public interface PointAnnotation extends Annotation {
 	public void setValuePoint(Point2D point);
 
 	/**
-	 * Returns the rotation angle of this component.
+	 * Sets the x,y values location in layer's world coordinate system
 	 * 
-	 * @return the rotation angle value
+	 * @param x
+	 *            the x-values of the new location
+	 * @param y
+	 *            the y-values of the new location
 	 */
-	@Property(order = 2, styleable = false)
-	public double getAngle();
-
-	/**
-	 * Set the rotation angle start to count from horizontal direction and grow in counter-clock wise direction.
-	 * 
-	 * @param angle
-	 *            the rotation angle
-	 */
-	public void setAngle(double angle);
+	public void setValuePoint(double x, double y);
 
 }
