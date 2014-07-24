@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -29,7 +29,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 
@@ -105,18 +104,6 @@ public class HStripAnnotationImpl extends AnnotationImpl implements HStripAnnota
 		} else {
 			return getBounds();
 		}
-	}
-
-	public PaperTransform getPaperTransform() {
-		Point2D loc = getLocation();
-		if (getParent() == null || loc == null) {
-			return null;
-		}
-		PaperTransform pxf = getParent().getPaperTransform();
-		if (pxf == null) {
-			return null;
-		}
-		return pxf.translate(0, loc.getY());
 	}
 
 	public Range getValueRange() {

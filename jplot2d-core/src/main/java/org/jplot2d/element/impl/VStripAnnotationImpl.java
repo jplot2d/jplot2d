@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -108,15 +108,12 @@ public class VStripAnnotationImpl extends AnnotationImpl implements VStripAnnota
 	}
 
 	public PaperTransform getPaperTransform() {
-		Point2D loc = getLocation();
-		if (getParent() == null || loc == null) {
-			return null;
-		}
-		PaperTransform pxf = getParent().getPaperTransform();
+		PaperTransform pxf = super.getPaperTransform();
 		if (pxf == null) {
 			return null;
+		} else {
+			return pxf.rotate(Math.PI / 2);
 		}
-		return pxf.translate(loc.getX(), 0).rotate(Math.PI / 2);
 	}
 
 	public Range getValueRange() {

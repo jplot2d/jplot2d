@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -253,10 +253,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 	}
 
 	public PaperTransform getPaperTransform() {
-		if (getParent() == null) {
+		PaperTransform pxf = super.getPaperTransform();
+		if (pxf == null) {
 			return null;
 		} else {
-			PaperTransform pxf = getParent().getPaperTransform().translate(getLocation().getX(), getLocation().getY());
 			if (getOrientation() == AxisOrientation.VERTICAL) {
 				pxf = pxf.rotate(Math.PI / 2);
 			}
