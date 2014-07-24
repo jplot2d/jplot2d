@@ -22,12 +22,6 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.element.HAlign;
-import org.jplot2d.element.VAlign;
-import org.jplot2d.tex.MathElement;
-import org.jplot2d.tex.MathLabel;
-import org.jplot2d.tex.TeXMathUtils;
-import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -37,16 +31,6 @@ import org.jplot2d.util.DoubleDimension2D;
 public abstract class PointAnnotationImpl extends AnnotationImpl implements PointAnnotationEx {
 
 	private double valueX, valueY;
-
-	private HAlign hAlign = HAlign.LEFT;
-
-	private VAlign vAlign = VAlign.MIDDLE;
-
-	protected double angle;
-
-	private MathElement textModel;
-
-	protected MathLabel label;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -81,19 +65,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
 	}
 
-	public PaperTransform getPaperTransform() {
-		Point2D loc = getLocation();
-		if (getParent() == null || loc == null) {
-			return null;
-		} else {
-			PaperTransform pxf = getParent().getPaperTransform().translate(loc.getX(), loc.getY());
-			if (angle != 0) {
-				pxf = pxf.rotate(angle / 180 * Math.PI);
-			}
-			return pxf;
-		}
-	}
-
 	@Override
 	public void copyFrom(ElementEx src) {
 		super.copyFrom(src);
@@ -101,11 +72,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 		PointAnnotationImpl tc = (PointAnnotationImpl) src;
 		this.valueX = tc.valueX;
 		this.valueY = tc.valueY;
-		this.hAlign = tc.hAlign;
-		this.vAlign = tc.vAlign;
-		this.angle = tc.angle;
-		this.textModel = tc.textModel;
-		this.label = tc.label;
 	}
 
 	public Point2D getValuePoint() {
@@ -119,53 +85,6 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setValuePoint(double x, double y) {
 		this.valueX = x;
 		this.valueY = y;
-		redraw(this);
-	}
-
-	public HAlign getHAlign() {
-		return hAlign;
-	}
-
-	public void setHAlign(HAlign hAlign) {
-		this.hAlign = hAlign;
-		label = null;
-		redraw(this);
-	}
-
-	public VAlign getVAlign() {
-		return vAlign;
-	}
-
-	public void setVAlign(VAlign vAlign) {
-		this.vAlign = vAlign;
-		label = null;
-		redraw(this);
-	}
-
-	public double getAngle() {
-		return angle;
-	}
-
-	public void setAngle(double angle) {
-		this.angle = angle;
-		redraw(this);
-	}
-
-	public String getText() {
-		return TeXMathUtils.toString(textModel);
-	}
-
-	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
-
-	public MathElement getTextModel() {
-		return textModel;
-	}
-
-	public void setTextModel(MathElement model) {
-		this.textModel = model;
-		label = null;
 		redraw(this);
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2014 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -24,7 +24,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import org.jplot2d.element.HAlign;
+import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.MathLabel;
+import org.jplot2d.tex.TeXMathUtils;
+import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.SymbolShape;
 
 /**
@@ -39,7 +44,17 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	private float symbolScale = 1;
 
+	private double angle;
+
 	private float offsetX = 1.25f, offsetY = 0;
+
+	private HAlign hAlign = HAlign.LEFT;
+
+	private VAlign vAlign = VAlign.MIDDLE;
+
+	private MathElement textModel;
+
+	private MathLabel label;
 
 	public String getId() {
 		if (getParent() != null) {
@@ -47,6 +62,32 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		} else {
 			return "SymbolAnnotation@" + Integer.toHexString(System.identityHashCode(this));
 		}
+	}
+
+	public PaperTransform getPaperTransform() {
+		PaperTransform pxf = super.getPaperTransform();
+		if (pxf == null || angle == 0) {
+			return pxf;
+		} else {
+			return pxf.rotate(angle / 180 * Math.PI);
+		}
+	}
+
+	@Override
+	public void copyFrom(ElementEx src) {
+		super.copyFrom(src);
+
+		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
+		this.symbolShape = tc.symbolShape;
+		this.symbolSize = tc.symbolSize;
+		this.symbolScale = tc.symbolScale;
+		this.offsetX = tc.offsetX;
+		this.offsetY = tc.offsetY;
+		this.hAlign = tc.hAlign;
+		this.vAlign = tc.vAlign;
+		this.angle = tc.angle;
+		this.textModel = tc.textModel;
+		this.label = tc.label;
 	}
 
 	public SymbolShape getSymbolShape() {
@@ -93,6 +134,53 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	public void setTextOffsetFactorY(float offset) {
 		this.offsetY = offset;
+		redraw(this);
+	}
+
+	public HAlign getHAlign() {
+		return hAlign;
+	}
+
+	public void setHAlign(HAlign hAlign) {
+		this.hAlign = hAlign;
+		label = null;
+		redraw(this);
+	}
+
+	public VAlign getVAlign() {
+		return vAlign;
+	}
+
+	public void setVAlign(VAlign vAlign) {
+		this.vAlign = vAlign;
+		label = null;
+		redraw(this);
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+		redraw(this);
+	}
+
+	public String getText() {
+		return TeXMathUtils.toString(textModel);
+	}
+
+	public void setText(String text) {
+		setTextModel(TeXMathUtils.parseText(text));
+	}
+
+	public MathElement getTextModel() {
+		return textModel;
+	}
+
+	public void setTextModel(MathElement model) {
+		this.textModel = model;
+		label = null;
 		redraw(this);
 	}
 
@@ -163,18 +251,6 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 		g.setTransform(oldTransform);
 		g.setClip(oldClip);
-	}
-
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
-
-		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
-		this.symbolShape = tc.symbolShape;
-		this.symbolSize = tc.symbolSize;
-		this.symbolScale = tc.symbolScale;
-		this.offsetX = tc.offsetX;
-		this.offsetY = tc.offsetY;
 	}
 
 }
