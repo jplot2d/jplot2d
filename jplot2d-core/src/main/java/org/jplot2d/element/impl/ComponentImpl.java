@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -263,13 +263,15 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
 	}
 
 	public PaperTransform getPaperTransform() {
-		PaperTransform pxf = getParent().getPaperTransform();
+		PaperTransform pxf = getParent() == null ? null : getParent().getPaperTransform();
 		if (pxf == null) {
 			return null;
-		} else {
-			Point2D loc = getLocation();
-			return pxf.translate(loc.getX(), loc.getY());
 		}
+		Point2D loc = getLocation();
+		if (loc == null) {
+			return null;
+		}
+		return pxf.translate(loc.getX(), loc.getY());
 	}
 
 	public Rectangle2D getBounds() {
