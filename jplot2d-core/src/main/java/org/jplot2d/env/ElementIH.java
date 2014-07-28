@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -661,6 +661,10 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * @throws Throwable
 	 */
 	protected boolean invokeSetter(Method method, Object[] args) throws Throwable {
+		if (iinfo.isPropWriteDisabled(method)) {
+			throw new UnsupportedOperationException("The property setter " + method.getName() + " is unsupported.");
+		}
+
 		// the old value is retrieved from concrete engine
 		Object oldValue = null;
 		Method reader = iinfo.getPropReadMethodByWriteMethod(method);

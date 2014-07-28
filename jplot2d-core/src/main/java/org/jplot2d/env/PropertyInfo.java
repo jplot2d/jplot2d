@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -35,8 +35,9 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	private final Class<?> type;
 	private String displayName;
 	private String shortDescription;
+	private boolean readOnly;
 	private int order;
-	private boolean profile;
+	private boolean styleable;
 
 	public PropertyInfo(String pname, Method reader, Method writer) throws IntrospectionException {
 		name = pname;
@@ -133,6 +134,14 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 		shortDescription = text;
 	}
 
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
 	public int getOrder() {
 		return order;
 	}
@@ -141,12 +150,12 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 		this.order = order;
 	}
 
-	public boolean isProfile() {
-		return profile;
+	public boolean isStyleable() {
+		return styleable;
 	}
 
-	public void setProfile(boolean profile) {
-		this.profile = profile;
+	public void setStyleable(boolean styleable) {
+		this.styleable = styleable;
 	}
 
 	/**
