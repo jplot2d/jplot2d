@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -54,9 +54,7 @@ public abstract class PointAnnotationImpl extends AnnotationImpl implements Poin
 	public void setLocation(double locX, double locY) {
 		Point2D loc = getLocation();
 		if (loc != null && (loc.getX() != locX || loc.getY() != locY)) {
-			valueX = getXPtoW(locX);
-			valueY = getYPtoW(locY);
-			redraw(this);
+			setValuePoint(getXPtoW(locX), getYPtoW(locY));
 		}
 	}
 

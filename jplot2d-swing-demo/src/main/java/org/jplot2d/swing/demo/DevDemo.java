@@ -18,7 +18,6 @@
  */
 package org.jplot2d.swing.demo;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.SwingUtilities;
@@ -50,24 +49,24 @@ public class DevDemo {
 
 	/**
 	 * @param args
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		final Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
-		//plot.setSizeMode(new FillContainerSizeMode(1));
+		// plot.setSizeMode(new FillContainerSizeMode(1));
 
 		Title title = ElementFactory.getInstance().createTitle("Title");
 		title.setFontScale(2);
 		plot.addTitle(title);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		xaxis.getTitle().setText("x axis");
-		plot.addXAxis(xaxis);
-		Axis yaxis = ElementFactory.getInstance().createAxis();
-		yaxis.getTitle().setText("y axis");
+		Axis[] xaxes = ElementFactory.getInstance().createAxes(2);
+		xaxes[0].getTitle().setText("x axis");
+		plot.addXAxes(xaxes);
+		Axis[] yaxes = ElementFactory.getInstance().createAxes(2);
+		yaxes[0].getTitle().setText("y axis");
 		// yaxis.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
-		plot.addYAxis(yaxis);
+		plot.addYAxes(yaxes);
 
 		XYGraphData graph = new XYGraphData(new ArrayPair(new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 }),
 				null, new ArrayPair(new double[] { 0.01, 0.01, 0.01 }, new double[] { 0.01, 0.01, 0.01 }));
@@ -92,9 +91,12 @@ public class DevDemo {
 		// t0.setMovable(true);
 		// t0.setLocation(0, 20);
 
-		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.06, 0.12, SymbolShape.DARROW, "marker");
-		sm.setAngle(90);
+		SymbolAnnotation sm = ElementFactory.getInstance().createSymbolAnnotation(0.06, 0.12, SymbolShape.VCROSS,
+				"marker");
+		sm.setAngle(60);
 		layer0.addAnnotation(sm);
+		SymbolAnnotation ca = ElementFactory.getInstance().createCoordinateAnnotation(0, 0.3, SymbolShape.VCROSS);
+		layer0.addAnnotation(ca);
 		HLineAnnotation hlm = ElementFactory.getInstance().createHLineAnnotation(0.1);
 		layer0.addAnnotation(hlm);
 		VLineAnnotation vlm = ElementFactory.getInstance().createVLineAnnotation(0.1);
@@ -107,8 +109,9 @@ public class DevDemo {
 		layer0.addAnnotation(ra);
 
 		plot.addLayer(layer0);
-		layer0.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
-		
+		layer0.setAxesTransform(xaxes[0].getTickManager().getAxisTransform(), yaxes[0].getTickManager()
+				.getAxisTransform());
+
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -116,13 +119,14 @@ public class DevDemo {
 				JPlot2DFrame frame = new JPlot2DFrame(plot);
 				frame.getPlotComponent().setPreferredSize(new Dimension(640, 480));
 				frame.pack();
-				frame.setVisible(true);				
-			}});
+				frame.setVisible(true);
+			}
+		});
 
 		Thread.sleep(5000);
-		
+
 		sm.setSymbolScale(2);
-		
-		//frame.getPlotComponent().setPlotBackground(Color.RED);
+
+		// frame.getPlotComponent().setPlotBackground(Color.RED);
 	}
 }

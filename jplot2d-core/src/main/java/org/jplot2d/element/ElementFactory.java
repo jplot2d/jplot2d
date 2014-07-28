@@ -41,6 +41,7 @@ import org.jplot2d.element.impl.AxisTransformEx;
 import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
+import org.jplot2d.element.impl.CoordinateAnnotationImpl;
 import org.jplot2d.element.impl.HLineAnnotationImpl;
 import org.jplot2d.element.impl.HStripAnnotationImpl;
 import org.jplot2d.element.impl.ImageMappingEx;
@@ -604,6 +605,19 @@ public class ElementFactory {
 		env.registerElement(annotation, annotationProxy);
 		return annotationProxy;
 	}
+
+    public CoordinateAnnotation createCoordinateAnnotation(double x, double y, SymbolShape symbol) {
+    	CoordinateAnnotationImpl annotation = new CoordinateAnnotationImpl();
+        annotation.setValuePoint(x, y);
+        annotation.setSymbolShape(symbol);
+        applyProfile(annotation);
+        CoordinateAnnotation annotationProxy = proxy(annotation, CoordinateAnnotation.class);
+
+        DummyEnvironment env = createDummyEnvironment();
+        env.registerElement(annotation, annotationProxy);
+        return annotationProxy;
+    }
+
 
 	/**
 	 * Create a horizontal line annotation with the given y value in world coordinate system
