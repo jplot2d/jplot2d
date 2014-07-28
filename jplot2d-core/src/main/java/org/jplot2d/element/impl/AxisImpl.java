@@ -110,6 +110,8 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 
 	private double labelOffset;
 
+	private double labelRotation;
+
 	private HAlign labelHAlign;
 
 	private VAlign labelVAlign;
@@ -504,23 +506,38 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 				labelOffset = asc + labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
 					asc = labelOffset + labelHeight;
-					labelVAlign = VAlign.BOTTOM;
-					labelHAlign = HAlign.CENTER;
 				} else {
 					asc = labelOffset + getLabelsMaxPaperWidth();
-					labelVAlign = VAlign.MIDDLE;
-					labelHAlign = HAlign.RIGHT;
 				}
 			} else {
 				labelOffset = -desc - labelHeight * LABEL_GAP_RATIO;
 				if (isLabelSameOrientation()) {
 					desc = -labelOffset + labelHeight;
-					labelVAlign = VAlign.TOP;
-					labelHAlign = HAlign.CENTER;
 				} else {
 					desc = -labelOffset + getLabelsMaxPaperWidth();
-					labelVAlign = VAlign.MIDDLE;
+				}
+			}
+			if (isLabelSameOrientation()) {
+				labelRotation = 0;
+				labelHAlign = HAlign.CENTER;
+				if (isLabelAscSide()) {
+					labelVAlign = VAlign.BOTTOM;
+				} else {
+					labelVAlign = VAlign.TOP;
+				}
+			} else {
+				if (getOrientation() == AxisOrientation.HORIZONTAL) {
+					labelRotation = Math.PI / 2.0;
+				} else {
+					labelRotation = -Math.PI / 2.0;
+				}
+				labelVAlign = VAlign.MIDDLE;
+				boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
+				boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
+				if (axisPositiveSide == outwardSide) {
 					labelHAlign = HAlign.LEFT;
+				} else {
+					labelHAlign = HAlign.RIGHT;
 				}
 			}
 		}
@@ -664,6 +681,7 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 		this.asc = axis.asc;
 		this.desc = axis.desc;
 		this.labelOffset = axis.labelOffset;
+		this.labelRotation = axis.labelRotation;
 		this.labelHAlign = axis.labelHAlign;
 		this.labelVAlign = axis.labelVAlign;
 		this.titleOffset = axis.titleOffset;
@@ -797,11 +815,10 @@ public class AxisImpl extends ComponentImpl implements AxisEx {
 			MathLabel label = new MathLabel(labels[i], getActualLabelFont(), vertalign, horzalign);
 
 			g.translate(xt, labelOffset);
-			g.scale(1, -1);
-			if (!isLabelSameOrientation()) {
-				g.rotate(Math.PI / 2.0);
+			if (labelRotation != 0) {
+				g.rotate(labelRotation);
 			}
-
+			g.scale(1, -1);
 			label.draw(g);
 
 			g.setTransform(oldTransform);
