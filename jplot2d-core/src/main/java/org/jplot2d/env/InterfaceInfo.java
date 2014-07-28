@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -58,9 +58,9 @@ public class InterfaceInfo {
 	 */
 	private final Map<String, PropertyInfo> piMap;
 
-	private final Map<Method, Method> propWriteReadMap = new HashMap<Method, Method>();
+	private final Map<Method, PropertyInfo> propReadMap = new HashMap<Method, PropertyInfo>();
 
-	private final Collection<Method> propReadMethods = new HashSet<Method>();
+	private final Map<Method, PropertyInfo> propWriteMap = new HashMap<Method, PropertyInfo>();
 
 	/** listener get add remove Methods */
 	private final Collection<Method> listenerGarMethods = new HashSet<Method>();
@@ -70,7 +70,7 @@ public class InterfaceInfo {
 	 */
 	private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
 
-	private Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<String, PropertyInfo[]>();
+	private final Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<String, PropertyInfo[]>();
 
 	/**
 	 * Load interface info for the given interface and its parents.The subclass may hide the info of its superclass. For
@@ -126,7 +126,6 @@ public class InterfaceInfo {
 		Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<String, List<PropertyInfo>>();
 
 		for (PropertyInfo p : piMap.values()) {
-
 			Method readMethod = p.getReadMethod();
 			Method writeMethod = p.getWriteMethod();
 			if (readMethod != null) {
@@ -138,9 +137,10 @@ public class InterfaceInfo {
 					if (pann.description().length() > 0) {
 						p.setShortDescription(pann.description());
 					}
+					p.setReadOnly(pann.readOnly());
 					p.setOrder(pann.order());
 					// only writable property can be in profile
-					p.setProfile(pann.styleable() && writeMethod != null);
+					p.setStyleable(pann.styleable() && writeMethod != null);
 					PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
 					if (pg != null) {
 						List<PropertyInfo> pis = pilGroupMap.get(pg.value());
@@ -152,9 +152,9 @@ public class InterfaceInfo {
 					}
 				}
 
-				propReadMethods.add(readMethod);
+				propReadMap.put(readMethod, p);
 				if (writeMethod != null) {
-					propWriteReadMap.put(writeMethod, readMethod);
+					propWriteMap.put(writeMethod, p);
 				}
 			}
 		}
@@ -186,7 +186,7 @@ public class InterfaceInfo {
 			String group = me.getKey();
 			List<PropertyInfo> ppl = new ArrayList<PropertyInfo>();
 			for (PropertyInfo pi : me.getValue()) {
-				if (pi.isProfile()) {
+				if (pi.isStyleable()) {
 					ppl.add(pi);
 				}
 			}
@@ -200,23 +200,51 @@ public class InterfaceInfo {
 	}
 
 	/**
+	 * Returns <code>true</true> if the given method is a property getter.
+	 * 
 	 * @param method
 	 * @return
 	 */
 	protected boolean isPropReadMethod(Method method) {
-		return propReadMethods.contains(method);
+		return propReadMap.containsKey(method);
 	}
 
 	/**
+	 * Returns <code>true</true> if the given method is a property setter.
+	 * 
 	 * @param method
 	 * @return
 	 */
 	protected boolean isPropWriteMethod(Method method) {
-		return propWriteReadMap.containsKey(method);
+		return propWriteMap.containsKey(method);
 	}
 
+	/**
+	 * Returns <code>true</true> if the given setter is disabled by property annotation.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isPropWriteDisabled(Method method) {
+		PropertyInfo pinfo = propWriteMap.get(method);
+		if (pinfo == null) {
+			throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
+		}
+		return pinfo.isReadOnly();
+	}
+
+	/**
+	 * Returns the getter of the given setter.
+	 * 
+	 * @param method
+	 * @return
+	 */
 	protected Method getPropReadMethodByWriteMethod(Method method) {
-		return propWriteReadMap.get(method);
+		PropertyInfo pinfo = propWriteMap.get(method);
+		if (pinfo == null) {
+			throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
+		}
+		return pinfo.getReadMethod();
 	}
 
 	protected boolean isListenerMethod(Method method) {
