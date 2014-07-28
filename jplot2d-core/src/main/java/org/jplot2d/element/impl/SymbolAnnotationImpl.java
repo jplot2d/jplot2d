@@ -52,7 +52,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 
 	private VAlign vAlign = VAlign.MIDDLE;
 
-	private MathElement textModel;
+	protected MathElement textModel;
 
 	private MathLabel label;
 
@@ -167,7 +167,7 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 	}
 
 	public String getText() {
-		return TeXMathUtils.toString(textModel);
+		return TeXMathUtils.toString(getTextModel());
 	}
 
 	public void setText(String text) {
@@ -204,16 +204,16 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		}
 
 		float ess = getEffectiveSymbolSize();
-		Rectangle2D sb = new Rectangle2D.Double(-ess / 2, -ess / 2, ess, ess);
+		Rectangle2D symbolBounds = new Rectangle2D.Double(-ess / 2, -ess / 2, ess, ess);
 		if (getTextModel() == null) {
-			return sb;
+			return symbolBounds;
 		}
 
 		Rectangle2D lb = label.getBounds();
 		float offx = offsetX * ess / 2;
 		float offy = offsetY * ess / 2;
 		Rectangle2D bounds = new Rectangle2D.Double(lb.getX() + offx, lb.getY() + offy, lb.getWidth(), lb.getHeight());
-		bounds.add(sb);
+		bounds.add(symbolBounds);
 		return bounds;
 	}
 
@@ -242,11 +242,11 @@ public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolA
 		if (label == null) {
 			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
 		}
-		g.scale(1.0, -1.0);
-		g.rotate(-Math.PI * angle / 180.0);
+		g.rotate(Math.PI * angle / 180.0);
 		float offx = offsetX * ess / 2;
 		float offy = offsetY * ess / 2;
 		g.translate(offx, offy);
+		g.scale(1.0, -1.0);
 		label.draw(g);
 
 		g.setTransform(oldTransform);
