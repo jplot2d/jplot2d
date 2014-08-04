@@ -458,7 +458,6 @@ public class PlotEnvironment extends Environment {
 	 * @param memento
 	 *            the memento to be copied from
 	 */
-	@SuppressWarnings("unchecked")
 	private void restore(UndoMemento memento) {
 
 		copyMap.clear();
@@ -480,7 +479,7 @@ public class PlotEnvironment extends Environment {
 			// copy properties from memento element to new impl
 			impl.copyFrom(mmte);
 			// replace impl in invocation handler
-			ElementIH<ElementEx> ih = (ElementIH<ElementEx>) Proxy.getInvocationHandler(proxy);
+			ElementIH ih = (ElementIH) Proxy.getInvocationHandler(proxy);
 			ih.replaceImpl(impl);
 
 			proxyMap.put(impl, proxy);

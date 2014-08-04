@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jplot2d.data.ArrayPair;
@@ -42,6 +43,7 @@ import org.jplot2d.element.impl.AxisTickManagerEx;
 import org.jplot2d.element.impl.AxisTickManagerImpl;
 import org.jplot2d.element.impl.AxisTitleEx;
 import org.jplot2d.element.impl.CoordinateAnnotationImpl;
+import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.HLineAnnotationImpl;
 import org.jplot2d.element.impl.HStripAnnotationImpl;
 import org.jplot2d.element.impl.ImageMappingEx;
@@ -65,6 +67,7 @@ import org.jplot2d.element.impl.XYGraphImpl;
 import org.jplot2d.env.DummyEnvironment;
 import org.jplot2d.env.ElementAddition;
 import org.jplot2d.env.ElementIH;
+import org.jplot2d.env.Environment;
 import org.jplot2d.env.StyleConfiguration;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.util.Range;
@@ -158,8 +161,8 @@ public class ElementFactory {
 	 * @return the proxy
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends Element> T proxy(T impl, Class<T> clazz) {
-		ElementIH<T> ih = new ElementIH<T>(impl, clazz);
+	public static final <T extends Element> T proxy(ElementEx impl, Class<T> clazz) {
+		ElementIH ih = new ElementIH(impl, clazz);
 		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz, ElementAddition.class }, ih);
 	}
 
@@ -606,18 +609,17 @@ public class ElementFactory {
 		return annotationProxy;
 	}
 
-    public CoordinateAnnotation createCoordinateAnnotation(double x, double y, SymbolShape symbol) {
-    	CoordinateAnnotationImpl annotation = new CoordinateAnnotationImpl();
-        annotation.setValuePoint(x, y);
-        annotation.setSymbolShape(symbol);
-        applyProfile(annotation);
-        CoordinateAnnotation annotationProxy = proxy(annotation, CoordinateAnnotation.class);
+	public CoordinateAnnotation createCoordinateAnnotation(double x, double y, SymbolShape symbol) {
+		CoordinateAnnotationImpl annotation = new CoordinateAnnotationImpl();
+		annotation.setValuePoint(x, y);
+		annotation.setSymbolShape(symbol);
+		applyProfile(annotation);
+		CoordinateAnnotation annotationProxy = proxy(annotation, CoordinateAnnotation.class);
 
-        DummyEnvironment env = createDummyEnvironment();
-        env.registerElement(annotation, annotationProxy);
-        return annotationProxy;
-    }
-
+		DummyEnvironment env = createDummyEnvironment();
+		env.registerElement(annotation, annotationProxy);
+		return annotationProxy;
+	}
 
 	/**
 	 * Create a horizontal line annotation with the given y value in world coordinate system
@@ -900,17 +902,48 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create a copy of the given component
+	 * Create a copy of the given element. All sub-element are copied together.
 	 * 
-	 * @param comp
-	 *            the component to be copied.
-	 * @param copyMap
-	 *            a original element to copy element map.
-	 * @return
+	 * @param element
+	 *            the element to be copied.
+	 * @return the copy of given element
 	 */
-	public <T extends PComponent> T copy(T comp, Map<Element, Element> copyMap) {
-		// TODO Auto-generated method stub
-		return null;
+	public <T extends Element> T copy(T element) {
+		return copy(element, null);
 	}
 
+	/**
+	 * Create a copy of the given element. All sub-element are copied together.
+	 * 
+	 * @param element
+	 *            the element to be copied.
+	 * @param copyMap
+	 *            a map to be filled with mapping from original element to copy element.
+	 * @return the copy of given element
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Element> T copy(T element, Map<ElementEx, ElementEx> copyMap) {
+		if (copyMap == null) {
+			copyMap = new HashMap<ElementEx, ElementEx>();
+		}
+
+		Environment senv = element.getEnvironment();
+		DummyEnvironment denv = createDummyEnvironment();
+
+		ElementEx ecopy = (ElementEx) ((ElementAddition) element).getImpl().copyStructure(copyMap);
+
+		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
+			ElementEx simpl = me.getKey();
+			ElementEx dimpl = me.getValue();
+
+			dimpl.copyFrom(simpl);
+
+			Element sproxy = senv.getProxy(simpl);
+			Class<? extends Element> itf = (Class<? extends Element>) sproxy.getClass().getInterfaces()[0];
+			Element dproxy = proxy(me.getValue(), itf);
+			denv.registerElement(dimpl, dproxy);
+		}
+
+		return (T) denv.getProxy(ecopy);
+	}
 }

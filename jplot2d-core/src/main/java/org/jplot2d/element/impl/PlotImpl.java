@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -157,10 +157,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return new InvokeStep(method, getParent().indexOf(this));
 	}
 
+	@Override
 	public PlotEx getParent() {
 		return (PlotEx) super.getParent();
 	}
 
+	@Override
 	public Map<Element, Element> getMooringMap() {
 		Map<Element, Element> result = new HashMap<Element, Element>();
 
@@ -184,10 +186,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return result;
 	}
 
+	@Override
 	public Dimension2D getContainerSize() {
 		return containerSize;
 	}
 
+	@Override
 	public void setContainerSize(Dimension2D size) {
 		if (sizeMode == null) {
 			throw new IllegalStateException("The sizeMode property must be set.");
@@ -195,10 +199,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		this.containerSize = size;
 	}
 
+	@Override
 	public SizeMode getSizeMode() {
 		return sizeMode;
 	}
 
+	@Override
 	public void setSizeMode(SizeMode sizeMode) {
 		this.sizeMode = sizeMode;
 		if (sizeMode.isAutoPack()) {
@@ -206,14 +212,17 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Point2D getLocation() {
 		return new Point2D.Double(locX, locY);
 	}
 
+	@Override
 	public final void setLocation(Point2D p) {
 		setLocation(p.getX(), p.getY());
 	}
 
+	@Override
 	public void setLocation(double locX, double locY) {
 		if (getLocation().getX() != locX || getLocation().getY() != locY) {
 			this.locX = locX;
@@ -225,14 +234,17 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Dimension2D getSize() {
 		return new DoubleDimension2D(width, height);
 	}
 
+	@Override
 	public final void setSize(Dimension2D size) {
 		this.setSize(size.getWidth(), size.getHeight());
 	}
 
+	@Override
 	public void setSize(double width, double height) {
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("paper size must be positive, " + width + "x" + height + " is invalid.");
@@ -245,15 +257,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Rectangle2D getBounds() {
 		return new Rectangle2D.Double(-margin.getLeft() - margin.getExtraLeft(), -margin.getBottom()
 				- margin.getExtraBottom(), width, height);
 	}
 
+	@Override
 	public double getScale() {
 		return this.scale;
 	}
 
+	@Override
 	public void setScale(double scale) {
 		if (this.scale != scale) {
 			this.scale = scale;
@@ -261,6 +276,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public PaperTransform getPaperTransform() {
 		if (pxf == null) {
 			if (getParent() != null) {
@@ -275,6 +291,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return pxf;
 	}
 
+	@Override
 	public void parentPaperTransformChanged() {
 		pxf = null;
 		redrawCascade(this);
@@ -287,30 +304,37 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public PlotMarginEx getMargin() {
 		return margin;
 	}
 
+	@Override
 	public LayoutDirector getLayoutDirector() {
 		return layoutDirector;
 	}
 
+	@Override
 	public void setLayoutDirector(LayoutDirector director) {
 		this.layoutDirector = director;
 	}
 
+	@Override
 	public Object getConstraint(Plot subplot) {
 		return layoutDirector.getConstraint((PlotEx) subplot);
 	}
 
+	@Override
 	public void setConstraint(Plot subplot, Object constraint) {
 		layoutDirector.setConstraint((PlotEx) subplot, constraint);
 	}
 
+	@Override
 	public Dimension2D getContentConstrant() {
 		return contentConstraint;
 	}
 
+	@Override
 	public void setContentConstrant(Dimension2D constraint) {
 		if (constraint.getWidth() <= 0 || constraint.getHeight() <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
@@ -322,18 +346,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
-	/**
-	 * Determines whether this component is valid. A component is valid when it is correctly sized and positioned within
-	 * its parent container and all its children are also valid.
-	 * 
-	 * @return <code>true</code> if the component is valid, <code>false</code> otherwise
-	 * @see #validate
-	 * @see #invalidate
-	 */
+	@Override
 	public boolean isValid() {
 		return valid;
 	}
 
+	@Override
 	public void invalidate() {
 		if (isValid()) {
 			valid = false;
@@ -346,6 +364,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void validate() {
 		if (isValid()) {
 			return;
@@ -362,22 +381,27 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		valid = true;
 	}
 
+	@Override
 	public boolean isRerenderNeeded() {
 		return rerenderNeeded;
 	}
 
+	@Override
 	public void setRerenderNeeded(boolean flag) {
 		rerenderNeeded = flag;
 	}
 
+	@Override
 	public Notifier getNotifier() {
 		return notifier;
 	}
 
+	@Override
 	public void setNotifier(Notifier notifier) {
 		this.notifier = notifier;
 	}
 
+	@Override
 	public void notify(Notice msg) {
 		if ((getParent() != null)) {
 			getParent().notify(msg);
@@ -386,10 +410,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Dimension2D getPreferredContentSize() {
 		return new DoubleDimension2D(preferredContentWidth, preferredContentHeight);
 	}
 
+	@Override
 	public void setPreferredContentSize(Dimension2D size) {
 		if (size == null) {
 			throw new IllegalArgumentException("Preferred content size cannpt be null.");
@@ -397,6 +423,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		setPreferredContentSize(size.getWidth(), size.getHeight());
 	}
 
+	@Override
 	public void setPreferredContentSize(double width, double height) {
 		if (width <= 0 || height <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
@@ -406,6 +433,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		childPreferredContentSizeChanged();
 	}
 
+	@Override
 	public void childPreferredContentSizeChanged() {
 		if (getParent() != null) {
 			getParent().childPreferredContentSizeChanged();
@@ -414,10 +442,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Dimension2D getContentSize() {
 		return contentSize;
 	}
 
+	@Override
 	public void setContentSize(Dimension2D csize) {
 		if (csize.getWidth() <= 0 || csize.getHeight() <= 0) {
 			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
@@ -428,6 +458,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		pxf = null;
 	}
 
+	@Override
 	public ComponentEx[] getComponents() {
 
 		int size = 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
@@ -455,10 +486,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		return comps;
 	}
 
+	@Override
 	public LegendEx getLegend() {
 		return legend;
 	}
 
+	@Override
 	public LegendEx getEnabledLegend() {
 		return getEnabledLegend(this);
 	}
@@ -479,18 +512,22 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public TitleEx getTitle(int index) {
 		return titles.get(index);
 	}
 
+	@Override
 	public int indexOf(TitleEx title) {
 		return titles.indexOf(title);
 	}
 
+	@Override
 	public TitleEx[] getTitles() {
 		return titles.toArray(new TitleEx[titles.size()]);
 	}
 
+	@Override
 	public void addTitle(Title title) {
 		TitleEx tx = (TitleEx) title;
 
@@ -504,6 +541,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void removeTitle(Title title) {
 		TitleEx tx = (TitleEx) title;
 
@@ -517,30 +555,37 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public AxisEx getXAxis(int index) {
 		return xAxis.get(index);
 	}
 
+	@Override
 	public AxisEx getYAxis(int index) {
 		return yAxis.get(index);
 	}
 
+	@Override
 	public int indexOfXAxis(AxisEx axis) {
 		return xAxis.indexOf(axis);
 	}
 
+	@Override
 	public int indexOfYAxis(AxisEx axis) {
 		return yAxis.indexOf(axis);
 	}
 
+	@Override
 	public AxisEx[] getXAxes() {
 		return xAxis.toArray(new AxisEx[xAxis.size()]);
 	}
 
+	@Override
 	public AxisEx[] getYAxes() {
 		return yAxis.toArray(new AxisEx[yAxis.size()]);
 	}
 
+	@Override
 	public void addXAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
 
@@ -565,6 +610,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void addYAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
 
@@ -589,6 +635,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void addXAxes(Axis[] axes) {
 		if (axes.length == 0) {
 			return;
@@ -625,6 +672,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void addYAxes(Axis[] axes) {
 		if (axes.length == 0) {
 			return;
@@ -661,6 +709,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void removeXAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
 
@@ -686,6 +735,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void removeYAxis(Axis axis) {
 		AxisEx ax = (AxisEx) axis;
 
@@ -711,18 +761,22 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public Layer getLayer(int index) {
 		return layers.get(index);
 	}
 
+	@Override
 	public int indexOf(LayerEx layer) {
 		return layers.indexOf(layer);
 	}
 
+	@Override
 	public LayerEx[] getLayers() {
 		return layers.toArray(new LayerEx[layers.size()]);
 	}
 
+	@Override
 	public void addLayer(Layer layer) {
 		LayerEx lx = (LayerEx) layer;
 		layers.add(lx);
@@ -739,15 +793,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager) {
 		addLayer(layer);
 		layer.setAxesTransform(xRangeManager, yRangeManager);
 	}
 
+	@Override
 	public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
 		this.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 	}
 
+	@Override
 	public void removeLayer(Layer layer) {
 		LayerEx lx = (LayerEx) layer;
 
@@ -765,18 +822,22 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public PlotEx getSubplot(int i) {
 		return subplots.get(i);
 	}
 
+	@Override
 	public int indexOf(PlotEx subplot) {
 		return subplots.indexOf(subplot);
 	}
 
+	@Override
 	public PlotEx[] getSubplots() {
 		return subplots.toArray(new PlotEx[subplots.size()]);
 	}
 
+	@Override
 	public void addSubplot(Plot subplot, Object constraint) {
 		PlotEx sp = (PlotEx) subplot;
 		subplots.add(sp);
@@ -799,6 +860,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	}
 
+	@Override
 	public void removeSubplot(Plot subplot) {
 		PlotEx sp = (PlotEx) subplot;
 
@@ -816,12 +878,22 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public boolean canContribute() {
 		return false;
 	}
 
 	@Override
 	public PlotImpl copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+		PlotImpl result = copyStructureCascade(orig2copyMap);
+
+		linkLayerAndAxisTransform(this, orig2copyMap);
+
+		return result;
+	}
+
+	@Override
+	public PlotImpl copyStructureCascade(Map<ElementEx, ElementEx> orig2copyMap) {
 		PlotImpl result = (PlotImpl) super.copyStructure(orig2copyMap);
 
 		// copy margin
@@ -860,7 +932,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		// copy subplots
 		for (PlotEx sp : subplots) {
-			PlotEx spCopy = (PlotEx) sp.copyStructure(orig2copyMap);
+			PlotEx spCopy = (PlotEx) sp.copyStructureCascade(orig2copyMap);
 			((ComponentEx) spCopy).setParent(result);
 			result.subplots.add(spCopy);
 		}
@@ -869,11 +941,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		for (LegendItemEx item : getLegend().getItems()) {
 			LegendItemEx liCopy = (LegendItemEx) orig2copyMap.get(item);
 			result.legend.addLegendItem(liCopy);
-		}
-
-		// only link layer and axis range manager on top level plot
-		if (getParent() == null) {
-			linkLayerAndRangeManager(this, orig2copyMap);
 		}
 
 		return result;
@@ -905,9 +972,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Deep search layers to find the copy whoes range manager not been linked, and set for them.
 	 * 
 	 * @param plot
+	 *            the plot to be copied
 	 * @param orig2copyMap
 	 */
-	public static void linkLayerAndRangeManager(PlotEx plot, Map<ElementEx, ElementEx> orig2copyMap) {
+	public static void linkLayerAndAxisTransform(PlotEx plot, Map<ElementEx, ElementEx> orig2copyMap) {
 		for (LayerEx layer : plot.getLayers()) {
 			LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
 			if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
@@ -922,15 +990,17 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			}
 		}
 		for (PlotEx sp : plot.getSubplots()) {
-			linkLayerAndRangeManager(sp, orig2copyMap);
+			linkLayerAndAxisTransform(sp, orig2copyMap);
 		}
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
 		// for debugging
 		// drawBounds(g);
 	}
 
+	@Override
 	public void commit() {
 
 		PaperTransform oldPxf = getPaperTransform();
@@ -1185,11 +1255,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void zoomXRange(double start, double end) {
 		Set<AxisRangeLockGroupEx> xarlgs = getXAxisRangeLockGroup();
 		zoomRange(xarlgs, start, end);
 	}
 
+	@Override
 	public void zoomYRange(double start, double end) {
 		Set<AxisRangeLockGroupEx> yarlgs = getYAxisRangeLockGroup();
 		zoomRange(yarlgs, start, end);
@@ -1261,6 +1333,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void adaptiveZoomX() {
 		Set<AxisRangeLockGroupEx> xarlgs = getXAxisRangeLockGroup();
 		for (AxisRangeLockGroupEx arm : xarlgs) {
@@ -1268,6 +1341,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 	}
 
+	@Override
 	public void adaptiveZoomY() {
 		Set<AxisRangeLockGroupEx> yarlgs = getYAxisRangeLockGroup();
 		for (AxisRangeLockGroupEx arm : yarlgs) {

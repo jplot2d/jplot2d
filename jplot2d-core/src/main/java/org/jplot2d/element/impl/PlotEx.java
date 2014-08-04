@@ -1,6 +1,7 @@
 package org.jplot2d.element.impl;
 
 import java.awt.geom.Dimension2D;
+import java.util.Map;
 
 import org.jplot2d.element.Plot;
 import org.jplot2d.notice.Notifier;
@@ -8,6 +9,13 @@ import org.jplot2d.notice.Notifier;
 public interface PlotEx extends Plot, ContainerEx {
 
 	public PlotEx getParent();
+
+	public PlotEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap);
+
+	/**
+	 * Create a structural copy of this plot, without linking layer and axis transform.
+	 */
+	public PlotEx copyStructureCascade(Map<ElementEx, ElementEx> orig2copyMap);
 
 	/**
 	 * Returns the short id of this plot. The short id is composed of series of ids concatenated with dots. The 1st id
