@@ -102,7 +102,7 @@ public abstract class Environment {
 	 * @param impl
 	 * @return
 	 */
-	final Element getProxy(ElementEx impl) {
+	public final Element getProxy(ElementEx impl) {
 		return proxyMap.get(impl);
 	}
 

@@ -34,18 +34,15 @@ import org.jplot2d.element.impl.Joinable;
  * This InvocationHandler intercept calls on proxy objects, and wrap the calls with environment lock.
  * 
  * @author Jingjing Li
- * 
- * @param <T>
- *            the element type
  */
-public class ElementIH<T extends Element> implements InvocationHandler {
+public class ElementIH implements InvocationHandler {
 
 	private final InterfaceInfo iinfo;
 
 	/**
 	 * Guarded by EnvLock
 	 */
-	private T impl;
+	private ElementEx impl;
 
 	/**
 	 * This field must be read within Environment Global LOCK
@@ -56,7 +53,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * @param impl
 	 * @param clazz
 	 */
-	public ElementIH(T impl, Class<T> clazz) {
+	public ElementIH(ElementEx impl, Class<?> clazz) {
 		this.impl = impl;
 		iinfo = InterfaceInfo.loadInterfaceInfo(clazz);
 	}
@@ -68,7 +65,7 @@ public class ElementIH<T extends Element> implements InvocationHandler {
 	 * 
 	 * @param impl
 	 */
-	void replaceImpl(T impl) {
+	void replaceImpl(ElementEx impl) {
 		this.impl = impl;
 	}
 
