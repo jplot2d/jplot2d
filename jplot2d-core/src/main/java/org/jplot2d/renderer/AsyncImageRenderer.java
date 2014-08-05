@@ -92,12 +92,16 @@ public class AsyncImageRenderer extends ImageRenderer {
 		}
 
 		public BufferedImage call() throws Exception {
-			return assembleResult(sn, bounds.getSize(), ainfo);
+			return assembleResult(sn, bounds, ainfo);
 		}
 
 		public void cancel() {
-			for (Object comp : ainfo.componentSet()) {
-				ainfo.getFuture(comp).cancel(true);
+			for (ComponentEx comp : ainfo.componentSet()) {
+				if (!isFutureCached(comp, ainfo.getFuture(comp))) {
+					// boolean cancelled =
+					ainfo.getFuture(comp).cancel(true);
+					// logger.trace("Cancelling cacheable block renderer for R.{} {}", sn, cancelled);
+				}
 			}
 		}
 
@@ -133,13 +137,8 @@ public class AsyncImageRenderer extends ImageRenderer {
 			} catch (ExecutionException e) {
 				logger.warn("Renderer exception, drop R." + getSN(), e);
 			}
-			if (result != null) {
-				try {
-					fireRenderingFinished(getSN(), result);
-				} catch (Exception e) {
-					logger.warn("RenderingFinishedListener Error", e);
-				}
-			}
+
+			fireRenderingFinished(getSN(), result);
 
 			/*
 			 * remove this renderer and all old renderers from the queue, and cancel all old renderers. The cancelling
@@ -215,7 +214,7 @@ public class AsyncImageRenderer extends ImageRenderer {
 						break;
 					}
 					if (rtask.cancel(true)) {
-						logger.trace("Render task {} to be exec. Cancel the running render task {}", task.getSN(),
+						logger.trace("Render task {} to be exec. The render task {} is cancelled.", task.getSN(),
 								rtask.getSN());
 					}
 				}

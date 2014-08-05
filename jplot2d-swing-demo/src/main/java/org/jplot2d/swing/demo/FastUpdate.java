@@ -54,7 +54,7 @@ public class FastUpdate {
 			@Override
 			public AsyncImageRenderer createImageRenderer() {
 				AsyncImageRenderer r = super.createImageRenderer();
-				r.setRendererCancelPolicy(RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE);
+				// r.setRendererCancelPolicy(RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE);
 				return r;
 			}
 		};
@@ -80,8 +80,8 @@ public class FastUpdate {
 		graph1.setSymbolVisible(true);
 		graph1.setSymbolShape(SymbolShape.SQUARE);
 
-		// graph0.setCacheable(true);
-		// graph1.setCacheable(true);
+		graph0.setCacheable(true);
+		graph1.setCacheable(true);
 
 		Layer layer0 = ElementFactory.getInstance().createLayer();
 		layer0.addGraph(graph0);

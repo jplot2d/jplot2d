@@ -39,8 +39,8 @@ public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory
 	private final Color bgColor;
 
 	/**
-	 * @param imageType
-	 *            type of the created image
+	 * @param gconf
+	 *            a GraphicsConfiguration associated with an AWT Component
 	 * @param bgColor
 	 *            background color
 	 */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,7 +18,6 @@
  */
 package org.jplot2d.renderer;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
@@ -198,7 +198,7 @@ public abstract class ImageRenderer extends Renderer {
 		} else {
 			ImageAssemblyInfo ainfo;
 			ainfo = runCompRender(executor, cacheBlockList);
-			result = assembleResult(fsn, bounds.getSize(), ainfo);
+			result = assembleResult(fsn, bounds, ainfo);
 		}
 
 		fireRenderingFinished(fsn++, result);
@@ -213,9 +213,17 @@ public abstract class ImageRenderer extends Renderer {
 	 *            the generated BufferedImage
 	 */
 	protected void fireRenderingFinished(long sn, BufferedImage img) {
+		if (img == null) {
+			return;
+		}
+
 		RenderingFinishedListener[] ls = renderingFinishedListenerList.toArray(new RenderingFinishedListener[0]);
 		for (RenderingFinishedListener lsnr : ls) {
-			lsnr.renderingFinished(new RenderingFinishedEvent(sn, img));
+			try {
+				lsnr.renderingFinished(new RenderingFinishedEvent(sn, img));
+			} catch (Exception e) {
+				logger.warn("RenderingFinishedListener Error", e);
+			}
 		}
 
 	}
@@ -301,6 +309,17 @@ public abstract class ImageRenderer extends Renderer {
 	}
 
 	/**
+	 * Returns <code>true</code> if the future for given component is cached for using later.
+	 * 
+	 * @param comp
+	 * @param future
+	 * @return
+	 */
+	protected boolean isFutureCached(ComponentEx comp, Future<BufferedImage> future) {
+		return compCachedFutureMap.getFuture(comp) == future;
+	}
+
+	/**
 	 * Assemble the rendered component given in AssemblyInfo into a result.
 	 * 
 	 * @param sn
@@ -311,27 +330,29 @@ public abstract class ImageRenderer extends Renderer {
 	 *            the AssemblyInfo
 	 * @return the assembled result
 	 */
-	protected BufferedImage assembleResult(long sn, Dimension size, ImageAssemblyInfo ainfo) {
-		BufferedImage image = imageFactory.createImage(size.width, size.height);
-
+	protected BufferedImage assembleResult(long sn, Rectangle bounds, ImageAssemblyInfo ainfo) {
+		BufferedImage image = imageFactory.createImage(bounds.width, bounds.height);
 		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.translate(-bounds.x, -bounds.y);
 
-		for (Object c : ainfo.componentSet()) {
-			Rectangle bounds = ainfo.getBounds(c);
-			Future<BufferedImage> f = ainfo.getFuture(c);
-			try {
-				BufferedImage bi = f.get();
-				g.drawImage(bi, bounds.x, bounds.y, null);
-			} catch (InterruptedException e) {
-				// logger.log(Level.WARNING, "Renderer interrupted, drop R." + sn, e);
-			} catch (ExecutionException e) {
-				logger.warn("Renderer exception, drop R." + sn, e);
+		try {
+			for (ComponentEx c : ainfo.componentSet()) {
+				Rectangle cbounds = ainfo.getBounds(c);
+				BufferedImage bi = ainfo.getFuture(c).get();
+				g.drawImage(bi, cbounds.x, cbounds.y, null);
 			}
+			g.dispose();
+			return image;
+		} catch (CancellationException e) {
+			// logger.trace("Renderer cancelled, drop R.{}", sn);
+		} catch (InterruptedException e) {
+			// logger.log(Level.WARNING, "Renderer interrupted, drop R." + sn, e);
+		} catch (ExecutionException e) {
+			logger.warn("Renderer exception, drop R." + sn, e);
 		}
 
-		g.dispose();
-
-		return image;
+		imageFactory.cacheImage(image);
+		return null;
 	}
 
 }

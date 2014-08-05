@@ -50,20 +50,10 @@ public class BufferedImageFactory implements ImageFactory {
 		}
 	}
 
-	/**
-	 * Create a transparent buffered image. The image is used by component renderer.
-	 * 
-	 * @return a BufferedImage
-	 */
 	public BufferedImage createTransparentImage(int width, int height) {
 		return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
-	/**
-	 * Create a buffered image. The image is the final image to draw everything.
-	 * 
-	 * @return a BufferedImage
-	 */
 	public BufferedImage createImage(int width, int height) {
 		BufferedImage image = tlImage.get();
 		if (image == null || image.getWidth() != width || image.getHeight() != height) {
