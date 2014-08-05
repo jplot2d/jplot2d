@@ -922,17 +922,18 @@ public class ElementFactory {
 	 * @return the copy of given element
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Element> T copy(T element, Map<ElementEx, ElementEx> copyMap) {
+	public <T extends Element> T copy(T element, Map<Element, Element> copyMap) {
 		if (copyMap == null) {
-			copyMap = new HashMap<ElementEx, ElementEx>();
+			copyMap = new HashMap<Element, Element>();
 		}
 
 		Environment senv = element.getEnvironment();
 		DummyEnvironment denv = createDummyEnvironment();
 
-		ElementEx ecopy = (ElementEx) ((ElementAddition) element).getImpl().copyStructure(copyMap);
+		HashMap<ElementEx, ElementEx> implCopyMap = new HashMap<ElementEx, ElementEx>();
+		ElementEx ecopy = (ElementEx) ((ElementAddition) element).getImpl().copyStructure(implCopyMap);
 
-		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
+		for (Map.Entry<ElementEx, ElementEx> me : implCopyMap.entrySet()) {
 			ElementEx simpl = me.getKey();
 			ElementEx dimpl = me.getValue();
 
@@ -942,6 +943,8 @@ public class ElementFactory {
 			Class<? extends Element> itf = (Class<? extends Element>) sproxy.getClass().getInterfaces()[0];
 			Element dproxy = proxy(me.getValue(), itf);
 			denv.registerElement(dimpl, dproxy);
+
+			copyMap.put(sproxy, dproxy);
 		}
 
 		return (T) denv.getProxy(ecopy);
