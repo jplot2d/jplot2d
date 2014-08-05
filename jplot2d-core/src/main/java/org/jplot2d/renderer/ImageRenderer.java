@@ -190,8 +190,10 @@ public abstract class ImageRenderer extends Renderer {
 		Dimension size = getDeviceBounds(comp).getSize();
 
 		BufferedImage result;
-		// If the plot has no cacheable component, run renderer directly
-		if (cacheBlockList.size() == 1) {
+		if (cacheBlockList.size() == 0) {
+			result = null;
+		} else if (cacheBlockList.size() == 1) {
+			// If the plot has no cacheable component, run renderer directly
 			result = runSingleRender(size, cacheBlockList.get(0).getSubcomps());
 		} else {
 			ImageAssemblyInfo ainfo;

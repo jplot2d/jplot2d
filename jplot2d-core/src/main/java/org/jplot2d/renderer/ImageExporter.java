@@ -39,7 +39,8 @@ public class ImageExporter extends ImageRenderer {
 		super(imageFactory);
 	}
 
-	protected void fireRenderingFinished(int fsn, BufferedImage img) {
+	@Override
+	protected void fireRenderingFinished(long fsn, BufferedImage img) {
 		this.image = img;
 	}
 
