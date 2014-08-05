@@ -51,7 +51,8 @@ public class PngFileExporter extends ImageExporter {
 		this.file = file;
 	}
 
-	protected void fireRenderingFinished(int sn, BufferedImage img) {
+	@Override
+	protected void fireRenderingFinished(long sn, BufferedImage img) {
 		super.fireRenderingFinished(sn, img);
 		try {
 			ImageIO.write(img, "PNG", file);
