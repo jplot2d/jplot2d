@@ -26,7 +26,7 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
+import org.jplot2d.renderer.CacheableBlock;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class PlotEnvironmentTest {
 
 	private Element proxyA1c, proxyA1c1, proxyA2c, proxyA2c1;
 
-	public static void checkCacheBlock(CacheBlock cb, ComponentEx comp, ComponentEx[] subcomps) {
+	public static void checkCacheBlock(CacheableBlock cb, ComponentEx comp, ComponentEx[] subcomps) {
 		assertEquals(cb.getUid(), comp);
 		assertEquals(cb.getComp(), comp);
 		assertArrayEquals(cb.getSubcomps().toArray(), subcomps);
