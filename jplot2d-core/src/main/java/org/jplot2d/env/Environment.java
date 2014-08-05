@@ -88,6 +88,42 @@ public abstract class Environment {
 		return LOCK;
 	}
 
+	/**
+	 * Returns <code>true</code> if the given element a is ancestor of element c, or they are the same element.
+	 * 
+	 * @param a
+	 * @param c
+	 * @return
+	 */
+	protected static boolean isAncestor(Element a, Element c) {
+		if (c == null) {
+			return false;
+		} else if (c == a) {
+			return true;
+		} else {
+			return isAncestor(a, c.getParent());
+		}
+	}
+
+	/**
+	 * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor will be returned.
+	 * 
+	 * @param comp
+	 * @return
+	 */
+	protected static final ComponentEx getCacheableAncestor(ComponentEx comp) {
+		if (comp.isCacheable()) {
+			return comp;
+		} else {
+			ComponentEx parent = comp.getParent();
+			if (parent == null) {
+				return comp;
+			} else {
+				return getCacheableAncestor(parent);
+			}
+		}
+	}
+
 	protected Environment(boolean threadSafe) {
 		if (threadSafe) {
 			lock = new ReentrantLock();
@@ -171,44 +207,8 @@ public abstract class Environment {
 		return result;
 	}
 
-	/**
-	 * Returns <code>true</code> if the given element a is ancestor of element c
-	 * 
-	 * @param a
-	 * @param c
-	 * @return
-	 */
-	protected static boolean isAncestor(Element a, Element c) {
-		if (c == null) {
-			return false;
-		} else if (c == a) {
-			return true;
-		} else {
-			return isAncestor(a, c.getParent());
-		}
-	}
-
 	void elementPropertyChanged(ElementEx comp) {
 		fireElementPropertyChanged(getProxy(comp));
-	}
-
-	/**
-	 * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor will be returned.
-	 * 
-	 * @param comp
-	 * @return
-	 */
-	protected final ComponentEx getCacheableAncestor(ComponentEx comp) {
-		if (comp.isCacheable()) {
-			return comp;
-		} else {
-			ComponentEx parent = comp.getParent();
-			if (parent == null) {
-				return comp;
-			} else {
-				return getCacheableAncestor(parent);
-			}
-		}
 	}
 
 	/* --- JPlot2DChangeListener --- */

@@ -30,8 +30,6 @@ import java.util.List;
 import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * Export plot image to a EPS stream or file.
@@ -57,9 +55,9 @@ public class EpsExporter extends Renderer {
 	}
 
 	@Override
-	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
+	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(plot).getSize();
+		Dimension size = getDeviceBounds(comp).getSize();
 
 		EPSDocumentGraphics2D g = new EPSDocumentGraphics2D(true);
 		g.setGraphicContext(new GraphicContext());
@@ -69,7 +67,7 @@ public class EpsExporter extends Renderer {
 			throw new RuntimeException("Error exporting EPS", e);
 		}
 
-		for (CacheBlock cb : cacheBlockList) {
+		for (CacheableBlock cb : cacheBlockList) {
 			List<ComponentEx> sublist = cb.getSubcomps();
 			for (ComponentEx subcomp : sublist) {
 				subcomp.draw(g);

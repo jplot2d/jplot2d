@@ -28,8 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * This renderer assemble all cacheable component in a individual thread asynchronously.
@@ -192,9 +190,9 @@ public class AsyncImageRenderer extends ImageRenderer {
 	}
 
 	@Override
-	public final void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
+	public final void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(plot).getSize();
+		Dimension size = getDeviceBounds(comp).getSize();
 
 		CancelableRendererCallable callable;
 		if (cacheBlockList.size() == 1) {

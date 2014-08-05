@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jplot2d.element.PComponent;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
 import org.jplot2d.renderer.PngFileExporter;
@@ -72,21 +74,6 @@ public class RenderEnvironment extends PlotEnvironment {
 		return rendererList.remove(renderer);
 	}
 
-	/**
-	 * Export plot to the given renderer.
-	 * 
-	 * @param renderer
-	 */
-	public void exportPlot(Renderer renderer) {
-		begin();
-
-		try {
-			renderer.render(plotCopy, cacheBlockList);
-		} finally {
-			end();
-		}
-	}
-
 	@Override
 	protected void render() {
 		if (!plotImpl.isRerenderNeeded()) {
@@ -104,6 +91,21 @@ public class RenderEnvironment extends PlotEnvironment {
 
 		for (Renderer r : getRenderers()) {
 			r.render(plotCopy, cacheBlockList);
+		}
+	}
+
+	/**
+	 * Export plot to the given renderer.
+	 * 
+	 * @param renderer
+	 */
+	public void exportPlot(Renderer renderer) {
+		begin();
+
+		try {
+			renderer.render(plotCopy, cacheBlockList);
+		} finally {
+			end();
 		}
 	}
 
