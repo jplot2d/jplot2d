@@ -50,7 +50,8 @@ public abstract class Renderer {
 	public abstract void render(ComponentEx comp, List<CacheableBlock> cacheBlockList);
 
 	/**
-	 * Returns a rectangle that completely enclose the given component.
+	 * Returns a rectangle that completely enclose the given component. The rectangle is on device space and relative to
+	 * the device original (top-left corner of screen).
 	 * 
 	 * @param comp
 	 * @return
