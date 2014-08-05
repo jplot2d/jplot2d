@@ -28,8 +28,6 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -71,9 +69,9 @@ public class PdfExporter extends Renderer {
 	}
 
 	@Override
-	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
+	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(plot).getSize();
+		Dimension size = getDeviceBounds(comp).getSize();
 
 		Document document = new Document(new Rectangle(size.width, size.height), 0, 0, 0, 0);
 		PdfWriter writer = null;
@@ -94,7 +92,7 @@ public class PdfExporter extends Renderer {
 		PdfContentByte cb = writer.getDirectContent();
 		Graphics2D g = cb.createGraphics(size.width, size.height);
 
-		for (CacheBlock cblock : cacheBlockList) {
+		for (CacheableBlock cblock : cacheBlockList) {
 			List<ComponentEx> sublist = cblock.getSubcomps();
 			for (ComponentEx subcomp : sublist) {
 				subcomp.draw(g);

@@ -38,6 +38,7 @@ import org.jplot2d.element.impl.IntermediateCacheEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notifier;
+import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.transform.PaperTransform;
 
 /**
@@ -47,34 +48,6 @@ import org.jplot2d.transform.PaperTransform;
  * 
  */
 public class PlotEnvironment extends Environment {
-
-	/**
-	 * A block holds subcomponents of a cacheable component.
-	 * 
-	 */
-	public class CacheBlock {
-		private final ComponentEx uid;
-		private final ComponentEx comp;
-		private final List<ComponentEx> subcomps;
-
-		public CacheBlock(ComponentEx comp, ComponentEx copy, List<ComponentEx> subcomps) {
-			this.uid = comp;
-			this.comp = copy;
-			this.subcomps = subcomps;
-		}
-
-		public ComponentEx getUid() {
-			return uid;
-		}
-
-		public ComponentEx getComp() {
-			return comp;
-		}
-
-		public List<ComponentEx> getSubcomps() {
-			return subcomps;
-		}
-	}
 
 	/**
 	 * Keep hard references to cache holder objects.
@@ -97,7 +70,7 @@ public class PlotEnvironment extends Environment {
 	/**
 	 * Contains all visible cacheable components in z-order. include uncacheable root plot.
 	 */
-	protected final List<CacheBlock> cacheBlockList = new ArrayList<CacheBlock>();
+	protected final List<CacheableBlock> cacheBlockList = new ArrayList<CacheableBlock>();
 
 	/**
 	 * The plot proxy
@@ -224,6 +197,9 @@ public class PlotEnvironment extends Environment {
 		render();
 	}
 
+	/**
+	 * When a command is committed, this method is called to generate a rendering result.
+	 */
 	protected void render() {
 
 	}
@@ -285,7 +261,7 @@ public class PlotEnvironment extends Environment {
 			ComponentEx copy = (ComponentEx) copyMap.get(comp);
 			List<ComponentEx> subcomps = subcompsMap.get(copy);
 			updateOrder(subcomps);
-			CacheBlock cb = new CacheBlock(comp, copy, subcomps);
+			CacheableBlock cb = new CacheableBlock(comp, copy, subcomps);
 			cacheBlockList.add(cb);
 		}
 	}

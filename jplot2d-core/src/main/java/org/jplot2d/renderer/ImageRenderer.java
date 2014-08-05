@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
 
 /**
  * Since Graphics can draw image, It's possible to render all cacheable component individually, then assemble them
@@ -187,9 +185,9 @@ public abstract class ImageRenderer extends Renderer {
 		this.executor = executor;
 	}
 
-	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
+	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(plot).getSize();
+		Dimension size = getDeviceBounds(comp).getSize();
 
 		BufferedImage result;
 		// If the plot has no cacheable component, run renderer directly
@@ -266,10 +264,10 @@ public abstract class ImageRenderer extends Renderer {
 	 *            Z-order.
 	 * @return
 	 */
-	protected final ImageAssemblyInfo runCompRender(Executor executor, List<CacheBlock> cacheBlockList) {
+	protected final ImageAssemblyInfo runCompRender(Executor executor, List<CacheableBlock> cacheBlockList) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
 
-		for (CacheBlock cb : cacheBlockList) {
+		for (CacheableBlock cb : cacheBlockList) {
 			ComponentEx comp = cb.getUid();
 			ComponentEx ccopy = cb.getComp();
 
