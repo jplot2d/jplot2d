@@ -18,7 +18,7 @@
  */
 package org.jplot2d.renderer;
 
-import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,11 +43,11 @@ public class AsyncImageRenderer extends ImageRenderer {
 	private abstract class CancelableRendererCallable implements Callable<BufferedImage> {
 
 		protected final long sn;
-		protected final Dimension size;
+		protected final Rectangle bounds;
 
-		public CancelableRendererCallable(long sn, Dimension size) {
+		public CancelableRendererCallable(long sn, Rectangle bounds) {
 			this.sn = sn;
-			this.size = size;
+			this.bounds = bounds;
 		}
 
 		/**
@@ -62,15 +62,15 @@ public class AsyncImageRenderer extends ImageRenderer {
 	 */
 	private final class SingleRendererCallable extends CancelableRendererCallable {
 
-		private final List<ComponentEx> complist;
+		private final CacheableBlock cacheableBlock;
 
-		public SingleRendererCallable(long sn, Dimension size, List<ComponentEx> complist) {
-			super(sn, size);
-			this.complist = complist;
+		public SingleRendererCallable(long sn, Rectangle bounds, CacheableBlock cacheableBlock) {
+			super(sn, bounds);
+			this.cacheableBlock = cacheableBlock;
 		}
 
 		public BufferedImage call() throws Exception {
-			return runSingleRender(size, complist);
+			return renderCacheableBlock(bounds, cacheableBlock);
 		}
 
 		public void cancel() {
@@ -86,13 +86,13 @@ public class AsyncImageRenderer extends ImageRenderer {
 
 		private final ImageAssemblyInfo ainfo;
 
-		private RenderAssemblyCallable(long sn, Dimension size, ImageAssemblyInfo ainfo) {
-			super(sn, size);
+		private RenderAssemblyCallable(long sn, Rectangle bounds, ImageAssemblyInfo ainfo) {
+			super(sn, bounds);
 			this.ainfo = ainfo;
 		}
 
 		public BufferedImage call() throws Exception {
-			return assembleResult(sn, size, ainfo);
+			return assembleResult(sn, bounds.getSize(), ainfo);
 		}
 
 		public void cancel() {
@@ -185,23 +185,23 @@ public class AsyncImageRenderer extends ImageRenderer {
 	/** synchronized by renderLock */
 	private final Queue<AsyncImageRendererTask> renderTaskQueue = new LinkedList<AsyncImageRendererTask>();
 
-	public AsyncImageRenderer(ImageFactory assembler) {
-		super(assembler);
+	public AsyncImageRenderer(ImageFactory imageFactory) {
+		super(imageFactory);
 	}
 
 	@Override
 	public final void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(comp).getSize();
+		Rectangle bounds = getDeviceBounds(comp);
 
 		CancelableRendererCallable callable;
 		if (cacheBlockList.size() == 1) {
 			// If the plot has no cacheable component, run renderer directly
-			callable = new SingleRendererCallable(fsn++, size, cacheBlockList.get(0).getSubcomps());
+			callable = new SingleRendererCallable(fsn++, bounds, cacheBlockList.get(0));
 		} else {
 			// run cacheable component renderer
 			ImageAssemblyInfo ainfo = runCompRender(executor, cacheBlockList);
-			callable = new RenderAssemblyCallable(fsn++, size, ainfo);
+			callable = new RenderAssemblyCallable(fsn++, bounds, ainfo);
 		}
 
 		synchronized (renderLock) {

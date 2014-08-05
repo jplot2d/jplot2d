@@ -87,7 +87,7 @@ public abstract class ImageRenderer extends Renderer {
 
 	private static class CompRenderCallable implements Callable<BufferedImage> {
 
-		private final List<ComponentEx> comps;
+		private final CacheableBlock cacheableBlock;
 
 		private final ImageFactory imageFactory;
 
@@ -99,8 +99,8 @@ public abstract class ImageRenderer extends Renderer {
 		 * @param imageFactory
 		 * @param bounds
 		 */
-		public CompRenderCallable(List<ComponentEx> comps, ImageFactory imageFactory, Rectangle bounds) {
-			this.comps = comps;
+		public CompRenderCallable(CacheableBlock cacheableBlock, ImageFactory imageFactory, Rectangle bounds) {
+			this.cacheableBlock = cacheableBlock;
 			this.imageFactory = imageFactory;
 			this.bounds = bounds;
 		}
@@ -118,7 +118,7 @@ public abstract class ImageRenderer extends Renderer {
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-			for (ComponentEx comp : comps) {
+			for (ComponentEx comp : cacheableBlock.getSubcomps()) {
 				if (Thread.interrupted()) {
 					g.dispose();
 					return null;
@@ -187,18 +187,18 @@ public abstract class ImageRenderer extends Renderer {
 
 	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(comp).getSize();
+		Rectangle bounds = getDeviceBounds(comp);
 
 		BufferedImage result;
 		if (cacheBlockList.size() == 0) {
 			result = null;
 		} else if (cacheBlockList.size() == 1) {
 			// If the plot has no cacheable component, run renderer directly
-			result = runSingleRender(size, cacheBlockList.get(0).getSubcomps());
+			result = renderCacheableBlock(bounds, cacheBlockList.get(0));
 		} else {
 			ImageAssemblyInfo ainfo;
 			ainfo = runCompRender(executor, cacheBlockList);
-			result = assembleResult(fsn, size, ainfo);
+			result = assembleResult(fsn, bounds.getSize(), ainfo);
 		}
 
 		fireRenderingFinished(fsn++, result);
@@ -228,43 +228,50 @@ public abstract class ImageRenderer extends Renderer {
 		renderingFinishedListenerList.remove(listener);
 	}
 
-	protected final BufferedImage runSingleRender(Dimension size, List<ComponentEx> sublist) {
+	/**
+	 * Render a cacheable block in the given bounds.
+	 * 
+	 * @param bounds
+	 *            the bounds to limit the components
+	 * @param sublist
+	 *            components to be rendered
+	 * @return the rendering result
+	 */
+	protected final BufferedImage renderCacheableBlock(Rectangle bounds, CacheableBlock cb) {
 		if (Thread.interrupted()) {
 			return null;
 		}
 
-		BufferedImage result = imageFactory.createImage(size.width, size.height);
-		Graphics2D g = result.createGraphics();
+		BufferedImage image = imageFactory.createImage(bounds.width, bounds.height);
+		Graphics2D g = image.createGraphics();
+		g.translate(-bounds.x, -bounds.y);
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-		for (ComponentEx subcomp : sublist) {
+		for (ComponentEx comp : cb.getSubcomps()) {
 			if (Thread.interrupted()) {
 				g.dispose();
-				imageFactory.cacheImage(result);
+				imageFactory.cacheImage(image);
 				return null;
 			}
-			subcomp.draw(g);
+			comp.draw(g);
 		}
 
 		g.dispose();
 
-		return result;
+		return image;
 	}
 
 	/**
 	 * Execute component renderer on every modified cacheable component. This method must be called from a render.
 	 * 
-	 * @param cacheableCompMap
-	 *            cacheable component map in Z-order, the key is component, the value is components' thread safe copy.
-	 * @param umCacheableComps
-	 *            unmodified cacheable components
-	 * @param subcompsMap
-	 *            the key is safe copy of cacheable component, the value is the safe copies of all its sub-components in
-	 *            Z-order.
-	 * @return
+	 * @param executor
+	 *            a executor to render cacheable blocks
+	 * @param cacheBlockList
+	 *            cacheable blocks to be rendered in executor
+	 * @return assembly info
 	 */
 	protected final ImageAssemblyInfo runCompRender(Executor executor, List<CacheableBlock> cacheBlockList) {
 		ImageAssemblyInfo ainfo = new ImageAssemblyInfo();
@@ -281,8 +288,7 @@ public abstract class ImageRenderer extends Renderer {
 			} else {
 				// create a new Component Render task
 				Rectangle bounds = getDeviceBounds(ccopy);
-				List<ComponentEx> sublist = cb.getSubcomps();
-				CompRenderCallable compRenderCallable = new CompRenderCallable(sublist, imageFactory, bounds);
+				CompRenderCallable compRenderCallable = new CompRenderCallable(cb, imageFactory, bounds);
 				FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(compRenderCallable);
 
 				executor.execute(crtask);

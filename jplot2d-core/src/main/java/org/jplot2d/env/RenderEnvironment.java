@@ -110,6 +110,41 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
+	 * Export a component and all its sub-components to the given renderer.
+	 * 
+	 * @param renderer
+	 */
+	public void exportComponent(PComponent comp, Renderer renderer) {
+		begin();
+
+		ComponentEx compImpl = (ComponentEx) ((ElementAddition) comp).getImpl();
+		ComponentEx compCopy = (ComponentEx) copyMap.get(compImpl);
+
+		// create a cacheBlockList for the given component
+		List<CacheableBlock> cbs = new ArrayList<CacheableBlock>();
+
+		for (CacheableBlock cb : cacheBlockList) {
+			if (isAncestor(compImpl, cb.getUid())) {
+				cbs.add(cb);
+			} else if (cb.getSubcomps().contains(compCopy)) {
+				List<ComponentEx> subcomps = new ArrayList<ComponentEx>();
+				for (ComponentEx scomp : cb.getSubcomps()) {
+					if (isAncestor(compCopy, scomp)) {
+						subcomps.add(scomp);
+					}
+				}
+				cbs.add(new CacheableBlock(compImpl, compCopy, subcomps));
+			}
+		}
+
+		try {
+			renderer.render(compCopy, cbs);
+		} finally {
+			end();
+		}
+	}
+
+	/**
 	 * Returns the default export directory.
 	 */
 	public static String getDefaultExportDirectory() {

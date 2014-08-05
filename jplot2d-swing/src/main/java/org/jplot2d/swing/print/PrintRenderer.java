@@ -124,10 +124,11 @@ public class PrintRenderer extends Renderer implements Printable {
 	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
 		Dimension2D size = comp.getSize();
-		double dw = size.getWidth() * comp.getScale();
-		double dh = size.getHeight() * comp.getScale();
+		double dscale = comp.getPaperTransform().getScale();
+		double dw = size.getWidth() * dscale;
+		double dh = size.getHeight() * dscale;
 
-		double pintScale = 1 / comp.getScale(); // printing size / display pixel size
+		double pintScale = 1 / dscale; // printing size / display pixel size
 		double dx = pf.getImageableX();
 		double dy = pf.getImageableY();
 		if (fitMode == PageFitMode.TO_FIT || fitMode == PageFitMode.SHRINK_TO_FIT) {
