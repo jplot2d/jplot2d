@@ -68,9 +68,20 @@ public interface ImageMapping extends Element {
 	 */
 	public void setLimitsAlgorithm(LimitsAlgorithm algo);
 
+	/**
+	 * Returns the IntensityTransform used to enhance images before applying bias/gain.
+	 * 
+	 * @return the IntensityTransform
+	 */
 	@Property(order = 1)
 	public IntensityTransform getIntensityTransform();
 
+	/**
+	 * Apply the given IntensityTransform to enhance images before applying bias/gain.
+	 * 
+	 * @param it
+	 *            the IntensityTransform to be applied
+	 */
 	public void setIntensityTransform(IntensityTransform it);
 
 	/**
@@ -82,7 +93,7 @@ public interface ImageMapping extends Element {
 	public double getBias();
 
 	/**
-	 * Sets the bias value. The default value is 0.5.
+	 * Sets the bias value. The valid range is [0,1] and the default value is 0.5.
 	 * 
 	 * @param bias
 	 *            the bias value
@@ -100,7 +111,7 @@ public interface ImageMapping extends Element {
 	public double getGain();
 
 	/**
-	 * Sets the gain value. The default value is 0.5.
+	 * Sets the gain value. The valid range is [0,1] and the default value is 0.5.
 	 * 
 	 * @param gain
 	 *            the gain value
