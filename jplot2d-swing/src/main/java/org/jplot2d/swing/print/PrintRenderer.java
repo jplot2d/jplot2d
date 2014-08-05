@@ -31,9 +31,8 @@ import java.awt.print.PrinterJob;
 import java.util.List;
 
 import org.jplot2d.element.impl.ComponentEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.env.PlotEnvironment.CacheBlock;
 import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.renderer.Renderer;
 
 /**
@@ -122,13 +121,13 @@ public class PrintRenderer extends Renderer implements Printable {
 	}
 
 	@Override
-	public void render(PlotEx plot, List<CacheBlock> cacheBlockList) {
+	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension2D size = plot.getSize();
-		double dw = size.getWidth() * plot.getScale();
-		double dh = size.getHeight() * plot.getScale();
+		Dimension2D size = comp.getSize();
+		double dw = size.getWidth() * comp.getScale();
+		double dh = size.getHeight() * comp.getScale();
 
-		double pintScale = 1 / plot.getScale(); // printing size / display pixel size
+		double pintScale = 1 / comp.getScale(); // printing size / display pixel size
 		double dx = pf.getImageableX();
 		double dy = pf.getImageableY();
 		if (fitMode == PageFitMode.TO_FIT || fitMode == PageFitMode.SHRINK_TO_FIT) {
@@ -174,7 +173,7 @@ public class PrintRenderer extends Renderer implements Printable {
 		g2.translate(dx, dy);
 		g2.scale(pintScale, pintScale);
 
-		for (CacheBlock cb : cacheBlockList) {
+		for (CacheableBlock cb : cacheBlockList) {
 			List<ComponentEx> sublist = cb.getSubcomps();
 			for (ComponentEx subcomp : sublist) {
 				subcomp.draw(g2);
