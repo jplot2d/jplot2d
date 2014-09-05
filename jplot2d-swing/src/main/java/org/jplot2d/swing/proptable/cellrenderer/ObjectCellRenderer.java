@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,13 +18,11 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import org.jplot2d.util.NumberArrayUtils;
-
 /**
  * @author Jingjing Li
  * 
  */
-public class ObjectCellRenderer extends StringCellRenderer<Object> {
+public class ObjectCellRenderer extends DigitsLimitableCellRenderer<Object> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,9 +32,9 @@ public class ObjectCellRenderer extends StringCellRenderer<Object> {
 		}
 
 		if (value instanceof double[]) {
-			return NumberArrayUtils.toString((double[]) value);
+			return DoubleArrayCellRenderer.toString((double[]) value, digits);
 		} else if (value instanceof float[]) {
-			return NumberArrayUtils.toString((float[]) value);
+			return FloatArrayCellRenderer.toString((float[]) value, digits);
 		}
 
 		return value.toString();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -24,7 +24,7 @@ import org.jplot2d.util.NumberUtils;
  * @author Jingjing Li
  * 
  */
-public class FloatCellRenderer extends StringCellRenderer<Float> {
+public class FloatCellRenderer extends DigitsLimitableCellRenderer<Float> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,7 @@ public class FloatCellRenderer extends StringCellRenderer<Float> {
 			return null;
 		}
 
-		return NumberUtils.toString(value);
+		return NumberUtils.toString(value, digits);
 	}
 
 }

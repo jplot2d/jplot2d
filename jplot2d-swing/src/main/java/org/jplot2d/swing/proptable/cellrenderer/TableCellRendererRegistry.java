@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -64,10 +64,19 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		typeRendererMap.remove(type);
 	}
 
+	/*
+	 * Sometimes the declare type (property.getType()) is Object, its value is float[] or double[], so we need a
+	 * ObjectCellRenderer, to display values according to its value type.
+	 */
 	public TableCellRenderer createTableCellRenderer(Property<?> property) {
 		TableCellRenderer result = typeRendererMap.get(property.getType());
 		if (result == null && property.getType().isInterface()) {
 			result = defaultCellRenderer;
+		}
+		if (result instanceof DigitsLimitableCellRenderer) {
+			if (property.getDisplayDigits() != 0) {
+				((DigitsLimitableCellRenderer<?>) result).setDigitsLimit(property.getDisplayDigits());
+			}
 		}
 		return result;
 	}
@@ -109,8 +118,8 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 		// Object renderer
 		registerRenderer(Object.class, new ObjectCellRenderer());
 		// number array renderer
-		registerRenderer(float[].class, new ObjectCellRenderer());
-		registerRenderer(double[].class, new ObjectCellRenderer());
+		registerRenderer(float[].class, new FloatArrayCellRenderer());
+		registerRenderer(double[].class, new DoubleArrayCellRenderer());
 		// String array renderer
 		registerRenderer(String[].class, new StringArrayCellRenderer());
 
