@@ -20,6 +20,7 @@ package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.checkPropertyInfoNames;
 import static org.jplot2d.util.TestUtils.checkCollecionOrder;
+import static org.junit.Assert.*;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.Test;
@@ -54,6 +55,8 @@ public class CoordinateAnnotationTest {
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Text"), "HAlign", "VAlign");
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Symbol Annotation"), "symbolSize",
 				"symbolScale", "textOffsetFactorX", "textOffsetFactorY");
+
+		assertTrue(iinfo.getPropertyInfo("text").isReadOnly());
 	}
 
 }

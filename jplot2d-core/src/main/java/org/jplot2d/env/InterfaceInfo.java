@@ -131,12 +131,9 @@ public class InterfaceInfo {
 			if (readMethod != null) {
 				Property pann = readMethod.getAnnotation(Property.class);
 				if (pann != null) {
-					if (pann.displayName().length() > 0) {
-						p.setDisplayName(pann.displayName());
-					}
-					if (pann.description().length() > 0) {
-						p.setShortDescription(pann.description());
-					}
+					p.setDisplayName(pann.displayName());
+					p.setDisplayDigits(pann.displayDigits());
+					p.setShortDescription(pann.description());
 					p.setReadOnly(pann.readOnly());
 					p.setOrder(pann.order());
 					// only writable property can be in profile
@@ -173,6 +170,10 @@ public class InterfaceInfo {
 			}
 		}
 
+	}
+
+	public PropertyInfo getPropertyInfo(String pname) {
+		return piMap.get(pname);
 	}
 
 	public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {

@@ -220,7 +220,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the base point in its parent's paper coordinate space
 	 */
-	@Property(order = 9, styleable = false)
+	@Property(order = 9, styleable = false, displayDigits = 4)
 	public Point2D getLocation();
 
 	/**
@@ -228,7 +228,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return
 	 */
-	@Property(order = 10, styleable = false)
+	@Property(order = 10, styleable = false, displayDigits = 4)
 	public Dimension2D getSize();
 
 	/**
@@ -236,7 +236,7 @@ public interface PComponent extends Element {
 	 * 
 	 * @return the paper bounds of this component.
 	 */
-	@Property(order = 11, styleable = false)
+	@Property(order = 11, styleable = false, displayDigits = 4)
 	public Rectangle2D getBounds();
 
 	/**

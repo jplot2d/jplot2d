@@ -55,7 +55,7 @@ public interface Title extends TextComponent, MovableComponent {
 	 * 
 	 * @return an instance of <code>Point</code> representing the base point of this title
 	 */
-	@Property(order = 2, styleable = false)
+	@Property(order = 2, styleable = false, displayDigits = 4)
 	public Point2D getLocation();
 
 	/**

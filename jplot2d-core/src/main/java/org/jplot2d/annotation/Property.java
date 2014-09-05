@@ -37,6 +37,12 @@ public @interface Property {
 	String displayName() default "";
 
 	/**
+	 * How many significant digits should display for the value. Only useful for float and double property. The default
+	 * value 0 means no limit.
+	 */
+	int displayDigits() default 0;
+
+	/**
 	 * The string displayed in tooltip.
 	 */
 	String description() default "";
