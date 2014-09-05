@@ -73,7 +73,7 @@ public class Point2DProperty extends PropertyDescriptorAdapter<Point2D> {
 	private void initSubProperties() {
 		// initial sub-properties
 		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Double>() {
+		subProperties[0] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "x";
@@ -81,10 +81,6 @@ public class Point2DProperty extends PropertyDescriptorAdapter<Point2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Point2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {
@@ -102,7 +98,7 @@ public class Point2DProperty extends PropertyDescriptorAdapter<Point2D> {
 
 		};
 
-		subProperties[1] = new SubProperty<Double>() {
+		subProperties[1] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "y";
@@ -110,10 +106,6 @@ public class Point2DProperty extends PropertyDescriptorAdapter<Point2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Point2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {

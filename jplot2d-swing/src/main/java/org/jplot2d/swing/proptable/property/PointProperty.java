@@ -53,7 +53,7 @@ public class PointProperty extends PropertyDescriptorAdapter<Point> {
 	private void initSubProperties() {
 		// initial sub-properties
 		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Integer>() {
+		subProperties[0] = new SubProperty<Integer>(this) {
 
 			public String getName() {
 				return "x";
@@ -61,10 +61,6 @@ public class PointProperty extends PropertyDescriptorAdapter<Point> {
 
 			public Class<Integer> getType() {
 				return Integer.class;
-			}
-
-			public boolean isEditable() {
-				return PointProperty.this.isEditable();
 			}
 
 			public Integer getValue() {
@@ -77,7 +73,7 @@ public class PointProperty extends PropertyDescriptorAdapter<Point> {
 
 		};
 
-		subProperties[1] = new SubProperty<Integer>() {
+		subProperties[1] = new SubProperty<Integer>(this) {
 
 			public String getName() {
 				return "y";
@@ -85,10 +81,6 @@ public class PointProperty extends PropertyDescriptorAdapter<Point> {
 
 			public Class<Integer> getType() {
 				return Integer.class;
-			}
-
-			public boolean isEditable() {
-				return PointProperty.this.isEditable();
 			}
 
 			public Integer getValue() {
