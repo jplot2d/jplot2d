@@ -18,25 +18,18 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import org.jplot2d.util.Insets2D;
-import org.jplot2d.util.NumberUtils;
-
 /**
- * 
  * @author Jingjing Li
+ * 
  */
-public class Insets2DCellRenderer extends DigitsLimitableCellRenderer<Insets2D> {
+public class DigitsLimitableCellRenderer<V> extends StringCellRenderer<V> {
 
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return "[" + NumberUtils.toString(value.getTop(), digits) + ", "
-				+ NumberUtils.toString(value.getLeft(), digits) + ", "
-				+ NumberUtils.toString(value.getBottom(), digits) + ", "
-				+ NumberUtils.toString(value.getRight(), digits) + "]";
+	protected int digits;
+
+	public void setDigitsLimit(int digits) {
+		this.digits = digits;
 	}
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -25,7 +25,7 @@ import org.jplot2d.util.Range;
  * 
  * @author Jingjing Li
  */
-public class RangeCellRenderer extends StringCellRenderer<Range> {
+public class RangeCellRenderer extends DigitsLimitableCellRenderer<Range> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class RangeCellRenderer extends StringCellRenderer<Range> {
 		if (value == null) {
 			return null;
 		}
-		return (value.isStartIncluded() ? "[" : "(") + NumberUtils.toString(value.getStart())
-				+ ", " + NumberUtils.toString(value.getEnd()) + (value.isEndIncluded() ? "]" : ")");
+		return (value.isStartIncluded() ? "[" : "(") + NumberUtils.toString(value.getStart(), digits) + ", "
+				+ NumberUtils.toString(value.getEnd(), digits) + (value.isEndIncluded() ? "]" : ")");
 	}
 }

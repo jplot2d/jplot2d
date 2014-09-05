@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,7 +26,7 @@ import org.jplot2d.util.NumberUtils;
  * 
  * @author Jingjing Li
  */
-public class Point2DCellRenderer extends StringCellRenderer<Point2D> {
+public class Point2DCellRenderer extends DigitsLimitableCellRenderer<Point2D> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,8 @@ public class Point2DCellRenderer extends StringCellRenderer<Point2D> {
 		if (value == null) {
 			return null;
 		}
-		return "[" + NumberUtils.toString(value.getX()) + ", "
-				+ NumberUtils.toString(value.getY()) + "]";
+
+		return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
+				+ "]";
 	}
 }
