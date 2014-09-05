@@ -61,60 +61,60 @@ public class NumberUtilsTest {
 
 	@Test
 	public void testCalcLabelFormatStrDouble() {
-		assertEquals(NumberUtils.calcFormatStr(Double.NaN), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(Double.POSITIVE_INFINITY), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(Double.NEGATIVE_INFINITY), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(0d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(1d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(-1d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(0.01), "%.2f");
-		assertEquals(NumberUtils.calcFormatStr(0.001), "%.3f");
-		assertEquals(NumberUtils.calcFormatStr(0.0011), "%.4f");
-		assertEquals(NumberUtils.calcFormatStr(0.00111), "%.5f");
+		assertEquals(NumberUtils.calcFormatStr(Double.NaN, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Double.POSITIVE_INFINITY, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Double.NEGATIVE_INFINITY, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(0d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(1d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(-1d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(0.01, 15), "%.2f");
+		assertEquals(NumberUtils.calcFormatStr(0.001, 15), "%.3f");
+		assertEquals(NumberUtils.calcFormatStr(0.0011, 15), "%.4f");
+		assertEquals(NumberUtils.calcFormatStr(0.00111, 15), "%.5f");
 
-		assertEquals(NumberUtils.calcFormatStr(10d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(100d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(1000d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(11000d), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(111000d), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(10d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(100d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(1000d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(11000d, 15), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(111000d, 15), "%.0f");
 
 		// more than 4 '0' can be saved, produce 'e' conversion
-		assertEquals(NumberUtils.calcFormatStr(0.0001), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(10000d), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(110000d), "%.1e");
+		assertEquals(NumberUtils.calcFormatStr(0.0001, 15), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(10000d, 15), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(110000d, 15), "%.1e");
 
 		// more than 14 significant digits
-		assertEquals(NumberUtils.calcFormatStr(1e14d + 1d), "%.14e");
-		assertEquals(NumberUtils.calcFormatStr(1e15d + 1d), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(1e14d + 1d, 15), "%.14e");
+		assertEquals(NumberUtils.calcFormatStr(1e15d + 1d, 15), "%.0e");
 	}
 
 	@Test
 	public void testCalcLabelFormatStrFloat() {
-		assertEquals(NumberUtils.calcFormatStr(Float.NaN), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(Float.POSITIVE_INFINITY), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(Float.NEGATIVE_INFINITY), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(0f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(1f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(-1f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(0.01f), "%.2f");
-		assertEquals(NumberUtils.calcFormatStr(0.001f), "%.3f");
-		assertEquals(NumberUtils.calcFormatStr(0.0011f), "%.4f");
-		assertEquals(NumberUtils.calcFormatStr(0.00111f), "%.5f");
+		assertEquals(NumberUtils.calcFormatStr(Float.NaN, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Float.POSITIVE_INFINITY, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(Float.NEGATIVE_INFINITY, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(0f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(1f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(-1f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(0.01f, 6), "%.2f");
+		assertEquals(NumberUtils.calcFormatStr(0.001f, 6), "%.3f");
+		assertEquals(NumberUtils.calcFormatStr(0.0011f, 6), "%.4f");
+		assertEquals(NumberUtils.calcFormatStr(0.00111f, 6), "%.5f");
 
-		assertEquals(NumberUtils.calcFormatStr(10f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(100f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(1000f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(11000f), "%.0f");
-		assertEquals(NumberUtils.calcFormatStr(111000f), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(10f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(100f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(1000f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(11000f, 6), "%.0f");
+		assertEquals(NumberUtils.calcFormatStr(111000f, 6), "%.0f");
 
 		// more than 4 '0' can be saved, produce 'e' conversion
-		assertEquals(NumberUtils.calcFormatStr(0.0001f), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(10000f), "%.0e");
-		assertEquals(NumberUtils.calcFormatStr(110000f), "%.1e");
+		assertEquals(NumberUtils.calcFormatStr(0.0001f, 6), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(10000f, 6), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(110000f, 6), "%.1e");
 
 		// more than 5 significant digits
-		assertEquals(NumberUtils.calcFormatStr(1000010f), "%.5e");
-		assertEquals(NumberUtils.calcFormatStr(1000001f), "%.0e");
+		assertEquals(NumberUtils.calcFormatStr(1000010f, 6), "%.5e");
+		assertEquals(NumberUtils.calcFormatStr(1000001f, 6), "%.0e");
 	}
 
 	@Test

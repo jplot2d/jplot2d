@@ -27,8 +27,7 @@ import java.util.Locale;
 public class NumberUtils {
 
 	/**
-	 * The number of logical bits in the significand of a <code>double</code> number, including the
-	 * implicit bit.
+	 * The number of logical bits in the significand of a <code>double</code> number, including the implicit bit.
 	 */
 	private static final int SIGNIFICAND_WIDTH = 53;
 
@@ -90,16 +89,17 @@ public class NumberUtils {
 	}
 
 	/**
-	 * Find a proper format to avoid the round error for float value. The max precision is 6
-	 * significant digits.
+	 * Find a proper format for the given significant digits limit.
 	 * 
 	 * @param value
 	 *            the value
+	 * @param digits
+	 *            significant digits
 	 * @return the format string for java Formatter
 	 */
-	public static String calcFormatStr(float value) {
+	public static String calcFormatStr(double value, int digits) {
 
-		if (value == 0 || Float.isNaN(value) || Float.isInfinite(value)) {
+		if (value == 0 || Double.isNaN(value) || Double.isInfinite(value)) {
 			return "%.0f";
 		}
 
@@ -110,7 +110,7 @@ public class NumberUtils {
 
 		double v = Math.abs(value);
 
-		String s = String.format((Locale) null, "%.5e", v);
+		String s = String.format((Locale) null, "%." + (digits - 1) + "e", v);
 		int eidx = s.lastIndexOf('e');
 		int ensi = eidx + 1; // the start index of exponent number
 		if (s.charAt(ensi) == '+') {
@@ -154,75 +154,39 @@ public class NumberUtils {
 	}
 
 	/**
-	 * Find a proper format to avoid the round error for float value. The max precision is 15
-	 * significant digits.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the format string for java Formatter
+	 * Format the value to avoid the round error. The max precision is 6 significant digits.
 	 */
-	public static String calcFormatStr(double value) {
-
-		if (value == 0 || Double.isNaN(value) || Double.isInfinite(value)) {
-			return "%.0f";
-		}
-
-		/* number of significant digits */
-		int maxPrec = 0;
-		/* number of fraction digits */
-		int maxFractionDigits = 0;
-
-		double v = Math.abs(value);
-
-		String s = String.format((Locale) null, "%.14e", v);
-		int eidx = s.lastIndexOf('e');
-		int ensi = eidx + 1; // the start index of exponent number
-		if (s.charAt(ensi) == '+') {
-			ensi++;
-		}
-		int mag = Integer.parseInt(s.substring(ensi));
-		/* number of significant digits, eg. the pp1 for 1.1 is 2 */
-		int pp1 = -1;
-		for (int i = eidx - 1; i >= 0; i--) {
-			if (s.charAt(i) != '0') {
-				pp1 = i;
-				break;
-			}
-		}
-
-		if (maxPrec < pp1) {
-			maxPrec = pp1;
-		}
-		if (maxFractionDigits < pp1 - mag - 1) {
-			maxFractionDigits = pp1 - mag - 1;
-		}
-
-		/* the number of 0 we can save */
-		int n0;
-		if (mag >= 0) {
-			n0 = mag - maxPrec + 1;
-		} else if (mag <= 0) {
-			n0 = -mag;
-		} else {
-			n0 = 0;
-		}
-
-		String format;
-		if (n0 < 4 && mag >= -4 && mag < 6) {
-			format = "%." + maxFractionDigits + "f";
-		} else {
-			format = "%." + (maxPrec - 1) + "e";
-		}
-		return format;
-
-	}
-
 	public static String toString(float v) {
-		return String.format((Locale) null, calcFormatStr(v), v);
+		return toString(v, 6);
 	}
 
+	/**
+	 * Format the value to the given significant digits limit. If the limit is 0, to avoid the round error, 6
+	 * significant digits is applied.
+	 */
+	public static String toString(float v, int digits) {
+		if (digits == 0) {
+			digits = 6;
+		}
+		return String.format((Locale) null, calcFormatStr(v, digits), v);
+	}
+
+	/**
+	 * Format the value to avoid the round error. The max precision is 15 significant digits.
+	 */
 	public static String toString(double v) {
-		return String.format((Locale) null, calcFormatStr(v), v);
+		return toString(v, 15);
+	}
+
+	/**
+	 * Format the value to the given significant digits limit. If the limit is 0, to avoid the round error, 15
+	 * significant digits is applied.
+	 */
+	public static String toString(double v, int digits) {
+		if (digits == 0) {
+			digits = 15;
+		}
+		return String.format((Locale) null, calcFormatStr(v, digits), v);
 	}
 
 	/**
