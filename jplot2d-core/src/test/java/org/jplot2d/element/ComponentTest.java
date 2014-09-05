@@ -19,6 +19,7 @@
 package org.jplot2d.element;
 
 import static org.jplot2d.util.TestUtils.*;
+import static org.junit.Assert.*;
 
 import org.jplot2d.env.InterfaceInfo;
 import org.junit.*;
@@ -39,6 +40,8 @@ public class ComponentTest {
 
 		checkPropertyInfoNames(iinfo.getProfilePropertyInfoGroupMap().get("Component"), "visible", "cacheable",
 				"selectable", "ZOrder", "color", "fontName", "fontStyle", "fontSize", "fontScale");
+
+		assertEquals(iinfo.getPropertyInfo("location").getDisplayDigits(), 4);
 	}
 
 }

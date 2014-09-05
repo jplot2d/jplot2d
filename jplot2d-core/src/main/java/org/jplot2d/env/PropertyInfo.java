@@ -34,6 +34,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	private final Method writeMethod;
 	private final Class<?> type;
 	private String displayName;
+	private int displayDigits;
 	private String shortDescription;
 	private boolean readOnly;
 	private int order;
@@ -94,7 +95,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	 *         name from getName.
 	 */
 	public String getDisplayName() {
-		if (displayName == null) {
+		if (displayName == null || displayName.length() == 0) {
 			return getName();
 		}
 		return displayName;
@@ -111,13 +112,32 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 	}
 
 	/**
+	 * Returns the number of significant digits should display for the value. Only useful for float and double property.
+	 * 
+	 * @return the number of significant digits
+	 */
+	public int getDisplayDigits() {
+		return displayDigits;
+	}
+
+	/**
+	 * Sets the number of significant digits should display for the value. Only useful for float and double property.
+	 * 
+	 * @param digits
+	 *            the number of significant digits
+	 */
+	public void setDisplayDigits(int digits) {
+		this.displayDigits = digits;
+	}
+
+	/**
 	 * Gets the short description of this feature.
 	 * 
 	 * @return A localized short description associated with this property/method/event. This defaults to be the display
 	 *         name.
 	 */
 	public String getShortDescription() {
-		if (shortDescription == null) {
+		if (shortDescription == null || shortDescription.length() == 0) {
 			return getDisplayName();
 		}
 		return shortDescription;
@@ -134,6 +154,11 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
 		shortDescription = text;
 	}
 
+	/**
+	 * Returns <code>true</code> only when there is a read-only annotation on the property.
+	 * 
+	 * @return <code>true</code> if the property is marked as read-only
+	 */
 	public boolean isReadOnly() {
 		return readOnly;
 	}
