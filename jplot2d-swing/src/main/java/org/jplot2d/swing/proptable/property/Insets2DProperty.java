@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * 
+ * Copyright 2010-2014 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.proptable.property;
 
@@ -42,30 +39,26 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 	}
 
 	private void setTop(double top) {
-		setValue(new Insets2D(top, getValue().getLeft(), getValue().getBottom(), getValue()
-				.getRight()));
+		setValue(new Insets2D(top, getValue().getLeft(), getValue().getBottom(), getValue().getRight()));
 	}
 
 	private void setLeft(double left) {
-		setValue(new Insets2D(getValue().getTop(), left, getValue().getBottom(), getValue()
-				.getRight()));
+		setValue(new Insets2D(getValue().getTop(), left, getValue().getBottom(), getValue().getRight()));
 	}
 
 	private void setBottom(double bottom) {
-		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), bottom, getValue()
-				.getRight()));
+		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), bottom, getValue().getRight()));
 	}
 
 	private void setRight(double right) {
-		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), getValue().getBottom(),
-				right));
+		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), getValue().getBottom(), right));
 	}
 
 	private void initSubProperties() {
 		// initial sub-properties
 		subProperties = new Property[4];
 
-		subProperties[0] = new SubProperty<Double>() {
+		subProperties[0] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "top";
@@ -73,10 +66,6 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Insets2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {
@@ -89,7 +78,7 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 		};
 
-		subProperties[1] = new SubProperty<Double>() {
+		subProperties[1] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "left";
@@ -97,10 +86,6 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Insets2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {
@@ -113,7 +98,7 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 		};
 
-		subProperties[2] = new SubProperty<Double>() {
+		subProperties[2] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "bottom";
@@ -121,10 +106,6 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Insets2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {
@@ -137,7 +118,7 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 		};
 
-		subProperties[3] = new SubProperty<Double>() {
+		subProperties[3] = new SubProperty<Double>(this) {
 
 			public String getName() {
 				return "right";
@@ -145,10 +126,6 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 			public Class<Double> getType() {
 				return Double.class;
-			}
-
-			public boolean isEditable() {
-				return Insets2DProperty.this.isEditable();
 			}
 
 			public Double getValue() {

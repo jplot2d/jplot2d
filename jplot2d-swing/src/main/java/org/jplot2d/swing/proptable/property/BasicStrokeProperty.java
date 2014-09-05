@@ -1,23 +1,20 @@
-/*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
- *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
- * If not, see <http://www.gnu.org/licenses/>.
- */
 /**
- * 
+ * Copyright 2010-2014 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.proptable.property;
 
@@ -66,23 +63,21 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 			if (v == null) {
 				setValue(new BasicStroke(lineWidth));
 			} else {
-				setValue(new BasicStroke(lineWidth, v.getEndCap(), v.getLineJoin(),
-						v.getMiterLimit()));
+				setValue(new BasicStroke(lineWidth, v.getEndCap(), v.getLineJoin(), v.getMiterLimit()));
 			}
 		} else {
 			if (v == null) {
-				setValue(new BasicStroke(lineWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER,
-						10.0f));
+				setValue(new BasicStroke(lineWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f));
 			} else {
-				setValue(new BasicStroke(lineWidth, v.getEndCap(), v.getLineJoin(),
-						v.getMiterLimit(), dashArray, v.getDashPhase()));
+				setValue(new BasicStroke(lineWidth, v.getEndCap(), v.getLineJoin(), v.getMiterLimit(), dashArray,
+						v.getDashPhase()));
 			}
 		}
 	}
 
 	private void initSubProperties() {
 		// initial sub-properties
-		spLineWidth = new SubProperty<Float>() {
+		spLineWidth = new SubProperty<Float>(this) {
 
 			public String getName() {
 				return "LineWidth";
@@ -90,10 +85,6 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 
 			public Class<Float> getType() {
 				return Float.class;
-			}
-
-			public boolean isEditable() {
-				return BasicStrokeProperty.this.isEditable();
 			}
 
 			public Float getValue() {
@@ -112,7 +103,7 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 
 		};
 
-		spDashArray = new SubProperty<float[]>() {
+		spDashArray = new SubProperty<float[]>(this) {
 
 			public String getName() {
 				return "DashArray";
@@ -120,10 +111,6 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 
 			public Class<float[]> getType() {
 				return float[].class;
-			}
-
-			public boolean isEditable() {
-				return BasicStrokeProperty.this.isEditable();
 			}
 
 			public float[] getValue() {
