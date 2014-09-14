@@ -308,14 +308,24 @@ public class ElementFactory {
 	}
 
 	/**
-	 * Create an AxisTickManager, which contains an axis range manager.
+	 * Create an AxisTickManager, which contains an AxisTransform.
 	 * 
 	 * @return an AxisTickManager
 	 */
 	public AxisTickManager createAxisTickManager() {
-		AxisTransform rm = createAxisTransform();
-		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
-		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) rm).getImpl();
+		return createAxisTickManager(createAxisTransform());
+	}
+
+	/**
+	 * Create an AxisTickManager, which contains the given AxisTransform.
+	 * 
+	 * @param axf
+	 *            an AxisTransform of the created AxisTickManager
+	 * @return an AxisTickManager
+	 */
+	public AxisTickManager createAxisTickManager(AxisTransform axf) {
+		DummyEnvironment env = (DummyEnvironment) axf.getEnvironment();
+		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) axf).getImpl();
 
 		AxisTickManagerImpl tm = new AxisTickManagerImpl();
 		applyProfile(tm);
