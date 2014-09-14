@@ -28,7 +28,7 @@ import org.jplot2d.util.Insets2D;
  */
 public class BoundsConstraint {
 
-	private static Insets2D ZERO_INSETS = new Insets2D(0, 0, 0, 0);
+	private static Insets2D ZERO_INSETS = new Insets2D.Double(0, 0, 0, 0);
 
 	private final Insets2D fixedInsets;
 
@@ -49,7 +49,7 @@ public class BoundsConstraint {
 	 */
 	public BoundsConstraint(double elasticTop, double elasticLeft,
 			double elasticBottom, double elasticRight) {
-		this(ZERO_INSETS, new Insets2D(elasticTop, elasticLeft, elasticBottom,
+		this(ZERO_INSETS, new Insets2D.Double(elasticTop, elasticLeft, elasticBottom,
 				elasticRight));
 	}
 

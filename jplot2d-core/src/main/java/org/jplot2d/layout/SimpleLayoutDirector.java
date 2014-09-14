@@ -318,7 +318,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		mLeft = calcLeftMargin(plot, ais);
 		mRight = calcRightMargin(plot, ais);
 
-		return new Insets2D(mTop, mLeft, mBottom, mRight);
+		return new Insets2D.Double(mTop, mLeft, mBottom, mRight);
 	}
 
 	private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {

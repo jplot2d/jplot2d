@@ -39,19 +39,19 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 	}
 
 	private void setTop(double top) {
-		setValue(new Insets2D(top, getValue().getLeft(), getValue().getBottom(), getValue().getRight()));
+		setValue(new Insets2D.Double(top, getValue().getLeft(), getValue().getBottom(), getValue().getRight()));
 	}
 
 	private void setLeft(double left) {
-		setValue(new Insets2D(getValue().getTop(), left, getValue().getBottom(), getValue().getRight()));
+		setValue(new Insets2D.Double(getValue().getTop(), left, getValue().getBottom(), getValue().getRight()));
 	}
 
 	private void setBottom(double bottom) {
-		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), bottom, getValue().getRight()));
+		setValue(new Insets2D.Double(getValue().getTop(), getValue().getLeft(), bottom, getValue().getRight()));
 	}
 
 	private void setRight(double right) {
-		setValue(new Insets2D(getValue().getTop(), getValue().getLeft(), getValue().getBottom(), right));
+		setValue(new Insets2D.Double(getValue().getTop(), getValue().getLeft(), getValue().getBottom(), right));
 	}
 
 	private void initSubProperties() {
