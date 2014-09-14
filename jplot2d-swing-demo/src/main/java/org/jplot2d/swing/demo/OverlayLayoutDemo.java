@@ -58,16 +58,16 @@ public class OverlayLayoutDemo {
 		plot.addXAxes(xaxes);
 		plot.addYAxes(yaxes);
 
-		Layer layer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
-				new double[] { 0, 0.1, 0.4 }, "line A"));
+		Layer layer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
+				"line A"));
 		plot.addLayer(layer, xaxes[0], yaxes[0]);
 
 		Plot sp1 = ef.createSubplot();
-		Layer nestLayer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 },
-				new double[] { 0, 0.1, 0.4 }, "line B"));
+		Layer nestLayer = ef.createLayer(ef.createXYGraph(new double[] { 0, 0.1, 0.2 }, new double[] { 0, 0.1, 0.4 },
+				"line B"));
 
-		plot.addSubplot(sp1, new BoundsConstraint(new Insets2D(0, 0, 0, 0), new Insets2D(0.05,
-				0.05, 0.45, 0.45)));
+		plot.addSubplot(sp1, new BoundsConstraint(new Insets2D.Double(0, 0, 0, 0), new Insets2D.Double(0.05, 0.05,
+				0.45, 0.45)));
 		sp1.setLocation(80, 250);
 		sp1.setSize(300, 200);
 		Axis[] p1x = ef.createAxes(2);
