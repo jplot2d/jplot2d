@@ -32,35 +32,47 @@ public abstract class SubProperty<T> implements Property<T> {
 		this.mainProp = mainProp;
 	}
 
+	public MainProperty<?> getMainProperty() {
+	    return mainProp;
+	}
+	
+    @Override
 	public String getName() {
 		return null;
 	}
 
+    @Override
 	public String getDisplayName() {
 		return getName();
 	}
 
+    @Override
 	public String getShortDescription() {
 		return getName();
 	}
 
+    @Override
 	public int getDisplayDigits() {
 		return mainProp.getDisplayDigits();
 	}
 
+    @Override
 	public Property<?>[] getSubProperties() {
 		return null;
 	}
 
+    @Override
 	public Class<T> getType() {
 		return null;
 	}
 
+    @Override
 	public boolean isEditable() {
 		return mainProp.isEditable();
 	}
 
-	public Object[] getAvailableValues() {
+    @Override
+	public T[] getAvailableValues() {
 		return null;
 	}
 
