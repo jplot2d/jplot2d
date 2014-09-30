@@ -47,7 +47,7 @@ public class ElementIH implements InvocationHandler {
 	/**
 	 * This field must be read within Environment Global LOCK
 	 */
-	private volatile Environment environment;
+	protected volatile Environment environment;
 
 	/**
 	 * @param impl
@@ -69,7 +69,7 @@ public class ElementIH implements InvocationHandler {
 		this.impl = impl;
 	}
 
-	public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 		/* quick equals */
 		if (method.getName().equals("equals")) {

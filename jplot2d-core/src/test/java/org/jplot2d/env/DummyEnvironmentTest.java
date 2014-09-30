@@ -39,12 +39,13 @@ public class DummyEnvironmentTest {
 	 */
 	@Test
 	public void testRegisterComponent() {
+        ElementFactory ef = ElementFactory.getInstance();
 
 		// register uncacheable component
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
-			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
+			PComponent proxyA = ef.proxy(compA, PComponent.class);
 			denv.registerElement(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
 		}
@@ -53,7 +54,7 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ComponentEx compA = mock(ComponentEx.class);
-			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
+			PComponent proxyA = ef.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			denv.registerElement(compA, proxyA);
 			assertEquals(denv.proxyMap.size(), 1);
@@ -63,10 +64,10 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
-			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
+			PComponent proxyA = ef.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
+			PComponent proxyAA = ef.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			assertEquals(compAA.getParent(), compA);
 			denv.registerElement(compA, proxyA);
@@ -78,10 +79,10 @@ public class DummyEnvironmentTest {
 		{
 			DummyEnvironment denv = new DummyEnvironment(false);
 			ContainerEx compA = mock(ContainerEx.class);
-			PComponent proxyA = ElementFactory.proxy(compA, PComponent.class);
+			PComponent proxyA = ef.proxy(compA, PComponent.class);
 			when(compA.isCacheable()).thenReturn(true);
 			ComponentEx compAA = mock(ComponentEx.class);
-			PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
+			PComponent proxyAA = ef.proxy(compAA, PComponent.class);
 			when(compAA.getParent()).thenReturn(compA);
 			when(compAA.isCacheable()).thenReturn(true);
 			denv.registerElement(compA, proxyA);

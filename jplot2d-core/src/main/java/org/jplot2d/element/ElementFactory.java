@@ -161,7 +161,7 @@ public class ElementFactory {
 	 * @return the proxy
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <T extends Element> T proxy(ElementEx impl, Class<T> clazz) {
+	public <T extends Element> T proxy(ElementEx impl, Class<T> clazz) {
 		ElementIH ih = new ElementIH(impl, clazz);
 		return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz, ElementAddition.class }, ih);
 	}
