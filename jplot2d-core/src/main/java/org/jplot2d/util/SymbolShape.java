@@ -177,9 +177,9 @@ public class SymbolShape {
 
 	private String data;
 
-	private final List<Shape> drawShapeList = new ArrayList<Shape>();
+	protected final List<Shape> drawShapeList = new ArrayList<Shape>();
 
-	private final List<Shape> fillShapeList = new ArrayList<Shape>();
+	protected final List<Shape> fillShapeList = new ArrayList<Shape>();
 
 	/**
 	 * Create a symbol with a name and a description string

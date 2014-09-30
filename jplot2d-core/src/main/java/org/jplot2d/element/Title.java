@@ -110,7 +110,7 @@ public interface Title extends TextComponent, MovableComponent {
 	public void setVAlign(VAlign valign);
 
 	/**
-	 * Returns the ratio of gap to its height.
+	 * Returns the ratio of gap to its height. The default value is 1/4.
 	 * 
 	 * @return the gap factor
 	 */
