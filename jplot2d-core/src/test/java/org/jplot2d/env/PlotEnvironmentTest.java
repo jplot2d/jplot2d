@@ -70,6 +70,7 @@ public class PlotEnvironmentTest {
 	@Before
 	public void setUp() {
 		env = new PlotEnvironment(false);
+		ElementFactory ef = ElementFactory.getInstance();
 
 		containerA = new ContainerStub();
 		containerA1 = new ContainerStub();
@@ -100,17 +101,17 @@ public class PlotEnvironmentTest {
 		elementA2c.setParent(containerA2);
 		elementA2c1.setParent(elementA2c);
 
-		proxyA = ElementFactory.proxy(containerA, PComponent.class);
-		proxyA1 = ElementFactory.proxy(containerA1, PComponent.class);
-		proxyA2 = ElementFactory.proxy(containerA2, PComponent.class);
-		proxyA1a = ElementFactory.proxy(compA1a, PComponent.class);
-		proxyA1b = ElementFactory.proxy(compA1b, PComponent.class);
-		proxyA1c = ElementFactory.proxy(elementA1c, Element.class);
-		proxyA1c1 = ElementFactory.proxy(elementA1c1, Element.class);
-		proxyA2a = ElementFactory.proxy(compA2a, PComponent.class);
-		proxyA2b = ElementFactory.proxy(compA2b, PComponent.class);
-		proxyA2c = ElementFactory.proxy(elementA2c, Element.class);
-		proxyA2c1 = ElementFactory.proxy(elementA2c1, Element.class);
+		proxyA = ef.proxy(containerA, PComponent.class);
+		proxyA1 = ef.proxy(containerA1, PComponent.class);
+		proxyA2 = ef.proxy(containerA2, PComponent.class);
+		proxyA1a = ef.proxy(compA1a, PComponent.class);
+		proxyA1b = ef.proxy(compA1b, PComponent.class);
+		proxyA1c = ef.proxy(elementA1c, Element.class);
+		proxyA1c1 = ef.proxy(elementA1c1, Element.class);
+		proxyA2a = ef.proxy(compA2a, PComponent.class);
+		proxyA2b = ef.proxy(compA2b, PComponent.class);
+		proxyA2c = ef.proxy(elementA2c, Element.class);
+		proxyA2c1 = ef.proxy(elementA2c1, Element.class);
 
 		env.proxyMap.put(containerA, proxyA);
 		env.proxyMap.put(containerA1, proxyA1);
@@ -156,7 +157,7 @@ public class PlotEnvironmentTest {
 		// add uncacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
+		PComponent proxyA = ElementFactory.getInstance().proxy(containerA, PComponent.class);
 		denv.registerElement(containerA, proxyA);
 		env.componentAdded(containerA, denv);
 
@@ -176,11 +177,12 @@ public class PlotEnvironmentTest {
 	public void testCacheableComponentAdded() {
 		// create a Environment
 		PlotEnvironment env = new PlotEnvironment(false);
+        ElementFactory ef = ElementFactory.getInstance();
 
 		// add cacheable component
 		DummyEnvironment denv = new DummyEnvironment(false);
 		ContainerEx containerA = new ContainerStub();
-		PComponent proxyA = ElementFactory.proxy(containerA, PComponent.class);
+		PComponent proxyA = ef.proxy(containerA, PComponent.class);
 		containerA.setCacheable(true);
 		denv.registerElement(containerA, proxyA);
 		env.componentAdded(containerA, denv);
@@ -197,7 +199,7 @@ public class PlotEnvironmentTest {
 		// add uncacheable component which has a cacheable parent
 		DummyEnvironment denvAA = new DummyEnvironment(false);
 		ComponentEx compAA = new ComponentStub();
-		PComponent proxyAA = ElementFactory.proxy(compAA, PComponent.class);
+		PComponent proxyAA = ef.proxy(compAA, PComponent.class);
 		denvAA.registerElement(compAA, proxyAA);
 		// link parent
 		compAA.setParent(containerA);
@@ -215,9 +217,9 @@ public class PlotEnvironmentTest {
 		// add cacheable component with uncacheable sub-component
 		DummyEnvironment denvB = new DummyEnvironment(false);
 		ContainerEx containerB = new ContainerStub();
-		PComponent proxyB = ElementFactory.proxy(containerB, PComponent.class);
+		PComponent proxyB = ef.proxy(containerB, PComponent.class);
 		ComponentEx compBA = new ComponentStub();
-		PComponent proxyBA = ElementFactory.proxy(compBA, PComponent.class);
+		PComponent proxyBA = ef.proxy(compBA, PComponent.class);
 		containerB.setCacheable(true);
 		compBA.setParent(containerB);
 		denvB.registerElement(containerB, proxyB);
