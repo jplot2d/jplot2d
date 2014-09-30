@@ -368,7 +368,8 @@ public abstract class Environment {
 		begin();
 
 		if (!verifyBatchToken(token)) {
-			throw new IllegalArgumentException("Batch token not match. " + token);
+			throw new IllegalArgumentException("Batch token not match. Require " + getBatchString() + " but is "
+					+ token);
 		}
 
 		endCommand(type);
