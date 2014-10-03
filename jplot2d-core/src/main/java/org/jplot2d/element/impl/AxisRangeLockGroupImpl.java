@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -28,7 +28,6 @@ import org.jplot2d.data.GraphData;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.transform.NormalTransform;
-import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLockGroupEx {
@@ -36,11 +35,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	private static Range NORM_PHYSICAL_RANGE = new Range.Double(0.0, 1.0);
 
 	private static Range INFINITY_PHYSICAL_RANGE = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-
-	/**
-	 * The unitive axis type. can be null is this lock group contains more than one axis type
-	 */
-	private TransformType type;
 
 	private AxisTransformEx prim;
 
@@ -87,8 +81,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		super.copyFrom(src);
 
 		AxisRangeLockGroupImpl alg = (AxisRangeLockGroupImpl) src;
-		this.type = alg.type;
-		this.prim = alg.prim;
 		this.autoRange = alg.autoRange;
 		this.zoomable = alg.zoomable;
 		this.autoRangeNeeded = alg.autoRangeNeeded;
@@ -107,15 +99,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		if (arms.size() == 1) {
 			parent = axis;
 			prim = axis;
-			type = axis.getTransform();
 		} else {
 			parent = null;
 		}
-
-		if (type != axis.getTransform()) {
-			type = null;
-		}
-
 	}
 
 	public void removeRangeManager(AxisTransformEx axis) {
@@ -126,33 +112,15 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		if (arms.size() == 0) {
 			parent = null;
 			prim = null;
-			type = null;
 		} else if (arms.size() == 1) {
 			parent = arms.get(0);
 			prim = arms.get(0);
-			type = prim.getTransform();
 		} else {
 			parent = null;
 
 			/* find a new primary axis */
 			if (prim == axis) {
 				prim = arms.get(0);
-			}
-
-			// try to find unique type
-			if (type == null) {
-				TransformType utype = null;
-				for (AxisTransformEx ax : arms) {
-					if (utype == null) {
-						utype = ax.getTransform();
-					} else {
-						if (utype != ax.getTransform()) {
-							utype = null;
-							break;
-						}
-					}
-				}
-				type = utype;
 			}
 		}
 
@@ -413,22 +381,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				malg.reAutoRange();
 			}
 		}
-	}
-
-	/**
-	 * @return null if the group contains multiple types.
-	 */
-	public TransformType getType() {
-		return type;
-	}
-
-	public void setType(TransformType type) {
-
-		for (AxisTransformEx ax : arms) {
-			ax.changeTransformType(type);
-		}
-
-		validateAxesRange();
 	}
 
 	public void validateAxesRange() {

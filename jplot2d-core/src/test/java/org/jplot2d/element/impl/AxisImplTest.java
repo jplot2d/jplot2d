@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.awt.Font;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jplot2d.element.AxisLabelSide;
 import org.jplot2d.element.AxisOrientation;
@@ -56,8 +58,7 @@ public class AxisImplTest {
 		axis.getTickManager().setAxisTransform(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
-				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
-						new MathElement.Mn("10") });
+				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"), new MathElement.Mn("10") });
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
@@ -95,8 +96,7 @@ public class AxisImplTest {
 		axis.getTickManager().setAxisTransform(va);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
-				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"),
-						new MathElement.Mn("10") });
+				new MathElement[] { new MathElement.Mn("0"), new MathElement.Mn("5"), new MathElement.Mn("10") });
 
 		axis.setPosition(AxisPosition.NEGATIVE_SIDE);
 		axis.calcThickness();
@@ -115,8 +115,7 @@ public class AxisImplTest {
 		checkDouble(axis.getDesc(), 18.09375);
 
 		when(axis.getTickManager().getLabelModels()).thenReturn(
-				new MathElement[] { new MathElement.Mn("0.0"), new MathElement.Mn("5.0"),
-						new MathElement.Mn("10.0") });
+				new MathElement[] { new MathElement.Mn("0.0"), new MathElement.Mn("5.0"), new MathElement.Mn("10.0") });
 		axis.invalidateThickness();
 		axis.calcThickness();
 		checkDouble(axis.getAsc(), 8.0);
@@ -137,5 +136,44 @@ public class AxisImplTest {
 		verify(alg, times(0)).reAutoRange();
 		axis.setLength(100);
 		verify(alg, times(1)).reAutoRange();
+	}
+
+	@Test
+	public void testCopyStructure() {
+		AxisEx axis = new AxisImpl();
+		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
+		axis.setTickManager(tickManager);
+		AxisTransformEx arm = new AxisTransformImpl();
+		tickManager.setAxisTransform(arm);
+		AxisRangeLockGroupEx alg = new AxisRangeLockGroupImpl();
+		arm.setLockGroup(alg);
+
+		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
+		AxisEx axisCopy = (AxisEx) axis.copyStructure(orig2copyMap);
+
+		AxisTransformEx axt = axis.getTickManager().getAxisTransform();
+		AxisTransformEx axtCopy = axisCopy.getTickManager().getAxisTransform();
+		AxisRangeLockGroupEx rlg = axt.getLockGroup();
+		AxisRangeLockGroupEx rlgCopy = axtCopy.getLockGroup();
+
+		assertSame(axisCopy, orig2copyMap.get(axis));
+		assertSame(axisCopy.getTickManager(), orig2copyMap.get(axis.getTickManager()));
+		assertSame(axtCopy, orig2copyMap.get(axt));
+		assertSame(rlgCopy, orig2copyMap.get(rlg));
+		assertSame(axtCopy, rlgCopy.getParent());
+		assertSame(axtCopy, rlgCopy.getPrim());
+
+		for (Map.Entry<ElementEx, ElementEx> me : orig2copyMap.entrySet()) {
+			ElementEx simpl = me.getKey();
+			ElementEx dimpl = me.getValue();
+			dimpl.copyFrom(simpl);
+		}
+
+		assertSame(axisCopy, orig2copyMap.get(axis));
+		assertSame(axisCopy.getTickManager(), orig2copyMap.get(axis.getTickManager()));
+		assertSame(axtCopy, orig2copyMap.get(axt));
+		assertSame(rlgCopy, orig2copyMap.get(rlg));
+		assertSame(axtCopy, rlgCopy.getParent());
+		assertSame(axtCopy, rlgCopy.getPrim());
 	}
 }
