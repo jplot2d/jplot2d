@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -32,7 +32,6 @@ import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.LegendPosition;
 import org.jplot2d.element.VAlign;
-import org.jplot2d.tex.MathElement;
 import org.jplot2d.util.DoubleDimension2D;
 
 /**
@@ -117,6 +116,12 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		return (PlotEx) super.getParent();
 	}
 
+	private void invalidatePlot() {
+		if (getParent() != null) {
+			getParent().invalidate();
+		}
+	}
+	
 	/*
 	 * Only contribute contents when it has visible items.
 	 */
@@ -127,7 +132,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (isEnabled() && visibleItemNum > 0 && getPosition() != LegendPosition.FREE) {
-			getParent().invalidate();
+			invalidatePlot();
 		}
 	}
 
@@ -202,7 +207,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		if (this.position != position) {
 			this.position = position;
 			if (canContribute()) {
-				getParent().invalidate();
+				invalidatePlot();
 			}
 		}
 	}
@@ -256,7 +261,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		}
 
 		if (oldContribution != this.canContribute()) {
-			getParent().invalidate();
+			invalidatePlot();
 		}
 	}
 
@@ -322,8 +327,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void removeLegendItem(LegendItemEx item) {
-		items.remove(item);
-		item.setLegend(null);
 		if (isItemVisible(item)) {
 			decVisibleItemNum();
 			if (item.getSize().equals(maxItemSize)) {
@@ -332,6 +335,8 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			sizeCalculationNeeded = true;
 			redraw(this);
 		}
+		items.remove(item);
+		item.setLegend(null);
 	}
 
 	public void itemVisibleChanged(LegendItemImpl item) {
@@ -348,20 +353,20 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	private boolean isItemVisible(LegendItemEx item) {
-		return item.isVisible() && item.getTextModel() != null && item.getTextModel() != MathElement.EMPTY;
+		return item.isVisible() && item.canContribute();
 	}
 
 	private void incVisibleItemNum() {
 		visibleItemNum++;
 		if (visibleItemNum == 1 && isVisible() && isEnabled()) {
-			getParent().invalidate();
+			invalidatePlot();
 		}
 	}
 
 	private void decVisibleItemNum() {
 		visibleItemNum--;
 		if (visibleItemNum == 0 && isVisible() && isEnabled()) {
-			getParent().invalidate();
+			invalidatePlot();
 		}
 	}
 

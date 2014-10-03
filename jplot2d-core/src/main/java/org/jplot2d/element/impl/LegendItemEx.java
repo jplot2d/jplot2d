@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -22,7 +22,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
 import org.jplot2d.element.LegendItem;
-import org.jplot2d.tex.MathElement;
 
 /**
  * @author Jingjing Li
@@ -52,19 +51,11 @@ public interface LegendItemEx extends LegendItem, ElementEx {
 	public void setText(String text);
 
 	/**
-	 * Returns the text displayed in the legend item
+	 * Returns <code>true</code> if the item has a text can be displayed in legend.
 	 * 
-	 * @return the text
+	 * @return the indicator
 	 */
-	public MathElement getTextModel();
-
-	/**
-	 * Sets the text displayed in the legend item
-	 * 
-	 * @param text
-	 *            the text displayed in the legend
-	 */
-	public void setTextModel(MathElement model);
+	public boolean canContribute();
 
 	/**
 	 * Called by legend when its effective font changed
