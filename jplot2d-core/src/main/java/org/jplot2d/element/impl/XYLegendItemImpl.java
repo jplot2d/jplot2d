@@ -84,7 +84,7 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
 	private MathLabel getLabel() {
 		if (label == null && getLegend() != null && getLegend().getEffectiveFont().getSize2D() > 0) {
-			label = new MathLabel(getTextModel(), getLegend().getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
+			label = new MathLabel(textModel, getLegend().getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
 		}
 		return label;
 	}
@@ -108,21 +108,17 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	}
 
 	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
-
-	public MathElement getTextModel() {
-		return textModel;
-	}
-
-	public void setTextModel(MathElement model) {
-		this.textModel = model;
+		textModel = TeXMathUtils.parseText(text);
 		label = null;
 		if (isVisible()) {
 			if (getLegend() != null) {
 				getLegend().itemSizeChanged(this);
 			}
 		}
+	}
+
+	public boolean canContribute() {
+		return textModel != null && textModel != MathElement.EMPTY;
 	}
 
 	public float getSymbolSize() {
