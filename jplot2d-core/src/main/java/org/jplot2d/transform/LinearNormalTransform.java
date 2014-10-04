@@ -38,11 +38,11 @@ public class LinearNormalTransform extends NormalTransform {
 
 	public LinearNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			throw new IllegalArgumentException("Transform is invalid");
+			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
 		}
 
 		if (u2 - u1 == 0) {
-			throw new IllegalArgumentException("Transform is invalid");
+			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
 		} else {
 			scale = u2 - u1;
 			offset = u1;

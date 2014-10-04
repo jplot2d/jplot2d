@@ -38,16 +38,16 @@ public class LogarithmicNormalTransform extends NormalTransform {
 
 	public LogarithmicNormalTransform(double u1, double u2) {
 		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			throw new IllegalArgumentException("Transform is invalid");
+			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
 		}
 
 		if (u1 <= 0 || u2 <= 0) {
-			throw new IllegalArgumentException("Transform is invalid");
+			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
 		}
 
 		double sc = Math.log10(u2) - Math.log10(u1);
 		if (sc == 0) {
-			throw new IllegalArgumentException("Transform is invalid");
+			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
 		} else {
 			scale = sc;
 			offset = Math.log10(u1);
