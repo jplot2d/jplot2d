@@ -313,19 +313,9 @@ public class ElementFactory {
 	 * @return an AxisTickManager
 	 */
 	public AxisTickManager createAxisTickManager() {
-		return createAxisTickManager(createAxisTransform());
-	}
-
-	/**
-	 * Create an AxisTickManager, which contains the given AxisTransform.
-	 * 
-	 * @param axf
-	 *            an AxisTransform of the created AxisTickManager
-	 * @return an AxisTickManager
-	 */
-	public AxisTickManager createAxisTickManager(AxisTransform axf) {
-		DummyEnvironment env = (DummyEnvironment) axf.getEnvironment();
-		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) axf).getImpl();
+		AxisTransform rm = createAxisTransform();
+		DummyEnvironment env = (DummyEnvironment) rm.getEnvironment();
+		AxisTransformEx rme = (AxisTransformEx) ((ElementAddition) rm).getImpl();
 
 		AxisTickManagerImpl tm = new AxisTickManagerImpl();
 		applyProfile(tm);
