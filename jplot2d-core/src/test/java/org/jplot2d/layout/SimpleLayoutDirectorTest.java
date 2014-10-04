@@ -52,10 +52,10 @@ public class SimpleLayoutDirectorTest {
 		PlotEx plot = new PlotImpl(legend);
 
 		AxesInPlot ais = new AxesInPlot();
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 0);
 
 		// add axes
 
@@ -79,19 +79,19 @@ public class SimpleLayoutDirectorTest {
 		ais.rightAxes.add(right);
 		ais.topAxes.add(top);
 		ais.bottomAxes.add(bottom);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 8.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 8.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 5.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 5.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 8.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 8.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 5.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 5.0);
 
 		plot.getMargin().setExtraLeft(10.0);
 		plot.getMargin().setExtraRight(9.0);
 		plot.getMargin().setExtraTop(8.0);
 		plot.getMargin().setExtraBottom(7.0);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 13.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 12.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 13.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 12.0);
 
 		// add title
 		TitleEx title0 = mock(TitleEx.class);
@@ -106,19 +106,19 @@ public class SimpleLayoutDirectorTest {
 		when(title1.getGapFactor()).thenReturn(0.25);
 		plot.addTitle(title0);
 		plot.addTitle(title1);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 38.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 12.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 12.0);
 
 		// add legend
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getPosition()).thenReturn(LegendPosition.BOTTOMCENTER);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(100, 40));
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 18.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 17.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 38.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais),
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 18.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 17.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 38.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes),
 				7.0 + 40.0 + SimpleLayoutDirector.LEGEND_GAP + 5.0);
 
 		// no auto margin
@@ -130,10 +130,10 @@ public class SimpleLayoutDirectorTest {
 		plot.getMargin().setTop(7);
 		plot.getMargin().setAutoBottom(false);
 		plot.getMargin().setBottom(7);
-		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais), 7 + 10.0);
-		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais), 7 + 9.0);
-		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais), 7 + 8.0);
-		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais), 7 + 7.0);
+		checkDouble(SimpleLayoutDirector.calcLeftMargin(plot, ais.leftAxes), 7 + 10.0);
+		checkDouble(SimpleLayoutDirector.calcRightMargin(plot, ais.rightAxes), 7 + 9.0);
+		checkDouble(SimpleLayoutDirector.calcTopMargin(plot, ais.topAxes), 7 + 8.0);
+		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 7 + 7.0);
 	}
 
 	@Test
@@ -155,49 +155,87 @@ public class SimpleLayoutDirectorTest {
 		when(left.getTickManager()).thenReturn(tm);
 		when(left.canContribute()).thenReturn(true);
 		when(left.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
-		when(left.getAsc()).thenReturn(8.0);
+		when(left.getAsc()).thenReturn(7.0);
 		when(left.getDesc()).thenReturn(2.0);
+
+		AxisEx left1 = mock(AxisEx.class);
+		when(left1.getTickManager()).thenReturn(tm);
+		when(left1.canContribute()).thenReturn(true);
+		when(left1.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
+		when(left1.getAsc()).thenReturn(3.0);
+		when(left1.getDesc()).thenReturn(2.0);
 
 		AxisEx right = mock(AxisEx.class);
 		when(right.getTickManager()).thenReturn(tm);
 		when(right.canContribute()).thenReturn(true);
 		when(right.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
-		when(right.getAsc()).thenReturn(2.0);
-		when(right.getDesc()).thenReturn(8.0);
+		when(right.getAsc()).thenReturn(7.0);
+		when(right.getDesc()).thenReturn(2.0);
+
+		AxisEx right1 = mock(AxisEx.class);
+		when(right1.getTickManager()).thenReturn(tm);
+		when(right1.canContribute()).thenReturn(true);
+		when(right1.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
+		when(right1.getAsc()).thenReturn(3.0);
+		when(right1.getDesc()).thenReturn(2.0);
 
 		AxisEx top = mock(AxisEx.class);
 		when(top.getTickManager()).thenReturn(tm);
 		when(top.canContribute()).thenReturn(true);
 		when(top.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
-		when(top.getAsc()).thenReturn(5.0);
-		when(top.getDesc()).thenReturn(2.5);
+		when(top.getAsc()).thenReturn(7.0);
+		when(top.getDesc()).thenReturn(2.0);
+
+		AxisEx top1 = mock(AxisEx.class);
+		when(top1.getTickManager()).thenReturn(tm);
+		when(top1.canContribute()).thenReturn(true);
+		when(top1.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
+		when(top1.getAsc()).thenReturn(3.0);
+		when(top1.getDesc()).thenReturn(2.0);
 
 		AxisEx bottom = mock(AxisEx.class);
 		when(bottom.getTickManager()).thenReturn(tm);
 		when(bottom.canContribute()).thenReturn(true);
 		when(bottom.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
-		when(bottom.getAsc()).thenReturn(2.5);
-		when(bottom.getDesc()).thenReturn(5.0);
+		when(bottom.getAsc()).thenReturn(7.0);
+		when(bottom.getDesc()).thenReturn(2.0);
+
+		AxisEx bottom1 = mock(AxisEx.class);
+		when(bottom1.getTickManager()).thenReturn(tm);
+		when(bottom1.canContribute()).thenReturn(true);
+		when(bottom1.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
+		when(bottom1.getAsc()).thenReturn(3.0);
+		when(bottom1.getDesc()).thenReturn(2.0);
 
 		plot.addYAxis(left);
+		plot.addYAxis(left1);
 		plot.addYAxis(right);
+		plot.addYAxis(right1);
 		plot.addXAxis(top);
+		plot.addXAxis(top1);
 		plot.addXAxis(bottom);
+		plot.addXAxis(bottom1);
 
 		plot.validate();
-		checkDouble(plot.getMargin().getLeft(), 8.0);
-		checkDouble(plot.getMargin().getBottom(), 5.0);
-		checkDouble(plot.getBounds().getX(), -8.0);
-		checkDouble(plot.getBounds().getY(), -5.0);
+		checkDouble(plot.getMargin().getLeft(), 12.0);
+		checkDouble(plot.getMargin().getRight(), 7.0);
+		checkDouble(plot.getMargin().getTop(), 12.0);
+		checkDouble(plot.getMargin().getBottom(), 7.0);
+		checkDouble(plot.getBounds().getX(), -12.0);
+		checkDouble(plot.getBounds().getY(), -7.0);
 		checkDouble(plot.getBounds().getWidth(), 300);
 		checkDouble(plot.getBounds().getHeight(), 200);
 
 		Dimension2D csize = plot.getContentSize();
-		checkDimension2D(csize, 300 - 8 - 8, 200 - 5 - 5);
+		checkDimension2D(csize, 300 - 12 - 7, 200 - 12 - 7);
 		verify(left).setLocation(0, 0);
-		verify(bottom).setLocation(0, 0);
-		verify(top).setLocation(0, csize.getHeight());
+		verify(left1).setLocation(-9, 0);
 		verify(right).setLocation(csize.getWidth(), 0);
+		verify(right1).setLocation(csize.getWidth() + 5, 0);
+		verify(bottom).setLocation(0, 0);
+		verify(bottom1).setLocation(0, -5);
+		verify(top).setLocation(0, csize.getHeight());
+		verify(top1).setLocation(0, csize.getHeight() + 9);
 		verify(legend, never()).setLocation(anyDouble(), anyDouble());
 		verify(legend, never()).setHAlign(any(HAlign.class));
 		verify(legend, never()).setVAlign(any(VAlign.class));
