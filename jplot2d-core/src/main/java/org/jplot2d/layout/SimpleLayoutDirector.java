@@ -103,10 +103,10 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		plot.setContentSize(contentSize);
-		layoutLeftMargin(plot, contentSize, ais);
-		layoutRightMargin(plot, contentSize, ais);
-		layoutTopMargin(plot, contentSize, ais);
-		layoutBottomMargin(plot, contentSize, ais);
+		layoutLeftMargin(plot, contentSize, ais.leftAxes);
+		layoutRightMargin(plot, contentSize, ais.rightAxes);
+		layoutTopMargin(plot, contentSize, ais.topAxes);
+		layoutBottomMargin(plot, contentSize, ais.bottomAxes);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return ais;
 	}
 
-	protected static double calcLeftMargin(PlotEx plot, AxesInPlot ais) {
+	protected static double calcLeftMargin(PlotEx plot, ArrayList<AxisEx> leftAxes) {
 		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoLeft()) {
@@ -149,11 +149,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mLeft = 0;
 
-		if (ais.leftAxes.size() > 0) {
-			for (AxisEx am : ais.leftAxes) {
+		if (leftAxes.size() > 0) {
+			for (AxisEx am : leftAxes) {
 				mLeft += am.getAsc() + am.getDesc();
 			}
-			mLeft -= ais.leftAxes.get(0).getDesc();
+			mLeft -= leftAxes.get(0).getDesc();
 		}
 
 		LegendEx legend = plot.getLegend();
@@ -173,7 +173,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mLeft + margin.getExtraLeft();
 	}
 
-	protected static double calcRightMargin(PlotEx plot, AxesInPlot ais) {
+	protected static double calcRightMargin(PlotEx plot, ArrayList<AxisEx> rightAxes) {
 		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoRight()) {
@@ -182,13 +182,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mRight = 0;
 
-		if (ais.rightAxes.size() > 0) {
-			if (ais.rightAxes.size() > 0) {
-				for (AxisEx am : ais.rightAxes) {
-					mRight += am.getAsc() + am.getDesc();
-				}
-				mRight -= ais.rightAxes.get(0).getAsc();
+		if (rightAxes.size() > 0) {
+			for (AxisEx am : rightAxes) {
+				mRight += am.getAsc() + am.getDesc();
 			}
+			mRight -= rightAxes.get(0).getAsc();
 		}
 
 		LegendEx legend = plot.getLegend();
@@ -208,7 +206,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mRight + margin.getExtraRight();
 	}
 
-	protected static double calcTopMargin(PlotEx plot, AxesInPlot ais) {
+	protected static double calcTopMargin(PlotEx plot, ArrayList<AxisEx> topAxes) {
 		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoTop()) {
@@ -217,11 +215,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mTop = 0;
 
-		if (ais.topAxes.size() > 0) {
-			for (AxisEx am : ais.topAxes) {
+		if (topAxes.size() > 0) {
+			for (AxisEx am : topAxes) {
 				mTop += am.getAsc() + am.getDesc();
 			}
-			mTop -= ais.topAxes.get(0).getDesc();
+			mTop -= topAxes.get(0).getDesc();
 		}
 
 		LegendEx legend = plot.getLegend();
@@ -255,7 +253,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		return mTop + margin.getExtraTop();
 	}
 
-	protected static double calcBottomMargin(PlotEx plot, AxesInPlot ais) {
+	protected static double calcBottomMargin(PlotEx plot, ArrayList<AxisEx> bottomAxes) {
 		PlotMarginEx margin = plot.getMargin();
 
 		if (!margin.isAutoBottom()) {
@@ -264,11 +262,11 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mBottom = 0;
 
-		if (ais.bottomAxes.size() > 0) {
-			for (AxisEx am : ais.bottomAxes) {
+		if (bottomAxes.size() > 0) {
+			for (AxisEx am : bottomAxes) {
 				mBottom += am.getAsc() + am.getDesc();
 			}
-			mBottom -= ais.bottomAxes.get(0).getAsc();
+			mBottom -= bottomAxes.get(0).getAsc();
 		}
 
 		LegendEx legend = plot.getLegend();
@@ -313,18 +311,15 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		double mLeft, mRight, mTop, mBottom;
 
-		mTop = calcTopMargin(plot, ais);
-		mBottom = calcBottomMargin(plot, ais);
-		mLeft = calcLeftMargin(plot, ais);
-		mRight = calcRightMargin(plot, ais);
+		mTop = calcTopMargin(plot, ais.topAxes);
+		mBottom = calcBottomMargin(plot, ais.bottomAxes);
+		mLeft = calcLeftMargin(plot, ais.leftAxes);
+		mRight = calcRightMargin(plot, ais.rightAxes);
 
 		return new Insets2D.Double(mTop, mLeft, mBottom, mRight);
 	}
 
-	private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
-
-		// all left axes in inner-to-outer order
-		ArrayList<AxisEx> leftAxes = ais.leftAxes;
+	private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> leftAxes) {
 
 		// viewport box
 		double iabLeft = 0;
@@ -337,13 +332,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			AxisEx am = leftAxes.get(0);
 			am.setLength(contentSize.getHeight());
 			am.setLocation(xloc, iabBottom);
-			xloc -= am.getDesc();
+			xloc -= am.getAsc();
 			for (int i = 1; i < leftAxes.size(); i++) {
 				am = leftAxes.get(i);
 				am.setLength(contentSize.getHeight());
-				xloc -= am.getAsc();
-				am.setLocation(xloc, iabBottom);
 				xloc -= am.getDesc();
+				am.setLocation(xloc, iabBottom);
+				xloc -= am.getAsc();
 			}
 		}
 
@@ -375,10 +370,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutRightMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
-
-		// all right axes in inner-to-outer order
-		ArrayList<AxisEx> rightAxes = ais.rightAxes;
+	private static void layoutRightMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> rightAxes) {
 
 		// viewport box
 		double iabRight = contentSize.getWidth();
@@ -391,13 +383,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			AxisEx am = rightAxes.get(0);
 			am.setLength(contentSize.getHeight());
 			am.setLocation(xloc, iabBottom);
-			xloc += am.getAsc();
+			xloc += am.getDesc();
 			for (int i = 1; i < rightAxes.size(); i++) {
 				am = rightAxes.get(i);
 				am.setLength(contentSize.getHeight());
-				xloc += am.getDesc();
-				am.setLocation(xloc, iabBottom);
 				xloc += am.getAsc();
+				am.setLocation(xloc, iabBottom);
+				xloc += am.getDesc();
 			}
 		}
 
@@ -428,10 +420,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	}
 
-	private static void layoutTopMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
-
-		// all left axes in inner-to-outer order
-		ArrayList<AxisEx> topAxes = ais.topAxes;
+	private static void layoutTopMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> topAxes) {
 
 		// viewport box
 		double iabLeft = 0;
@@ -517,10 +506,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 	}
 
-	private static void layoutBottomMargin(PlotEx sp, Dimension2D contentSize, AxesInPlot ais) {
-
-		// all bottom axes in inner-to-outer order
-		ArrayList<AxisEx> bottomAxes = ais.bottomAxes;
+	private static void layoutBottomMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> bottomAxes) {
 
 		// viewport box
 		double iabLeft = 0;

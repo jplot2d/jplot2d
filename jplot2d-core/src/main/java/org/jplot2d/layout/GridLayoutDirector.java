@@ -279,10 +279,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
 
-			double mLeft = calcLeftMargin(sp, ais);
-			double mRight = calcRightMargin(sp, ais);
-			double mTop = calcTopMargin(sp, ais);
-			double mBottom = calcBottomMargin(sp, ais);
+			double mLeft = calcLeftMargin(sp, ais.leftAxes);
+			double mRight = calcRightMargin(sp, ais.rightAxes);
+			double mTop = calcTopMargin(sp, ais.topAxes);
+			double mBottom = calcBottomMargin(sp, ais.bottomAxes);
 
 			if (leftMargin.get(col) == null || leftMargin.get(col) < mLeft) {
 				leftMargin.put(col, mLeft);
