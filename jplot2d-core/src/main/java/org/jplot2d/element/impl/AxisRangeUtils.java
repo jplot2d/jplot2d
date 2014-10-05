@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -81,7 +81,7 @@ class AxisRangeUtils {
 
 		Map<AxisTransformEx, NormalTransform> result = new HashMap<AxisTransformEx, NormalTransform>();
 
-		boolean match = true;
+		boolean match = false;
 		double offset = Double.NaN;
 		for (AxisTransformEx axis : axes) {
 			if (!match) {
@@ -290,14 +290,14 @@ class AxisRangeUtils {
 			if (pLo == pHi) {
 				pXdRange = new Range.Double(pLo, pHi);
 			} else if (pLo < pHi) {
-				if (arm.getType().getDefaultTransformType() == vnt.getType()) {
+				if (arm.getTransform() == vnt.getType()) {
 					double span = pHi - pLo;
 					pLo -= span * arm.getMarginFactor();
 					pHi += span * arm.getMarginFactor();
 					pXdRange = new Range.Double(pLo, pHi);
 				} else {
 					Range wr = vnt.convFromNR(new Range.Double(pLo, pHi));
-					NormalTransform npt = arm.getType().getDefaultTransformType().createNormalTransform(wr);
+					NormalTransform npt = arm.getTransform().createNormalTransform(wr);
 					Range exnpr = new Range.Double(-arm.getMarginFactor(), 1 + arm.getMarginFactor());
 					Range exwr = npt.convFromNR(exnpr);
 					pXdRange = vnt.convToNR(exwr);
