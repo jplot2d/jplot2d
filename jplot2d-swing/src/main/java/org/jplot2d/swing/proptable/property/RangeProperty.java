@@ -40,24 +40,16 @@ public class RangeProperty extends PropertyDescriptorAdapter<Range> {
 		return subProperties;
 	}
 
-	private void setStart(Double start) {
-		_start = start;
+	public void readFromObject(Object object) {
+		super.readFromObject(object);
+
 		if (getValue() != null) {
+			_start = getValue().getStart();
 			_end = getValue().getEnd();
-		}
-		if (_start != null && _end != null) {
-			setValue(new Range.Double(_start, _end));
-		}
-		if (_start == null && _end == null) {
-			setValue(null);
 		}
 	}
 
-	private void setEnd(Double end) {
-		_end = end;
-		if (getValue() != null) {
-			_start = getValue().getStart();
-		}
+	private void updateValue() {
 		if (_start != null && _end != null) {
 			setValue(new Range.Double(_start, _end));
 		}
@@ -80,16 +72,12 @@ public class RangeProperty extends PropertyDescriptorAdapter<Range> {
 			}
 
 			public Double getValue() {
-				Range r = RangeProperty.this.getValue();
-				if (r == null) {
-					return _start;
-				} else {
-					return r.getStart();
-				}
+				return _start;
 			}
 
-			public void setValue(Double width) {
-				setStart(width);
+			public void setValue(Double start) {
+				_start = start;
+				updateValue();
 			}
 
 		};
@@ -105,16 +93,12 @@ public class RangeProperty extends PropertyDescriptorAdapter<Range> {
 			}
 
 			public Double getValue() {
-				Range r = RangeProperty.this.getValue();
-				if (r == null) {
-					return _end;
-				} else {
-					return r.getEnd();
-				}
+				return _end;
 			}
 
 			public void setValue(Double end) {
-				setEnd(end);
+				_end = end;
+				updateValue();
 			}
 
 		};

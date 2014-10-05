@@ -29,6 +29,8 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
 	private Property<?>[] subProperties;
 
+	private Double _top, _left, _bottom, _right;
+
 	public Insets2DProperty(PropertyInfo descriptor) {
 		super(descriptor);
 		initSubProperties();
@@ -38,20 +40,24 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 		return subProperties;
 	}
 
-	private void setTop(double top) {
-		setValue(new Insets2D.Double(top, getValue().getLeft(), getValue().getBottom(), getValue().getRight()));
+	public void readFromObject(Object object) {
+		super.readFromObject(object);
+
+		if (getValue() != null) {
+			_top = getValue().getTop();
+			_left = getValue().getLeft();
+			_bottom = getValue().getBottom();
+			_right = getValue().getRight();
+		}
 	}
 
-	private void setLeft(double left) {
-		setValue(new Insets2D.Double(getValue().getTop(), left, getValue().getBottom(), getValue().getRight()));
-	}
-
-	private void setBottom(double bottom) {
-		setValue(new Insets2D.Double(getValue().getTop(), getValue().getLeft(), bottom, getValue().getRight()));
-	}
-
-	private void setRight(double right) {
-		setValue(new Insets2D.Double(getValue().getTop(), getValue().getLeft(), getValue().getBottom(), right));
+	private void updateValue() {
+		if (_top != null && _left != null & _bottom != null && _right != null) {
+			setValue(new Insets2D.Double(_top, _left, _bottom, _right));
+		}
+		if (_top == null && _left == null & _bottom == null && _right == null) {
+			setValue(null);
+		}
 	}
 
 	private void initSubProperties() {
@@ -69,11 +75,12 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 			}
 
 			public Double getValue() {
-				return Insets2DProperty.this.getValue().getTop();
+				return _top;
 			}
 
 			public void setValue(Double top) {
-				setTop(top);
+				_top = top;
+				updateValue();
 			}
 
 		};
@@ -89,11 +96,12 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 			}
 
 			public Double getValue() {
-				return Insets2DProperty.this.getValue().getLeft();
+				return _left;
 			}
 
 			public void setValue(Double left) {
-				setLeft(left);
+				_left = left;
+				updateValue();
 			}
 
 		};
@@ -109,11 +117,12 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 			}
 
 			public Double getValue() {
-				return Insets2DProperty.this.getValue().getBottom();
+				return _bottom;
 			}
 
 			public void setValue(Double bottom) {
-				setBottom(bottom);
+				_bottom = bottom;
+				updateValue();
 			}
 
 		};
@@ -129,11 +138,12 @@ public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 			}
 
 			public Double getValue() {
-				return Insets2DProperty.this.getValue().getRight();
+				return _right;
 			}
 
 			public void setValue(Double right) {
-				setRight(right);
+				_right = right;
+				updateValue();
 			}
 
 		};

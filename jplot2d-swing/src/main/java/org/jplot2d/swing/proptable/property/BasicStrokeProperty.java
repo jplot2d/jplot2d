@@ -88,12 +88,7 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 			}
 
 			public Float getValue() {
-				BasicStroke p = BasicStrokeProperty.this.getValue();
-				if (p == null) {
-					return null;
-				} else {
-					return p.getLineWidth();
-				}
+				return lineWidth;
 			}
 
 			public void setValue(Float x) {
@@ -114,12 +109,7 @@ public class BasicStrokeProperty extends PropertyDescriptorAdapter<BasicStroke> 
 			}
 
 			public float[] getValue() {
-				BasicStroke p = BasicStrokeProperty.this.getValue();
-				if (p == null) {
-					return null;
-				} else {
-					return p.getDashArray();
-				}
+				return dashArray;
 			}
 
 			public void setValue(float[] y) {
