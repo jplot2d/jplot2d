@@ -31,6 +31,8 @@ public class Dimension2DProperty extends PropertyDescriptorAdapter<Dimension2D> 
 
 	private Property<?>[] subProperties;
 
+	private Double _w, _h;
+
 	public Dimension2DProperty(PropertyInfo descriptor) {
 		super(descriptor);
 		initSubProperties();
@@ -40,12 +42,22 @@ public class Dimension2DProperty extends PropertyDescriptorAdapter<Dimension2D> 
 		return subProperties;
 	}
 
-	private void setWidth(double width) {
-		setValue(new DoubleDimension2D(width, getValue().getHeight()));
+	public void readFromObject(Object object) {
+		super.readFromObject(object);
+
+		if (getValue() != null) {
+			_w = getValue().getWidth();
+			_h = getValue().getHeight();
+		}
 	}
 
-	private void setHeight(double height) {
-		setValue(new DoubleDimension2D(getValue().getWidth(), height));
+	private void updateValue() {
+		if (_w != null && _h != null) {
+			setValue(new DoubleDimension2D(_w, _h));
+		}
+		if (_w == null && _h == null) {
+			setValue(null);
+		}
 	}
 
 	private void initSubProperties() {
@@ -62,11 +74,12 @@ public class Dimension2DProperty extends PropertyDescriptorAdapter<Dimension2D> 
 			}
 
 			public Double getValue() {
-				return Dimension2DProperty.this.getValue().getWidth();
+				return _w;
 			}
 
 			public void setValue(Double width) {
-				setWidth(width);
+				_w = width;
+				updateValue();
 			}
 
 		};
@@ -82,11 +95,12 @@ public class Dimension2DProperty extends PropertyDescriptorAdapter<Dimension2D> 
 			}
 
 			public Double getValue() {
-				return Dimension2DProperty.this.getValue().getHeight();
+				return _h;
 			}
 
 			public void setValue(Double height) {
-				setHeight(height);
+				_h = height;
+				updateValue();
 			}
 
 		};

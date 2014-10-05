@@ -112,7 +112,6 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
 
 		// others
 		registerRenderer(Range.class, new RangeCellRenderer());
-		registerRenderer(MathElement.class, new MathCellRenderer());
 		registerRenderer(BasicStroke.class, new BasicStrokeCellRenderer());
 
 		// Object renderer

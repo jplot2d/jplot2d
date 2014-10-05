@@ -30,6 +30,8 @@ public class DimensionProperty extends PropertyDescriptorAdapter<Dimension> {
 
 	private Property<?>[] subProperties;
 
+	private Integer _w, _h;
+
 	public DimensionProperty(PropertyInfo descriptor) {
 		super(descriptor);
 		initSubProperties();
@@ -39,12 +41,22 @@ public class DimensionProperty extends PropertyDescriptorAdapter<Dimension> {
 		return subProperties;
 	}
 
-	private void setWidth(int width) {
-		setValue(new Dimension(width, getValue().height));
+	public void readFromObject(Object object) {
+		super.readFromObject(object);
+
+		if (getValue() != null) {
+			_w = getValue().width;
+			_h = getValue().height;
+		}
 	}
 
-	private void setHeight(int height) {
-		setValue(new Dimension(getValue().width, height));
+	private void updateValue() {
+		if (_w != null && _h != null) {
+			setValue(new Dimension(_w, _h));
+		}
+		if (_w == null && _h == null) {
+			setValue(null);
+		}
 	}
 
 	private void initSubProperties() {
@@ -61,11 +73,12 @@ public class DimensionProperty extends PropertyDescriptorAdapter<Dimension> {
 			}
 
 			public Integer getValue() {
-				return DimensionProperty.this.getValue().width;
+				return _w;
 			}
 
 			public void setValue(Integer width) {
-				setWidth(width);
+				_w = width;
+				updateValue();
 			}
 
 		};
@@ -81,11 +94,12 @@ public class DimensionProperty extends PropertyDescriptorAdapter<Dimension> {
 			}
 
 			public Integer getValue() {
-				return DimensionProperty.this.getValue().height;
+				return _h;
 			}
 
 			public void setValue(Integer height) {
-				setHeight(height);
+				_h = height;
+				updateValue();
 			}
 
 		};
