@@ -272,7 +272,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	private void updateTickAlgorithm() {
 		TickAlgorithm ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(), getTickTransform());
 		if (ta == null) {
-			setTickTransform(null);
 			ta = axisTransform.getType().getTickAlgorithm(axisTransform.getTransform(), null);
 		}
 		setTickAlgorithm(ta);
