@@ -119,7 +119,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		AxesInPlot ais = new AxesInPlot();
 
 		for (AxisEx axis : plot.getXAxes()) {
-			if (axis.canContribute()) {
+			if (axis.isVisible() && axis.canContribute()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					ais.topAxes.add(axis);
 				} else {
@@ -128,7 +128,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 			}
 		}
 		for (AxisEx axis : plot.getYAxes()) {
-			if (axis.canContribute()) {
+			if (axis.isVisible() && axis.canContribute()) {
 				if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
 					ais.rightAxes.add(axis);
 				} else {
