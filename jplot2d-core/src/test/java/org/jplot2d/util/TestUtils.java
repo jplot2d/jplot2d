@@ -165,6 +165,7 @@ public class TestUtils {
 		}
 	}
 
+	@SafeVarargs
 	public static <T> void checkHashSet(Set<T> set, T... strs) {
 		HashSet<T> extraSet = new HashSet<T>(set);
 		HashSet<T> omitSet = new HashSet<T>(Arrays.asList(strs));
@@ -189,6 +190,7 @@ public class TestUtils {
 		}
 	}
 
+	@SafeVarargs
 	public static <T> void checkCollecionOrder(Collection<T> set, T... strs) {
 		Object[] clt = set.toArray();
 		if (clt.length != strs.length) {
