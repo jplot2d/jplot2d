@@ -97,13 +97,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	public void addRangeManager(AxisTransformEx axis) {
 		arms.add(axis);
 
-		autoRange = false;
-
 		if (arms.size() == 1) {
 			parent = axis;
 			prim = axis;
 		} else {
 			parent = null;
+			autoRange = false;
 		}
 	}
 
