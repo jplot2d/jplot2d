@@ -64,9 +64,9 @@ public class InterfaceInfoTest {
 				}
 			}
 		}
-		for (Class<?> cls : props) {
+//		for (Class<?> cls : props) {
 			// System.out.println(cls);
-		}
+//		}
 	}
 
 	/**
