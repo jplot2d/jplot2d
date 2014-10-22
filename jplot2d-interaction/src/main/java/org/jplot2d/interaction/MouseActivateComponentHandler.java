@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,9 +21,11 @@ package org.jplot2d.interaction;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.PlotEnvironment;
+import org.jplot2d.transform.PaperTransform;
 
 /**
  * This handler activate / deactivate component while mouse moving. It set the interaction handler's mode according to
@@ -42,8 +44,6 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 	 */
 	private PComponent activeComponent;
 
-	private Shape activeBounds;
-
 	public MouseActivateComponentHandler(MouseActivateComponentBehavior behavior, InteractionModeHandler handler) {
 		super(behavior, handler);
 		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
@@ -52,12 +52,17 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 	@Override
 	public boolean behaviorPerformed(int x, int y) {
 
-		if (activeComponent != null && activeBounds.contains(x, y)) {
-			return false;
+		PlotEnvironment penv = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+
+		// quick check
+		if (activeComponent != null && activeComponent.getEnvironment() == penv) {
+			Shape activeBounds = getDeviceBounds(activeComponent);
+			if (activeBounds != null && activeBounds.contains(x, y)) {
+				return false;
+			}
 		}
 
 		// the selectable component that contains the specified point.
-		PlotEnvironment penv = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
 		PComponent newComp = penv.getSelectableCompnentAt(new Point(x, y));
 
 		if (activeComponent == newComp) {
@@ -66,12 +71,10 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 
 		if (newComp != null) {
 			activeComponent = newComp;
-			activeBounds = getDeviceBounds(activeComponent);
 			// activate((Graphics2D) ccomp.getGraphics());
 			handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, activeComponent);
 		} else {
 			activeComponent = null;
-			activeBounds = null;
 			handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, null);
 		}
 
@@ -85,13 +88,21 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 		 * Draw bounding box for the active component
 		 */
 		if (activeComponent != null) {
-			activeBounds = getDeviceBounds(activeComponent);
-			icomp.drawShape(g, Color.BLUE.getRGB(), activeBounds);
+			Shape activeBounds = getDeviceBounds(activeComponent);
+			if (activeBounds != null) {
+				icomp.drawShape(g, Color.BLUE.getRGB(), activeBounds);
+			}
 		}
 	}
 
 	private static Shape getDeviceBounds(PComponent comp) {
-		return comp.getPaperTransform().getPtoD(comp.getSelectableBounds());
+		PaperTransform pxf = comp.getPaperTransform();
+		Rectangle2D sb = comp.getSelectableBounds();
+		if (pxf == null || sb == null) {
+			return null;
+		} else {
+			return comp.getPaperTransform().getPtoD(comp.getSelectableBounds());
+		}
 	}
 
 }
