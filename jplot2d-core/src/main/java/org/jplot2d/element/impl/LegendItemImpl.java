@@ -89,8 +89,8 @@ public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		if (getLegend() != null) {
-			getLegend().itemVisibleChanged(this);
+		if (canContribute() && getLegend() != null) {
+			getLegend().itemVisibilityChanged(this);
 		}
 	}
 

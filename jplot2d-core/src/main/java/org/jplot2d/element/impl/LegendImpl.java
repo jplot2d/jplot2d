@@ -121,7 +121,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 			getParent().invalidate();
 		}
 	}
-	
+
 	/*
 	 * Only contribute contents when it has visible items.
 	 */
@@ -339,19 +339,28 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 		item.setLegend(null);
 	}
 
-	public void itemVisibleChanged(LegendItemImpl item) {
-		if (item.getSize().equals(maxItemSize)) {
-			maxItemSize = null;
-		}
+	public void itemVisibilityChanged(LegendItemImpl item) {
 		if (isItemVisible(item)) {
 			incVisibleItemNum();
+			maxItemSize = null;
 		} else {
 			decVisibleItemNum();
+			if (item.getSize().equals(maxItemSize)) {
+				maxItemSize = null;
+			}
 		}
 		sizeCalculationNeeded = true;
 		redraw(this);
 	}
 
+	/**
+	 * Returns <code>true</code> when both visible and contributable are <code>true</code>. Otherwise returns
+	 * <code>false</code>.
+	 * 
+	 * @param item
+	 *            the legend item
+	 * @return <code>true</code> when both visible and contributable are <code>true</code>
+	 */
 	private boolean isItemVisible(LegendItemEx item) {
 		return item.isVisible() && item.canContribute();
 	}
@@ -359,7 +368,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	private void incVisibleItemNum() {
 		visibleItemNum++;
 		if (visibleItemNum == 1 && isVisible() && isEnabled()) {
-			invalidatePlot();
+			invalidatePlot(); // TODO: Do we need it?
 		}
 	}
 

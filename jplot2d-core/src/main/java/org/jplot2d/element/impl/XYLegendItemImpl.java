@@ -108,10 +108,13 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 	}
 
 	public void setText(String text) {
+		boolean contributable = canContribute();
 		textModel = TeXMathUtils.parseText(text);
 		label = null;
-		if (isVisible()) {
-			if (getLegend() != null) {
+		if (isVisible() && getLegend() != null) {
+			if (canContribute() != contributable) {
+				getLegend().itemVisibilityChanged(this);
+			} else if (contributable) {
 				getLegend().itemSizeChanged(this);
 			}
 		}
