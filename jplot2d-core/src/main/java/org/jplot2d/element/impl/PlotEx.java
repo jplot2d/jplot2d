@@ -161,6 +161,4 @@ public interface PlotEx extends Plot, ContainerEx {
 	 */
 	public void setContentConstrant(Dimension2D constraint);
 
-	public void childPreferredContentSizeChanged();
-
 }
