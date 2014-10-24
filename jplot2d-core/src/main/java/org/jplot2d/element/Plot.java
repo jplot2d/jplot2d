@@ -401,7 +401,9 @@ public interface Plot extends PComponent {
 	 * Add a subplot with a constraint to this plot.
 	 * 
 	 * @param subplot
+	 *            the subplot to be added
 	 * @param constraint
+	 *            an object expressing layout constraints
 	 */
 	@Hierarchy(HierarchyOp.ADD)
 	void addSubplot(Plot subplot, Object constraint);
@@ -413,6 +415,16 @@ public interface Plot extends PComponent {
 	 */
 	@Hierarchy(HierarchyOp.REMOVE)
 	void removeSubplot(Plot subplot);
+
+	/**
+	 * Set a new layout constraint for the given subplot.
+	 * 
+	 * @param subplot
+	 *            the subplot
+	 * @param constraint
+	 *            an object expressing layout constraints
+	 */
+	public void setSubplotConstraint(Plot subplot, Object constraint);
 
 	/**
 	 * Zoom the given range to entire X axis. The behavior is like, creating a temporary AxisRangeLockGroup to group all
