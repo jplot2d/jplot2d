@@ -99,8 +99,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private double preferredContentHeight = 240;
 
-	private boolean preferredSizeChanged;
-
 	private Dimension2D contentSize;
 
 	private PlotMarginEx margin;
@@ -207,8 +205,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	@Override
 	public void setSizeMode(SizeMode sizeMode) {
 		this.sizeMode = sizeMode;
-		if (sizeMode.isAutoPack()) {
-			preferredSizeChanged = true;
+		if (getParent() == null && sizeMode.isAutoPack()) {
+			invalidate();
 		}
 	}
 
@@ -418,7 +416,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	@Override
 	public void setPreferredContentSize(Dimension2D size) {
 		if (size == null) {
-			throw new IllegalArgumentException("Preferred content size cannpt be null.");
+			throw new IllegalArgumentException("Preferred content size cannot be null.");
 		}
 		setPreferredContentSize(size.getWidth(), size.getHeight());
 	}
@@ -430,16 +428,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		}
 		this.preferredContentWidth = width;
 		this.preferredContentHeight = height;
-		childPreferredContentSizeChanged();
-	}
-
-	@Override
-	public void childPreferredContentSizeChanged() {
-		if (getParent() != null) {
-			getParent().childPreferredContentSizeChanged();
-		} else {
-			preferredSizeChanged = true;
-		}
+		// In grid layout or auto pack sizing mode, changing preferred content size will invalidate the layout
+		invalidate();
 	}
 
 	@Override
@@ -861,6 +851,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	@Override
+	public void setSubplotConstraint(Plot subplot, Object constraint) {
+		PlotEx sp = (PlotEx) subplot;
+		LayoutDirector ld = getLayoutDirector();
+		if (ld != null) {
+			ld.setConstraint(sp, constraint);
+			if (sp.isVisible()) {
+				invalidate();
+			}
+		}
+	}
+
+	@Override
 	public void removeSubplot(Plot subplot) {
 		PlotEx sp = (PlotEx) subplot;
 
@@ -1087,10 +1089,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private void autoPack() {
 		if (getLayoutDirector() != null) {
-			if (!isValid() || preferredSizeChanged) {
+			if (!isValid()) {
 				Dimension2D prefSize = getLayoutDirector().getPreferredSize(this);
 				this.setSize(prefSize);
-				preferredSizeChanged = false;
 			}
 		}
 	}

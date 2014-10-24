@@ -250,8 +250,10 @@ public interface PComponent extends Element {
 	/**
 	 * Returns the paper transform of this component, which can be used to convert between device coordinate and paper
 	 * coordinate of this component. The original point of paper coordinate is the location point of this component.
+	 * <p>
+	 * Returns <code>null</code> if the component is not added to a plot or not laid out
 	 * 
-	 * @return
+	 * @return the paper transform of this component
 	 */
 	public PaperTransform getPaperTransform();
 
