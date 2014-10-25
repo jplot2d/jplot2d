@@ -340,17 +340,32 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void itemVisibilityChanged(LegendItemImpl item) {
-		if (isItemVisible(item)) {
-			incVisibleItemNum();
-			maxItemSize = null;
-		} else {
-			decVisibleItemNum();
-			if (item.getSize().equals(maxItemSize)) {
+		if (item.canContribute()) {
+			if (item.isVisible()) {
+				incVisibleItemNum();
 				maxItemSize = null;
+			} else {
+				decVisibleItemNum();
+				if (item.getSize().equals(maxItemSize)) {
+					maxItemSize = null;
+				}
 			}
+			sizeCalculationNeeded = true;
+			redraw(this);
 		}
-		sizeCalculationNeeded = true;
-		redraw(this);
+	}
+
+	public void itemContribitivityChanged(LegendItemImpl item) {
+		if (item.isVisible()) {
+			if (item.canContribute()) {
+				incVisibleItemNum();
+			} else {
+				decVisibleItemNum();
+			}
+			maxItemSize = null;
+			sizeCalculationNeeded = true;
+			redraw(this);
+		}
 	}
 
 	/**
@@ -380,9 +395,11 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 	}
 
 	public void itemSizeChanged(LegendItemEx item) {
-		maxItemSize = null;
-		sizeCalculationNeeded = true;
-		redraw(this);
+		if (item.isVisible()) {
+			maxItemSize = null;
+			sizeCalculationNeeded = true;
+			redraw(this);
+		}
 	}
 
 	@Override
