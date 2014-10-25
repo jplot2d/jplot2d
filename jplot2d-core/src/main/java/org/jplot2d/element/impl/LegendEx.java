@@ -67,16 +67,21 @@ public interface LegendEx extends Legend, ComponentEx {
 	public void removeLegendItem(LegendItemEx item);
 
 	/**
-	 * Called by a visible legend item to notify this legend that the item's size is changed. This method is only called
-	 * on the legend hosts the given item.
+	 * Called by a visible legend item to notify this legend that the item's size is changed.
 	 */
 	public void itemSizeChanged(LegendItemEx item);
 
 	/**
 	 * Called by a legend item to notify this legend that the item's visibility is changed. An item is shown when both
-	 * visible and contributable are <code>true</code>. This method is only called on the legend hosts the given item.
+	 * visibility and contributivity are <code>true</code>.
 	 */
 	public void itemVisibilityChanged(LegendItemImpl item);
+
+	/**
+	 * Called by a legend item to notify that the item's contributivity is changed. An item is shown when both
+	 * visibility and contributivity are <code>true</code>.
+	 */
+	public void itemContribitivityChanged(LegendItemImpl item);
 
 	/**
 	 * Returns the thickness of this legend. When position is on top or bottom, thickness is its height. When position

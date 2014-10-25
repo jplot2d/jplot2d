@@ -111,9 +111,9 @@ public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 		boolean contributable = canContribute();
 		textModel = TeXMathUtils.parseText(text);
 		label = null;
-		if (isVisible() && getLegend() != null) {
+		if (getLegend() != null) {
 			if (canContribute() != contributable) {
-				getLegend().itemVisibilityChanged(this);
+				getLegend().itemContribitivityChanged(this);
 			} else if (contributable) {
 				getLegend().itemSizeChanged(this);
 			}
