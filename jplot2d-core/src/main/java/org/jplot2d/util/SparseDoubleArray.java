@@ -19,8 +19,8 @@
 package org.jplot2d.util;
 
 /**
- * SparseIntArrays map integers to integers. Unlike a normal array of integers, there can be gaps in the indices. It is
- * intended to be more memory efficient than using a HashMap to map Integers to Integers, both because it avoids
+ * SparseIntArrays map integers to doubles. Unlike a normal array of doubles, there can be gaps in the indices. It is
+ * intended to be more memory efficient than using a HashMap to map Integers to Doubles, both because it avoids
  * auto-boxing keys and values and its data structure doesn't rely on an extra entry object for each mapping.
  * 
  * <p>
@@ -38,6 +38,9 @@ package org.jplot2d.util;
  * </p>
  */
 public class SparseDoubleArray implements Cloneable {
+	private static final int[] EMPTY_INTS = new int[0];
+	private static final double[] EMPTY_DOUBLES = new double[0];
+
 	private int[] mKeys;
 	private double[] mValues;
 	private int mSize;
@@ -277,14 +280,8 @@ public class SparseDoubleArray implements Cloneable {
 		return buffer.toString();
 	}
 
-	static final boolean[] EMPTY_BOOLEANS = new boolean[0];
-	static final int[] EMPTY_INTS = new int[0];
-	static final double[] EMPTY_DOUBLES = new double[0];
-	static final long[] EMPTY_LONGS = new long[0];
-	static final Object[] EMPTY_OBJECTS = new Object[0];
-
 	// This is Arrays.binarySearch(), but doesn't do any argument validation.
-	static int binarySearch(int[] array, int size, int value) {
+	private static int binarySearch(int[] array, int size, int value) {
 		int lo = 0;
 		int hi = size - 1;
 

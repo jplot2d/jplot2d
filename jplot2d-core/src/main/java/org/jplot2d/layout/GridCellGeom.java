@@ -18,10 +18,6 @@
  */
 package org.jplot2d.layout;
 
-import java.util.Map;
-import java.util.SortedMap;
-
-import org.jplot2d.util.SparseArray;
 import org.jplot2d.util.SparseDoubleArray;
 
 public class GridCellGeom {
@@ -47,13 +43,11 @@ public class GridCellGeom {
 	}
 
 	public double getWidth(int col) {
-		Double v = colWidth.get(col);
-		return v.doubleValue();
+		return colWidth.get(col);
 	}
 
 	public double getHeight(int row) {
-		Double v = rowHeight.get(row);
-		return v.doubleValue();
+		return rowHeight.get(row);
 	}
 
 	/**
@@ -64,10 +58,9 @@ public class GridCellGeom {
 	 */
 	public double getSumWidthLeft(int col) {
 		double sum = 0;
-		
-		for (SortedMap.Entry<Integer, Double> me : colWidth.entrySet()) {
-			int c = me.getKey();
-			double v = me.getValue();
+		for (int i = 0; i < colWidth.size(); i++) {
+			int c = colWidth.keyAt(i);
+			double v = colWidth.valueAt(i);
 			if (c < col) {
 				sum += v;
 			}
@@ -84,9 +77,9 @@ public class GridCellGeom {
 	 */
 	public double getSumHeightBelow(int row) {
 		double sum = 0;
-		for (SortedMap.Entry<Integer, Double> me : rowHeight.entrySet()) {
-			int r = me.getKey();
-			double v = me.getValue();
+		for (int i = 0; i < rowHeight.size(); i++) {
+			int r = rowHeight.keyAt(i);
+			double v = rowHeight.valueAt(i);
 			if (r < row) {
 				sum += v;
 			}
@@ -108,30 +101,6 @@ public class GridCellGeom {
 
 	public int getColNum() {
 		return colWidth.size();
-	}
-
-	public boolean approxEquals(GridCellGeom b) {
-		if (getColNum() != b.getColNum() || getRowNum() != b.getRowNum()) {
-			return false;
-		}
-		if (getSumWidth() != b.getSumWidth() || getSumHeight() != b.getSumHeight()) {
-			return false;
-		}
-		for (Integer col : colWidth.keySet()) {
-			Double aw = colWidth.get(col);
-			Double bw = b.colWidth.get(col);
-			if ((bw == null) || !GridLayoutDirector.approximate(aw, bw)) {
-				return false;
-			}
-		}
-		for (Integer row : rowHeight.keySet()) {
-			Double ah = rowHeight.get(row);
-			Double bh = b.rowHeight.get(row);
-			if ((bh == null) || !GridLayoutDirector.approximate(ah, bh)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 }

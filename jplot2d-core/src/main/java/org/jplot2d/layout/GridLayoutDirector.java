@@ -267,10 +267,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
 		Map<PlotEx, AxesInPlot> saMap = getSubplotAxisMap(plot.getSubplots());
 
-		Map<Integer, Double> topMargin = new HashMap<Integer, Double>();
-		Map<Integer, Double> leftMargin = new HashMap<Integer, Double>();
-		Map<Integer, Double> bottomMargin = new HashMap<Integer, Double>();
-		Map<Integer, Double> rightMargin = new HashMap<Integer, Double>();
+		SparseDoubleArray topMargin = new SparseDoubleArray();
+		SparseDoubleArray leftMargin = new SparseDoubleArray();
+		SparseDoubleArray bottomMargin = new SparseDoubleArray();
+		SparseDoubleArray rightMargin = new SparseDoubleArray();
 
 		for (Map.Entry<PlotEx, AxesInPlot> me : saMap.entrySet()) {
 			PlotEx sp = me.getKey();
@@ -284,16 +284,16 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			double mTop = calcTopMargin(sp, ais.topAxes);
 			double mBottom = calcBottomMargin(sp, ais.bottomAxes);
 
-			if (leftMargin.get(col) == null || leftMargin.get(col) < mLeft) {
+			if (leftMargin.get(col, -1) < mLeft) {
 				leftMargin.put(col, mLeft);
 			}
-			if (rightMargin.get(col) == null || rightMargin.get(col) < mRight) {
+			if (rightMargin.get(col, -1) < mRight) {
 				rightMargin.put(col, mRight);
 			}
-			if (topMargin.get(row) == null || topMargin.get(row) < mTop) {
+			if (topMargin.get(row, -1) < mTop) {
 				topMargin.put(row, mTop);
 			}
-			if (bottomMargin.get(row) == null || bottomMargin.get(row) < mBottom) {
+			if (bottomMargin.get(row, -1) < mBottom) {
 				bottomMargin.put(row, mBottom);
 			}
 		}
