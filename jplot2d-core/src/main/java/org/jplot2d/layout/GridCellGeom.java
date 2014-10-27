@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,20 +21,25 @@ package org.jplot2d.layout;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.jplot2d.util.SparseArray;
+import org.jplot2d.util.SparseDoubleArray;
+
 public class GridCellGeom {
 
-	private final Map<Integer, Double> colWidth, rowHeight;
+	private final SparseDoubleArray colWidth, rowHeight;
 
 	private final double sumWidth, sumHeight;
 
-	public GridCellGeom(Map<Integer, Double> colWidth, Map<Integer, Double> rowHeight) {
+	public GridCellGeom(SparseDoubleArray colWidth, SparseDoubleArray rowHeight) {
 		this.colWidth = colWidth;
 		this.rowHeight = rowHeight;
 		double sw = 0, sh = 0;
-		for (double w : colWidth.values()) {
+		for (int i = 0; i < colWidth.size(); i++) {
+			double w = colWidth.valueAt(i);
 			sw += w;
 		}
-		for (double h : rowHeight.values()) {
+		for (int i = 0; i < rowHeight.size(); i++) {
+			double h = rowHeight.valueAt(i);
 			sh += h;
 		}
 		sumWidth = sw;
@@ -59,6 +64,7 @@ public class GridCellGeom {
 	 */
 	public double getSumWidthLeft(int col) {
 		double sum = 0;
+		
 		for (SortedMap.Entry<Integer, Double> me : colWidth.entrySet()) {
 			int c = me.getKey();
 			double v = me.getValue();
