@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -33,7 +33,6 @@ import org.jplot2d.element.impl.PlotMarginEx;
 import org.jplot2d.element.impl.TitleEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
-import org.jplot2d.util.NumberUtils;
 
 /**
  * This LayoutDirector only layout layers, all subplot are not considered.
@@ -57,10 +56,6 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	/** The layout constraints */
 	private Map<PlotEx, Object> constraints = new HashMap<PlotEx, Object>();
-
-	static boolean approximate(double a, double b) {
-		return NumberUtils.approximate(a, b, 4);
-	}
 
 	public Object getConstraint(PlotEx plot) {
 		return constraints.get(plot);

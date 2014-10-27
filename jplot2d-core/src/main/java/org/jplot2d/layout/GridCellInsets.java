@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -18,20 +18,19 @@
  */
 package org.jplot2d.layout;
 
-import java.util.Collections;
-import java.util.Map;
+import org.jplot2d.util.SparseDoubleArray;
 
 public class GridCellInsets {
 
-	final Map<Integer, Double> topPadding;
+	private final SparseDoubleArray topPadding;
 
-	final Map<Integer, Double> leftPadding;
+	private final SparseDoubleArray leftPadding;
 
-	final Map<Integer, Double> bottomPadding;
+	private final SparseDoubleArray bottomPadding;
 
-	final Map<Integer, Double> rightPadding;
+	private final SparseDoubleArray rightPadding;
 
-	final double sumWidth, sumHeight;
+	private final double sumWidth, sumHeight;
 
 	/**
 	 * @param topPadding
@@ -43,39 +42,34 @@ public class GridCellInsets {
 	 * @param rightPadding
 	 *            the key is column id
 	 */
-	public GridCellInsets(Map<Integer, Double> topPadding,
-			Map<Integer, Double> leftPadding,
-			Map<Integer, Double> bottomPadding,
-			Map<Integer, Double> rightPadding) {
+	public GridCellInsets(SparseDoubleArray topPadding, SparseDoubleArray leftPadding, SparseDoubleArray bottomPadding,
+			SparseDoubleArray rightPadding) {
 		this.topPadding = topPadding;
 		this.leftPadding = leftPadding;
 		this.bottomPadding = bottomPadding;
 		this.rightPadding = rightPadding;
 
 		double sumXpad = 0;
-		for (double left : leftPadding.values()) {
+		for (int i = 0; i < leftPadding.size(); i++) {
+			double left = leftPadding.valueAt(i);
 			sumXpad += left;
 		}
-		for (double right : rightPadding.values()) {
+		for (int i = 0; i < rightPadding.size(); i++) {
+			double right = rightPadding.valueAt(i);
 			sumXpad += right;
 		}
 		sumWidth = sumXpad;
 
 		double sumYpad = 0;
-		for (double top : topPadding.values()) {
+		for (int i = 0; i < topPadding.size(); i++) {
+			double top = topPadding.valueAt(i);
 			sumYpad += top;
 		}
-		for (double bottom : bottomPadding.values()) {
+		for (int i = 0; i < bottomPadding.size(); i++) {
+			double bottom = bottomPadding.valueAt(i);
 			sumYpad += bottom;
 		}
 		sumHeight = sumYpad;
-	}
-
-	public GridCellInsets() {
-		this(Collections.<Integer, Double> emptyMap(), Collections
-				.<Integer, Double> emptyMap(), Collections
-				.<Integer, Double> emptyMap(), Collections
-				.<Integer, Double> emptyMap());
 	}
 
 	public double getTop(int row) {
@@ -104,48 +98,6 @@ public class GridCellInsets {
 
 	public double getSumHeight() {
 		return sumHeight;
-	}
-
-	public boolean approxEquals(GridCellInsets b) {
-		if (topPadding.size() != b.topPadding.size()
-				|| leftPadding.size() != b.leftPadding.size()
-				|| bottomPadding.size() != b.bottomPadding.size()
-				|| rightPadding.size() != b.rightPadding.size()) {
-			return false;
-		}
-		if (getSumWidth() != b.getSumWidth()
-				|| getSumHeight() != b.getSumHeight()) {
-			return false;
-		}
-		for (Integer col : leftPadding.keySet()) {
-			Double aw = leftPadding.get(col);
-			Double bw = b.leftPadding.get(col);
-			if ((bw == null) || !GridLayoutDirector.approximate(aw, bw)) {
-				return false;
-			}
-		}
-		for (Integer col : rightPadding.keySet()) {
-			Double aw = rightPadding.get(col);
-			Double bw = b.rightPadding.get(col);
-			if ((bw == null) || !GridLayoutDirector.approximate(aw, bw)) {
-				return false;
-			}
-		}
-		for (Integer row : topPadding.keySet()) {
-			Double ah = topPadding.get(row);
-			Double bh = b.topPadding.get(row);
-			if ((bh == null) || !GridLayoutDirector.approximate(ah, bh)) {
-				return false;
-			}
-		}
-		for (Integer row : bottomPadding.keySet()) {
-			Double ah = bottomPadding.get(row);
-			Double bh = b.bottomPadding.get(row);
-			if ((bh == null) || !GridLayoutDirector.approximate(ah, bh)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 }
