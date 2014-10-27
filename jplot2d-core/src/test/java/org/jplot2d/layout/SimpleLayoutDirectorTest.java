@@ -153,6 +153,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx left = mock(AxisEx.class);
 		when(left.getTickManager()).thenReturn(tm);
+		when(left.isVisible()).thenReturn(true);
 		when(left.canContribute()).thenReturn(true);
 		when(left.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(left.getAsc()).thenReturn(7.0);
@@ -160,6 +161,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx left1 = mock(AxisEx.class);
 		when(left1.getTickManager()).thenReturn(tm);
+		when(left1.isVisible()).thenReturn(true);
 		when(left1.canContribute()).thenReturn(true);
 		when(left1.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(left1.getAsc()).thenReturn(3.0);
@@ -167,6 +169,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx right = mock(AxisEx.class);
 		when(right.getTickManager()).thenReturn(tm);
+		when(right.isVisible()).thenReturn(true);
 		when(right.canContribute()).thenReturn(true);
 		when(right.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(right.getAsc()).thenReturn(7.0);
@@ -174,6 +177,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx right1 = mock(AxisEx.class);
 		when(right1.getTickManager()).thenReturn(tm);
+		when(right1.isVisible()).thenReturn(true);
 		when(right1.canContribute()).thenReturn(true);
 		when(right1.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(right1.getAsc()).thenReturn(3.0);
@@ -181,6 +185,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx top = mock(AxisEx.class);
 		when(top.getTickManager()).thenReturn(tm);
+		when(top.isVisible()).thenReturn(true);
 		when(top.canContribute()).thenReturn(true);
 		when(top.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(top.getAsc()).thenReturn(7.0);
@@ -188,6 +193,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx top1 = mock(AxisEx.class);
 		when(top1.getTickManager()).thenReturn(tm);
+		when(top1.isVisible()).thenReturn(true);
 		when(top1.canContribute()).thenReturn(true);
 		when(top1.getPosition()).thenReturn(AxisPosition.POSITIVE_SIDE);
 		when(top1.getAsc()).thenReturn(3.0);
@@ -195,6 +201,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx bottom = mock(AxisEx.class);
 		when(bottom.getTickManager()).thenReturn(tm);
+		when(bottom.isVisible()).thenReturn(true);
 		when(bottom.canContribute()).thenReturn(true);
 		when(bottom.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(bottom.getAsc()).thenReturn(7.0);
@@ -202,6 +209,7 @@ public class SimpleLayoutDirectorTest {
 
 		AxisEx bottom1 = mock(AxisEx.class);
 		when(bottom1.getTickManager()).thenReturn(tm);
+		when(bottom1.isVisible()).thenReturn(true);
 		when(bottom1.canContribute()).thenReturn(true);
 		when(bottom1.getPosition()).thenReturn(AxisPosition.NEGATIVE_SIDE);
 		when(bottom1.getAsc()).thenReturn(3.0);
@@ -290,8 +298,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getTop(), 10 + SimpleLayoutDirector.LEGEND_GAP);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 12 - 12, 200 - topMargin - 12);
-		verify(legend).directLocation(csize.getWidth() / 2,
-				csize.getHeight() + SimpleLayoutDirector.LEGEND_GAP);
+		verify(legend).directLocation(csize.getWidth() / 2, csize.getHeight() + SimpleLayoutDirector.LEGEND_GAP);
 		verify(legend).setHAlign(HAlign.CENTER);
 		verify(legend).setVAlign(VAlign.BOTTOM);
 	}
@@ -345,8 +352,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(plot.getMargin().getTop(), 0);
 		Dimension2D csize = plot.getContentSize();
 		checkDimension2D(csize, 300 - 12 - rightMargin, 200 - 12 - 12);
-		verify(legend).directLocation(csize.getWidth() + SimpleLayoutDirector.LEGEND_GAP,
-				csize.getHeight() / 2);
+		verify(legend).directLocation(csize.getWidth() + SimpleLayoutDirector.LEGEND_GAP, csize.getHeight() / 2);
 		verify(legend).setHAlign(HAlign.LEFT);
 		verify(legend).setVAlign(VAlign.MIDDLE);
 	}
