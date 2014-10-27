@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -21,10 +21,10 @@ package org.jplot2d.layout;
 import java.awt.geom.Dimension2D;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.SparseDoubleArray;
 
 /**
  * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio of their
@@ -101,8 +101,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		// calculate contents size factor of subplots.
 		Dimension2D scsFactor = calcSubplotContentFactor(plot, marginGeom);
 
-		TreeMap<Integer, Double> cellWidthMap = new TreeMap<Integer, Double>();
-		TreeMap<Integer, Double> cellHeightMap = new TreeMap<Integer, Double>();
+		SparseDoubleArray cellWidthMap = new SparseDoubleArray();
+		SparseDoubleArray cellHeightMap = new SparseDoubleArray();
 
 		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
@@ -120,10 +120,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			double cw = marginGeom.getLeft(col) + contWidth + marginGeom.getRight(col);
 			double ch = marginGeom.getTop(row) + contHeight + marginGeom.getBottom(row);
 
-			if (cellWidthMap.get(col) == null || cellWidthMap.get(col) < cw) {
+			if (cellWidthMap.get(col, -1) < cw) {
 				cellWidthMap.put(col, cw);
 			}
-			if (cellHeightMap.get(row) == null || cellHeightMap.get(row) < ch) {
+			if (cellHeightMap.get(row, -1) < ch) {
 				cellHeightMap.put(row, ch);
 			}
 		}
@@ -138,8 +138,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			// the paper bottom-left of a grid in chart(root layer)
 			double cws = cellGeom.getSumWidthLeft(col);
 			double chs = cellGeom.getSumHeightBelow(row);
-			double pX = cws + marginGeom.getLeft(col) + col * hgap;
-			double pY = chs + marginGeom.getBottom(row) + row * vgap;
+			double pX = cws + marginGeom.getLeft(col) + cellWidthMap.indexOfKey(col) * hgap;
+			double pY = chs + marginGeom.getBottom(row) + cellHeightMap.indexOfKey(row) * vgap;
 
 			sp.setLocation(pX, pY);
 		}
@@ -188,25 +188,25 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 		GridCellGeom contentGeom = getSubplotsPreferredContentsGeom(plot);
 		GridCellInsets marginGeom = getSubplotsMarginGeom(plot);
 
-		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
-		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
+		SparseDoubleArray colWidthMap = new SparseDoubleArray();
+		SparseDoubleArray rowHeightMap = new SparseDoubleArray();
 		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
 			int row = (grid == null) ? 0 : grid.getGridY();
 			double width = contentGeom.getWidth(col) + marginGeom.getLeft(col) + marginGeom.getRight(col);
 			double Height = contentGeom.getHeight(row) + marginGeom.getTop(row) + marginGeom.getBottom(row);
-			if (colWidthMap.get(col) == null || colWidthMap.get(col) < width) {
+			if (colWidthMap.get(col, -1) < width) {
 				colWidthMap.put(col, width);
 			}
-			if (rowHeightMap.get(row) == null || rowHeightMap.get(row) < Height) {
+			if (rowHeightMap.get(row, -1) < Height) {
 				rowHeightMap.put(row, Height);
 			}
 		}
 
 		GridCellGeom geom = new GridCellGeom(colWidthMap, rowHeightMap);
-		double width = geom.getSumWidth();
-		double height = geom.getSumHeight();
+		double width = geom.getSumWidth() + hgap * (colWidthMap.size() - 1);
+		double height = geom.getSumHeight() + vgap * (rowHeightMap.size() - 1);
 		Dimension2D spcs = plot.getPreferredContentSize();
 		if (spcs != null && width < spcs.getWidth()) {
 			width = spcs.getWidth();
@@ -228,8 +228,8 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 			return plotsPreferredContentsGeomMap.get(plot);
 		}
 
-		Map<Integer, Double> colWidthMap = new HashMap<Integer, Double>();
-		Map<Integer, Double> rowHeightMap = new HashMap<Integer, Double>();
+		SparseDoubleArray colWidthMap = new SparseDoubleArray();
+		SparseDoubleArray rowHeightMap = new SparseDoubleArray();
 		for (PlotEx sp : plot.getSubplots()) {
 			GridConstraint grid = (GridConstraint) getConstraint(sp);
 			int col = (grid == null) ? 0 : grid.getGridX();
@@ -241,10 +241,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 				width = contentSize.getWidth();
 				Height = contentSize.getHeight();
 			}
-			if (colWidthMap.get(col) == null || colWidthMap.get(col) < width) {
+			if (colWidthMap.get(col, -1) < width) {
 				colWidthMap.put(col, width);
 			}
-			if (rowHeightMap.get(row) == null || rowHeightMap.get(row) < Height) {
+			if (rowHeightMap.get(row, -1) < Height) {
 				rowHeightMap.put(row, Height);
 			}
 		}

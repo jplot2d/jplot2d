@@ -315,6 +315,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	@Override
 	public void setLayoutDirector(LayoutDirector director) {
 		this.layoutDirector = director;
+		invalidate();
 	}
 
 	@Override
@@ -325,6 +326,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	@Override
 	public void setConstraint(Plot subplot, Object constraint) {
 		layoutDirector.setConstraint((PlotEx) subplot, constraint);
+		invalidate();
 	}
 
 	@Override
