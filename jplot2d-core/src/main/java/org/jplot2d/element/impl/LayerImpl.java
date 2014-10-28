@@ -150,7 +150,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
 
 		// add legend item
 		if (getParent() != null && gx instanceof XYGraphEx) {
-			getParent().getEnabledLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
+			getParent().getLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
 		}
 
 		redraw(gx);

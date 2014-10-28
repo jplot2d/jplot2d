@@ -484,27 +484,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	}
 
 	@Override
-	public LegendEx getEnabledLegend() {
-		return getEnabledLegend(this);
-	}
-
-	/**
-	 * Find an enabled legend to host legend item for the given plot
-	 * 
-	 * @param plot
-	 * @return
-	 */
-	private static LegendEx getEnabledLegend(PlotEx plot) {
-		if (plot.getLegend().isEnabled()) {
-			return plot.getLegend();
-		} else if (plot.getParent() == null) {
-			return plot.getLegend();
-		} else {
-			return getEnabledLegend(plot.getParent());
-		}
-	}
-
-	@Override
 	public TitleEx getTitle(int index) {
 		return titles.get(index);
 	}
@@ -777,10 +756,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		redrawCascade(lx);
 
 		// add legend items
-		LegendEx enabledLegend = getEnabledLegend();
 		for (GraphEx gx : lx.getGraphs()) {
 			if (gx instanceof XYGraphEx) {
-				enabledLegend.addLegendItem(((XYGraphEx) gx).getLegendItem());
+				getLegend().addLegendItem(((XYGraphEx) gx).getLegendItem());
 			}
 		}
 	}
@@ -1030,7 +1008,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		 */
 
 		/* calculate size may invalidate plot */
-
 		calcAxesThickness(this);
 		calcLegendSize(this);
 		calcTitleSize(this);
