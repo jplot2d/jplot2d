@@ -104,14 +104,6 @@ public interface PlotEx extends Plot, ContainerEx {
 
 	public LegendEx getLegend();
 
-	/**
-	 * Return an enable legend who can host legend items for this plot. This method always return a legend. If all
-	 * legend is disabled, the top level legend is returned.
-	 * 
-	 * @return an enable legend
-	 */
-	public LegendEx getEnabledLegend();
-
 	public int indexOf(TitleEx title);
 
 	public TitleEx[] getTitles();
