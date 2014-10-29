@@ -90,6 +90,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
+	/**
+	 * Efficient Immutable
+	 */
 	private Dimension2D contentConstraint;
 
 	/**
@@ -340,11 +343,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	@Override
 	public void setContentConstrant(Dimension2D constraint) {
-		if (constraint.getWidth() <= 0 || constraint.getHeight() <= 0) {
-			throw new IllegalArgumentException("Content constrant size must be positive, " + constraint.getWidth()
-					+ "x" + constraint.getHeight() + " is invalid.");
-		} // FIXME
-
 		if (!constraint.equals(this.contentConstraint)) {
 			this.contentConstraint = constraint;
 			invalidate();
@@ -446,13 +444,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	@Override
 	public void setContentSize(Dimension2D csize) {
-		if (csize.getWidth() <= 0 || csize.getHeight() <= 0) {
+		if (csize.getWidth() < 0 || csize.getHeight() < 0) {
 			throw new IllegalArgumentException("Content size must be positive, " + csize.getWidth() + "x"
 					+ csize.getHeight() + " is invalid.");
 		}
 
 		this.contentSize = csize;
-
 		pxf = null;
 	}
 

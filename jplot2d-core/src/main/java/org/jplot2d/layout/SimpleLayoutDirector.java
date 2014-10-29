@@ -75,28 +75,31 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 	public void layout(PlotEx plot) {
 
-		Dimension2D contentSize;
 		AxesInPlot ais = getAllAxes(plot);
-
 		Insets2D margin = calcMargin(plot, ais);
 
+		double contentWidth, contentHeight;
 		if (plot.getContentConstrant() != null) {
-			contentSize = plot.getContentConstrant();
-			double width = contentSize.getWidth() + margin.getLeft() + margin.getRight();
-			double height = contentSize.getHeight() + margin.getTop() + margin.getBottom();
-			plot.setSize(width, height);
+			contentWidth = plot.getContentConstrant().getWidth();
+			contentHeight = plot.getContentConstrant().getHeight();
 		} else {
-			double contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
-			double contentHeight = plot.getSize().getHeight() - margin.getTop() - margin.getBottom();
-			if (contentWidth < PlotEx.MIN_CONTENT_SIZE.getWidth()) {
-				contentWidth = PlotEx.MIN_CONTENT_SIZE.getWidth();
-			}
-			if (contentHeight < PlotEx.MIN_CONTENT_SIZE.getHeight()) {
-				contentHeight = PlotEx.MIN_CONTENT_SIZE.getHeight();
-			}
-			contentSize = new DoubleDimension2D(contentWidth, contentHeight);
+			contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
+			contentHeight = plot.getSize().getHeight() - margin.getTop() - margin.getBottom();
+		}
+		if (contentWidth < 0) {
+			contentWidth = 0;
+		}
+		if (contentHeight < 0) {
+			contentHeight = 0;
 		}
 
+		if (plot.getContentConstrant() != null) {
+			double width = contentWidth + margin.getLeft() + margin.getRight();
+			double height = contentHeight + margin.getTop() + margin.getBottom();
+			plot.setSize(width, height);
+		}
+
+		Dimension2D contentSize = new DoubleDimension2D(contentWidth, contentHeight);
 		plot.setContentSize(contentSize);
 		layoutLeftMargin(plot, contentSize, ais.leftAxes);
 		layoutRightMargin(plot, contentSize, ais.rightAxes);

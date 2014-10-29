@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -27,7 +27,6 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.sizing.SizeMode;
-import org.jplot2d.util.DoubleDimension2D;
 
 /**
  * Plot has a content area in the center, surrounded by margin area. The margin area holds axes, titles and legend.
@@ -41,8 +40,6 @@ import org.jplot2d.util.DoubleDimension2D;
  */
 @PropertyGroup("Plot")
 public interface Plot extends PComponent {
-
-	public static final Dimension2D MIN_CONTENT_SIZE = new DoubleDimension2D(8, 8);
 
 	@Hierarchy(HierarchyOp.GET)
 	public Plot getParent();
