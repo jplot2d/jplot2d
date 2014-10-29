@@ -59,7 +59,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * The container size only take effect when this plot is top plot and has a size mode assigned.
 	 */
-	private Dimension2D containerSize;
+	private double containerWidth, containerHeight;
 
 	/**
 	 * The size mode only take effect when this plot is the root plot.
@@ -99,6 +99,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	private double preferredContentHeight = 240;
 
+	/**
+	 * Efficient Immutable
+	 */
 	private Dimension2D contentSize;
 
 	private PlotMarginEx margin;
@@ -186,7 +189,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	@Override
 	public Dimension2D getContainerSize() {
-		return containerSize;
+		return new DoubleDimension2D(containerWidth, containerHeight);
 	}
 
 	@Override
@@ -194,7 +197,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		if (sizeMode == null) {
 			throw new IllegalStateException("The sizeMode property must be set.");
 		}
-		this.containerSize = size;
+		this.containerWidth = size.getWidth();
+		this.containerHeight = size.getHeight();
 	}
 
 	@Override
@@ -337,8 +341,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	@Override
 	public void setContentConstrant(Dimension2D constraint) {
 		if (constraint.getWidth() <= 0 || constraint.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
-		}
+			throw new IllegalArgumentException("Content constrant size must be positive, " + constraint.getWidth()
+					+ "x" + constraint.getHeight() + " is invalid.");
+		} // FIXME
 
 		if (!constraint.equals(this.contentConstraint)) {
 			this.contentConstraint = constraint;
@@ -436,13 +441,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 	@Override
 	public Dimension2D getContentSize() {
-		return contentSize;
+		return new DoubleDimension2D(contentSize);
 	}
 
 	@Override
 	public void setContentSize(Dimension2D csize) {
 		if (csize.getWidth() <= 0 || csize.getHeight() <= 0) {
-			throw new IllegalArgumentException("Size must be positive, " + width + "x" + height + " is invalid.");
+			throw new IllegalArgumentException("Content size must be positive, " + csize.getWidth() + "x"
+					+ csize.getHeight() + " is invalid.");
 		}
 
 		this.contentSize = csize;
@@ -945,7 +951,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		preferredContentHeight = plot.preferredContentHeight;
 		contentSize = plot.contentSize;
 
-		containerSize = plot.containerSize;
+		containerWidth = plot.containerWidth;
+		containerHeight = plot.containerHeight;
 		sizeMode = plot.sizeMode;
 		rerenderNeeded = plot.rerenderNeeded;
 	}
