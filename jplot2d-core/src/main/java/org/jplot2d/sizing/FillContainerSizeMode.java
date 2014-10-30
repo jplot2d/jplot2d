@@ -52,6 +52,10 @@ public class FillContainerSizeMode extends SizeMode {
 	 */
 	public FillContainerSizeMode(Dimension2D targetSize) {
 		super(false);
+		if (targetSize.getWidth() <= 0 || targetSize.getHeight() <= 0) {
+			throw new IllegalArgumentException("Target size must be positive, " + targetSize.getWidth() + "x"
+					+ targetSize.getHeight() + " is invalid.");
+		}
 		this.targetSize = targetSize;
 		this.scale = 1;
 	}
