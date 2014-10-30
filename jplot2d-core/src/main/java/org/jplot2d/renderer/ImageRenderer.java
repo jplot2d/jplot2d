@@ -249,6 +249,9 @@ public abstract class ImageRenderer extends Renderer {
 		if (Thread.interrupted()) {
 			return null;
 		}
+		if (bounds.width <= 0 || bounds.height <= 0) {
+			return null;
+		}
 
 		BufferedImage image = imageFactory.createImage(bounds.width, bounds.height);
 		Graphics2D g = image.createGraphics();
