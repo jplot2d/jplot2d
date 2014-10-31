@@ -260,7 +260,7 @@ public class ElementIH implements InvocationHandler {
 			for (int i = 0; i < arg0.length; i++) {
 				ComponentEx cimpl = (ComponentEx) ((ElementAddition) arg0[i]).getImpl();
 				if (cimpl.getParent() != null) {
-					cenv.end();
+					cenv.endCommand();
 					throw new IllegalArgumentException(
 							"At lease one of the components to be added already has a parent.");
 				}
@@ -315,7 +315,7 @@ public class ElementIH implements InvocationHandler {
 			cenv.beginCommand(method.getName());
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
-				cenv.end();
+				cenv.endCommand();
 				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
 			penv.beginCommand(method.getName());
@@ -438,12 +438,12 @@ public class ElementIH implements InvocationHandler {
 			if (env != cenv) {
 				if (cimpl instanceof Joinable) {
 					if (((Joinable) cimpl).getPrim() != null) {
-						cenv.end();
+						cenv.endCommand();
 						throw new IllegalArgumentException(
 								"The element to be referenced has been referenced by element from another environment.");
 					}
 				} else {
-					cenv.end();
+					cenv.endCommand();
 					throw new IllegalArgumentException("The argument is not referencable.");
 				}
 				add = true;
@@ -607,7 +607,7 @@ public class ElementIH implements InvocationHandler {
 			cenv.beginCommand(method.getName());
 			cimpl = (ComponentEx) cproxy.getImpl();
 			if (cimpl.getParent() != null) {
-				cenv.end();
+				cenv.endCommand();
 				throw new IllegalArgumentException("The component to be added already has a parent.");
 			}
 			penv.beginCommand(method.getName());
