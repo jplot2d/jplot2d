@@ -138,6 +138,9 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	public void setAutoRange(boolean autoRange) {
 		this.autoRange = autoRange;
+		if (autoRange) {
+			autoRangeNeeded = true;
+		}
 	}
 
 	public boolean isZoomable() {
@@ -153,10 +156,13 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		autoRangeNeeded = true;
 	}
 
-	public void calcAutoRange() {
+	public boolean calcAutoRange() {
 		if (autoRange && autoRangeNeeded) {
 			autoRange();
 			autoRangeNeeded = false;
+			return true;
+		} else {
+			return false;
 		}
 	}
 
