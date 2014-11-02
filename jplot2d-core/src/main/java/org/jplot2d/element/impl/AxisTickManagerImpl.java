@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -447,6 +447,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		}
 	}
 
+	public int getActualMinorTicks() {
+		return actualMinorNumber;
+	}
+
 	/* =========================== Labels ============================= */
 
 	public boolean isAutoLabelFormat() {
@@ -619,10 +623,18 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			mvalues = tickCalculator.getMinorValues();
 		} else {
 			// filter off the ticks out of range
-			valueIdxes = tickCalculator.getInRangeValuesIdx(fixedValues);
-			mvalueIdxes = tickCalculator.getInRangeValuesIdx(fixedMinorValues);
-			values = NumberArrayUtils.subArray(fixedValues, valueIdxes);
-			mvalues = NumberArrayUtils.subArray(fixedMinorValues, mvalueIdxes);
+			if (fixedValues != null) {
+				valueIdxes = tickCalculator.getInRangeValuesIdx(fixedValues);
+				values = NumberArrayUtils.subArray(fixedValues, valueIdxes);
+			} else {
+				values = new double[0];
+			}
+			if (fixedMinorValues != null) {
+				mvalueIdxes = tickCalculator.getInRangeValuesIdx(fixedMinorValues);
+				mvalues = NumberArrayUtils.subArray(fixedMinorValues, mvalueIdxes);
+			} else {
+				mvalues = new double[0];
+			}
 		}
 
 		if (!NumberArrayUtils.equals(this.values, values)) {
@@ -979,7 +991,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 	 * 
 	 * @param values
 	 *            the tick values
-	 * @param mod
 	 * @return the canonical values
 	 */
 	private Object getCanonicalValues(Object values) {
@@ -999,7 +1010,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			}
 			return result;
 		}
-		throw new Error();
+		return null;
 	}
 
 	private double getCanonicalValue(double d) {

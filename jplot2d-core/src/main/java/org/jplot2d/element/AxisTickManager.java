@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -286,11 +286,20 @@ public interface AxisTickManager extends Element {
 	public void setMinorTicks(int minors);
 
 	/**
+	 * Return the number of minor ticks displayed between two major ticks. This method returns the actual number, might
+	 * be different form the number set by {@link #setMinorTicks(Integer)}.
+	 * 
+	 * @return the number of minor ticks displayed
+	 */
+	@Property(order = 20, styleable = false)
+	public int getActualMinorTicks();
+
+	/**
 	 * Return an array of number representing the tick positions shown in the axis.
 	 * 
 	 * @return the values of the ticks
 	 */
-	@Property(order = 20, styleable = false)
+	@Property(order = 21, styleable = false)
 	public Object getTickValues();
 
 	/**
@@ -298,7 +307,7 @@ public interface AxisTickManager extends Element {
 	 * 
 	 * @return the values of the ticks
 	 */
-	@Property(order = 21, styleable = false)
+	@Property(order = 22, styleable = false)
 	public Object getMinorTickValues();
 
 	/* =========================== Labels ============================= */

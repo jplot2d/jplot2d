@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -38,7 +38,7 @@ public class AxisTickManagerTest {
 		checkCollecionOrder(iinfo.getPropertyInfoGroupMap().keySet(), "Axis Tick Manager");
 		checkPropertyInfoNames(iinfo.getPropertyInfoGroupMap().get("Axis Tick Manager"), "tickTransform", "range",
 				"autoTickValues", "fixedTickValues", "fixedMinorTickValues", "autoTickInterval", "tickInterval",
-				"tickOffset", "ticks", "autoAdjustTicks", "autoMinorTicks", "minorTicks", "tickValues",
+				"tickOffset", "ticks", "autoAdjustTicks", "autoMinorTicks", "minorTicks", "actualMinorTicks", "tickValues",
 				"minorTickValues", "labelInterval", "autoLabelFormat", "labelTextFormat", "labelFormat",
 				"fixedLabelStrings", "labelStrings");
 
