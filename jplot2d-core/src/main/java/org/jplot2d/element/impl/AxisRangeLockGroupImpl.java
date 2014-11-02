@@ -337,7 +337,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			for (LayerEx layer : arm.getLayers()) {
 				if (layer.getXAxisTransform() == arm) {
 					orthset.add(layer.getYAxisTransform().getLockGroup());
-				} else if (layer.getXAxisTransform() == arm) {
+				} else if (layer.getYAxisTransform() == arm) {
 					orthset.add(layer.getXAxisTransform().getLockGroup());
 				}
 			}
