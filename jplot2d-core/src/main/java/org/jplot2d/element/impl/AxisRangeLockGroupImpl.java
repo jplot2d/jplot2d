@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jplot2d.data.GraphData;
+import org.jplot2d.notice.Notice;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.transform.NormalTransform;
@@ -74,6 +75,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	public ElementEx getPrim() {
 		return prim;
+	}
+
+	public void notify(Notice msg) {
+		if (getPrim() != null) {
+			getPrim().notify(msg);
+		}
 	}
 
 	@Override

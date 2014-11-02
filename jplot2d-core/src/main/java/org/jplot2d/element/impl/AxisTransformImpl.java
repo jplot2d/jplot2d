@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.element.AxisRangeLockGroup;
+import org.jplot2d.notice.Notice;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.transform.NormalTransform;
@@ -115,6 +116,12 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 			return null;
 		} else {
 			return tickManagers.get(0);
+		}
+	}
+
+	public void notify(Notice msg) {
+		if (getPrim() != null) {
+			getPrim().notify(msg);
 		}
 	}
 
