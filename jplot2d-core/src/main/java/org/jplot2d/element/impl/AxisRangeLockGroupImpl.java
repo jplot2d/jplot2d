@@ -332,13 +332,15 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		for (AxisTransformEx arm : arms) {
 			NormalTransform vt = vtMap.get(arm).zoom(range);
 			Range wrange = vt.getValueRange();
-			arm.setNormalTransfrom(arm.getTransform().createNormalTransform(wrange));
+			if (!arm.getRange().equals(wrange)) {
+				arm.setNormalTransfrom(arm.getTransform().createNormalTransform(wrange));
 
-			for (LayerEx layer : arm.getLayers()) {
-				if (layer.getXAxisTransform() == arm) {
-					orthset.add(layer.getYAxisTransform().getLockGroup());
-				} else if (layer.getYAxisTransform() == arm) {
-					orthset.add(layer.getXAxisTransform().getLockGroup());
+				for (LayerEx layer : arm.getLayers()) {
+					if (layer.getXAxisTransform() == arm) {
+						orthset.add(layer.getYAxisTransform().getLockGroup());
+					} else if (layer.getYAxisTransform() == arm) {
+						orthset.add(layer.getXAxisTransform().getLockGroup());
+					}
 				}
 			}
 		}
@@ -377,13 +379,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		for (AxisTransformEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform().zoom(npRange);
-			Range wrange = npt.getValueRange();
-			axis.setNormalTransfrom(axis.getTransform().createNormalTransform(wrange));
+			axis.setNormalTransfrom(npt);
 
 			for (LayerEx layer : axis.getLayers()) {
 				if (layer.getXAxisTransform() == axis) {
 					orthset.add(layer.getYAxisTransform().getLockGroup());
-				} else if (layer.getXAxisTransform() == axis) {
+				} else if (layer.getYAxisTransform() == axis) {
 					orthset.add(layer.getXAxisTransform().getLockGroup());
 				}
 			}
