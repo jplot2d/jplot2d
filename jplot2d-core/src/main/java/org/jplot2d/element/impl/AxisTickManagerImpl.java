@@ -33,6 +33,7 @@ import org.jplot2d.axtick.RangeAdvisor;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.axtick.TickCalculator;
 import org.jplot2d.element.AxisTransform;
+import org.jplot2d.notice.Notice;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.transform.AxisTickTransform;
@@ -244,6 +245,12 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 			return null;
 		} else {
 			return axes.get(0);
+		}
+	}
+
+	public void notify(Notice msg) {
+		if (getPrim() != null) {
+			getPrim().notify(msg);
 		}
 	}
 
