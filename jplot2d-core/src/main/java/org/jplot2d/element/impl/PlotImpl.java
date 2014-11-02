@@ -1086,8 +1086,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
 		fillLockGroups(this, algs);
 
-		for (AxisRangeLockGroupEx alg : algs) {
-			alg.calcAutoRange();
+		boolean hasAutoRange = true;
+		while (hasAutoRange) {
+			hasAutoRange = false;
+			for (AxisRangeLockGroupEx alg : algs) {
+				hasAutoRange |= alg.calcAutoRange();
+			}
 		}
 	}
 

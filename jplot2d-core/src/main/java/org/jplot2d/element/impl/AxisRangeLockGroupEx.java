@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -43,15 +43,17 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joi
 	public AxisTransformEx getPrimaryAxis();
 
 	/**
-	 * Force re-autorange this axis group. This method is called when layer data set changes, layer
-	 * attach/detach to an axis of this group, or axis type change
+	 * Force re-autorange this axis group. This method is called when layer data set changes, layer attach/detach to an
+	 * axis of this group, or axis type change
 	 */
 	public void reAutoRange();
 
 	/**
 	 * Calculate auto range when necessary.
+	 * 
+	 * @return <code>true</code> if auto range is calculated for this group
 	 */
-	public void calcAutoRange();
+	public boolean calcAutoRange();
 
 	public void zoomVirtualRange(Range range, Map<AxisTransformEx, NormalTransform> vtMap);
 
@@ -61,8 +63,8 @@ public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joi
 	public void validateAxesRange();
 
 	/**
-	 * Zoom the given normalized range to entire axis. All axes in this lock group are changed. If
-	 * the orthogonal axes are autoRange, they need to be re-autoRange.
+	 * Zoom the given normalized range to entire axis. All axes in this lock group are changed. If the orthogonal axes
+	 * are autoRange, they need to be re-autoRange.
 	 * 
 	 * @param pRange
 	 *            the normalized range which has been validated
