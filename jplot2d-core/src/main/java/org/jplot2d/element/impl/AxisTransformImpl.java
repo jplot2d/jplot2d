@@ -235,13 +235,32 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 	}
 
 	public void setNormalTransfrom(NormalTransform ntf) {
+		if (this.ntf.equals(ntf)) {
+			return;
+		}
+
+		boolean sameRange = this.ntf.equals(ntf.invert());
+
 		this.ntf = ntf;
 
-		for (AxisTickManagerEx atm : tickManagers) {
-			for (AxisEx axis : atm.getAxes()) {
-				ComponentImpl.redraw(axis);
+		if (!sameRange) {
+			for (LayerEx layer : layers) {
+				if (layer.getXAxisTransform() == this) {
+					AxisRangeLockGroupEx orth = layer.getYAxisTransform().getLockGroup();
+					if (orth != null && orth.isAutoRange()) {
+						orth.reAutoRange();
+					}
+				} else if (layer.getYAxisTransform() == this) {
+					AxisRangeLockGroupEx orth = layer.getXAxisTransform().getLockGroup();
+					if (orth != null && orth.isAutoRange()) {
+						orth.reAutoRange();
+					}
+				}
 			}
+		} else {
+			System.out.println("Same range");
 		}
+
 		for (LayerEx layer : layers) {
 			layer.transformChanged();
 		}

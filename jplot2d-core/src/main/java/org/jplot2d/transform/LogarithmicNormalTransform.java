@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -147,4 +147,11 @@ public class LogarithmicNormalTransform extends NormalTransform {
 		return new LogTransform(offset, scale, d1, d2);
 	}
 
+	public boolean equals(Object o) {
+		if (!(o instanceof LogarithmicNormalTransform)) {
+			return false;
+		}
+		LogarithmicNormalTransform obj = (LogarithmicNormalTransform) o;
+		return scale == obj.scale && offset == obj.offset;
+	}
 }

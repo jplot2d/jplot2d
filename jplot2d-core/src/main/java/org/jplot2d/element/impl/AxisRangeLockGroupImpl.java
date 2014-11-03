@@ -20,7 +20,6 @@ package org.jplot2d.element.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -232,31 +231,15 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	}
 
 	public void zoomVirtualRange(Range range, Map<AxisTransformEx, NormalTransform> vtMap) {
-		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
-
 		for (AxisTransformEx arm : arms) {
 			NormalTransform vt = vtMap.get(arm).zoom(range);
 			Range wrange = vt.getValueRange();
 			if (!arm.getRange().equals(wrange)) {
 				arm.setNormalTransfrom(arm.getTransform().createNormalTransform(wrange));
-
-				for (LayerEx layer : arm.getLayers()) {
-					if (layer.getXAxisTransform() == arm) {
-						orthset.add(layer.getYAxisTransform().getLockGroup());
-					} else if (layer.getYAxisTransform() == arm) {
-						orthset.add(layer.getXAxisTransform().getLockGroup());
-					}
-				}
 			}
 		}
 
 		autoRange = false;
-
-		for (AxisRangeLockGroupEx malg : orthset) {
-			if (malg.isAutoRange()) {
-				malg.reAutoRange();
-			}
-		}
 	}
 
 	public void zoomRange(double start, double end) {
@@ -280,28 +263,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 	}
 
 	public void zoomNormalRange(Range npRange) {
-		HashSet<AxisRangeLockGroupEx> orthset = new HashSet<AxisRangeLockGroupEx>();
-
 		for (AxisTransformEx axis : arms) {
 			NormalTransform npt = axis.getNormalTransform().zoom(npRange);
 			axis.setNormalTransfrom(npt);
-
-			for (LayerEx layer : axis.getLayers()) {
-				if (layer.getXAxisTransform() == axis) {
-					orthset.add(layer.getYAxisTransform().getLockGroup());
-				} else if (layer.getYAxisTransform() == axis) {
-					orthset.add(layer.getXAxisTransform().getLockGroup());
-				}
-			}
 		}
 
 		autoRange = false;
-
-		for (AxisRangeLockGroupEx malg : orthset) {
-			if (malg.isAutoRange()) {
-				malg.reAutoRange();
-			}
-		}
 	}
 
 	public void validateAxesRange() {
