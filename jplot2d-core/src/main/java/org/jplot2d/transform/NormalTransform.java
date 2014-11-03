@@ -100,4 +100,7 @@ public abstract class NormalTransform {
 	 */
 	public abstract Transform1D createTransform(double d1, double d2);
 
+	public String toString() {
+		return getClass().getSimpleName() + " " + getValueRange();
+	}
 }
