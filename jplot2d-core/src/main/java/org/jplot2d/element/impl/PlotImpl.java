@@ -1083,13 +1083,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 * Re-autorange on all AxisLockGroups whoes autorange are true.
 	 */
 	private void calcPendingLockGroupAutoRange() {
-		Set<AxisRangeLockGroupEx> algs = new HashSet<AxisRangeLockGroupEx>();
-		fillLockGroups(this, algs);
+		Set<AxisRangeLockGroupEx> xalgs = new HashSet<AxisRangeLockGroupEx>();
+		Set<AxisRangeLockGroupEx> yalgs = new HashSet<AxisRangeLockGroupEx>();
+		fillLockGroups(this, xalgs, yalgs);
 
+		/* calculating auto range may require auto range on y axis, and vice versa */
 		boolean hasAutoRange = true;
 		while (hasAutoRange) {
 			hasAutoRange = false;
-			for (AxisRangeLockGroupEx alg : algs) {
+			for (AxisRangeLockGroupEx alg : xalgs) {
+				hasAutoRange |= alg.calcAutoRange();
+			}
+			for (AxisRangeLockGroupEx alg : yalgs) {
 				hasAutoRange |= alg.calcAutoRange();
 			}
 		}
@@ -1098,17 +1103,17 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	/**
 	 * find all AxisLockGroups in the given plot and fill them into the given set.
 	 */
-	private static void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> algs) {
+	private static void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> xalgs, Set<AxisRangeLockGroupEx> yalgs) {
 		for (AxisEx axis : plot.getXAxes()) {
 			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-			algs.add(alg);
+			xalgs.add(alg);
 		}
 		for (AxisEx axis : plot.getYAxes()) {
 			AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-			algs.add(alg);
+			yalgs.add(alg);
 		}
 		for (PlotEx sp : plot.getSubplots()) {
-			fillLockGroups(sp, algs);
+			fillLockGroups(sp, xalgs, yalgs);
 		}
 	}
 

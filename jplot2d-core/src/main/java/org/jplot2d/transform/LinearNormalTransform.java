@@ -1,5 +1,5 @@
 /**
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -149,4 +149,11 @@ public class LinearNormalTransform extends NormalTransform {
 		return new LinearTransform(offset, scale, d1, d2);
 	}
 
+	public boolean equals(Object o) {
+		if (!(o instanceof LinearNormalTransform)) {
+			return false;
+		}
+		LinearNormalTransform obj = (LinearNormalTransform) o;
+		return scale == obj.scale && offset == obj.offset;
+	}
 }
