@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.data.GraphData;
 import org.jplot2d.notice.Notice;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
 import org.jplot2d.notice.RangeSelectionNotice;
@@ -183,7 +182,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 		Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils.createVirtualTransformMap(arms);
 
-		RangeStatus<Boolean> pRange = calcNiceVirtualRange(vtMap);
+		RangeStatus<Boolean> pRange = AxisRangeUtils.calcNiceVirtualRange(vtMap);
 
 		if (pRange == null) {
 			/* all axis is LOG and contain no positive data, do nothing */
@@ -229,100 +228,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 		 * After zoomPhysicalRange(), autoRange is set to false, re-set to true.
 		 */
 		autoRange = true;
-
-	}
-
-	/**
-	 * Find a nice norm-physical range to make sure all corresponding user range only contain valid values.
-	 * <ul>
-	 * <li>If any corresponding world range of layer span invalid value, the physical end of given range is adjusted
-	 * inward to match the data that most close to boundary.</li>
-	 * <li>If there is no valid data inside the given range, <code>null</code> will be returned.</li>
-	 * <li>No margin added to the result.</li>
-	 * </ul>
-	 * 
-	 * @return a RangeStatus contain the nice norm-physical range. The Boolean status to indicate if there are some data
-	 *         points outside the value bounds
-	 */
-	private RangeStatus<Boolean> calcNiceVirtualRange(Map<AxisTransformEx, NormalTransform> vtMap) {
-
-		/* find the physical intersected range of valid world range among layers */
-		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-		for (AxisTransformEx ax : arms) {
-			Range aprange = vtMap.get(ax).convToNR(ax.getType().getBoundary(ax.getTransform()));
-			pbnds = pbnds.intersect(aprange);
-		}
-
-		if (pbnds == null) {
-			/* The given range on all layers are outside the boundary. */
-			return null;
-		}
-
-		Range padRange = null;
-		boolean dataOutsideBounds = false;
-		for (AxisTransformEx at : arms) {
-			for (LayerEx layer : at.getLayers()) {
-				Range urange = vtMap.get(at).convFromNR(pbnds);
-				Range wDRange = new Range.Double();
-
-				if (layer.getXAxisTransform() == at) {
-					AxisTransformEx yat = layer.getYAxisTransform();
-					Range yRange;
-					if (yat.getLockGroup().isAutoRange()) {
-						yRange = yat.getType().getBoundary(yat.getTransform());
-					} else {
-						yRange = yat.getRange();
-					}
-					for (GraphEx dp : layer.getGraphs()) {
-						if (dp.getData() != null) {
-							GraphData dataInBounds = dp.getData().applyBoundary(urange, yRange);
-							wDRange = dataInBounds.getXRange().union(wDRange);
-							if (dataInBounds.hasPointOutsideXBounds()) {
-								dataOutsideBounds = true;
-							}
-						}
-					}
-				} else if (layer.getYAxisTransform() == at) {
-					AxisTransformEx xat = layer.getXAxisTransform();
-					Range xRange;
-					if (xat.getLockGroup().isAutoRange()) {
-						xRange = xat.getType().getBoundary(xat.getTransform());
-					} else {
-						xRange = xat.getRange();
-					}
-					for (GraphEx dp : layer.getGraphs()) {
-						if (dp.getData() != null) {
-							GraphData dataInBounds = dp.getData().applyBoundary(xRange, urange);
-							wDRange = dataInBounds.getYRange().union(wDRange);
-							if (dataInBounds.hasPointOutsideYBounds()) {
-								dataOutsideBounds = true;
-							}
-						}
-					}
-				}
-
-				if (!wDRange.isEmpty()) {
-					Range pDRange = vtMap.get(at).convToNR(wDRange);
-					/* expand range by margin factor */
-					double pLo = pDRange.getMin();
-					double pHi = pDRange.getMax();
-					double span = pDRange.getSpan();
-					pLo -= span * at.getMarginFactor();
-					pHi += span * at.getMarginFactor();
-					Range pXdRange = new Range.Double(pLo, pHi).intersect(pbnds);
-					if (padRange == null) {
-						padRange = pXdRange;
-					} else {
-						padRange = padRange.union(pXdRange);
-					}
-				}
-			}
-		}
-
-		if (padRange == null) {
-			return null;
-		}
-		return new RangeStatus<Boolean>(padRange.getMin(), padRange.getMax(), dataOutsideBounds);
 
 	}
 
@@ -401,12 +306,12 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
 	public void validateAxesRange() {
 		/* find nice range */
-		Range pRange = validateNormalRange(NORM_PHYSICAL_RANGE);
+		Range pRange = AxisRangeUtils.validateNormalRange(NORM_PHYSICAL_RANGE, arms, true);
 		/*
-		 * if the current physical range contains no valid data, find valid data at all range (like auto range)
+		 * if the current normalized range contains no valid data, find valid data at all range (like auto range)
 		 */
 		if (pRange == null) {
-			pRange = validateNormalRange(INFINITY_PHYSICAL_RANGE);
+			pRange = AxisRangeUtils.validateNormalRange(INFINITY_PHYSICAL_RANGE, arms, true);
 		}
 
 		if (pRange == null) {
@@ -431,7 +336,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 				ax.setNormalTransfrom(ax.getTransform().createNormalTransform(nwr));
 			}
 
-			Range pr = validateNormalRange(INFINITY_PHYSICAL_RANGE);
+			Range pr = AxisRangeUtils.validateNormalRange(INFINITY_PHYSICAL_RANGE, arms, true);
 			RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pr, arms);
 			Range ur = prim.getNormalTransform().convFromNR(rs);
 			Range exur = prim.expandRangeToTick(ur);
@@ -481,10 +386,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 			}
 		}
 
-	}
-
-	private Range validateNormalRange(Range range) {
-		return AxisRangeUtils.validateNormalRange(range, arms, true);
 	}
 
 	/**

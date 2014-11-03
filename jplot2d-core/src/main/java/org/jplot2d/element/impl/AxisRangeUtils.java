@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.jplot2d.data.GraphData;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
 
@@ -31,7 +32,7 @@ import org.jplot2d.util.Range;
  * @author Jingjing Li
  * 
  */
-class AxisRangeUtils {
+public class AxisRangeUtils {
 
 	/**
 	 * The depth of zoom-in is controlled by this constant. The precision limit of double is 0x1.0p-52. 65536x to ensure
@@ -50,7 +51,7 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * find the virtual normal intersected range of valid world range
+	 * find the virtual normalized intersected range of valid world range
 	 * 
 	 * @param axes
 	 *            locked axes
@@ -67,13 +68,13 @@ class AxisRangeUtils {
 	}
 
 	/**
-	 * Create a set of virtual NormalTransform correspond to NPTs of the given axes. The virtual NormalTransform will
-	 * try to remove the offset to minimize the double calculation round error.
+	 * Create a set of virtual NormalTransform correspond to the NormalTransform of the given axes. The virtual
+	 * NormalTransform will try to remove the offset to minimize the double calculation round error.
 	 * 
 	 * @param axes
 	 * @return
 	 */
-	static Map<AxisTransformEx, NormalTransform> createVirtualTransformMap(Collection<AxisTransformEx> axes) {
+	public static Map<AxisTransformEx, NormalTransform> createVirtualTransformMap(Collection<AxisTransformEx> axes) {
 
 		if (axes.size() == 0) {
 			return Collections.emptyMap();
@@ -107,12 +108,106 @@ class AxisRangeUtils {
 		return result;
 	}
 
-	private static Map<AxisTransformEx, NormalTransform> createNormalTransformMap(Collection<AxisTransformEx> axes) {
+	public static Map<AxisTransformEx, NormalTransform> createNormalTransformMap(Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> vtMap = new LinkedHashMap<AxisTransformEx, NormalTransform>();
 		for (AxisTransformEx axis : axes) {
 			vtMap.put(axis, axis.getNormalTransform());
 		}
 		return vtMap;
+	}
+
+	/**
+	 * Find a nice normalized range to make sure all corresponding world range only contain valid values.
+	 * <ul>
+	 * <li>If any corresponding world range of layer span invalid value, the end of the given normalized range is
+	 * adjusted inward to match the data that most close to boundary.</li>
+	 * <li>If there is no valid data inside the given range, <code>null</code> will be returned.</li>
+	 * <li>No margin added to the result.</li>
+	 * </ul>
+	 * 
+	 * @return a RangeStatus contain the nice normalized range. The Boolean status to indicate if there are some data
+	 *         points outside the value bounds
+	 */
+	public static RangeStatus<Boolean> calcNiceVirtualRange(Map<AxisTransformEx, NormalTransform> vtMap) {
+
+		/* find the normalized intersected range of valid world range among layers */
+		Range pbnds = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		for (AxisTransformEx ax : vtMap.keySet()) {
+			Range aprange = vtMap.get(ax).convToNR(ax.getType().getBoundary(ax.getTransform()));
+			pbnds = pbnds.intersect(aprange);
+		}
+
+		if (pbnds == null) {
+			/* The given range on all layers are outside the boundary. */
+			return null;
+		}
+
+		Range padRange = null;
+		boolean dataOutsideBounds = false;
+		for (AxisTransformEx at : vtMap.keySet()) {
+			for (LayerEx layer : at.getLayers()) {
+				Range urange = vtMap.get(at).convFromNR(pbnds);
+				Range wDRange = new Range.Double();
+
+				if (layer.getXAxisTransform() == at) {
+					AxisTransformEx yat = layer.getYAxisTransform();
+					Range yRange;
+					if (yat.getLockGroup().isAutoRange()) {
+						yRange = yat.getType().getBoundary(yat.getTransform());
+					} else {
+						yRange = yat.getRange();
+					}
+					for (GraphEx dp : layer.getGraphs()) {
+						if (dp.getData() != null) {
+							GraphData dataInBounds = dp.getData().applyBoundary(urange, yRange);
+							wDRange = dataInBounds.getXRange().union(wDRange);
+							if (dataInBounds.hasPointOutsideXBounds()) {
+								dataOutsideBounds = true;
+							}
+						}
+					}
+				} else if (layer.getYAxisTransform() == at) {
+					AxisTransformEx xat = layer.getXAxisTransform();
+					Range xRange;
+					if (xat.getLockGroup().isAutoRange()) {
+						xRange = xat.getType().getBoundary(xat.getTransform());
+					} else {
+						xRange = xat.getRange();
+					}
+					for (GraphEx dp : layer.getGraphs()) {
+						if (dp.getData() != null) {
+							GraphData dataInBounds = dp.getData().applyBoundary(xRange, urange);
+							wDRange = dataInBounds.getYRange().union(wDRange);
+							if (dataInBounds.hasPointOutsideYBounds()) {
+								dataOutsideBounds = true;
+							}
+						}
+					}
+				}
+
+				if (!wDRange.isEmpty()) {
+					Range pDRange = vtMap.get(at).convToNR(wDRange);
+					/* expand range by margin factor */
+					double pLo = pDRange.getMin();
+					double pHi = pDRange.getMax();
+					double span = pDRange.getSpan();
+					pLo -= span * at.getMarginFactor();
+					pHi += span * at.getMarginFactor();
+					Range pXdRange = new Range.Double(pLo, pHi).intersect(pbnds);
+					if (padRange == null) {
+						padRange = pXdRange;
+					} else {
+						padRange = padRange.union(pXdRange);
+					}
+				}
+			}
+		}
+
+		if (padRange == null) {
+			return null;
+		}
+		return new RangeStatus<Boolean>(padRange.getMin(), padRange.getMax(), dataOutsideBounds);
+
 	}
 
 	/**
@@ -136,7 +231,7 @@ class AxisRangeUtils {
 	 * @return a RangeStatus contain the adjusted normalized range. The RangeAdjustTag status indicate if the given
 	 *         range is adjusted.
 	 */
-	static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes, boolean findNearsetData) {
+	public static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes, boolean findNearsetData) {
 		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return validateNormalRange(range, axisMap, findNearsetData);
 	}
@@ -162,17 +257,18 @@ class AxisRangeUtils {
 	 * @return a RangeStatus contain the nice normalized range. The RangeAdjustTag status indicate if the given range is
 	 *         adjusted.
 	 */
-	static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap, boolean findNearsetData) {
+	public static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap,
+			boolean findNearsetData) {
 
 		if (range.isInverted()) {
 			throw new IllegalArgumentException();
 		}
 
-		/* find the physical intersected range of valid world range among layers */
+		/* find the normalized intersected range of valid world range among layers */
 		Range pbnds = new Range.Double(range);
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
 			AxisTransformEx ax = me.getKey();
-			// virtual normal range of the axis type boundary
+			// virtual normalized range of the axis type boundary
 			Range aprange = me.getValue().convToNR(me.getKey().getType().getBoundary(ax.getTransform()));
 			pbnds = pbnds.intersect(aprange);
 		}
@@ -239,7 +335,7 @@ class AxisRangeUtils {
 	private static Range findDataRange(Range pbnds, Map<AxisTransformEx, NormalTransform> axisMap, boolean findLoData,
 			boolean findHiData) {
 
-		// the physical adjusted range that find the data edge
+		// the normalized adjusted range that find the data edge
 		Range padRange = null;
 
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : axisMap.entrySet()) {
@@ -285,7 +381,7 @@ class AxisRangeUtils {
 			}
 
 			/* expand range by margin factor */
-			// physical extended range
+			// normalized extended range
 			Range pXdRange = null;
 			if (pLo == pHi) {
 				pXdRange = new Range.Double(pLo, pHi);
@@ -335,12 +431,12 @@ class AxisRangeUtils {
 	 * @return the new range that satisfy the precision limit. The status object is PrecisionException if the range is
 	 *         adjusted.
 	 */
-	static RangeStatus<PrecisionState> ensurePrecision(Range prange, Collection<AxisTransformEx> axes) {
+	public static RangeStatus<PrecisionState> ensurePrecision(Range prange, Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> axisMap = createNormalTransformMap(axes);
 		return ensurePrecision(prange, axisMap);
 	}
 
-	static RangeStatus<PrecisionState> ensurePrecision(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
+	public static RangeStatus<PrecisionState> ensurePrecision(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -353,7 +449,7 @@ class AxisRangeUtils {
 		PrecisionState ex = null;
 		/* the minimal virtual range to satisfy the precision limit */
 		double minRange = 0;
-		/* the axis id that require the maximal physical range expansion */
+		/* the axis id that require the maximal normalized range expansion */
 		String minRangeId = null;
 
 		// find new range to avoid PrecisionException
@@ -362,7 +458,7 @@ class AxisRangeUtils {
 			NormalTransform vt = me.getValue();
 
 			/*
-			 * the required physical range to satisfy the precision limit for the axis
+			 * the required normalized range to satisfy the precision limit for the axis
 			 */
 			double r = vt.getMinPSpan4PrecisionLimit(pLo, pHi, precisionLimit);
 			if (minRange < r) {
@@ -416,12 +512,12 @@ class AxisRangeUtils {
 		return result;
 	}
 
-	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Collection<AxisTransformEx> axes) {
+	public static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Collection<AxisTransformEx> axes) {
 		Map<AxisTransformEx, NormalTransform> vtMap = createNormalTransformMap(axes);
 		return ensureCircleSpan(prange, vtMap);
 	}
 
-	static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
+	public static RangeStatus<PrecisionState> ensureCircleSpan(Range prange, Map<AxisTransformEx, NormalTransform> vtMap) {
 
 		double pLo = prange.getStart();
 		double pHi = prange.getEnd();
@@ -430,7 +526,7 @@ class AxisRangeUtils {
 			throw new IllegalArgumentException("pLo > pHi is not allowed.");
 		}
 
-		/* the maximum physical range to satisfy the circle */
+		/* the maximum normalized range to satisfy the circle */
 		double maxRange = Double.POSITIVE_INFINITY;
 		String maxRangeId = null;
 		for (Map.Entry<AxisTransformEx, NormalTransform> me : vtMap.entrySet()) {
