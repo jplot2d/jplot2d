@@ -257,8 +257,6 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 					}
 				}
 			}
-		} else {
-			System.out.println("Same range");
 		}
 
 		for (LayerEx layer : layers) {
