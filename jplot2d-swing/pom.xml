@@ -13,37 +13,50 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>../jar-jplot2d-dependencies.xml</descriptor>
-					</descriptors>
-				</configuration>
+				<artifactId>maven-shade-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>bundle-with-core</id>
-						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<createSourcesJar>true</createSourcesJar>
+							<shadedClassifierName>full</shadedClassifierName>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<artifactSet>
+								<includes>
+									<include>org.jplot2d:*</include>
+								</includes>
+							</artifactSet>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<includeDependencySources>true</includeDependencySources>
-					<dependencySourceIncludes>
-						<dependencySourceInclude>org.jplot2d:*</dependencySourceInclude>
-					</dependencySourceIncludes>
-				</configuration>
 				<executions>
 					<execution>
 						<id>javadoc</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<includeDependencySources>false</includeDependencySources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>javadoc-full</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>full-javadoc</classifier>
+							<includeDependencySources>true</includeDependencySources>
+							<dependencySourceIncludes>
+								<dependencySourceInclude>org.jplot2d:*</dependencySourceInclude>
+							</dependencySourceIncludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
