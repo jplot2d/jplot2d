@@ -23,7 +23,7 @@ import org.jplot2d.interaction.InteractionMode;
 import org.jplot2d.interaction.MouseBehavior;
 
 /**
- * The interaction manager for PlotXY. Other applications that using plot as their renderer engine should not extends
+ * The interaction manager for a plot. Other applications that using plot as their renderer engine should not extends
  * this manager, they should write their own interaction manager.
  * 
  * @author Jingjing Li

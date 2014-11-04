@@ -41,7 +41,7 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.swing.components.ShowPropertiesAction;
 
 /**
- * The PlotOutlineManager manage a plot tree. It register itself to PlotXYEngine as an ElementChangeListener. Whenever a
+ * The PlotOutlineManager manage a plot tree. It register itself to environment as an ElementChangeListener. Whenever a
  * plot property changed, this PlotOutline will notify the registered ShowPropertiesAction to refresh its contents. Also
  * when user choose a new tree node, this PlotOutline will notify the registered ShowPropertiesAction to show the
  * properties.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2013 Jingjing Li.
+ * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -146,6 +146,8 @@ public class RenderEnvironment extends PlotEnvironment {
 
 	/**
 	 * Returns the default export directory.
+	 * 
+	 * @return the default export directory
 	 */
 	public static String getDefaultExportDirectory() {
 		return defaultExportDirectory.getAbsolutePath();
@@ -154,6 +156,9 @@ public class RenderEnvironment extends PlotEnvironment {
 	/**
 	 * Sets the default export directory. If the given directory is relative path, it's relative to user's home
 	 * directory. The default export directory is persisted within a session.
+	 * 
+	 * @param dir
+	 *            the default directory for exporting files
 	 */
 	public static void setDefaultExportDirectory(String dir) {
 		File dirFile;
@@ -174,20 +179,21 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Returns the export directory for this PlotXY. If this directory is null, the global default directory will be
-	 * used when exporting a plot.
+	 * Returns the export directory for this environment. If this directory is null, the global default directory will
+	 * be used when exporting a plot.
 	 * 
-	 * @see #getDefaultExportDirectory()
+	 * @return the export directory for this environment
 	 */
 	public String getExportDirectory() {
 		return (exportDirectory == null) ? null : exportDirectory.getAbsolutePath();
 	}
 
 	/**
-	 * Sets the export directory for this PlotXY. If the directory is null, the global default directory will be used
-	 * when exporting a plot. If the given directory is a relative path, it's relative to user's home directory.
+	 * Sets the export directory for this environment. If the directory is null, the global default directory will be
+	 * used when exporting a plot. If the given directory is a relative path, it's relative to user's home directory.
 	 * 
-	 * @see #setDefaultExportDirectory(String)
+	 * @param dir
+	 *            the export directory for this environment
 	 */
 	public void setExportDirectory(String dir) {
 		File dirFile;
@@ -207,12 +213,14 @@ public class RenderEnvironment extends PlotEnvironment {
 	}
 
 	/**
-	 * Returns the absolute pathname string for the given file name.
+	 * Returns the file for the given file name. If the given file name is already absolute, then the pathname string is
+	 * simply returned. Otherwise the export directory is used as parent pathname.
 	 * 
-	 * If the given file name is already absolute, then the pathname string is simply returned. Otherwise the default
-	 * export directory is used as parent pathname.
+	 * @param filename
+	 *            the filename
+	 * @return a file object
 	 */
-	private File getExportFile(String filename) {
+	public File getExportFile(String filename) {
 		File file = new File(filename);
 		if (!file.isAbsolute()) {
 			File dir = (exportDirectory == null) ? defaultExportDirectory : exportDirectory;
