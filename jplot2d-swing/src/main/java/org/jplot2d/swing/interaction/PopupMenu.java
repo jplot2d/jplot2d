@@ -39,7 +39,7 @@ import org.jplot2d.swing.components.PlotPropertiesFrame;
 import org.jplot2d.swing.print.PrintRenderer;
 
 /**
- * The popup menu support for PlotXY.
+ * The popup menu support for a plot.
  * 
  * @author Jingjing Li
  */
