@@ -155,7 +155,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		LegendEx legend = plot.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case LEFTTOP:
 			case LEFTMIDDLE:
@@ -188,7 +188,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		LegendEx legend = plot.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
 			case RIGHTMIDDLE:
@@ -221,7 +221,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		LegendEx legend = plot.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case TOPLEFT:
 			case TOPCENTER:
@@ -233,7 +233,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		for (TitleEx title : plot.getTitles()) {
-			if (title.canContribute()) {
+			if (title.isVisible() && title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
 				case TOPLEFT:
@@ -268,7 +268,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		LegendEx legend = plot.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
 			case BOTTOMCENTER:
@@ -280,7 +280,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		}
 
 		for (TitleEx title : plot.getTitles()) {
-			if (title.canContribute()) {
+			if (title.isVisible() && title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
 				case BOTTOMLEFT:
@@ -343,7 +343,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		LegendEx legend = sp.getLegend();
 
 		/* locate legend */
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case LEFTTOP:
 				xloc -= LEGEND_GAP;
@@ -393,7 +393,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		/* locate legend */
 		LegendEx legend = sp.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case RIGHTTOP:
 				xloc += LEGEND_GAP;
@@ -443,7 +443,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		// locate legend
 		LegendEx legend = sp.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case TOPLEFT:
 				yloc += LEGEND_GAP;
@@ -473,7 +473,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 		TitleEx[] titles = sp.getTitles();
 		for (int i = titles.length - 1; i >= 0; i--) {
 			TitleEx title = titles[i];
-			if (title.canContribute()) {
+			if (title.isVisible() && title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
 				case TOPLEFT:
@@ -529,7 +529,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		// locate legend
 		LegendEx legend = sp.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			switch (legend.getPosition()) {
 			case BOTTOMLEFT:
 				yloc -= LEGEND_GAP;
@@ -557,7 +557,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		// locate titles
 		for (TitleEx title : sp.getTitles()) {
-			if (title.canContribute()) {
+			if (title.isVisible() && title.canContribute()) {
 				double titleHeight = title.getSize().getHeight();
 				switch (title.getPosition()) {
 				case BOTTOMLEFT:

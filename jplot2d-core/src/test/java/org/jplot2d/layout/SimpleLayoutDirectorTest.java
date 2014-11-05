@@ -95,11 +95,13 @@ public class SimpleLayoutDirectorTest {
 
 		// add title
 		TitleEx title0 = mock(TitleEx.class);
+		when(title0.isVisible()).thenReturn(true);
 		when(title0.canContribute()).thenReturn(true);
 		when(title0.getPosition()).thenReturn(TitlePosition.TOPCENTER);
 		when(title0.getSize()).thenReturn(new DoubleDimension2D(20, 12));
 		when(title0.getGapFactor()).thenReturn(0.25);
 		TitleEx title1 = mock(TitleEx.class);
+		when(title1.isVisible()).thenReturn(true);
 		when(title1.canContribute()).thenReturn(true);
 		when(title1.getPosition()).thenReturn(TitlePosition.TOPCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(20, 8));
@@ -112,6 +114,7 @@ public class SimpleLayoutDirectorTest {
 		checkDouble(SimpleLayoutDirector.calcBottomMargin(plot, ais.bottomAxes), 12.0);
 
 		// add legend
+		when(legend.isVisible()).thenReturn(true);
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getPosition()).thenReturn(LegendPosition.BOTTOMCENTER);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(100, 40));
@@ -252,6 +255,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutLegendBottomCenter() {
 		LegendEx legend = mock(LegendEx.class);
+		when(legend.isVisible()).thenReturn(true);
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(LegendPosition.BOTTOMCENTER);
@@ -279,6 +283,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutLegendTopCenter() {
 		LegendEx legend = mock(LegendEx.class);
+		when(legend.isVisible()).thenReturn(true);
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(LegendPosition.TOPCENTER);
@@ -306,6 +311,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutLegendLeftMiddle() {
 		LegendEx legend = mock(LegendEx.class);
+		when(legend.isVisible()).thenReturn(true);
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(LegendPosition.LEFTMIDDLE);
@@ -333,6 +339,7 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutLegendRightMiddle() {
 		LegendEx legend = mock(LegendEx.class);
+		when(legend.isVisible()).thenReturn(true);
 		when(legend.canContribute()).thenReturn(true);
 		when(legend.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(legend.getPosition()).thenReturn(LegendPosition.RIGHTMIDDLE);
@@ -360,11 +367,13 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutTitleBottomCenter() {
 		TitleEx title0 = mock(TitleEx.class);
+		when(title0.isVisible()).thenReturn(true);
 		when(title0.canContribute()).thenReturn(true);
 		when(title0.getPosition()).thenReturn(TitlePosition.BOTTOMCENTER);
 		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title0.getGapFactor()).thenReturn(0.25);
 		TitleEx title1 = mock(TitleEx.class);
+		when(title1.isVisible()).thenReturn(true);
 		when(title1.canContribute()).thenReturn(true);
 		when(title1.getPosition()).thenReturn(TitlePosition.BOTTOMCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
@@ -398,11 +407,13 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutTitleTopCenter() {
 		TitleEx title0 = mock(TitleEx.class);
+		when(title0.isVisible()).thenReturn(true);
 		when(title0.canContribute()).thenReturn(true);
 		when(title0.getPosition()).thenReturn(TitlePosition.TOPCENTER);
 		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title0.getGapFactor()).thenReturn(0.25);
 		TitleEx title1 = mock(TitleEx.class);
+		when(title1.isVisible()).thenReturn(true);
 		when(title1.canContribute()).thenReturn(true);
 		when(title1.getPosition()).thenReturn(TitlePosition.TOPCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));
@@ -436,11 +447,13 @@ public class SimpleLayoutDirectorTest {
 	@Test
 	public void testLayoutTitleTopBottomCenter() {
 		TitleEx title0 = mock(TitleEx.class);
+		when(title0.isVisible()).thenReturn(true);
 		when(title0.canContribute()).thenReturn(true);
 		when(title0.getPosition()).thenReturn(TitlePosition.TOPCENTER);
 		when(title0.getSize()).thenReturn(new DoubleDimension2D(30, 10));
 		when(title0.getGapFactor()).thenReturn(0.25);
 		TitleEx title1 = mock(TitleEx.class);
+		when(title1.isVisible()).thenReturn(true);
 		when(title1.canContribute()).thenReturn(true);
 		when(title1.getPosition()).thenReturn(TitlePosition.BOTTOMCENTER);
 		when(title1.getSize()).thenReturn(new DoubleDimension2D(30, 10));

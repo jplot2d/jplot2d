@@ -197,7 +197,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	 * Invalidate the parent plot when its position is not null.
 	 */
 	private void invalidatePlot() {
-		if (canContribute() && getParent() != null) {
+		if (isVisible() && canContribute() && getParent() != null) {
 			getParent().invalidate();
 		}
 	}

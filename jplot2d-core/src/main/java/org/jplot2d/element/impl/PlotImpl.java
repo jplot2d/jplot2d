@@ -39,6 +39,7 @@ import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.Element;
 import org.jplot2d.element.Layer;
 import org.jplot2d.element.Title;
+import org.jplot2d.element.TitlePosition;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.notice.RangeAdjustedToValueBoundsNotice;
@@ -510,7 +511,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		redrawCascade(tx);
 
-		if (tx.canContribute() && tx.getPosition() != null) {
+		if (tx.isVisible() && tx.canContribute() && tx.getPosition() != TitlePosition.FREE) {
 			invalidate();
 		}
 	}
@@ -524,7 +525,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		titles.remove(tx);
 		tx.setParent(null);
 
-		if (tx.canContribute() && tx.getPosition() != null) {
+		if (tx.isVisible() && tx.canContribute() && tx.getPosition() != TitlePosition.FREE) {
 			invalidate();
 		}
 	}
@@ -579,7 +580,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		redrawCascade(ax);
 
-		if (ax.canContribute()) {
+		if (ax.isVisible() && ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -604,7 +605,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		redrawCascade(ax);
 
-		if (ax.canContribute()) {
+		if (ax.isVisible() && ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -640,7 +641,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 			redrawCascade(ax);
 
-			if (ax.canContribute()) {
+			if (ax.isVisible() && ax.canContribute()) {
 				invalidate();
 			}
 		}
@@ -677,7 +678,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 			redrawCascade(ax);
 
-			if (ax.canContribute()) {
+			if (ax.isVisible() && ax.canContribute()) {
 				invalidate();
 			}
 		}
@@ -699,12 +700,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			// quit the range manager if tick manager is not its only member
 			ax.getTickManager().setAxisTransform(null);
 		} else if (ax.getTickManager().getAxisTransform().getLockGroup().getParent() == null) {
-			// quit the lock group if range manager is not the lock group's only
-			// member
+			// quit the lock group if range manager is not the lock group's only member
 			ax.getTickManager().getAxisTransform().setLockGroup(null);
 		}
 
-		if (ax.canContribute()) {
+		if (ax.isVisible() && ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -725,12 +725,11 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 			// quit the range manager if tick manager is not its only member
 			ax.getTickManager().setAxisTransform(null);
 		} else if (ax.getTickManager().getAxisTransform().getLockGroup().getParent() == null) {
-			// quit the lock group if range manager is not the lock group's only
-			// member
+			// quit the lock group if range manager is not the lock group's only member
 			ax.getTickManager().getAxisTransform().setLockGroup(null);
 		}
 
-		if (ax.canContribute()) {
+		if (ax.isVisible() && ax.canContribute()) {
 			invalidate();
 		}
 	}
@@ -1122,12 +1121,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private static void calcAxesThickness(PlotEx plot) {
 		for (AxisEx axis : plot.getXAxes()) {
-			if (axis.canContribute()) {
+			if (axis.isVisible() && axis.canContribute()) {
 				calcAxisThickness(axis);
 			}
 		}
 		for (AxisEx axis : plot.getYAxes()) {
-			if (axis.canContribute()) {
+			if (axis.isVisible() && axis.canContribute()) {
 				calcAxisThickness(axis);
 			}
 		}
@@ -1182,7 +1181,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private static void calcTitleSize(PlotEx plot) {
 		for (TitleEx title : plot.getTitles()) {
-			if (title.canContribute()) {
+			if (title.isVisible() && title.canContribute()) {
 				Dimension2D size = title.getSize();
 				double oldThickness = (size == null) ? 0 : size.getHeight();
 				title.calcSize();
@@ -1201,7 +1200,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	 */
 	private static void calcLegendSize(PlotEx plot) {
 		LegendEx legend = plot.getLegend();
-		if (legend.canContribute()) {
+		if (legend.isVisible() && legend.canContribute()) {
 			double oldThickness = legend.getThickness();
 			plot.getLegend().calcSize();
 			if (Math.abs(oldThickness - legend.getThickness()) > Math.abs(oldThickness) * 1e-12) {
