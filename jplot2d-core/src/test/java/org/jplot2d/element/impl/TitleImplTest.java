@@ -39,6 +39,8 @@ public class TitleImplTest {
 
 		tc.setText("");
 		assertNotNull(tc.getTextModel());
+		assertFalse(tc.canContribute());
+		tc.setText("A");
 		assertTrue(tc.canContribute());
 	}
 

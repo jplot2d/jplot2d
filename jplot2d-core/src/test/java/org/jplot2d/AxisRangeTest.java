@@ -189,4 +189,19 @@ public class AxisRangeTest {
 		assertTrue(yaxf.getLockGroup().isAutoRange());
 	}
 
+	@Test
+	public void testAxisRangeZoom() {
+		Plot p = factory.createPlot();
+		Axis xaxis = factory.createAxis();
+		AxisTransform xva = xaxis.getTickManager().getAxisTransform();
+		AxisRangeLockGroup xag = xva.getLockGroup();
+		p.addXAxis(xaxis);
+
+		PlotEnvironment env = new PlotEnvironment(false);
+		env.setPlot(p);
+
+		xag.zoomRange(0.2, 0.8);
+		checkRange(xva.getRange(), -0.6, 0.6);
+	}
+
 }

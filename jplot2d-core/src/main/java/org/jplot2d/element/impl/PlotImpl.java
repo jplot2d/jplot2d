@@ -509,7 +509,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 		titles.add(tx);
 		tx.setParent(this);
 
-		redrawCascade(tx);
+		redraw(tx);
 
 		if (tx.isVisible() && tx.canContribute() && tx.getPosition() != TitlePosition.FREE) {
 			invalidate();
@@ -520,7 +520,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 	public void removeTitle(Title title) {
 		TitleEx tx = (TitleEx) title;
 
-		redrawCascade(tx);
+		redraw(tx);
 
 		titles.remove(tx);
 		tx.setParent(null);
