@@ -59,7 +59,7 @@ public interface Legend extends MovableComponent {
 	public LegendPosition getPosition();
 
 	/**
-	 * Sets the position of this legend. Only when position is <code>Position.FREE</code> , the legend can be located by
+	 * Sets the position of this legend. Only when position is {@link LegendPosition#FREE}, the legend can be located by
 	 * {@link #setLocation(Point2D)}, {@link #setHAlign()} , {@link #setVAlign()}.
 	 * 
 	 * @param position
@@ -107,8 +107,8 @@ public interface Legend extends MovableComponent {
 	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the base point is on
 	 * the left of this legend.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
-	 * defined.
+	 * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is
+	 * not defined.
 	 * 
 	 * @param halign
 	 *            horizontal alignment.
@@ -127,8 +127,8 @@ public interface Legend extends MovableComponent {
 	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the base point is on the
 	 * top of this legend.
 	 * <p>
-	 * Notice: This method should be called when the position is <code>null</code>, otherwise the behavior is not
-	 * defined.
+	 * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is
+	 * not defined.
 	 * 
 	 * @param valign
 	 *            The vertical alignment.
@@ -144,8 +144,8 @@ public interface Legend extends MovableComponent {
 	public int getColumns();
 
 	/**
-	 * Sets the number of columns. This method only take effect when position is
-	 * <code>null<code>. Otherwise the columns is auto selected.
+	 * Sets the number of columns. This method only take effect when position is {@link LegendPosition#FREE}. Otherwise
+	 * the columns is auto selected.
 	 * 
 	 * @param cols
 	 *            number of columns
