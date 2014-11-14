@@ -712,6 +712,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		if (tickChanged) {
 			for (AxisEx axis : axes) {
 				axis.invalidateThickness();
+				ComponentImpl.redraw(axis);
 			}
 		}
 	}
@@ -805,6 +806,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 		if (tickChanged) {
 			for (AxisEx axis : axes) {
 				axis.invalidateThickness();
+				ComponentImpl.redraw(axis);
 			}
 		}
 	}

@@ -85,7 +85,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public boolean canContribute() {
-		return textModel != null;
+		return textModel != null && textModel != MathElement.EMPTY;
 	}
 
 	public void setVisible(boolean visible) {
@@ -132,6 +132,7 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 	}
 
 	public void setTextModel(MathElement model) {
+		redraw(this);
 		this.textModel = model;
 		label = null;
 		redraw(this);
