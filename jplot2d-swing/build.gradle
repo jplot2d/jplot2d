@@ -1,0 +1,6 @@
+description = 'The swing component for plot, and properties editor.'
+
+dependencies {
+    compile project(':jplot2d-core')
+    compile project(':jplot2d-interaction')
+}

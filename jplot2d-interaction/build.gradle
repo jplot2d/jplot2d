@@ -1,0 +1,6 @@
+description = 'The behaviors and handlers for interaction'
+
+dependencies {
+    compile project(':jplot2d-core')
+    compile project(':jplot2d-common-interaction')
+}

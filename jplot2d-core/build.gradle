@@ -1,0 +1,11 @@
+plugins {
+    id "ca.coglinc.javacc" version "2.0.3"
+}
+
+description = 'The core engine'
+
+dependencies {
+    compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
+    compile group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '1.5'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.5'
+}
