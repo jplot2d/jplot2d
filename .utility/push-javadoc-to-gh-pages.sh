@@ -1,10 +1,8 @@
 #!/bin/bash
 
-env
-
 if [ "$TRAVIS_REPO_SLUG" == "jplot2d/jplot2d" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk7" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
-  DOC_PATH = `pwd`/build/javadoc
+  DOC_PATH=`pwd`/build/javadoc
 
   echo -e "Publishing javadoc from $DOC_PATH ...\n"
 
@@ -15,7 +13,7 @@ if [ "$TRAVIS_REPO_SLUG" == "jplot2d/jplot2d" ] && [ "$TRAVIS_JDK_VERSION" == "o
 
   cd gh-pages
   git rm -rf ./javadoc
-  mv DOC_PATH ./javadoc
+  mv $DOC_PATH ./javadoc
   git add -f .
   git commit -m "Lastest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
