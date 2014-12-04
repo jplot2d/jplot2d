@@ -1,11 +1,10 @@
 language: java
+jdk:
+  - oraclejdk7
 
 env:
   global:
   - secure: aDH/ZX8DkSq5cN0kgFz2XSiSxYFFM7jA4qAVIgVj7Yuf+wYvfkbRyNwqHJPhCe2OWMXDrFjPso8aFxQAQOQ4Y+3GVT2InAfKIumphn89sYf+zDXY2WqwBF7lgK+ByjwbmPIkEu4Y/vSe7ONN+EcurBeiokUGDaofj6xh7kvsrwQ=
-
-before_install:
-  - env
 
 after_success:
   - ./gradlew docs

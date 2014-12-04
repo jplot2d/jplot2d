@@ -1,5 +1,7 @@
 #!/bin/bash
 
+env
+
 if [ "$TRAVIS_REPO_SLUG" == "jplot2d/jplot2d" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk7" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
   DOC_PATH = `pwd`/build/javadoc
