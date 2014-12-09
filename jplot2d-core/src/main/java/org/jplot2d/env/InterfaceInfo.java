@@ -201,6 +201,20 @@ public class InterfaceInfo {
 	}
 
 	/**
+	 * Returns <code>true</true> if the given property is writable.
+	 * 
+	 * @param pname
+	 *            The property name
+	 * @return <code>true</true> if the given property is writable
+	 */
+	public boolean isWritableProp(String pname) {
+		if (piMap.containsKey(pname)) {
+			return piMap.get(pname).getWriteMethod() != null;
+		}
+		return false;
+	}
+
+	/**
 	 * Returns <code>true</true> if the given method is a property getter.
 	 * 
 	 * @param method
