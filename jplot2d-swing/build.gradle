@@ -1,4 +1,4 @@
-description = 'The swing component for plot, and properties editor.'
+description = 'The swing component for plot, includes a properties editor.'
 
 dependencies {
     compile project(':jplot2d-core')

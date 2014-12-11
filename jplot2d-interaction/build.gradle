@@ -1,4 +1,4 @@
-description = 'The behaviors and handlers for interaction'
+description = 'The behaviors and handlers for interaction of plot.'
 
 dependencies {
     compile project(':jplot2d-core')
