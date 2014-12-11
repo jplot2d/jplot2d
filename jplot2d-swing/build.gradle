@@ -4,3 +4,13 @@ dependencies {
     compile project(':jplot2d-core')
     compile project(':jplot2d-interaction')
 }
+
+//create a single Jar with all dependencies
+task distJar(type: Jar, dependsOn: jar) {
+    appendix = 'all'
+    destinationDir = distsDir
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}

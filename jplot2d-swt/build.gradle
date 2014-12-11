@@ -34,9 +34,19 @@ ext {
     swtArtifactName = "org.eclipse.swt.${swtWindowingLibrary}.${swtPlatform}.${swtArch}"
 }
 
-
 dependencies {
     compile project(':jplot2d-core')
     compile project(':jplot2d-interaction')
-    compile group: 'org.eclipse.swt', name: swtArtifactName, version: '4.3'
+    compile group: 'org.eclipse.swt', name: swtArtifactName, version: '4.3', transitive: false
+}
+
+//create a single Jar with all dependencies
+task distJar(type: Jar, dependsOn: jar) {
+    appendix = 'all'
+    destinationDir = distsDir
+    def deps = project(':jplot2d-core').configurations.runtime + project(':jplot2d-interaction').configurations.runtime
+    from {
+        deps.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }

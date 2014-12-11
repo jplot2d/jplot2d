@@ -51,3 +51,6 @@ task docs(type: Javadoc) {
     classpath = files(exportedProjects.collect { project(it).sourceSets.main.compileClasspath })
     destinationDir = file("${buildDir}/javadoc")
 }
+
+task distJar(dependsOn: ['jplot2d-core:zipExtLibs', ':jplot2d-swing:distJar', ':jplot2d-swt:distJar'])
+
