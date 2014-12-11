@@ -10,7 +10,8 @@ after_success:
   - ./gradlew docs
   - .utility/push-javadoc-to-gh-pages.sh
 
-# before_deploy:
+before_deploy:
+  - ./gradlew distJar
 
 deploy:
   provider: releases
