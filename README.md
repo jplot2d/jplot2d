@@ -1,7 +1,7 @@
 jplot2d
 =======
 
-_*A high-performace multi-threaded 2d plot library which produces publication quality plots.*_
+**A high-performace multi-threaded 2d plot library which produces publication quality plots.**
 
 ###Key features
  * scatter plot, line chart, staircase chart
@@ -13,3 +13,12 @@ _*A high-performace multi-threaded 2d plot library which produces publication qu
  * multi-thread rendering
  * swing and swt gui components
  * python friendly
+
+###[Examples](https://github.com/jplot2d/jplot2d/wiki/Examples)
+Please check out the examples to see what jplot2d can produce.
+
+:link: https://github.com/jplot2d/jplot2d/wiki/Examples
+
+###[Latest Javadoc](http://jplot2d.github.io/jplot2d/javadoc/)
+:link: http://jplot2d.github.io/jplot2d/javadoc/
+
