@@ -22,3 +22,5 @@ Please check out the examples to see what jplot2d can produce.
 ###[Latest Javadoc](http://jplot2d.github.io/jplot2d/javadoc/)
 :link: http://jplot2d.github.io/jplot2d/javadoc/
 
+###[Releases](https://github.com/jplot2d/jplot2d/releases)
+:link: https://github.com/jplot2d/jplot2d/releases
