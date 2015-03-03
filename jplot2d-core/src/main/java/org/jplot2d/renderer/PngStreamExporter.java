@@ -27,33 +27,32 @@ import javax.imageio.ImageIO;
 
 /**
  * Export plot image to a png output stream.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PngStreamExporter extends ImageExporter {
 
-	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
-			Color.WHITE);
+    private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
+            Color.WHITE);
 
-	private final OutputStream out;
+    private final OutputStream out;
 
-	public PngStreamExporter(OutputStream out) {
-		this(INT_RGB_IMAGEFACTORY, out);
-	}
+    public PngStreamExporter(OutputStream out) {
+        this(INT_RGB_IMAGEFACTORY, out);
+    }
 
-	public PngStreamExporter(ImageFactory imageFactory, final OutputStream out) {
-		super(imageFactory);
-		this.out = out;
-	}
+    public PngStreamExporter(ImageFactory imageFactory, final OutputStream out) {
+        super(imageFactory);
+        this.out = out;
+    }
 
-	protected void fireRenderingFinished(int sn, BufferedImage img) {
-		super.fireRenderingFinished(sn, img);
-		try {
-			ImageIO.write(img, "PNG", out);
-		} catch (IOException e) {
-			throw new RuntimeException("Png out I/O exception", e);
-		}
-	}
+    protected void fireRenderingFinished(int sn, BufferedImage img) {
+        super.fireRenderingFinished(sn, img);
+        try {
+            ImageIO.write(img, "PNG", out);
+        } catch (IOException e) {
+            throw new RuntimeException("Png out I/O exception", e);
+        }
+    }
 
 }

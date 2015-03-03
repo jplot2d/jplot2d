@@ -20,24 +20,23 @@ package org.jplot2d.renderer;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class RenderingFinishedEvent {
 
-	private final long sn;
+    private final long sn;
 
-	private final Object result;
+    private final Object result;
 
-	public RenderingFinishedEvent(long sn, Object result) {
-		this.sn = sn;
-		this.result = result;
-	}
+    public RenderingFinishedEvent(long sn, Object result) {
+        this.sn = sn;
+        this.result = result;
+    }
 
-	public long getSN() {
-		return sn;
-	}
+    public long getSN() {
+        return sn;
+    }
 
-	public Object getResult() {
-		return result;
-	}
+    public Object getResult() {
+        return result;
+    }
 }

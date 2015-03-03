@@ -18,54 +18,51 @@
  */
 package org.jplot2d.renderer;
 
-import java.util.List;
-
 import org.jplot2d.element.impl.ComponentEx;
 
+import java.util.List;
+
 /**
- * A block holds subcomponents of a cacheable component.
- * 
+ * A block holds sub-components of a cacheable component.
+ *
  * @author Jingjing Li
  */
 public class CacheableBlock {
-	/**
-	 * The original component, act as uid
-	 */
-	private final ComponentEx uid;
+    /**
+     * The original component, act as uid
+     */
+    private final ComponentEx uid;
 
-	/**
-	 * The component copy for rendering
-	 */
-	private final ComponentEx comp;
+    /**
+     * The component copy for rendering
+     */
+    private final ComponentEx comp;
 
-	/**
-	 * The sub-component copies for rendering, contains comp
-	 */
-	private final List<ComponentEx> subcomps;
+    /**
+     * The sub-component copies for rendering, contains comp
+     */
+    private final List<ComponentEx> subcomps;
 
-	/**
-	 * @param comp
-	 *            the original component, act as uid
-	 * @param copy
-	 *            the component copy for rendering
-	 * @param subcomps
-	 *            the sub-component copies for rendering, contains comp
-	 */
-	public CacheableBlock(ComponentEx comp, ComponentEx copy, List<ComponentEx> subcomps) {
-		this.uid = comp;
-		this.comp = copy;
-		this.subcomps = subcomps;
-	}
+    /**
+     * @param comp     the original component, act as uid
+     * @param copy     the component copy for rendering
+     * @param subcomps the sub-component copies for rendering, contains comp
+     */
+    public CacheableBlock(ComponentEx comp, ComponentEx copy, List<ComponentEx> subcomps) {
+        this.uid = comp;
+        this.comp = copy;
+        this.subcomps = subcomps;
+    }
 
-	public ComponentEx getUid() {
-		return uid;
-	}
+    public ComponentEx getUid() {
+        return uid;
+    }
 
-	public ComponentEx getComp() {
-		return comp;
-	}
+    public ComponentEx getComp() {
+        return comp;
+    }
 
-	public List<ComponentEx> getSubcomps() {
-		return subcomps;
-	}
+    public List<ComponentEx> getSubcomps() {
+        return subcomps;
+    }
 }

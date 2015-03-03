@@ -27,38 +27,37 @@ import javax.imageio.ImageIO;
 
 /**
  * Export plot image to a png file.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PngFileExporter extends ImageExporter {
 
-	private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
-			Color.WHITE);
+    private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
+            Color.WHITE);
 
-	private final File file;
+    private final File file;
 
-	public PngFileExporter(String pathname) {
-		this(new File(pathname));
-	}
+    public PngFileExporter(String pathname) {
+        this(new File(pathname));
+    }
 
-	public PngFileExporter(File file) {
-		this(INT_RGB_IMAGEFACTORY, file);
-	}
+    public PngFileExporter(File file) {
+        this(INT_RGB_IMAGEFACTORY, file);
+    }
 
-	public PngFileExporter(ImageFactory imageFactory, File file) {
-		super(imageFactory);
-		this.file = file;
-	}
+    public PngFileExporter(ImageFactory imageFactory, File file) {
+        super(imageFactory);
+        this.file = file;
+    }
 
-	@Override
-	protected void fireRenderingFinished(long sn, BufferedImage img) {
-		super.fireRenderingFinished(sn, img);
-		try {
-			ImageIO.write(img, "PNG", file);
-		} catch (IOException e) {
-			throw new RuntimeException("Png file I/O exception", e);
-		}
-	}
+    @Override
+    protected void fireRenderingFinished(long sn, BufferedImage img) {
+        super.fireRenderingFinished(sn, img);
+        try {
+            ImageIO.write(img, "PNG", file);
+        } catch (IOException e) {
+            throw new RuntimeException("Png file I/O exception", e);
+        }
+    }
 
 }

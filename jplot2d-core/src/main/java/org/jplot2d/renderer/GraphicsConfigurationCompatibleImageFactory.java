@@ -26,55 +26,52 @@ import java.awt.image.BufferedImage;
 
 /**
  * A factory to create GraphicsConfiguration compatible images.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory {
 
-	private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
+    private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
 
-	private final GraphicsConfiguration gconf;
+    private final GraphicsConfiguration gconf;
 
-	private final Color bgColor;
+    private final Color bgColor;
 
-	/**
-	 * @param gconf
-	 *            a GraphicsConfiguration associated with an AWT Component
-	 * @param bgColor
-	 *            background color
-	 */
-	public GraphicsConfigurationCompatibleImageFactory(GraphicsConfiguration gconf, Color bgColor) {
-		this.gconf = gconf;
-		if (bgColor == null) {
-			this.bgColor = TRANSPARENT_COLOR;
-		} else {
-			this.bgColor = bgColor;
-		}
-	}
+    /**
+     * @param gconf   a GraphicsConfiguration associated with an AWT Component
+     * @param bgColor background color
+     */
+    public GraphicsConfigurationCompatibleImageFactory(GraphicsConfiguration gconf, Color bgColor) {
+        this.gconf = gconf;
+        if (bgColor == null) {
+            this.bgColor = TRANSPARENT_COLOR;
+        } else {
+            this.bgColor = bgColor;
+        }
+    }
 
-	public BufferedImage createTransparentImage(int width, int height) {
-		return gconf.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-	}
+    public BufferedImage createTransparentImage(int width, int height) {
+        return gconf.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+    }
 
-	public BufferedImage createImage(int width, int height) {
-		BufferedImage image = tlImage.get();
-		if (image == null || image.getWidth() != width || image.getHeight() != height) {
-			image = gconf.createCompatibleImage(width, height);
-		} else {
-			tlImage.remove();
-		}
+    public BufferedImage createImage(int width, int height) {
+        BufferedImage image = tlImage.get();
+        if (image == null || image.getWidth() != width || image.getHeight() != height) {
+            image = gconf.createCompatibleImage(width, height);
+        } else {
+            tlImage.remove();
+        }
 
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setBackground(bgColor);
-		g.clearRect(0, 0, width, height);
-		g.dispose();
+        Graphics2D g = (Graphics2D) image.getGraphics();
+        g.setBackground(bgColor);
+        g.clearRect(0, 0, width, height);
+        g.dispose();
 
-		return image;
-	}
+        return image;
+    }
 
-	public void cacheImage(BufferedImage image) {
-		tlImage.set(image);
-	}
+    public void cacheImage(BufferedImage image) {
+        tlImage.set(image);
+    }
 
 }

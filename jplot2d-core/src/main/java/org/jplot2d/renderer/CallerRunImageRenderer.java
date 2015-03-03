@@ -18,17 +18,25 @@
  */
 package org.jplot2d.renderer;
 
+import java.util.concurrent.Executor;
+
 /**
- * This renderer execute component rendering and assembling them in a single
- * thread, suite for servlet.
- * 
+ * This renderer execute component rendering and assembling them in a single thread, suite for servlet.
+ *
  * @author Jingjing Li
- * 
  */
 public class CallerRunImageRenderer extends ImageRenderer {
 
-	public CallerRunImageRenderer(ImageFactory assembler) {
-		super(assembler, COMPONENT_RENDERING_CALLER_RUN_EXECUTOR);
-	}
+    protected static final Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
+
+        public void execute(Runnable command) {
+            command.run();
+        }
+
+    };
+
+    public CallerRunImageRenderer(ImageFactory assembler) {
+        super(assembler, COMPONENT_RENDERING_CALLER_RUN_EXECUTOR);
+    }
 
 }

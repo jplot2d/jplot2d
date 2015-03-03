@@ -23,29 +23,28 @@ import java.awt.image.BufferedImage;
 
 /**
  * Export plot image to a BufferedImage object.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class ImageExporter extends ImageRenderer {
 
-	private BufferedImage image;
+    private BufferedImage image;
 
-	public ImageExporter(int imageType, Color bgColor) {
-		this(new BufferedImageFactory(imageType, bgColor));
-	}
+    public ImageExporter(int imageType, Color bgColor) {
+        this(new BufferedImageFactory(imageType, bgColor));
+    }
 
-	public ImageExporter(ImageFactory imageFactory) {
-		super(imageFactory);
-	}
+    public ImageExporter(ImageFactory imageFactory) {
+        super(imageFactory);
+    }
 
-	@Override
-	protected void fireRenderingFinished(long fsn, BufferedImage img) {
-		this.image = img;
-	}
+    @Override
+    protected void fireRenderingFinished(long fsn, BufferedImage img) {
+        this.image = img;
+    }
 
-	public BufferedImage getImage() {
-		return image;
-	}
+    public BufferedImage getImage() {
+        return image;
+    }
 
 }

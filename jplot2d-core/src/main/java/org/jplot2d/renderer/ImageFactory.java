@@ -23,27 +23,27 @@ import java.awt.image.BufferedImage;
 
 public interface ImageFactory {
 
-	public static Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
+    public static Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
 
-	/**
-	 * Create a transparent buffered image. The image is used by component renderer.
-	 * 
-	 * @return a BufferedImage
-	 */
-	public BufferedImage createTransparentImage(int width, int height);
+    /**
+     * Create a transparent buffered image. The image is used by component renderer.
+     *
+     * @return a BufferedImage
+     */
+    public BufferedImage createTransparentImage(int width, int height);
 
-	/**
-	 * Create a buffered image. The image is the final image to draw everything.
-	 * 
-	 * @return a BufferedImage
-	 */
-	public BufferedImage createImage(int width, int height);
+    /**
+     * Create a buffered image. The image is the final image to draw everything.
+     *
+     * @return a BufferedImage
+     */
+    public BufferedImage createImage(int width, int height);
 
-	/**
-	 * Put the given buffered image into local cache for next usage.
-	 * 
-	 * @param image
-	 */
-	public void cacheImage(BufferedImage image);
+    /**
+     * Put the given buffered image into local cache for next usage.
+     *
+     * @param image the image to be reused
+     */
+    public void cacheImage(BufferedImage image);
 
 }

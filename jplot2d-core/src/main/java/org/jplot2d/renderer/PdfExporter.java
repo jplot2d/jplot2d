@@ -18,6 +18,14 @@
  */
 package org.jplot2d.renderer;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
+
+import org.jplot2d.element.impl.ComponentEx;
+
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.io.BufferedOutputStream;
@@ -27,80 +35,71 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.jplot2d.element.impl.ComponentEx;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
-
 /**
  * Export plot image to a png file.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PdfExporter extends Renderer {
 
-	private final OutputStream os;
+    private final OutputStream os;
 
-	private String title;
+    private String title;
 
-	public PdfExporter(String pathname) throws FileNotFoundException {
-		this(new File(pathname));
-	}
+    public PdfExporter(String pathname) throws FileNotFoundException {
+        this(new File(pathname));
+    }
 
-	public PdfExporter(File file) throws FileNotFoundException {
-		this(new FileOutputStream(file));
-	}
+    public PdfExporter(File file) throws FileNotFoundException {
+        this(new FileOutputStream(file));
+    }
 
-	public PdfExporter(OutputStream out) {
-		super();
-		os = new BufferedOutputStream(out);
-	}
+    public PdfExporter(OutputStream out) {
+        super();
+        os = new BufferedOutputStream(out);
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	@Override
-	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
+    @Override
+    public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(comp).getSize();
+        Dimension size = getDeviceBounds(comp).getSize();
 
-		Document document = new Document(new Rectangle(size.width, size.height), 0, 0, 0, 0);
-		PdfWriter writer = null;
-		try {
-			writer = PdfWriter.getInstance(document, os);
-		} catch (DocumentException e) {
-			/*
+        Document document = new Document(new Rectangle(size.width, size.height), 0, 0, 0, 0);
+        PdfWriter writer = null;
+        try {
+            writer = PdfWriter.getInstance(document, os);
+        } catch (DocumentException e) {
+            /*
 			 * should not happen but if it happens it should be notified to the integration instead of leaving it
 			 * half-done and tell nothing.
 			 */
-			throw new RuntimeException("Error creating PDF document", e);
-		}
+            throw new RuntimeException("Error creating PDF document", e);
+        }
 
-		document.open();
-		if (title != null) {
-			document.addTitle(title);
-		}
-		PdfContentByte cb = writer.getDirectContent();
-		Graphics2D g = cb.createGraphics(size.width, size.height);
+        document.open();
+        if (title != null) {
+            document.addTitle(title);
+        }
+        PdfContentByte cb = writer.getDirectContent();
+        Graphics2D g = cb.createGraphics(size.width, size.height);
 
-		for (CacheableBlock cblock : cacheBlockList) {
-			List<ComponentEx> sublist = cblock.getSubcomps();
-			for (ComponentEx subcomp : sublist) {
-				subcomp.draw(g);
-			}
-		}
+        for (CacheableBlock cblock : cacheBlockList) {
+            List<ComponentEx> sublist = cblock.getSubcomps();
+            for (ComponentEx subcomp : sublist) {
+                subcomp.draw(g);
+            }
+        }
 
-		g.dispose();
-		document.close();
-	}
+        g.dispose();
+        document.close();
+    }
 
 }

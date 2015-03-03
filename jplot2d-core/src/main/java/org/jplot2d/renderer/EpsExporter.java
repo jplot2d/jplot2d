@@ -18,6 +18,10 @@
  */
 package org.jplot2d.renderer;
 
+import org.apache.xmlgraphics.java2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
+import org.jplot2d.element.impl.ComponentEx;
+
 import java.awt.Dimension;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,58 +31,53 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.xmlgraphics.java2d.GraphicContext;
-import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
-import org.jplot2d.element.impl.ComponentEx;
-
 /**
  * Export plot image to a EPS stream or file.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class EpsExporter extends Renderer {
 
-	private final OutputStream os;
+    private final OutputStream os;
 
-	public EpsExporter(String pathname) throws FileNotFoundException {
-		this(new File(pathname));
-	}
+    public EpsExporter(String pathname) throws FileNotFoundException {
+        this(new File(pathname));
+    }
 
-	public EpsExporter(File file) throws FileNotFoundException {
-		this(new FileOutputStream(file));
-	}
+    public EpsExporter(File file) throws FileNotFoundException {
+        this(new FileOutputStream(file));
+    }
 
-	public EpsExporter(OutputStream out) {
-		super();
-		os = new BufferedOutputStream(out);
-	}
+    public EpsExporter(OutputStream out) {
+        super();
+        os = new BufferedOutputStream(out);
+    }
 
-	@Override
-	public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
+    @Override
+    public void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
 
-		Dimension size = getDeviceBounds(comp).getSize();
+        Dimension size = getDeviceBounds(comp).getSize();
 
-		EPSDocumentGraphics2D g = new EPSDocumentGraphics2D(true);
-		g.setGraphicContext(new GraphicContext());
-		try {
-			g.setupDocument(os, size.width, size.height);
-		} catch (IOException e) {
-			throw new RuntimeException("Error exporting EPS", e);
-		}
+        EPSDocumentGraphics2D g = new EPSDocumentGraphics2D(true);
+        g.setGraphicContext(new GraphicContext());
+        try {
+            g.setupDocument(os, size.width, size.height);
+        } catch (IOException e) {
+            throw new RuntimeException("Error exporting EPS", e);
+        }
 
-		for (CacheableBlock cb : cacheBlockList) {
-			List<ComponentEx> sublist = cb.getSubcomps();
-			for (ComponentEx subcomp : sublist) {
-				subcomp.draw(g);
-			}
-		}
+        for (CacheableBlock cb : cacheBlockList) {
+            List<ComponentEx> sublist = cb.getSubcomps();
+            for (ComponentEx subcomp : sublist) {
+                subcomp.draw(g);
+            }
+        }
 
-		try {
-			g.finish();
-		} catch (IOException e) {
-			throw new RuntimeException("Error exporting EPS", e);
-		}
-	}
+        try {
+            g.finish();
+        } catch (IOException e) {
+            throw new RuntimeException("Error exporting EPS", e);
+        }
+    }
 
 }

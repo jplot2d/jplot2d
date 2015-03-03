@@ -20,17 +20,15 @@ package org.jplot2d.renderer;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface RenderingFinishedListener {
 
-	/**
-	 * This method is called by image renderer. The renderer may be asynchronous, so the concurrency must be considered
-	 * in this method.
-	 * 
-	 * @param event
-	 *            the event
-	 */
-	public void renderingFinished(RenderingFinishedEvent event);
+    /**
+     * This method is called by image renderer. The renderer may be asynchronous, so the concurrency must be considered
+     * in this method.
+     *
+     * @param event the event
+     */
+    public void renderingFinished(RenderingFinishedEvent event);
 
 }

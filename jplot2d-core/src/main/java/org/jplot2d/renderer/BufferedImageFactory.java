@@ -24,54 +24,52 @@ import java.awt.image.BufferedImage;
 
 /**
  * A factory to create buffered images.
- * 
+ *
  * @author Jingjing Li
  */
 public class BufferedImageFactory implements ImageFactory {
 
-	private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
+    private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
 
-	private final int imageType;
+    private final int imageType;
 
-	private final Color bgColor;
+    private final Color bgColor;
 
-	/**
-	 * @param imageType
-	 *            type of the created image
-	 * @param bgColor
-	 *            background color
-	 */
-	public BufferedImageFactory(int imageType, Color bgColor) {
-		this.imageType = imageType;
-		if (bgColor == null) {
-			this.bgColor = TRANSPARENT_COLOR;
-		} else {
-			this.bgColor = bgColor;
-		}
-	}
+    /**
+     * @param imageType type of the created image
+     * @param bgColor   background color
+     */
+    public BufferedImageFactory(int imageType, Color bgColor) {
+        this.imageType = imageType;
+        if (bgColor == null) {
+            this.bgColor = TRANSPARENT_COLOR;
+        } else {
+            this.bgColor = bgColor;
+        }
+    }
 
-	public BufferedImage createTransparentImage(int width, int height) {
-		return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-	}
+    public BufferedImage createTransparentImage(int width, int height) {
+        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
 
-	public BufferedImage createImage(int width, int height) {
-		BufferedImage image = tlImage.get();
-		if (image == null || image.getWidth() != width || image.getHeight() != height) {
-			image = new BufferedImage(width, height, imageType);
-		} else {
-			tlImage.remove();
-		}
+    public BufferedImage createImage(int width, int height) {
+        BufferedImage image = tlImage.get();
+        if (image == null || image.getWidth() != width || image.getHeight() != height) {
+            image = new BufferedImage(width, height, imageType);
+        } else {
+            tlImage.remove();
+        }
 
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setBackground(bgColor);
-		g.clearRect(0, 0, width, height);
-		g.dispose();
+        Graphics2D g = (Graphics2D) image.getGraphics();
+        g.setBackground(bgColor);
+        g.clearRect(0, 0, width, height);
+        g.dispose();
 
-		return image;
-	}
+        return image;
+    }
 
-	public void cacheImage(BufferedImage image) {
-		tlImage.set(image);
-	}
+    public void cacheImage(BufferedImage image) {
+        tlImage.set(image);
+    }
 
 }
