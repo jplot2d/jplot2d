@@ -20,9 +20,8 @@ package org.jplot2d.element;
 
 /**
  * A horizontal strip annotation to highlight a range.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface HStripAnnotation extends StripAnnotation {
 

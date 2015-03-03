@@ -22,21 +22,20 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * A annotation with a symbol and a text string to show the coordinates. The text will automatically update whenever the
- * annotation changes to a new location.
- * 
+ * A annotation with a symbol and a text string to show the coordinates.
+ * The text will automatically update whenever the annotation changes to a new location.
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Coordinate Annotation")
 public interface CoordinateAnnotation extends SymbolAnnotation {
 
-	@Property(order = 0, readOnly = true, styleable = false)
-	public String getText();
+    @Property(order = 0, readOnly = true, styleable = false)
+    public String getText();
 
-	/**
-	 * The text cannot be set. Setting a text will throw an UnsupportedOperationException.
-	 */
-	public void setText(String text);
+    /**
+     * The text cannot be set. Setting a text will throw an UnsupportedOperationException.
+     */
+    public void setText(String text);
 
 }

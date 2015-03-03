@@ -28,180 +28,173 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**
- * An axis transform define a X or Y transformation of a viewport. It can be shared by a group of axes, which represent
- * the same user range.
- * 
+ * An axis transform define a X or Y transformation of a viewport.
+ * It can be shared by a group of axes, which represent the same user range.
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Axis Transform")
 public interface AxisTransform extends Element {
 
-	/**
-	 * Return the type of this axis.
-	 * 
-	 * @return the type of this axis
-	 */
-	@Property(order = 0, styleable = false)
-	public AxisType getType();
+    /**
+     * Return the type of this axis.
+     *
+     * @return the type of this axis
+     */
+    @Property(order = 0, styleable = false)
+    public AxisType getType();
 
-	/**
-	 * Set the type of the axis. An axis type can only be changed when it dosn't lock with other axes.
-	 * 
-	 * @param type
-	 *            the axis type
-	 */
-	public void setType(AxisType type);
+    /**
+     * Set the type of the axis. An axis type can only be changed when it dosn't lock with other axes.
+     *
+     * @param type the axis type
+     */
+    public void setType(AxisType type);
 
-	/**
-	 * Returns the transform type
-	 * 
-	 * @return the transform type
-	 */
-	@Property(order = 1, styleable = false)
-	public TransformType getTransform();
+    /**
+     * Returns the transform type
+     *
+     * @return the transform type
+     */
+    @Property(order = 1, styleable = false)
+    public TransformType getTransform();
 
-	/**
-	 * Sets the transform type
-	 * 
-	 * @param txfType
-	 *            the transform type
-	 */
-	public void setTransform(TransformType txfType);
+    /**
+     * Sets the transform type
+     *
+     * @param txfType the transform type
+     */
+    public void setTransform(TransformType txfType);
 
-	/**
-	 * Returns <code>true</code> if this AxisTransform is inverted.
-	 * 
-	 * @return <code>true</code> if this AxisTransform is inverted
-	 */
-	@Property(order = 2, styleable = false)
-	public boolean isInverted();
+    /**
+     * Returns <code>true</code> if this AxisTransform is inverted.
+     *
+     * @return <code>true</code> if this AxisTransform is inverted
+     */
+    @Property(order = 2, styleable = false)
+    public boolean isInverted();
 
-	/**
-	 * Sets <code>false</code> to make this AxisTransform have "normal" displaying, or <code>true</code> to have
-	 * "inverted" displaying.
-	 * 
-	 * @param flag
-	 *            if flag is <code>true</code> this AxisTransform is inverted, if flag is <code>false</code> this
-	 *            AxisTransform is normal
-	 */
-	public void setInverted(boolean flag);
+    /**
+     * Sets <code>false</code> to make this AxisTransform have "normal" displaying,
+     * or <code>true</code> to have "inverted" displaying.
+     *
+     * @param flag if flag is <code>true</code> this AxisTransform is inverted,
+     *             if flag is <code>false</code> this AxisTransform is normal
+     */
+    public void setInverted(boolean flag);
 
-	/**
-	 * Returns <code>true</code> if the margin is extended to an axis major tick automatically. The minimal margin is
-	 * controlled by {@link #getMarginFactor()}
-	 * 
-	 * @return <code>true</code> if the margin is auto-selected
-	 */
-	@Property(order = 3, styleable = false)
-	public boolean isAutoMargin();
+    /**
+     * Returns <code>true</code> if the margin is extended to an axis major tick automatically.
+     * The minimal margin is controlled by {@link #getMarginFactor()}
+     *
+     * @return <code>true</code> if the margin is auto-selected
+     */
+    @Property(order = 3, styleable = false)
+    public boolean isAutoMargin();
 
-	/**
-	 * Controls if the the margin is extended to an axis major tick automatically.
-	 * 
-	 * @param autoMargin
-	 *            the switch
-	 */
-	public void setAutoMargin(boolean autoMargin);
+    /**
+     * Controls if the the margin is extended to an axis major tick automatically.
+     *
+     * @param autoMargin the switch
+     */
+    public void setAutoMargin(boolean autoMargin);
 
-	/**
-	 * Returns the factor that the margin will be appended to range
-	 * 
-	 * @return the margin factor
-	 */
-	@Property(order = 4, styleable = false)
-	public double getMarginFactor();
+    /**
+     * Returns the factor that the margin will be appended to range
+     *
+     * @return the margin factor
+     */
+    @Property(order = 4, styleable = false)
+    public double getMarginFactor();
 
-	/**
-	 * Sets the factor that the margin will be appended to range
-	 * 
-	 * @param factor
-	 *            the margin factor
-	 */
-	public void setMarginFactor(double factor);
+    /**
+     * Sets the factor that the margin will be appended to range
+     *
+     * @param factor the margin factor
+     */
+    public void setMarginFactor(double factor);
 
-	/**
-	 * Return the core range of the AxisTransform. The returned range will be negative (start > end) if this
-	 * AxisTransform is inverted.
-	 * 
-	 * @return the core range
-	 */
-	@Property(order = 5, styleable = false)
-	public Range getCoreRange();
+    /**
+     * Return the core range of the AxisTransform.
+     * The returned range will be negative (start > end) if this AxisTransform is inverted.
+     *
+     * @return the core range
+     */
+    @Property(order = 5, styleable = false)
+    public Range getCoreRange();
 
-	/**
-	 * Set the core range of the AxisTransform. The range will expand according to the settings of autoMargin and
-	 * marginFactor, and derive an actual range. The given range can be positive (start < end) or negative (start >
-	 * end). It has not effect on the inverted property. All locked axes will follow the change of this axis.
-	 * <p>
-	 * If user want set actual range directly by {@link #setRange(Range)}, The coreRange will be set to
-	 * <code>null</code> automatically.
-	 * 
-	 * @param range
-	 *            the core range to be set
-	 */
-	public void setCoreRange(Range range);
+    /**
+     * Set the core range of the AxisTransform. The range will expand
+     * according to the settings of autoMargin and marginFactor, and derive an actual range.
+     * The given range can be positive (start < end) or negative (start > end).
+     * It has not effect on the property "inverted". All locked axes will follow the change of this axis.
+     * <p/>
+     * If user want set actual range directly by {@link #setRange(Range)},
+     * The coreRange will be set to <code>null</code> automatically.
+     *
+     * @param range the core range to be set
+     */
+    public void setCoreRange(Range range);
 
-	/**
-	 * Return the range of the AxisTransform. The returned range will be negative (start > end) if this AxisTransform is
-	 * inverted.
-	 * 
-	 * @return the actual range displayed
-	 */
-	@Property(order = 6, styleable = false)
-	public Range getRange();
+    /**
+     * Return the range of the AxisTransform. The returned range will be negative (start > end)
+     * if this AxisTransform is inverted.
+     *
+     * @return the actual range displayed
+     */
+    @Property(order = 6, styleable = false)
+    public Range getRange();
 
-	/**
-	 * Set the actual range displayed in the AxisTransform. The given range can be positive (start < end) or negative
-	 * (start > end). It has not effect on the inverted property. All locked axes will follow the change of this axis.
-	 * <p>
-	 * The coreRange is set to <code>null</code> after calling this method.
-	 * 
-	 * @param range
-	 *            the actual range to be set.
-	 */
-	public void setRange(Range range);
+    /**
+     * Set the actual range displayed in the AxisTransform.
+     * The given range can be positive (start < end) or negative (start > end).
+     * It has not effect on the property "inverted". All locked axes will follow the change of this axis.
+     * <p/>
+     * The coreRange is set to <code>null</code> after calling this method.
+     *
+     * @param range the actual range to be set.
+     */
+    public void setRange(Range range);
 
-	/**
-	 * Returns the normal transform of this AxisTransform
-	 * 
-	 * @return the normal transform
-	 */
-	public NormalTransform getNormalTransform();
+    /**
+     * Returns the normal transform of this AxisTransform
+     *
+     * @return the normal transform
+     */
+    public NormalTransform getNormalTransform();
 
-	/**
-	 * Returns the lock group to that this AxisTransform belongs. A AxisTransform must has a lock group, which have this
-	 * AxisTransform at least.
-	 * 
-	 * @return
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public AxisRangeLockGroup getLockGroup();
+    /**
+     * Returns the lock group that this AxisTransform belongs to.
+     * A AxisTransform must has a lock group, which have this AxisTransform at least.
+     *
+     * @return the lock group that this AxisTransform belongs to
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public AxisRangeLockGroup getLockGroup();
 
-	/**
-	 * Join an axis lock group. The lock group must exist in the same environment, otherwise an exception will be
-	 * thrown.
-	 * 
-	 * @param group
-	 *            the lock group to join to.
-	 */
-	@Hierarchy(HierarchyOp.JOIN)
-	public void setLockGroup(AxisRangeLockGroup group);
+    /**
+     * Join an axis lock group.
+     * The lock group must exist in the same environment, otherwise an exception will be thrown.
+     *
+     * @param group the lock group to join to.
+     */
+    @Hierarchy(HierarchyOp.JOIN)
+    public void setLockGroup(AxisRangeLockGroup group);
 
-	/**
-	 * Returns all axis tick managers belongs to this range manager.
-	 * 
-	 * @return all axes tick managers belongs to this range manager.
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public AxisTickManager[] getTickManagers();
+    /**
+     * Returns all axis tick managers belongs to this range manager.
+     *
+     * @return all axes tick managers belongs to this range manager.
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public AxisTickManager[] getTickManagers();
 
-	/**
-	 * Returns all layers attaching to this AxisTransform.
-	 * 
-	 * @return
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public Layer[] getLayers();
+    /**
+     * Returns all layers attaching to this AxisTransform.
+     *
+     * @return all layers attaching to this AxisTransform
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public Layer[] getLayers();
 
 }

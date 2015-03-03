@@ -25,26 +25,25 @@ import org.jplot2d.data.SingleBandImageData;
 
 /**
  * A graph to display a pseudo-color image. Its data is a single band intensity values.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Image")
 public interface ImageGraph extends Graph {
 
-	/**
-	 * Returns the mapping of this image.
-	 * 
-	 * @return the mapping of this image
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public ImageMapping getMapping();
+    /**
+     * Returns the mapping of this image.
+     *
+     * @return the mapping of this image
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public ImageMapping getMapping();
 
-	@Hierarchy(HierarchyOp.JOIN)
-	public void setMapping(ImageMapping mapping);
+    @Hierarchy(HierarchyOp.JOIN)
+    public void setMapping(ImageMapping mapping);
 
-	public SingleBandImageData getData();
+    public SingleBandImageData getData();
 
-	public void setData(SingleBandImageData data);
+    public void setData(SingleBandImageData data);
 
 }

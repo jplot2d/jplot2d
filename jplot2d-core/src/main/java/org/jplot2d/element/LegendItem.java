@@ -26,57 +26,54 @@ import org.jplot2d.annotation.PropertyGroup;
 /**
  * An item in legend to show a short line and a text. It will be hosted by the legend of the plot which host the Graph.
  * If the hosting legend is disabled, it will be hosted by legend of parent plot.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Legend Item")
 public interface LegendItem extends Element {
 
-	@Hierarchy(HierarchyOp.GET)
-	public Graph getParent();
+    @Hierarchy(HierarchyOp.GET)
+    public Graph getParent();
 
-	/**
-	 * Returns the legend who show this item
-	 * 
-	 * @return the legend who show this item
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Legend getLegend();
+    /**
+     * Returns the legend who show this item
+     *
+     * @return the legend who show this item
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public Legend getLegend();
 
-	/**
-	 * returns <code>true</code> if this item is displayed in legend; otherwise, returns <code>false</code>.
-	 * 
-	 * @return the flag
-	 */
-	@Property(order = 0, styleable = false)
-	public boolean isVisible();
+    /**
+     * returns <code>true</code> if this item is displayed in legend; otherwise, returns <code>false</code>.
+     *
+     * @return the flag
+     */
+    @Property(order = 0, styleable = false)
+    public boolean isVisible();
 
-	/**
-	 * Sets a flag indicating whether this item should be displayed in the legend. The default value is
-	 * <code>true</code>, even if the Graph is invisible.
-	 * 
-	 * @param show
-	 *            the flag
-	 */
-	public void setVisible(boolean show);
+    /**
+     * Sets a flag indicating whether this item should be displayed in the legend.
+     * The default value is <code>true</code>, even if the Graph is invisible.
+     *
+     * @param show the flag
+     */
+    public void setVisible(boolean show);
 
-	/**
-	 * Returns the size of the symbol draw in legend. The default symbol size is <code>Float.NaN</code>, means the same
-	 * size as the symbol size of XYGraph.
-	 * 
-	 * @return the size of the symbol draw in legend
-	 */
-	@Property(order = 1)
-	public float getSymbolSize();
+    /**
+     * Returns the size of the symbol draw in legend.
+     * The default symbol size is <code>Float.NaN</code>, means the same size as the symbol size of XYGraph.
+     *
+     * @return the size of the symbol draw in legend
+     */
+    @Property(order = 1)
+    public float getSymbolSize();
 
-	/**
-	 * Set the size of symbol draw in legend. Setting to <code>Float.NaN</code> means the same size as the symbol size
-	 * of XYGraph.
-	 * 
-	 * @param size
-	 *            the size of symbols draw in legend
-	 */
-	public void setSymbolSize(float size);
+    /**
+     * Set the size of symbol draw in legend.
+     * Setting to <code>Float.NaN</code> means the same size as the symbol size of XYGraph.
+     *
+     * @param size the size of symbols draw in legend
+     */
+    public void setSymbolSize(float size);
 
 }

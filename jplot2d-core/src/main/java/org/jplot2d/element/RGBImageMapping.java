@@ -27,42 +27,41 @@ import org.jplot2d.annotation.HierarchyOp;
  * <li>Apply band transform on R,G,B bands, see {@link ImageBandTransform}</li>
  * <li>zoom to correct size for display</li>
  * </ol>
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface RGBImageMapping extends Element {
 
-	/**
-	 * Returns all ImageGraph whose mapping are controlled by this ImageMapping.
-	 * 
-	 * @return all ImageGraph whose mapping are controlled by this ImageMapping
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public RGBImageGraph[] getGraphs();
+    /**
+     * Returns all ImageGraph whose mapping are controlled by this ImageMapping.
+     *
+     * @return all ImageGraph whose mapping are controlled by this ImageMapping
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public RGBImageGraph[] getGraphs();
 
-	/**
-	 * Returns the BandTransform of R band.
-	 * 
-	 * @return the BandTransform of R band
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public ImageBandTransform getRedTransform();
+    /**
+     * Returns the BandTransform of R band.
+     *
+     * @return the BandTransform of R band
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public ImageBandTransform getRedTransform();
 
-	/**
-	 * Returns the BandTransform of G band.
-	 * 
-	 * @return the BandTransform of G band
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public ImageBandTransform getGreenTransform();
+    /**
+     * Returns the BandTransform of G band.
+     *
+     * @return the BandTransform of G band
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public ImageBandTransform getGreenTransform();
 
-	/**
-	 * Returns the BandTransform of B band.
-	 * 
-	 * @return the BandTransform of B band
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public ImageBandTransform getBlueTransform();
+    /**
+     * Returns the BandTransform of B band.
+     *
+     * @return the BandTransform of B band
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public ImageBandTransform getBlueTransform();
 
 }

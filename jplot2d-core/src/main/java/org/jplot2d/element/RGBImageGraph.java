@@ -25,26 +25,25 @@ import org.jplot2d.data.MultiBandImageData;
 
 /**
  * A image graph which can display a 3-bands data and map them to RGB color.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Image")
 public interface RGBImageGraph extends Graph {
 
-	/**
-	 * Returns the mapping of this image.
-	 * 
-	 * @return the mapping of this image
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public RGBImageMapping getMapping();
+    /**
+     * Returns the mapping of this image.
+     *
+     * @return the mapping of this image
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public RGBImageMapping getMapping();
 
-	@Hierarchy(HierarchyOp.JOIN)
-	public void setMapping(RGBImageMapping mapping);
+    @Hierarchy(HierarchyOp.JOIN)
+    public void setMapping(RGBImageMapping mapping);
 
-	public MultiBandImageData getData();
+    public MultiBandImageData getData();
 
-	public void setData(MultiBandImageData data);
+    public void setData(MultiBandImageData data);
 
 }

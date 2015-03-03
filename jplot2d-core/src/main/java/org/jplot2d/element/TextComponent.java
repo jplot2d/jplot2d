@@ -23,59 +23,59 @@ import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A component who represent a text string. The text string can be a math element.
- * 
+ *
  * @author Jingjing Li
  */
 @PropertyGroup("Text")
 public interface TextComponent extends PComponent {
 
-	/**
-	 * Returns the text string.
-	 * 
-	 * @return a String
-	 */
-	@Property(order = 0, description = "Can be TeX math string", styleable = false)
-	public String getText();
+    /**
+     * Returns the text string.
+     *
+     * @return a String
+     */
+    @Property(order = 0, description = "Can be TeX math string", styleable = false)
+    public String getText();
 
-	/**
-	 * Defines the single line of text to be displayed. The string can be in TeX-like syntax. A pair of "$" mark into
-	 * math mode and out math mode. In math mode, Greek letter can be inputed as \alpha, \beta, etc. Superscripts (up
-	 * high) and subscripts (down low) can be inputed by using "^" and "_". Notice that ^ and _ apply only to the next
-	 * single character. If you want several things to be superscripted or subscripted, just enclose them in braces. eg:
-	 * "plain text $x_\alpha^{2y}$".
-	 * 
-	 * @param text
-	 */
-	public void setText(String text);
+    /**
+     * Defines the text to be displayed. The text can be multi-line, splited by \n.
+     * The string of every line can be in TeX-like syntax. A pair of "$" mark into math mode and out math mode.
+     * In math mode, Greek letter can be inputed as \alpha, \beta, etc.
+     * Superscripts (up high) and subscripts (down low) can be inputed by using "^" and "_".
+     * Notice that ^ and _ apply only to the next single character.
+     * If you want several things to be superscripted or subscripted, just enclose them in braces. eg:
+     * "plain text $x_\alpha^{2y}$".
+     *
+     * @param text the text to be displayed
+     */
+    public void setText(String text);
 
-	/**
-	 * @return the horizontal alignment.
-	 */
-	@Property(order = 1)
-	public HAlign getHAlign();
+    /**
+     * @return the horizontal alignment.
+     */
+    @Property(order = 1)
+    public HAlign getHAlign();
 
-	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the title is on the
-	 * left of the base point.
-	 * 
-	 * @param hAlign
-	 *            the horizontal alignment.
-	 */
-	public void setHAlign(HAlign hAlign);
+    /**
+     * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
+     * eg, LEFT means the title is on the left of the base point.
+     *
+     * @param hAlign the horizontal alignment.
+     */
+    public void setHAlign(HAlign hAlign);
 
-	/**
-	 * @return the vertical alignment or null if not set.
-	 */
-	@Property(order = 2)
-	public VAlign getVAlign();
+    /**
+     * @return the vertical alignment or null if not set.
+     */
+    @Property(order = 2)
+    public VAlign getVAlign();
 
-	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
-	 * the base point
-	 * 
-	 * @param vAlign
-	 *            the vertical alignment.
-	 */
-	public void setVAlign(VAlign vAlign);
+    /**
+     * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
+     * eg, TOP means the title is on the top of the base point
+     *
+     * @param vAlign the vertical alignment.
+     */
+    public void setVAlign(VAlign vAlign);
 
 }

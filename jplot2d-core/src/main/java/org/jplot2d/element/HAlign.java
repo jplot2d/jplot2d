@@ -19,5 +19,5 @@
 package org.jplot2d.element;
 
 public enum HAlign {
-	LEFT, CENTER, RIGHT
+    LEFT, CENTER, RIGHT
 }

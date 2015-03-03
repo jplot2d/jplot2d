@@ -18,183 +18,174 @@
  */
 package org.jplot2d.element;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import java.awt.geom.Point2D;
+
 /**
  * Legend display legend items. If there is no item in a legend, it will not show.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Legend")
 public interface Legend extends MovableComponent {
 
-	/**
-	 * Returns <code>true</code> if this legend is enabled. By default, the legend is enabled.
-	 * 
-	 * @return the enabled flag.
-	 */
-	@Property(order = 0)
-	public boolean isEnabled();
+    /**
+     * Returns <code>true</code> if this legend is enabled. By default, the legend is enabled.
+     *
+     * @return the enabled flag.
+     */
+    @Property(order = 0)
+    public boolean isEnabled();
 
-	/**
-	 * Set to <code>true</code> to let this legend to host items. Otherwise the items will be displayed in parent
-	 * legend. The disabled legend will not show.
-	 * 
-	 * @param enabled
-	 */
-	public void setEnabled(boolean enabled);
+    /**
+     * Set to <code>true</code> to let this legend to host items.
+     * Otherwise the items will be displayed in parent legend. The disabled legend will not show.
+     *
+     * @param enabled the flag
+     */
+    public void setEnabled(boolean enabled);
 
-	/**
-	 * Gets the current position of this legend.
-	 * 
-	 * @return the position.
-	 */
-	@Property(order = 1)
-	public LegendPosition getPosition();
+    /**
+     * Gets the current position of this legend.
+     *
+     * @return the position.
+     */
+    @Property(order = 1)
+    public LegendPosition getPosition();
 
-	/**
-	 * Sets the position of this legend. Only when position is {@link LegendPosition#FREE}, the legend can be located by
-	 * {@link #setLocation(Point2D)}, {@link #setHAlign()} , {@link #setVAlign()}.
-	 * 
-	 * @param position
-	 *            the position of this legend.
-	 */
-	public void setPosition(LegendPosition position);
+    /**
+     * Sets the position of this legend.
+     * Only when position is {@link LegendPosition#FREE}, the legend can be located by
+     * {@link #setLocation(Point2D)}, {@link #setHAlign(HAlign)} , {@link #setVAlign(VAlign)}.
+     *
+     * @param position the position of this legend.
+     */
+    public void setPosition(LegendPosition position);
 
-	/**
-	 * Gets the location of this legend.
-	 * 
-	 * @return an instance of <code>Point</code> representing the base point of this legend
-	 */
-	@Property(order = 2, styleable = false, displayDigits = 4)
-	public Point2D getLocation();
+    /**
+     * Gets the location of this legend.
+     *
+     * @return an instance of <code>Point</code> representing the base point of this legend
+     */
+    @Property(order = 2, styleable = false, displayDigits = 4)
+    public Point2D getLocation();
 
-	/**
-	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
-	 * {@link LegendPosition#FREE}
-	 * 
-	 * @param loc
-	 *            the base point of this legend
-	 */
-	public void setLocation(Point2D loc);
+    /**
+     * Moves this legend to a new location.
+     * Setting legend to a new location will change legend position to {@link LegendPosition#FREE}
+     *
+     * @param loc the base point of this legend
+     */
+    public void setLocation(Point2D loc);
 
-	/**
-	 * Moves this legend to a new location. Setting legend to a new location will change legend position to
-	 * {@link LegendPosition#FREE}
-	 * 
-	 * @param x
-	 *            the x-coordinate of the new location
-	 * @param y
-	 *            the y-coordinate of the new location
-	 */
-	public void setLocation(double x, double y);
+    /**
+     * Moves this legend to a new location.
+     * Setting legend to a new location will change legend position to {@link LegendPosition#FREE}
+     *
+     * @param x the x-coordinate of the new location
+     * @param y the y-coordinate of the new location
+     */
+    public void setLocation(double x, double y);
 
-	/**
-	 * Get the horizontal alignment.
-	 * 
-	 * @return the horizontal alignment.
-	 */
-	@Property(order = 3, styleable = false)
-	public HAlign getHAlign();
+    /**
+     * Get the horizontal alignment.
+     *
+     * @return the horizontal alignment.
+     */
+    @Property(order = 3, styleable = false)
+    public HAlign getHAlign();
 
-	/**
-	 * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT. eg, LEFT means the base point is on
-	 * the left of this legend.
-	 * <p>
-	 * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is
-	 * not defined.
-	 * 
-	 * @param halign
-	 *            horizontal alignment.
-	 */
-	public void setHAlign(HAlign halign);
+    /**
+     * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
+     * eg, LEFT means the base point is on the left of this legend.
+     * <p/>
+     * Notice: This method should be called when the position is {@link LegendPosition#FREE},
+     * otherwise the behavior is not defined.
+     *
+     * @param halign the horizontal alignment.
+     */
+    public void setHAlign(HAlign halign);
 
-	/**
-	 * Get the vertical alignment.
-	 * 
-	 * @return the vertical alignment.
-	 */
-	@Property(order = 4, styleable = false)
-	public VAlign getVAlign();
+    /**
+     * Get the vertical alignment.
+     *
+     * @return the vertical alignment.
+     */
+    @Property(order = 4, styleable = false)
+    public VAlign getVAlign();
 
-	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the base point is on the
-	 * top of this legend.
-	 * <p>
-	 * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is
-	 * not defined.
-	 * 
-	 * @param valign
-	 *            The vertical alignment.
-	 */
-	public void setVAlign(VAlign valign);
+    /**
+     * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
+     * eg, TOP means the base point is on the top of this legend.
+     * <p/>
+     * Notice: This method should be called when the position is {@link LegendPosition#FREE},
+     * otherwise the behavior is not defined.
+     *
+     * @param valign The vertical alignment.
+     */
+    public void setVAlign(VAlign valign);
 
-	/**
-	 * Returns the number of columns in the legend item.
-	 * 
-	 * @return the number of columns
-	 */
-	@Property(order = 5, styleable = false)
-	public int getColumns();
+    /**
+     * Returns the number of columns in the legend item.
+     *
+     * @return the number of columns
+     */
+    @Property(order = 5, styleable = false)
+    public int getColumns();
 
-	/**
-	 * Sets the number of columns. This method only take effect when position is {@link LegendPosition#FREE}. Otherwise
-	 * the columns is auto selected.
-	 * 
-	 * @param cols
-	 *            number of columns
-	 */
-	public void setColumns(int columns);
+    /**
+     * Sets the number of columns. This method only take effect when position is {@link LegendPosition#FREE}.
+     * Otherwise the columns is auto selected.
+     *
+     * @param columns number of columns
+     */
+    public void setColumns(int columns);
 
-	/**
-	 * Returns the row spacing factor. The row spacing is factor * row height.
-	 * 
-	 * @return the row spacing factor
-	 */
-	@Property(order = 6)
-	public double getRowSpacingFactor();
+    /**
+     * Returns the row spacing factor. The row spacing is factor * row height.
+     *
+     * @return the row spacing factor
+     */
+    @Property(order = 6)
+    public double getRowSpacingFactor();
 
-	/**
-	 * Sets the row spacing factor. The row spacing is factor * row height. The default factor is 0.125
-	 * 
-	 * @param factor
-	 *            the row spacing factor
-	 */
-	public void setRowSpacingFactor(double factor);
+    /**
+     * Sets the row spacing factor. The row spacing is factor * row height. The default factor is 0.125
+     *
+     * @param factor the row spacing factor
+     */
+    public void setRowSpacingFactor(double factor);
 
-	/**
-	 * Returns <code>true</code> if the legend border is visible
-	 * 
-	 * @return <code>true</code> if the legend border is visible
-	 */
-	@Property(order = 7)
-	public boolean isBorderVisible();
+    /**
+     * Returns <code>true</code> if the legend border is visible
+     *
+     * @return <code>true</code> if the legend border is visible
+     */
+    @Property(order = 7)
+    public boolean isBorderVisible();
 
-	/**
-	 * Sets if the legend border is visible. By default, the legend border is visible.
-	 * 
-	 * @param visible
-	 *            the flag to indicate if the legend border is visible
-	 */
-	public void setBorderVisible(boolean visible);
+    /**
+     * Sets if the legend border is visible. By default, the legend border is visible.
+     *
+     * @param visible the flag to indicate if the legend border is visible
+     */
+    public void setBorderVisible(boolean visible);
 
-	@Property(order = 8)
-	public boolean isMovable();
+    @Property(order = 8)
+    public boolean isMovable();
 
-	public void setMovable(boolean movable);
+    public void setMovable(boolean movable);
 
-	/**
-	 * Returns all legend items managed by this legend
-	 * 
-	 * @return items managed by this legend
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public LegendItem[] getItems();
+    /**
+     * Returns all legend items managed by this legend
+     *
+     * @return items managed by this legend
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public LegendItem[] getItems();
 
 }

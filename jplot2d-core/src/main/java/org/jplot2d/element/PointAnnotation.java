@@ -18,44 +18,40 @@
  */
 package org.jplot2d.element;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import java.awt.geom.Point2D;
+
 /**
  * A annotation which can highlight a point.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Point Annotation")
 public interface PointAnnotation extends Annotation {
 
-	/**
-	 * returns the x,y values location in layer's world coordinate system.
-	 * 
-	 * @return the x,y values location
-	 */
-	@Property(order = 1, styleable = false)
-	public Point2D getValuePoint();
+    /**
+     * returns the x,y values location in layer's world coordinate system.
+     *
+     * @return the x,y values location
+     */
+    @Property(order = 1, styleable = false)
+    public Point2D getValuePoint();
 
-	/**
-	 * Sets the x,y values location in layer's world coordinate system
-	 * 
-	 * @param point
-	 *            the x,y values location
-	 */
-	public void setValuePoint(Point2D point);
+    /**
+     * Sets the x,y values location in layer's world coordinate system
+     *
+     * @param point the x,y values location
+     */
+    public void setValuePoint(Point2D point);
 
-	/**
-	 * Sets the x,y values location in layer's world coordinate system
-	 * 
-	 * @param x
-	 *            the x-values of the new location
-	 * @param y
-	 *            the y-values of the new location
-	 */
-	public void setValuePoint(double x, double y);
+    /**
+     * Sets the x,y values location in layer's world coordinate system
+     *
+     * @param x the x-values of the new location
+     * @param y the y-values of the new location
+     */
+    public void setValuePoint(double x, double y);
 
 }

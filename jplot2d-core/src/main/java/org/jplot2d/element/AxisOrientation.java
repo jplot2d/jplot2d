@@ -20,9 +20,9 @@ package org.jplot2d.element;
 
 /**
  * An enum type to define the orientation of an axis or axis label.
- * 
+ *
  * @author Jingjing Li
  */
 public enum AxisOrientation {
-	HORIZONTAL, VERTICAL
+    HORIZONTAL, VERTICAL
 }

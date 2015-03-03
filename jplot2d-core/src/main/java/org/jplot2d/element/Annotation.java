@@ -25,19 +25,18 @@ import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A annotation can be added to layers to mark a point or a range of values.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Annotation")
 public interface Annotation extends MovableComponent {
 
-	@Hierarchy(HierarchyOp.GET)
-	public Layer getParent();
+    @Hierarchy(HierarchyOp.GET)
+    public Layer getParent();
 
-	@Property(order = 0)
-	public boolean isMovable();
+    @Property(order = 0)
+    public boolean isMovable();
 
-	public void setMovable(boolean movable);
+    public void setMovable(boolean movable);
 
 }

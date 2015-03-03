@@ -22,133 +22,122 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains an dataset and optionally some annotations. Every layer has its own viewport to show data line
- * and annotations.
- * 
+ * A layer can contains graphs and annotations. Every layer has its own viewport to graphs line and annotations.
+ *
  * @author Jingjing Li
- * 
  */
 public interface Layer extends PComponent {
 
-	@Hierarchy(HierarchyOp.GET)
-	public Plot getParent();
+    @Hierarchy(HierarchyOp.GET)
+    public Plot getParent();
 
-	/**
-	 * Returns the graph on the given index.
-	 * 
-	 * @return the graph on the given index
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Graph getGraph(int index);
+    /**
+     * Returns the graph on the given index.
+     *
+     * @return the graph on the given index
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public Graph getGraph(int index);
 
-	/**
-	 * Returns all graph of this layer.
-	 * 
-	 * @return all graph of this layer.
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public Graph[] getGraphs();
+    /**
+     * Returns all graph of this layer.
+     *
+     * @return all graph of this layer.
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public Graph[] getGraphs();
 
-	/**
-	 * Adds a graph to this layer.
-	 * 
-	 * @param graph
-	 *            the graoh to be add.
-	 */
-	@Hierarchy(HierarchyOp.ADD)
-	public void addGraph(Graph graph);
+    /**
+     * Adds a graph to this layer.
+     *
+     * @param graph the graoh to be add.
+     */
+    @Hierarchy(HierarchyOp.ADD)
+    public void addGraph(Graph graph);
 
-	/**
-	 * Remove the graph from this layer.
-	 * 
-	 * @param graph
-	 *            the graph to be removed
-	 */
-	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeGraph(Graph graph);
+    /**
+     * Remove the graph from this layer.
+     *
+     * @param graph the graph to be removed
+     */
+    @Hierarchy(HierarchyOp.REMOVE)
+    public void removeGraph(Graph graph);
 
-	/**
-	 * Returns the annotation.
-	 * 
-	 * @param id
-	 *            the index of annotations
-	 * @return the annotation.
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Annotation getAnnotation(int idx);
+    /**
+     * Returns the annotation.
+     *
+     * @param idx the index of annotations
+     * @return the annotation.
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public Annotation getAnnotation(int idx);
 
-	/**
-	 * Returns all the annotations in this layer.
-	 * 
-	 * @return all annotations in an array
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public Annotation[] getAnnotations();
+    /**
+     * Returns all the annotations in this layer.
+     *
+     * @return all annotations in an array
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public Annotation[] getAnnotations();
 
-	/**
-	 * Add a new annotation to this layer.
-	 * 
-	 * @param annotation
-	 *            the annotation to be added
-	 */
-	@Hierarchy(HierarchyOp.ADD)
-	public void addAnnotation(Annotation annotation);
+    /**
+     * Add a new annotation to this layer.
+     *
+     * @param annotation the annotation to be added
+     */
+    @Hierarchy(HierarchyOp.ADD)
+    public void addAnnotation(Annotation annotation);
 
-	/**
-	 * Remove the annotation from this layer.
-	 * 
-	 * @param annotation
-	 *            the annotation to be removed
-	 */
-	@Hierarchy(HierarchyOp.REMOVE)
-	public void removeAnnotation(Annotation annotation);
+    /**
+     * Remove the annotation from this layer.
+     *
+     * @param annotation the annotation to be removed
+     */
+    @Hierarchy(HierarchyOp.REMOVE)
+    public void removeAnnotation(Annotation annotation);
 
-	/**
-	 * Returns the X axis to this layer attaching.
-	 * 
-	 * @return
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public AxisTransform getXAxisTransform();
+    /**
+     * Returns the X axis that this layer attach to.
+     *
+     * @return the X axis that this layer attach to
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public AxisTransform getXAxisTransform();
 
-	/**
-	 * Returns the Y axis to this layer attaching.
-	 * 
-	 * @return
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public AxisTransform getYAxisTransform();
+    /**
+     * Returns the Y axis that this layer attach to.
+     *
+     * @return the Y axis that this layer attach to
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public AxisTransform getYAxisTransform();
 
-	/**
-	 * Attach this layer to the given X axis. When adding a layer to a plot, the axis must exist in the destination
-	 * environment, otherwise an exception will be thrown.
-	 * 
-	 * @param axt
-	 *            axis transform
-	 */
-	@Hierarchy(HierarchyOp.REF)
-	public void setXAxisTransform(AxisTransform axt);
+    /**
+     * Attach this layer to the given X axis. When adding a layer to a plot,
+     * the axis must exist in the destination environment, otherwise an exception will be thrown.
+     *
+     * @param axt the axis transform
+     */
+    @Hierarchy(HierarchyOp.REF)
+    public void setXAxisTransform(AxisTransform axt);
 
-	/**
-	 * Attach this layer to the given Y axis. When adding a layer to a plot, the axis must exist in the destination
-	 * environment, otherwise an exception will be thrown.
-	 * 
-	 * @param axt
-	 *            axis transform
-	 */
-	@Hierarchy(HierarchyOp.REF)
-	public void setYAxisTransform(AxisTransform axt);
+    /**
+     * Attach this layer to the given Y axis. When adding a layer to a plot,
+     * the axis must exist in the destination environment, otherwise an exception will be thrown.
+     *
+     * @param axt the axis transform
+     */
+    @Hierarchy(HierarchyOp.REF)
+    public void setYAxisTransform(AxisTransform axt);
 
-	/**
-	 * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes must exist in the
-	 * destination environment, otherwise an exception will be thrown.
-	 * 
-	 * @param xaxt
-	 *            the x axis transform
-	 * @param yaxt
-	 *            the y axis transform
-	 */
-	@Hierarchy(HierarchyOp.REF2)
-	public void setAxesTransform(AxisTransform xaxt, AxisTransform yaxt);
+    /**
+     * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes must exist in the
+     * destination environment, otherwise an exception will be thrown.
+     *
+     * @param xaxt the x axis transform
+     * @param yaxt the y axis transform
+     */
+    @Hierarchy(HierarchyOp.REF2)
+    public void setAxesTransform(AxisTransform xaxt, AxisTransform yaxt);
 
 }

@@ -19,5 +19,5 @@
 package org.jplot2d.element;
 
 public enum VAlign {
-	TOP, MIDDLE, BOTTOM
+    TOP, MIDDLE, BOTTOM
 }

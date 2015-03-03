@@ -24,20 +24,19 @@ import org.jplot2d.data.GraphData;
 
 /**
  * A graph to draw Graph data in a viewport of layer. It always has an associated legend item, show in a legend.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface Graph extends PComponent {
 
-	@Hierarchy(HierarchyOp.GET)
-	public Layer getParent();
+    @Hierarchy(HierarchyOp.GET)
+    public Layer getParent();
 
-	/**
-	 * Returns the graph data that this graph will draw.
-	 * 
-	 * @return
-	 */
-	public GraphData getData();
+    /**
+     * Returns the graph data that this graph will draw.
+     *
+     * @return the graph data
+     */
+    public GraphData getData();
 
 }

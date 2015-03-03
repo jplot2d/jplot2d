@@ -18,50 +18,47 @@
  */
 package org.jplot2d.element;
 
-import java.awt.BasicStroke;
-
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import java.awt.BasicStroke;
+
 /**
  * A line annotation to highlight a value.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Line Annotation")
 public interface LineAnnotation extends Annotation {
 
-	/**
-	 * Returns the value of this annotation
-	 * 
-	 * @return the value of this annotation
-	 */
-	@Property(order = 0, styleable = false)
-	public double getValue();
+    /**
+     * Returns the value of this annotation
+     *
+     * @return the value of this annotation
+     */
+    @Property(order = 0, styleable = false)
+    public double getValue();
 
-	/**
-	 * Sets the value of this annotation
-	 * 
-	 * @param value
-	 *            the value of this annotation
-	 */
-	public void setValue(double value);
+    /**
+     * Sets the value of this annotation
+     *
+     * @param value the value of this annotation
+     */
+    public void setValue(double value);
 
-	/**
-	 * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
-	 * 
-	 * @return the <code>BasicStroke</code>
-	 */
-	@Property(order = 1)
-	public BasicStroke getStroke();
+    /**
+     * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
+     *
+     * @return the <code>BasicStroke</code>
+     */
+    @Property(order = 1)
+    public BasicStroke getStroke();
 
-	/**
-	 * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
-	 * 
-	 * @param stroke
-	 *            the <code>BasicStroke</code> to be used to draw the annotation line
-	 */
-	public void setStroke(BasicStroke stroke);
+    /**
+     * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
+     *
+     * @param stroke the <code>BasicStroke</code> to be used to draw the annotation line
+     */
+    public void setStroke(BasicStroke stroke);
 
 }

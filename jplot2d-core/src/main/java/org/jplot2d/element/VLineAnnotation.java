@@ -20,9 +20,8 @@ package org.jplot2d.element;
 
 /**
  * A vertical line annotation to highlight a value.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface VLineAnnotation extends LineAnnotation {
 

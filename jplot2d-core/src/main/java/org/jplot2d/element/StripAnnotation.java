@@ -18,51 +18,48 @@
  */
 package org.jplot2d.element;
 
-import java.awt.Paint;
-
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.util.Range;
 
+import java.awt.Paint;
+
 /**
  * A strip annotation to highlight a range.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Strip Annotation")
 public interface StripAnnotation extends Annotation {
 
-	/**
-	 * Returns the value range of this annotation
-	 * 
-	 * @return the value range of this annotation
-	 */
-	@Property(order = 0, styleable = false)
-	public Range getValueRange();
+    /**
+     * Returns the value range of this annotation
+     *
+     * @return the value range of this annotation
+     */
+    @Property(order = 0, styleable = false)
+    public Range getValueRange();
 
-	/**
-	 * Sets the value range of this annotation
-	 * 
-	 * @param range
-	 *            the value range of this annotation
-	 */
-	public void setValueRange(Range range);
+    /**
+     * Sets the value range of this annotation
+     *
+     * @param range the value range of this annotation
+     */
+    public void setValueRange(Range range);
 
-	/**
-	 * Returns the <code>Paint</code> to be used to fill the annotation strip.
-	 * 
-	 * @return the <code>Paint</code>
-	 */
-	@Property(order = 1)
-	public Paint getFillPaint();
+    /**
+     * Returns the <code>Paint</code> to be used to fill the annotation strip.
+     *
+     * @return the <code>Paint</code>
+     */
+    @Property(order = 1)
+    public Paint getFillPaint();
 
-	/**
-	 * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is semi-transparent grey.
-	 * 
-	 * @param stroke
-	 *            the <code>Paint</code> to be used to fill the annotation strip
-	 */
-	public void setFillPaint(Paint stroke);
+    /**
+     * Sets the <code>Paint</code> to be used to fill the annotation strip. The default paint is semi-transparent grey.
+     *
+     * @param stroke the <code>Paint</code> to be used to fill the annotation strip
+     */
+    public void setFillPaint(Paint stroke);
 
 }

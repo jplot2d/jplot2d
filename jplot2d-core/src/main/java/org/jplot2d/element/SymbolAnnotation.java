@@ -24,112 +24,105 @@ import org.jplot2d.util.SymbolShape;
 
 /**
  * A point annotation with a symbol and a text string.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Symbol Annotation")
 public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 
-	/**
-	 * Returns the symbol shape of this annotation
-	 * 
-	 * @return the symbol shape of this annotation
-	 */
-	@Property(order = 0, styleable = false)
-	public SymbolShape getSymbolShape();
+    /**
+     * Returns the symbol shape of this annotation
+     *
+     * @return the symbol shape of this annotation
+     */
+    @Property(order = 0, styleable = false)
+    public SymbolShape getSymbolShape();
 
-	/**
-	 * Sets the symbol shape of this annotation
-	 * 
-	 * @param symbol
-	 *            the symbol shape of this annotation
-	 */
-	public void setSymbolShape(SymbolShape symbol);
+    /**
+     * Sets the symbol shape of this annotation
+     *
+     * @param symbol the symbol shape of this annotation
+     */
+    public void setSymbolShape(SymbolShape symbol);
 
-	/**
-	 * Returns the symbol size of this annotation
-	 * 
-	 * @return the symbol size of this annotation
-	 */
-	@Property(order = 1)
-	public float getSymbolSize();
+    /**
+     * Returns the symbol size of this annotation
+     *
+     * @return the symbol size of this annotation
+     */
+    @Property(order = 1)
+    public float getSymbolSize();
 
-	/**
-	 * Sets the symbol shape of this annotation
-	 * 
-	 * @param symbol
-	 *            the symbol size of this annotation
-	 */
-	public void setSymbolSize(float size);
+    /**
+     * Sets the symbol shape of this annotation
+     *
+     * @param size the symbol size of this annotation
+     */
+    public void setSymbolSize(float size);
 
-	/**
-	 * Returns the scale apply to effective font size to derive symbol size when symbol size is NaN.
-	 * 
-	 * @return the font scale.
-	 */
-	@Property(order = 2)
-	public float getSymbolScale();
+    /**
+     * Returns the scale apply to effective font size to derive symbol size when symbol size is NaN.
+     *
+     * @return the font scale.
+     */
+    @Property(order = 2)
+    public float getSymbolScale();
 
-	/**
-	 * Sets the scale apply to effective font size to derive symbol size when symbol size is NaN.
-	 * 
-	 * @param scale
-	 *            the scale
-	 */
-	public void setSymbolScale(float scale);
+    /**
+     * Sets the scale apply to effective font size to derive symbol size when symbol size is NaN.
+     *
+     * @param scale the scale
+     */
+    public void setSymbolScale(float scale);
 
-	/**
-	 * Returns the rotation angle of the text.
-	 * 
-	 * @return the rotation angle value
-	 */
-	@Property(order = 3, styleable = false)
-	public double getAngle();
+    /**
+     * Returns the rotation angle of the text.
+     *
+     * @return the rotation angle value
+     */
+    @Property(order = 3, styleable = false)
+    public double getAngle();
 
-	/**
-	 * Set the rotation angle of the text. The angle start to count from horizontal direction and grow in counter-clock
-	 * wise direction.
-	 * 
-	 * @param angle
-	 *            the rotation angle
-	 */
-	public void setAngle(double angle);
+    /**
+     * Set the rotation angle of the text. The angle start to count from horizontal direction and grow in counter-clock
+     * wise direction.
+     *
+     * @param angle the rotation angle
+     */
+    public void setAngle(double angle);
 
-	/**
-	 * Returns the X offset factor of text. The offset is relative to the base point of this annotation. The factor
-	 * apply to the half size of symbol.
-	 * 
-	 * @return the X offset factor of text
-	 */
-	@Property(order = 4)
-	public float getTextOffsetFactorX();
+    /**
+     * Returns the X offset factor of text. The offset is relative to the base point of this annotation. The factor
+     * apply to the half size of symbol.
+     *
+     * @return the X offset factor of text
+     */
+    @Property(order = 4)
+    public float getTextOffsetFactorX();
 
-	/**
-	 * Sets the X offset factor of text. The offset is relative to the base point of this annotation. The factor apply
-	 * to the half size of symbol.
-	 * 
-	 * @param offset
-	 *            the X offset factor of text
-	 */
-	public void setTextOffsetFactorX(float offset);
+    /**
+     * Sets the X offset factor of text. The offset is relative to the base point of this annotation. The factor apply
+     * to the half size of symbol.
+     *
+     * @param offset the X offset factor of text
+     */
+    public void setTextOffsetFactorX(float offset);
 
-	/**
-	 * Returns the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
-	 * half size of symbol.
-	 * 
-	 * @return the Y offset factor of text
-	 */
-	@Property(order = 5)
-	public float getTextOffsetFactorY();
+    /**
+     * Returns the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
+     * half size of symbol.
+     *
+     * @return the Y offset factor of text
+     */
+    @Property(order = 5)
+    public float getTextOffsetFactorY();
 
-	/**
-	 * Sets the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
-	 * half size of symbol.
-	 * 
-	 * @param offset
-	 *            the Y offset factor of text
-	 */
-	public void setTextOffsetFactorY(float offset);
+    /**
+     * Sets the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
+     * half size of symbol.
+     *
+     * @param offset the Y offset factor of text
+     */
+    public void setTextOffsetFactorY(float offset);
 
 }

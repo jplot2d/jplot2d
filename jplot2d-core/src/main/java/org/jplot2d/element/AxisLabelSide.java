@@ -21,7 +21,7 @@ package org.jplot2d.element;
 /**
  * An enum type to define the position of the axis tick labels relative to the
  * axis.
- * 
+ *
  * @author Jingjing Li
  */
 public enum AxisLabelSide {

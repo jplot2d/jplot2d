@@ -22,45 +22,40 @@ import java.awt.geom.Point2D;
 
 /**
  * Defines some methods for movable component.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface MovableComponent extends PComponent {
 
-	/**
-	 * Returns <code>true</code> if the component is movable by mouse dragging. Only selectable
-	 * component can be movable.
-	 * 
-	 * @return <code>true</code> if movable
-	 */
-	public boolean isMovable();
+    /**
+     * Returns <code>true</code> if the component is movable by mouse dragging.
+     * Only selectable component can be movable.
+     *
+     * @return <code>true</code> if movable
+     */
+    public boolean isMovable();
 
-	/**
-	 * Set if the component is movable by mouse dragging.
-	 * 
-	 * @param movable
-	 *            <code>true</code> if movable
-	 */
-	public void setMovable(boolean movable);
+    /**
+     * Set if the component is movable by mouse dragging.
+     *
+     * @param movable <code>true</code> if movable
+     */
+    public void setMovable(boolean movable);
 
-	/**
-	 * Moves this component to a new location. The location is specified by point in the parent's
-	 * paper coordinate space.
-	 * 
-	 * @param loc
-	 *            the base point given in the paper coordinate space
-	 */
-	public void setLocation(Point2D loc);
+    /**
+     * Moves this component to a new location.
+     * The location is specified by point in the parent's paper coordinate space.
+     *
+     * @param loc the base point given in the paper coordinate space
+     */
+    public void setLocation(Point2D loc);
 
-	/**
-	 * Moves this component to a new location.
-	 * 
-	 * @param x
-	 *            the x-coordinate of the new location
-	 * @param y
-	 *            the y-coordinate of the new location
-	 */
-	public void setLocation(double x, double y);
+    /**
+     * Moves this component to a new location.
+     *
+     * @param x the x-coordinate of the new location
+     * @param y the y-coordinate of the new location
+     */
+    public void setLocation(double x, double y);
 
 }

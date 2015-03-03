@@ -20,7 +20,6 @@ package org.jplot2d.element;
 
 /**
  * @author Jingjing Li
- *
  */
 public interface IntensityLegend {
 

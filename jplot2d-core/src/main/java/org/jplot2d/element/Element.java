@@ -24,25 +24,24 @@ import org.jplot2d.env.Environment;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface Element {
 
-	/**
-	 * Returns the id string of this element
-	 * 
-	 * @return the id string
-	 */
-	public String getId();
+    /**
+     * Returns the id string of this element
+     *
+     * @return the id string
+     */
+    public String getId();
 
-	/**
-	 * Gets the parent of this component.
-	 * 
-	 * @return the parent of this component
-	 */
-	@Hierarchy(HierarchyOp.GET)
-	public Element getParent();
+    /**
+     * Gets the parent of this component.
+     *
+     * @return the parent of this component
+     */
+    @Hierarchy(HierarchyOp.GET)
+    public Element getParent();
 
-	public Environment getEnvironment();
+    public Environment getEnvironment();
 
 }

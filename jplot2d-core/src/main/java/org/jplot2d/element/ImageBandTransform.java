@@ -30,48 +30,46 @@ import org.jplot2d.image.LimitsAlgorithm;
  * <ol>
  * <li>Apply limit algorithm</li>
  * <li>Apply intensity transform</li>
- * <li>Apply bias/gain. method of Schlick{@link <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>(C. Schlick,
- * Fast Alternatives to Perlin's Bias and Gain Functions)</a>}</li>
+ * <li>Apply bias/gain. method of Schlick{@link <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>
+ *     (C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions)</a>}</li>
  * </ol>
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Image Band Transform")
 public interface ImageBandTransform extends Element {
 
-	@Hierarchy(HierarchyOp.GET)
-	public RGBImageMapping getParent();
+    @Hierarchy(HierarchyOp.GET)
+    public RGBImageMapping getParent();
 
-	/**
-	 * Returns the LimitsAlgorithm
-	 * 
-	 * @return the LimitsAlgorithm
-	 */
-	@Property(order = 0)
-	public LimitsAlgorithm getLimitsAlgorithm();
+    /**
+     * Returns the LimitsAlgorithm
+     *
+     * @return the LimitsAlgorithm
+     */
+    @Property(order = 0)
+    public LimitsAlgorithm getLimitsAlgorithm();
 
-	/**
-	 * Sets the LimitsAlgorithm
-	 * 
-	 * @param algo
-	 *            the LimitsAlgorithm
-	 */
-	public void setLimitsAlgorithm(LimitsAlgorithm algo);
+    /**
+     * Sets the LimitsAlgorithm
+     *
+     * @param algo the LimitsAlgorithm
+     */
+    public void setLimitsAlgorithm(LimitsAlgorithm algo);
 
-	@Property(order = 1)
-	public IntensityTransform getIntensityTransform();
+    @Property(order = 1)
+    public IntensityTransform getIntensityTransform();
 
-	public void setIntensityTransform(IntensityTransform it);
+    public void setIntensityTransform(IntensityTransform it);
 
-	@Property(order = 2)
-	public double getBias();
+    @Property(order = 2)
+    public double getBias();
 
-	public void setBias(double bias);
+    public void setBias(double bias);
 
-	@Property(order = 3)
-	public double getGain();
+    @Property(order = 3)
+    public double getGain();
 
-	public void setGain(double gain);
+    public void setGain(double gain);
 
 }

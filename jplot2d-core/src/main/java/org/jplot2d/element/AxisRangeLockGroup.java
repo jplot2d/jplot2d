@@ -25,63 +25,58 @@ import org.jplot2d.annotation.PropertyGroup;
 
 /**
  * A group of axes who are pinned together. When one axis changes its range, all axes follow the change together.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @PropertyGroup("Axis Range Lock Group")
 public interface AxisRangeLockGroup extends Element {
 
-	/**
-	 * Return the autorange status of this axis group.
-	 * 
-	 * @return true if the axis is in autorange status
-	 */
-	@Property(order = 0, styleable = false)
-	public boolean isAutoRange();
+    /**
+     * Return the autorange status of this axis group.
+     *
+     * @return true if the axis is in autorange status
+     */
+    @Property(order = 0, styleable = false)
+    public boolean isAutoRange();
 
-	/**
-	 * If true set the range of the axis group to allow to display the minimum and maximum value of the Layer.
-	 * 
-	 * @param isAutoRange
-	 *            the flag.
-	 */
-	public void setAutoRange(boolean autoRange);
+    /**
+     * If true set the range of the axis group to allow to display the minimum and maximum value of the Layer.
+     *
+     * @param autoRange the flag.
+     */
+    public void setAutoRange(boolean autoRange);
 
-	/**
-	 * Returns <code>true</code> if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
-	 * {@link Plot#zoomYRange(double, double)}. By default an AxisRangeLockGroup is zoomable.
-	 * 
-	 * @return if this AxisRangeLockGroup can be zoomed
-	 */
-	@Property(order = 1, styleable = false)
-	public boolean isZoomable();
+    /**
+     * Returns <code>true</code> if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
+     * {@link Plot#zoomYRange(double, double)}. By default an AxisRangeLockGroup is zoomable.
+     *
+     * @return if this AxisRangeLockGroup can be zoomed
+     */
+    @Property(order = 1, styleable = false)
+    public boolean isZoomable();
 
-	/**
-	 * Sets if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
-	 * {@link Plot#zoomYRange(double, double)}.
-	 * 
-	 * @param zoomable
-	 *            the flag
-	 */
-	public void setZoomable(boolean zoomable);
+    /**
+     * Sets if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
+     * {@link Plot#zoomYRange(double, double)}.
+     *
+     * @param zoomable the flag
+     */
+    public void setZoomable(boolean zoomable);
 
-	/**
-	 * Zoom the given range to entire axis
-	 * 
-	 * @param start
-	 *            the normalized start
-	 * @param end
-	 *            the normalized end
-	 */
-	public void zoomRange(double start, double end);
+    /**
+     * Zoom the given range to entire axis
+     *
+     * @param start the normalized start
+     * @param end   the normalized end
+     */
+    public void zoomRange(double start, double end);
 
-	/**
-	 * Returns all axes belongs to this group.
-	 * 
-	 * @return all axes belongs to this group
-	 */
-	@Hierarchy(HierarchyOp.GETARRAY)
-	public AxisTransform[] getRangeManagers();
+    /**
+     * Returns all axes belongs to this group.
+     *
+     * @return all axes belongs to this group
+     */
+    @Hierarchy(HierarchyOp.GETARRAY)
+    public AxisTransform[] getRangeManagers();
 
 }
