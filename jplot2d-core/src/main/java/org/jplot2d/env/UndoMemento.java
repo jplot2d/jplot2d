@@ -18,41 +18,45 @@
  */
 package org.jplot2d.env;
 
-import java.util.Map;
-
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.PlotEx;
 
+import java.util.Map;
+
 /**
+ * A memento to store undo data.
+ *
  * @author Jingjing Li
- * 
  */
 public class UndoMemento {
 
-	private final PlotEx plot;
+    private final PlotEx plot;
 
-	private final Map<ElementEx, Element> proxyMap;
+    private final Map<ElementEx, Element> proxyMap;
 
-	/**
-	 * @param root
-	 * @param proxyMap
-	 *            the key is the impl, the value is proxy.
-	 */
-	UndoMemento(PlotEx plot, Map<ElementEx, Element> proxyMap) {
-		this.plot = plot;
-		this.proxyMap = proxyMap;
-	}
+    /**
+     * Construct an undo memento.
+     *
+     * @param plot     the plot
+     * @param proxyMap the key is the impl, the value is proxy.
+     */
+    UndoMemento(PlotEx plot, Map<ElementEx, Element> proxyMap) {
+        this.plot = plot;
+        this.proxyMap = proxyMap;
+    }
 
-	public PlotEx getPlot() {
-		return plot;
-	}
+    public PlotEx getPlot() {
+        return plot;
+    }
 
-	/**
-	 * @return
-	 */
-	public Map<ElementEx, Element> getProxyMap() {
-		return proxyMap;
-	}
+    /**
+     * Returns the proxy map of this undo memento.
+     *
+     * @return the proxy map of this undo memento
+     */
+    public Map<ElementEx, Element> getProxyMap() {
+        return proxyMap;
+    }
 
 }

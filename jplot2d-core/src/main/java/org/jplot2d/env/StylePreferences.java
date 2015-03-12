@@ -18,164 +18,150 @@
  */
 package org.jplot2d.env;
 
-import java.awt.Color;
-import java.awt.Paint;
+import org.jplot2d.element.Element;
+
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.prefs.Preferences;
 
-import org.jplot2d.element.Element;
-
 /**
  * StyleConfiguration who can persist in java Preferences.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class StylePreferences implements StyleConfiguration {
 
-	private static Object IGNORE = new Object();
+    private static Object IGNORE = new Object();
 
-	private Preferences pref;
+    private Preferences pref;
 
-	/**
-	 * Create a profile who store data in Preferences node "org/jplot2d/profile/default".
-	 */
-	public StylePreferences() {
-		pref = Preferences.userRoot().node("org/jplot2d/profile/default");
-	}
+    /**
+     * Create a style configuration who store data in Preferences node "org/jplot2d/profile/default".
+     */
+    public StylePreferences() {
+        pref = Preferences.userRoot().node("org/jplot2d/profile/default");
+    }
 
-	/**
-	 * Create a profile who store data in Preferences node in the given path.
-	 * 
-	 * @param profileName
-	 */
-	public StylePreferences(String pathName) {
-		pref = Preferences.userRoot().node(pathName);
-	}
+    /**
+     * Create a style configuration who store data in Preferences node in the given path.
+     *
+     * @param pathName the path to load preference
+     */
+    public StylePreferences(String pathName) {
+        pref = Preferences.userRoot().node(pathName);
+    }
 
-	/**
-	 * Apply profile to the given element
-	 * 
-	 * @param element
-	 */
-	public void applyTo(Element element) {
-		Class<?> eif = getElementInterface(element.getClass());
+    public void applyTo(Element element) {
+        Class<?> eif = getElementInterface(element.getClass());
 
-		if (eif == null) {
-			return;
-		}
+        if (eif == null) {
+            return;
+        }
 
-		Preferences node = pref.node(eif.getSimpleName());
+        Preferences node = pref.node(eif.getSimpleName());
 
-		InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(eif);
-		for (PropertyInfo[] pinfos : iinfo.getProfilePropertyInfoGroupMap().values()) {
-			for (PropertyInfo pinfo : pinfos) {
-				String pname = pinfo.getName();
-				Method reader = pinfo.getReadMethod();
+        InterfaceInfo iinfo = InterfaceInfo.loadInterfaceInfo(eif);
+        for (PropertyInfo[] pinfos : iinfo.getProfilePropertyInfoGroupMap().values()) {
+            for (PropertyInfo pinfo : pinfos) {
+                String pname = pinfo.getName();
+                Method reader = pinfo.getReadMethod();
 
-				if (pinfo.getWriteMethod() != null) {
-					try {
-						Object oldValue = reader.invoke(element);
-						String pvalue = node.get(pname, null);
-						if (pvalue == null) {
-							// populate the preference
-							node.put(pname, toString(oldValue));
-						} else if (!toString(oldValue).equals(pvalue)) {
-							// apply the preference value
-							Method writter = pinfo.getWriteMethod();
-							Class<?> ptype = pinfo.getPropertyType();
-							Object v = parse(pvalue, ptype);
-							if (v != IGNORE) {
-								writter.invoke(element, v);
-							}
-						}
-					} catch (IllegalArgumentException e) {
+                if (pinfo.getWriteMethod() != null) {
+                    try {
+                        Object oldValue = reader.invoke(element);
+                        String pvalue = node.get(pname, null);
+                        if (pvalue == null) {
+                            // populate the preference
+                            node.put(pname, toString(oldValue));
+                        } else if (!toString(oldValue).equals(pvalue)) {
+                            // apply the preference value
+                            Method writter = pinfo.getWriteMethod();
+                            Class<?> ptype = pinfo.getPropertyType();
+                            Object v = parse(pvalue, ptype);
+                            if (v != IGNORE) {
+                                writter.invoke(element, v);
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        // ignore
+                    } catch (IllegalAccessException e) {
+                        // ignore
+                    } catch (InvocationTargetException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
 
-					} catch (IllegalAccessException e) {
+    }
 
-					} catch (InvocationTargetException e) {
+    private String toString(Object obj) {
+        if (obj instanceof Color) {
+            return "0x" + Integer.toHexString(((Color) obj).getRGB());
+        }
+        return String.valueOf(obj);
+    }
 
-					}
-				}
-			}
-		}
+    private Object parse(String s, Class ptype) {
+        if (s.equals("null")) {
+            return null;
+        } else if (ptype == String.class) {
+            return s;
+        }
 
-	}
+        try {
+            if (ptype == Boolean.TYPE) {
+                return Boolean.parseBoolean(s);
+            } else if (ptype == Byte.TYPE) {
+                return Byte.parseByte(s);
+            } else if (ptype == Short.TYPE) {
+                return Short.parseShort(s);
+            } else if (ptype == Integer.TYPE) {
+                return Integer.parseInt(s);
+            } else if (ptype == Long.TYPE) {
+                return Long.parseLong(s);
+            } else if (ptype == Float.TYPE) {
+                return Float.parseFloat(s);
+            } else if (ptype == Double.TYPE) {
+                return Double.parseDouble(s);
+            } else if (ptype.isEnum()) {
+                return Enum.valueOf(ptype, s);
+            }
 
-	private String toString(Object obj) {
-		if (obj instanceof Color) {
-			return "0x" + Integer.toHexString(((Color) obj).getRGB());
-		}
-		return String.valueOf(obj);
-	}
+            if (ptype == Paint.class) {
+                return Color.decode(s);
+            }
+        } catch (Exception e) {
+            // ignore
+        }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Object parse(String s, Class ptype) {
-		if (s.equals("null")) {
-			return null;
-		} else if (ptype == String.class) {
-			return s;
-		}
+        return IGNORE;
+    }
 
-		try {
-			if (ptype == Boolean.TYPE) {
-				return Boolean.parseBoolean(s);
-			} else if (ptype == Byte.TYPE) {
-				return Byte.parseByte(s);
-			} else if (ptype == Short.TYPE) {
-				return Short.parseShort(s);
-			} else if (ptype == Integer.TYPE) {
-				return Integer.parseInt(s);
-			} else if (ptype == Long.TYPE) {
-				return Long.parseLong(s);
-			} else if (ptype == Float.TYPE) {
-				return Float.parseFloat(s);
-			} else if (ptype == Double.TYPE) {
-				return Double.parseDouble(s);
-			} else if (ptype.isEnum()) {
-				return Enum.valueOf(ptype, s);
-			}
+    /**
+     * Returns the parent interface of the given element, which is in org.jplot2d.element package
+     *
+     * @param element the element
+     * @return an interface in org.jplot2d.element package
+     */
+    protected static Class<?> getElementInterface(Class<?> element) {
+        if (element.getPackage().getName().equals("org.jplot2d.element")) {
+            return element;
+        }
+        Class<?>[] interfaces = element.getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            Class<?> eif = getElementInterface(anInterface);
+            if (eif != null) {
+                return eif;
+            }
+        }
+        return null;
+    }
 
-			if (ptype == Paint.class) {
-				return Color.decode(s);
-			}
-		} catch (Exception e) {
-
-		}
-
-		return IGNORE;
-	}
-
-	/**
-	 * Returns the parent interface which is in org.jplot2d.element package
-	 * 
-	 * @param element
-	 * @return
-	 */
-	protected static Class<?> getElementInterface(Class<?> element) {
-		if (element.getPackage().getName().equals("org.jplot2d.element")) {
-			return element;
-		}
-		Class<?>[] interfaces = element.getInterfaces();
-		for (int i = 0; i < interfaces.length; i++) {
-			Class<?> eif = getElementInterface(interfaces[i]);
-			if (eif != null) {
-				return eif;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns a element instance who can proxy get/set values from/to this profile.
-	 * 
-	 * @param elementInterface
-	 *            the element interface
-	 * @return
-	 */
-	public <T extends Element> T getProxyBean(Class<T> elementInterface) {
-		return null;
-	}
+    public <T extends Element> T getProxyBean(Class<T> elementInterface) {
+        // TODO: implementation
+        return null;
+    }
 
 }

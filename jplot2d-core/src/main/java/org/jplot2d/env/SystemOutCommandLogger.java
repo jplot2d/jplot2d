@@ -20,24 +20,23 @@ package org.jplot2d.env;
 
 /**
  * A logger to print command invocation to system out.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class SystemOutCommandLogger implements CommandLogger {
 
-	private static SystemOutCommandLogger instance = new SystemOutCommandLogger();
+    private static SystemOutCommandLogger instance = new SystemOutCommandLogger();
 
-	public static SystemOutCommandLogger getInstance() {
-		return instance;
-	}
+    public static SystemOutCommandLogger getInstance() {
+        return instance;
+    }
 
-	private SystemOutCommandLogger() {
+    private SystemOutCommandLogger() {
 
-	}
+    }
 
-	public void log(String cmd) {
-		System.out.println(cmd);
-	}
+    public void log(String cmd) {
+        System.out.println(cmd);
+    }
 
 }

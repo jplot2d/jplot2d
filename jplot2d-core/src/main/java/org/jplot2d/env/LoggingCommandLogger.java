@@ -23,26 +23,25 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A logger to log command to java logger "org.jplot2d.command".
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class LoggingCommandLogger implements CommandLogger {
 
-	private static LoggingCommandLogger instance = new LoggingCommandLogger();
+    private static LoggingCommandLogger instance = new LoggingCommandLogger();
 
-	private static Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.command");
+    private static Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.command");
 
-	public static LoggingCommandLogger getInstance() {
-		return instance;
-	}
+    public static LoggingCommandLogger getInstance() {
+        return instance;
+    }
 
-	private LoggingCommandLogger() {
+    private LoggingCommandLogger() {
 
-	}
+    }
 
-	public void log(String cmd) {
-		LOGGER.info("Command: " + cmd);
-	}
+    public void log(String cmd) {
+        LOGGER.info("Command: " + cmd);
+    }
 
 }

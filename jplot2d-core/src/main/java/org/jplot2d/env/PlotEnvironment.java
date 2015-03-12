@@ -18,17 +18,6 @@
  */
 package org.jplot2d.env;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jplot2d.element.Element;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.Plot;
@@ -41,489 +30,476 @@ import org.jplot2d.notice.Notifier;
 import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.transform.PaperTransform;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Proxy;
+import java.util.*;
+
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PlotEnvironment extends Environment {
 
-	/**
-	 * Keep hard references to cache holder objects.
-	 */
-	@SuppressWarnings("unused")
-	private List<Object> cacheHolders;
+    /**
+     * Keep hard references to cache holder objects.
+     */
+    @SuppressWarnings("unused")
+    private List<Object> cacheHolders;
 
-	/**
-	 * the key is impl element, the value is copy of element (for renderer thread safe)
-	 */
-	protected Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
+    /**
+     * the key is impl element, the value is copy of element (for renderer thread safe)
+     */
+    protected Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
 
-	/**
-	 * A copy to proxy map that contains all element in this environment.
-	 */
-	protected Map<ElementEx, Element> copyProxyMap;
+    /**
+     * A copy to proxy map that contains all element in this environment.
+     */
+    protected Map<ElementEx, Element> copyProxyMap;
 
-	protected final UndoManager<UndoMemento> undoManager = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
+    protected final UndoManager<UndoMemento> undoManager = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
 
-	/**
-	 * Contains all visible cacheable components in z-order. include uncacheable root plot.
-	 */
-	protected final List<CacheableBlock> cacheBlockList = new ArrayList<CacheableBlock>();
+    /**
+     * Contains all visible cacheable components in z-order. include uncacheable root plot.
+     */
+    protected final List<CacheableBlock> cacheBlockList = new ArrayList<CacheableBlock>();
 
-	/**
-	 * The plot proxy
-	 */
-	protected volatile Plot plot;
+    /**
+     * The plot proxy
+     */
+    protected volatile Plot plot;
 
-	protected PlotEx plotImpl;
+    protected PlotEx plotImpl;
 
-	protected PlotEx plotCopy;
+    protected PlotEx plotCopy;
 
-	public PlotEnvironment(boolean threadSafe) {
-		super(threadSafe);
-	}
+    public PlotEnvironment(boolean threadSafe) {
+        super(threadSafe);
+    }
 
-	/**
-	 * Sets a plot to this environment. The plot must hosted by a dummy environment. All notices are logged to java
-	 * logging facilities.
-	 * 
-	 * @param plot
-	 */
-	public void setPlot(Plot plot) {
-		setPlot(plot, LoggingNotifier.getInstance());
-	}
+    /**
+     * Sets a plot to this environment. The plot must hosted by a dummy environment. All notices are logged to java
+     * logging facilities.
+     *
+     * @param plot the plot
+     */
+    public void setPlot(Plot plot) {
+        setPlot(plot, LoggingNotifier.getInstance());
+    }
 
-	/**
-	 * Sets a plot to this environment. The plot must hosted by a dummy environment.
-	 * 
-	 * @param plot
-	 * @param notifier
-	 *            the notifier to receive and process notices
-	 */
-	public void setPlot(Plot plot, Notifier notifier) {
-		Environment oldEnv;
-		synchronized (getGlobalLock()) {
-			// remove the env of the given plot
-			oldEnv = plot.getEnvironment();
-			if (!(oldEnv instanceof DummyEnvironment)) {
-				throw new IllegalArgumentException("The plot to be added has been added a PlotEnvironment");
-			}
+    /**
+     * Sets a plot to this environment. The plot must hosted by a dummy environment.
+     *
+     * @param plot     the plot
+     * @param notifier the notifier to receive and process notices
+     */
+    public void setPlot(Plot plot, Notifier notifier) {
+        Environment oldEnv;
+        synchronized (getGlobalLock()) {
+            // remove the env of the given plot
+            oldEnv = plot.getEnvironment();
+            if (!(oldEnv instanceof DummyEnvironment)) {
+                throw new IllegalArgumentException("The plot to be added has been added a PlotEnvironment");
+            }
 
-			// check this environment is ready to host plot
-			beginCommand("setPlot");
+            // check this environment is ready to host plot
+            beginCommand("setPlot");
 
-			if (this.plot != null) {
-				endCommand();
-				throw new IllegalArgumentException("This Environment has hosted a plot");
-			}
+            if (this.plot != null) {
+                endCommand();
+                throw new IllegalArgumentException("This Environment has hosted a plot");
+            }
 
-			oldEnv.beginCommand("setPlot");
+            oldEnv.beginCommand("setPlot");
 
-			// update environment for all adding components
-			for (Element proxy : oldEnv.proxyMap.values()) {
-				((ElementAddition) proxy).setEnvironment(this);
-			}
-		}
+            // update environment for all adding components
+            for (Element proxy : oldEnv.proxyMap.values()) {
+                ((ElementAddition) proxy).setEnvironment(this);
+            }
+        }
 
-		this.plot = plot;
-		this.plotImpl = (PlotEx) ((ElementAddition) plot).getImpl();
+        this.plot = plot;
+        this.plotImpl = (PlotEx) ((ElementAddition) plot).getImpl();
 
-		componentAdded(plotImpl, oldEnv);
+        componentAdded(plotImpl, oldEnv);
 
-		this.notifier = notifier;
-		plotImpl.setNotifier(notifier);
-		plotImpl.setRerenderNeeded(true);
+        this.notifier = notifier;
+        plotImpl.setNotifier(notifier);
+        plotImpl.setRerenderNeeded(true);
 
-		oldEnv.endCommand();
-		endCommand();
-	}
+        oldEnv.endCommand();
+        endCommand();
+    }
 
-	public Plot getPlot() {
-		return plot;
-	}
+    public Plot getPlot() {
+        return plot;
+    }
 
-	/**
-	 * Returns the notifier of this environment. The notifier will receive notices during command execution and process
-	 * all notices at once when command finished.
-	 * 
-	 * @return the notifier of this environment
-	 */
-	public Notifier getNotifier() {
-		Notifier result = null;
-		begin();
-		result = notifier;
-		end();
-		return result;
-	}
+    /**
+     * Returns the notifier of this environment. The notifier will receive notices during command execution and process
+     * all notices at once when command finished.
+     *
+     * @return the notifier of this environment
+     */
+    public Notifier getNotifier() {
+        Notifier result = null;
+        begin();
+        result = notifier;
+        end();
+        return result;
+    }
 
-	/**
-	 * Sets the notifier of this environment. The notifier will receive notices during command execution and process all
-	 * notices at once when command finished.
-	 * 
-	 * @param notifier
-	 *            the notifier to be used in this environment
-	 */
-	public void setNotifier(Notifier notifier) {
-		begin();
-		this.notifier = notifier;
-		plotImpl.setNotifier(notifier);
-		end();
-	}
+    /**
+     * Sets the notifier of this environment. The notifier will receive notices during command execution and process all
+     * notices at once when command finished.
+     *
+     * @param notifier the notifier to be used in this environment
+     */
+    public void setNotifier(Notifier notifier) {
+        begin();
+        this.notifier = notifier;
+        plotImpl.setNotifier(notifier);
+        end();
+    }
 
-	@Override
-	protected void commit() {
-		plotImpl.commit();
-		fireChangeProcessed();
+    @Override
+    protected void commit() {
+        plotImpl.commit();
+        fireChangeProcessed();
 
-		// create cache holder
-		List<Object> holders = new ArrayList<Object>();
-		for (ElementEx element : proxyMap.keySet()) {
-			if (element instanceof IntermediateCacheEx) {
-				Object cacheHolder = ((IntermediateCacheEx) element).createCacheHolder();
-				if (cacheHolder != null) {
-					holders.add(cacheHolder);
-				}
-			}
-		}
-		this.cacheHolders = holders;
+        // create cache holder
+        List<Object> holders = new ArrayList<Object>();
+        for (ElementEx element : proxyMap.keySet()) {
+            if (element instanceof IntermediateCacheEx) {
+                Object cacheHolder = ((IntermediateCacheEx) element).createCacheHolder();
+                if (cacheHolder != null) {
+                    holders.add(cacheHolder);
+                }
+            }
+        }
+        this.cacheHolders = holders;
 
-		// fill copyMap and copyProxyMap
-		makeUndoMemento();
-		// fill cacheBlockList
-		buildComponentCacheBlock();
+        // fill copyMap and copyProxyMap
+        makeUndoMemento();
+        // fill cacheBlockList
+        buildComponentCacheBlock();
 
-		render();
-	}
+        render();
+    }
 
-	/**
-	 * When a command is committed, this method is called to generate a rendering result.
-	 */
-	protected void render() {
+    /**
+     * When a command is committed, this method is called to generate a rendering result.
+     */
+    protected void render() {
 
-	}
+    }
 
-	protected void fireChangeProcessed() {
-		ElementChangeListener[] ls = getElementChangeListeners();
-		if (ls.length > 0) {
-			ElementChangeEvent evt = new ElementChangeEvent(this, null);
-			for (ElementChangeListener lsnr : ls) {
-				lsnr.propertyChangesProcessed(evt);
-			}
-		}
-	}
+    protected void fireChangeProcessed() {
+        ElementChangeListener[] ls = getElementChangeListeners();
+        if (ls.length > 0) {
+            ElementChangeEvent evt = new ElementChangeEvent(this, null);
+            for (ElementChangeListener lsnr : ls) {
+                lsnr.propertyChangesProcessed(evt);
+            }
+        }
+    }
 
-	/**
-	 * Sort components in cacheable blocks.
-	 */
-	protected void buildComponentCacheBlock() {
-		/*
-		 * Contains all visible cacheable components in z-order. include uncacheable root plot.
+    /**
+     * Sort components in cacheable blocks.
+     */
+    protected void buildComponentCacheBlock() {
+        /*
+         * Contains all visible cacheable components in z-order. include uncacheable root plot.
 		 */
-		List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
+        List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
 
 		/*
 		 * The key is copy of cacheable components or uncacheable root plot; the value is copy of key's visible
 		 * uncacheable descendants, include the key itself, in z-order.
 		 */
-		Map<ComponentEx, List<ComponentEx>> subcompsMap = new HashMap<ComponentEx, List<ComponentEx>>();
+        Map<ComponentEx, List<ComponentEx>> subcompsMap = new HashMap<ComponentEx, List<ComponentEx>>();
 
-		cacheBlockList.clear();
+        cacheBlockList.clear();
 
-		for (ElementEx element : proxyMap.keySet()) {
-			if (element instanceof ComponentEx) {
-				ComponentEx comp = (ComponentEx) element;
-				ComponentEx copy = (ComponentEx) copyMap.get(comp);
-				if (isShowing(copy)) {
-					ComponentEx cacheableAncestor;
+        for (ElementEx element : proxyMap.keySet()) {
+            if (element instanceof ComponentEx) {
+                ComponentEx comp = (ComponentEx) element;
+                ComponentEx copy = (ComponentEx) copyMap.get(comp);
+                if (isShowing(copy)) {
+                    ComponentEx cacheableAncestor;
 
-					if (comp.isCacheable() || comp == plotImpl) {
-						cacheableComponentList.add((ComponentEx) element);
-						cacheableAncestor = copy;
-					} else {
-						cacheableAncestor = getCacheableAncestor(copy);
-					}
+                    if (comp.isCacheable() || comp == plotImpl) {
+                        cacheableComponentList.add((ComponentEx) element);
+                        cacheableAncestor = copy;
+                    } else {
+                        cacheableAncestor = getCacheableAncestor(copy);
+                    }
 
-					List<ComponentEx> subComps = subcompsMap.get(cacheableAncestor);
-					if (subComps == null) {
-						subComps = new ArrayList<ComponentEx>();
-						subcompsMap.put(cacheableAncestor, subComps);
-					}
-					subComps.add(copy);
-				}
-			}
-		}
+                    List<ComponentEx> subComps = subcompsMap.get(cacheableAncestor);
+                    if (subComps == null) {
+                        subComps = new ArrayList<ComponentEx>();
+                        subcompsMap.put(cacheableAncestor, subComps);
+                    }
+                    subComps.add(copy);
+                }
+            }
+        }
 
-		// sort by z-order
-		updateOrder(cacheableComponentList);
-		for (ComponentEx comp : cacheableComponentList) {
-			ComponentEx copy = (ComponentEx) copyMap.get(comp);
-			List<ComponentEx> subcomps = subcompsMap.get(copy);
-			updateOrder(subcomps);
-			CacheableBlock cb = new CacheableBlock(comp, copy, subcomps);
-			cacheBlockList.add(cb);
-		}
-	}
+        // sort by z-order
+        updateOrder(cacheableComponentList);
+        for (ComponentEx comp : cacheableComponentList) {
+            ComponentEx copy = (ComponentEx) copyMap.get(comp);
+            List<ComponentEx> subcomps = subcompsMap.get(copy);
+            updateOrder(subcomps);
+            CacheableBlock cb = new CacheableBlock(comp, copy, subcomps);
+            cacheBlockList.add(cb);
+        }
+    }
 
-	/**
-	 * update the list order;
-	 */
-	protected static void updateOrder(List<ComponentEx> list) {
-		ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
-		Comparator<PComponent> zComparator = new Comparator<PComponent>() {
+    /**
+     * update the list order;
+     */
+    protected static void updateOrder(List<ComponentEx> list) {
+        ComponentEx[] comps = list.toArray(new ComponentEx[list.size()]);
+        Comparator<PComponent> zComparator = new Comparator<PComponent>() {
 
-			public int compare(PComponent o1, PComponent o2) {
-				return o1.getZOrder() - o2.getZOrder();
-			}
-		};
+            public int compare(PComponent o1, PComponent o2) {
+                return o1.getZOrder() - o2.getZOrder();
+            }
+        };
 
-		Arrays.sort(comps, zComparator);
+        Arrays.sort(comps, zComparator);
 
-		list.clear();
-		for (ComponentEx comp : comps) {
-			list.add(comp);
-		}
-	}
+        list.clear();
+        Collections.addAll(list, comps);
+    }
 
-	/**
-	 * Determines whether the component is showing on plot. This means that the component must be visible, and it must
-	 * be in a container that is visible and showing.
-	 * 
-	 * @param comp
-	 *            the component
-	 * @return whether the component is showing
-	 */
-	private static boolean isShowing(ComponentEx comp) {
-		if (!comp.isVisible()) {
-			return false;
-		} else if (comp.getParent() != null) {
-			return isShowing(comp.getParent());
-		} else {
-			return true;
-		}
-	}
+    /**
+     * Determines whether the component is showing on plot. This means that the component must be visible, and it must
+     * be in a container that is visible and showing.
+     *
+     * @param comp the component
+     * @return whether the component is showing
+     */
+    private static boolean isShowing(ComponentEx comp) {
+        return comp.isVisible() && (comp.getParent() == null || isShowing(comp.getParent()));
+    }
 
-	/**
-	 * Create a undo memento and add it to change history.
-	 */
-	private void makeUndoMemento() {
+    /**
+     * Create a undo memento and add it to change history.
+     */
+    private void makeUndoMemento() {
 
-		copyMap.clear();
+        copyMap.clear();
 
-		plotCopy = (PlotEx) plotImpl.copyStructure(copyMap);
-		for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
-			me.getValue().copyFrom(me.getKey());
-		}
+        plotCopy = plotImpl.copyStructure(copyMap);
+        for (Map.Entry<ElementEx, ElementEx> me : copyMap.entrySet()) {
+            me.getValue().copyFrom(me.getKey());
+        }
 
-		if (undoManager.getCapacity() > 0) {
-			// build copy to proxy map
-			copyProxyMap = new LinkedHashMap<ElementEx, Element>();
-			for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
-				Element element = me.getKey();
-				Element proxy = me.getValue();
-				ElementEx copye = copyMap.get(element);
-				copyProxyMap.put(copye, proxy);
-			}
+        if (undoManager.getCapacity() > 0) {
+            // build copy to proxy map
+            copyProxyMap = new LinkedHashMap<ElementEx, Element>();
+            for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
+                ElementEx element = me.getKey();
+                Element proxy = me.getValue();
+                ElementEx copye = copyMap.get(element);
+                copyProxyMap.put(copye, proxy);
+            }
 
-			undoManager.add(new UndoMemento(plotCopy, copyProxyMap));
-		}
-	}
+            undoManager.add(new UndoMemento(plotCopy, copyProxyMap));
+        }
+    }
 
 	/* ====================== Undo/Redo ====================== */
 
-	/**
-	 * Returns the maximum number of reversible operations.
-	 * 
-	 * @return the maximum number of reversible operations
-	 */
-	public int getUndoLevels() {
-		begin();
-		int capacity = undoManager.getCapacity();
-		end();
+    /**
+     * Returns the maximum number of reversible operations.
+     *
+     * @return the maximum number of reversible operations
+     */
+    public int getUndoLevels() {
+        begin();
+        int capacity = undoManager.getCapacity();
+        end();
 
-		return capacity;
-	}
+        return capacity;
+    }
 
-	/**
-	 * Sets the maximum number of reversible operations.
-	 * 
-	 * @param levels
-	 *            the maximum number of reversible operations
-	 */
-	public void setUndoLevels(int levels) {
-		begin();
-		undoManager.setCapacity(levels);
-		end();
-	}
+    /**
+     * Sets the maximum number of reversible operations.
+     *
+     * @param levels the maximum number of reversible operations
+     */
+    public void setUndoLevels(int levels) {
+        begin();
+        undoManager.setCapacity(levels);
+        end();
+    }
 
-	/**
-	 * Returns <code>true</code> if undo is possible.
-	 * 
-	 * @return
-	 */
-	public boolean canUndo() {
-		begin();
-		boolean b = undoManager.canUndo();
-		end();
+    /**
+     * Returns <code>true</code> if undo is possible.
+     *
+     * @return <code>true</code> if undo is possible
+     */
+    public boolean canUndo() {
+        begin();
+        boolean b = undoManager.canUndo();
+        end();
 
-		return b;
-	}
+        return b;
+    }
 
-	/**
-	 * Returns <code>true</code> if undo is possible.
-	 * 
-	 * @return
-	 */
-	public boolean canRedo() {
-		begin();
-		boolean b = undoManager.canRedo();
-		end();
+    /**
+     * Returns <code>true</code> if redo is possible.
+     *
+     * @return <code>true</code> if redo is possibl
+     */
+    public boolean canRedo() {
+        begin();
+        boolean b = undoManager.canRedo();
+        end();
 
-		return b;
-	}
+        return b;
+    }
 
-	/**
-	 * Undo the last change. If there is nothing to undo, an exception is thrown.
-	 * 
-	 * @return
-	 */
-	public void undo() {
-		begin();
+    /**
+     * Undo the last change. If there is nothing to undo, an exception is thrown.
+     */
+    public void undo() {
+        begin();
 
-		UndoMemento memento = undoManager.undo();
-		if (memento == null) {
-			throw new RuntimeException("Cannot undo");
-		}
+        UndoMemento memento = undoManager.undo();
+        if (memento == null) {
+            end();
+            throw new RuntimeException("Cannot undo");
+        }
 
-		restore(memento);
-		buildComponentCacheBlock();
+        restore(memento);
+        buildComponentCacheBlock();
 
-		plotImpl.setRerenderNeeded(false);
-		render();
+        plotImpl.setRerenderNeeded(false);
+        render();
 
-		end();
-	}
+        end();
+    }
 
-	/**
-	 * Undo the last change. If there is nothing to undo, an exception is thrown.
-	 * 
-	 * @return
-	 */
-	public void redo() {
-		begin();
+    /**
+     * Redo the last change. If there is nothing to redo, an exception is thrown.
+     */
+    public void redo() {
+        begin();
 
-		UndoMemento memento = undoManager.redo();
-		if (memento == null) {
-			throw new RuntimeException("Cannot redo");
-		}
+        UndoMemento memento = undoManager.redo();
+        if (memento == null) {
+            end();
+            throw new RuntimeException("Cannot redo");
+        }
 
-		restore(memento);
-		buildComponentCacheBlock();
+        restore(memento);
+        buildComponentCacheBlock();
 
-		plotImpl.setRerenderNeeded(false);
-		render();
+        plotImpl.setRerenderNeeded(false);
+        render();
 
-		end();
-	}
+        end();
+    }
 
-	/**
-	 * copy the memento back to working environment. This method create a copy of memento, and assign the copy as
-	 * working plotImpl.
-	 * 
-	 * @param memento
-	 *            the memento to be copied from
-	 */
-	private void restore(UndoMemento memento) {
+    /**
+     * copy the memento back to working environment. This method create a copy of memento, and assign the copy as
+     * working plotImpl.
+     *
+     * @param memento the memento to be copied from
+     */
+    private void restore(UndoMemento memento) {
 
-		copyMap.clear();
+        copyMap.clear();
 
-		// the key is element in memento, the value is copy of element for restoring
-		Map<ElementEx, ElementEx> rcopyMap = new HashMap<ElementEx, ElementEx>();
+        // the key is element in memento, the value is copy of element for restoring
+        Map<ElementEx, ElementEx> rcopyMap = new HashMap<ElementEx, ElementEx>();
 
-		// copy the memento as implements
-		plotCopy = memento.getPlot();
-		plotImpl = (PlotEx) plotCopy.copyStructure(rcopyMap);
-		plotImpl.setNotifier(notifier);
+        // copy the memento as implements
+        plotCopy = memento.getPlot();
+        plotImpl = plotCopy.copyStructure(rcopyMap);
+        plotImpl.setNotifier(notifier);
 
-		proxyMap.clear();
-		copyProxyMap = memento.getProxyMap();
-		for (Map.Entry<ElementEx, Element> me : copyProxyMap.entrySet()) {
-			ElementEx mmte = me.getKey(); // the memento element
-			Element proxy = me.getValue(); // the proxy
-			ElementEx impl = rcopyMap.get(mmte); // the copy of memento element, as the new impl
-			// copy properties from memento element to new impl
-			impl.copyFrom(mmte);
-			// replace impl in invocation handler
-			ElementIH ih = (ElementIH) Proxy.getInvocationHandler(proxy);
-			ih.replaceImpl(impl);
+        proxyMap.clear();
+        copyProxyMap = memento.getProxyMap();
+        for (Map.Entry<ElementEx, Element> me : copyProxyMap.entrySet()) {
+            ElementEx mmte = me.getKey(); // the memento element
+            Element proxy = me.getValue(); // the proxy
+            ElementEx impl = rcopyMap.get(mmte); // the copy of memento element, as the new impl
+            // copy properties from memento element to new impl
+            impl.copyFrom(mmte);
+            // replace impl in invocation handler
+            ElementIH ih = (ElementIH) Proxy.getInvocationHandler(proxy);
+            ih.replaceImpl(impl);
 
-			proxyMap.put(impl, proxy);
-			copyMap.put(impl, mmte);
-		}
-	}
+            proxyMap.put(impl, proxy);
+            copyMap.put(impl, mmte);
+        }
+    }
 
-	/**
-	 * Return the top selectable component at the given location.
-	 * 
-	 * @param dp
-	 *            the device point relative to top-left corner.
-	 * @return
-	 */
-	public PComponent getSelectableCompnentAt(Point2D dp) {
-		PComponent result = null;
+    /**
+     * Return the top selectable component at the given location.
+     *
+     * @param dp the device point relative to top-left corner.
+     * @return the top selectable component
+     */
+    public PComponent getSelectableComponentAt(Point2D dp) {
+        PComponent result = null;
 
-		begin();
+        begin();
 
-		for (int i = cacheBlockList.size() - 1; i >= 0; i--) {
-			List<ComponentEx> uccList = cacheBlockList.get(i).getSubcomps();
-			for (int j = uccList.size() - 1; j >= 0; j--) {
-				ComponentEx ucc = uccList.get(j);
-				if (ucc.isSelectable()) {
-					PaperTransform pxf = ucc.getPaperTransform();
-					Rectangle2D sbnd = ucc.getSelectableBounds();
-					if (pxf != null && sbnd != null && sbnd.contains(pxf.getDtoP(dp))) {
-						result = (PComponent) copyProxyMap.get(ucc);
-						break;
-					}
-				}
-			}
-		}
+        for (int i = cacheBlockList.size() - 1; i >= 0; i--) {
+            List<ComponentEx> uccList = cacheBlockList.get(i).getSubcomps();
+            for (int j = uccList.size() - 1; j >= 0; j--) {
+                ComponentEx ucc = uccList.get(j);
+                if (ucc.isSelectable()) {
+                    PaperTransform pxf = ucc.getPaperTransform();
+                    Rectangle2D sbnd = ucc.getSelectableBounds();
+                    if (pxf != null && sbnd != null && sbnd.contains(pxf.getDtoP(dp))) {
+                        result = (PComponent) copyProxyMap.get(ucc);
+                        break;
+                    }
+                }
+            }
+        }
 
-		end();
+        end();
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Return the most inner plot that contains the given location.
-	 * 
-	 * @param dp
-	 *            the device point relative to top-left corner.
-	 * @return
-	 */
-	public Plot getPlotAt(Point2D dp) {
-		Plot result = null;
+    /**
+     * Return the most inner plot that contains the given location.
+     *
+     * @param dp the device point relative to top-left corner.
+     * @return the most inner plot
+     */
+    public Plot getPlotAt(Point2D dp) {
+        Plot result = null;
 
-		begin();
+        begin();
 
-		for (int i = cacheBlockList.size() - 1; i >= 0; i--) {
-			List<ComponentEx> uccList = cacheBlockList.get(i).getSubcomps();
-			for (int j = uccList.size() - 1; j >= 0; j--) {
-				ComponentEx ucc = uccList.get(j);
-				if (ucc instanceof PlotEx) {
-					Point2D p = ucc.getPaperTransform().getDtoP(dp);
-					if (ucc.getBounds().contains(p)) {
-						result = (Plot) copyProxyMap.get(ucc);
-						break;
-					}
-				}
-			}
-		}
+        for (int i = cacheBlockList.size() - 1; i >= 0; i--) {
+            List<ComponentEx> uccList = cacheBlockList.get(i).getSubcomps();
+            for (int j = uccList.size() - 1; j >= 0; j--) {
+                ComponentEx ucc = uccList.get(j);
+                if (ucc instanceof PlotEx) {
+                    Point2D p = ucc.getPaperTransform().getDtoP(dp);
+                    if (ucc.getBounds().contains(p)) {
+                        result = (Plot) copyProxyMap.get(ucc);
+                        break;
+                    }
+                }
+            }
+        }
 
-		end();
+        end();
 
-		return result;
-	}
+        return result;
+    }
 
 }

@@ -63,7 +63,7 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 		}
 
 		// the selectable component that contains the specified point.
-		PComponent newComp = penv.getSelectableCompnentAt(new Point(x, y));
+		PComponent newComp = penv.getSelectableComponentAt(new Point(x, y));
 
 		if (activeComponent == newComp) {
 			return false;

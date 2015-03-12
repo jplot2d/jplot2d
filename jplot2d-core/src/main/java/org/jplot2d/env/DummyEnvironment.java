@@ -22,33 +22,34 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ElementEx;
 
 /**
+ * A environment to host new created implementation elements and their proxies.
+ *
  * @author Jingjing Li
- * 
  */
 public class DummyEnvironment extends Environment {
 
-	public DummyEnvironment(boolean threadSafe) {
-		super(threadSafe);
-	}
+    public DummyEnvironment(boolean threadSafe) {
+        super(threadSafe);
+    }
 
-	/**
-	 * Register new created element to this environment. This method is called when element factory create a element
-	 * proxy. Every new created element has an associated environment. The proxy object will associate with this
-	 * environment.
-	 * 
-	 * @param element
-	 * @param proxy
-	 */
-	public void registerElement(ElementEx element, Element proxy) {
-		synchronized (getGlobalLock()) {
-			((ElementAddition) proxy).setEnvironment(this);
-		}
-		proxyMap.put(element, proxy);
-	}
+    /**
+     * Register a new created implementation element and its proxy to this environment.
+     * This method is called when an element factory create implementation elements and their proxy.
+     * Every new created implementation element has a proxy object, which will associate with a dummy environment.
+     *
+     * @param element the element to be registered
+     * @param proxy   the proxy object of the element
+     */
+    public void registerElement(ElementEx element, Element proxy) {
+        synchronized (getGlobalLock()) {
+            ((ElementAddition) proxy).setEnvironment(this);
+        }
+        proxyMap.put(element, proxy);
+    }
 
-	@Override
-	protected void commit() {
-		// do nothng
-	}
+    @Override
+    protected void commit() {
+        // do nothng
+    }
 
 }

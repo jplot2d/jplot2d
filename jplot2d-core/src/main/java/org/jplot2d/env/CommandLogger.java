@@ -20,18 +20,16 @@ package org.jplot2d.env;
 
 /**
  * A logger to record command invocation.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface CommandLogger {
 
-	/**
-	 * log the given command string. The logging is protected by environment.
-	 * 
-	 * @param cmd
-	 *            the command string
-	 */
-	public void log(String cmd);
+    /**
+     * log the given command string. The logging is protected by environment.
+     *
+     * @param cmd the command string
+     */
+    public void log(String cmd);
 
 }

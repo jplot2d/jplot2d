@@ -22,26 +22,24 @@ import org.jplot2d.element.Element;
 
 /**
  * Define default properties which can be used to initialize the new created plot component.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface StyleConfiguration {
 
-	/**
-	 * Apply profile to the given element
-	 * 
-	 * @param element
-	 */
-	public void applyTo(Element element);
+    /**
+     * Apply style to the given element
+     *
+     * @param element the element to be configured
+     */
+    public void applyTo(Element element);
 
-	/**
-	 * Returns a element instance who can proxy get/set values from/to this profile.
-	 * 
-	 * @param elementInterface
-	 *            the element interface
-	 * @return
-	 */
-	public <T extends Element> T getProxyBean(Class<T> elementInterface);
+    /**
+     * Returns a element instance who can proxy get/set values from/to this profile.
+     *
+     * @param elementInterface the element interface
+     * @return the proxy element
+     */
+    public <T extends Element> T getProxyBean(Class<T> elementInterface);
 
 }

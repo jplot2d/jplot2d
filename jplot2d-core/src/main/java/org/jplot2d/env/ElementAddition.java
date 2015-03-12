@@ -21,29 +21,28 @@ package org.jplot2d.env;
 import org.jplot2d.element.impl.ElementEx;
 
 /**
- * Interface that provide methods for called from an environment.
- * 
+ * Interface that provide additional methods to proxy objects.
+ *
  * @author Jingjing Li
- * 
  */
 public interface ElementAddition {
 
-	/**
-	 * update the environment of this component and sub-elements
-	 * <p>
-	 * <em>MUST</em> be synchronized with Environment.getGlobalLock()
-	 * 
-	 * @param env
-	 */
-	public void setEnvironment(Environment env);
+    /**
+     * Sets the environment of this component and its sub-elements.
+     * <p/>
+     * This method must be <em>synchronized</em> within Environment.getGlobalLock().
+     *
+     * @param env the new environment
+     */
+    public void setEnvironment(Environment env);
 
-	/**
-	 * Returns the impl of this proxy object
-	 * <p>
-	 * <em>MUST</em> called within environment begin-end block.
-	 * 
-	 * @return the impl
-	 */
-	public ElementEx getImpl();
+    /**
+     * Returns the implementation element wrapped by this proxy object.
+     * <p/>
+     * This method must be called within a environment begin-end block.
+     *
+     * @return the impl
+     */
+    public ElementEx getImpl();
 
 }

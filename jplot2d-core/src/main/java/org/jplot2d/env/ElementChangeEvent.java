@@ -18,40 +18,38 @@
  */
 package org.jplot2d.env;
 
-import java.util.EventObject;
-
 import org.jplot2d.element.Element;
+
+import java.util.EventObject;
 
 /**
  * Encapsulates information describing changes to a hierarchy structure or properties of an element.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class ElementChangeEvent extends EventObject {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Element element;
+    private Element element;
 
-	/**
-	 * create an event when hierarchy structure or properties changed.
-	 * 
-	 * @param element
-	 *            the element which added, removing, or properties changed
-	 */
-	public ElementChangeEvent(Environment source, Element element) {
-		super(source);
-		this.element = element;
-	}
+    /**
+     * create an event when hierarchy structure or properties changed.
+     *
+     * @param element the element which added, removing, or properties changed
+     */
+    public ElementChangeEvent(Environment source, Element element) {
+        super(source);
+        this.element = element;
+    }
 
-	/**
-	 * Returns the element which added, removing, or properties changed
-	 * 
-	 * @return the element
-	 */
-	public Element getElement() {
-		return element;
-	}
+    /**
+     * Returns the element which added, removing, or properties changed
+     *
+     * @return the element
+     */
+    public Element getElement() {
+        return element;
+    }
 
 }
