@@ -22,47 +22,44 @@ import org.jplot2d.util.Range;
 
 /**
  * The common interface for graph data.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface GraphData {
 
-	/**
-	 * Apply the new boundary on x/y direction. Data outside the boundary are ignored.
-	 * 
-	 * @param xboundary
-	 *            the new boundary to apply
-	 * @param yboundary
-	 *            the new boundary to apply
-	 * @return a new GraphData instance
-	 */
-	public GraphData applyBoundary(Range xboundary, Range yboundary);
+    /**
+     * Apply the new boundary on x/y direction. Data outside the boundary are ignored.
+     *
+     * @param xboundary the new boundary to apply
+     * @param yboundary the new boundary to apply
+     * @return a new GraphData instance
+     */
+    public GraphData applyBoundary(Range xboundary, Range yboundary);
 
-	/**
-	 * Returns x range which contains all valid data in x boundary. If there is no valid data in x boundary, the empty
-	 * property of returned Range will be set to <code>true</code>
-	 */
-	public Range getXRange();
+    /**
+     * Returns x range which contains all valid data in x boundary.
+     * If there is no valid data in x boundary, the empty property of returned Range will be set to <code>true</code>
+     */
+    public Range getXRange();
 
-	/**
-	 * Returns y range which contains all valid data in y boundary. If there is no valid data in y boundary, the empty
-	 * property of returned Range will be set to <code>true</code>
-	 */
-	public Range getYRange();
+    /**
+     * Returns y range which contains all valid data in y boundary.
+     * If there is no valid data in y boundary, the empty property of returned Range will be set to <code>true</code>
+     */
+    public Range getYRange();
 
-	/**
-	 * Returns <code>true</code> if there are valid data out of the x boundary.
-	 * 
-	 * @return the flag
-	 */
-	public boolean hasPointOutsideXBounds();
+    /**
+     * Returns <code>true</code> if there are valid data out of the x boundary.
+     *
+     * @return the flag
+     */
+    public boolean hasPointOutsideXBounds();
 
-	/**
-	 * Returns <code>true</code> if there are valid data out of the y boundary.
-	 * 
-	 * @return the flag
-	 */
-	public boolean hasPointOutsideYBounds();
+    /**
+     * Returns <code>true</code> if there are valid data out of the y boundary.
+     *
+     * @return the flag
+     */
+    public boolean hasPointOutsideYBounds();
 
 }

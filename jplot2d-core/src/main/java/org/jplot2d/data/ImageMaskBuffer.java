@@ -19,24 +19,21 @@
 package org.jplot2d.data;
 
 /**
- * A interface can returns a boolean to determines for the associated element whether the value is valid or not. When an
- * element of the mask is False, the corresponding element is valid and is said to be unmasked. When an element of the
- * mask is True, the corresponding element is said to be masked (invalid).
- * 
+ * A interface can returns a boolean to determines for the associated element whether the value is valid or not.
+ * When an element of the mask is False, the corresponding element is valid and is said to be unmasked.
+ * When an element of the mask is True, the corresponding element is said to be masked (invalid).
+ *
  * @author Jingjing Li
- * 
  */
 public interface ImageMaskBuffer {
 
-	/**
-	 * returns a boolean to determines for the associated element whether the value is valid or not.
-	 * 
-	 * @param x
-	 *            The X coordinate of the pixel location
-	 * @param y
-	 *            The Y coordinate of the pixel location
-	 * @return an boolean
-	 */
-	public boolean isMasked(int x, int y);
+    /**
+     * returns a boolean to determines for the associated element whether the value is valid or not.
+     *
+     * @param x The X coordinate of the pixel location
+     * @param y The Y coordinate of the pixel location
+     * @return an boolean
+     */
+    public boolean isMasked(int x, int y);
 
 }

@@ -22,191 +22,190 @@ import java.nio.FloatBuffer;
 
 /**
  * This class extends ImageDataBuffer and stores data internally as floats.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class FloatDataBuffer extends ImageDataBuffer {
 
-	public FloatDataBuffer(ImageMaskBuffer mask) {
-		super(mask);
-	}
+    public FloatDataBuffer(ImageMaskBuffer mask) {
+        super(mask);
+    }
 
-	@Override
-	public byte getByte(int x, int y) {
-		return (byte) get(x, y);
-	}
+    @Override
+    public byte getByte(int x, int y) {
+        return (byte) get(x, y);
+    }
 
-	@Override
-	public short getShort(int x, int y) {
-		return (short) get(x, y);
-	}
+    @Override
+    public short getShort(int x, int y) {
+        return (short) get(x, y);
+    }
 
-	@Override
-	public int getInt(int x, int y) {
-		return (int) get(x, y);
-	}
+    @Override
+    public int getInt(int x, int y) {
+        return (int) get(x, y);
+    }
 
-	@Override
-	public float getFloat(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public float getFloat(int x, int y) {
+        return get(x, y);
+    }
 
-	@Override
-	public double getDouble(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public double getDouble(int x, int y) {
+        return get(x, y);
+    }
 
-	public abstract float get(int x, int y);
+    public abstract float get(int x, int y);
 
-	public static class Array extends FloatDataBuffer {
-		private final float[] data;
-		private final int offset;
+    public static class Array extends FloatDataBuffer {
+        private final float[] data;
+        private final int offset;
 
-		public Array(float[] data) {
-			this(data, 0, null);
-		}
+        public Array(float[] data) {
+            this(data, 0, null);
+        }
 
-		public Array(float[] data, ImageMaskBuffer mask) {
-			this(data, 0, mask);
-		}
+        public Array(float[] data, ImageMaskBuffer mask) {
+            this(data, 0, mask);
+        }
 
-		public Array(float[] data, int offset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.offset = offset;
-		}
+        public Array(float[] data, int offset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.offset = offset;
+        }
 
-		public float get(int x, int y) {
-			return data[offset + x + y];
-		}
+        public float get(int x, int y) {
+            return data[offset + x + y];
+        }
 
-	}
+    }
 
-	public static class Array2D extends FloatDataBuffer {
-		private final float[][] data;
-		private final int xoffset, yoffset;
+    public static class Array2D extends FloatDataBuffer {
+        private final float[][] data;
+        private final int xoffset, yoffset;
 
-		public Array2D(float[][] data) {
-			this(data, 0, 0, null);
-		}
+        public Array2D(float[][] data) {
+            this(data, 0, 0, null);
+        }
 
-		public Array2D(float[][] data, ImageMaskBuffer mask) {
-			this(data, 0, 0, mask);
-		}
+        public Array2D(float[][] data, ImageMaskBuffer mask) {
+            this(data, 0, 0, mask);
+        }
 
-		public Array2D(float[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.xoffset = xoffset;
-			this.yoffset = yoffset;
-		}
+        public Array2D(float[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.xoffset = xoffset;
+            this.yoffset = yoffset;
+        }
 
-		public float get(int x, int y) {
-			return data[yoffset + y][xoffset + x];
-		}
+        public float get(int x, int y) {
+            return data[yoffset + y][xoffset + x];
+        }
 
-	}
+    }
 
-	public static class NioBuffer extends FloatDataBuffer {
-		private final FloatBuffer data;
-		private final int offset;
+    public static class NioBuffer extends FloatDataBuffer {
+        private final FloatBuffer data;
+        private final int offset;
 
-		public NioBuffer(FloatBuffer data) {
-			this(data, 0, null);
-		}
+        public NioBuffer(FloatBuffer data) {
+            this(data, 0, null);
+        }
 
-		public NioBuffer(FloatBuffer data, ImageMaskBuffer mask) {
-			this(data, 0, mask);
-		}
+        public NioBuffer(FloatBuffer data, ImageMaskBuffer mask) {
+            this(data, 0, mask);
+        }
 
-		public NioBuffer(FloatBuffer data, int offset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.offset = offset;
-		}
+        public NioBuffer(FloatBuffer data, int offset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.offset = offset;
+        }
 
-		public float get(int x, int y) {
-			return data.get(offset + x + y);
-		}
+        public float get(int x, int y) {
+            return data.get(offset + x + y);
+        }
 
-	}
+    }
 
-	@Override
-	public double countValid(int w, int h) {
-		int count = 0;
-		if (!hasMasks()) {
-			for (int j = 0; j < h; j++) {
-				for (int i = 0; i < w; i++) {
-					float v = get(i, j);
-					if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
-						count++;
-					}
-				}
-			}
-		} else {
-			for (int j = 0; j < h; j++) {
-				for (int i = 0; i < w; i++) {
-					if (!isMasked(i, j)) {
-						float v = get(i, j);
-						if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
-							count++;
-						}
-					}
-				}
-			}
-		}
-		return count;
-	}
+    @Override
+    public double countValid(int w, int h) {
+        int count = 0;
+        if (!hasMasks()) {
+            for (int j = 0; j < h; j++) {
+                for (int i = 0; i < w; i++) {
+                    float v = get(i, j);
+                    if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+                        count++;
+                    }
+                }
+            }
+        } else {
+            for (int j = 0; j < h; j++) {
+                for (int i = 0; i < w; i++) {
+                    if (!isMasked(i, j)) {
+                        float v = get(i, j);
+                        if (v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
 
-	@Override
-	public double[] calcMinMax(int w, int h) {
-		float min = Float.NaN;
-		float max = Float.NaN;
+    @Override
+    public double[] calcMinMax(int w, int h) {
+        float min = Float.NaN;
+        float max = Float.NaN;
 
 		/* find the 1st non-Nan idx and value */
-		int m = -1;
-		int n = -1;
+        int m = -1;
+        int n = -1;
 
-		for (int j = 0; j < h; j++) {
-			for (int i = 0; i < w; i++) {
-				float v = get(i, j);
-				if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
-					min = v;
-					max = v;
-					m = i;
-					n = j;
-					break;
-				}
-			}
-			if (n != -1) {
-				break;
-			}
-		}
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                float v = get(i, j);
+                if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+                    min = v;
+                    max = v;
+                    m = i;
+                    n = j;
+                    break;
+                }
+            }
+            if (n != -1) {
+                break;
+            }
+        }
 
-		if (n == -1) {
-			return null;
-		}
+        if (n == -1) {
+            return null;
+        }
 
 		/* find min & max value */
-		m++;
-		for (int j = n; j < h; j++) {
-			for (int i = m; i < w; i++) {
-				float v = get(i, j);
-				if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
-					if (min > v) {
-						min = v;
-					}
-					if (max < v) {
-						max = v;
-					}
-				}
-			}
-			m = 0;
-		}
+        m++;
+        for (int j = n; j < h; j++) {
+            for (int i = m; i < w; i++) {
+                float v = get(i, j);
+                if (!isMasked(i, j) && v == v && v != Float.POSITIVE_INFINITY && v != Float.NEGATIVE_INFINITY) {
+                    if (min > v) {
+                        min = v;
+                    }
+                    if (max < v) {
+                        max = v;
+                    }
+                }
+            }
+            m = 0;
+        }
 
-		return new double[] { min, max };
+        return new double[]{min, max};
 
-	}
+    }
 
 }

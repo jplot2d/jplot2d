@@ -22,149 +22,149 @@ import org.jplot2d.util.Range;
 
 /**
  * Immutable. This class keep (x,y) image data and compute data feature such as max/min, NaN indexes.
- * 
+ *
  * @author Jingjing Li
  */
 public abstract class ImageData implements GraphData {
 
-	private final int imgWidth, imgHeight;
+    private final int imgWidth, imgHeight;
 
-	protected final Range xboundary;
+    protected final Range xboundary;
 
-	protected final Range yboundary;
+    protected final Range yboundary;
 
-	protected final ImageCoordinateReference coordref;
+    protected final ImageCoordinateReference coordref;
 
-	private double xmin, xmax;
+    private double xmin, xmax;
 
-	private double ymin, ymax;
+    private double ymin, ymax;
 
-	protected ImageData(int w, int h, ImageCoordinateReference cr, Range xboundary, Range yboundary) {
-		this.imgWidth = w;
-		this.imgHeight = h;
-		this.coordref = new ImageCoordinateReference(cr);
-		this.xboundary = xboundary;
-		this.yboundary = yboundary;
+    protected ImageData(int w, int h, ImageCoordinateReference cr, Range xboundary, Range yboundary) {
+        this.imgWidth = w;
+        this.imgHeight = h;
+        this.coordref = new ImageCoordinateReference(cr);
+        this.xboundary = xboundary;
+        this.yboundary = yboundary;
 
-		updateRanges();
-	}
+        updateRanges();
+    }
 
-	public int getWidth() {
-		return imgWidth;
-	}
+    public int getWidth() {
+        return imgWidth;
+    }
 
-	public int getHeight() {
-		return imgHeight;
-	}
+    public int getHeight() {
+        return imgHeight;
+    }
 
-	protected void updateRanges() {
-		xmin = coordref.xRefVal - (coordref.xRefPixel - 0.5) * coordref.xDelta;
-		xmax = xmin + imgWidth * coordref.xDelta;
-		ymin = coordref.yRefVal - (coordref.yRefPixel - 0.5) * coordref.yDelta;
-		ymax = ymin + imgHeight * coordref.yDelta;
+    protected void updateRanges() {
+        xmin = coordref.xRefVal - (coordref.xRefPixel - 0.5) * coordref.xDelta;
+        xmax = xmin + imgWidth * coordref.xDelta;
+        ymin = coordref.yRefVal - (coordref.yRefPixel - 0.5) * coordref.yDelta;
+        ymax = ymin + imgHeight * coordref.yDelta;
 
-		if (!inXBoundary(xmin)) {
-			xmin = xboundary.getMin();
-		}
-		if (!inXBoundary(xmax)) {
-			xmax = xboundary.getMax();
-		}
-		if (!inYBoundary(ymin)) {
-			ymin = yboundary.getMin();
-		}
-		if (!inXBoundary(ymax)) {
-			ymax = yboundary.getMax();
-		}
-	}
+        if (!inXBoundary(xmin)) {
+            xmin = xboundary.getMin();
+        }
+        if (!inXBoundary(xmax)) {
+            xmax = xboundary.getMax();
+        }
+        if (!inYBoundary(ymin)) {
+            ymin = yboundary.getMin();
+        }
+        if (!inXBoundary(ymax)) {
+            ymax = yboundary.getMax();
+        }
+    }
 
-	/**
-	 * Returns <code>true</code> if the given x is in the x boundary
-	 */
-	private boolean inXBoundary(double x) {
-		return (xboundary == null) ? true : xboundary.contains(x);
-	}
+    /**
+     * Returns <code>true</code> if the given x is in the x boundary
+     */
+    private boolean inXBoundary(double x) {
+        return (xboundary == null) || xboundary.contains(x);
+    }
 
-	/**
-	 * Returns <code>true</code> if the given y is in the y boundary
-	 */
-	private boolean inYBoundary(double y) {
-		return (yboundary == null) ? true : yboundary.contains(y);
-	}
+    /**
+     * Returns <code>true</code> if the given y is in the y boundary
+     */
+    private boolean inYBoundary(double y) {
+        return (yboundary == null) || yboundary.contains(y);
+    }
 
-	public Range getXRange() {
-		return new Range.Double(xmin, xmax);
-	}
+    public Range getXRange() {
+        return new Range.Double(xmin, xmax);
+    }
 
-	public Range getYRange() {
-		return new Range.Double(ymin, ymax);
-	}
+    public Range getYRange() {
+        return new Range.Double(ymin, ymax);
+    }
 
-	public boolean hasPointOutsideXBounds() {
-		return false;
-	}
+    public boolean hasPointOutsideXBounds() {
+        return false;
+    }
 
-	public boolean hasPointOutsideYBounds() {
-		return false;
-	}
+    public boolean hasPointOutsideYBounds() {
+        return false;
+    }
 
-	public ImageCoordinateReference getCoordinateReference() {
-		return new ImageCoordinateReference(coordref);
-	}
+    public ImageCoordinateReference getCoordinateReference() {
+        return new ImageCoordinateReference(coordref);
+    }
 
-	public abstract ImageData applyCoordinateReference(ImageCoordinateReference cr);
+    public abstract ImageData applyCoordinateReference(ImageCoordinateReference cr);
 
-	/**
-	 * Get the coordinate reference value of the X axis
-	 * 
-	 * @return the coordinate reference value of the X axis
-	 */
-	public double getXcrval() {
-		return coordref.xRefVal;
-	}
+    /**
+     * Get the coordinate reference value of the X axis
+     *
+     * @return the coordinate reference value of the X axis
+     */
+    public double getXcrval() {
+        return coordref.xRefVal;
+    }
 
-	/**
-	 * Get the coordinate reference value of the Y axis
-	 * 
-	 * @return the coordinate reference value of the Y axis
-	 */
-	public double getYcrval() {
-		return coordref.yRefVal;
-	}
+    /**
+     * Get the coordinate reference value of the Y axis
+     *
+     * @return the coordinate reference value of the Y axis
+     */
+    public double getYcrval() {
+        return coordref.yRefVal;
+    }
 
-	/**
-	 * Get the coordinate reference pixel in the X axis
-	 * 
-	 * @return the coordinate reference pixel in the X axis
-	 */
-	public double getXcrpix() {
-		return coordref.xRefPixel;
-	}
+    /**
+     * Get the coordinate reference pixel in the X axis
+     *
+     * @return the coordinate reference pixel in the X axis
+     */
+    public double getXcrpix() {
+        return coordref.xRefPixel;
+    }
 
-	/**
-	 * Get the coordinate reference pixel in the Y axis
-	 * 
-	 * @return the coordinate reference pixel in the Y axis
-	 */
-	public double getYcrpix() {
-		return coordref.yRefPixel;
-	}
+    /**
+     * Get the coordinate reference pixel in the Y axis
+     *
+     * @return the coordinate reference pixel in the Y axis
+     */
+    public double getYcrpix() {
+        return coordref.yRefPixel;
+    }
 
-	/**
-	 * Get the pixel size in the X direction
-	 * 
-	 * @return the pixel size in the X direction
-	 */
-	public double getXcdelt() {
-		return coordref.xDelta;
-	}
+    /**
+     * Get the pixel size in the X direction
+     *
+     * @return the pixel size in the X direction
+     */
+    public double getXcdelt() {
+        return coordref.xDelta;
+    }
 
-	/**
-	 * Get the pixel size in the Y direction
-	 * 
-	 * @return the pixel size in the Y direction
-	 */
-	public double getYcdelt() {
-		return coordref.yDelta;
-	}
+    /**
+     * Get the pixel size in the Y direction
+     *
+     * @return the pixel size in the Y direction
+     */
+    public double getYcdelt() {
+        return coordref.yDelta;
+    }
 
 }

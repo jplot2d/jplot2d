@@ -19,49 +19,49 @@
 package org.jplot2d.data;
 
 /**
- * This class extends ImageMaskBuffer and stores data internally as booleans. It can optionally take an offset, so that
- * mask in an existing array can be used even if the interesting mask doesn't start at array location zero.
- * 
+ * This class extends ImageMaskBuffer and stores data internally as booleans.
+ * It can optionally take an offset, so that mask in an existing array can be used
+ * even if the interesting mask doesn't start at array location zero.
+ *
  * @author Jingjing Li
- * 
  */
 public interface BooleanMaskBuffer extends ImageMaskBuffer {
 
-	public static class Array implements BooleanMaskBuffer {
-		private final boolean[] mask;
-		private final int offset;
+    public static class Array implements BooleanMaskBuffer {
+        private final boolean[] mask;
+        private final int offset;
 
-		public Array(boolean[] mask) {
-			this(mask, 0);
-		}
+        public Array(boolean[] mask) {
+            this(mask, 0);
+        }
 
-		public Array(boolean[] mask, int offset) {
-			this.mask = mask;
-			this.offset = offset;
-		}
+        public Array(boolean[] mask, int offset) {
+            this.mask = mask;
+            this.offset = offset;
+        }
 
-		public boolean isMasked(int x, int y) {
-			return mask[offset + x + y];
-		}
-	}
+        public boolean isMasked(int x, int y) {
+            return mask[offset + x + y];
+        }
+    }
 
-	public static class Array2D implements BooleanMaskBuffer {
-		private final boolean[][] mask;
-		private final int xoffset, yoffset;
+    public static class Array2D implements BooleanMaskBuffer {
+        private final boolean[][] mask;
+        private final int xoffset, yoffset;
 
-		public Array2D(boolean[][] mask) {
-			this(mask, 0, 0);
-		}
+        public Array2D(boolean[][] mask) {
+            this(mask, 0, 0);
+        }
 
-		public Array2D(boolean[][] mask, int xoffset, int yoffset) {
-			this.mask = mask;
-			this.xoffset = xoffset;
-			this.yoffset = yoffset;
-		}
+        public Array2D(boolean[][] mask, int xoffset, int yoffset) {
+            this.mask = mask;
+            this.xoffset = xoffset;
+            this.yoffset = yoffset;
+        }
 
-		public boolean isMasked(int x, int y) {
-			return mask[yoffset + y][xoffset + x];
-		}
-	}
+        public boolean isMasked(int x, int y) {
+            return mask[yoffset + y][xoffset + x];
+        }
+    }
 
 }

@@ -22,157 +22,156 @@ import java.nio.ByteBuffer;
 
 /**
  * This class extends ImageDataBuffer and stores data internally as bytes.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class ByteDataBuffer extends ImageDataBuffer {
 
-	public ByteDataBuffer(ImageMaskBuffer mask) {
-		super(mask);
-	}
+    public ByteDataBuffer(ImageMaskBuffer mask) {
+        super(mask);
+    }
 
-	@Override
-	public byte getByte(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public byte getByte(int x, int y) {
+        return get(x, y);
+    }
 
-	@Override
-	public short getShort(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public short getShort(int x, int y) {
+        return get(x, y);
+    }
 
-	@Override
-	public int getInt(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public int getInt(int x, int y) {
+        return get(x, y);
+    }
 
-	@Override
-	public float getFloat(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public float getFloat(int x, int y) {
+        return get(x, y);
+    }
 
-	@Override
-	public double getDouble(int x, int y) {
-		return get(x, y);
-	}
+    @Override
+    public double getDouble(int x, int y) {
+        return get(x, y);
+    }
 
-	public abstract byte get(int x, int y);
+    public abstract byte get(int x, int y);
 
-	public static class Array extends ByteDataBuffer {
-		private final byte[] data;
-		private final int offset;
+    public static class Array extends ByteDataBuffer {
+        private final byte[] data;
+        private final int offset;
 
-		public Array(byte[] data) {
-			this(data, 0, null);
-		}
+        public Array(byte[] data) {
+            this(data, 0, null);
+        }
 
-		public Array(byte[] data, ImageMaskBuffer mask) {
-			this(data, 0, mask);
-		}
+        public Array(byte[] data, ImageMaskBuffer mask) {
+            this(data, 0, mask);
+        }
 
-		public Array(byte[] data, int offset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.offset = offset;
-		}
+        public Array(byte[] data, int offset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.offset = offset;
+        }
 
-		public byte get(int x, int y) {
-			return data[offset + x + y];
-		}
+        public byte get(int x, int y) {
+            return data[offset + x + y];
+        }
 
-	}
+    }
 
-	public static class Array2D extends ByteDataBuffer {
-		private final byte[][] data;
-		private final int xoffset, yoffset;
+    public static class Array2D extends ByteDataBuffer {
+        private final byte[][] data;
+        private final int xoffset, yoffset;
 
-		public Array2D(byte[][] data) {
-			this(data, 0, 0, null);
-		}
+        public Array2D(byte[][] data) {
+            this(data, 0, 0, null);
+        }
 
-		public Array2D(byte[][] data, ImageMaskBuffer mask) {
-			this(data, 0, 0, mask);
-		}
+        public Array2D(byte[][] data, ImageMaskBuffer mask) {
+            this(data, 0, 0, mask);
+        }
 
-		public Array2D(byte[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.xoffset = xoffset;
-			this.yoffset = yoffset;
-		}
+        public Array2D(byte[][] data, int xoffset, int yoffset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.xoffset = xoffset;
+            this.yoffset = yoffset;
+        }
 
-		public byte get(int x, int y) {
-			return data[yoffset + y][xoffset + x];
-		}
+        public byte get(int x, int y) {
+            return data[yoffset + y][xoffset + x];
+        }
 
-	}
+    }
 
-	public static class NioBuffer extends ByteDataBuffer {
-		private final ByteBuffer data;
-		private final int offset;
+    public static class NioBuffer extends ByteDataBuffer {
+        private final ByteBuffer data;
+        private final int offset;
 
-		public NioBuffer(ByteBuffer data) {
-			this(data, 0, null);
-		}
+        public NioBuffer(ByteBuffer data) {
+            this(data, 0, null);
+        }
 
-		public NioBuffer(ByteBuffer data, ImageMaskBuffer mask) {
-			this(data, 0, mask);
-		}
+        public NioBuffer(ByteBuffer data, ImageMaskBuffer mask) {
+            this(data, 0, mask);
+        }
 
-		public NioBuffer(ByteBuffer data, int offset, ImageMaskBuffer mask) {
-			super(mask);
-			this.data = data;
-			this.offset = offset;
-		}
+        public NioBuffer(ByteBuffer data, int offset, ImageMaskBuffer mask) {
+            super(mask);
+            this.data = data;
+            this.offset = offset;
+        }
 
-		public byte get(int x, int y) {
-			return data.get(offset + x + y);
-		}
+        public byte get(int x, int y) {
+            return data.get(offset + x + y);
+        }
 
-	}
+    }
 
-	@Override
-	public double countValid(int w, int h) {
-		if (mask == null) {
-			return w * h;
-		} else {
-			int count = 0;
-			for (int j = 0; j < h; j++) {
-				for (int i = 0; i < w; i++) {
-					if (!isMasked(i, j)) {
-						count++;
-					}
-				}
-			}
-			return count;
-		}
-	}
+    @Override
+    public double countValid(int w, int h) {
+        if (mask == null) {
+            return w * h;
+        } else {
+            int count = 0;
+            for (int j = 0; j < h; j++) {
+                for (int i = 0; i < w; i++) {
+                    if (!isMasked(i, j)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+    }
 
-	@Override
-	public double[] calcMinMax(int w, int h) {
+    @Override
+    public double[] calcMinMax(int w, int h) {
 
-		byte min = Byte.MAX_VALUE;
-		byte max = Byte.MIN_VALUE;
+        byte min = Byte.MAX_VALUE;
+        byte max = Byte.MIN_VALUE;
 
-		for (int j = 0; j < h; j++) {
-			for (int i = 0; i < w; i++) {
-				if (!isMasked(i, j)) {
-					byte v = get(i, j);
-					if (min > v) {
-						min = v;
-					}
-					if (max < v) {
-						max = v;
-					}
-				}
-			}
-		}
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                if (!isMasked(i, j)) {
+                    byte v = get(i, j);
+                    if (min > v) {
+                        min = v;
+                    }
+                    if (max < v) {
+                        max = v;
+                    }
+                }
+            }
+        }
 
-		if (min > max) {
-			return null;
-		}
-		return new double[] { min, max };
+        if (min > max) {
+            return null;
+        }
+        return new double[]{min, max};
 
-	}
+    }
 }
