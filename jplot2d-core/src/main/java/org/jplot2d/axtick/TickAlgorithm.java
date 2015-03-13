@@ -20,11 +20,11 @@ package org.jplot2d.axtick;
 
 /**
  * Virtual creator for TickCalculator
- * 
+ *
  * @author Jingjing Li
  */
 public abstract class TickAlgorithm {
 
-	public abstract TickCalculator createCalculator();
+    public abstract TickCalculator createCalculator();
 
 }

@@ -20,76 +20,76 @@ package org.jplot2d.axtick;
 
 /**
  * This class represent a number in hour minute second format
- * 
+ *
  * @author Jingjing Li
  */
 public final class TimeHmsInterval implements DoubleInterval {
 
-	public enum Unit {
-		SECOND(1), MINUTE(1 * 60), HOUR(1 * 3600);
+    public enum Unit {
+        SECOND(1), MINUTE(60), HOUR(3600);
 
-		public final int time;
+        public final int time;
 
-		private Unit(int time) {
-			this.time = time;
-		}
-	};
+        private Unit(int time) {
+            this.time = time;
+        }
+    }
 
-	private final TickUnitConverter tuc;
+    private final TickUnitConverter tuc;
 
-	private final int _c, _e;
+    private final int _c, _e;
 
-	private final Unit _unit;
+    private final Unit _unit;
 
-	public TimeHmsInterval(TickUnitConverter tuc, int coefficient, int exponent) {
-		this.tuc = tuc;
-		_unit = Unit.SECOND;
-		_c = coefficient;
-		_e = exponent;
-	}
+    public TimeHmsInterval(TickUnitConverter tuc, int coefficient, int exponent) {
+        this.tuc = tuc;
+        _unit = Unit.SECOND;
+        _c = coefficient;
+        _e = exponent;
+    }
 
-	public TimeHmsInterval(TickUnitConverter tuc, Unit unit, int value) {
-		this.tuc = tuc;
-		_unit = unit;
-		_c = value;
-		_e = 0;
-	}
+    public TimeHmsInterval(TickUnitConverter tuc, Unit unit, int value) {
+        this.tuc = tuc;
+        _unit = unit;
+        _c = value;
+        _e = 0;
+    }
 
-	public Unit getUnit() {
-		return _unit;
-	}
+    public Unit getUnit() {
+        return _unit;
+    }
 
-	/**
-	 * @return the coefficient
-	 */
-	public int getCoefficient() {
-		return _c;
-	}
+    /**
+     * @return the coefficient
+     */
+    public int getCoefficient() {
+        return _c;
+    }
 
-	/**
-	 * @return the exponent
-	 */
-	public int getExponent() {
-		return _e;
-	}
+    /**
+     * @return the exponent
+     */
+    public int getExponent() {
+        return _e;
+    }
 
-	public double doubleValue() {
-		return tuc.convertT2D(Math.pow(10, _e) * _c * _unit.time);
-	}
+    public double doubleValue() {
+        return tuc.convertT2D(Math.pow(10, _e) * _c * _unit.time);
+    }
 
-	public boolean equals(Object obj) {
-		if (!(obj instanceof TimeHmsInterval)) {
-			return false;
-		}
-		TimeHmsInterval ien = (TimeHmsInterval) obj;
-		return _c == ien._c && _e == ien._e;
-	}
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TimeHmsInterval)) {
+            return false;
+        }
+        TimeHmsInterval ien = (TimeHmsInterval) obj;
+        return _c == ien._c && _e == ien._e;
+    }
 
-	public int hashCode() {
-		return _c ^ (_e << 16);
-	}
+    public int hashCode() {
+        return _c ^ (_e << 16);
+    }
 
-	public String toString() {
-		return _c + "e" + _e;
-	}
+    public String toString() {
+        return _c + "e" + _e;
+    }
 }

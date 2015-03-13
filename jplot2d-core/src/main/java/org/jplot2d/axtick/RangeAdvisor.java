@@ -22,36 +22,44 @@ import org.jplot2d.util.Range;
 
 /**
  * Calculate a proper range to arrange major ticks falling on the edge.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface RangeAdvisor {
 
-	public Range getRange();
+    /**
+     * Returns the range.
+     *
+     * @return the range
+     */
+    public Range getRange();
 
-	public void setRange(Range range);
+    /**
+     * Sets the range.
+     *
+     * @param range the range
+     */
+    public void setRange(Range range);
 
-	/**
-	 * The interval will be 1,2,5 * 10^n
-	 * 
-	 * @param range
-	 *            the old range
-	 * @param tickNumber
-	 */
-	public void expandRangeByTickNumber(int tickNumber);
+    /**
+     * Expand the range by the given tick number. The interval will be 1,2,5 * 10^n
+     *
+     * @param tickNumber the tick number
+     */
+    public void expandRangeByTickNumber(int tickNumber);
 
-	/**
-	 * 
-	 * @param range
-	 *            the old range
-	 * @param interval
-	 */
-	public void expandRangeByTickInterval(double interval);
+    /**
+     * Expand the range by the given tick interval.
+     *
+     * @param interval the tick interval
+     */
+    public void expandRangeByTickInterval(double interval);
 
-	/**
-	 * @return the tick interval.
-	 */
-	public double getInterval();
+    /**
+     * Returns the tick interval.
+     *
+     * @return the tick interval.
+     */
+    public double getInterval();
 
 }

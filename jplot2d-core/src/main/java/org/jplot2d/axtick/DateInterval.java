@@ -20,110 +20,110 @@ package org.jplot2d.axtick;
 
 /**
  * This class represent a date in unit and value.
- * 
+ *
  * @author Jingjing Li
  */
 public final class DateInterval {
 
-	public enum Unit {
-		MICROSECOND(0), MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(1000L * 3600 * 24), WEEK(
-				1000L * 3600 * 24 * 7), MONTH(1000L * 3600 * 24 * 30), YEAR(1000L * 3600 * 24 * 30 * 12);
+    public enum Unit {
+        MICROSECOND(0), MILLISECOND(1), SECOND(1000L), MINUTE(1000L * 60), HOUR(1000L * 3600), DAY(1000L * 3600 * 24), WEEK(
+                1000L * 3600 * 24 * 7), MONTH(1000L * 3600 * 24 * 30), YEAR(1000L * 3600 * 24 * 30 * 12);
 
-		/**
-		 * the time in milliseconds
-		 */
-		public final long time;
+        /**
+         * the time in milliseconds
+         */
+        public final long time;
 
-		private Unit(long time) {
-			this.time = time;
-		}
+        private Unit(long time) {
+            this.time = time;
+        }
 
-	};
+    }
 
-	private final Unit unit;
+    private final Unit unit;
 
-	private final int v;
+    private final int v;
 
-	public DateInterval(Unit unit, int value) {
-		this.unit = unit;
-		this.v = value;
-	}
+    public DateInterval(Unit unit, int value) {
+        this.unit = unit;
+        this.v = value;
+    }
 
-	public static DateInterval createWithMillis(long interval) {
-		Unit unit;
-		int v;
-		if (interval < Unit.SECOND.time) {
-			unit = Unit.MILLISECOND;
-			v = (int) interval;
-		} else if (interval < Unit.MINUTE.time) {
-			unit = Unit.SECOND;
-			v = (int) (interval / Unit.SECOND.time);
-		} else if (interval < Unit.HOUR.time) {
-			unit = Unit.MINUTE;
-			v = (int) (interval / Unit.MINUTE.time);
-		} else if (interval < Unit.DAY.time) {
-			unit = Unit.HOUR;
-			v = (int) (interval / Unit.HOUR.time);
-		} else if (interval < Unit.MONTH.time) {
-			unit = Unit.DAY;
-			v = (int) (interval / Unit.DAY.time);
-		} else if (interval < Unit.YEAR.time) {
-			unit = Unit.MONTH;
-			v = (int) (interval / Unit.MONTH.time);
-		} else {
-			unit = Unit.YEAR;
-			v = (int) (interval / Unit.YEAR.time);
-		}
-		return new DateInterval(unit, v);
-	}
+    public static DateInterval createWithMillis(long interval) {
+        Unit unit;
+        int v;
+        if (interval < Unit.SECOND.time) {
+            unit = Unit.MILLISECOND;
+            v = (int) interval;
+        } else if (interval < Unit.MINUTE.time) {
+            unit = Unit.SECOND;
+            v = (int) (interval / Unit.SECOND.time);
+        } else if (interval < Unit.HOUR.time) {
+            unit = Unit.MINUTE;
+            v = (int) (interval / Unit.MINUTE.time);
+        } else if (interval < Unit.DAY.time) {
+            unit = Unit.HOUR;
+            v = (int) (interval / Unit.HOUR.time);
+        } else if (interval < Unit.MONTH.time) {
+            unit = Unit.DAY;
+            v = (int) (interval / Unit.DAY.time);
+        } else if (interval < Unit.YEAR.time) {
+            unit = Unit.MONTH;
+            v = (int) (interval / Unit.MONTH.time);
+        } else {
+            unit = Unit.YEAR;
+            v = (int) (interval / Unit.YEAR.time);
+        }
+        return new DateInterval(unit, v);
+    }
 
-	public static DateInterval createWithMicros(long interval) {
-		if (interval < 1000) {
-			return new DateInterval(Unit.MICROSECOND, (int) interval);
-		} else {
-			return createWithMillis(interval / 1000);
-		}
-	}
+    public static DateInterval createWithMicros(long interval) {
+        if (interval < 1000) {
+            return new DateInterval(Unit.MICROSECOND, (int) interval);
+        } else {
+            return createWithMillis(interval / 1000);
+        }
+    }
 
-	/**
-	 * @return the coefficient
-	 */
-	public Unit getUnit() {
-		return unit;
-	}
+    /**
+     * @return the coefficient
+     */
+    public Unit getUnit() {
+        return unit;
+    }
 
-	/**
-	 * @return the exponent
-	 */
-	public int getValue() {
-		return v;
-	}
+    /**
+     * @return the exponent
+     */
+    public int getValue() {
+        return v;
+    }
 
-	public long getTimeInMillis() {
-		return v * unit.time;
-	}
+    public long getTimeInMillis() {
+        return v * unit.time;
+    }
 
-	public long getTimeInMicros() {
-		if (unit == Unit.MICROSECOND) {
-			return v;
-		} else {
-			return v * unit.time * 1000;
-		}
-	}
+    public long getTimeInMicros() {
+        if (unit == Unit.MICROSECOND) {
+            return v;
+        } else {
+            return v * unit.time * 1000;
+        }
+    }
 
-	public boolean equals(Object obj) {
-		if (!(obj instanceof DateInterval)) {
-			return false;
-		}
-		DateInterval ien = (DateInterval) obj;
-		return getValue() == ien.getValue() && getUnit() == ien.getUnit();
-	}
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DateInterval)) {
+            return false;
+        }
+        DateInterval ien = (DateInterval) obj;
+        return getValue() == ien.getValue() && getUnit() == ien.getUnit();
+    }
 
-	public int hashCode() {
-		return (int) (getValue() ^ (getUnit().ordinal() << 28));
-	}
+    public int hashCode() {
+        return (int) (getValue() ^ (getUnit().ordinal() << 28));
+    }
 
-	public String toString() {
-		return String.valueOf(v) + unit;
-	}
+    public String toString() {
+        return String.valueOf(v) + unit;
+    }
 }

@@ -20,23 +20,23 @@ package org.jplot2d.axtick;
 
 /**
  * A Concrete Creator for logarithmic TickCalculator.
- * 
+ *
  * @author Jingjing Li
  */
 public class LogTickAlgorithm extends TickAlgorithm {
 
-	private static LogTickAlgorithm _instance = new LogTickAlgorithm();
+    private static LogTickAlgorithm _instance = new LogTickAlgorithm();
 
-	private LogTickAlgorithm() {
+    private LogTickAlgorithm() {
 
-	}
+    }
 
-	public static LogTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static LogTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public LogTickCalculator createCalculator() {
-		return new LogTickCalculator();
-	}
+    public LogTickCalculator createCalculator() {
+        return new LogTickCalculator();
+    }
 
 }

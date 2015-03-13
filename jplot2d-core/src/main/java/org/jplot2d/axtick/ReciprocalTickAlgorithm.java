@@ -20,24 +20,23 @@ package org.jplot2d.axtick;
 
 /**
  * A Concrete Creator for Reciprocal TickCalculator.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class ReciprocalTickAlgorithm extends TickAlgorithm {
 
-	private static ReciprocalTickAlgorithm _instance = new ReciprocalTickAlgorithm();
+    private static ReciprocalTickAlgorithm _instance = new ReciprocalTickAlgorithm();
 
-	private ReciprocalTickAlgorithm() {
+    private ReciprocalTickAlgorithm() {
 
-	}
+    }
 
-	public static ReciprocalTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static ReciprocalTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public ReciprocalTickCalculator createCalculator() {
-		return new ReciprocalTickCalculator();
-	}
+    public ReciprocalTickCalculator createCalculator() {
+        return new ReciprocalTickCalculator();
+    }
 
 }

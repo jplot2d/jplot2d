@@ -20,36 +20,35 @@ package org.jplot2d.axtick;
 
 /**
  * An interface to convert the input values to the values in the unit that the tick calculator accepted.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface TickUnitConverter {
 
-	public final TickUnitConverter IDENTITY = new TickUnitConverter() {
-		public double convertD2T(double v) {
-			return v;
-		}
+    public final TickUnitConverter IDENTITY = new TickUnitConverter() {
+        public double convertD2T(double v) {
+            return v;
+        }
 
-		public double convertT2D(double v) {
-			return v;
-		}
-	};
+        public double convertT2D(double v) {
+            return v;
+        }
+    };
 
-	/**
-	 * Convert the input value to tick value
-	 * 
-	 * @param v
-	 * @return
-	 */
-	public double convertD2T(double v);
+    /**
+     * Convert the input value to tick value
+     *
+     * @param v the data value
+     * @return the tick value
+     */
+    public double convertD2T(double v);
 
-	/**
-	 * Convert the tick value to input value
-	 * 
-	 * @param v
-	 * @return
-	 */
-	public double convertT2D(double v);
+    /**
+     * Convert the tick value to input value
+     *
+     * @param v the tick value
+     * @return the data value
+     */
+    public double convertT2D(double v);
 
 }

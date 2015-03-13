@@ -20,72 +20,72 @@ package org.jplot2d.axtick;
 
 /**
  * This class represent a number in degree minute second format
- * 
+ *
  * @author Jingjing Li
  */
 public final class ArcDmsInterval implements DoubleInterval {
 
-	public enum Unit {
-		SECOND(1.0 / 3600), MINUTE(1.0 / 60), DEGREE(1);
+    public enum Unit {
+        SECOND(1.0 / 3600), MINUTE(1.0 / 60), DEGREE(1);
 
-		public final double angle;
+        public final double angle;
 
-		private Unit(double angle) {
-			this.angle = angle;
-		}
-	};
+        private Unit(double angle) {
+            this.angle = angle;
+        }
+    }
 
-	private final int _c, _e;
+    private final int _c, _e;
 
-	private final Unit _unit;
+    private final Unit _unit;
 
-	public ArcDmsInterval(int coefficient, int exponent) {
-		_unit = Unit.SECOND;
-		_c = coefficient;
-		_e = exponent;
-	}
+    public ArcDmsInterval(int coefficient, int exponent) {
+        _unit = Unit.SECOND;
+        _c = coefficient;
+        _e = exponent;
+    }
 
-	public ArcDmsInterval(Unit unit, int value) {
-		_unit = unit;
-		_c = value;
-		_e = 0;
-	}
+    public ArcDmsInterval(Unit unit, int value) {
+        _unit = unit;
+        _c = value;
+        _e = 0;
+    }
 
-	public Unit getUnit() {
-		return _unit;
-	}
+    public Unit getUnit() {
+        return _unit;
+    }
 
-	/**
-	 * @return the coefficient
-	 */
-	public int getCoefficient() {
-		return _c;
-	}
+    /**
+     * @return the coefficient
+     */
+    public int getCoefficient() {
+        return _c;
+    }
 
-	/**
-	 * @return the exponent
-	 */
-	public int getExponent() {
-		return _e;
-	}
+    /**
+     * @return the exponent
+     */
+    public int getExponent() {
+        return _e;
+    }
 
-	public double doubleValue() {
-		return Math.pow(10, _e) * _c * _unit.angle;
-	}
+    public double doubleValue() {
+        return Math.pow(10, _e) * _c * _unit.angle;
+    }
 
-	public boolean equals(Object obj) {
-		if (!(obj instanceof ArcDmsInterval)) {
-			return false;
-		}
-		ArcDmsInterval ien = (ArcDmsInterval) obj;
-		return _c == ien._c && _e == ien._e;
-	}
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ArcDmsInterval)) {
+            return false;
+        }
+        ArcDmsInterval ien = (ArcDmsInterval) obj;
+        return _c == ien._c && _e == ien._e;
+    }
 
-	public int hashCode() {
-		return _c ^ (_e << 16);
-	}
+    public int hashCode() {
+        return _c ^ (_e << 16);
+    }
 
-	public String toString() {
-		return _c + "e" + _e;
-	}
+    public String toString() {
+        return _c + "e" + _e;
+    }
 }

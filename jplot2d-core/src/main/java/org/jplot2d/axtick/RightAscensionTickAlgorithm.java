@@ -20,36 +20,35 @@ package org.jplot2d.axtick;
 
 /**
  * A TickCalculator to display in hh:mm:ss.xxxx format. The input unit is decimal degree.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class RightAscensionTickAlgorithm extends TickAlgorithm {
 
-	private static final RightAscensionTickAlgorithm _instance = new RightAscensionTickAlgorithm();
+    private static final RightAscensionTickAlgorithm _instance = new RightAscensionTickAlgorithm();
 
-	private static final TickUnitConverter tuc = new TickUnitConverter() {
+    private static final TickUnitConverter tuc = new TickUnitConverter() {
 
-		public double convertD2T(double v) {
-			return v / 360 * 60 * 60 * 24;
-		}
+        public double convertD2T(double v) {
+            return v / 360 * 60 * 60 * 24;
+        }
 
-		public double convertT2D(double v) {
-			return v / (60 * 60 * 24) * 360;
-		}
+        public double convertT2D(double v) {
+            return v / (60 * 60 * 24) * 360;
+        }
 
-	};
+    };
 
-	private RightAscensionTickAlgorithm() {
+    private RightAscensionTickAlgorithm() {
 
-	}
+    }
 
-	public static RightAscensionTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static RightAscensionTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public TickCalculator createCalculator() {
-		return new TimeHmsTickCalculator(tuc);
-	}
+    public TickCalculator createCalculator() {
+        return new TimeHmsTickCalculator(tuc);
+    }
 
 }

@@ -20,6 +20,6 @@ package org.jplot2d.axtick;
 
 public interface DoubleInterval {
 
-	public double doubleValue();
+    public double doubleValue();
 
 }

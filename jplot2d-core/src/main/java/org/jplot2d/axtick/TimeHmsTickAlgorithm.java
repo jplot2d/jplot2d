@@ -20,24 +20,23 @@ package org.jplot2d.axtick;
 
 /**
  * A TickCalculator to display in hh:mm:ss.xxxx format. The input unit is second.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class TimeHmsTickAlgorithm extends TickAlgorithm {
 
-	private static final TimeHmsTickAlgorithm _instance = new TimeHmsTickAlgorithm();
+    private static final TimeHmsTickAlgorithm _instance = new TimeHmsTickAlgorithm();
 
-	private TimeHmsTickAlgorithm() {
+    private TimeHmsTickAlgorithm() {
 
-	}
+    }
 
-	public static TimeHmsTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static TimeHmsTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public TimeHmsTickCalculator createCalculator() {
-		return new TimeHmsTickCalculator(TickUnitConverter.IDENTITY);
-	}
+    public TimeHmsTickCalculator createCalculator() {
+        return new TimeHmsTickCalculator(TickUnitConverter.IDENTITY);
+    }
 
 }

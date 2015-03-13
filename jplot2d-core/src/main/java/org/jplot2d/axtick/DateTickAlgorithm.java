@@ -23,23 +23,22 @@ import java.util.TimeZone;
 
 /**
  * A Concrete Creator for DateTickCalculator.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class DateTickAlgorithm extends TickAlgorithm {
 
-	private TimeZone zone;
+    private TimeZone zone;
 
-	private Locale locale;
+    private Locale locale;
 
-	public DateTickAlgorithm(TimeZone zone, Locale aLocale) {
-		this.zone = zone;
-		this.locale = aLocale;
-	}
+    public DateTickAlgorithm(TimeZone zone, Locale aLocale) {
+        this.zone = zone;
+        this.locale = aLocale;
+    }
 
-	public DateTickCalculator createCalculator() {
-		return new DateTickCalculator(zone, locale);
-	}
+    public DateTickCalculator createCalculator() {
+        return new DateTickCalculator(zone, locale);
+    }
 
 }

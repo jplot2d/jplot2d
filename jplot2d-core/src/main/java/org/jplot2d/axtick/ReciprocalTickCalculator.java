@@ -21,133 +21,132 @@ package org.jplot2d.axtick;
 import java.text.Format;
 
 /**
- * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone, with a end tick value is multiple
- * of the other end. The reasonable multiplying factor is 4.
- * 
+ * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone,
+ * with a end tick value is multiple of the other end. The reasonable multiplying factor is 4.
+ *
  * @author Jingjing Li
- * 
  */
 public class ReciprocalTickCalculator extends DoubleTickCalculator {
 
-	static final int LINEAR_MULIPLE_THRESHOLD = 2;
+    static final int LINEAR_MULIPLE_THRESHOLD = 2;
 
-	/**
-	 * Always be positive
-	 */
-	protected double interval;
+    /**
+     * Always be positive
+     */
+    protected double interval;
 
-	protected int minorNumber;
+    protected int minorNumber;
 
-	protected double[] tickValues;
+    protected double[] tickValues;
 
-	protected double[] minorValues;
+    protected double[] minorValues;
 
-	protected void setRange(double start, double end) {
-		/* the start or end may be NaN if the main axis start/end at 0 */
-		super.setRange(start, end);
-	}
+    protected void setRange(double start, double end) {
+        /* the start or end may be NaN if the main axis start/end at 0 */
+        super.setRange(start, end);
+    }
 
-	public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
-		calcReciprocal(minorTickNumber);
-		if (tickValues == null) {
-			calcAsLinear(tickNumber, minorTickNumber);
-		}
-	}
+    public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
+        calcReciprocal(minorTickNumber);
+        if (tickValues == null) {
+            calcAsLinear(tickNumber, minorTickNumber);
+        }
+    }
 
-	@Override
-	public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
-		calcReciprocal(minorTickNumber);
-		if (tickValues == null) {
-			calcAsLinear(interval, offset, minorTickNumber);
-		}
-	}
+    @Override
+    public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
+        calcReciprocal(minorTickNumber);
+        if (tickValues == null) {
+            calcAsLinear(interval, offset, minorTickNumber);
+        }
+    }
 
-	private void calcReciprocal(int minorTickNumber) {
-		double farv;
-		double mf = 0;
-		double absStart = Math.abs(start);
-		double absEnd = Math.abs(end);
-		if (Math.signum(start) == Math.signum(end)) {
-			mf = (absStart > absEnd) ? absStart / absEnd : absEnd / absStart;
-			if (mf < LINEAR_MULIPLE_THRESHOLD) {
-				tickValues = null;
-				minorValues = null;
-				return;
-			} else {
-				if (absStart > absEnd) {
-					farv = end;
-				} else {
-					farv = start;
-				}
-			}
-		} else if (Double.isNaN(start)) {
-			farv = end;
-		} else if (Double.isNaN(end)) {
-			farv = start;
-		} else {
-			if (absStart > absEnd) {
-				farv = end;
-			} else {
-				farv = start;
-			}
-		}
+    private void calcReciprocal(int minorTickNumber) {
+        double farv;
+        double mf = 0;
+        double absStart = Math.abs(start);
+        double absEnd = Math.abs(end);
+        if (Math.signum(start) == Math.signum(end)) {
+            mf = (absStart > absEnd) ? absStart / absEnd : absEnd / absStart;
+            if (mf < LINEAR_MULIPLE_THRESHOLD) {
+                tickValues = null;
+                minorValues = null;
+                return;
+            } else {
+                if (absStart > absEnd) {
+                    farv = end;
+                } else {
+                    farv = start;
+                }
+            }
+        } else if (Double.isNaN(start)) {
+            farv = end;
+        } else if (Double.isNaN(end)) {
+            farv = start;
+        } else {
+            if (absStart > absEnd) {
+                farv = end;
+            } else {
+                farv = start;
+            }
+        }
 
-		if (mf == 0 || mf > 4) {
-			mf = 4;
-		}
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
-		tc.setRange(farv, farv * mf);
-		tc.calcValuesByTickNumber(3, minorTickNumber);
-		this.minorNumber = tc.getMinorNumber();
-		this.tickValues = tc.getValues();
-		this.minorValues = tc.getMinorValues();
+        if (mf == 0 || mf > 4) {
+            mf = 4;
+        }
+        DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
+        tc.setRange(farv, farv * mf);
+        tc.calcValuesByTickNumber(3, minorTickNumber);
+        this.minorNumber = tc.getMinorNumber();
+        this.tickValues = tc.getValues();
+        this.minorValues = tc.getMinorValues();
 
-	}
+    }
 
-	private void calcAsLinear(int tickNumber, int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
-		tc.setRange(start, end);
-		tc.calcValuesByTickNumber(tickNumber, minorTickNumber);
-		this.minorNumber = tc.getMinorNumber();
-		this.tickValues = tc.getValues();
-		this.minorValues = tc.getMinorValues();
-	}
+    private void calcAsLinear(int tickNumber, int minorTickNumber) {
+        DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
+        tc.setRange(start, end);
+        tc.calcValuesByTickNumber(tickNumber, minorTickNumber);
+        this.minorNumber = tc.getMinorNumber();
+        this.tickValues = tc.getValues();
+        this.minorValues = tc.getMinorValues();
+    }
 
-	private void calcAsLinear(double interval, double offset, int minorTickNumber) {
-		DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
-		tc.setRange(start, end);
-		tc.calcValuesByTickInterval(interval, offset, minorTickNumber);
-		this.minorNumber = tc.getMinorNumber();
-		this.tickValues = tc.getValues();
-		this.minorValues = tc.getMinorValues();
-	}
+    private void calcAsLinear(double interval, double offset, int minorTickNumber) {
+        DoubleTickCalculator tc = LinearTickAlgorithm.getInstance().createCalculator();
+        tc.setRange(start, end);
+        tc.calcValuesByTickInterval(interval, offset, minorTickNumber);
+        this.minorNumber = tc.getMinorNumber();
+        this.tickValues = tc.getValues();
+        this.minorValues = tc.getMinorValues();
+    }
 
-	@Override
-	public double getInterval() {
-		return interval;
-	}
+    @Override
+    public double getInterval() {
+        return interval;
+    }
 
-	@Override
-	public int getMinorNumber() {
-		return minorNumber;
-	}
+    @Override
+    public int getMinorNumber() {
+        return minorNumber;
+    }
 
-	@Override
-	public double[] getValues() {
-		return tickValues;
-	}
+    @Override
+    public double[] getValues() {
+        return tickValues;
+    }
 
-	@Override
-	public double[] getMinorValues() {
-		return minorValues;
-	}
+    @Override
+    public double[] getMinorValues() {
+        return minorValues;
+    }
 
-	public Format calcLabelTextFormat(Object canonicalValues) {
-		return null;
-	}
+    public Format calcLabelTextFormat(Object canonicalValues) {
+        return null;
+    }
 
-	public String getLabelFormate() {
-		return calcLabelFormatString(getValues());
-	}
+    public String getLabelFormate() {
+        return calcLabelFormatString(getValues());
+    }
 
 }

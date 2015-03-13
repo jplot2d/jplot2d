@@ -20,24 +20,23 @@ package org.jplot2d.axtick;
 
 /**
  * A Concrete Creator for Linear TickCalculator.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class LinearTickAlgorithm extends TickAlgorithm {
 
-	private static LinearTickAlgorithm _instance = new LinearTickAlgorithm();
+    private static LinearTickAlgorithm _instance = new LinearTickAlgorithm();
 
-	private LinearTickAlgorithm() {
+    private LinearTickAlgorithm() {
 
-	}
+    }
 
-	public static LinearTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static LinearTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public LinearTickCalculator createCalculator() {
-		return new LinearTickCalculator();
-	}
+    public LinearTickCalculator createCalculator() {
+        return new LinearTickCalculator();
+    }
 
 }

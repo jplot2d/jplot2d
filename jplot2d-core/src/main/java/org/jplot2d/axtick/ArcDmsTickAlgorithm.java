@@ -20,24 +20,23 @@ package org.jplot2d.axtick;
 
 /**
  * A TickCalculator in ARC dmsxxxx format. The input data is in digital degree
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class ArcDmsTickAlgorithm extends TickAlgorithm {
 
-	private static final ArcDmsTickAlgorithm _instance = new ArcDmsTickAlgorithm();
+    private static final ArcDmsTickAlgorithm _instance = new ArcDmsTickAlgorithm();
 
-	private ArcDmsTickAlgorithm() {
+    private ArcDmsTickAlgorithm() {
 
-	}
+    }
 
-	public static ArcDmsTickAlgorithm getInstance() {
-		return _instance;
-	}
+    public static ArcDmsTickAlgorithm getInstance() {
+        return _instance;
+    }
 
-	public ArcDmsTickCalculator createCalculator() {
-		return new ArcDmsTickCalculator();
-	}
+    public ArcDmsTickCalculator createCalculator() {
+        return new ArcDmsTickCalculator();
+    }
 
 }
