@@ -20,6 +20,8 @@ package org.jplot2d.axtick;
 
 import java.text.Format;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Jingjing Li
  */
@@ -52,7 +54,7 @@ public class LinearTickCalculator extends AbstractLinearTickCalculator {
     public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
         Int10expn intv = (Int10expn) calcInterval(tickNumber);
 
-        if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+        if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
             switch (intv.getCoefficient()) {
                 case 1: /* the minor interval is 0.2 */
                     minorNumber = 4;
@@ -111,11 +113,11 @@ public class LinearTickCalculator extends AbstractLinearTickCalculator {
         }
     }
 
-    public String getLabelFormate() {
+    public String getLabelFormat() {
         return calcLabelFormatString(getValues());
     }
 
-    public Format calcLabelTextFormat(Object canonicalValues) {
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
         return null;
     }
 

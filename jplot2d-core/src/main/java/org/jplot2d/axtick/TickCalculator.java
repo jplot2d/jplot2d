@@ -29,6 +29,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A calculator to calculate tick values and minor tick values
  *
@@ -36,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public abstract class TickCalculator {
 
-    public static final int AUTO_MINORTICK_NUMBER = -1;
+    public static final int AUTO_MINOR_TICK_NUMBER = -1;
 
     /**
      * The Tolerance error for double computing. doublePrecisionLimit is 0x1.0p-52
@@ -53,7 +56,7 @@ public abstract class TickCalculator {
      *
      * @param tickNumber      the number of ticks
      * @param minorTickNumber the number of minor ticks.
-     *                        if the given number is {@link #AUTO_MINORTICK_NUMBER}, the tick number is automatically chosen.
+     *                        if the given number is {@link #AUTO_MINOR_TICK_NUMBER}, the tick number is automatically chosen.
      */
     public abstract void calcValuesByTickNumber(int tickNumber, int minorTickNumber);
 
@@ -63,7 +66,7 @@ public abstract class TickCalculator {
      *
      * @param interval        the interval between 2 tick values
      * @param offset          the offset from the default tick values
-     * @param minorTickNumber if the given number is {@link #AUTO_MINORTICK_NUMBER}, the tick number is derived from interval.
+     * @param minorTickNumber if the given number is {@link #AUTO_MINOR_TICK_NUMBER}, the tick number is derived from interval.
      */
     public abstract void calcValuesByTickInterval(double interval, double offset, int minorTickNumber);
 
@@ -151,28 +154,32 @@ public abstract class TickCalculator {
     public abstract int[] getInRangeValuesIdx(Object values);
 
     /**
-     * Calculate a proper text format to format the labels on given values.
+     * Calculate a proper text format to format the labels on the given values.
      * A calculator can just returns a text format and do not provide a format string (returns a empty string).
      * If The returned text format is <code>null</code>, a proper format string must be provided.
      *
      * @param values the values to be formatted
      * @return a text format object
      */
-    public abstract Format calcLabelTextFormat(Object values);
+    @Nullable
+    public abstract Format calcLabelTextFormat(@Nonnull Object values);
 
     /**
-     * Calculate a proper format string to format the labels on given values.
+     * Calculate a proper format string to format the labels on the given values.
+     * This method can returns <code>null</code> if {@link #calcLabelTextFormat} returns a format object.
      *
      * @param values the values to be formatted
      * @return a format string
      */
-    public abstract String calcLabelFormatString(Object values);
+    @Nullable
+    public abstract String calcLabelFormatString(@Nonnull Object values);
 
     /**
      * Returns a proper format string to format the labels on tick values returned by {@link #getValues()}.
-     * Some calculator can derive format from its internal status directly.
+     * Some calculators can derive format from its internal status directly.
      */
-    public abstract String getLabelFormate();
+    @Nullable
+    public abstract String getLabelFormat();
 
     /**
      * Returns <code>true</code> if the given format is valid for this tick calculator
@@ -183,7 +190,7 @@ public abstract class TickCalculator {
 
     // %[argument_index$][flags][width][.precision]m_conversion
     private static final Pattern M_CONVERSION_PATTERN = Pattern
-            .compile("(%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?)(m)");
+            .compile("(%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?)(m)");
 
     private static final Pattern M_RESULT_PATTERN = Pattern
             .compile("-->>([+-]?[0-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");

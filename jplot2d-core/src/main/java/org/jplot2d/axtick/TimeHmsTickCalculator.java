@@ -23,6 +23,8 @@ import org.jplot2d.axtick.TimeHmsInterval.Unit;
 import java.lang.reflect.Array;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * This calculator works on seconds, and accept a TickUnitConverter, in case of the input data is not in seconds.
  *
@@ -120,7 +122,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
     public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
         TimeHmsInterval intv = (TimeHmsInterval) calcInterval(tickNumber);
 
-        if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+        if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
             if (intv.getCoefficient() == 1 && (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.HOUR)) {
                 minorNumber = 0;
             } else {
@@ -153,12 +155,11 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
                 s1dInterval = (int) s1dcoef;
             }
         } else if (itv < Unit.MINUTE.time) {
-            double secs = itv;
-            double s1dcoef = Math.round(secs);
+            double s1dcoef = Math.round(itv);
 			/*
 			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
-            if (Math.abs(s1dcoef / secs - 1) > DOUBLE_PRECISION_TOLERANCE) {
+            if (Math.abs(s1dcoef / itv - 1) > DOUBLE_PRECISION_TOLERANCE) {
                 s1dInterval = 0;
             } else {
                 s1dInterval = (int) s1dcoef;
@@ -195,7 +196,7 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
 
     }
 
-    public TimeHmsFormat calcLabelTextFormat(Object values) {
+    public TimeHmsFormat calcLabelTextFormat(@Nonnull Object values) {
         return new TimeHmsFormat(tuc, calcSigFraDigits(values));
     }
 
@@ -231,12 +232,12 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
         return maxFractionDigits;
     }
 
-    public String calcLabelFormatString(Object values) {
-        return "";
+    public String calcLabelFormatString(@Nonnull Object values) {
+        return null;
     }
 
-    public String getLabelFormate() {
-        return "";
+    public String getLabelFormat() {
+        return null;
     }
 
 }

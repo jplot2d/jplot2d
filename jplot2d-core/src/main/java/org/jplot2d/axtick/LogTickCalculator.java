@@ -22,6 +22,8 @@ import org.jplot2d.util.NumberArrayUtils;
 
 import java.text.Format;
 
+import javax.annotation.Nonnull;
+
 /**
  * The Log tick calculate its exponent with linear tick calculator, with this exceptions:
  * <ul>
@@ -32,7 +34,7 @@ import java.text.Format;
  */
 class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
 
-    private LinearTickCalculator expCalculator = new LinearTickCalculator();
+    private final LinearTickCalculator expCalculator = new LinearTickCalculator();
 
     private double[] _tickValues;
 
@@ -281,11 +283,11 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
         return _minorValues;
     }
 
-    public String getLabelFormate() {
+    public String getLabelFormat() {
         return calcLabelFormatString(getValues());
     }
 
-    public Format calcLabelTextFormat(Object canonicalValues) {
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
         return null;
     }
 

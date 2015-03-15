@@ -18,26 +18,23 @@
  */
 package org.jplot2d.axtick;
 
-import static org.junit.Assert.*;
-
-import org.jplot2d.axtick.Int10expn;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class Int10expnTest {
 
-	@Test
-	public void testCreateFromDouble() {
-		assertEquals(new Int10expn(1.49), new Int10expn(1, 0));
-		assertEquals(new Int10expn(9.51), new Int10expn(1, 1));
-		assertEquals(new Int10expn(0.149), new Int10expn(1, -1));
-		assertEquals(new Int10expn(0.951), new Int10expn(1, 0));
-		assertEquals(new Int10expn(14.9), new Int10expn(1, 1));
-		assertEquals(new Int10expn(95.1), new Int10expn(1, 2));
-	}
+    @Test
+    public void testCreateFromDouble() {
+        assertEquals(new Int10expn(1.49), new Int10expn(1, 0));
+        assertEquals(new Int10expn(9.51), new Int10expn(1, 1));
+        assertEquals(new Int10expn(0.149), new Int10expn(1, -1));
+        assertEquals(new Int10expn(0.951), new Int10expn(1, 0));
+        assertEquals(new Int10expn(14.9), new Int10expn(1, 1));
+        assertEquals(new Int10expn(95.1), new Int10expn(1, 2));
+    }
 
 }

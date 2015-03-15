@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calculator to calculate tick values in TAI micro seconds and date/time format.
  *
@@ -93,7 +95,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
             /* 1 <= rough/scale < 10 */
             double coeff = rough / scale;
             if (coeff < 2) {
-                itvA = new DateInterval(Unit.MICROSECOND, scale * 1);
+                itvA = new DateInterval(Unit.MICROSECOND, scale);
                 itvB = new DateInterval(Unit.MICROSECOND, scale * 2);
             } else if (coeff < 5) {
                 itvA = new DateInterval(Unit.MICROSECOND, scale * 2);
@@ -147,8 +149,8 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
             add(t1cal, dateInterval.getUnit(), 1);
         }
 
-        List<Long> ticks = new ArrayList<Long>();
-        List<Long> mticks = new ArrayList<Long>();
+        List<Long> ticks = new ArrayList<>();
+        List<Long> mticks = new ArrayList<>();
         if (minorNumber == 0) {
             int delta = distanceToIntervalBoundary(t1cal, dateInterval);
             if (delta != 0) {
@@ -277,7 +279,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         if (dateInterval.getValue() == 1) {
             minorNumber = 0;
         } else {
-            if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+            if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
                 minorTickNumber = 3;
             }
             minorNumber = calcMinorNumber(dateInterval.getValue(), minorTickNumber);
@@ -301,7 +303,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         return minorValues;
     }
 
-    public String getLabelFormate() {
+    public String getLabelFormat() {
         TAIMicrosCalendar loCal = new TAIMicrosCalendar(zone, locale);
         loCal.setTimeInMicros(lo);
         TAIMicrosCalendar hiCal = new TAIMicrosCalendar(zone, locale);
@@ -311,13 +313,13 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         return DateTickCalculator.calcLabelFormat(dateInterval.getUnit(), umax);
     }
 
-    public Format calcLabelTextFormat(Object canonicalValues) {
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
         return null;
     }
 
-    public String calcLabelFormatString(Object values) {
+    public String calcLabelFormatString(@Nonnull Object values) {
         if (((long[]) values).length == 0) {
-            return "";
+            return null;
         }
 
         TAIMicrosCalendar cal = new TAIMicrosCalendar(zone, locale);
@@ -346,6 +348,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         return DateTickCalculator.calcLabelFormat(umin, umax);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean isValidFormat(String format) {
         try {
             String.format(format, Calendar.getInstance(zone, locale));

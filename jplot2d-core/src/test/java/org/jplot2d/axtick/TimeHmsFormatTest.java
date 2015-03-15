@@ -18,29 +18,29 @@
  */
 package org.jplot2d.axtick;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TimeHmsFormatTest {
 
-	@Test
-	public void testFormat0() {
-		TimeHmsFormat format = new TimeHmsFormat(TickUnitConverter.IDENTITY, 0);
-		assertEquals(format.format(-60.1), "-00:01:00");
-		assertEquals(format.format(59.99), "00:01:00");
-		assertEquals(format.format(-59.99), "-00:01:00");
-	}
+    @Test
+    public void testFormat0() {
+        TimeHmsFormat format = new TimeHmsFormat(TickUnitConverter.IDENTITY, 0);
+        assertEquals(format.format(-60.1), "-00:01:00");
+        assertEquals(format.format(59.99), "00:01:00");
+        assertEquals(format.format(-59.99), "-00:01:00");
+    }
 
-	@Test
-	public void testFormat1() {
-		TimeHmsFormat format = new TimeHmsFormat(TickUnitConverter.IDENTITY, 1);
-		assertEquals(format.format(-60.1), "-00:01:00.1");
-		assertEquals(format.format(59.9), "00:00:59.9");
-		assertEquals(format.format(-59.9), "-00:00:59.9");
-		assertEquals(format.format(-60.01), "-00:01:00.0");
-		assertEquals(format.format(59.99), "00:01:00.0");
-		assertEquals(format.format(-59.99), "-00:01:00.0");
-	}
+    @Test
+    public void testFormat1() {
+        TimeHmsFormat format = new TimeHmsFormat(TickUnitConverter.IDENTITY, 1);
+        assertEquals(format.format(-60.1), "-00:01:00.1");
+        assertEquals(format.format(59.9), "00:00:59.9");
+        assertEquals(format.format(-59.9), "-00:00:59.9");
+        assertEquals(format.format(-60.01), "-00:01:00.0");
+        assertEquals(format.format(59.99), "00:01:00.0");
+        assertEquals(format.format(-59.99), "-00:01:00.0");
+    }
 
 }

@@ -25,7 +25,7 @@ package org.jplot2d.axtick;
  */
 public class ReciprocalTickAlgorithm extends TickAlgorithm {
 
-    private static ReciprocalTickAlgorithm _instance = new ReciprocalTickAlgorithm();
+    private static final ReciprocalTickAlgorithm _instance = new ReciprocalTickAlgorithm();
 
     private ReciprocalTickAlgorithm() {
 

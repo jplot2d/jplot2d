@@ -23,6 +23,8 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Formatter;
 
+import javax.annotation.Nonnull;
+
 /**
  * Format a value in degree to DD°MM′SS″nnnn format.
  *
@@ -32,7 +34,7 @@ public class ArcDmsFormat extends Format {
 
     private static final long serialVersionUID = 1L;
 
-    private int fraDigits;
+    private final int fraDigits;
 
     /**
      * Construct a ArcDmsFormat with the given fragment digits.
@@ -44,15 +46,15 @@ public class ArcDmsFormat extends Format {
     }
 
     @Override
-    public StringBuffer format(Object number, StringBuffer toAppendTo, FieldPosition pos) {
+    public StringBuffer format(Object number, @Nonnull StringBuffer toAppendTo, @Nonnull FieldPosition pos) {
         if (number instanceof Number) {
-            return format(((Number) number).doubleValue(), toAppendTo, pos);
+            return format(((Number) number).doubleValue(), toAppendTo);
         } else {
             throw new IllegalArgumentException("Cannot format given Object as a Number");
         }
     }
 
-    private StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
+    private StringBuffer format(double number, StringBuffer result) {
 
         boolean negative = false;
         if (number < 0) {
@@ -86,8 +88,8 @@ public class ArcDmsFormat extends Format {
         if (negative) {
             result.append('-');
         }
-        Formatter foramtter = new Formatter(result);
-        foramtter.format("%02d\u00b0%02d\u2032%02d", degree, minute, second);
+        Formatter formatter = new Formatter(result);
+        formatter.format("%02d\u00b0%02d\u2032%02d", degree, minute, second);
         if (fraDigits > 0) {
             // remove the digit before dot
             result.append(sb, 1, sb.length());
@@ -99,16 +101,13 @@ public class ArcDmsFormat extends Format {
     }
 
     @Override
-    public Object parseObject(String source, ParsePosition pos) {
+    public Object parseObject(String source, @Nonnull ParsePosition pos) {
         // not support
         return null;
     }
 
     public boolean equals(Object obj) {
-        if (obj instanceof ArcDmsFormat) {
-            return fraDigits == ((ArcDmsFormat) obj).fraDigits;
-        }
-        return false;
+        return obj instanceof ArcDmsFormat && fraDigits == ((ArcDmsFormat) obj).fraDigits;
     }
 
 }

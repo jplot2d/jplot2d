@@ -20,6 +20,8 @@ package org.jplot2d.axtick;
 
 import java.text.Format;
 
+import javax.annotation.Nonnull;
+
 /**
  * A TickCalculator for reciprocal. A reciprocal ticks contains a primary tick zone,
  * with a end tick value is multiple of the other end. The reasonable multiplying factor is 4.
@@ -28,7 +30,7 @@ import java.text.Format;
  */
 public class ReciprocalTickCalculator extends DoubleTickCalculator {
 
-    static final int LINEAR_MULIPLE_THRESHOLD = 2;
+    static final int LINEAR_MULTIPLE_THRESHOLD = 2;
 
     /**
      * Always be positive
@@ -40,11 +42,6 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
     protected double[] tickValues;
 
     protected double[] minorValues;
-
-    protected void setRange(double start, double end) {
-        /* the start or end may be NaN if the main axis start/end at 0 */
-        super.setRange(start, end);
-    }
 
     public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
         calcReciprocal(minorTickNumber);
@@ -68,7 +65,7 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
         double absEnd = Math.abs(end);
         if (Math.signum(start) == Math.signum(end)) {
             mf = (absStart > absEnd) ? absStart / absEnd : absEnd / absStart;
-            if (mf < LINEAR_MULIPLE_THRESHOLD) {
+            if (mf < LINEAR_MULTIPLE_THRESHOLD) {
                 tickValues = null;
                 minorValues = null;
                 return;
@@ -141,11 +138,11 @@ public class ReciprocalTickCalculator extends DoubleTickCalculator {
         return minorValues;
     }
 
-    public Format calcLabelTextFormat(Object canonicalValues) {
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
         return null;
     }
 
-    public String getLabelFormate() {
+    public String getLabelFormat() {
         return calcLabelFormatString(getValues());
     }
 

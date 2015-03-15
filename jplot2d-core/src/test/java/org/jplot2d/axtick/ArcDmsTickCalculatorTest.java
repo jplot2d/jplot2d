@@ -18,26 +18,26 @@
  */
 package org.jplot2d.axtick;
 
-import static org.jplot2d.util.TestUtils.*;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.jplot2d.util.TestUtils.checkDouble;
+import static org.jplot2d.util.TestUtils.checkDoubleArray;
+import static org.jplot2d.util.TestUtils.checkFormat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class ArcDmsTickCalculatorTest {
 
-    private static ArcDmsTickCalculator admsTC = ArcDmsTickAlgorithm
-            .getInstance().createCalculator();
+    private static final ArcDmsTickCalculator admsTC = ArcDmsTickAlgorithm.getInstance().createCalculator();
 
     @Test
     public void testCalcValuesByTickNumber() {
         ArcDmsFormat format;
 
         admsTC.setRange(0, 1.0 / 3600);
-        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         checkDouble(admsTC.getInterval(), 0.1 / 3600);
         assertEquals(admsTC.getMinorNumber(), 0);
         checkDoubleArray(admsTC.getValues(), 0, 0.1 / 3600, 0.2 / 3600,
@@ -53,7 +53,7 @@ public class ArcDmsTickCalculatorTest {
                 "00\u00b000\u203200.9\u2033", "00\u00b000\u203201.0\u2033");
 
         admsTC.setRange(0, 60.0 / 3600);
-        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         checkDouble(admsTC.getInterval(), 5.0 / 3600);
         assertEquals(admsTC.getMinorNumber(), 4);
         checkDoubleArray(admsTC.getValues(), 0, 5.0 / 3600, 10.0 / 3600,
@@ -71,7 +71,7 @@ public class ArcDmsTickCalculatorTest {
                 "00\u00b000\u203255\u2033", "00\u00b001\u203200\u2033");
 
         admsTC.setRange(0, 1);
-        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         checkDouble(admsTC.getInterval(), 300.0 / 3600);
         assertEquals(admsTC.getMinorNumber(), 4);
         checkDoubleArray(admsTC.getValues(), 0, 300.0 / 3600, 600.0 / 3600,
@@ -89,7 +89,7 @@ public class ArcDmsTickCalculatorTest {
                 "00\u00b055\u203200\u2033", "01\u00b000\u203200\u2033");
 
         admsTC.setRange(0, 360);
-        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickNumber(11, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         checkDouble(admsTC.getInterval(), 30);
         assertEquals(admsTC.getMinorNumber(), 2);
         checkDoubleArray(admsTC.getValues(), 0, 30, 60, 90, 120, 150, 180, 210,
@@ -111,8 +111,7 @@ public class ArcDmsTickCalculatorTest {
         ArcDmsFormat format;
 
         admsTC.setRange(0, 1.0 / 3600);
-        admsTC.calcValuesByTickInterval(0.1 / 3600, 0,
-                TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickInterval(0.1 / 3600, 0, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         assertEquals(admsTC.getMinorNumber(), 0);
         checkDoubleArray(admsTC.getValues(), 0, 0.1 / 3600, 0.2 / 3600,
                 0.3 / 3600, 0.4 / 3600, 0.5 / 3600, 0.6 / 3600, 0.7 / 3600,
@@ -127,8 +126,7 @@ public class ArcDmsTickCalculatorTest {
                 "00\u00b000\u203200.9\u2033", "00\u00b000\u203201.0\u2033");
 
         admsTC.setRange(0, 60.0 / 3600);
-        admsTC.calcValuesByTickInterval(5.0 / 3600, 0,
-                TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickInterval(5.0 / 3600, 0, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         assertEquals(admsTC.getMinorNumber(), 4);
         checkDoubleArray(admsTC.getValues(), 0, 5.0 / 3600, 10.0 / 3600,
                 15.0 / 3600, 20.0 / 3600, 25.0 / 3600, 30.0 / 3600,
@@ -145,8 +143,7 @@ public class ArcDmsTickCalculatorTest {
                 "00\u00b000\u203255\u2033", "00\u00b001\u203200\u2033");
 
         admsTC.setRange(0, 1);
-        admsTC.calcValuesByTickInterval(300.0 / 3600, 0,
-                TickCalculator.AUTO_MINORTICK_NUMBER);
+        admsTC.calcValuesByTickInterval(300.0 / 3600, 0, TickCalculator.AUTO_MINOR_TICK_NUMBER);
         assertEquals(admsTC.getMinorNumber(), 4);
         checkDoubleArray(admsTC.getValues(), 0, 300.0 / 3600, 600.0 / 3600,
                 900.0 / 3600, 1200.0 / 3600, 1500.0 / 3600, 1800.0 / 3600,
@@ -164,7 +161,7 @@ public class ArcDmsTickCalculatorTest {
 
         admsTC.setRange(0, 360);
         admsTC.calcValuesByTickInterval(30, 0,
-                TickCalculator.AUTO_MINORTICK_NUMBER);
+                TickCalculator.AUTO_MINOR_TICK_NUMBER);
         assertEquals(admsTC.getMinorNumber(), 2);
         checkDoubleArray(admsTC.getValues(), 0, 30, 60, 90, 120, 150, 180, 210,
                 240, 270, 300, 330, 360);

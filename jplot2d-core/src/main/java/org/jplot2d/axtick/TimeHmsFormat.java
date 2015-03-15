@@ -23,6 +23,8 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Formatter;
 
+import javax.annotation.Nonnull;
+
 /**
  * Format a value in seconds to HH:MM:SS.nnnn format.
  *
@@ -51,16 +53,16 @@ public class TimeHmsFormat extends Format {
     }
 
     @Override
-    public StringBuffer format(Object number, StringBuffer toAppendTo, FieldPosition pos) {
+    public StringBuffer format(Object number, @Nonnull StringBuffer toAppendTo, @Nonnull FieldPosition pos) {
         if (number instanceof Number) {
             double v = tuf.convertD2T(((Number) number).doubleValue());
-            return format(v, toAppendTo, pos);
+            return format(v, toAppendTo);
         } else {
             throw new IllegalArgumentException("Cannot format given Object as a Number");
         }
     }
 
-    private StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
+    private StringBuffer format(double number, StringBuffer result) {
 
         boolean negative = false;
         if (number < 0) {
@@ -92,8 +94,8 @@ public class TimeHmsFormat extends Format {
         if (negative) {
             result.append('-');
         }
-        Formatter foramtter = new Formatter(result);
-        foramtter.format("%02d:%02d:%02d", hour, minute, second);
+        Formatter formatter = new Formatter(result);
+        formatter.format("%02d:%02d:%02d", hour, minute, second);
         if (fraDigits > 0) {
             // remove the digit before dot
             result.append(sb, 1, sb.length());
@@ -103,16 +105,13 @@ public class TimeHmsFormat extends Format {
     }
 
     @Override
-    public Object parseObject(String source, ParsePosition pos) {
+    public Object parseObject(String source, @Nonnull ParsePosition pos) {
         // not support
         return null;
     }
 
     public boolean equals(Object obj) {
-        if (obj instanceof TimeHmsFormat) {
-            return fraDigits == ((TimeHmsFormat) obj).fraDigits;
-        }
-        return false;
+        return obj instanceof TimeHmsFormat && fraDigits == ((TimeHmsFormat) obj).fraDigits;
     }
 
 }

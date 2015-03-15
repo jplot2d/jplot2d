@@ -25,7 +25,7 @@ package org.jplot2d.axtick;
  */
 public class LogTickAlgorithm extends TickAlgorithm {
 
-    private static LogTickAlgorithm _instance = new LogTickAlgorithm();
+    private static final LogTickAlgorithm _instance = new LogTickAlgorithm();
 
     private LogTickAlgorithm() {
 

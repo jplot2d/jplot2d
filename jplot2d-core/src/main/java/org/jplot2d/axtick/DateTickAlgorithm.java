@@ -28,9 +28,9 @@ import java.util.TimeZone;
  */
 public class DateTickAlgorithm extends TickAlgorithm {
 
-    private TimeZone zone;
+    private final TimeZone zone;
 
-    private Locale locale;
+    private final Locale locale;
 
     public DateTickAlgorithm(TimeZone zone, Locale aLocale) {
         this.zone = zone;

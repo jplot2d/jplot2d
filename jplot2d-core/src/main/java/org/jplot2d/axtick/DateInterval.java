@@ -120,7 +120,7 @@ public final class DateInterval {
     }
 
     public int hashCode() {
-        return (int) (getValue() ^ (getUnit().ordinal() << 28));
+        return getValue() ^ (getUnit().ordinal() << 28);
     }
 
     public String toString() {

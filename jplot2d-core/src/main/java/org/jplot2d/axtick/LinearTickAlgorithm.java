@@ -25,7 +25,7 @@ package org.jplot2d.axtick;
  */
 public class LinearTickAlgorithm extends TickAlgorithm {
 
-    private static LinearTickAlgorithm _instance = new LinearTickAlgorithm();
+    private static final LinearTickAlgorithm _instance = new LinearTickAlgorithm();
 
     private LinearTickAlgorithm() {
 

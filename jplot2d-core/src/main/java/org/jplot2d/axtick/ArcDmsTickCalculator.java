@@ -23,6 +23,8 @@ import org.jplot2d.axtick.ArcDmsInterval.Unit;
 import java.lang.reflect.Array;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calculator to calculate tick values in double precision number and degree-minute-second format.
  *
@@ -130,7 +132,7 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
     public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
         ArcDmsInterval intv = (ArcDmsInterval) calcInterval(tickNumber);
 
-        if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+        if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
             if (intv.getCoefficient() == 1 && (intv.getUnit() == Unit.MINUTE || intv.getUnit() == Unit.DEGREE)) {
                 minorNumber = 0;
             } else {
@@ -202,7 +204,7 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
 
     }
 
-    public ArcDmsFormat calcLabelTextFormat(Object values) {
+    public ArcDmsFormat calcLabelTextFormat(@Nonnull Object values) {
         if (values instanceof long[]) {
             return new ArcDmsFormat(0);
         }
@@ -244,12 +246,12 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
         return maxFractionDigits;
     }
 
-    public String calcLabelFormatString(Object values) {
-        return "";
+    public String calcLabelFormatString(@Nonnull Object values) {
+        return null;
     }
 
-    public String getLabelFormate() {
-        return "";
+    public String getLabelFormat() {
+        return null;
     }
 
 }

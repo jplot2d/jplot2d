@@ -22,6 +22,8 @@ import org.jplot2d.util.Range;
 
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calculator to calculate tick values and minor tick values in double precision.
  *
@@ -93,6 +95,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean isValidFormat(String format) {
         format = convFCm2e(format);
         try {
@@ -103,7 +106,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
         }
     }
 
-    public String calcLabelFormatString(Object valueArray) {
+    public String calcLabelFormatString(@Nonnull Object valueArray) {
 
         double[] values = (double[]) valueArray;
 
@@ -113,12 +116,12 @@ public abstract class DoubleTickCalculator extends TickCalculator {
         int maxPrec = 0;
         /* number of fraction digits */
         int maxFractionDigits = 0;
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] == 0 || Double.isNaN(values[i]) || Double.isInfinite(values[i])) {
+        for (double value : values) {
+            if (value == 0 || Double.isNaN(value) || Double.isInfinite(value)) {
                 continue;
             }
 
-            double v = Math.abs(values[i]);
+            double v = Math.abs(value);
 
             String s = String.format((Locale) null, "%.14e", v);
             int eidx = s.lastIndexOf('e');
@@ -127,7 +130,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
                 ensi++;
             }
             int mag = Integer.parseInt(s.substring(ensi));
-			/* number of significant digits, eg. the pp1 for 1.1 is 2 */
+            /* number of significant digits, eg. the pp1 for 1.1 is 2 */
             int pp1 = -1;
             for (int ci = eidx - 1; ci >= 0; ci--) {
                 if (s.charAt(ci) != '0') {
@@ -179,7 +182,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
     public static String convFCm2e(String format) {
         int mathConversionIdx = format.indexOf("m", 1);
         if (mathConversionIdx != -1) {
-            StringBuffer newFormat = new StringBuffer(format);
+            StringBuilder newFormat = new StringBuilder(format);
             newFormat.setCharAt(mathConversionIdx, 'e');
             format = newFormat.toString();
         }

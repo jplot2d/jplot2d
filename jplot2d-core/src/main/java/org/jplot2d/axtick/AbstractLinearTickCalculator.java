@@ -107,7 +107,7 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
     public void calcValuesByTickInterval(double interval, double offset, int minorTickNumber) {
         interval = Math.abs(interval);
 
-        if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+        if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
             minorNumber = calcMinorNumber(interval);
         } else {
             minorNumber = minorTickNumber;
@@ -117,7 +117,7 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
     }
 
     /**
-     * Calculate a proper minor ticks number when minor tick number is {@link #AUTO_MINORTICK_NUMBER}
+     * Calculate a proper minor ticks number when minor tick number is {@link #AUTO_MINOR_TICK_NUMBER}
      *
      * @param interval the interval of 2 ticks
      * @return the proper minor tick number
@@ -146,6 +146,8 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
             lo = end;
             hi = start;
         }
+
+        @SuppressWarnings("UnnecessaryLocalVariable")
         double d = interval;
 
         double expandLo = lo - Math.abs(lo) * DOUBLE_PRECISION_TOLERANCE - offset;
@@ -167,10 +169,10 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
                 minorValues[mvi++] = minorInterval * mi + offset;
             }
         } else {
-            double lowMargine = -expandLo + d * iLo;
-            double hiMargine = expandHi - d * iHi;
-            int minorNumBeforeLow = (int) (lowMargine / minorInterval);
-            int minorNumAfterHi = (int) (hiMargine / minorInterval);
+            double lowMargin = -expandLo + d * iLo;
+            double hiMargin = expandHi - d * iHi;
+            int minorNumBeforeLow = (int) (lowMargin / minorInterval);
+            int minorNumAfterHi = (int) (hiMargin / minorInterval);
             minorValues = new double[(minorNumBeforeLow + (tickNum - 1) * minorTickNumber + minorNumAfterHi)];
             int mvi = 0;
             int tvi = 0;

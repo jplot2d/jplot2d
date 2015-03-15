@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calculator to calculate tick values in milliseconds and date format.
  *
@@ -127,7 +129,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
             /* 1 <= rough/scale < 10 */
             double coeff = rough / scale;
             if (coeff < 2) {
-                itvA = new DateInterval(Unit.MILLISECOND, scale * 1);
+                itvA = new DateInterval(Unit.MILLISECOND, scale);
                 itvB = new DateInterval(Unit.MILLISECOND, scale * 2);
             } else if (coeff < 5) {
                 itvA = new DateInterval(Unit.MILLISECOND, scale * 2);
@@ -215,7 +217,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
 			/* 1 <= rough/scale < 10 */
             double coeff = roughYear / scale;
             if (coeff < 2) {
-                itvA = new DateInterval(Unit.YEAR, scale * 1);
+                itvA = new DateInterval(Unit.YEAR, scale);
                 itvB = new DateInterval(Unit.YEAR, scale * 2);
             } else if (coeff < 5) {
                 itvA = new DateInterval(Unit.YEAR, scale * 2);
@@ -246,8 +248,8 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
             add(t1cal, dateInterval.getUnit(), 1);
         }
 
-        List<Long> ticks = new ArrayList<Long>();
-        List<Long> mticks = new ArrayList<Long>();
+        List<Long> ticks = new ArrayList<>();
+        List<Long> mticks = new ArrayList<>();
         if (minorNumber == 0) {
             int delta = distanceToIntervalBoundary(t1cal, dateInterval);
             if (delta != 0) {
@@ -376,7 +378,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         if (dateInterval.getValue() == 1) {
             minorNumber = 0;
         } else {
-            if (minorTickNumber == AUTO_MINORTICK_NUMBER) {
+            if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
                 minorTickNumber = 3;
             }
             minorNumber = calcMinorNumber(dateInterval.getValue(), minorTickNumber);
@@ -400,7 +402,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         return minorValues;
     }
 
-    public String getLabelFormate() {
+    public String getLabelFormat() {
         Calendar loCal = Calendar.getInstance(zone, locale);
         loCal.setTimeInMillis(lo);
         Calendar hiCal = Calendar.getInstance(zone, locale);
@@ -410,13 +412,13 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         return calcLabelFormat(dateInterval.getUnit(), umax);
     }
 
-    public Format calcLabelTextFormat(Object canonicalValues) {
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
         return null;
     }
 
-    public String calcLabelFormatString(Object values) {
+    public String calcLabelFormatString(@Nonnull Object values) {
         if (((long[]) values).length == 0) {
-            return "";
+            return null;
         }
 
         Calendar cal = Calendar.getInstance(zone, locale);
@@ -445,6 +447,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         return calcLabelFormat(umin, umax);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean isValidFormat(String format) {
         try {
             String.format(format, Calendar.getInstance(zone, locale));

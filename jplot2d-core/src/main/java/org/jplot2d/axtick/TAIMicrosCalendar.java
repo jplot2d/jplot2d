@@ -22,6 +22,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calendar start from TAI epoch and count in microseconds.
  *
@@ -29,9 +31,9 @@ import java.util.TimeZone;
  */
 public class TAIMicrosCalendar implements Comparable<TAIMicrosCalendar>, Cloneable {
 
-    public static long TAI_EPOCH_OFFSET = -378691200000L;
+    public static final long TAI_EPOCH_OFFSET = -378691200000L;
 
-    public static int MICROSECOND = Calendar.FIELD_COUNT;
+    public static final int MICROSECOND = Calendar.FIELD_COUNT;
 
     final Calendar calendar;
 
@@ -59,6 +61,7 @@ public class TAIMicrosCalendar implements Comparable<TAIMicrosCalendar>, Cloneab
         calendar.setTimeInMillis(millis);
     }
 
+    @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
     public Object clone() {
         return new TAIMicrosCalendar(calendar, microsecond);
     }
@@ -116,11 +119,12 @@ public class TAIMicrosCalendar implements Comparable<TAIMicrosCalendar>, Cloneab
         return compareTo(when) < 0;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean after(TAIMicrosCalendar when) {
         return compareTo(when) > 0;
     }
 
-    public int compareTo(TAIMicrosCalendar anotherTAI) {
+    public int compareTo(@Nonnull TAIMicrosCalendar anotherTAI) {
         int compare = calendar.compareTo(anotherTAI.calendar);
         if (compare == 0) {
             return microsecond - anotherTAI.microsecond;

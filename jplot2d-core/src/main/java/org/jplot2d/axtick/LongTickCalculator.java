@@ -22,6 +22,8 @@ import org.jplot2d.util.Range;
 
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
+
 /**
  * A calculator to calculate tick values and minor tick values
  *
@@ -111,7 +113,7 @@ public abstract class LongTickCalculator extends TickCalculator {
         }
     }
 
-    public String calcLabelFormatString(Object valueArray) {
+    public String calcLabelFormatString(@Nonnull Object valueArray) {
 
         long[] values = (long[]) valueArray;
 
@@ -119,12 +121,12 @@ public abstract class LongTickCalculator extends TickCalculator {
         /* number of significant digits */
         int maxPrec = 0;
 
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] == 0) {
+        for (long value : values) {
+            if (value == 0) {
                 continue;
             }
 
-            long v = Math.abs(values[i]);
+            long v = Math.abs(value);
 
             int mag = (int) Math.floor(Math.log10(v));
             if (maxMag < mag) {
@@ -132,7 +134,7 @@ public abstract class LongTickCalculator extends TickCalculator {
             }
 
             String s = String.format((Locale) null, "%d", v);
-			/* number of significant digits. eg. pp1 for 1100 is 2 */
+            /* number of significant digits. eg. pp1 for 1100 is 2 */
             int pp1 = 0;
             for (int ci = s.length() - 1; ci >= 0; ci--) {
                 if (s.charAt(ci) != '0') {
