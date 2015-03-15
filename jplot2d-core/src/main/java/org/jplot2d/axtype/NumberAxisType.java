@@ -55,14 +55,8 @@ public class NumberAxisType extends AxisType {
 	}
 
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == TransformType.LINEAR) {
-			return true;
-		}
-		if (txfType == TransformType.LOGARITHMIC) {
-			return true;
-		}
-		return false;
-	}
+        return txfType == TransformType.LINEAR || txfType == TransformType.LOGARITHMIC;
+    }
 
 	public Range getBoundary(TransformType txfType) {
 		if (txfType == TransformType.LINEAR) {

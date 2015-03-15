@@ -18,103 +18,102 @@
  */
 package org.jplot2d.axtype;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * An axis type defines a viewport axis transform type(LINEAR/LOGARITHMIC) and a preferred tick algorithm.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class AxisType {
 
-	private static final Map<String, AxisType> axisTypeMap = Collections
-			.synchronizedMap(new LinkedHashMap<String, AxisType>());
+    private static final Map<String, AxisType> axisTypeMap = Collections
+            .synchronizedMap(new LinkedHashMap<String, AxisType>());
 
-	public static final AxisType NUMBER = NumberAxisType.getInstance();
+    public static final AxisType NUMBER = NumberAxisType.getInstance();
 
-	public static final AxisType DATE = DateAxisType.getDefault();
+    public static final AxisType DATE = DateAxisType.getDefault();
 
-	public static final AxisType DATE_UTC_US = DateAxisType.getUTC();
+    public static final AxisType DATE_UTC_US = DateAxisType.getUTC();
 
-	public static final AxisType TAI_MICROS_UTC_US = TAIMicrosAxisType.getUTC();
+    public static final AxisType TAI_MICROS_UTC_US = TAIMicrosAxisType.getUTC();
 
-	public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
+    public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
 
-	public static final AxisType DECLINATION = DeclinationAxisType.getInstance();
+    public static final AxisType DECLINATION = DeclinationAxisType.getInstance();
 
-	private final String name;
+    private final String name;
 
-	public AxisType(String name) {
-		this.name = name;
-		axisTypeMap.put(name, this);
-	}
+    public AxisType(String name) {
+        this.name = name;
+        axisTypeMap.put(name, this);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public abstract boolean canSupport(TransformType txfType);
+    public abstract boolean canSupport(TransformType txfType);
 
-	public abstract TransformType getDefaultTransformType();
+    public abstract TransformType getDefaultTransformType();
 
-	/**
-	 * The boundary of the axis nature. The returned boundary is never inverted. For circular axis, this boundary is
-	 * valid limit for data values, not for displayed label values.
-	 * 
-	 * @return
-	 */
-	public abstract Range getBoundary(TransformType txfType);
+    /**
+     * The boundary of the axis nature. The returned boundary is never inverted.
+     * For circular axis, this boundary defines canonical range for data values.
+     *
+     * @return the boundary of the axis nature
+     */
+    public abstract Range getBoundary(TransformType txfType);
 
-	/**
-	 * @return the default world range when the axis contains no valid data
-	 */
-	public abstract Range getDefaultWorldRange(TransformType txfType);
+    /**
+     * @return the default world range when the axis contains no valid data
+     */
+    public abstract Range getDefaultWorldRange(TransformType txfType);
 
-	/**
-	 * Returns a TickAlgorithm by the given transform type and tick transform, or
-	 * <code>null<code> if the given tick transform is not allowed.
-	 * 
-	 * @param txfType
-	 *            the transform type
-	 * @param tickTransform
-	 *            the tick transform, can be <code>null</code>
-	 * @return a TickAlgorithm
-	 */
-	public abstract TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform);
+    /**
+     * Returns a TickAlgorithm by the given transform type and tick transform, or
+     * <code>null<code> if the given tick transform is not allowed.
+     *
+     * @param txfType       the transform type
+     * @param tickTransform the tick transform, can be <code>null</code>
+     * @return a TickAlgorithm
+     */
+    public abstract TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform);
 
-	/**
-	 * Some axis has a circular nature, such as angle. This range is a canonical range that all values should displayed
-	 * in the range.
-	 * 
-	 * @return a range to represent this axis' circular nature, or <code>null<code> if this axis is not circular
-	 */
-	public Range getCircularRange() {
-		return null;
-	}
+    /**
+     * Some axis has a circular nature, such as angle. This range is a canonical range that all values should displayed
+     * in the range.
+     *
+     * @return a range to represent this axis' circular nature, or <code>null<code> if this axis is not circular
+     */
+    public Range getCircularRange() {
+        return null;
+    }
 
-	public String toString() {
-		return getName();
-	}
+    public String toString() {
+        return getName();
+    }
 
-	public static AxisType valueOf(String name) {
-		return axisTypeMap.get(name);
-	}
+    public static AxisType valueOf(String name) {
+        return axisTypeMap.get(name);
+    }
 
-	/**
-	 * Returns all axis types in a array.
-	 * 
-	 * @return all axis types
-	 */
-	public static AxisType[] values() {
-		return axisTypeMap.values().toArray(new AxisType[0]);
-	}
+    /**
+     * Returns all axis types in a array.
+     *
+     * @return all axis types
+     */
+    public static AxisType[] values() {
+        synchronized (axisTypeMap) {
+            return axisTypeMap.values().toArray(new AxisType[axisTypeMap.size()]);
+        }
+    }
 
 }

@@ -50,11 +50,8 @@ public class RightAscensionAxisType extends AxisType {
 
 	@Override
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == TransformType.LINEAR) {
-			return true;
-		}
-		return false;
-	}
+        return txfType == TransformType.LINEAR;
+    }
 
 	@Override
 	public TransformType getDefaultTransformType() {

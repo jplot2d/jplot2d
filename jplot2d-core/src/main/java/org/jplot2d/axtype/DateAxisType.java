@@ -44,9 +44,9 @@ public class DateAxisType extends AxisType {
 	private final DateTickAlgorithm algo;
 
 	/**
-	 * Returns a DateAxisType with default zone and local
+	 * Returns a DateAxisType with default zone and local.
 	 * 
-	 * @return
+	 * @return a DateAxisType with default zone and local
 	 */
 	public static DateAxisType getDefault() {
 		return DEFAULT;
@@ -55,7 +55,7 @@ public class DateAxisType extends AxisType {
 	/**
 	 * Returns a DateAxisType with UTC zone and US local
 	 * 
-	 * @return
+	 * @return a DateAxisType with UTC zone and US local
 	 */
 	public static DateAxisType getUTC() {
 		return UTC_US;
@@ -72,11 +72,8 @@ public class DateAxisType extends AxisType {
 
 	@Override
 	public boolean canSupport(TransformType txfType) {
-		if (txfType == TransformType.LINEAR) {
-			return true;
-		}
-		return false;
-	}
+        return txfType == TransformType.LINEAR;
+    }
 
 	@Override
 	public TransformType getDefaultTransformType() {
