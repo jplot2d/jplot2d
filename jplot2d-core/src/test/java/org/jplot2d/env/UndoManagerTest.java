@@ -30,7 +30,7 @@ public class UndoManagerTest {
 
 	@Test
 	public void testUndoManager0() {
-		UndoManager<Integer> ch = new UndoManager<Integer>();
+		UndoManager<Integer> ch = new UndoManager<>();
 		assertNull(ch.current());
 		assertFalse(ch.canUndo());
 		assertFalse(ch.canRedo());
@@ -52,7 +52,7 @@ public class UndoManagerTest {
 
 	@Test
 	public void testUndoManager2() {
-		UndoManager<Integer> ch = new UndoManager<Integer>(2);
+		UndoManager<Integer> ch = new UndoManager<>(2);
 		assertNull(ch.current());
 		assertFalse(ch.canUndo());
 		assertFalse(ch.canRedo());

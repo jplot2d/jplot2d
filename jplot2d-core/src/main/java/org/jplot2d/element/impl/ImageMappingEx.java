@@ -22,36 +22,35 @@ import org.jplot2d.element.ImageMapping;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface ImageMappingEx extends ImageMapping, ElementEx {
 
-	public ImageGraphEx getParent();
+    public ImageGraphEx getParent();
 
-	public ImageGraphEx[] getGraphs();
+    public ImageGraphEx[] getGraphs();
 
-	public void addImageGraph(ImageGraphEx graph);
+    public void addImageGraph(ImageGraphEx graph);
 
-	public void removeImageGraph(ImageGraphEx graph);
+    public void removeImageGraph(ImageGraphEx graph);
 
-	/**
-	 * Called by ImageGraphEx when its data changed, to notify the limits need to be recalculated.
-	 */
-	public void recalcLimits();
+    /**
+     * Called by ImageGraphEx when its data changed, to notify the limits need to be recalculated.
+     */
+    public void recalcLimits();
 
-	/**
-	 * Called by PlotEx.commit() to calculate limits if needed
-	 */
-	public void calcLimits();
+    /**
+     * Called by PlotEx.commit() to calculate limits if needed
+     */
+    public void calcLimits();
 
-	public double[] getLimits();
+    public double[] getLimits();
 
-	/**
-	 * Returns the number of significant bits that the ILUT output range. When creating image, the color model bit
-	 * should match this value.
-	 * 
-	 * @return the number of significant bits
-	 */
-	public int getILUTOutputBits();
+    /**
+     * Returns the number of significant bits that the ILUT output range. When creating image, the color model bit
+     * should match this value.
+     *
+     * @return the number of significant bits
+     */
+    public int getILUTOutputBits();
 
 }

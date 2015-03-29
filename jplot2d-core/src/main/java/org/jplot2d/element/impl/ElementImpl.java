@@ -18,67 +18,66 @@
  */
 package org.jplot2d.element.impl;
 
-import java.util.Map;
-
 import org.jplot2d.env.Environment;
 import org.jplot2d.notice.Notice;
 
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+
 /**
  * @author Jingjing Li
- * 
  */
 public abstract class ElementImpl implements ElementEx {
 
-	protected ElementEx parent;
+    protected ElementEx parent;
 
-	public final Environment getEnvironment() {
-		throw new UnsupportedOperationException();
-	}
+    public final Environment getEnvironment() {
+        throw new UnsupportedOperationException();
+    }
 
-	public ElementEx getParent() {
-		return parent;
-	}
+    public ElementEx getParent() {
+        return parent;
+    }
 
-	public void setParent(ElementEx parent) {
-		this.parent = parent;
-	}
+    public void setParent(ElementEx parent) {
+        this.parent = parent;
+    }
 
-	public String getFullId() {
-		if (parent != null) {
-			return getId() + "." + parent.getFullId();
-		} else {
-			return getId();
-		}
-	}
+    public String getFullId() {
+        if (parent != null) {
+            return getId() + "." + parent.getFullId();
+        } else {
+            return getId();
+        }
+    }
 
-	public void notify(Notice msg) {
-		if ((getParent() != null)) {
-			getParent().notify(msg);
-		}
-	}
+    public void notify(Notice msg) {
+        if ((getParent() != null)) {
+            getParent().notify(msg);
+        }
+    }
 
-	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		ElementImpl result;
+    public ElementEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
+        ElementImpl result;
 
-		try {
-			result = this.getClass().newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            result = this.getClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
+        orig2copyMap.put(this, result);
 
-		return result;
-	}
+        return result;
+    }
 
-	public void copyFrom(ElementEx src) {
-		// copy nothing
-	}
+    public void copyFrom(ElementEx src) {
+        // copy nothing
+    }
 
-	public String toString() {
-		return getFullId();
-	}
+    public String toString() {
+        return getFullId();
+    }
 
 }

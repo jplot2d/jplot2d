@@ -25,83 +25,82 @@ import java.lang.reflect.Method;
 
 /**
  * @author Jingjing Li
- * 
  */
 public abstract class LegendItemImpl extends ElementImpl implements LegendItemEx {
 
-	private boolean visible = true;
+    private boolean visible = true;
 
-	private double locX, locY;
+    private double locX, locY;
 
-	private LegendEx legend;
+    private LegendEx legend;
 
-	public LegendItemImpl() {
+    public LegendItemImpl() {
 
-	}
+    }
 
-	public String getId() {
-		return "LegendItem";
-	}
+    public String getId() {
+        return "LegendItem";
+    }
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (parent == null) {
-			return null;
-		}
+    public InvokeStep getInvokeStepFormParent() {
+        if (parent == null) {
+            return null;
+        }
 
-		Method method;
-		try {
-			method = XYGraphEx.class.getMethod("getLegendItem");
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method);
-	}
+        Method method;
+        try {
+            method = XYGraphEx.class.getMethod("getLegendItem");
+        } catch (NoSuchMethodException e) {
+            throw new Error(e);
+        }
+        return new InvokeStep(method);
+    }
 
-	public XYGraphEx getParent() {
-		return (XYGraphEx) super.getParent();
-	}
+    public XYGraphEx getParent() {
+        return (XYGraphEx) super.getParent();
+    }
 
-	public LegendEx getLegend() {
-		return legend;
-	}
+    public LegendEx getLegend() {
+        return legend;
+    }
 
-	public void setLegend(LegendEx legend) {
-		this.legend = legend;
-	}
+    public void setLegend(LegendEx legend) {
+        this.legend = legend;
+    }
 
-	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
-	}
+    public Point2D getLocation() {
+        return new Point2D.Double(locX, locY);
+    }
 
-	public void setLocation(double locX, double locY) {
-		this.locX = locX;
-		this.locY = locY;
-	}
+    public void setLocation(double locX, double locY) {
+        this.locX = locX;
+        this.locY = locY;
+    }
 
-	public Rectangle2D getBounds() {
-		Dimension2D size = getSize();
-		return new Rectangle2D.Double(locX, locY, size.getWidth(), size.getHeight());
-	}
+    public Rectangle2D getBounds() {
+        Dimension2D size = getSize();
+        return new Rectangle2D.Double(locX, locY, size.getWidth(), size.getHeight());
+    }
 
-	public boolean isVisible() {
-		return visible;
-	}
+    public boolean isVisible() {
+        return visible;
+    }
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-		if (getLegend() != null) {
-			getLegend().itemVisibilityChanged(this);
-		}
-	}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        if (getLegend() != null) {
+            getLegend().itemVisibilityChanged(this);
+        }
+    }
 
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
+    @Override
+    public void copyFrom(ElementEx src) {
+        super.copyFrom(src);
 
-		LegendItemImpl item = (LegendItemImpl) src;
-		visible = item.visible;
-		locX = item.locX;
-		locY = item.locY;
-	}
+        LegendItemImpl item = (LegendItemImpl) src;
+        visible = item.visible;
+        locX = item.locX;
+        locY = item.locY;
+    }
 
 }

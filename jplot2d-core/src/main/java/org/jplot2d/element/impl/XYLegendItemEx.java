@@ -20,15 +20,15 @@ package org.jplot2d.element.impl;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface XYLegendItemEx extends LegendItemEx {
 
-	public XYGraphEx getParent();
+    @SuppressWarnings("EmptyMethod")
+    public XYGraphEx getParent();
 
-	/**
-	 * Called by XYGraphEx to notify XYLegendItemEx that the symbol size has been changed.
-	 */
-	public void graphSymbolSizeChanged();
+    /**
+     * Called by XYGraphEx to notify XYLegendItemEx that the symbol size has been changed.
+     */
+    public void graphSymbolSizeChanged();
 
 }

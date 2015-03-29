@@ -18,86 +18,85 @@
  */
 package org.jplot2d.axtype;
 
-import java.util.Locale;
-import java.util.TimeZone;
-
 import org.jplot2d.axtick.DateTickAlgorithm;
 import org.jplot2d.axtick.TickAlgorithm;
 import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * An axis type to present data in Date/Time format. The data is in millisecond, since January 1, 1970, 00:00:00 UTC.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class DateAxisType extends AxisType {
 
-	private static final DateAxisType DEFAULT = new DateAxisType(TimeZone.getDefault(), Locale.getDefault());
+    private static final DateAxisType DEFAULT = new DateAxisType(TimeZone.getDefault(), Locale.getDefault());
 
-	private static final DateAxisType UTC_US = new DateAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
+    private static final DateAxisType UTC_US = new DateAxisType(TimeZone.getTimeZone("UTC"), Locale.US);
 
-	private static final Range DATE_BOUNDARY = new Range.Long(Long.MIN_VALUE, Long.MAX_VALUE);
+    private static final Range DATE_BOUNDARY = new Range.Long(Long.MIN_VALUE, Long.MAX_VALUE);
 
-	private final DateTickAlgorithm algo;
+    private final DateTickAlgorithm algo;
 
-	/**
-	 * Returns a DateAxisType with default zone and local.
-	 * 
-	 * @return a DateAxisType with default zone and local
-	 */
-	public static DateAxisType getDefault() {
-		return DEFAULT;
-	}
+    /**
+     * Returns a DateAxisType with default zone and local.
+     *
+     * @return a DateAxisType with default zone and local
+     */
+    public static DateAxisType getDefault() {
+        return DEFAULT;
+    }
 
-	/**
-	 * Returns a DateAxisType with UTC zone and US local
-	 * 
-	 * @return a DateAxisType with UTC zone and US local
-	 */
-	public static DateAxisType getUTC() {
-		return UTC_US;
-	}
+    /**
+     * Returns a DateAxisType with UTC zone and US local
+     *
+     * @return a DateAxisType with UTC zone and US local
+     */
+    public static DateAxisType getUTC() {
+        return UTC_US;
+    }
 
-	public static DateAxisType getInstance(TimeZone zone, Locale aLocale) {
-		return new DateAxisType(zone, aLocale);
-	}
+    public static DateAxisType getInstance(TimeZone zone, Locale aLocale) {
+        return new DateAxisType(zone, aLocale);
+    }
 
-	private DateAxisType(TimeZone zone, Locale locale) {
-		super("DATE-" + zone.getID() + "-" + locale.toString());
-		algo = new DateTickAlgorithm(zone, locale);
-	}
+    private DateAxisType(TimeZone zone, Locale locale) {
+        super("DATE-" + zone.getID() + "-" + locale.toString());
+        algo = new DateTickAlgorithm(zone, locale);
+    }
 
-	@Override
-	public boolean canSupport(TransformType txfType) {
+    @Override
+    public boolean canSupport(TransformType txfType) {
         return txfType == TransformType.LINEAR;
     }
 
-	@Override
-	public TransformType getDefaultTransformType() {
-		return TransformType.LINEAR;
-	}
+    @Override
+    public TransformType getDefaultTransformType() {
+        return TransformType.LINEAR;
+    }
 
-	@Override
-	public Range getBoundary(TransformType txfType) {
-		return DATE_BOUNDARY;
-	}
+    @Override
+    public Range getBoundary(TransformType txfType) {
+        return DATE_BOUNDARY;
+    }
 
-	@Override
-	public Range getDefaultWorldRange(TransformType txfType) {
-		long now = System.currentTimeMillis();
-		return new Range.Long(now, now + 1);
-	}
+    @Override
+    public Range getDefaultWorldRange(TransformType txfType) {
+        long now = System.currentTimeMillis();
+        return new Range.Long(now, now + 1);
+    }
 
-	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
-		if (tickTransform != null) {
-			return null;
-		}
+    @Override
+    public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
+        if (tickTransform != null) {
+            return null;
+        }
 
-		return algo;
-	}
+        return algo;
+    }
 
 }

@@ -25,7 +25,7 @@ package org.jplot2d.env;
  */
 public class SystemOutCommandLogger implements CommandLogger {
 
-    private static SystemOutCommandLogger instance = new SystemOutCommandLogger();
+    private static final SystemOutCommandLogger instance = new SystemOutCommandLogger();
 
     public static SystemOutCommandLogger getInstance() {
         return instance;

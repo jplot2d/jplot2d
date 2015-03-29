@@ -22,19 +22,18 @@ import java.awt.BasicStroke;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class GraphicsUtil {
 
-	private GraphicsUtil() {
+    private GraphicsUtil() {
 
-	}
+    }
 
-	public static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
-		float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
-				stroke.getDashArray(), scale);
-		return new BasicStroke((float) (stroke.getLineWidth() * scale), stroke.getEndCap(),
-				stroke.getLineJoin(), 10f, dashArray, (float) (stroke.getDashPhase() * scale));
-	}
+    public static BasicStroke scaleStroke(BasicStroke stroke, double scale) {
+        float[] dashArray = (stroke.getDashArray() == null) ? null : NumberArrayUtils.multiply(
+                stroke.getDashArray(), scale);
+        return new BasicStroke((float) (stroke.getLineWidth() * scale), stroke.getEndCap(),
+                stroke.getLineJoin(), 10f, dashArray, (float) (stroke.getDashPhase() * scale));
+    }
 
 }

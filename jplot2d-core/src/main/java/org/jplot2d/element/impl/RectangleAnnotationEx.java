@@ -22,8 +22,9 @@ import org.jplot2d.element.RectangleAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface RectangleAnnotationEx extends AnnotationEx, RectangleAnnotation {
+
+    public LayerEx getParent();
 
 }

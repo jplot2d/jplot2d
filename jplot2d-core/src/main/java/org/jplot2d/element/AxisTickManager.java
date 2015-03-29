@@ -222,7 +222,7 @@ public interface AxisTickManager extends Element {
     /**
      * Set to true to allow the tick number to be automatically reduced to avoid tick label overlaps.
      *
-     * @param flag
+     * @param flag the flag
      */
     public void setAutoAdjustTicks(boolean flag);
 
@@ -251,7 +251,7 @@ public interface AxisTickManager extends Element {
      * when autoTickInterval is set to false: minor ticks is exactly the user set by {@link #setMinorTicks(int)}.
      * The Default number is zero, means not shown by default.
      *
-     * @param flag
+     * @param flag the flag
      */
     public void setAutoMinorTicks(boolean flag);
 

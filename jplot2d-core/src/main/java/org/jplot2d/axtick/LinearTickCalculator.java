@@ -81,8 +81,8 @@ public class LinearTickCalculator extends AbstractLinearTickCalculator {
         int mag = (int) Math.floor(Math.log10(interval));
         double coefficient = interval / Math.pow(10, mag);
         double s1dcoef = Math.round(coefficient);
-		/*
-		 * if the coefficient contains more than 1 significant digit, ignore the minor number
+        /*
+         * if the coefficient contains more than 1 significant digit, ignore the minor number
 		 */
         if (Math.abs(s1dcoef / coefficient - 1) > DOUBLE_PRECISION_TOLERANCE) {
             return 0;

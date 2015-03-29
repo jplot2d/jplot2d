@@ -62,6 +62,7 @@ public abstract class AxisType {
 
     public abstract boolean canSupport(TransformType txfType);
 
+    @SuppressWarnings("SameReturnValue")
     public abstract TransformType getDefaultTransformType();
 
     /**

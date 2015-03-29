@@ -22,82 +22,74 @@ import org.jplot2d.util.SparseDoubleArray;
 
 public class GridCellInsets {
 
-	private final SparseDoubleArray topPadding;
+    private final SparseDoubleArray topPadding;
 
-	private final SparseDoubleArray leftPadding;
+    private final SparseDoubleArray leftPadding;
 
-	private final SparseDoubleArray bottomPadding;
+    private final SparseDoubleArray bottomPadding;
 
-	private final SparseDoubleArray rightPadding;
+    private final SparseDoubleArray rightPadding;
 
-	private final double sumWidth, sumHeight;
+    private final double sumWidth, sumHeight;
 
-	/**
-	 * @param topPadding
-	 *            the key is row id
-	 * @param leftPadding
-	 *            the key is column id
-	 * @param bottomPadding
-	 *            the key is row id
-	 * @param rightPadding
-	 *            the key is column id
-	 */
-	public GridCellInsets(SparseDoubleArray topPadding, SparseDoubleArray leftPadding, SparseDoubleArray bottomPadding,
-			SparseDoubleArray rightPadding) {
-		this.topPadding = topPadding;
-		this.leftPadding = leftPadding;
-		this.bottomPadding = bottomPadding;
-		this.rightPadding = rightPadding;
+    /**
+     * @param topPadding    the key is row id
+     * @param leftPadding   the key is column id
+     * @param bottomPadding the key is row id
+     * @param rightPadding  the key is column id
+     */
+    public GridCellInsets(SparseDoubleArray topPadding, SparseDoubleArray leftPadding, SparseDoubleArray bottomPadding,
+                          SparseDoubleArray rightPadding) {
+        this.topPadding = topPadding;
+        this.leftPadding = leftPadding;
+        this.bottomPadding = bottomPadding;
+        this.rightPadding = rightPadding;
 
-		double sumXpad = 0;
-		for (int i = 0; i < leftPadding.size(); i++) {
-			double left = leftPadding.valueAt(i);
-			sumXpad += left;
-		}
-		for (int i = 0; i < rightPadding.size(); i++) {
-			double right = rightPadding.valueAt(i);
-			sumXpad += right;
-		}
-		sumWidth = sumXpad;
+        double sumXpad = 0;
+        for (int i = 0; i < leftPadding.size(); i++) {
+            double left = leftPadding.valueAt(i);
+            sumXpad += left;
+        }
+        for (int i = 0; i < rightPadding.size(); i++) {
+            double right = rightPadding.valueAt(i);
+            sumXpad += right;
+        }
+        sumWidth = sumXpad;
 
-		double sumYpad = 0;
-		for (int i = 0; i < topPadding.size(); i++) {
-			double top = topPadding.valueAt(i);
-			sumYpad += top;
-		}
-		for (int i = 0; i < bottomPadding.size(); i++) {
-			double bottom = bottomPadding.valueAt(i);
-			sumYpad += bottom;
-		}
-		sumHeight = sumYpad;
-	}
+        double sumYpad = 0;
+        for (int i = 0; i < topPadding.size(); i++) {
+            double top = topPadding.valueAt(i);
+            sumYpad += top;
+        }
+        for (int i = 0; i < bottomPadding.size(); i++) {
+            double bottom = bottomPadding.valueAt(i);
+            sumYpad += bottom;
+        }
+        sumHeight = sumYpad;
+    }
 
-	public double getTop(int row) {
-		Double v = topPadding.get(row);
-		return (v == null) ? 0 : v.doubleValue();
-	}
+    public double getTop(int row) {
+        return topPadding.get(row);
+    }
 
-	public double getLeft(int col) {
-		Double v = leftPadding.get(col);
-		return (v == null) ? 0 : v.doubleValue();
-	}
+    public double getLeft(int col) {
+        return leftPadding.get(col);
+    }
 
-	public double getBottom(int row) {
-		Double v = bottomPadding.get(row);
-		return (v == null) ? 0 : v.doubleValue();
-	}
+    public double getBottom(int row) {
+        return bottomPadding.get(row);
+    }
 
-	public double getRight(int col) {
-		Double v = rightPadding.get(col);
-		return (v == null) ? 0 : v.doubleValue();
-	}
+    public double getRight(int col) {
+        return rightPadding.get(col);
+    }
 
-	public double getSumWidth() {
-		return sumWidth;
-	}
+    public double getSumWidth() {
+        return sumWidth;
+    }
 
-	public double getSumHeight() {
-		return sumHeight;
-	}
+    public double getSumHeight() {
+        return sumHeight;
+    }
 
 }

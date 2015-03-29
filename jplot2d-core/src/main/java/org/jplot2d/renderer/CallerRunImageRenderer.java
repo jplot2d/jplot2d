@@ -20,6 +20,8 @@ package org.jplot2d.renderer;
 
 import java.util.concurrent.Executor;
 
+import javax.annotation.Nonnull;
+
 /**
  * This renderer execute component rendering and assembling them in a single thread, suite for servlet.
  *
@@ -29,7 +31,7 @@ public class CallerRunImageRenderer extends ImageRenderer {
 
     protected static final Executor COMPONENT_RENDERING_CALLER_RUN_EXECUTOR = new Executor() {
 
-        public void execute(Runnable command) {
+        public void execute(@Nonnull Runnable command) {
             command.run();
         }
 

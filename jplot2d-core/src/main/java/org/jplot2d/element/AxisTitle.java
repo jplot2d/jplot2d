@@ -153,10 +153,10 @@ public interface AxisTitle extends Element {
     public String getText();
 
     /**
-     * Defines the text to be displayed. The text can be multi-line, splited by \n.
+     * Defines the text to be displayed. The text can be multi-line, split by \n.
      * The string of every line can be in TeX-like syntax. A pair of "$" mark into math mode and out math mode.
-     * In math mode, Greek letter can be inputed as \alpha, \beta, etc.
-     * Superscripts (up high) and subscripts (down low) can be inputed by using "^" and "_".
+     * In math mode, Greek letter can be inputted as \alpha, \beta, etc.
+     * Superscripts (up high) and subscripts (down low) can be inputted by using "^" and "_".
      * Notice that ^ and _ apply only to the next single character.
      * If you want several things to be superscripted or subscripted, just enclose them in braces. eg:
      * "plain text $x_\alpha^{2y}$".

@@ -53,12 +53,13 @@ public class TeXMathParserTest {
 		assertSame(me, MathElement.EMPTY);
 	}
 
-	private void checkException(String src) throws ParseException {
+	private void checkException(String src) {
 		parser.ReInit(new StringReader(src));
 		try {
 			parser.parse();
 			fail("ParseException should be thrown");
-		} catch (ParseException e) {
+		} catch (ParseException ignored) {
+            // exception is expected
 		}
 	}
 

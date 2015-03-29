@@ -22,12 +22,11 @@ import org.jplot2d.element.Annotation;
 
 /**
  * A annotation with a symbol and a text string.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface AnnotationEx extends Annotation, ComponentEx {
 
-	public LayerEx getParent();
+    public LayerEx getParent();
 
 }

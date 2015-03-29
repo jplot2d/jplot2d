@@ -26,134 +26,133 @@ import org.jplot2d.util.Range;
  */
 public class LinearNormalTransform extends NormalTransform {
 
-	private static final TransformType type = TransformType.LINEAR;
+    private static final TransformType type = TransformType.LINEAR;
 
-	private final double scale;
+    private final double scale;
 
-	private final double offset;
+    private final double offset;
 
-	public LinearNormalTransform(Range ur) {
-		this(ur.getStart(), ur.getEnd());
-	}
+    public LinearNormalTransform(Range ur) {
+        this(ur.getStart(), ur.getEnd());
+    }
 
-	public LinearNormalTransform(double u1, double u2) {
-		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
-		}
+    public LinearNormalTransform(double u1, double u2) {
+        if (Double.isNaN(u1) || Double.isNaN(u2)) {
+            throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
+        }
 
-		if (u2 - u1 == 0) {
-			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
-		} else {
-			scale = u2 - u1;
-			offset = u1;
-		}
-	}
+        if (u2 - u1 == 0) {
+            throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
+        } else {
+            scale = u2 - u1;
+            offset = u1;
+        }
+    }
 
-	private LinearNormalTransform(Void v, double a, double b) {
-		this.scale = a;
-		this.offset = b;
-	}
+    private LinearNormalTransform(@SuppressWarnings("UnusedParameters") Void v, double a, double b) {
+        this.scale = a;
+        this.offset = b;
+    }
 
-	public TransformType getType() {
-		return type;
-	}
+    public TransformType getType() {
+        return type;
+    }
 
-	public double getScale() {
-		return scale;
-	}
+    public double getScale() {
+        return scale;
+    }
 
-	public double getOffset() {
-		return offset;
-	}
+    public double getOffset() {
+        return offset;
+    }
 
-	/**
-	 * Transform from user to normalized coordinates.
-	 * 
-	 * @param u
-	 *            user value
-	 * @return normalized value
-	 */
-	public double convToNR(double w) {
-		return (w - offset) / scale;
-	}
+    /**
+     * Transform from user to normalized coordinates.
+     *
+     * @param w world value
+     * @return normalized value
+     */
+    public double convToNR(double w) {
+        return (w - offset) / scale;
+    }
 
-	public double convFromNR(double p) {
-		return scale * p + offset;
-	}
+    public double convFromNR(double p) {
+        return scale * p + offset;
+    }
 
-	public NormalTransform deriveNoOffset() {
-		return new LinearNormalTransform(null, scale, 0);
-	}
+    public NormalTransform deriveNoOffset() {
+        return new LinearNormalTransform(null, scale, 0);
+    }
 
-	public NormalTransform zoom(Range npr) {
-		double b = offset + scale * npr.getStart();
-		double a = scale * npr.getSpan();
-		// prevent overflow
-		if (a == Double.POSITIVE_INFINITY) {
-			a = Double.MAX_VALUE;
-		} else if (a == Double.NEGATIVE_INFINITY) {
-			a = -Double.MAX_VALUE;
-		}
-		return new LinearNormalTransform(null, a, b);
-	}
+    public NormalTransform zoom(Range npr) {
+        double b = offset + scale * npr.getStart();
+        double a = scale * npr.getSpan();
+        // prevent overflow
+        if (a == Double.POSITIVE_INFINITY) {
+            a = Double.MAX_VALUE;
+        } else if (a == Double.NEGATIVE_INFINITY) {
+            a = -Double.MAX_VALUE;
+        }
+        return new LinearNormalTransform(null, a, b);
+    }
 
-	public NormalTransform invert() {
-		return new LinearNormalTransform(null, -scale, scale + offset);
-	}
+    public NormalTransform invert() {
+        return new LinearNormalTransform(null, -scale, scale + offset);
+    }
 
-	/**
-	 * t: the precision limit; u: the abs larger user point of range to zoom in<br>
-	 * The formula: p = _a * u + _b *
-	 * 
-	 * <pre>
-	 *         (u-dU)/u &lt; 1 - t
-	 *         dU/u &gt; t
-	 *         (dP / _a) / ((p - _b) / _a) &gt; t
-	 *         dP &gt; t * (p - _b)
-	 *         [[ _b= getTansP(0) ]]
-	 * </pre>
-	 */
-	@Override
-	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
-		double r;
-		double b = convToNR(0);
-		if (pLo < b && pHi > b) {
-			r = 0;
-		} else {
-			// find the far point from b
-			double p = ((pLo + pHi) > 2 * b) ? pHi : pLo;
-			r = precisionLimit * Math.abs(p - b);
-		}
-		return r;
-	}
+    /**
+     * t: the precision limit; u: the abs larger user point of range to zoom in<br>
+     * The formula: p = _a * u + _b *
+     * <p/>
+     * <pre>
+     *         (u-dU)/u &lt; 1 - t
+     *         dU/u &gt; t
+     *         (dP / _a) / ((p - _b) / _a) &gt; t
+     *         dP &gt; t * (p - _b)
+     *         [[ _b= getTansP(0) ]]
+     * </pre>
+     */
+    @Override
+    public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
+        double r;
+        double b = convToNR(0);
+        if (pLo < b && pHi > b) {
+            r = 0;
+        } else {
+            // find the far point from b
+            double p = ((pLo + pHi) > 2 * b) ? pHi : pLo;
+            r = precisionLimit * Math.abs(p - b);
+        }
+        return r;
+    }
 
-	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
-		double pcsHFactor = precisionLimit / (2 - precisionLimit);
-		double mid = (range.getStart() + range.getEnd()) / 2;
-		// precision half span
-		double pcsHSpan = Math.abs(mid * pcsHFactor);
-		if (range.getSpan() >= pcsHSpan * 2) {
-			return range;
-		} else {
-			return new Range.Double(mid - pcsHSpan, mid + pcsHSpan);
-		}
-	}
+    public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
+        double pcsHFactor = precisionLimit / (2 - precisionLimit);
+        double mid = (range.getStart() + range.getEnd()) / 2;
+        // precision half span
+        double pcsHSpan = Math.abs(mid * pcsHFactor);
+        if (range.getSpan() >= pcsHSpan * 2) {
+            return range;
+        } else {
+            return new Range.Double(mid - pcsHSpan, mid + pcsHSpan);
+        }
+    }
 
-	@Override
-	public Range getValueRange() {
-		return new Range.Double(offset, scale + offset);
-	}
+    @Override
+    public Range getValueRange() {
+        return new Range.Double(offset, scale + offset);
+    }
 
-	@Override
-	public Transform1D createTransform(double d1, double d2) {
-		return new LinearTransform(offset, scale, d1, d2);
-	}
+    @Override
+    public Transform1D createTransform(double d1, double d2) {
+        return new LinearTransform(offset, scale, d1, d2);
+    }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof LinearNormalTransform)) {
-			return false;
-		}
-		LinearNormalTransform obj = (LinearNormalTransform) o;
-		return scale == obj.scale && offset == obj.offset;
-	}
+    public boolean equals(Object o) {
+        if (!(o instanceof LinearNormalTransform)) {
+            return false;
+        }
+        LinearNormalTransform obj = (LinearNormalTransform) o;
+        return scale == obj.scale && offset == obj.offset;
+    }
 }

@@ -18,44 +18,43 @@
  */
 package org.jplot2d.sizing;
 
-import java.awt.geom.Dimension2D;
-
 import org.jplot2d.element.impl.PlotEx;
+
+import java.awt.geom.Dimension2D;
 
 /**
  * The plot paper size is auto packed to its contents. The plot content size is assigned by
  * preferred content size. Changing the container size will change the scale, while keep the
  * width/height ratio of plot.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class AutoPackSizeMode extends SizeMode {
 
-	/**
-	 * The plot paper size is auto packed according to its preferred content size.
-	 */
-	public AutoPackSizeMode() {
-		super(true);
-	}
+    /**
+     * The plot paper size is auto packed according to its preferred content size.
+     */
+    public AutoPackSizeMode() {
+        super(true);
+    }
 
-	public Result update(PlotEx plot) {
+    public Result update(PlotEx plot) {
 
-		Dimension2D size = plot.getSize();
-		Dimension2D containerSize = plot.getContainerSize();
-		/*
-		 * Calculate scale based on container size and paper size.
+        Dimension2D size = plot.getSize();
+        Dimension2D containerSize = plot.getContainerSize();
+        /*
+         * Calculate scale based on container size and paper size.
 		 */
-		double scaleX = containerSize.getWidth() / size.getWidth();
-		double scaleY = containerSize.getHeight() / size.getHeight();
-		double scale = (scaleX < scaleY) ? scaleX : scaleY;
+        double scaleX = containerSize.getWidth() / size.getWidth();
+        double scaleY = containerSize.getHeight() / size.getHeight();
+        double scale = (scaleX < scaleY) ? scaleX : scaleY;
 
-		return new Result(size.getWidth(), size.getHeight(), scale);
+        return new Result(size.getWidth(), size.getHeight(), scale);
 
-	}
+    }
 
-	public String toString() {
-		return "Auto pack to contents";
-	}
+    public String toString() {
+        return "Auto pack to contents";
+    }
 
 }

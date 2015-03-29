@@ -51,7 +51,7 @@ public interface ElementChangeListener extends EventListener {
     /**
      * Called after properties of an element is changed.
      *
-     * @param event event the ElementChangeEvent. The element of this event is the element whoes properties is changed
+     * @param event event the ElementChangeEvent. The element of this event is the element whose properties is changed
      */
     void propertiesChanged(ElementChangeEvent event);
 

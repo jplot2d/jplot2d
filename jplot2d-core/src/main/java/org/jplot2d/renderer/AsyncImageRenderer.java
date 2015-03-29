@@ -146,8 +146,8 @@ public class AsyncImageRenderer extends ImageRenderer {
 			 */
             if (cancelPolicy == RendererCancelPolicy.CANCEL_AFTER_NEWER_DONE) {
                 synchronized (renderLock) {
-					/*
-					 * The tasks in the queue are on SN order. We can't guarantee the current tasks exist in the queue.
+                    /*
+                     * The tasks in the queue are on SN order. We can't guarantee the current tasks exist in the queue.
 					 * Another newer task may be done just before this method is called, and sweep all old tasks,
 					 * include this. In this case, The renderer queue might be empty.
 					 */
@@ -185,7 +185,7 @@ public class AsyncImageRenderer extends ImageRenderer {
     /**
      * synchronized by renderLock
      */
-    private final Queue<AsyncImageRendererTask> renderTaskQueue = new LinkedList<AsyncImageRendererTask>();
+    private final Queue<AsyncImageRendererTask> renderTaskQueue = new LinkedList<>();
 
     public AsyncImageRenderer(ImageFactory imageFactory) {
         super(imageFactory);

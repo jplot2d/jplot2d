@@ -22,10 +22,9 @@ import org.jplot2d.element.Graph;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface GraphEx extends Graph, ComponentEx {
 
-	public LayerEx getParent();
+    public LayerEx getParent();
 
 }

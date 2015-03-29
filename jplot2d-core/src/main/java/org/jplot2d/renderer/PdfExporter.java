@@ -73,12 +73,12 @@ public class PdfExporter extends Renderer {
         Dimension size = getDeviceBounds(comp).getSize();
 
         Document document = new Document(new Rectangle(size.width, size.height), 0, 0, 0, 0);
-        PdfWriter writer = null;
+        PdfWriter writer;
         try {
             writer = PdfWriter.getInstance(document, os);
         } catch (DocumentException e) {
             /*
-			 * should not happen but if it happens it should be notified to the integration instead of leaving it
+             * should not happen but if it happens it should be notified to the integration instead of leaving it
 			 * half-done and tell nothing.
 			 */
             throw new RuntimeException("Error creating PDF document", e);

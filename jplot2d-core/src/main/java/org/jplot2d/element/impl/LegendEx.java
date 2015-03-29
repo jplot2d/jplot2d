@@ -22,79 +22,76 @@ import org.jplot2d.element.Legend;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface LegendEx extends Legend, ComponentEx {
 
-	public PlotEx getParent();
+    public PlotEx getParent();
 
-	/**
-	 * Returns all legend items managed by this legend
-	 * 
-	 * @return items managed by this legend
-	 */
-	public LegendItemEx[] getItems();
+    /**
+     * Returns all legend items managed by this legend
+     *
+     * @return items managed by this legend
+     */
+    public LegendItemEx[] getItems();
 
-	/**
-	 * Put all items in this disabled legend to enabled upper legend
-	 */
-	public void putItemsToEnabledLegend();
+    /**
+     * Put all items in this disabled legend to enabled upper legend
+     */
+    public void putItemsToEnabledLegend();
 
-	/**
-	 * Sets the location without setting the position to Position.FREE
-	 * 
-	 * @param locX
-	 * @param locY
-	 */
-	public void directLocation(double locX, double locY);
+    /**
+     * Sets the location without setting the position to Position.FREE
+     *
+     * @param locX the x value of the location
+     * @param locY the y value of the location
+     */
+    public void directLocation(double locX, double locY);
 
-	/**
-	 * Add the given item to this legend. If this legend is disabled, the item should be added to its upper level
-	 * legend. This method will set the legend property of added legend item to the actual hosting legend.
-	 * 
-	 * @param item
-	 *            the legend item to be added
-	 */
-	public void addLegendItem(LegendItemEx item);
+    /**
+     * Add the given item to this legend. If this legend is disabled, the item should be added to its upper level
+     * legend. This method will set the legend property of added legend item to the actual hosting legend.
+     *
+     * @param item the legend item to be added
+     */
+    public void addLegendItem(LegendItemEx item);
 
-	/**
-	 * Remove the given item from this legend. If this legend is disabled, the item should be removed from its upper
-	 * level legend.
-	 * 
-	 * @param item
-	 *            the legend item to be removed
-	 */
-	public void removeLegendItem(LegendItemEx item);
+    /**
+     * Remove the given item from this legend. If this legend is disabled, the item should be removed from its upper
+     * level legend.
+     *
+     * @param item the legend item to be removed
+     */
+    public void removeLegendItem(LegendItemEx item);
 
-	/**
-	 * Called by a visible legend item to notify this legend that the item's size is changed.
-	 */
-	public void itemSizeChanged(LegendItemEx item);
+    /**
+     * Called by a visible legend item to notify this legend that the item's size is changed.
+     */
+    public void itemSizeChanged(LegendItemEx item);
 
-	/**
-	 * Called by a legend item to notify this legend that the item's visibility is changed. An item is shown when both
-	 * visibility and contributivity are <code>true</code>.
-	 */
-	public void itemVisibilityChanged(LegendItemImpl item);
+    /**
+     * Called by a legend item to notify this legend that the item's visibility is changed. An item is shown when both
+     * visibility and contributivity are <code>true</code>.
+     */
+    public void itemVisibilityChanged(LegendItemImpl item);
 
-	/**
-	 * Called by a legend item to notify that the item's contributivity is changed. An item is shown when both
-	 * visibility and contributivity are <code>true</code>.
-	 */
-	public void itemContribitivityChanged(LegendItemImpl item);
+    /**
+     * Called by a legend item to notify that the item's contributivity is changed. An item is shown when both
+     * visibility and contributivity are <code>true</code>.
+     */
+    public void itemContribitivityChanged(LegendItemImpl item);
 
-	/**
-	 * Returns the thickness of this legend. When position is on top or bottom, thickness is its height. When position
-	 * is on left or right, thickness is its width.
-	 * 
-	 * @return the thickness of this legend
-	 */
-	public double getThickness();
+    /**
+     * Returns the thickness of this legend. When position is on top or bottom, thickness is its height. When position
+     * is on left or right, thickness is its width.
+     *
+     * @return the thickness of this legend
+     */
+    public double getThickness();
 
-	/**
-	 * Calculate size of this legend and re-layout legend items. This method is always called by plot when committing
-	 * changes.
-	 */
-	public void calcSize();
+    /**
+     * Calculate size of this legend and re-layout legend items. This method is always called by plot when committing
+     * changes.
+     */
+    public void calcSize();
 
 }

@@ -20,24 +20,23 @@ package org.jplot2d.image;
 
 /**
  * The limits algorithm to set the lower and upper limits to the user given limit values.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class FixedLimitsAlgorithm implements LimitsAlgorithm {
 
-	private final FixedLimitsCalculator calculator;
+    private final FixedLimitsCalculator calculator;
 
-	public FixedLimitsAlgorithm(double low, double high) {
-		calculator = new FixedLimitsCalculator(low, high);
-	}
+    public FixedLimitsAlgorithm(double low, double high) {
+        calculator = new FixedLimitsCalculator(low, high);
+    }
 
-	public LimitsCalculator getCalculator() {
-		return calculator;
-	}
+    public LimitsCalculator getCalculator() {
+        return calculator;
+    }
 
-	public String toString() {
-		return this.getClass().getSimpleName();
-	}
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 
 }

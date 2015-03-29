@@ -20,19 +20,19 @@ package org.jplot2d.element.impl;
 
 /**
  * Class implements this interface means it maintains a intermediate cache.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface IntermediateCacheEx {
 
-	/**
-	 * Create a cache holder to keep intermediate calculation result. This method is called by PlotEnvironment.commit(),
-	 * before create thread-safe copy for renderers. The PlotEnvironment will keep hard reference to the returned
-	 * Object. Usually the returned object is used as key of WeakHashMap.
-	 * 
-	 * @return an object to that PlotEnvironment should keep reference
-	 */
-	public Object createCacheHolder();
+    /**
+     * Create a cache holder to keep intermediate calculation result.
+     * This method is called by PlotEnvironment.commit(), before create thread-safe copy for renderers.
+     * The PlotEnvironment will keep hard reference to the returned Object.
+     * Usually the returned object is used as key of WeakHashMap.
+     *
+     * @return an object to that PlotEnvironment should keep reference
+     */
+    public Object createCacheHolder();
 
 }

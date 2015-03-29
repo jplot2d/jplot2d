@@ -22,17 +22,16 @@ package org.jplot2d.element.impl;
  * The getParent() will returns the only parent of this element. If this element has multiple
  * referencer, getParent() returns <code>null</code>. This make a referenceable element can be
  * removed together with its only referencer.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface Joinable {
 
-	/**
-	 * Returns the primary referencer.
-	 * 
-	 * @return the primary referencer
-	 */
-	public ElementEx getPrim();
+    /**
+     * Returns the primary referencer.
+     *
+     * @return the primary referencer
+     */
+    public ElementEx getPrim();
 
 }

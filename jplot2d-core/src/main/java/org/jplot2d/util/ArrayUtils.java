@@ -22,26 +22,25 @@ import java.util.Collection;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class ArrayUtils {
 
-	public static String toString(Object[] array) {
-		StringBuilder sb = new StringBuilder();
-		if (array.length > 0) {
-			sb.append(array[0]);
-		}
-		for (int i = 1; i < array.length; i++)
-			sb.append(',').append(array[i]);
-		return sb.toString();
-	}
+    public static String toString(Object[] array) {
+        StringBuilder sb = new StringBuilder();
+        if (array.length > 0) {
+            sb.append(array[0]);
+        }
+        for (int i = 1; i < array.length; i++)
+            sb.append(',').append(array[i]);
+        return sb.toString();
+    }
 
-	public static String toString(Collection<?> collections) {
-		StringBuilder sb = new StringBuilder();
-		for (Object obj : collections) {
-			sb.append(obj).append(',');
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		return sb.toString();
-	}
+    public static String toString(Collection<?> collections) {
+        StringBuilder sb = new StringBuilder();
+        for (Object obj : collections) {
+            sb.append(obj).append(',');
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
 }

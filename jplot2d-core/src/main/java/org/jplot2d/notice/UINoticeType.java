@@ -21,13 +21,13 @@ package org.jplot2d.notice;
 
 public class UINoticeType extends NoticeType {
 
-	private static final UINoticeType instance = new UINoticeType();
+    private static final UINoticeType instance = new UINoticeType();
 
-	private UINoticeType() {
-		super("UI");
-	}
+    private UINoticeType() {
+        super("UI");
+    }
 
-	public static UINoticeType getInstance() {
-		return instance;
-	}
+    public static UINoticeType getInstance() {
+        return instance;
+    }
 }

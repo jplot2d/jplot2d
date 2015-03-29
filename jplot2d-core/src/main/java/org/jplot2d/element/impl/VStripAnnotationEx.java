@@ -22,8 +22,9 @@ import org.jplot2d.element.VStripAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface VStripAnnotationEx extends AnnotationEx, VStripAnnotation {
+
+    public LayerEx getParent();
 
 }

@@ -18,20 +18,21 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
-
 import org.jplot2d.element.XYGraph;
+
+import java.awt.Color;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface XYGraphEx extends XYGraph, GraphEx {
 
-	public LegendItemEx getLegendItem();
+    public LayerEx getParent();
 
-	public Color getEffectiveSymbolColor();
+    public LegendItemEx getLegendItem();
 
-	public Color getEffectiveSymbolColor(int i);
+    public Color getEffectiveSymbolColor();
+
+    public Color getEffectiveSymbolColor(int i);
 
 }

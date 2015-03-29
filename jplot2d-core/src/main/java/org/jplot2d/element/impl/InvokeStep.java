@@ -22,42 +22,38 @@ import java.lang.reflect.Method;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class InvokeStep {
 
-	private final Method method;
-	private final int index;
+    private final Method method;
+    private final int index;
 
-	/**
-	 * Create a invoke step with a method
-	 * 
-	 * @param method
-	 *            the method to invoke
-	 */
-	public InvokeStep(Method method) {
-		this.method = method;
-		index = -1;
-	}
+    /**
+     * Create a invoke step with a method
+     *
+     * @param method the method to invoke
+     */
+    public InvokeStep(Method method) {
+        this.method = method;
+        index = -1;
+    }
 
-	/**
-	 * Create a invoke step with a method and an int argument
-	 * 
-	 * @param method
-	 *            the method to invoke
-	 * @param index
-	 *            the argument
-	 */
-	public InvokeStep(Method method, int index) {
-		this.method = method;
-		this.index = index;
-	}
+    /**
+     * Create a invoke step with a method and an int argument
+     *
+     * @param method the method to invoke
+     * @param index  the argument
+     */
+    public InvokeStep(Method method, int index) {
+        this.method = method;
+        this.index = index;
+    }
 
-	public Method getMethod() {
-		return method;
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	public int getIndex() {
-		return index;
-	}
+    public int getIndex() {
+        return index;
+    }
 }

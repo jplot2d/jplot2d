@@ -22,20 +22,19 @@ import org.jplot2d.util.Range;
 
 public enum TransformType {
 
-	LINEAR {
-		@Override
-		public NormalTransform createNormalTransform(Range wrange) {
-			return new LinearNormalTransform(wrange);
-		}
-	},
-	LOGARITHMIC {
+    LINEAR {
+        @Override
+        public NormalTransform createNormalTransform(Range wrange) {
+            return new LinearNormalTransform(wrange);
+        }
+    },
+    LOGARITHMIC {
+        @Override
+        public NormalTransform createNormalTransform(Range wrange) {
+            return new LogarithmicNormalTransform(wrange);
+        }
+    };
 
-		@Override
-		public NormalTransform createNormalTransform(Range wrange) {
-			return new LogarithmicNormalTransform(wrange);
-		}
-	};
-
-	public abstract NormalTransform createNormalTransform(Range wrange);
+    public abstract NormalTransform createNormalTransform(Range wrange);
 
 }

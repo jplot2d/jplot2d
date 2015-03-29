@@ -18,56 +18,54 @@
  */
 package org.jplot2d.element.impl;
 
-import java.util.Map;
-
 import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
 
+import java.util.Map;
+
 /**
  * @author Jingjing Li
- * 
  */
 public interface AxisRangeLockGroupEx extends AxisRangeLockGroup, ElementEx, Joinable {
 
-	public AxisTransformEx getParent();
+    public AxisTransformEx getParent();
 
-	public AxisTransformEx[] getRangeManagers();
+    public AxisTransformEx[] getRangeManagers();
 
-	public int indexOfRangeManager(AxisTransformEx rangeManager);
+    public int indexOfRangeManager(AxisTransformEx rangeManager);
 
-	public void addRangeManager(AxisTransformEx rangeManager);
+    public void addRangeManager(AxisTransformEx rangeManager);
 
-	public void removeRangeManager(AxisTransformEx rangeManager);
+    public void removeRangeManager(AxisTransformEx rangeManager);
 
-	public AxisTransformEx getPrimaryAxis();
+    public AxisTransformEx getPrimaryAxis();
 
-	/**
-	 * Force re-autorange this axis group. This method is called when layer data set changes, layer attach/detach to an
-	 * axis of this group, or axis type change
-	 */
-	public void reAutoRange();
+    /**
+     * Force re-autorange this axis group. This method is called when layer data set changes, layer attach/detach to an
+     * axis of this group, or axis type change
+     */
+    public void reAutoRange();
 
-	/**
-	 * Calculate auto range when necessary.
-	 * 
-	 * @return <code>true</code> if auto range is calculated for this group
-	 */
-	public boolean calcAutoRange();
+    /**
+     * Calculate auto range when necessary.
+     *
+     * @return <code>true</code> if auto range is calculated for this group
+     */
+    public boolean calcAutoRange();
 
-	public void zoomVirtualRange(Range range, Map<AxisTransformEx, NormalTransform> vtMap);
+    public void zoomVirtualRange(Range range, Map<AxisTransformEx, NormalTransform> vtMap);
 
-	/**
-	 * Validate axes range after axis type or axis transform type changed.
-	 */
-	public void validateAxesRange();
+    /**
+     * Validate axes range after axis type or axis transform type changed.
+     */
+    public void validateAxesRange();
 
-	/**
-	 * Zoom the given normalized range to entire axis. All axes in this lock group are changed. If the orthogonal axes
-	 * are autoRange, they need to be re-autoRange.
-	 * 
-	 * @param pRange
-	 *            the normalized range which has been validated
-	 */
-	public void zoomNormalRange(Range npRange);
+    /**
+     * Zoom the given normalized range to entire axis. All axes in this lock group are changed. If the orthogonal axes
+     * are autoRange, they need to be re-autoRange.
+     *
+     * @param npRange the normalized range which has been validated
+     */
+    public void zoomNormalRange(Range npRange);
 }

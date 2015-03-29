@@ -26,7 +26,13 @@ import org.jplot2d.annotation.PropertyGroup;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class extract properties from method declaration, rather than using java introspector.
@@ -45,23 +51,23 @@ public class InterfaceInfo {
     private static final String GET_PREFIX = "get";
     private static final String SET_PREFIX = "set";
 
-    private static Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<Class<?>, InterfaceInfo>();
+    private static final Map<Class<?>, InterfaceInfo> interfaceInfoCache = new HashMap<>();
 
     /**
      * property name to PropertyInfo map. It contains all properties no matter if it has @property annotation.
      */
     private final Map<String, PropertyInfo> piMap;
 
-    private final Map<Method, PropertyInfo> propReadMap = new HashMap<Method, PropertyInfo>();
+    private final Map<Method, PropertyInfo> propReadMap = new HashMap<>();
 
-    private final Map<Method, PropertyInfo> propWriteMap = new HashMap<Method, PropertyInfo>();
+    private final Map<Method, PropertyInfo> propWriteMap = new HashMap<>();
 
     /**
      * Hierarchy annotated Method to HierarchyOp map
      */
-    private final Map<Method, HierarchyOp> hierachyMethodMap = new HashMap<Method, HierarchyOp>();
+    private final Map<Method, HierarchyOp> hierarchyMethodMap = new HashMap<>();
 
-    private final Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<String, PropertyInfo[]>();
+    private final Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<>();
 
     /**
      * Load interface info for the given interface and its parents. The subclass may hide the info of its superclass.
@@ -94,7 +100,7 @@ public class InterfaceInfo {
         for (Method method : methods) {
             Hierarchy hierAnn = method.getAnnotation(Hierarchy.class);
             if (hierAnn != null) {
-                hierachyMethodMap.put(method, hierAnn.value());
+                hierarchyMethodMap.put(method, hierAnn.value());
             }
         }
 
@@ -112,9 +118,10 @@ public class InterfaceInfo {
         }
     }
 
+    @SuppressWarnings("UnusedParameters")
     private void load(Class<?> beanClass) {
 
-        Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<String, List<PropertyInfo>>();
+        Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<>();
 
         for (PropertyInfo p : piMap.values()) {
             Method readMethod = p.getReadMethod();
@@ -133,7 +140,7 @@ public class InterfaceInfo {
                     if (pg != null) {
                         List<PropertyInfo> pis = pilGroupMap.get(pg.value());
                         if (pis == null) {
-                            pis = new ArrayList<PropertyInfo>();
+                            pis = new ArrayList<>();
                             pilGroupMap.put(pg.value(), pis);
                         }
                         pis.add(p);
@@ -172,11 +179,11 @@ public class InterfaceInfo {
     }
 
     public Map<String, PropertyInfo[]> getProfilePropertyInfoGroupMap() {
-        Map<String, PropertyInfo[]> result = new LinkedHashMap<String, PropertyInfo[]>();
+        Map<String, PropertyInfo[]> result = new LinkedHashMap<>();
 
         for (Map.Entry<String, PropertyInfo[]> me : pisGroupMap.entrySet()) {
             String group = me.getKey();
-            List<PropertyInfo> ppl = new ArrayList<PropertyInfo>();
+            List<PropertyInfo> ppl = new ArrayList<>();
             for (PropertyInfo pi : me.getValue()) {
                 if (pi.isStyleable()) {
                     ppl.add(pi);
@@ -250,42 +257,42 @@ public class InterfaceInfo {
     }
 
     protected boolean isGetCompMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.GET;
     }
 
     protected boolean isGetCompArrayMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.GETARRAY;
     }
 
     protected boolean isAddCompMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.ADD;
     }
 
     protected boolean isRemoveCompMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.REMOVE;
     }
 
     protected boolean isJoinElementMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.JOIN;
     }
 
     protected boolean isRefElementMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.REF;
     }
 
     protected boolean isRef2ElementMethod(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.REF2;
     }
 
     protected boolean isAddRef2Method(Method method) {
-        HierarchyOp hop = hierachyMethodMap.get(method);
+        HierarchyOp hop = hierarchyMethodMap.get(method);
         return hop != null && hop == HierarchyOp.ADD_REF2;
     }
 
@@ -297,8 +304,8 @@ public class InterfaceInfo {
      */
     private static Map<String, PropertyInfo> getPropertyInfo(Method[] methods) throws IntrospectionException {
 
-        Map<String, Method> pdReaderMap = new LinkedHashMap<String, Method>();
-        Map<String, Method> pdWriterMap = new HashMap<String, Method>();
+        Map<String, Method> pdReaderMap = new LinkedHashMap<>();
+        Map<String, Method> pdWriterMap = new HashMap<>();
 
         for (Method method : methods) {
             if (method == null) {
@@ -335,11 +342,12 @@ public class InterfaceInfo {
                         pdReaderMap.put(pname, method);
                     } else if (pre.getReturnType().isAssignableFrom(method.getReturnType())) {
                         pdReaderMap.put(pname, method);
-                    } else if (method.getReturnType().isAssignableFrom(pre.getReturnType())) {
-                        // the return type of exist getter is more precise
-                    } else {
-                        throw new IntrospectionException("getter name conflict: " + name);
-                    }
+                    } else //noinspection StatementWithEmptyBody
+                        if (method.getReturnType().isAssignableFrom(pre.getReturnType())) {
+                            // the return type of exist getter is more precise
+                        } else {
+                            throw new IntrospectionException("getter name conflict: " + name);
+                        }
                 }
             } else if (argCount == 1) {
                 if (resultType == void.class && name.startsWith(SET_PREFIX)) {
@@ -353,7 +361,7 @@ public class InterfaceInfo {
             }
         }
 
-        Map<String, PropertyInfo> pimap = new HashMap<String, PropertyInfo>();
+        Map<String, PropertyInfo> pimap = new HashMap<>();
         for (Map.Entry<String, Method> me : pdReaderMap.entrySet()) {
             String pname = me.getKey();
             Method reader = me.getValue();

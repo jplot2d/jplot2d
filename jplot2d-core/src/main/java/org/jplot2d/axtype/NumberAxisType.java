@@ -30,75 +30,74 @@ import org.jplot2d.util.Range;
 /**
  * An axis for displaying numerical data. It support both LinearTransformType and
  * LogarithmicTransformType.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class NumberAxisType extends AxisType {
 
-	private static final Range LINEAR_BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
-			Double.MAX_VALUE / 2);
+    private static final Range LINEAR_BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
+            Double.MAX_VALUE / 2);
 
-	private static final Range LINEAR_DEFAULT_RANGE = new Range.Double(-1, 1);
+    private static final Range LINEAR_DEFAULT_RANGE = new Range.Double(-1, 1);
 
-	private static final Range POSITIVE_BOUNDARY = new Range.Double(Double.MIN_VALUE, true,
-			Double.MAX_VALUE / 2, true);
+    private static final Range POSITIVE_BOUNDARY = new Range.Double(Double.MIN_VALUE, true,
+            Double.MAX_VALUE / 2, true);
 
-	private static final Range LOG_DEFAULT_RANGE = new Range.Double(0.1, 10);
+    private static final Range LOG_DEFAULT_RANGE = new Range.Double(0.1, 10);
 
-	public static NumberAxisType getInstance() {
-		return new NumberAxisType();
-	}
+    public static NumberAxisType getInstance() {
+        return new NumberAxisType();
+    }
 
-	private NumberAxisType() {
-		super("NUMBER");
-	}
+    private NumberAxisType() {
+        super("NUMBER");
+    }
 
-	public boolean canSupport(TransformType txfType) {
+    public boolean canSupport(TransformType txfType) {
         return txfType == TransformType.LINEAR || txfType == TransformType.LOGARITHMIC;
     }
 
-	public Range getBoundary(TransformType txfType) {
-		if (txfType == TransformType.LINEAR) {
-			return LINEAR_BOUNDARY;
-		}
-		if (txfType == TransformType.LOGARITHMIC) {
-			return POSITIVE_BOUNDARY;
-		}
-		return null;
-	}
+    public Range getBoundary(TransformType txfType) {
+        if (txfType == TransformType.LINEAR) {
+            return LINEAR_BOUNDARY;
+        }
+        if (txfType == TransformType.LOGARITHMIC) {
+            return POSITIVE_BOUNDARY;
+        }
+        return null;
+    }
 
-	public Range getDefaultWorldRange(TransformType txfType) {
-		if (txfType == TransformType.LINEAR) {
-			return LINEAR_DEFAULT_RANGE;
-		}
-		if (txfType == TransformType.LOGARITHMIC) {
-			return LOG_DEFAULT_RANGE;
-		}
-		return null;
-	}
+    public Range getDefaultWorldRange(TransformType txfType) {
+        if (txfType == TransformType.LINEAR) {
+            return LINEAR_DEFAULT_RANGE;
+        }
+        if (txfType == TransformType.LOGARITHMIC) {
+            return LOG_DEFAULT_RANGE;
+        }
+        return null;
+    }
 
-	public TransformType getDefaultTransformType() {
-		return TransformType.LINEAR;
-	}
+    public TransformType getDefaultTransformType() {
+        return TransformType.LINEAR;
+    }
 
-	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
-		if (tickTransform == null) {
-			if (txfType == TransformType.LINEAR) {
-				return LinearTickAlgorithm.getInstance();
-			}
-			if (txfType == TransformType.LOGARITHMIC) {
-				return LogTickAlgorithm.getInstance();
-			}
-		} else if (tickTransform instanceof ReciprocalAxisTickTransform) {
-			if (txfType == TransformType.LINEAR) {
-				return ReciprocalTickAlgorithm.getInstance();
-			}
-			if (txfType == TransformType.LOGARITHMIC) {
-				return LogTickAlgorithm.getInstance();
-			}
-		}
-		return null;
-	}
+    public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
+        if (tickTransform == null) {
+            if (txfType == TransformType.LINEAR) {
+                return LinearTickAlgorithm.getInstance();
+            }
+            if (txfType == TransformType.LOGARITHMIC) {
+                return LogTickAlgorithm.getInstance();
+            }
+        } else if (tickTransform instanceof ReciprocalAxisTickTransform) {
+            if (txfType == TransformType.LINEAR) {
+                return ReciprocalTickAlgorithm.getInstance();
+            }
+            if (txfType == TransformType.LOGARITHMIC) {
+                return LogTickAlgorithm.getInstance();
+            }
+        }
+        return null;
+    }
 
 }

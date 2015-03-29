@@ -154,7 +154,7 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
             double coefficient = interval / Math.pow(10, mag);
             double s1dcoef = Math.round(coefficient);
             /*
-			 * if the coefficient contains more than 1 significant digit, ignore the minor number
+             * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
             if (Math.abs(s1dcoef / coefficient - 1) > DOUBLE_PRECISION_TOLERANCE) {
                 s1dInterval = 0;
@@ -164,7 +164,7 @@ public class ArcDmsTickCalculator extends AbstractLinearTickCalculator {
         } else if (interval < Unit.MINUTE.angle) {
             double secs = interval / Unit.SECOND.angle;
             double s1dcoef = Math.round(secs);
-			/*
+            /*
 			 * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
             if (Math.abs(s1dcoef / secs - 1) > DOUBLE_PRECISION_TOLERANCE) {

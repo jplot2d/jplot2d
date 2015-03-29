@@ -22,15 +22,14 @@ import org.jplot2d.element.Title;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface TitleEx extends Title, ComponentEx {
 
-	public PlotEx getParent();
+    public PlotEx getParent();
 
-	/**
-	 * Called by plot to calculate size of this title.
-	 */
-	public void calcSize();
+    /**
+     * Called by plot to calculate size of this title.
+     */
+    public void calcSize();
 
 }

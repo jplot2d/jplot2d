@@ -18,6 +18,14 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.element.HAlign;
+import org.jplot2d.element.VAlign;
+import org.jplot2d.tex.MathElement;
+import org.jplot2d.tex.MathLabel;
+import org.jplot2d.tex.TeXMathUtils;
+import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.SymbolShape;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,197 +36,189 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.element.HAlign;
-import org.jplot2d.element.VAlign;
-import org.jplot2d.tex.MathElement;
-import org.jplot2d.tex.MathLabel;
-import org.jplot2d.tex.TeXMathUtils;
-import org.jplot2d.util.DoubleDimension2D;
-import org.jplot2d.util.SymbolShape;
-
 /**
  * @author Jingjing Li
- * 
  */
 public class XYLegendItemImpl extends LegendItemImpl implements XYLegendItemEx {
 
-	private static final double LABEL_SPACE = 8;
+    private static final double LABEL_SPACE = 8;
 
-	private static final double LINE_LENGTH = 24;
+    private static final double LINE_LENGTH = 24;
 
-	private float symbolSize = Float.NaN;
+    private float symbolSize = Float.NaN;
 
-	private MathElement textModel;
+    private MathElement textModel;
 
-	private transient MathLabel label;
+    private transient MathLabel label;
 
-	public XYLegendItemImpl() {
+    public XYLegendItemImpl() {
 
-	}
+    }
 
-	public XYGraphEx getParent() {
-		return (XYGraphEx) super.getParent();
-	}
+    public XYGraphEx getParent() {
+        return super.getParent();
+    }
 
-	public void setLegend(LegendEx legend) {
-		Font oldFont = (getLegend() == null) ? null : getLegend().getEffectiveFont();
-		super.setLegend(legend);
-		if (legend != null && !legend.getEffectiveFont().equals(oldFont)) {
-			label = null;
-			if (isVisible()) {
-				if (getLegend() != null) {
-					getLegend().itemSizeChanged(this);
-				}
-			}
-		}
-	}
+    public void setLegend(LegendEx legend) {
+        Font oldFont = (getLegend() == null) ? null : getLegend().getEffectiveFont();
+        super.setLegend(legend);
+        if (legend != null && !legend.getEffectiveFont().equals(oldFont)) {
+            label = null;
+            if (isVisible()) {
+                if (getLegend() != null) {
+                    getLegend().itemSizeChanged(this);
+                }
+            }
+        }
+    }
 
-	public void legendEffectiveFontChanged() {
-		label = null;
-		if (isVisible()) {
-			if (getLegend() != null) {
-				getLegend().itemSizeChanged(this);
-			}
-		}
-	}
+    public void legendEffectiveFontChanged() {
+        label = null;
+        if (isVisible()) {
+            if (getLegend() != null) {
+                getLegend().itemSizeChanged(this);
+            }
+        }
+    }
 
-	private MathLabel getLabel() {
-		if (label == null && getLegend() != null && getLegend().getEffectiveFont().getSize2D() > 0) {
-			label = new MathLabel(textModel, getLegend().getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
-		}
-		return label;
-	}
+    private MathLabel getLabel() {
+        if (label == null && getLegend() != null && getLegend().getEffectiveFont().getSize2D() > 0) {
+            label = new MathLabel(textModel, getLegend().getEffectiveFont(), VAlign.MIDDLE, HAlign.LEFT);
+        }
+        return label;
+    }
 
-	public Dimension2D getSize() {
-		if (getLabel() == null) {
-			return null;
-		}
-		Rectangle2D labelBounds = getLabel().getBounds();
-		double width = labelBounds.getWidth();
-		double height = labelBounds.getHeight();
-		// System.out.println(height);
-		if (height < getEffectiveSymbolSize()) {
-			height = getEffectiveSymbolSize();
-		}
-		return new DoubleDimension2D(LINE_LENGTH + LABEL_SPACE + width, height);
-	}
+    public Dimension2D getSize() {
+        if (getLabel() == null) {
+            return null;
+        }
+        Rectangle2D labelBounds = getLabel().getBounds();
+        double width = labelBounds.getWidth();
+        double height = labelBounds.getHeight();
+        // System.out.println(height);
+        if (height < getEffectiveSymbolSize()) {
+            height = getEffectiveSymbolSize();
+        }
+        return new DoubleDimension2D(LINE_LENGTH + LABEL_SPACE + width, height);
+    }
 
-	public String getText() {
-		return TeXMathUtils.toString(textModel);
-	}
+    public String getText() {
+        return TeXMathUtils.toString(textModel);
+    }
 
-	public void setText(String text) {
-		boolean contributable = canContribute();
-		textModel = TeXMathUtils.parseText(text);
-		label = null;
-		if (getLegend() != null) {
-			if (canContribute() != contributable) {
-				getLegend().itemContribitivityChanged(this);
-			} else if (contributable) {
-				getLegend().itemSizeChanged(this);
-			}
-		}
-	}
+    public void setText(String text) {
+        boolean contributable = canContribute();
+        textModel = TeXMathUtils.parseText(text);
+        label = null;
+        if (getLegend() != null) {
+            if (canContribute() != contributable) {
+                getLegend().itemContribitivityChanged(this);
+            } else if (contributable) {
+                getLegend().itemSizeChanged(this);
+            }
+        }
+    }
 
-	public boolean canContribute() {
-		return textModel != null && textModel != MathElement.EMPTY;
-	}
+    public boolean canContribute() {
+        return textModel != null && textModel != MathElement.EMPTY;
+    }
 
-	public float getSymbolSize() {
-		return symbolSize;
-	}
+    public float getSymbolSize() {
+        return symbolSize;
+    }
 
-	public void setSymbolSize(float size) {
-		if (symbolSize != size) {
-			symbolSize = size;
-			symbolSizeChanged();
-		}
-	}
+    public void setSymbolSize(float size) {
+        if (symbolSize != size) {
+            symbolSize = size;
+            symbolSizeChanged();
+        }
+    }
 
-	public void graphSymbolSizeChanged() {
-		if (Float.isNaN(symbolSize)) {
-			symbolSizeChanged();
-		}
-	}
+    public void graphSymbolSizeChanged() {
+        if (Float.isNaN(symbolSize)) {
+            symbolSizeChanged();
+        }
+    }
 
-	private void symbolSizeChanged() {
-		if (isVisible() && getLegend() != null) {
-			getLegend().itemSizeChanged(this);
-		}
-	}
+    private void symbolSizeChanged() {
+        if (isVisible() && getLegend() != null) {
+            getLegend().itemSizeChanged(this);
+        }
+    }
 
-	private float getEffectiveSymbolSize() {
-		if (Float.isNaN(symbolSize)) {
-			return getParent().getSymbolSize();
-		} else {
-			return symbolSize;
-		}
-	}
+    private float getEffectiveSymbolSize() {
+        if (Float.isNaN(symbolSize)) {
+            return getParent().getSymbolSize();
+        } else {
+            return symbolSize;
+        }
+    }
 
-	public void draw(Graphics2D g) {
-		Point2D loc = getLocation();
+    public void draw(Graphics2D g) {
+        Point2D loc = getLocation();
 
 		/* draw line and mark */
-		XYGraphEx graph = getParent();
+        XYGraphEx graph = getParent();
 
-		float ax = (float) loc.getX();
-		float bx = ax + (float) (LINE_LENGTH);
-		float ay = (float) loc.getY();
-		float by = ay;
+        float ax = (float) loc.getX();
+        float bx = ax + (float) (LINE_LENGTH);
+        float ay = (float) loc.getY();
+        //noinspection UnnecessaryLocalVariable
+        float by = ay;
 
-		Color sc = graph.getEffectiveSymbolColor();
-		if (graph.isLineVisible()) {
-			g.setColor(graph.getEffectiveColor());
-			g.setStroke(graph.getLineStroke());
-			Path2D.Float gp = new Path2D.Float();
-			gp.moveTo(ax, ay);
-			gp.lineTo(bx, by);
-			g.draw(gp);
-			if (graph.isSymbolVisible()) {
-				drawSymbol(g, ax, ay, sc);
-				drawSymbol(g, bx, by, sc);
-			}
-		} else if (graph.isSymbolVisible()) {
-			drawSymbol(g, bx, by, sc);
-		}
+        Color sc = graph.getEffectiveSymbolColor();
+        if (graph.isLineVisible()) {
+            g.setColor(graph.getEffectiveColor());
+            g.setStroke(graph.getLineStroke());
+            Path2D.Float gp = new Path2D.Float();
+            gp.moveTo(ax, ay);
+            gp.lineTo(bx, by);
+            g.draw(gp);
+            if (graph.isSymbolVisible()) {
+                drawSymbol(g, ax, ay, sc);
+                drawSymbol(g, bx, by, sc);
+            }
+        } else if (graph.isSymbolVisible()) {
+            drawSymbol(g, bx, by, sc);
+        }
 
 		/* draw label */
-		drawLabel(g);
-	}
+        drawLabel(g);
+    }
 
-	private void drawSymbol(Graphics2D g, float x, float y, Color color) {
-		XYGraphEx graph = getParent();
+    private void drawSymbol(Graphics2D g, float x, float y, Color color) {
+        XYGraphEx graph = getParent();
 
-		// use half of line stroke to draw marks
-		float lw = graph.getLineStroke().getLineWidth() / 2;
-		g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-		g.setColor(color);
+        // use half of line stroke to draw marks
+        float lw = graph.getLineStroke().getLineWidth() / 2;
+        g.setStroke(new BasicStroke(lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+        g.setColor(color);
 
-		float actSymbolSize = getEffectiveSymbolSize();
-		AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
-		maf.scale(actSymbolSize, actSymbolSize);
+        float actSymbolSize = getEffectiveSymbolSize();
+        AffineTransform maf = AffineTransform.getTranslateInstance(x, y);
+        maf.scale(actSymbolSize, actSymbolSize);
 
-		SymbolShape ss = graph.getSymbolShape();
-		ss.draw(g, maf);
-	}
+        SymbolShape ss = graph.getSymbolShape();
+        ss.draw(g, maf);
+    }
 
-	private void drawLabel(Graphics2D g) {
-		AffineTransform oldTransform = g.getTransform();
+    private void drawLabel(Graphics2D g) {
+        AffineTransform oldTransform = g.getTransform();
 
-		g.translate(getLocation().getX() + LINE_LENGTH + LABEL_SPACE, getLocation().getY());
-		g.scale(1.0, -1.0);
-		g.setColor(Color.BLACK);
-		getLabel().draw(g);
+        g.translate(getLocation().getX() + LINE_LENGTH + LABEL_SPACE, getLocation().getY());
+        g.scale(1.0, -1.0);
+        g.setColor(Color.BLACK);
+        getLabel().draw(g);
 
-		g.setTransform(oldTransform);
-	}
+        g.setTransform(oldTransform);
+    }
 
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
+    @Override
+    public void copyFrom(ElementEx src) {
+        super.copyFrom(src);
 
-		XYLegendItemImpl xyli = (XYLegendItemImpl) src;
-		textModel = xyli.textModel;
-	}
+        XYLegendItemImpl xyli = (XYLegendItemImpl) src;
+        textModel = xyli.textModel;
+    }
 
 }

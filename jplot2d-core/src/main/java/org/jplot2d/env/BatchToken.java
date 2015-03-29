@@ -26,9 +26,9 @@ package org.jplot2d.env;
  */
 public class BatchToken {
 
-    private int batchDepth;
+    private final int batchDepth;
 
-    private int[] batchSND;
+    private final int[] batchSND;
 
     /**
      * Create a batch token.

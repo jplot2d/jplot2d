@@ -25,52 +25,48 @@ import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface AxisTransformEx extends AxisTransform, ElementEx, Joinable {
 
-	public AxisTickManagerEx getParent();
+    public AxisTickManagerEx getParent();
 
-	public AxisTickManagerEx[] getTickManagers();
+    public AxisTickManagerEx[] getTickManagers();
 
-	public AxisRangeLockGroupEx getLockGroup();
+    public AxisRangeLockGroupEx getLockGroup();
 
-	public int indexOfTickManager(AxisTickManagerEx tickManager);
+    public int indexOfTickManager(AxisTickManagerEx tickManager);
 
-	/**
-	 * Sets the normal transform of this axis
-	 * 
-	 * @param ntf
-	 *            the normal transform
-	 */
-	public void setNormalTransfrom(NormalTransform ntf);
+    /**
+     * Sets the normal transform of this axis
+     *
+     * @param ntf the normal transform
+     */
+    public void setNormalTransform(NormalTransform ntf);
 
-	public void addTickManager(AxisTickManagerEx tickManager);
+    public void addTickManager(AxisTickManagerEx tickManager);
 
-	public void removeTickManager(AxisTickManagerEx tickManager);
+    public void removeTickManager(AxisTickManagerEx tickManager);
 
-	public LayerEx[] getLayers();
+    public LayerEx[] getLayers();
 
-	/**
-	 * Called when a layer attach to this viewport axis
-	 * 
-	 * @param layer
-	 *            the layer
-	 */
-	public void addLayer(LayerEx layer);
+    /**
+     * Called when a layer attach to this viewport axis
+     *
+     * @param layer the layer
+     */
+    public void addLayer(LayerEx layer);
 
-	/**
-	 * Called when a layer detach from this viewport axis
-	 * 
-	 * @param layer
-	 *            the layer
-	 */
-	public void removeLayer(LayerEx layer);
+    /**
+     * Called when a layer detach from this viewport axis
+     *
+     * @param layer the layer
+     */
+    public void removeLayer(LayerEx layer);
 
-	public void linkLayer(LayerEx layer);
+    public void linkLayer(LayerEx layer);
 
-	public Range expandRangeToTick(Range ur);
+    public Range expandRangeToTick(Range ur);
 
-	public void changeTransformType(TransformType txfType);
+    public void changeTransformType(TransformType txfType);
 
 }

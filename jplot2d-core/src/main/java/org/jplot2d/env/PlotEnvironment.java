@@ -33,7 +33,14 @@ import org.jplot2d.transform.PaperTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This Environment can host a plot instance and provide undo/redo ability.
@@ -45,25 +52,25 @@ public class PlotEnvironment extends Environment {
     /**
      * Keep hard references to cache holder objects.
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"FieldCanBeLocal"})
     private List<Object> cacheHolders;
 
     /**
      * the key is impl element, the value is copy of element (for renderer thread safe)
      */
-    protected Map<ElementEx, ElementEx> copyMap = new HashMap<ElementEx, ElementEx>();
+    protected final Map<ElementEx, ElementEx> copyMap = new HashMap<>();
 
     /**
      * A copy to proxy map that contains all element in this environment.
      */
     protected Map<ElementEx, Element> copyProxyMap;
 
-    protected final UndoManager<UndoMemento> undoManager = new UndoManager<UndoMemento>(Integer.MAX_VALUE);
+    protected final UndoManager<UndoMemento> undoManager = new UndoManager<>(Integer.MAX_VALUE);
 
     /**
      * Contains all visible cacheable components in z-order. include uncacheable root plot.
      */
-    protected final List<CacheableBlock> cacheBlockList = new ArrayList<CacheableBlock>();
+    protected final List<CacheableBlock> cacheBlockList = new ArrayList<>();
 
     /**
      * The plot proxy
@@ -143,7 +150,7 @@ public class PlotEnvironment extends Environment {
      * @return the notifier of this environment
      */
     public Notifier getNotifier() {
-        Notifier result = null;
+        Notifier result;
         begin();
         result = notifier;
         end();
@@ -169,7 +176,7 @@ public class PlotEnvironment extends Environment {
         fireChangeProcessed();
 
         // create cache holder
-        List<Object> holders = new ArrayList<Object>();
+        List<Object> holders = new ArrayList<>();
         for (ElementEx element : proxyMap.keySet()) {
             if (element instanceof IntermediateCacheEx) {
                 Object cacheHolder = ((IntermediateCacheEx) element).createCacheHolder();
@@ -212,13 +219,13 @@ public class PlotEnvironment extends Environment {
         /*
          * Contains all visible cacheable components in z-order. include uncacheable root plot.
 		 */
-        List<ComponentEx> cacheableComponentList = new ArrayList<ComponentEx>();
+        List<ComponentEx> cacheableComponentList = new ArrayList<>();
 
 		/*
-		 * The key is copy of cacheable components or uncacheable root plot; the value is copy of key's visible
+         * The key is copy of cacheable components or uncacheable root plot; the value is copy of key's visible
 		 * uncacheable descendants, include the key itself, in z-order.
 		 */
-        Map<ComponentEx, List<ComponentEx>> subcompsMap = new HashMap<ComponentEx, List<ComponentEx>>();
+        Map<ComponentEx, List<ComponentEx>> subcompsMap = new HashMap<>();
 
         cacheBlockList.clear();
 
@@ -238,7 +245,7 @@ public class PlotEnvironment extends Environment {
 
                     List<ComponentEx> subComps = subcompsMap.get(cacheableAncestor);
                     if (subComps == null) {
-                        subComps = new ArrayList<ComponentEx>();
+                        subComps = new ArrayList<>();
                         subcompsMap.put(cacheableAncestor, subComps);
                     }
                     subComps.add(copy);
@@ -300,7 +307,7 @@ public class PlotEnvironment extends Environment {
 
         if (undoManager.getCapacity() > 0) {
             // build copy to proxy map
-            copyProxyMap = new LinkedHashMap<ElementEx, Element>();
+            copyProxyMap = new LinkedHashMap<>();
             for (Map.Entry<ElementEx, Element> me : proxyMap.entrySet()) {
                 ElementEx element = me.getKey();
                 Element proxy = me.getValue();
@@ -417,7 +424,7 @@ public class PlotEnvironment extends Environment {
         copyMap.clear();
 
         // the key is element in memento, the value is copy of element for restoring
-        Map<ElementEx, ElementEx> rcopyMap = new HashMap<ElementEx, ElementEx>();
+        Map<ElementEx, ElementEx> rcopyMap = new HashMap<>();
 
         // copy the memento as implements
         plotCopy = memento.getPlot();

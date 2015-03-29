@@ -32,7 +32,7 @@ import javax.imageio.ImageIO;
  */
 public class PngFileExporter extends ImageExporter {
 
-    private static final ImageFactory INT_RGB_IMAGEFACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
+    private static final ImageFactory INT_RGB_IMAGE_FACTORY = new BufferedImageFactory(BufferedImage.TYPE_INT_RGB,
             Color.WHITE);
 
     private final File file;
@@ -42,7 +42,7 @@ public class PngFileExporter extends ImageExporter {
     }
 
     public PngFileExporter(File file) {
-        this(INT_RGB_IMAGEFACTORY, file);
+        this(INT_RGB_IMAGE_FACTORY, file);
     }
 
     public PngFileExporter(ImageFactory imageFactory, File file) {

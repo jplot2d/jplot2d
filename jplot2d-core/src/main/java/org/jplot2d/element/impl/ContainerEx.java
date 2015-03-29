@@ -20,11 +20,13 @@ package org.jplot2d.element.impl;
 
 public interface ContainerEx extends ComponentEx {
 
-	/**
-	 * Returns the components in this container.
-	 * 
-	 * @return an array of sub-components
-	 */
-	public ComponentEx[] getComponents();
+    public ContainerEx getParent();
+
+    /**
+     * Returns the components in this container.
+     *
+     * @return an array of sub-components
+     */
+    public ComponentEx[] getComponents();
 
 }

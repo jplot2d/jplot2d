@@ -73,6 +73,8 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /**
  * A factory to produce all kind of plot components.
  *
@@ -80,9 +82,9 @@ import java.util.Map;
  */
 public class ElementFactory {
 
-    private static ElementFactory instance = new ElementFactory(false, null);
+    private static final ElementFactory instance = new ElementFactory(false, null);
 
-    private static ElementFactory threadSafeInstance = new ElementFactory(true, null);
+    private static final ElementFactory threadSafeInstance = new ElementFactory(true, null);
 
     /**
      * Returns an instance of ComponentFactory. All component created by this factory are not thread-safe.
@@ -873,15 +875,15 @@ public class ElementFactory {
      * @return the copy of given element
      */
     @SuppressWarnings("unchecked")
-    public <T extends Element> T copy(T element, Map<Element, Element> copyMap) {
+    public <T extends Element> T copy(T element, @Nullable Map<Element, Element> copyMap) {
         if (copyMap == null) {
-            copyMap = new HashMap<Element, Element>();
+            copyMap = new HashMap<>();
         }
 
         Environment senv = element.getEnvironment();
         DummyEnvironment denv = createDummyEnvironment();
 
-        HashMap<ElementEx, ElementEx> implCopyMap = new HashMap<ElementEx, ElementEx>();
+        HashMap<ElementEx, ElementEx> implCopyMap = new HashMap<>();
         ElementEx ecopy = ((ElementAddition) element).getImpl().copyStructure(implCopyMap);
 
         for (Map.Entry<ElementEx, ElementEx> me : implCopyMap.entrySet()) {

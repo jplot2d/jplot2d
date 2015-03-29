@@ -20,12 +20,12 @@ package org.jplot2d.util;
 
 /**
  * find bottom N numbers among a number set.
- * 
+ *
  * @author Jingjing Li
  */
 public class FloatBottomNFinder {
 
-    private float[] a;
+    private final float[] a;
 
     public FloatBottomNFinder(float[] array) {
         this.a = array;
@@ -58,7 +58,6 @@ public class FloatBottomNFinder {
 
     /**
      * build a max heap
-     * 
      */
     private void heapify() {
         for (int i = (a.length - 2) / 2; i >= 0; i--) {
@@ -67,8 +66,7 @@ public class FloatBottomNFinder {
     }
 
     /**
-     * @param s
-     *            the heap top
+     * @param s the heap top
      */
     private void siftDown(int s) {
 

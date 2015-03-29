@@ -22,36 +22,38 @@ import org.jplot2d.element.Layer;
 
 public interface LayerEx extends Layer, ContainerEx {
 
-	public PlotEx getParent();
+    public PlotEx getParent();
 
-	/**
-	 * Returns the short id of this layer. The short id is composed of series of ids concatenated with dots. The 1st id
-	 * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
-	 * root plot.
-	 * 
-	 * @return the short id of this layer.
-	 */
-	public String getShortId();
+    /**
+     * Returns the short id of this layer. The short id is composed of series of ids concatenated with dots. The 1st id
+     * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
+     * root plot.
+     *
+     * @return the short id of this layer.
+     */
+    public String getShortId();
 
-	public AxisTransformEx getXAxisTransform();
+    public AxisTransformEx getXAxisTransform();
 
-	public AxisTransformEx getYAxisTransform();
+    public AxisTransformEx getYAxisTransform();
 
-	public GraphEx[] getGraphs();
+    public GraphEx[] getGraphs();
 
-	public int indexOf(GraphEx graph);
+    public GraphEx getGraph(int index);
 
-	public AnnotationEx[] getAnnotations();
+    public int indexOf(GraphEx graph);
 
-	public int indexOf(AnnotationEx annotation);
+    public AnnotationEx[] getAnnotations();
 
-	/**
-	 * Called by {@link AxisTransformEx} to notify that x/y transform is changed.
-	 */
-	public void transformChanged();
+    public int indexOf(AnnotationEx annotation);
 
-	public void linkXAxisTransform(AxisTransformEx axt);
+    /**
+     * Called by {@link AxisTransformEx} to notify that x/y transform is changed.
+     */
+    public void transformChanged();
 
-	public void linkYAxisTransform(AxisTransformEx axt);
+    public void linkXAxisTransform(AxisTransformEx axt);
+
+    public void linkYAxisTransform(AxisTransformEx axt);
 
 }

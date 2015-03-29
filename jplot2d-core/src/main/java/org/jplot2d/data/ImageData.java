@@ -80,6 +80,7 @@ public abstract class ImageData implements GraphData {
     /**
      * Returns <code>true</code> if the given x is in the x boundary
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean inXBoundary(double x) {
         return (xboundary == null) || xboundary.contains(x);
     }

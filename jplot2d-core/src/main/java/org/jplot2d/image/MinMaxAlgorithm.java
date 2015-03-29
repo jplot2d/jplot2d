@@ -20,22 +20,21 @@ package org.jplot2d.image;
 
 /**
  * The limits algorithm to set the upper and lower limits to the min and max values.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class MinMaxAlgorithm implements LimitsAlgorithm {
 
-	public MinMaxAlgorithm() {
+    public MinMaxAlgorithm() {
 
-	}
+    }
 
-	public MinMaxCalculator getCalculator() {
-		return new MinMaxCalculator();
-	}
+    public MinMaxCalculator getCalculator() {
+        return new MinMaxCalculator();
+    }
 
-	public String toString() {
-		return this.getClass().getSimpleName();
-	}
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 
 }

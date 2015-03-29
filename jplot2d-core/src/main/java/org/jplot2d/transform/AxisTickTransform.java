@@ -20,28 +20,25 @@ package org.jplot2d.transform;
 
 /**
  * This interface define the transformation between user value and tick value.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface AxisTickTransform {
 
-	/**
-	 * Transform a user value to tick value
-	 * 
-	 * @param v
-	 *            the user value
-	 * @return the tick value
-	 */
-	public double transformUser2Tick(double v);
+    /**
+     * Transform a user value to tick value
+     *
+     * @param v the user value
+     * @return the tick value
+     */
+    public double transformUser2Tick(double v);
 
-	/**
-	 * Transform a tick value to user value.
-	 * 
-	 * @param v
-	 *            the tick value
-	 * @return the user value
-	 */
-	public double transformTick2User(double v);
+    /**
+     * Transform a tick value to user value.
+     *
+     * @param v the tick value
+     * @return the user value
+     */
+    public double transformTick2User(double v);
 
 }

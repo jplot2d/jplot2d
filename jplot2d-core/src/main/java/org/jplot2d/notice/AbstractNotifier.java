@@ -23,41 +23,40 @@ import java.util.List;
 
 /**
  * This abstract class receive and process plot waning messages.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class AbstractNotifier implements Notifier {
 
-	protected final List<Notice> notices = new ArrayList<Notice>();
+    protected final List<Notice> notices = new ArrayList<>();
 
-	/**
-	 * Application call this method to add notices. This method can called multiple times.
-	 * 
-	 * @param notice
-	 */
-	public final void notify(Notice notice) {
-		notices.add(notice);
-	}
+    /**
+     * Application call this method to add notices. This method can be called multiple times.
+     *
+     * @param notice the notices
+     */
+    public final void notify(Notice notice) {
+        notices.add(notice);
+    }
 
-	/**
-	 * Discard all exist notices
-	 */
-	public final void reset() {
-		notices.clear();
-	}
+    /**
+     * Discard all exist notices
+     */
+    public final void reset() {
+        notices.clear();
+    }
 
-	/**
-	 * Application call this method to show the notices. All notices in the queue are treated as the given notice type.
-	 */
-	public final void processNotices(NoticeType type) {
-		showNotices(type);
-		reset();
-	}
+    /**
+     * Application call this method to show the notices. All notices in the queue are treated as the given notice type.
+     */
+    public final void processNotices(NoticeType type) {
+        showNotices(type);
+        reset();
+    }
 
-	/**
-	 * To be overridden to show notices
-	 */
-	public abstract void showNotices(NoticeType type);
+    /**
+     * To be overridden to show notices
+     */
+    public abstract void showNotices(NoticeType type);
 
 }

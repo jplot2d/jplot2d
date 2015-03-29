@@ -23,6 +23,9 @@ import org.jplot2d.annotation.PropertyGroup;
 
 import java.awt.BasicStroke;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A line annotation to highlight a value.
  *
@@ -52,13 +55,15 @@ public interface LineAnnotation extends Annotation {
      * @return the <code>BasicStroke</code>
      */
     @Property(order = 1)
+    @Nonnull
     public BasicStroke getStroke();
 
     /**
      * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
+     * If the given stroke is <code>null</code>, the default stoke will be used.
      *
      * @param stroke the <code>BasicStroke</code> to be used to draw the annotation line
      */
-    public void setStroke(BasicStroke stroke);
+    public void setStroke(@Nullable BasicStroke stroke);
 
 }

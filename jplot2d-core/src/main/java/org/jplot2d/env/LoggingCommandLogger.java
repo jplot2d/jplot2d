@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  */
 public class LoggingCommandLogger implements CommandLogger {
 
-    private static LoggingCommandLogger instance = new LoggingCommandLogger();
+    private static final LoggingCommandLogger instance = new LoggingCommandLogger();
 
-    private static Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.command");
+    private static final Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.command");
 
     public static LoggingCommandLogger getInstance() {
         return instance;

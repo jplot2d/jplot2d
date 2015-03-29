@@ -21,33 +21,32 @@ package org.jplot2d.layout;
 /**
  * The constraint defines the x,y indexes in the grid of grid layout. The x is the index from left
  * to right. The y is the index from bottom to top.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class GridConstraint {
 
-	private final int x, y;
+    private final int x, y;
 
-	public GridConstraint(int gridx, int gridy) {
-		this.x = gridx;
-		this.y = gridy;
-	}
+    public GridConstraint(int gridx, int gridy) {
+        this.x = gridx;
+        this.y = gridy;
+    }
 
-	public int getGridX() {
-		return x;
-	}
+    public int getGridX() {
+        return x;
+    }
 
-	public int getGridY() {
-		return y;
-	}
+    public int getGridY() {
+        return y;
+    }
 
-	public boolean equals(Object obj) {
-		if (obj instanceof GridConstraint) {
-			GridConstraint spgc = (GridConstraint) obj;
-			return (x == spgc.x) && (y == spgc.y);
-		}
-		return false;
-	}
+    public boolean equals(Object obj) {
+        if (obj instanceof GridConstraint) {
+            GridConstraint spgc = (GridConstraint) obj;
+            return (x == spgc.x) && (y == spgc.y);
+        }
+        return false;
+    }
 
 }

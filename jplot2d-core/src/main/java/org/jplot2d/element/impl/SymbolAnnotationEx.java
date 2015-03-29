@@ -22,8 +22,9 @@ import org.jplot2d.element.SymbolAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface SymbolAnnotationEx extends PointAnnotationEx, SymbolAnnotation {
+
+    public LayerEx getParent();
 
 }

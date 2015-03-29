@@ -25,11 +25,9 @@ import org.jplot2d.util.Range;
 
 /**
  * Extends the Range to supply a status object. Immutable.
- * 
+ *
+ * @param <T> the status type
  * @author Jingjing Li
- * 
- * @param <T>
- *            the status type
  */
 class RangeStatus<T> extends Range.Double {
 

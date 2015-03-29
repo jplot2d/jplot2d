@@ -18,47 +18,49 @@
  */
 package org.jplot2d.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The property annotation indicate that the property should appear in properties table. This annotation mark on the
  * getter method.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Property {
 
-	/**
-	 * The name displayed in properties table. The default value "" means displaying the property name.
-	 */
-	String displayName() default "";
+    /**
+     * The name displayed in properties table. The default value "" means displaying the property name.
+     */
+    String displayName() default "";
 
-	/**
-	 * How many significant digits should display for the value. Only useful for float and double property. The default
-	 * value 0 means no limit.
-	 */
-	int displayDigits() default 0;
+    /**
+     * How many significant digits should display for the value. Only useful for float and double property. The default
+     * value 0 means no limit.
+     */
+    int displayDigits() default 0;
 
-	/**
-	 * The string displayed in tooltip.
-	 */
-	String description() default "";
+    /**
+     * The string displayed in tooltip.
+     */
+    String description() default "";
 
-	/**
-	 * The property is read-only, even if there is a writer method. A sub-interface can use it to disable a writer.
-	 */
-	boolean readOnly() default false;
+    /**
+     * The property is read-only, even if there is a writer method. A sub-interface can use it to disable a writer.
+     */
+    boolean readOnly() default false;
 
-	/**
-	 * The order in its group
-	 */
-	int order();
+    /**
+     * The order in its group
+     */
+    int order();
 
-	/**
-	 * Determine if this property is a styleable property. A styleable property must be writable.
-	 */
-	boolean styleable() default true;
+    /**
+     * Determine if this property is a styleable property. A styleable property must be writable.
+     */
+    boolean styleable() default true;
 }

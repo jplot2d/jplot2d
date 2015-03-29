@@ -18,71 +18,71 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.element.Layer;
+
 import java.awt.BasicStroke;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
 
-import org.jplot2d.element.Layer;
-
 public abstract class AnnotationImpl extends ComponentImpl implements AnnotationEx {
 
-	protected final static BasicStroke DEFAULT_STROKE = new BasicStroke();
+    protected final static BasicStroke DEFAULT_STROKE = new BasicStroke();
 
-	protected final static BasicStroke ZERO_WIDTH_STROKE = new BasicStroke(0);
+    protected final static BasicStroke ZERO_WIDTH_STROKE = new BasicStroke(0);
 
-	public AnnotationImpl() {
-		setSelectable(true);
-		setMovable(true);
-	}
+    public AnnotationImpl() {
+        setSelectable(true);
+        setMovable(true);
+    }
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (parent == null) {
-			return null;
-		}
+    public InvokeStep getInvokeStepFormParent() {
+        if (parent == null) {
+            return null;
+        }
 
-		Method method;
-		try {
-			method = Layer.class.getMethod("getAnnotation", Integer.TYPE);
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method, getParent().indexOf(this));
-	}
+        Method method;
+        try {
+            method = Layer.class.getMethod("getAnnotation", Integer.TYPE);
+        } catch (NoSuchMethodException e) {
+            throw new Error(e);
+        }
+        return new InvokeStep(method, getParent().indexOf(this));
+    }
 
-	public LayerEx getParent() {
-		return (LayerEx) super.getParent();
-	}
+    public LayerEx getParent() {
+        return (LayerEx) super.getParent();
+    }
 
-	public void thisEffectiveColorChanged() {
-		redraw(this);
-	}
+    public void thisEffectiveColorChanged() {
+        redraw(this);
+    }
 
-	public void thisEffectiveFontChanged() {
-		redraw(this);
-	}
+    public void thisEffectiveFontChanged() {
+        redraw(this);
+    }
 
-	public final void setLocation(Point2D p) {
-		setLocation(p.getX(), p.getY());
-	}
+    public final void setLocation(Point2D p) {
+        setLocation(p.getX(), p.getY());
+    }
 
-	protected double getXWtoP(double v) {
-		LayerEx layer = getParent();
-		return layer.getXAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getWidth();
-	}
+    protected double getXWtoP(double v) {
+        LayerEx layer = getParent();
+        return layer.getXAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getWidth();
+    }
 
-	protected double getYWtoP(double v) {
-		LayerEx layer = getParent();
-		return layer.getYAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getHeight();
-	}
+    protected double getYWtoP(double v) {
+        LayerEx layer = getParent();
+        return layer.getYAxisTransform().getNormalTransform().convToNR(v) * layer.getSize().getHeight();
+    }
 
-	protected double getXPtoW(double v) {
-		LayerEx layer = getParent();
-		return layer.getXAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getWidth());
-	}
+    protected double getXPtoW(double v) {
+        LayerEx layer = getParent();
+        return layer.getXAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getWidth());
+    }
 
-	protected double getYPtoW(double v) {
-		LayerEx layer = getParent();
-		return layer.getYAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getHeight());
-	}
+    protected double getYPtoW(double v) {
+        LayerEx layer = getParent();
+        return layer.getYAxisTransform().getNormalTransform().convFromNR(v / layer.getSize().getHeight());
+    }
 
 }

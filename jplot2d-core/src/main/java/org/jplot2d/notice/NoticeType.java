@@ -20,26 +20,17 @@ package org.jplot2d.notice;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class NoticeType {
 
-	private final String type;
+    private final String type;
 
-	protected NoticeType(String type) {
-		this.type = type;
-	}
+    protected NoticeType(String type) {
+        this.type = type;
+    }
 
-	public final boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	public final int hashCode() {
-		return super.hashCode();
-	}
-
-	public String toString() {
-		return "NoticeType " + type;
-	}
+    public String toString() {
+        return "NoticeType " + type;
+    }
 
 }

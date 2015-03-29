@@ -48,8 +48,8 @@ public class PlotImplTest {
 		try {
 			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
@@ -57,8 +57,8 @@ public class PlotImplTest {
 		try {
 			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisTransformEx arm = mock(AxisTransformEx.class);
@@ -66,8 +66,8 @@ public class PlotImplTest {
 		try {
 			p.addXAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
@@ -84,8 +84,8 @@ public class PlotImplTest {
 		try {
 			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
@@ -93,8 +93,8 @@ public class PlotImplTest {
 		try {
 			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisTransformEx arm = mock(AxisTransformEx.class);
@@ -102,8 +102,8 @@ public class PlotImplTest {
 		try {
 			p.addYAxis(axis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
 		}
 
 		AxisRangeLockGroupEx alg = mock(AxisRangeLockGroupEx.class);
@@ -305,11 +305,11 @@ public class PlotImplTest {
 		assertFalse(p.isValid());
 		p.validate();
 
-		PlotImpl spInvisble = new PlotImpl();
-		spInvisble.setVisible(false);
-		p.addSubplot(spInvisble, null);
+		PlotImpl spInvisible = new PlotImpl();
+		spInvisible.setVisible(false);
+		p.addSubplot(spInvisible, null);
 		assertTrue(p.isValid());
-		p.removeSubplot(spInvisble);
+		p.removeSubplot(spInvisible);
 		assertTrue(p.isValid());
 		p.validate();
 	}
@@ -347,7 +347,7 @@ public class PlotImplTest {
 		XYGraphImpl gp = new XYGraphImpl();
 		layer.addGraph(gp);
 
-		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
+		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<>();
 		PlotImpl p2 = p.copyStructure(orig2copyMap);
 		// copy properties
 		for (Map.Entry<ElementEx, ElementEx> me : orig2copyMap.entrySet()) {
@@ -372,7 +372,8 @@ public class PlotImplTest {
 				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform()));
 		assertSame(p2.getYAxis(0).getTickManager().getAxisTransform().getLockGroup(),
 				orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform().getLockGroup()));
-		assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
+
+        assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
 		assertSame(p2.getLayer(0).getGraph(0), orig2copyMap.get(p.getLayer(0).getGraph(0)));
 
 		// check parent

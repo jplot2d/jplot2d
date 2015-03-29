@@ -408,13 +408,13 @@ public interface Plot extends PComponent {
 
     /**
      * Adaptive zoom the x range for all axes in this plot.
-     * Only axes whoes AxisRangeLockGroups is zoomable are zoomed.
+     * Only axes whose AxisRangeLockGroups is zoomable are zoomed.
      */
     public void adaptiveZoomX();
 
     /**
      * Adaptive zoom the y range for all axes in this plot.
-     * Only axes whoes AxisRangeLockGroups is zoomable are zoomed.
+     * Only axes whose AxisRangeLockGroups is zoomable are zoomed.
      */
     public void adaptiveZoomY();
 

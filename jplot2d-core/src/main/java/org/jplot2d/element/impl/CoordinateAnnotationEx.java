@@ -22,7 +22,6 @@ import org.jplot2d.element.CoordinateAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface CoordinateAnnotationEx extends SymbolAnnotationEx, CoordinateAnnotation {
 

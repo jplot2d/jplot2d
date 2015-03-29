@@ -39,6 +39,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Nonnull;
+
 /**
  * Since Graphics can draw image, It's possible to render all cacheable component individually, then assemble them together.
  * <p/>
@@ -71,7 +73,7 @@ public abstract class ImageRenderer extends Renderer {
             group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         }
 
-        public Thread newThread(Runnable r) {
+        public Thread newThread(@Nonnull Runnable r) {
             Thread t = new Thread(group, r, "JPlot2d-renderer-" + threadNumber.getAndIncrement(), 0);
             if (!t.isDaemon()) {
                 t.setDaemon(true);
@@ -204,7 +206,10 @@ public abstract class ImageRenderer extends Renderer {
             return;
         }
 
-        RenderingFinishedListener[] ls = renderingFinishedListenerList.toArray(new RenderingFinishedListener[0]);
+        RenderingFinishedListener[] ls;
+        synchronized (renderingFinishedListenerList) {
+            ls = renderingFinishedListenerList.toArray(new RenderingFinishedListener[renderingFinishedListenerList.size()]);
+        }
         for (RenderingFinishedListener lsnr : ls) {
             try {
                 lsnr.renderingFinished(new RenderingFinishedEvent(sn, img));
@@ -283,7 +288,7 @@ public abstract class ImageRenderer extends Renderer {
                 // create a new Component Render task
                 Rectangle bounds = getDeviceBounds(ccopy);
                 CompRenderCallable compRenderCallable = new CompRenderCallable(cb, imageFactory, bounds);
-                FutureTask<BufferedImage> crtask = new FutureTask<BufferedImage>(compRenderCallable);
+                FutureTask<BufferedImage> crtask = new FutureTask<>(compRenderCallable);
 
                 executor.execute(crtask);
                 ainfo.put(comp, bounds, crtask);
@@ -318,6 +323,7 @@ public abstract class ImageRenderer extends Renderer {
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.translate(-bounds.x, -bounds.y);
 
+        //noinspection TryWithIdenticalCatches
         try {
             for (ComponentEx c : ainfo.componentSet()) {
                 Rectangle cbounds = ainfo.getBounds(c);

@@ -31,7 +31,7 @@ public class ElementChangeEvent extends EventObject {
 
     private static final long serialVersionUID = 1L;
 
-    private Element element;
+    private final Element element;
 
     /**
      * create an event when hierarchy structure or properties changed.

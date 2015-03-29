@@ -22,20 +22,21 @@ import java.awt.Graphics2D;
 
 public abstract class ContainerImpl extends ComponentImpl implements ContainerEx {
 
-	public final void thisEffectiveColorChanged() {
-		for (ComponentEx comp : getComponents()) {
-			comp.parentEffectiveColorChanged();
-		}
-	}
+    public final void thisEffectiveColorChanged() {
+        for (ComponentEx comp : getComponents()) {
+            comp.parentEffectiveColorChanged();
+        }
+    }
 
-	public final void thisEffectiveFontChanged() {
-		for (ComponentEx comp : getComponents()) {
-			comp.parentEffectiveFontChanged();
-		}
-	}
+    public final void thisEffectiveFontChanged() {
+        for (ComponentEx comp : getComponents()) {
+            comp.parentEffectiveFontChanged();
+        }
+    }
 
-	public void draw(Graphics2D g) {
-		// draw nothing
-	}
+    @SuppressWarnings("EmptyMethod")
+    public void draw(Graphics2D g) {
+        // draw nothing
+    }
 
 }

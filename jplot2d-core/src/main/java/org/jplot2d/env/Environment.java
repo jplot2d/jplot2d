@@ -27,7 +27,12 @@ import org.jplot2d.notice.Notifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -55,7 +60,7 @@ public abstract class Environment {
     /**
      * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch depth
      */
-    private int[] batchSND = new int[MAX_BATCH_DEPTH];
+    private final int[] batchSND = new int[MAX_BATCH_DEPTH];
 
     private int batchDepth;
 
@@ -73,7 +78,7 @@ public abstract class Environment {
      * A impl to proxy map that contains all element in this environment. It's a LinkedHashMap to keep the order of
      * elements added. In case of the same z-order, the adding order take into account.
      */
-    protected final Map<ElementEx, Element> proxyMap = new LinkedHashMap<ElementEx, Element>();
+    protected final Map<ElementEx, Element> proxyMap = new LinkedHashMap<>();
 
     private final List<ElementChangeListener> plotStructureListenerList = Collections
             .synchronizedList(new ArrayList<ElementChangeListener>());
@@ -174,7 +179,7 @@ public abstract class Environment {
 
         DummyEnvironment result = createDummyEnvironment();
 
-        // remove all elements whoes parent has been removed
+        // remove all elements whose parent has been removed
         Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
         while (ite.hasNext()) {
             Entry<ElementEx, Element> e = ite.next();

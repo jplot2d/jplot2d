@@ -21,7 +21,11 @@ package org.jplot2d.env;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.renderer.*;
+import org.jplot2d.renderer.CacheableBlock;
+import org.jplot2d.renderer.EpsExporter;
+import org.jplot2d.renderer.PdfExporter;
+import org.jplot2d.renderer.PngFileExporter;
+import org.jplot2d.renderer.Renderer;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,13 +122,13 @@ public class RenderEnvironment extends PlotEnvironment {
         ComponentEx compCopy = (ComponentEx) copyMap.get(compImpl);
 
         // create a cacheBlockList for the given component
-        List<CacheableBlock> cbs = new ArrayList<CacheableBlock>();
+        List<CacheableBlock> cbs = new ArrayList<>();
 
         for (CacheableBlock cb : cacheBlockList) {
             if (isAncestor(compImpl, cb.getUid())) {
                 cbs.add(cb);
             } else if (cb.getSubcomps().contains(compCopy)) {
-                List<ComponentEx> subcomps = new ArrayList<ComponentEx>();
+                List<ComponentEx> subcomps = new ArrayList<>();
                 for (ComponentEx scomp : cb.getSubcomps()) {
                     if (isAncestor(compCopy, scomp)) {
                         subcomps.add(scomp);
@@ -225,29 +229,41 @@ public class RenderEnvironment extends PlotEnvironment {
 
     /**
      * Export the Plot to an EPS file.
-     *
-     * @throws IOException
      */
     public void exportToEPS(String filename) throws IOException {
-        exportPlot(new EpsExporter(getExportFile(filename)));
+        try {
+            exportPlot(new EpsExporter(getExportFile(filename)));
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof IOException) {
+                throw (IOException) e.getCause();
+            }
+        }
     }
 
     /**
      * Export the Plot to an PDF file.
-     *
-     * @throws IOException
      */
     public void exportToPDF(String filename) throws IOException {
-        exportPlot(new PdfExporter(getExportFile(filename)));
+        try {
+            exportPlot(new PdfExporter(getExportFile(filename)));
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof IOException) {
+                throw (IOException) e.getCause();
+            }
+        }
     }
 
     /**
      * Export the Plot to a PNG file.
-     *
-     * @throws IOException
      */
     public void exportToPNG(String filename) throws IOException {
-        exportPlot(new PngFileExporter(getExportFile(filename)));
+        try {
+            exportPlot(new PngFileExporter(getExportFile(filename)));
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof IOException) {
+                throw (IOException) e.getCause();
+            }
+        }
     }
 
 }

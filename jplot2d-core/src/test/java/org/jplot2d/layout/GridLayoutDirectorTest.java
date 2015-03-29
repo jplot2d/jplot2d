@@ -115,7 +115,7 @@ public class GridLayoutDirectorTest {
 		checkDouble(sp2.getMargin().getTop(), 4);
 		checkDouble(sp2.getMargin().getBottom(), 0);
 		checkPoint2D(sp2.getLocation(), 6, 247 + vgap);
-		checkDimension2D(sp2.getContentConstrant(), 640, 480);
+		checkDimension2D(sp2.getContentConstraint(), 640, 480);
 		checkDimension2D(sp2.getSize(), 4 + 640, 480 + 4);
 
 		checkDouble(sp1.getMargin().getLeft(), 0);
@@ -123,7 +123,7 @@ public class GridLayoutDirectorTest {
 		checkDouble(sp1.getMargin().getTop(), 5);
 		checkDouble(sp1.getMargin().getBottom(), 0);
 		checkPoint2D(sp1.getLocation(), 646 + hgap, 247 + vgap);
-		checkDimension2D(sp1.getContentConstrant(), 320, 480);
+		checkDimension2D(sp1.getContentConstraint(), 320, 480);
 		checkDimension2D(sp1.getSize(), 320 + 5, 480 + 5);
 
 		checkDouble(sp3.getMargin().getLeft(), 6);
@@ -131,7 +131,7 @@ public class GridLayoutDirectorTest {
 		checkDouble(sp3.getMargin().getTop(), 0);
 		checkDouble(sp3.getMargin().getBottom(), 6);
 		checkPoint2D(sp3.getLocation(), 6, 7);
-		checkDimension2D(sp3.getContentConstrant(), 640, 240);
+		checkDimension2D(sp3.getContentConstraint(), 640, 240);
 		checkDimension2D(sp3.getSize(), 6 + 640, 6 + 240);
 
 		checkDouble(sp4.getMargin().getLeft(), 0);
@@ -139,7 +139,7 @@ public class GridLayoutDirectorTest {
 		checkDouble(sp4.getMargin().getTop(), 0);
 		checkDouble(sp4.getMargin().getBottom(), 7);
 		checkPoint2D(sp4.getLocation(), 646 + hgap, 7);
-		checkDimension2D(sp4.getContentConstrant(), 320, 240);
+		checkDimension2D(sp4.getContentConstraint(), 320, 240);
 		checkDimension2D(sp4.getSize(), 320 + 7, 7 + 240);
 
 		plot.setPreferredContentSize(new DoubleDimension2D(1213 + hgap, 912 + vgap));

@@ -24,6 +24,8 @@ import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.element.impl.ElementImpl;
 import org.jplot2d.element.impl.InvokeStep;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Jingjing Li
  * 
@@ -34,7 +36,7 @@ public class ElementStub extends ElementImpl {
 		return null;
 	}
 
-	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
+	public ElementEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
 		return this;
 	}
 

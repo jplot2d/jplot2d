@@ -125,17 +125,17 @@ public class ElementIH implements InvocationHandler {
             invokeJoinElementMethod(method, args);
             return null;
         }
-		/* set(Element element) as a reference. For example, layer reference an AxisTransform */
+        /* set(Element element) as a reference. For example, layer reference an AxisTransform */
         if (iinfo.isRefElementMethod(method)) {
             invokeSetRefElementMethod(method, args);
             return null;
         }
-		/* set(Element, Element) as references. For example, layer reference 2 AxisTransforms */
+        /* set(Element, Element) as references. For example, layer reference 2 AxisTransforms */
         if (iinfo.isRef2ElementMethod(method)) {
             invokeSetRef2ElementMethod(method, args);
             return null;
         }
-		/* addComponent(Component comp, Element e1, Elemente2) */
+        /* addComponent(Component comp, Element e1, Element2) */
         if (iinfo.isAddRef2Method(method)) {
             invokeAddRefMethod(method, args, 2);
             return null;
@@ -165,24 +165,24 @@ public class ElementIH implements InvocationHandler {
         environment.beginCommand(method.getName());
         try {
             if (iinfo.isPropWriteMethod(method)) {
-				/* property setter method */
+                /* property setter method */
                 boolean propChanged = invokeSetter(method, args);
                 if (propChanged) {
                     // fire PropertyChanged
                     environment.elementPropertyChanged(impl);
                 }
+                return null;
             } else {
 				/* other method */
-                invokeOther(method, args);
+                Object result = invokeOther(method, args);
                 // fire PropertyChanged
                 environment.elementPropertyChanged(impl);
+                return result;
             }
 
         } finally {
             environment.endCommand();
         }
-
-        return null;
 
     }
 
@@ -241,7 +241,7 @@ public class ElementIH implements InvocationHandler {
             cenv = ((Element) arg0[0]).getEnvironment();
             for (int i = 1; i < arg0.length; i++) {
                 if (cenv != ((Element) arg0[i]).getEnvironment()) {
-                    throw new IllegalArgumentException("The components to be added must belong to the same envoriment.");
+                    throw new IllegalArgumentException("The components to be added must belong to the same environment.");
                 }
             }
 
@@ -353,7 +353,7 @@ public class ElementIH implements InvocationHandler {
             ComponentEx cimpl = (ComponentEx) cproxy.getImpl();
 
             if (cimpl.getParent() != impl) {
-                throwable = new IllegalArgumentException("The component to be removed dosn't belong to this container.");
+                throwable = new IllegalArgumentException("The component to be removed doesn't belong to this container.");
 
             } else {
                 // check removable
@@ -434,7 +434,7 @@ public class ElementIH implements InvocationHandler {
                     }
                 } else {
                     cenv.endCommand();
-                    throw new IllegalArgumentException("The argument is not referencable.");
+                    throw new IllegalArgumentException("The argument is not referenceable.");
                 }
                 add = true;
                 env.beginCommand(method.getName());
@@ -509,7 +509,7 @@ public class ElementIH implements InvocationHandler {
             env = environment;
             Environment cenv = ((Element) args[0]).getEnvironment();
             if (env != cenv) {
-                throw new IllegalArgumentException("Must belongd to the same environment");
+                throw new IllegalArgumentException("Must belongs to the same environment");
             }
             env.beginCommand(method.getName());
             cimpl = ((ElementAddition) args[0]).getImpl();
@@ -549,10 +549,10 @@ public class ElementIH implements InvocationHandler {
             env = environment;
 
             if (((Element) args[0]).getEnvironment() != env) {
-                throw new IllegalArgumentException("Must belongd to the same environment");
+                throw new IllegalArgumentException("Must belongs to the same environment");
             }
             if (((Element) args[1]).getEnvironment() != env) {
-                throw new IllegalArgumentException("Must belongd to the same environment");
+                throw new IllegalArgumentException("Must belongs to the same environment");
             }
 
             env.beginCommand(method.getName());

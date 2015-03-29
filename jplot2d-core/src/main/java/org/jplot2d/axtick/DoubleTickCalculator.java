@@ -106,6 +106,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public String calcLabelFormatString(@Nonnull Object valueArray) {
 
         double[] values = (double[]) valueArray;

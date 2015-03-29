@@ -18,55 +18,53 @@
  */
 package org.jplot2d.image;
 
-import java.awt.Dimension;
-
 import org.jplot2d.data.ImageDataBuffer;
+
+import java.awt.Dimension;
 
 /**
  * The limits calculator to produce the upper and lower limits to the min and max value of given ImageDataBuffer.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class MinMaxCalculator implements LimitsCalculator {
 
-	public MinMaxCalculator() {
+    public MinMaxCalculator() {
 
-	}
+    }
 
-	public double[] calcLimits(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
-		return calcMinMax(dbufs, sizeArray);
-	}
+    public double[] calcLimits(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
+        return calcMinMax(dbufs, sizeArray);
+    }
 
-	public static double[] calcMinMax(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
-		double min = Double.NaN;
-		double max = Double.NaN;
-		for (int i = 0; i < dbufs.length; i++) {
-			ImageDataBuffer dbuf = dbufs[i];
-			Dimension size = sizeArray[i];
-			double[] minmax = null;
-			minmax = dbuf.calcMinMax(size.width, size.height);
+    public static double[] calcMinMax(ImageDataBuffer[] dbufs, Dimension[] sizeArray) {
+        double min = Double.NaN;
+        double max = Double.NaN;
+        for (int i = 0; i < dbufs.length; i++) {
+            ImageDataBuffer dbuf = dbufs[i];
+            Dimension size = sizeArray[i];
+            double[] minmax = dbuf.calcMinMax(size.width, size.height);
 
-			if (minmax != null) {
-				double dmin = minmax[0];
-				double dmax = minmax[1];
-				if (Double.isNaN(min) || Double.isNaN(max)) {
-					min = dmin;
-					max = dmax;
-				} else {
-					if (min > dmin) {
-						min = dmin;
-					}
-					if (max < dmax) {
-						max = dmax;
-					}
-				}
-			}
-		}
-		if (Double.isNaN(min) || Double.isNaN(max)) {
-			return null;
-		} else {
-			return new double[] { min, max };
-		}
-	}
+            if (minmax != null) {
+                double dmin = minmax[0];
+                double dmax = minmax[1];
+                if (Double.isNaN(min) || Double.isNaN(max)) {
+                    min = dmin;
+                    max = dmax;
+                } else {
+                    if (min > dmin) {
+                        min = dmin;
+                    }
+                    if (max < dmax) {
+                        max = dmax;
+                    }
+                }
+            }
+        }
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            return null;
+        } else {
+            return new double[]{min, max};
+        }
+    }
 }

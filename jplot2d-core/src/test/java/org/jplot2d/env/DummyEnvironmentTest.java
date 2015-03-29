@@ -34,8 +34,8 @@ import org.junit.Test;
 public class DummyEnvironmentTest {
 
 	/**
-	 * Test method for {@link PlotEnvironment#componentAdded(org.jplot2d.element.PComponent, java.util.Map)} . When a
-	 * cacheable component added, verify the order.
+	 * Test method for {@link Environment#componentAdded(org.jplot2d.element.impl.ComponentEx, Environment)}.
+     * When a cacheable component added, verify the order.
 	 */
 	@Test
 	public void testRegisterComponent() {

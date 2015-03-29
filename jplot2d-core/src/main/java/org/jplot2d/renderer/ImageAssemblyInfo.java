@@ -36,8 +36,8 @@ public class ImageAssemblyInfo {
 
     private static class InfoItem {
 
-        private Rectangle bounds;
-        private Future<BufferedImage> future;
+        private final Rectangle bounds;
+        private final Future<BufferedImage> future;
 
         private InfoItem(Rectangle bounds, Future<BufferedImage> future) {
             this.bounds = bounds;
@@ -45,7 +45,7 @@ public class ImageAssemblyInfo {
         }
     }
 
-    private final Map<ComponentEx, InfoItem> map = new LinkedHashMap<ComponentEx, InfoItem>();
+    private final Map<ComponentEx, InfoItem> map = new LinkedHashMap<>();
 
     public ImageAssemblyInfo() {
 
@@ -54,8 +54,8 @@ public class ImageAssemblyInfo {
     /**
      * Test if this AssemblyInfo contains the given component.
      *
-     * @param comp
-     * @return
+     * @param comp the component
+     * @return <code>true</code> if this AssemblyInfo contains the given component
      */
     public boolean contains(ComponentEx comp) {
         return map.containsKey(comp);
@@ -64,7 +64,7 @@ public class ImageAssemblyInfo {
     /**
      * The returned set is an ordered set that follow the z-order.
      *
-     * @return
+     * @return a set of components
      */
     public Set<ComponentEx> componentSet() {
         return map.keySet();
@@ -79,11 +79,12 @@ public class ImageAssemblyInfo {
     }
 
     /**
+     * Puts a component and its future into this assembly info.
      * Z-order: The 1st put component is on the bottom. The later is on top.
      *
-     * @param comp
-     * @param bounds
-     * @param future
+     * @param comp   the component
+     * @param bounds the bounds of the given component
+     * @param future the future of the given component
      */
     public void put(ComponentEx comp, Rectangle bounds, Future<BufferedImage> future) {
         map.put(comp, new InfoItem(bounds, future));

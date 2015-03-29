@@ -21,24 +21,23 @@ package org.jplot2d.image;
 /**
  * The limits algorithm to set the upper and lower limits to based on the specified percentage. A histogram of the data
  * is created and the limits are set to display the percentage, about the mean value.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PercentAlgorithm implements LimitsAlgorithm {
 
-	private final double percentage;
+    private final double percentage;
 
-	public PercentAlgorithm(double percentage) {
-		this.percentage = percentage;
-	}
+    public PercentAlgorithm(double percentage) {
+        this.percentage = percentage;
+    }
 
-	public LimitsCalculator getCalculator() {
-		if (percentage == 100) {
-			return new MinMaxCalculator();
-		} else {
-			return new PercentCalculator(percentage);
-		}
-	}
+    public LimitsCalculator getCalculator() {
+        if (percentage == 100) {
+            return new MinMaxCalculator();
+        } else {
+            return new PercentCalculator(percentage);
+        }
+    }
 
 }

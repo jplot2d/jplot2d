@@ -18,6 +18,9 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.data.ImageDataBuffer;
+import org.jplot2d.data.MultiBandImageData;
+
 import java.awt.Dimension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,145 +28,141 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.data.MultiBandImageData;
+import javax.annotation.Nonnull;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingEx {
 
-	private final List<RGBImageGraphEx> graphs = new ArrayList<RGBImageGraphEx>();
+    private final List<RGBImageGraphEx> graphs = new ArrayList<>();
 
-	private final ImageBandTransformEx redTransform, greenTransform, blueTransform;
+    private final ImageBandTransformEx redTransform, greenTransform, blueTransform;
 
-	public RGBImageMappingImpl() {
-		redTransform = new ImageBandTransformImpl();
-		greenTransform = new ImageBandTransformImpl();
-		blueTransform = new ImageBandTransformImpl();
-		redTransform.setParent(this);
-		greenTransform.setParent(this);
-		blueTransform.setParent(this);
-	}
+    public RGBImageMappingImpl() {
+        redTransform = new ImageBandTransformImpl();
+        greenTransform = new ImageBandTransformImpl();
+        blueTransform = new ImageBandTransformImpl();
+        redTransform.setParent(this);
+        greenTransform.setParent(this);
+        blueTransform.setParent(this);
+    }
 
-	public RGBImageMappingImpl(ImageBandTransformEx redTransform, ImageBandTransformEx greenTransform,
-			ImageBandTransformEx blueTransform) {
-		this.redTransform = redTransform;
-		this.greenTransform = greenTransform;
-		this.blueTransform = blueTransform;
-		redTransform.setParent(this);
-		greenTransform.setParent(this);
-		blueTransform.setParent(this);
-	}
+    public RGBImageMappingImpl(ImageBandTransformEx redTransform, ImageBandTransformEx greenTransform,
+                               ImageBandTransformEx blueTransform) {
+        this.redTransform = redTransform;
+        this.greenTransform = greenTransform;
+        this.blueTransform = blueTransform;
+        redTransform.setParent(this);
+        greenTransform.setParent(this);
+        blueTransform.setParent(this);
+    }
 
-	public RGBImageGraphEx getParent() {
-		return (RGBImageGraphEx) parent;
-	}
+    public RGBImageGraphEx getParent() {
+        return (RGBImageGraphEx) parent;
+    }
 
-	public String getId() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("RGBImageMapping(");
-		for (RGBImageGraphEx graph : graphs) {
-			sb.append(graph.getId()).append(',');
-		}
-		sb.replace(sb.length() - 1, sb.length(), ")");
-		return sb.toString();
-	}
+    public String getId() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RGBImageMapping(");
+        for (RGBImageGraphEx graph : graphs) {
+            sb.append(graph.getId()).append(',');
+        }
+        sb.replace(sb.length() - 1, sb.length(), ")");
+        return sb.toString();
+    }
 
-	public String getFullId() {
-		return "RGBImageMapping@" + Integer.toHexString(System.identityHashCode(this));
-	}
+    public String getFullId() {
+        return "RGBImageMapping@" + Integer.toHexString(System.identityHashCode(this));
+    }
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (graphs.size() == 0) {
-			return null;
-		}
+    public InvokeStep getInvokeStepFormParent() {
+        if (graphs.size() == 0) {
+            return null;
+        }
 
-		Method method;
-		try {
-			method = ImageGraphEx.class.getMethod("getMapping");
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method);
-	}
+        Method method;
+        try {
+            method = ImageGraphEx.class.getMethod("getMapping");
+        } catch (NoSuchMethodException e) {
+            throw new Error(e);
+        }
+        return new InvokeStep(method);
+    }
 
-	public RGBImageGraphEx[] getGraphs() {
-		return graphs.toArray(new RGBImageGraphEx[graphs.size()]);
-	}
+    public RGBImageGraphEx[] getGraphs() {
+        return graphs.toArray(new RGBImageGraphEx[graphs.size()]);
+    }
 
-	public void addImageGraph(RGBImageGraphEx graph) {
-		graphs.add(graph);
-		if (graphs.size() == 1) {
-			parent = graphs.get(0);
-		} else {
-			parent = null;
-		}
-	}
+    public void addImageGraph(RGBImageGraphEx graph) {
+        graphs.add(graph);
+        if (graphs.size() == 1) {
+            parent = graphs.get(0);
+        } else {
+            parent = null;
+        }
+    }
 
-	public void removeImageGraph(RGBImageGraphEx graph) {
-		graphs.remove(graph);
-		if (graphs.size() == 1) {
-			parent = graphs.get(0);
-		} else {
-			parent = null;
-		}
-	}
+    public void removeImageGraph(RGBImageGraphEx graph) {
+        graphs.remove(graph);
+        if (graphs.size() == 1) {
+            parent = graphs.get(0);
+        } else {
+            parent = null;
+        }
+    }
 
-	public ImageBandTransformEx getRedTransform() {
-		return redTransform;
-	}
+    public ImageBandTransformEx getRedTransform() {
+        return redTransform;
+    }
 
-	public ImageBandTransformEx getGreenTransform() {
-		return greenTransform;
-	}
+    public ImageBandTransformEx getGreenTransform() {
+        return greenTransform;
+    }
 
-	public ImageBandTransformEx getBlueTransform() {
-		return blueTransform;
-	}
+    public ImageBandTransformEx getBlueTransform() {
+        return blueTransform;
+    }
 
-	@Override
-	public ElementEx copyStructure(Map<ElementEx, ElementEx> orig2copyMap) {
-		ImageBandTransformEx redCopy = (ImageBandTransformEx) redTransform.copyStructure(orig2copyMap);
-		ImageBandTransformEx greenCopy = (ImageBandTransformEx) greenTransform.copyStructure(orig2copyMap);
-		ImageBandTransformEx blueCopy = (ImageBandTransformEx) blueTransform.copyStructure(orig2copyMap);
-		RGBImageMappingImpl result = new RGBImageMappingImpl(redCopy, greenCopy, blueCopy);
+    @Override
+    public ElementEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
+        ImageBandTransformEx redCopy = (ImageBandTransformEx) redTransform.copyStructure(orig2copyMap);
+        ImageBandTransformEx greenCopy = (ImageBandTransformEx) greenTransform.copyStructure(orig2copyMap);
+        ImageBandTransformEx blueCopy = (ImageBandTransformEx) blueTransform.copyStructure(orig2copyMap);
+        RGBImageMappingImpl result = new RGBImageMappingImpl(redCopy, greenCopy, blueCopy);
 
-		if (orig2copyMap != null) {
-			orig2copyMap.put(this, result);
-		}
+        orig2copyMap.put(this, result);
 
-		return result;
-	}
+        return result;
+    }
 
-	public void calcLimits() {
-		ImageDataBuffer[] redBuffers = new ImageDataBuffer[graphs.size()];
-		ImageDataBuffer[] greenBuffers = new ImageDataBuffer[graphs.size()];
-		ImageDataBuffer[] blueBuffers = new ImageDataBuffer[graphs.size()];
-		Dimension[] sizeArray = new Dimension[graphs.size()];
+    public void calcLimits() {
+        ImageDataBuffer[] redBuffers = new ImageDataBuffer[graphs.size()];
+        ImageDataBuffer[] greenBuffers = new ImageDataBuffer[graphs.size()];
+        ImageDataBuffer[] blueBuffers = new ImageDataBuffer[graphs.size()];
+        Dimension[] sizeArray = new Dimension[graphs.size()];
 
-		int n = 0;
-		for (int i = 0; i < graphs.size(); i++) {
-			MultiBandImageData data = graphs.get(i).getData();
-			if (data != null) {
-				ImageDataBuffer[] dbBands = data.getDataBuffer();
-				redBuffers[n] = dbBands[0];
-				greenBuffers[n] = dbBands[1];
-				blueBuffers[n] = dbBands[2];
-				sizeArray[n] = new Dimension(data.getWidth(), data.getHeight());
-				n++;
-			}
-		}
-		if (n != graphs.size()) {
-			redBuffers = Arrays.copyOf(redBuffers, n);
-			greenBuffers = Arrays.copyOf(greenBuffers, n);
-			blueBuffers = Arrays.copyOf(blueBuffers, n);
-			sizeArray = Arrays.copyOf(sizeArray, n);
-		}
+        int n = 0;
+        for (int i = 0; i < graphs.size(); i++) {
+            MultiBandImageData data = graphs.get(i).getData();
+            if (data != null) {
+                ImageDataBuffer[] dbBands = data.getDataBuffer();
+                redBuffers[n] = dbBands[0];
+                greenBuffers[n] = dbBands[1];
+                blueBuffers[n] = dbBands[2];
+                sizeArray[n] = new Dimension(data.getWidth(), data.getHeight());
+                n++;
+            }
+        }
+        if (n != graphs.size()) {
+            redBuffers = Arrays.copyOf(redBuffers, n);
+            greenBuffers = Arrays.copyOf(greenBuffers, n);
+            blueBuffers = Arrays.copyOf(blueBuffers, n);
+            sizeArray = Arrays.copyOf(sizeArray, n);
+        }
 
-		redTransform.calcLimits(redBuffers, sizeArray);
-		greenTransform.calcLimits(greenBuffers, sizeArray);
-		blueTransform.calcLimits(blueBuffers, sizeArray);
-	}
+        redTransform.calcLimits(redBuffers, sizeArray);
+        greenTransform.calcLimits(greenBuffers, sizeArray);
+        blueTransform.calcLimits(blueBuffers, sizeArray);
+    }
 }

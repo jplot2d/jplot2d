@@ -27,16 +27,14 @@ import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ContainerEx;
 import org.jplot2d.element.impl.ElementEx;
 import org.jplot2d.renderer.CacheableBlock;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Jingjing Li
  * 
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class PlotEnvironmentTest {
 
 	private PlotEnvironment env;
@@ -57,14 +55,6 @@ public class PlotEnvironmentTest {
 		assertEquals(cb.getUid(), comp);
 		assertEquals(cb.getComp(), comp);
 		assertArrayEquals(cb.getSubcomps().toArray(), subcomps);
-	}
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
 	}
 
 	@Before
@@ -129,10 +119,6 @@ public class PlotEnvironmentTest {
 			env.copyMap.put(element, element);
 		}
 		env.buildComponentCacheBlock();
-	}
-
-	@After
-	public void tearDown() {
 	}
 
 	@Test

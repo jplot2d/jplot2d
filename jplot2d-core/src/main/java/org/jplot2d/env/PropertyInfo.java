@@ -21,6 +21,8 @@ package org.jplot2d.env;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 
+import javax.annotation.Nonnull;
+
 /**
  * Information of a property. If a property is read-only, {@link #getWriteMethod()} will return <code>null</code>.
  *
@@ -217,7 +219,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
         }
     }
 
-    public int compareTo(PropertyInfo o) {
+    public int compareTo(@Nonnull PropertyInfo o) {
         return order - o.order;
     }
 

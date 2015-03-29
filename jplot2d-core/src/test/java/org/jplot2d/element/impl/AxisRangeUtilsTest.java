@@ -60,7 +60,7 @@ public class AxisRangeUtilsTest {
 
 		layer.setXAxisTransform(axf);
 
-		Collection<AxisTransformEx> axes = new ArrayList<AxisTransformEx>();
+		Collection<AxisTransformEx> axes = new ArrayList<>();
 		axes.add(axf);
 
 		Range range = new Range.Double(0.0, 1.0);

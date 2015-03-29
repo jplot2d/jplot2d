@@ -22,12 +22,13 @@ import org.jplot2d.element.RGBImageGraph;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface RGBImageGraphEx extends RGBImageGraph, GraphEx {
 
-	public RGBImageMappingEx getMapping();
+    public LayerEx getParent();
 
-	public void mappingChanged();
+    public RGBImageMappingEx getMapping();
+
+    public void mappingChanged();
 
 }

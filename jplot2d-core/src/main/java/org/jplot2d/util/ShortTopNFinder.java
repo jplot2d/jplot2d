@@ -20,12 +20,12 @@ package org.jplot2d.util;
 
 /**
  * find top N numbers among a number set.
- * 
+ *
  * @author Jingjing Li
  */
 public class ShortTopNFinder {
 
-    private short[] a;
+    private final short[] a;
 
     public ShortTopNFinder(short[] array) {
         this.a = array;
@@ -58,7 +58,6 @@ public class ShortTopNFinder {
 
     /**
      * build a min heap
-     * 
      */
     private void heapify() {
         for (int i = (a.length - 2) / 2; i >= 0; i--) {
@@ -67,8 +66,7 @@ public class ShortTopNFinder {
     }
 
     /**
-     * @param s
-     *            the heap top
+     * @param s the heap top
      */
     private void siftDown(int s) {
 

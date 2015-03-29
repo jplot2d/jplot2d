@@ -120,7 +120,7 @@ class LogTickCalculator extends DoubleTickCalculator implements RangeAdvisor {
         int minorNum = (10 - minorStart) + (length - 1) * 8 + (minorEnd - 1);
 
         if (minorNum == 0) {
-			/* length == 1 in this case */
+            /* length == 1 in this case */
             _tickValues[0] = Math.pow(10, expStart);
             _minorValues = new double[0];
             return;

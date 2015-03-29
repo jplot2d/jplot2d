@@ -29,8 +29,6 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.Title;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.Range;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -41,15 +39,7 @@ import org.junit.Test;
  */
 public class UndoRedoTest {
 
-	private static ElementFactory ef = ElementFactory.getInstance();
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	private static final ElementFactory ef = ElementFactory.getInstance();
 
 	@Test
 	public void undoPropertyTest() {

@@ -22,8 +22,9 @@ import org.jplot2d.element.HLineAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface HLineAnnotationEx extends AnnotationEx, HLineAnnotation {
+
+    public LayerEx getParent();
 
 }

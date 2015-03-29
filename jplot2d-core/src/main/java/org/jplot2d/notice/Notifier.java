@@ -20,28 +20,26 @@ package org.jplot2d.notice;
 
 /**
  * This interface receive notices during command execution and process all notices at once.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface Notifier {
 
-	/**
-	 * Adds a notice to this notifier. This method can be called multiple times.
-	 * 
-	 * @param notice
-	 *            a notice to be added.
-	 */
-	public void notify(Notice notice);
+    /**
+     * Adds a notice to this notifier. This method can be called multiple times.
+     *
+     * @param notice a notice to be added.
+     */
+    public void notify(Notice notice);
 
-	/**
-	 * Discard all exist notices
-	 */
-	public void reset();
+    /**
+     * Discard all exist notices
+     */
+    public void reset();
 
-	/**
-	 * Process all notices. All notices in the queue are treated as the given notice type.
-	 */
-	public void processNotices(NoticeType type);
+    /**
+     * Process all notices. All notices in the queue are treated as the given notice type.
+     */
+    public void processNotices(NoticeType type);
 
 }

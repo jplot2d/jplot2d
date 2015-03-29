@@ -34,6 +34,7 @@ public abstract class ImageDataBuffer {
         this.mask = mask;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean hasMasks() {
         return mask != null;
     }
@@ -47,6 +48,7 @@ public abstract class ImageDataBuffer {
      * @param y The Y coordinate of the pixel location
      * @return an boolean
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isMasked(int x, int y) {
         return mask != null && mask.isMasked(x, y);
     }

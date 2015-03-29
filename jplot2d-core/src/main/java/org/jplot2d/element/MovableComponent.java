@@ -33,6 +33,7 @@ public interface MovableComponent extends PComponent {
      *
      * @return <code>true</code> if movable
      */
+    @SuppressWarnings("EmptyMethod")
     public boolean isMovable();
 
     /**
@@ -40,6 +41,7 @@ public interface MovableComponent extends PComponent {
      *
      * @param movable <code>true</code> if movable
      */
+    @SuppressWarnings("EmptyMethod")
     public void setMovable(boolean movable);
 
     /**

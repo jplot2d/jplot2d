@@ -27,59 +27,58 @@ import org.jplot2d.util.Range;
 /**
  * RIGHT_ASCENSION axis type. The input data unit is decimal degree. The display tick label format
  * is hh:mm:ss.ms
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class RightAscensionAxisType extends AxisType {
 
-	private static final Range BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
-			Double.MAX_VALUE / 2);
+    private static final Range BOUNDARY = new Range.Double(-Double.MAX_VALUE / 2,
+            Double.MAX_VALUE / 2);
 
-	private static final Range CIRCULAR_RANGE = new Range.Double(0, 360);
+    private static final Range CIRCULAR_RANGE = new Range.Double(0, 360);
 
-	private static final Range DEFAULT_RANGE = new Range.Double(360, 0);
+    private static final Range DEFAULT_RANGE = new Range.Double(360, 0);
 
-	public static RightAscensionAxisType getInstance() {
-		return new RightAscensionAxisType();
-	}
+    public static RightAscensionAxisType getInstance() {
+        return new RightAscensionAxisType();
+    }
 
-	private RightAscensionAxisType() {
-		super("RIGHT_ASCENSION");
-	}
+    private RightAscensionAxisType() {
+        super("RIGHT_ASCENSION");
+    }
 
-	@Override
-	public boolean canSupport(TransformType txfType) {
+    @Override
+    public boolean canSupport(TransformType txfType) {
         return txfType == TransformType.LINEAR;
     }
 
-	@Override
-	public TransformType getDefaultTransformType() {
-		return TransformType.LINEAR;
-	}
+    @Override
+    public TransformType getDefaultTransformType() {
+        return TransformType.LINEAR;
+    }
 
-	@Override
-	public Range getBoundary(TransformType txfType) {
-		return BOUNDARY;
-	}
+    @Override
+    public Range getBoundary(TransformType txfType) {
+        return BOUNDARY;
+    }
 
-	@Override
-	public Range getDefaultWorldRange(TransformType txfType) {
-		return DEFAULT_RANGE;
-	}
+    @Override
+    public Range getDefaultWorldRange(TransformType txfType) {
+        return DEFAULT_RANGE;
+    }
 
-	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
-		if (tickTransform != null) {
-			return null;
-		}
+    @Override
+    public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
+        if (tickTransform != null) {
+            return null;
+        }
 
-		return RightAscensionTickAlgorithm.getInstance();
-	}
+        return RightAscensionTickAlgorithm.getInstance();
+    }
 
-	@Override
-	public Range getCircularRange() {
-		return CIRCULAR_RANGE;
-	}
+    @Override
+    public Range getCircularRange() {
+        return CIRCULAR_RANGE;
+    }
 
 }

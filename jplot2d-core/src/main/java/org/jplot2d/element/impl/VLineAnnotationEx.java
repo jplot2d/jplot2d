@@ -22,8 +22,9 @@ import org.jplot2d.element.VLineAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface VLineAnnotationEx extends AnnotationEx, VLineAnnotation {
+
+    public LayerEx getParent();
 
 }

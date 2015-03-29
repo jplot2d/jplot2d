@@ -22,15 +22,16 @@ import org.jplot2d.element.ImageGraph;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface ImageGraphEx extends ImageGraph, GraphEx {
 
-	public ImageMappingEx getMapping();
+    public LayerEx getParent();
 
-	/**
-	 * Notify this graph that the mapping limits or LUT changed.
-	 */
-	public void mappingChanged();
+    public ImageMappingEx getMapping();
+
+    /**
+     * Notify this graph that the mapping limits or LUT changed.
+     */
+    public void mappingChanged();
 
 }

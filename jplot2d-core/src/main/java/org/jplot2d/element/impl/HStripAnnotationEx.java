@@ -22,7 +22,6 @@ import org.jplot2d.element.HStripAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface HStripAnnotationEx extends AnnotationEx, HStripAnnotation {
 

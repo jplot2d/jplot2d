@@ -20,21 +20,20 @@ package org.jplot2d.notice;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class Notice {
 
-	private final String msg;
+    private final String msg;
 
-	public Notice(String message) {
-		this.msg = message;
-	}
+    public Notice(String message) {
+        this.msg = message;
+    }
 
-	public String getMessage() {
-		return msg;
-	}
+    public String getMessage() {
+        return msg;
+    }
 
-	public String toString() {
-		return msg;
-	}
+    public String toString() {
+        return msg;
+    }
 }

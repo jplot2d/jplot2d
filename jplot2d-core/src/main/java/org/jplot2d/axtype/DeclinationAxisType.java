@@ -26,47 +26,46 @@ import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class DeclinationAxisType extends AxisType {
 
-	private static final Range DECLINATION_BOUNDARY = new Range.Double(-90, true, 90, true);
+    private static final Range DECLINATION_BOUNDARY = new Range.Double(-90, true, 90, true);
 
-	public static DeclinationAxisType getInstance() {
-		return new DeclinationAxisType();
-	}
+    public static DeclinationAxisType getInstance() {
+        return new DeclinationAxisType();
+    }
 
-	private DeclinationAxisType() {
-		super("DECLINATION");
-	}
+    private DeclinationAxisType() {
+        super("DECLINATION");
+    }
 
-	@Override
-	public boolean canSupport(TransformType txfType) {
+    @Override
+    public boolean canSupport(TransformType txfType) {
         return txfType == TransformType.LINEAR;
     }
 
-	@Override
-	public TransformType getDefaultTransformType() {
-		return TransformType.LINEAR;
-	}
+    @Override
+    public TransformType getDefaultTransformType() {
+        return TransformType.LINEAR;
+    }
 
-	@Override
-	public Range getBoundary(TransformType txfType) {
-		return DECLINATION_BOUNDARY;
-	}
+    @Override
+    public Range getBoundary(TransformType txfType) {
+        return DECLINATION_BOUNDARY;
+    }
 
-	@Override
-	public Range getDefaultWorldRange(TransformType txfType) {
-		return DECLINATION_BOUNDARY;
-	}
+    @Override
+    public Range getDefaultWorldRange(TransformType txfType) {
+        return DECLINATION_BOUNDARY;
+    }
 
-	@Override
-	public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
-		if (tickTransform != null) {
-			return null;
-		}
+    @Override
+    public TickAlgorithm getTickAlgorithm(TransformType txfType, AxisTickTransform tickTransform) {
+        if (tickTransform != null) {
+            return null;
+        }
 
-		return ArcDmsTickAlgorithm.getInstance();
-	}
+        return ArcDmsTickAlgorithm.getInstance();
+    }
 
 }

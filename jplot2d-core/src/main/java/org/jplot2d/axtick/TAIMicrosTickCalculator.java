@@ -143,7 +143,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         hiCal.setTimeInMicros(hi);
 
         TAIMicrosCalendar t1cal = (TAIMicrosCalendar) loCal.clone();
-		/* round up to unit */
+        /* round up to unit */
         setCalendarBelowToMin(t1cal, dateInterval.getUnit());
         if (t1cal.before(loCal)) {
             add(t1cal, dateInterval.getUnit(), 1);
@@ -207,7 +207,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
 
         long span = hi - lo;
         if (span < tickNumber - 1) {
-			/* expand range to tick number */
+            /* expand range to tick number */
             long halfXpand = (tickNumber - 1 - span) / 2;
             long odd = (tickNumber - 1 - span) % 2;
             lo -= halfXpand;

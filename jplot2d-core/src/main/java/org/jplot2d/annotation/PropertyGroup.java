@@ -25,14 +25,13 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation defines the group name for the interface
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PropertyGroup {
 
-	String value();
+    String value();
 
 }

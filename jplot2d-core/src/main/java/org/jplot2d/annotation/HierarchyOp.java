@@ -20,44 +20,44 @@ package org.jplot2d.annotation;
 
 /**
  * Defines hierarchy operation types.
- * 
+ *
  * @author Jingjing Li
  */
 public enum HierarchyOp {
-	/**
-	 * The method should returns an element.
-	 */
-	GET,
-	/**
-	 * The method should returns an array of elements. (1:n parent:children)
-	 */
-	GETARRAY,
-	/**
-	 * The method should add an element as its child. (1:n parent:children)
-	 */
-	ADD,
-	/**
-	 * The method should remove an element and all its children. (1:n
-	 * parent:children).
-	 */
-	REMOVE,
-	/**
-	 * The method should set an element as its reference (n:1 reffrom:refto). If
-	 * the referenced element has no parent, it will be bring into the
-	 * environment of the element who reference it.
-	 */
-	JOIN,
-	/**
-	 * The method should set an element as its reference (1:n reffrom:refto).
-	 */
-	REF,
-	/**
-	 * The method should set 2 elements as its reference. (2x 1:n reffrom:refto)
-	 */
-	REF2,
-	/**
-	 * The method should add an element as its child (1:n parent:children), and
-	 * set 2 elements as its reference
-	 */
-	ADD_REF2
+    /**
+     * The method should returns an element.
+     */
+    GET,
+    /**
+     * The method should returns an array of elements. (1:n parent:children)
+     */
+    GETARRAY,
+    /**
+     * The method should add an element as its child. (1:n parent:children)
+     */
+    ADD,
+    /**
+     * The method should remove an element and all its children. (1:n
+     * parent:children).
+     */
+    REMOVE,
+    /**
+     * The method should set an element as its reference (n:1 reffrom:refto). If
+     * the referenced element has no parent, it will be bring into the
+     * environment of the element who reference it.
+     */
+    JOIN,
+    /**
+     * The method should set an element as its reference (1:n reffrom:refto).
+     */
+    REF,
+    /**
+     * The method should set 2 elements as its reference. (2x 1:n reffrom:refto)
+     */
+    REF2,
+    /**
+     * The method should add an element as its child (1:n parent:children), and
+     * set 2 elements as its reference
+     */
+    ADD_REF2
 }

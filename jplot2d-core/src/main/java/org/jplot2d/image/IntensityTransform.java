@@ -20,12 +20,11 @@ package org.jplot2d.image;
 
 /**
  * The intensity transform to enhance images. It's applied before applying bias/gain.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface IntensityTransform {
 
-	public double transform(double v);
+    public double transform(double v);
 
 }

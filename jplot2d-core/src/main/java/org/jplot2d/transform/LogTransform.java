@@ -20,43 +20,39 @@ package org.jplot2d.transform;
 
 /**
  * The dest value = k * Math.log10(src value) + a.
- * 
+ *
  * @author Jingjing Li
  */
 public class LogTransform implements Transform1D {
 
-	private double k;
+    private double k;
 
-	private double a;
+    private double a;
 
-	public LogTransform() {
-		super();
-	}
+    public LogTransform() {
+        super();
+    }
 
-	/**
-	 * @param offset
-	 *            the offset in LogarithmicNormalTransform
-	 * @param scale
-	 *            the scale in LogarithmicNormalTransform
-	 * @param d1
-	 *            the start value in destination
-	 * @param d2
-	 *            the end value in destination
-	 */
-	public LogTransform(double offset, double scale, double d1, double d2) {
-		if (Double.isNaN(d1) || Double.isNaN(d2)) {
-			throw new IllegalArgumentException("Transform is invalid");
-		}
+    /**
+     * @param offset the offset in LogarithmicNormalTransform
+     * @param scale  the scale in LogarithmicNormalTransform
+     * @param d1     the start value in destination
+     * @param d2     the end value in destination
+     */
+    public LogTransform(double offset, double scale, double d1, double d2) {
+        if (Double.isNaN(d1) || Double.isNaN(d2)) {
+            throw new IllegalArgumentException("Transform is invalid");
+        }
 
-		k = (d2 - d1) / scale;
-		a = d1 - k * offset;
-	}
+        k = (d2 - d1) / scale;
+        a = d1 - k * offset;
+    }
 
-	public double convert(double u) {
-		if (u <= 0) {
-			return Double.NEGATIVE_INFINITY * k;
-		}
-		return k * Math.log10(u) + a;
-	}
+    public double convert(double u) {
+        if (u <= 0) {
+            return Double.NEGATIVE_INFINITY * k;
+        }
+        return k * Math.log10(u) + a;
+    }
 
 }

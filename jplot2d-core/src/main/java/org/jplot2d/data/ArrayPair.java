@@ -108,6 +108,7 @@ public class ArrayPair implements Cloneable {
         return Array.getDouble(q, idx);
     }
 
+    @SuppressWarnings("SuspiciousSystemArraycopy")
     public ArrayPair append(ArrayPair arrayPair) {
         Object newp = Array.newInstance(pctype, size + arrayPair.size);
         System.arraycopy(p, 0, newp, 0, size);
@@ -119,6 +120,7 @@ public class ArrayPair implements Cloneable {
         return new ArrayPair(newp, newq);
     }
 
+    @SuppressWarnings("SuspiciousSystemArraycopy")
     public ArrayPair append(Object ap, Object aq, int length) {
         Object newp = Array.newInstance(pctype, size + length);
         System.arraycopy(p, 0, newp, 0, size);

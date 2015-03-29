@@ -18,29 +18,28 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Dimension;
-
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.element.ImageBandTransform;
 
+import java.awt.Dimension;
+
 /**
  * @author Jingjing Li
- * 
  */
 public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
 
-	public RGBImageMappingEx getParent();
+    public RGBImageMappingEx getParent();
 
-	/**
-	 * Called by RGBImageGraphEx when its data changed, to notify the limits of this band need to be recalculated.
-	 */
-	public void recalcLimits();
+    /**
+     * Called by RGBImageGraphEx when its data changed, to notify the limits of this band need to be recalculated.
+     */
+    public void recalcLimits();
 
-	/**
-	 * Calculate limits if needed
-	 */
-	public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
+    /**
+     * Calculate limits if needed
+     */
+    public void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
 
-	public double[] getLimits();
+    public double[] getLimits();
 
 }

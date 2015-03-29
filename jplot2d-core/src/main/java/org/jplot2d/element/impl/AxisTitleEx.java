@@ -18,60 +18,54 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
-
 import org.jplot2d.element.AxisTitle;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Dimension2D;
+
 /**
  * @author Jingjing Li
- * 
  */
 public interface AxisTitleEx extends AxisTitle, ElementEx {
 
-	/**
-	 * Returns the math model of this component.
-	 * 
-	 * @return the math model
-	 */
-	public MathElement getTextModel();
+    /**
+     * Returns the math model of this component.
+     *
+     * @return the math model
+     */
+    public MathElement getTextModel();
 
-	/**
-	 * Sets the math model of this component.
-	 * 
-	 * @param model
-	 *            the math model
-	 */
-	public void setTextModel(MathElement model);
+    /**
+     * Sets the math model of this component.
+     *
+     * @param model the math model
+     */
+    public void setTextModel(MathElement model);
 
-	/**
-	 * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
-	 * the base point
-	 * 
-	 * @param vAlign
-	 *            the vertical alignment.
-	 */
-	public void setVAlign(VAlign vAlign);
+    /**
+     * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
+     * the base point
+     *
+     * @param vAlign the vertical alignment.
+     */
+    public void setVAlign(VAlign vAlign);
 
-	/**
-	 * Returns the title size. The units of bounds is pt (1/72 inch)
-	 * 
-	 * @return the paper bounds of this title.
-	 */
-	public Dimension2D getSize();
+    /**
+     * Returns the title size. The units of bounds is pt (1/72 inch)
+     *
+     * @return the paper bounds of this title.
+     */
+    public Dimension2D getSize();
 
-	/**
-	 * Draw this component only. All its children is not drawn.
-	 * 
-	 * @param g
-	 *            to the Graphics2D drawing. The transformation of this component is not applied.
-	 * @param x
-	 *            the x position
-	 * @param y
-	 *            the y position
-	 */
-	public void draw(Graphics2D g, double x, double y);
+    /**
+     * Draw this component only. All its children is not drawn.
+     *
+     * @param g to the Graphics2D drawing. The transformation of this component is not applied.
+     * @param x the x position
+     * @param y the y position
+     */
+    public void draw(Graphics2D g, double x, double y);
 
 }

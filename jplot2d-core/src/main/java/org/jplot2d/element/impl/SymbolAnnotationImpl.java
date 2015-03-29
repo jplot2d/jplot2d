@@ -18,12 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.tex.MathElement;
@@ -32,225 +26,230 @@ import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.SymbolShape;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 /**
  * @author Jingjing Li
- * 
  */
 public class SymbolAnnotationImpl extends PointAnnotationImpl implements SymbolAnnotationEx {
 
-	private SymbolShape symbolShape;
+    private SymbolShape symbolShape;
 
-	private float symbolSize = Float.NaN;
+    private float symbolSize = Float.NaN;
 
-	private float symbolScale = 1;
+    private float symbolScale = 1;
 
-	private double angle;
+    private double angle;
 
-	private float offsetX = 1.25f, offsetY = 0;
+    private float offsetX = 1.25f, offsetY = 0;
 
-	private HAlign hAlign = HAlign.LEFT;
+    private HAlign hAlign = HAlign.LEFT;
 
-	private VAlign vAlign = VAlign.MIDDLE;
+    private VAlign vAlign = VAlign.MIDDLE;
 
-	protected MathElement textModel;
+    protected MathElement textModel;
 
-	private MathLabel label;
+    private MathLabel label;
 
-	public String getId() {
-		if (getParent() != null) {
-			return "SymbolAnnotation" + getParent().indexOf(this);
-		} else {
-			return "SymbolAnnotation@" + Integer.toHexString(System.identityHashCode(this));
-		}
-	}
+    public String getId() {
+        if (getParent() != null) {
+            return "SymbolAnnotation" + getParent().indexOf(this);
+        } else {
+            return "SymbolAnnotation@" + Integer.toHexString(System.identityHashCode(this));
+        }
+    }
 
-	public PaperTransform getPaperTransform() {
-		PaperTransform pxf = super.getPaperTransform();
-		if (pxf == null || angle == 0) {
-			return pxf;
-		} else {
-			return pxf.rotate(angle / 180 * Math.PI);
-		}
-	}
+    public PaperTransform getPaperTransform() {
+        PaperTransform pxf = super.getPaperTransform();
+        if (pxf == null || angle == 0) {
+            return pxf;
+        } else {
+            return pxf.rotate(angle / 180 * Math.PI);
+        }
+    }
 
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
+    @Override
+    public void copyFrom(ElementEx src) {
+        super.copyFrom(src);
 
-		SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
-		this.symbolShape = tc.symbolShape;
-		this.symbolSize = tc.symbolSize;
-		this.symbolScale = tc.symbolScale;
-		this.offsetX = tc.offsetX;
-		this.offsetY = tc.offsetY;
-		this.hAlign = tc.hAlign;
-		this.vAlign = tc.vAlign;
-		this.angle = tc.angle;
-		this.textModel = tc.textModel;
-		this.label = tc.label;
-	}
+        SymbolAnnotationImpl tc = (SymbolAnnotationImpl) src;
+        this.symbolShape = tc.symbolShape;
+        this.symbolSize = tc.symbolSize;
+        this.symbolScale = tc.symbolScale;
+        this.offsetX = tc.offsetX;
+        this.offsetY = tc.offsetY;
+        this.hAlign = tc.hAlign;
+        this.vAlign = tc.vAlign;
+        this.angle = tc.angle;
+        this.textModel = tc.textModel;
+        this.label = tc.label;
+    }
 
-	public SymbolShape getSymbolShape() {
-		return symbolShape;
-	}
+    public SymbolShape getSymbolShape() {
+        return symbolShape;
+    }
 
-	public void setSymbolShape(SymbolShape symbol) {
-		this.symbolShape = symbol;
-		redraw(this);
-	}
+    public void setSymbolShape(SymbolShape symbol) {
+        this.symbolShape = symbol;
+        redraw(this);
+    }
 
-	public float getSymbolSize() {
-		return symbolSize;
-	}
+    public float getSymbolSize() {
+        return symbolSize;
+    }
 
-	public void setSymbolSize(float size) {
-		this.symbolSize = size;
-		redraw(this);
-	}
+    public void setSymbolSize(float size) {
+        this.symbolSize = size;
+        redraw(this);
+    }
 
-	@Override
-	public float getSymbolScale() {
-		return symbolScale;
-	}
+    @Override
+    public float getSymbolScale() {
+        return symbolScale;
+    }
 
-	@Override
-	public void setSymbolScale(float scale) {
-		this.symbolScale = scale;
-		redraw(this);
-	}
+    @Override
+    public void setSymbolScale(float scale) {
+        this.symbolScale = scale;
+        redraw(this);
+    }
 
-	public float getTextOffsetFactorX() {
-		return offsetX;
-	}
+    public float getTextOffsetFactorX() {
+        return offsetX;
+    }
 
-	public void setTextOffsetFactorX(float offset) {
-		this.offsetX = offset;
-		redraw(this);
-	}
+    public void setTextOffsetFactorX(float offset) {
+        this.offsetX = offset;
+        redraw(this);
+    }
 
-	public float getTextOffsetFactorY() {
-		return offsetY;
-	}
+    public float getTextOffsetFactorY() {
+        return offsetY;
+    }
 
-	public void setTextOffsetFactorY(float offset) {
-		this.offsetY = offset;
-		redraw(this);
-	}
+    public void setTextOffsetFactorY(float offset) {
+        this.offsetY = offset;
+        redraw(this);
+    }
 
-	public HAlign getHAlign() {
-		return hAlign;
-	}
+    public HAlign getHAlign() {
+        return hAlign;
+    }
 
-	public void setHAlign(HAlign hAlign) {
-		this.hAlign = hAlign;
-		label = null;
-		redraw(this);
-	}
+    public void setHAlign(HAlign hAlign) {
+        this.hAlign = hAlign;
+        label = null;
+        redraw(this);
+    }
 
-	public VAlign getVAlign() {
-		return vAlign;
-	}
+    public VAlign getVAlign() {
+        return vAlign;
+    }
 
-	public void setVAlign(VAlign vAlign) {
-		this.vAlign = vAlign;
-		label = null;
-		redraw(this);
-	}
+    public void setVAlign(VAlign vAlign) {
+        this.vAlign = vAlign;
+        label = null;
+        redraw(this);
+    }
 
-	public double getAngle() {
-		return angle;
-	}
+    public double getAngle() {
+        return angle;
+    }
 
-	public void setAngle(double angle) {
-		this.angle = angle;
-		redraw(this);
-	}
+    public void setAngle(double angle) {
+        this.angle = angle;
+        redraw(this);
+    }
 
-	public String getText() {
-		return TeXMathUtils.toString(getTextModel());
-	}
+    public String getText() {
+        return TeXMathUtils.toString(getTextModel());
+    }
 
-	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
+    public void setText(String text) {
+        setTextModel(TeXMathUtils.parseText(text));
+    }
 
-	public MathElement getTextModel() {
-		return textModel;
-	}
+    public MathElement getTextModel() {
+        return textModel;
+    }
 
-	public void setTextModel(MathElement model) {
-		this.textModel = model;
-		label = null;
-		redraw(this);
-	}
+    public void setTextModel(MathElement model) {
+        this.textModel = model;
+        label = null;
+        redraw(this);
+    }
 
-	private float getEffectiveSymbolSize() {
-		if (symbolShape == null) {
-			return 0;
-		} else if (!Float.isNaN(symbolSize)) {
-			return symbolSize;
-		} else {
-			return getEffectiveFontSize() * symbolScale;
-		}
-	}
+    private float getEffectiveSymbolSize() {
+        if (symbolShape == null) {
+            return 0;
+        } else if (!Float.isNaN(symbolSize)) {
+            return symbolSize;
+        } else {
+            return getEffectiveFontSize() * symbolScale;
+        }
+    }
 
-	public Rectangle2D getBounds() {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
+    public Rectangle2D getBounds() {
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+        }
 
-		if (symbolShape == null) {
-			return label.getBounds();
-		}
+        if (symbolShape == null) {
+            return label.getBounds();
+        }
 
-		float ess = getEffectiveSymbolSize();
-		Rectangle2D symbolBounds = new Rectangle2D.Double(-ess / 2, -ess / 2, ess, ess);
-		if (getTextModel() == null) {
-			return symbolBounds;
-		}
+        float ess = getEffectiveSymbolSize();
+        Rectangle2D symbolBounds = new Rectangle2D.Double(-ess / 2, -ess / 2, ess, ess);
+        if (getTextModel() == null) {
+            return symbolBounds;
+        }
 
-		Rectangle2D lb = label.getBounds();
-		float offx = offsetX * ess / 2;
-		float offy = offsetY * ess / 2;
-		Rectangle2D bounds = new Rectangle2D.Double(lb.getX() + offx, lb.getY() + offy, lb.getWidth(), lb.getHeight());
-		bounds.add(symbolBounds);
-		return bounds;
-	}
+        Rectangle2D lb = label.getBounds();
+        float offx = offsetX * ess / 2;
+        float offy = offsetY * ess / 2;
+        Rectangle2D bounds = new Rectangle2D.Double(lb.getX() + offx, lb.getY() + offy, lb.getWidth(), lb.getHeight());
+        bounds.add(symbolBounds);
+        return bounds;
+    }
 
-	public void draw(Graphics2D g) {
-		Point2D loc = getLocation();
-		if (loc == null) {
-			return;
-		}
+    public void draw(Graphics2D g) {
+        Point2D loc = getLocation();
+        if (loc == null) {
+            return;
+        }
 
-		Shape oldClip = g.getClip();
-		AffineTransform oldTransform = g.getTransform();
+        Shape oldClip = g.getClip();
+        AffineTransform oldTransform = g.getTransform();
 
-		g.transform(getParent().getPaperTransform().getTransform());
-		g.setClip(getParent().getBounds());
-		g.translate(loc.getX(), loc.getY());
-		g.setColor(getEffectiveColor());
+        g.transform(getParent().getPaperTransform().getTransform());
+        g.setClip(getParent().getBounds());
+        g.translate(loc.getX(), loc.getY());
+        g.setColor(getEffectiveColor());
 
-		// draw symbol
-		float ess = getEffectiveSymbolSize();
-		if (symbolShape != null) {
-			AffineTransform maf = AffineTransform.getScaleInstance(ess, ess);
-			symbolShape.draw(g, maf);
-		}
+        // draw symbol
+        float ess = getEffectiveSymbolSize();
+        if (symbolShape != null) {
+            AffineTransform maf = AffineTransform.getScaleInstance(ess, ess);
+            symbolShape.draw(g, maf);
+        }
 
-		// draw label
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
-		g.rotate(Math.PI * angle / 180.0);
-		float offx = offsetX * ess / 2;
-		float offy = offsetY * ess / 2;
-		g.translate(offx, offy);
-		g.scale(1.0, -1.0);
-		label.draw(g);
+        // draw label
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+        }
+        g.rotate(Math.PI * angle / 180.0);
+        float offx = offsetX * ess / 2;
+        float offy = offsetY * ess / 2;
+        g.translate(offx, offy);
+        g.scale(1.0, -1.0);
+        label.draw(g);
 
-		g.setTransform(oldTransform);
-		g.setClip(oldClip);
-	}
+        g.setTransform(oldTransform);
+        g.setClip(oldClip);
+    }
 
 }

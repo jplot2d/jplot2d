@@ -25,12 +25,11 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation to mark a hierarchy operation type.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Hierarchy {
-	HierarchyOp value();
+    HierarchyOp value();
 }

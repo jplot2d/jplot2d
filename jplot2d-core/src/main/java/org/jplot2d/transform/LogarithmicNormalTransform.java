@@ -26,132 +26,131 @@ import org.jplot2d.util.Range;
  */
 public class LogarithmicNormalTransform extends NormalTransform {
 
-	private static final TransformType type = TransformType.LOGARITHMIC;
+    private static final TransformType type = TransformType.LOGARITHMIC;
 
-	private final double scale;
+    private final double scale;
 
-	private final double offset;
+    private final double offset;
 
-	public LogarithmicNormalTransform(Range ur) {
-		this(ur.getStart(), ur.getEnd());
-	}
+    public LogarithmicNormalTransform(Range ur) {
+        this(ur.getStart(), ur.getEnd());
+    }
 
-	public LogarithmicNormalTransform(double u1, double u2) {
-		if (Double.isNaN(u1) || Double.isNaN(u2)) {
-			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
-		}
+    public LogarithmicNormalTransform(double u1, double u2) {
+        if (Double.isNaN(u1) || Double.isNaN(u2)) {
+            throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
+        }
 
-		if (u1 <= 0 || u2 <= 0) {
-			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
-		}
+        if (u1 <= 0 || u2 <= 0) {
+            throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
+        }
 
-		double sc = Math.log10(u2) - Math.log10(u1);
-		if (sc == 0) {
-			throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
-		} else {
-			scale = sc;
-			offset = Math.log10(u1);
-		}
-	}
+        double sc = Math.log10(u2) - Math.log10(u1);
+        if (sc == 0) {
+            throw new IllegalArgumentException("The given range (" + u1 + ", " + u2 + ") is invalid");
+        } else {
+            scale = sc;
+            offset = Math.log10(u1);
+        }
+    }
 
-	private LogarithmicNormalTransform(Void v, double a, double b) {
-		this.scale = a;
-		this.offset = b;
-	}
+    private LogarithmicNormalTransform(@SuppressWarnings("UnusedParameters") Void v, double a, double b) {
+        this.scale = a;
+        this.offset = b;
+    }
 
-	public TransformType getType() {
-		return type;
-	}
+    public TransformType getType() {
+        return type;
+    }
 
-	public double getScale() {
-		return scale;
-	}
+    public double getScale() {
+        return scale;
+    }
 
-	public double getOffset() {
-		return offset;
-	}
+    public double getOffset() {
+        return offset;
+    }
 
-	/**
-	 * Transform from user to normalized coordinates.
-	 * 
-	 * @param u
-	 *            user value
-	 * @return normalized value
-	 */
-	public double convToNR(double w) {
-		if (w <= 0) {
-			return Double.NEGATIVE_INFINITY * scale;
-		}
-		return (Math.log10(w) - offset) / scale;
-	}
+    /**
+     * Transform from user to normalized coordinates.
+     *
+     * @param w world value
+     * @return normalized value
+     */
+    public double convToNR(double w) {
+        if (w <= 0) {
+            return Double.NEGATIVE_INFINITY * scale;
+        }
+        return (Math.log10(w) - offset) / scale;
+    }
 
-	public double convFromNR(double p) {
-		return Math.pow(10, scale * p + offset);
-	}
+    public double convFromNR(double p) {
+        return Math.pow(10, scale * p + offset);
+    }
 
-	public NormalTransform deriveNoOffset() {
-		return new LogarithmicNormalTransform(null, scale, 0);
-	}
+    public NormalTransform deriveNoOffset() {
+        return new LogarithmicNormalTransform(null, scale, 0);
+    }
 
-	public NormalTransform zoom(Range npr) {
-		double b = offset + scale * npr.getStart();
-		double a = scale * npr.getSpan();
-		// prevent overflow
-		if (a == Double.POSITIVE_INFINITY) {
-			a = Double.MAX_VALUE;
-		} else if (a == Double.NEGATIVE_INFINITY) {
-			a = -Double.MAX_VALUE;
-		}
-		return new LogarithmicNormalTransform(null, a, b);
-	}
+    public NormalTransform zoom(Range npr) {
+        double b = offset + scale * npr.getStart();
+        double a = scale * npr.getSpan();
+        // prevent overflow
+        if (a == Double.POSITIVE_INFINITY) {
+            a = Double.MAX_VALUE;
+        } else if (a == Double.NEGATIVE_INFINITY) {
+            a = -Double.MAX_VALUE;
+        }
+        return new LogarithmicNormalTransform(null, a, b);
+    }
 
-	public NormalTransform invert() {
-		return new LogarithmicNormalTransform(null, -scale, scale + offset);
-	}
+    public NormalTransform invert() {
+        return new LogarithmicNormalTransform(null, -scale, scale + offset);
+    }
 
-	/**
-	 * t: the precision limit; u: the abs larger user point of range to zoom in<br>
-	 * The formula: p = _a * u + _b *
-	 * 
-	 * <pre>
-	 *         u'/u &gt; 1 - t
-	 *         10&circ;(_ap'-_b)/10&circ;(_ap-_b) &gt; 1-t
-	 *         10&circ;(_a(p'-p)) &gt; 1-t
-	 *         _a(p'-p) &gt; log10(1-t)
-	 *         dP &gt; log10(1-t)/abs(_a)
-	 * </pre>
-	 */
-	public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
-		return Math.log10(1 - precisionLimit) / Math.abs(scale);
-	}
+    /**
+     * t: the precision limit; u: the abs larger user point of range to zoom in<br>
+     * The formula: p = _a * u + _b *
+     * <p/>
+     * <pre>
+     *         u'/u &gt; 1 - t
+     *         10&circ;(_ap'-_b)/10&circ;(_ap-_b) &gt; 1-t
+     *         10&circ;(_a(p'-p)) &gt; 1-t
+     *         _a(p'-p) &gt; log10(1-t)
+     *         dP &gt; log10(1-t)/abs(_a)
+     * </pre>
+     */
+    public double getMinPSpan4PrecisionLimit(double pLo, double pHi, double precisionLimit) {
+        return Math.log10(1 - precisionLimit) / Math.abs(scale);
+    }
 
-	public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
-		double pcsHFactor = precisionLimit / (2 - precisionLimit);
-		double mid = (range.getStart() + range.getEnd()) / 2;
-		// precision half span
-		double pcsHSpan = Math.abs(mid * pcsHFactor);
-		if (range.getSpan() >= pcsHSpan * 2) {
-			return range;
-		} else {
-			return new Range.Double(mid - pcsHSpan, mid + pcsHSpan);
-		}
-	}
+    public Range getRange4PrecisionLimit(Range range, double precisionLimit) {
+        double pcsHFactor = precisionLimit / (2 - precisionLimit);
+        double mid = (range.getStart() + range.getEnd()) / 2;
+        // precision half span
+        double pcsHSpan = Math.abs(mid * pcsHFactor);
+        if (range.getSpan() >= pcsHSpan * 2) {
+            return range;
+        } else {
+            return new Range.Double(mid - pcsHSpan, mid + pcsHSpan);
+        }
+    }
 
-	@Override
-	public Range getValueRange() {
-		return new Range.Double(Math.pow(10, offset), Math.pow(10, scale + offset));
-	}
+    @Override
+    public Range getValueRange() {
+        return new Range.Double(Math.pow(10, offset), Math.pow(10, scale + offset));
+    }
 
-	@Override
-	public Transform1D createTransform(double d1, double d2) {
-		return new LogTransform(offset, scale, d1, d2);
-	}
+    @Override
+    public Transform1D createTransform(double d1, double d2) {
+        return new LogTransform(offset, scale, d1, d2);
+    }
 
-	public boolean equals(Object o) {
-		if (!(o instanceof LogarithmicNormalTransform)) {
-			return false;
-		}
-		LogarithmicNormalTransform obj = (LogarithmicNormalTransform) o;
-		return scale == obj.scale && offset == obj.offset;
-	}
+    public boolean equals(Object o) {
+        if (!(o instanceof LogarithmicNormalTransform)) {
+            return false;
+        }
+        LogarithmicNormalTransform obj = (LogarithmicNormalTransform) o;
+        return scale == obj.scale && offset == obj.offset;
+    }
 }

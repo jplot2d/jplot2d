@@ -20,7 +20,8 @@ package org.jplot2d.env;
 
 import org.jplot2d.element.Element;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Paint;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.prefs.Preferences;
@@ -32,9 +33,9 @@ import java.util.prefs.Preferences;
  */
 public class StylePreferences implements StyleConfiguration {
 
-    private static Object IGNORE = new Object();
+    private static final Object IGNORE = new Object();
 
-    private Preferences pref;
+    private final Preferences pref;
 
     /**
      * Create a style configuration who store data in Preferences node "org/jplot2d/profile/default".
@@ -83,11 +84,7 @@ public class StylePreferences implements StyleConfiguration {
                                 writter.invoke(element, v);
                             }
                         }
-                    } catch (IllegalArgumentException e) {
-                        // ignore
-                    } catch (IllegalAccessException e) {
-                        // ignore
-                    } catch (InvocationTargetException e) {
+                    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                         // ignore
                     }
                 }

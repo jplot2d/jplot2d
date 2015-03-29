@@ -18,27 +18,26 @@
  */
 package org.jplot2d.image;
 
-import java.awt.Dimension;
-
 import org.jplot2d.data.ImageDataBuffer;
+
+import java.awt.Dimension;
 
 /**
  * The limits calculator to produce the upper and lower limits to the user given limit values.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class FixedLimitsCalculator implements LimitsCalculator {
 
-	private final double min, max;
+    private final double min, max;
 
-	public FixedLimitsCalculator(double min, double max) {
-		this.min = min;
-		this.max = max;
-	}
+    public FixedLimitsCalculator(double min, double max) {
+        this.min = min;
+        this.max = max;
+    }
 
-	public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray) {
-		return new double[] { min, max };
-	}
+    public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray) {
+        return new double[]{min, max};
+    }
 
 }

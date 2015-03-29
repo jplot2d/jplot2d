@@ -40,6 +40,7 @@ public interface StyleConfiguration {
      * @param elementInterface the element interface
      * @return the proxy element
      */
+    @SuppressWarnings("SameReturnValue")
     public <T extends Element> T getProxyBean(Class<T> elementInterface);
 
 }

@@ -49,7 +49,7 @@ public class DummyEnvironment extends Environment {
 
     @Override
     protected void commit() {
-        // do nothng
+        // do nothing
     }
 
 }

@@ -111,7 +111,7 @@ public interface ImageMapping extends Element {
      *
      * @param gain the gain value
      * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>
-     *     C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
+     * C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
      */
     public void setGain(double gain);
 

@@ -20,10 +20,9 @@ package org.jplot2d.transform;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface Transform1D {
 
-	public double convert(double u);
+    public double convert(double u);
 
 }

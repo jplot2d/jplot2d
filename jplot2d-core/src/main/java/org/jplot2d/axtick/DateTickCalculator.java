@@ -214,7 +214,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
             double roughYear = rough / Unit.YEAR.time;
             int expn = (int) Math.floor(Math.log10(roughYear));
             int scale = (int) Math.pow(10, expn);
-			/* 1 <= rough/scale < 10 */
+            /* 1 <= rough/scale < 10 */
             double coeff = roughYear / scale;
             if (coeff < 2) {
                 itvA = new DateInterval(Unit.YEAR, scale);
@@ -242,7 +242,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         hiCal.setTimeInMillis(hi);
 
         Calendar t1cal = (Calendar) loCal.clone();
-		/* round up to unit */
+        /* round up to unit */
         setCalendarBelowToMin(t1cal, dateInterval.getUnit());
         if (t1cal.before(loCal)) {
             add(t1cal, dateInterval.getUnit(), 1);

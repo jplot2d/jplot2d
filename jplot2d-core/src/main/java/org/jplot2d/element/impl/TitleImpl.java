@@ -18,13 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Method;
-
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.TitlePosition;
@@ -34,224 +27,230 @@ import org.jplot2d.tex.MathLabel;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.DoubleDimension2D;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
+
 /**
  * @author Jingjing Li
- * 
  */
 public class TitleImpl extends ComponentImpl implements TitleEx {
 
-	private TitlePosition position = TitlePosition.TOPCENTER;
+    private TitlePosition position = TitlePosition.TOPCENTER;
 
-	private double locX, locY;
+    private double locX, locY;
 
-	private MathElement textModel;
+    private MathElement textModel;
 
-	private HAlign hAlign = HAlign.CENTER;
+    private HAlign hAlign = HAlign.CENTER;
 
-	private VAlign vAlign = VAlign.BOTTOM;
+    private VAlign vAlign = VAlign.BOTTOM;
 
-	private MathLabel label;
+    private MathLabel label;
 
-	private double gapFactor = 0.25;
+    private double gapFactor = 0.25;
 
-	public TitleImpl() {
-		setSelectable(true);
-	}
+    public TitleImpl() {
+        setSelectable(true);
+    }
 
-	public String getId() {
-		if (getParent() != null) {
-			return "Title" + getParent().indexOf(this);
-		} else {
-			return "Title@" + Integer.toHexString(System.identityHashCode(this));
-		}
-	}
+    public String getId() {
+        if (getParent() != null) {
+            return "Title" + getParent().indexOf(this);
+        } else {
+            return "Title@" + Integer.toHexString(System.identityHashCode(this));
+        }
+    }
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (parent == null) {
-			return null;
-		}
+    public InvokeStep getInvokeStepFormParent() {
+        if (parent == null) {
+            return null;
+        }
 
-		Method method;
-		try {
-			method = Plot.class.getMethod("getTitle", Integer.TYPE);
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method, getParent().indexOf(this));
-	}
+        Method method;
+        try {
+            method = Plot.class.getMethod("getTitle", Integer.TYPE);
+        } catch (NoSuchMethodException e) {
+            throw new Error(e);
+        }
+        return new InvokeStep(method, getParent().indexOf(this));
+    }
 
-	public PlotEx getParent() {
-		return (PlotEx) super.getParent();
-	}
+    public PlotEx getParent() {
+        return (PlotEx) super.getParent();
+    }
 
-	public boolean canContribute() {
-		return textModel != null && textModel != MathElement.EMPTY;
-	}
+    public boolean canContribute() {
+        return textModel != null && textModel != MathElement.EMPTY;
+    }
 
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		if (textModel != null && getPosition() != TitlePosition.FREE && getParent() != null) {
-			getParent().invalidate();
-		}
-	}
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (textModel != null && getPosition() != TitlePosition.FREE && getParent() != null) {
+            getParent().invalidate();
+        }
+    }
 
-	public Point2D getLocation() {
-		return new Point2D.Double(locX, locY);
-	}
+    public Point2D getLocation() {
+        return new Point2D.Double(locX, locY);
+    }
 
-	public final void setLocation(Point2D p) {
-		setLocation(p.getX(), p.getY());
-	}
+    public final void setLocation(Point2D p) {
+        setLocation(p.getX(), p.getY());
+    }
 
-	public void setLocation(double locX, double locY) {
-		if (getLocation().getX() != locX || getLocation().getY() != locY) {
-			this.locX = locX;
-			this.locY = locY;
-		}
-	}
+    public void setLocation(double locX, double locY) {
+        if (getLocation().getX() != locX || getLocation().getY() != locY) {
+            this.locX = locX;
+            this.locY = locY;
+        }
+    }
 
-	public void thisEffectiveColorChanged() {
-		redraw(this);
-	}
+    public void thisEffectiveColorChanged() {
+        redraw(this);
+    }
 
-	public void thisEffectiveFontChanged() {
-		label = null;
-		redraw(this);
-	}
+    public void thisEffectiveFontChanged() {
+        label = null;
+        redraw(this);
+    }
 
-	public String getText() {
-		return TeXMathUtils.toString(textModel);
-	}
+    public String getText() {
+        return TeXMathUtils.toString(textModel);
+    }
 
-	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
+    public void setText(String text) {
+        setTextModel(TeXMathUtils.parseText(text));
+    }
 
-	public MathElement getTextModel() {
-		return textModel;
-	}
+    public MathElement getTextModel() {
+        return textModel;
+    }
 
-	public void setTextModel(MathElement model) {
-		redraw(this);
-		this.textModel = model;
-		label = null;
-		redraw(this);
-	}
+    public void setTextModel(MathElement model) {
+        redraw(this);
+        this.textModel = model;
+        label = null;
+        redraw(this);
+    }
 
-	public HAlign getHAlign() {
-		return hAlign;
-	}
+    public HAlign getHAlign() {
+        return hAlign;
+    }
 
-	public void setHAlign(HAlign hAlign) {
-		if (this.hAlign != hAlign) {
-			this.hAlign = hAlign;
-			label = null;
-			redraw(this);
-		}
-	}
+    public void setHAlign(HAlign hAlign) {
+        if (this.hAlign != hAlign) {
+            this.hAlign = hAlign;
+            label = null;
+            redraw(this);
+        }
+    }
 
-	public VAlign getVAlign() {
-		return vAlign;
-	}
+    public VAlign getVAlign() {
+        return vAlign;
+    }
 
-	public void setVAlign(VAlign vAlign) {
-		if (this.vAlign != vAlign) {
-			this.vAlign = vAlign;
-			label = null;
-			redraw(this);
-		}
-	}
+    public void setVAlign(VAlign vAlign) {
+        if (this.vAlign != vAlign) {
+            this.vAlign = vAlign;
+            label = null;
+            redraw(this);
+        }
+    }
 
-	public Dimension2D getSize() {
-		Rectangle2D bounds = getBounds();
-		if (bounds == null) {
-			return null;
-		} else {
-			return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
-		}
-	}
+    public Dimension2D getSize() {
+        Rectangle2D bounds = getBounds();
+        if (bounds == null) {
+            return null;
+        } else {
+            return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
+        }
+    }
 
-	public TitlePosition getPosition() {
-		return position;
-	}
+    public TitlePosition getPosition() {
+        return position;
+    }
 
-	public void setPosition(TitlePosition position) {
-		if (position == null) {
-			position = TitlePosition.FREE;
-		}
-		if (this.position != position) {
-			this.position = position;
-			invalidatePlot();
-		}
-	}
+    public void setPosition(TitlePosition position) {
+        if (position == null) {
+            position = TitlePosition.FREE;
+        }
+        if (this.position != position) {
+            this.position = position;
+            invalidatePlot();
+        }
+    }
 
-	public double getGapFactor() {
-		return gapFactor;
-	}
+    public double getGapFactor() {
+        return gapFactor;
+    }
 
-	public void setGapFactor(double factor) {
-		this.gapFactor = factor;
-		invalidatePlot();
-	}
+    public void setGapFactor(double factor) {
+        this.gapFactor = factor;
+        invalidatePlot();
+    }
 
-	/**
-	 * Invalidate the parent plot when its position is not null.
-	 */
-	private void invalidatePlot() {
-		if (isVisible() && canContribute() && getParent() != null) {
-			getParent().invalidate();
-		}
-	}
+    /**
+     * Invalidate the parent plot when its position is not null.
+     */
+    private void invalidatePlot() {
+        if (isVisible() && canContribute() && getParent() != null) {
+            getParent().invalidate();
+        }
+    }
 
-	public Rectangle2D getBounds() {
-		if (label == null) {
-			return null;
-		} else {
-			return label.getBounds();
-		}
-	}
+    public Rectangle2D getBounds() {
+        if (label == null) {
+            return null;
+        } else {
+            return label.getBounds();
+        }
+    }
 
-	public void calcSize() {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
-	}
+    public void calcSize() {
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+        }
+    }
 
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
+    @Override
+    public void copyFrom(ElementEx src) {
+        super.copyFrom(src);
 
-		TitleImpl tc = (TitleImpl) src;
-		locX = tc.locX;
-		locY = tc.locY;
-		this.textModel = tc.textModel;
-		this.hAlign = tc.hAlign;
-		this.vAlign = tc.vAlign;
-		this.label = tc.label;
-		this.position = tc.position;
-		this.gapFactor = tc.gapFactor;
-	}
+        TitleImpl tc = (TitleImpl) src;
+        locX = tc.locX;
+        locY = tc.locY;
+        this.textModel = tc.textModel;
+        this.hAlign = tc.hAlign;
+        this.vAlign = tc.vAlign;
+        this.label = tc.label;
+        this.position = tc.position;
+        this.gapFactor = tc.gapFactor;
+    }
 
-	public void draw(Graphics2D g) {
-		if (!canContribute()) {
-			return;
-		}
+    public void draw(Graphics2D g) {
+        if (!canContribute()) {
+            return;
+        }
 
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
-		}
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), getVAlign(), getHAlign());
+        }
 
-		AffineTransform oldTransform = g.getTransform();
+        AffineTransform oldTransform = g.getTransform();
 
-		g.transform(getParent().getPaperTransform().getTransform());
-		g.translate(getLocation().getX(), getLocation().getY());
-		g.scale(1.0, -1.0);
+        g.transform(getParent().getPaperTransform().getTransform());
+        g.translate(getLocation().getX(), getLocation().getY());
+        g.scale(1.0, -1.0);
 
-		g.setColor(getEffectiveColor());
+        g.setColor(getEffectiveColor());
 
-		label.draw(g);
+        label.draw(g);
 
-		g.setTransform(oldTransform);
-	}
+        g.setTransform(oldTransform);
+    }
 
 }

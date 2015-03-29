@@ -22,27 +22,26 @@ import org.jplot2d.element.RGBImageMapping;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface RGBImageMappingEx extends RGBImageMapping, ElementEx {
 
-	public RGBImageGraphEx getParent();
+    public RGBImageGraphEx getParent();
 
-	public RGBImageGraphEx[] getGraphs();
+    public RGBImageGraphEx[] getGraphs();
 
-	public void addImageGraph(RGBImageGraphEx graph);
+    public void addImageGraph(RGBImageGraphEx graph);
 
-	public void removeImageGraph(RGBImageGraphEx graph);
+    public void removeImageGraph(RGBImageGraphEx graph);
 
-	public ImageBandTransformEx getRedTransform();
+    public ImageBandTransformEx getRedTransform();
 
-	public ImageBandTransformEx getGreenTransform();
+    public ImageBandTransformEx getGreenTransform();
 
-	public ImageBandTransformEx getBlueTransform();
+    public ImageBandTransformEx getBlueTransform();
 
-	/**
-	 * Called by PlotEx.commit() to calculate limits for bands if needed
-	 */
-	public void calcLimits();
+    /**
+     * Called by PlotEx.commit() to calculate limits for bands if needed
+     */
+    public void calcLimits();
 
 }

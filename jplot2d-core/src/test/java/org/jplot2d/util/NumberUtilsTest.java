@@ -150,7 +150,8 @@ public class NumberUtilsTest {
 		assertEquals(NumberUtils.calcDeltaFormatStr(1e7, 1e6), "%.1e");
 		assertEquals(NumberUtils.calcDeltaFormatStr(1e8, 1e7), "%.1e");
 
-		assertEquals(String.format((Locale) null, "0", 0.001), "0");
+        //noinspection MalformedFormatString
+        assertEquals(String.format((Locale) null, "0", 0.001), "0");
 		assertEquals(String.format((Locale) null, "%.2f", 0.001), "0.00");
 	}
 }

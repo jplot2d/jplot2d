@@ -18,78 +18,66 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Font;
-
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.transform.PaperTransform;
+
+import java.awt.Font;
 
 public interface AxisEx extends Axis, ComponentEx {
 
-	public PlotEx getParent();
+    public PlotEx getParent();
 
-	/**
-	 * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots. The 1st id
-	 * is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the
-	 * root plot.
-	 * 
-	 * @return the short id of this axis.
-	 */
-	public String getShortId();
+    /**
+     * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots.
+     * The 1st id is the id of this element, the 2nd id is the id of the parent of this element, etc,
+     * until but not include the root plot.
+     *
+     * @return the short id of this axis.
+     */
+    public String getShortId();
 
-	public AxisTickManagerEx getTickManager();
+    public AxisTickManagerEx getTickManager();
 
-	/**
-	 * Set shrunk font for displaying by tick manager.
-	 * 
-	 * @param font
-	 *            the shrunk font
-	 */
-	public void setActualFont(Font font);
+    /**
+     * Set shrunk font for displaying by tick manager.
+     *
+     * @param font the shrunk font
+     */
+    public void setActualFont(Font font);
 
-	/**
-	 * Returns the paper transform of this component.
-	 * 
-	 * @return
-	 */
-	public PaperTransform getPaperTransform();
+    /**
+     * Moves this plot component to a new location. The origin of the new location is given in the parent's paper coordinate space.
+     *
+     * @param locX the x value of the origin of the new location
+     * @param locY the y value of the origin of the new location
+     */
+    public void setLocation(double locX, double locY);
 
-	/**
-	 * Moves this plot component to a new location. The origin of the new location is specified by point <code>p</code>.
-	 * Point2D <code>p</code> is given in the parent's paper coordinate space.
-	 * 
-	 * @param p
-	 *            the point defining the origin of the new location, given in the coordinate space of this component's
-	 *            parent
-	 */
-	public void setLocation(double locX, double locY);
+    /**
+     * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)} to set the orientation of this axis.
+     *
+     * @param orientation the orientation
+     */
+    public void setOrientation(AxisOrientation orientation);
 
-	/**
-	 * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)} to set the orientation of this axis.
-	 * 
-	 * @param orientation
-	 *            the orientation
-	 */
-	public void setOrientation(AxisOrientation orientation);
+    /**
+     * Set the length of this axis.
+     *
+     * @param length the length of this axis
+     */
+    public void setLength(double length);
 
-	/**
-	 * Set the length for this axis.
-	 * 
-	 * @param length
-	 */
-	public void setLength(double length);
+    public double getThickness();
 
-	public double getThickness();
+    public double getAsc();
 
-	public double getAsc();
+    public double getDesc();
 
-	public double getDesc();
+    public void invalidateThickness();
 
-	public void invalidateThickness();
-
-	/**
-	 * calculate asc and desc of this axis.
-	 */
-	public void calcThickness();
+    /**
+     * calculate asc and desc of this axis.
+     */
+    public void calcThickness();
 
 }

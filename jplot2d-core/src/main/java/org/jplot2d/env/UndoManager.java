@@ -42,7 +42,7 @@ public class UndoManager<E> {
      */
     private int csn;
 
-    private Entry<E> header = new Entry<E>(null, null, null);
+    private final Entry<E> header = new Entry<>(null, null, null);
 
     private int curIdx = -1;
 
@@ -136,7 +136,7 @@ public class UndoManager<E> {
             return;
         }
 
-        cur = new Entry<E>(cs, header, cur);
+        cur = new Entry<>(cs, header, cur);
         cur.previous.next = cur;
         cur.next.previous = cur;
         curIdx++;

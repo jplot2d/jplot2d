@@ -23,39 +23,34 @@ package org.jplot2d.transform;
  */
 public class LinearTransform implements Transform1D {
 
-	private double k;
+    private double k;
 
-	private double a;
+    private double a;
 
-	/**
-	 * @param offset
-	 *            the offset in LinearNormalTransform
-	 * @param scale
-	 *            the scale in LinearNormalTransform
-	 * @param d1
-	 *            the start value in destination
-	 * @param d2
-	 *            the end value in destination
-	 */
-	public LinearTransform(double offset, double scale, double d1, double d2) {
+    /**
+     * @param offset the offset in LinearNormalTransform
+     * @param scale  the scale in LinearNormalTransform
+     * @param d1     the start value in destination
+     * @param d2     the end value in destination
+     */
+    public LinearTransform(double offset, double scale, double d1, double d2) {
 
-		if (Double.isNaN(d1) || Double.isNaN(d2)) {
-			throw new IllegalArgumentException("Transform is invalid");
-		}
+        if (Double.isNaN(d1) || Double.isNaN(d2)) {
+            throw new IllegalArgumentException("Transform is invalid");
+        }
 
-		k = (d2 - d1) / scale;
-		a = d1 - k * offset;
-	}
+        k = (d2 - d1) / scale;
+        a = d1 - k * offset;
+    }
 
-	/**
-	 * Transform from src to dest coordinates.
-	 * 
-	 * @param u
-	 *            src value
-	 * @return dest value
-	 */
-	public double convert(double u) {
-		return k * u + a;
-	}
+    /**
+     * Transform from src to dest coordinates.
+     *
+     * @param u src value
+     * @return dest value
+     */
+    public double convert(double u) {
+        return k * u + a;
+    }
 
 }

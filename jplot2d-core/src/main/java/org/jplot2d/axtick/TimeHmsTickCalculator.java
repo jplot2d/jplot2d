@@ -146,8 +146,8 @@ public class TimeHmsTickCalculator extends AbstractLinearTickCalculator {
             int mag = (int) Math.floor(Math.log10(itv));
             double coefficient = itv / Math.pow(10, mag);
             double s1dcoef = Math.round(coefficient);
-			/*
-			 * if the coefficient contains more than 1 significant digit, ignore the minor number
+            /*
+             * if the coefficient contains more than 1 significant digit, ignore the minor number
 			 */
             if (Math.abs(s1dcoef / coefficient - 1) > DOUBLE_PRECISION_TOLERANCE) {
                 s1dInterval = 0;

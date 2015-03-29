@@ -45,7 +45,7 @@ public interface AxisTransform extends Element {
     public AxisType getType();
 
     /**
-     * Set the type of the axis. An axis type can only be changed when it dosn't lock with other axes.
+     * Set the type of the axis. An axis type can only be changed when it doesn't lock with other axes.
      *
      * @param type the axis type
      */

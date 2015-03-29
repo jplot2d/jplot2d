@@ -94,7 +94,8 @@ public final class XYGraphData implements GraphData {
     /**
      * Extracts the data feature form the XY array.
      */
-    private final void extractDataFeature() {
+    @SuppressWarnings("ConstantConditions")
+    private void extractDataFeature() {
         _rsIdxes = new int[DEFAULT_CAPACITY];
         _reIdxes = new int[DEFAULT_CAPACITY];
         _nraLastIdx = -1;
@@ -212,14 +213,14 @@ public final class XYGraphData implements GraphData {
      * Returns <code>true</code> if the given x is in the x boundary
      */
     private boolean inXBoundary(double x) {
-        return (_xboundary == null) ? true : _xboundary.contains(x);
+        return (_xboundary == null) || _xboundary.contains(x);
     }
 
     /**
      * Returns <code>true</code> if the given y is in the y boundary
      */
     private boolean inYBoundary(double y) {
-        return (_yboundary == null) ? true : _yboundary.contains(y);
+        return (_yboundary == null) || _yboundary.contains(y);
     }
 
     private void addNaNIdx(int idx) {
@@ -249,13 +250,12 @@ public final class XYGraphData implements GraphData {
     /**
      * Returns a new LineData that contains the appended points.
      *
-     * @param xy
+     * @param xy the points to be added
      * @return a new LineData object.
      */
     public XYGraphData addPoints(ArrayPair xy) {
         if (xy != null) {
-            XYGraphData nld = new XYGraphData(_xy.append(xy), _errorX, _errorY);
-            return nld;
+            return new XYGraphData(_xy.append(xy), _errorX, _errorY);
         }
         return this;
     }

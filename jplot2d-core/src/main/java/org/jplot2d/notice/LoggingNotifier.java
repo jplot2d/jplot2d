@@ -23,42 +23,43 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This notifier write all messages to java log.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class LoggingNotifier extends AbstractNotifier {
 
-	private static final LoggingNotifier instance = new LoggingNotifier();
+    private static final LoggingNotifier instance = new LoggingNotifier();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.notice");
+    private static final Logger LOGGER = LoggerFactory.getLogger("org.jplot2d.notice");
 
-	private LoggingNotifier() {
+    private LoggingNotifier() {
 
-	}
+    }
 
-	public static LoggingNotifier getInstance() {
-		return instance;
-	}
+    public static LoggingNotifier getInstance() {
+        return instance;
+    }
 
-	@Override
-	public void showNotices(NoticeType type) {
-		logNotices(notices.toArray(new Notice[notices.size()]));
-	}
+    @Override
+    public void showNotices(NoticeType type) {
+        logNotices(notices.toArray(new Notice[notices.size()]));
+    }
 
-	public static void logNotices(Notice[] notices) {
-		if (notices.length == 0) {
-			return;
-		} else if (notices.length == 1) {
-			LoggingNotifier.LOGGER.info("Notice: " + notices[0]);
-		} else {
-			StringBuilder sb = new StringBuilder("Multiple Notices:\n");
-			for (Notice wm : notices) {
-				sb.append("\t");
-				sb.append(wm.getMessage());
-				sb.append("\n");
-			}
-			LoggingNotifier.LOGGER.info(sb.toString());
-		}
-	}
+    public static void logNotices(Notice[] notices) {
+        if (notices.length == 0) {
+            return;
+        }
+
+        if (notices.length == 1) {
+            LoggingNotifier.LOGGER.info("Notice: " + notices[0]);
+        } else {
+            StringBuilder sb = new StringBuilder("Multiple Notices:\n");
+            for (Notice wm : notices) {
+                sb.append("\t");
+                sb.append(wm.getMessage());
+                sb.append("\n");
+            }
+            LoggingNotifier.LOGGER.info(sb.toString());
+        }
+    }
 }

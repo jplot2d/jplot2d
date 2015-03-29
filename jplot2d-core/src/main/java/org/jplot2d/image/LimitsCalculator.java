@@ -18,28 +18,25 @@
  */
 package org.jplot2d.image;
 
-import java.awt.Dimension;
-
 import org.jplot2d.data.ImageDataBuffer;
+
+import java.awt.Dimension;
 
 /**
  * The limits calculator to produce the upper and lower limits according to the given ImageDataBuffer.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface LimitsCalculator {
 
-	/**
-	 * Calculate cutting limits for the given ImageDataBuffers. If the given ImageDataBuffers contains no valid data,
-	 * <code>null</code> is returned.
-	 * 
-	 * @param dbufArray
-	 *            ImageDataBuffers for calculation
-	 * @param sizeArray
-	 *            the dimension of the given ImageDataBuffers
-	 * @return low limit and high limit in a double array
-	 */
-	public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray);
+    /**
+     * Calculate cutting limits for the given ImageDataBuffers. If the given ImageDataBuffers contains no valid data,
+     * <code>null</code> is returned.
+     *
+     * @param dbufArray ImageDataBuffers for calculation
+     * @param sizeArray the dimension of the given ImageDataBuffers
+     * @return low limit and high limit in a double array
+     */
+    public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray);
 
 }

@@ -20,12 +20,12 @@ package org.jplot2d.util;
 
 /**
  * find top N numbers among a number set.
- * 
+ *
  * @author Jingjing Li
  */
 public class DoubleTopNFinder {
 
-    private double[] a;
+    private final double[] a;
 
     public DoubleTopNFinder(double[] array) {
         this.a = array;
@@ -58,7 +58,6 @@ public class DoubleTopNFinder {
 
     /**
      * build a min heap
-     * 
      */
     private void heapify() {
         for (int i = (a.length - 2) / 2; i >= 0; i--) {
@@ -67,8 +66,7 @@ public class DoubleTopNFinder {
     }
 
     /**
-     * @param s
-     *            the heap top
+     * @param s the heap top
      */
     private void siftDown(int s) {
 

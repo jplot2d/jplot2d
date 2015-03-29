@@ -31,7 +31,7 @@ import java.awt.image.BufferedImage;
  */
 public class GraphicsConfigurationCompatibleImageFactory implements ImageFactory {
 
-    private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<BufferedImage>();
+    private static final ThreadLocal<BufferedImage> tlImage = new ThreadLocal<>();
 
     private final GraphicsConfiguration gconf;
 

@@ -22,8 +22,10 @@ import org.jplot2d.element.PointAnnotation;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface PointAnnotationEx extends PointAnnotation, AnnotationEx {
+
+    @SuppressWarnings("EmptyMethod")
+    public LayerEx getParent();
 
 }

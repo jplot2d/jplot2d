@@ -167,8 +167,8 @@ public class TestUtils {
 
 	@SafeVarargs
 	public static <T> void checkHashSet(Set<T> set, T... strs) {
-		HashSet<T> extraSet = new HashSet<T>(set);
-		HashSet<T> omitSet = new HashSet<T>(Arrays.asList(strs));
+		HashSet<T> extraSet = new HashSet<>(set);
+		HashSet<T> omitSet = new HashSet<>(Arrays.asList(strs));
 		extraSet.removeAll(omitSet);
 		omitSet.removeAll(set);
 
@@ -214,7 +214,7 @@ public class TestUtils {
 
 	@SuppressWarnings({ "rawtypes" })
 	public static Class[] getClassesInPackage(String pckgname) throws ClassNotFoundException {
-		ArrayList<Class> classes = new ArrayList<Class>();
+		ArrayList<Class> classes = new ArrayList<>();
 		// Get a File object for the package
 
 		ClassLoader cld = Thread.currentThread().getContextClassLoader();
@@ -239,16 +239,16 @@ public class TestUtils {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			if (directory.exists()) {
+			if (directory != null && directory.exists()) {
 				// Get the list of the files contained in the package
 				String[] files = directory.list();
-				for (int i = 0; i < files.length; i++) {
-					// we are only interested in .class files
-					if (files[i].endsWith(".class")) {
-						// removes the .class extension
-						classes.add(Class.forName(pckgname + '.' + files[i].substring(0, files[i].length() - 6)));
-					}
-				}
+                for (String file : files) {
+                    // we are only interested in .class files
+                    if (file.endsWith(".class")) {
+                        // removes the .class extension
+                        classes.add(Class.forName(pckgname + '.' + file.substring(0, file.length() - 6)));
+                    }
+                }
 			} else {
 				throw new ClassNotFoundException(pckgname + " does not appear to be a valid package");
 			}

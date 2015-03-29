@@ -78,7 +78,7 @@ public class AxisImplTest {
 	}
 
 	@Test
-	public void testTicknessY() {
+	public void testThicknessY() {
 		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.VERTICAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.INWARD);
@@ -148,7 +148,7 @@ public class AxisImplTest {
 		AxisRangeLockGroupEx alg = new AxisRangeLockGroupImpl();
 		arm.setLockGroup(alg);
 
-		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<ElementEx, ElementEx>();
+		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<>();
 		AxisEx axisCopy = (AxisEx) axis.copyStructure(orig2copyMap);
 
 		AxisTransformEx axt = axis.getTickManager().getAxisTransform();

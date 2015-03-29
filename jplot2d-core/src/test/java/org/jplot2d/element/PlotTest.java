@@ -65,8 +65,8 @@ public class PlotTest {
 		try {
 			p.removeTitle(title);
 			fail("An IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected
 		}
 	}
 
@@ -183,7 +183,7 @@ public class PlotTest {
 	 * Re-adding a removed layer back
 	 */
 	@Test
-	public void testRemovAndAddLayerBack() {
+	public void testRemoveAndAddLayerBack() {
 
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
@@ -215,7 +215,7 @@ public class PlotTest {
 	 * An axis can't be removed when there is layer attach to it.
 	 */
 	@Test
-	public void testRemovAxis() {
+	public void testRemoveAxis() {
 
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
@@ -243,14 +243,14 @@ public class PlotTest {
 		try {
 			sp.removeXAxis(xaxis);
 			fail("IllegalStateException should be thrown");
-		} catch (IllegalStateException e) {
-
+		} catch (IllegalStateException ignored) {
+            // exception is expected
 		}
 		try {
 			sp.removeYAxis(yaxis);
 			fail("IllegalStateException should be thrown");
-		} catch (IllegalStateException e) {
-
+		} catch (IllegalStateException ignored) {
+            // exception is expected
 		}
 
 		// test the status after exception is thrown
@@ -269,14 +269,14 @@ public class PlotTest {
 		try {
 			layer.setXAxisTransform(null);
 			fail("IllegalArgumentException should be thrown");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected
 		}
 		try {
 			layer.setYAxisTransform(null);
 			fail("IllegalArgumentException should be thrown");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected
 		}
 
 		// remove layer will release viewport axes
@@ -292,7 +292,7 @@ public class PlotTest {
 	 * Remove subplot will remove axes and layers together.
 	 */
 	@Test
-	public void testRemovSubplot() {
+	public void testRemoveSubplot() {
 		Plot p = factory.createPlot();
 		Plot sp = factory.createSubplot();
 		Axis xaxis = factory.createAxis();
@@ -314,7 +314,7 @@ public class PlotTest {
 	}
 
 	@Test
-	public void testRemovSubplotWithAxisBeingAttached() {
+	public void testRemoveSubplotWithAxisBeingAttached() {
 		Plot p = factory.createPlot();
 		Plot sp0 = factory.createSubplot();
 		Plot sp1 = factory.createSubplot();
@@ -333,8 +333,8 @@ public class PlotTest {
 		try {
 			p.removeSubplot(sp0);
 			fail("IllegalStateException should be thrown");
-		} catch (IllegalStateException e) {
-
+		} catch (IllegalStateException ignored) {
+            // exception is expected
 		}
 
 	}

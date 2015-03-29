@@ -20,10 +20,9 @@ package org.jplot2d.image;
 
 /**
  * The algorithm to calculate cutting limits
- * 
  */
 public interface LimitsAlgorithm {
 
-	public LimitsCalculator getCalculator();
+    public LimitsCalculator getCalculator();
 
 }

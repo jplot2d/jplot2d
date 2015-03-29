@@ -22,15 +22,15 @@ package org.jplot2d.notice;
 /**
  * Thrown to indicate that the plot range contains negative values when axis is
  * in LOG mode.
- * 
+ *
  * @author Jingjing Li
  */
 public class RangeAdjustedToValueBoundsNotice extends RangeSelectionNotice {
 
-	static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
-	public RangeAdjustedToValueBoundsNotice(String message) {
-		super(message);
-	}
+    public RangeAdjustedToValueBoundsNotice(String message) {
+        super(message);
+    }
 
 }

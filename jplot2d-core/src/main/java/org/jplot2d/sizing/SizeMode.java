@@ -18,71 +18,71 @@
  */
 package org.jplot2d.sizing;
 
-import java.awt.geom.Dimension2D;
-
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
+
+import java.awt.geom.Dimension2D;
 
 /**
  * Defines how the plot size is decided. The plot container size is a common input for all size
  * mode. If a plot's size mode is <code>null</code>, the plot container size is useless.
- * 
+ *
  * @author Jingjing Li
  */
 public abstract class SizeMode {
 
-	public static class Result {
+    public static class Result {
 
-		protected double width, height;
+        protected final double width, height;
 
-		protected double scale = 1;
+        protected double scale = 1;
 
-		public Result(double width, double height, double scale) {
-			this.width = width;
-			this.height = height;
-			this.scale = scale;
-		}
+        public Result(double width, double height, double scale) {
+            this.width = width;
+            this.height = height;
+            this.scale = scale;
+        }
 
-		/**
-		 * Returns the plot size derived from this size mode .
-		 * 
-		 * @return the plot size
-		 */
-		public Dimension2D getSize() {
-			return new DoubleDimension2D(width, height);
-		}
+        /**
+         * Returns the plot size derived from this size mode .
+         *
+         * @return the plot size
+         */
+        public Dimension2D getSize() {
+            return new DoubleDimension2D(width, height);
+        }
 
-		/**
-		 * Returns the scale derived from this size mode
-		 * 
-		 * @return the scale
-		 */
-		public double getScale() {
-			return scale;
-		}
+        /**
+         * Returns the scale derived from this size mode
+         *
+         * @return the scale
+         */
+        public double getScale() {
+            return scale;
+        }
 
-	}
+    }
 
-	protected final boolean autoPack;
+    protected final boolean autoPack;
 
-	protected SizeMode(boolean autoPack) {
-		this.autoPack = autoPack;
-	}
+    protected SizeMode(boolean autoPack) {
+        this.autoPack = autoPack;
+    }
 
-	/**
-	 * Returns <code>true</code> if this size mode has auto pack feature.
-	 * 
-	 * @return <code>true</code> if this size mode has auto pack feature.
-	 */
-	public boolean isAutoPack() {
-		return autoPack;
-	}
+    /**
+     * Returns <code>true</code> if this size mode has auto pack feature.
+     *
+     * @return <code>true</code> if this size mode has auto pack feature.
+     */
+    public boolean isAutoPack() {
+        return autoPack;
+    }
 
-	/**
-	 * Update the internal status of this size mode.
-	 * <p>
-	 * For Internal use only. User should never call this method.
-	 */
-	public abstract Result update(PlotEx plot);
+    /**
+     * Update the internal status of this size mode.
+     * <p/>
+     * For Internal use only. User should never call this method.
+     */
+    public abstract Result update(PlotEx plot);
 
 }

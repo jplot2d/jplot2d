@@ -24,7 +24,7 @@ package org.jplot2d.element.impl;
 /**
  * Thrown to indicate that the given value is closed to precision limit and may
  * lead to inaccurate result.
- * 
+ *
  * @author Jingjing Li
  */
 class PrecisionState {

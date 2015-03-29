@@ -22,13 +22,13 @@ package org.jplot2d.notice;
 /**
  * Thrown to indicate that the axis range has been adjusted by some special
  * reason.
- * 
+ *
  * @author Jingjing li
  */
 public class RangeSelectionNotice extends Notice {
 
-	public RangeSelectionNotice(String message) {
-		super(message);
-	}
+    public RangeSelectionNotice(String message) {
+        super(message);
+    }
 
 }

@@ -26,46 +26,44 @@ import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable {
 
-	public AxisEx getParent();
+    public AxisEx getParent();
 
-	public AxisEx[] getAxes();
+    public AxisEx[] getAxes();
 
-	public AxisTransformEx getAxisTransform();
+    public AxisTransformEx getAxisTransform();
 
-	public void addAxis(AxisEx axis);
+    public void addAxis(AxisEx axis);
 
-	public void removeAxis(AxisEx axis);
+    public void removeAxis(AxisEx axis);
 
-	public TickAlgorithm getTickAlgorithm();
+    public TickAlgorithm getTickAlgorithm();
 
-	public void setTickAlgorithm(TickAlgorithm algorithm);
+    public void setTickAlgorithm(TickAlgorithm algorithm);
 
-	public MathElement[] getLabelModels();
+    public MathElement[] getLabelModels();
 
-	/**
-	 * Calculate ticks when tick calculation is needed.
-	 */
-	public void calcTicks();
+    /**
+     * Calculate ticks when tick calculation is needed.
+     */
+    public void calcTicks();
 
-	/**
-	 * This method not change internal status of TickManager. Only get those
-	 * values: tickCalculator, tickNumber, labelFormat, labelInterval
-	 * 
-	 * @param txfType
-	 *            transform type
-	 * @param range
-	 *            the core range
-	 * @return the expanded range
-	 */
-	public Range expandRangeToTick(TransformType txfType, Range range);
+    /**
+     * Expand the given range to major ticks. If {@link #isAutoTickValues()} is false, this method does nothing.
+     * This method not change internal status of TickManager, except those values:
+     * tickCalculator, tickNumber, labelFormat, labelInterval
+     *
+     * @param txfType transform type
+     * @param range   the core range
+     * @return the expanded range
+     */
+    public Range expandRangeToTick(TransformType txfType, Range range);
 
-	/**
-	 * Notified by AxisRangeManagerEx that transform type changed.
-	 */
-	public void transformTypeChanged();
+    /**
+     * Notified by AxisRangeManagerEx that transform type changed.
+     */
+    public void transformTypeChanged();
 
 }

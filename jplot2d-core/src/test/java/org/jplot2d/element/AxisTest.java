@@ -147,8 +147,8 @@ public class AxisTest {
 		try {
 			sp.addXAxis(xaxis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected
 		}
 
 		// set xaxis a new range manager
@@ -204,8 +204,8 @@ public class AxisTest {
 		try {
 			sp.addXAxis(xaxis);
 			fail("IllegalArgumentException should be thrown.");
-		} catch (IllegalArgumentException e) {
-
+		} catch (IllegalArgumentException ignored) {
+            // exception is expected
 		}
 
 		// set xaxis a new range manager
@@ -261,7 +261,7 @@ public class AxisTest {
 			sp.addXAxis(xaxis);
 			fail("IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {
-
+            // exception is expected
 		}
 
 		// set xaxis a new group

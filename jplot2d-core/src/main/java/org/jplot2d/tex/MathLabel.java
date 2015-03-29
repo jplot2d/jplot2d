@@ -18,99 +18,98 @@
  */
 package org.jplot2d.tex;
 
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
-
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
+
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * This class override all methods of its ancestor. It accept a TeX-like string as its text to
  * render a math. The underlayer component is {@link MathLabelComp}.
- * <p>
+ * <p/>
  * Only support left to right writing direction, and subscript superscript.
- * 
+ *
  * @author Jingjing Li
  */
 public class MathLabel {
 
-	private MathElement _me;
+    private MathElement _me;
 
-	/**
-	 * created even when _me==null
-	 */
-	private MathLabelXLines _mlc;
+    /**
+     * created even when _me==null
+     */
+    private MathLabelXLines _mlc;
 
-	private Font _font;
+    private Font _font;
 
-	private HAlign _halign;
+    private HAlign _halign;
 
-	private VAlign _valign;
+    private VAlign _valign;
 
-	/**
-	 * The paper bounds relative to location
-	 */
-	private Rectangle2D bounds;
+    /**
+     * The paper bounds relative to location
+     */
+    private Rectangle2D bounds;
 
-	public MathLabel(MathElement me, Font font) {
-		this(me, font, VAlign.BOTTOM, HAlign.LEFT);
-	}
+    public MathLabel(MathElement me, Font font) {
+        this(me, font, VAlign.BOTTOM, HAlign.LEFT);
+    }
 
-	public MathLabel(MathElement me, Font font, VAlign valign, HAlign halign) {
-		if (font == null) {
-			throw new IllegalArgumentException("font cannot be null");
-		}
-		if (Float.isNaN(font.getSize2D())) {
-			throw new IllegalArgumentException("font size2D cannot be NaN");
-		}
-		if (valign == null) {
-			throw new IllegalArgumentException("valign cannot be null");
-		}
-		if (halign == null) {
-			throw new IllegalArgumentException("halign cannot be null");
-		}
-		_font = font;
-		_valign = valign;
-		_halign = halign;
-		_me = me;
-		_mlc = new MathLabelXLines(_me, _font, _halign, _valign);
+    public MathLabel(MathElement me, Font font, VAlign valign, HAlign halign) {
+        if (font == null) {
+            throw new IllegalArgumentException("font cannot be null");
+        }
+        if (Float.isNaN(font.getSize2D())) {
+            throw new IllegalArgumentException("font size2D cannot be NaN");
+        }
+        if (valign == null) {
+            throw new IllegalArgumentException("valign cannot be null");
+        }
+        if (halign == null) {
+            throw new IllegalArgumentException("halign cannot be null");
+        }
+        _font = font;
+        _valign = valign;
+        _halign = halign;
+        _me = me;
+        _mlc = new MathLabelXLines(_me, _font, _halign, _valign);
 
-		_mlc.relayout(_font.getSize2D());
-		Rectangle2D dbnds = _mlc.getBounds();
-		bounds = new Rectangle2D.Double(dbnds.getX(), -(dbnds.getY() + dbnds.getHeight()),
-				dbnds.getWidth(), dbnds.getHeight());
-	}
+        _mlc.relayout(_font.getSize2D());
+        Rectangle2D dbnds = _mlc.getBounds();
+        bounds = new Rectangle2D.Double(dbnds.getX(), -(dbnds.getY() + dbnds.getHeight()),
+                dbnds.getWidth(), dbnds.getHeight());
+    }
 
-	public void draw(Graphics2D g) {
-		_mlc.draw(g);
-	}
+    public void draw(Graphics2D g) {
+        _mlc.draw(g);
+    }
 
-	public Font getFont() {
-		return _font;
-	}
+    public Font getFont() {
+        return _font;
+    }
 
-	public HAlign getHAlign() {
-		return _halign;
-	}
+    public HAlign getHAlign() {
+        return _halign;
+    }
 
-	public VAlign getVAlign() {
-		return _valign;
-	}
+    public VAlign getVAlign() {
+        return _valign;
+    }
 
-	public MathElement getModel() {
-		return _me;
-	}
+    public MathElement getModel() {
+        return _me;
+    }
 
-	/**
-	 * Calculate the normal paper bounds of this label. The bounds is relative to its location
-	 * point, original point is left-bottom. Normal scale is 1.
-	 * 
-	 * @return the normal paper bounds of this label.
-	 */
-	public Rectangle2D getBounds() {
-		return bounds;
-	}
+    /**
+     * Calculate the normal paper bounds of this label. The bounds is relative to its location
+     * point, original point is left-bottom. Normal scale is 1.
+     *
+     * @return the normal paper bounds of this label.
+     */
+    public Rectangle2D getBounds() {
+        return bounds;
+    }
 
 }

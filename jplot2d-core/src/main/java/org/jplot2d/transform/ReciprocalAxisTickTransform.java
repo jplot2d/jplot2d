@@ -20,28 +20,27 @@ package org.jplot2d.transform;
 
 /**
  * This interface define the reciprocal transformation between user value and tick value.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class ReciprocalAxisTickTransform implements AxisTickTransform {
 
-	public final double _factor;
+    public final double _factor;
 
-	public ReciprocalAxisTickTransform(double factor) {
-		_factor = factor;
-	}
+    public ReciprocalAxisTickTransform(double factor) {
+        _factor = factor;
+    }
 
-	public double transformUser2Tick(double v) {
-		return _factor / v;
-	}
+    public double transformUser2Tick(double v) {
+        return _factor / v;
+    }
 
-	public double transformTick2User(double v) {
-		if (Double.isNaN(v)) {
-			return 0;
-		} else {
-			return _factor / v;
-		}
-	}
+    public double transformTick2User(double v) {
+        if (Double.isNaN(v)) {
+            return 0;
+        } else {
+            return _factor / v;
+        }
+    }
 
 }

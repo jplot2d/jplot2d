@@ -18,14 +18,6 @@
  */
 package org.jplot2d.element.impl;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Method;
-
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
@@ -34,279 +26,288 @@ import org.jplot2d.tex.MathLabel;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.DoubleDimension2D;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
+
 /**
  * @author Jingjing Li
- * 
  */
 public class AxisTitleImpl extends ElementImpl implements AxisTitleEx {
 
-	private boolean visible = true;
+    private boolean visible = true;
 
-	private Color color = null;
+    private Color color = null;
 
-	private String fontName;
+    private String fontName;
 
-	private int fontStyle = -1;
+    private int fontStyle = -1;
 
-	private float fontSize = Float.NaN;
+    private float fontSize = Float.NaN;
 
-	private float fontScale = 1.5f;
+    private float fontScale = 1.5f;
 
-	private VAlign vAlign;
+    private VAlign vAlign;
 
-	private MathElement textModel;
+    private MathElement textModel;
 
-	private MathLabel label;
+    private MathLabel label;
 
-	public AxisTitleImpl() {
+    public AxisTitleImpl() {
 
-	}
+    }
 
-	public String getId() {
-		return "Title";
-	}
+    public String getId() {
+        return "Title";
+    }
 
-	public InvokeStep getInvokeStepFormParent() {
-		if (parent == null) {
-			return null;
-		}
+    public InvokeStep getInvokeStepFormParent() {
+        if (parent == null) {
+            return null;
+        }
 
-		Method method;
-		try {
-			method = Plot.class.getMethod("getTitle", Integer.TYPE);
-		} catch (NoSuchMethodException e) {
-			throw new Error(e);
-		}
-		return new InvokeStep(method);
-	}
+        Method method;
+        try {
+            method = Plot.class.getMethod("getTitle", Integer.TYPE);
+        } catch (NoSuchMethodException e) {
+            throw new Error(e);
+        }
+        return new InvokeStep(method);
+    }
 
-	public AxisEx getParent() {
-		return (AxisEx) parent;
-	}
+    public AxisEx getParent() {
+        return (AxisEx) parent;
+    }
 
-	public boolean isVisible() {
-		return visible;
-	}
+    public boolean isVisible() {
+        return visible;
+    }
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-		invalidateThickness();
-		redraw();
-	}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        invalidateThickness();
+        redraw();
+    }
 
-	public Color getColor() {
-		return color;
-	}
+    public Color getColor() {
+        return color;
+    }
 
-	public void setColor(Color color) {
-		Color oldColor = getEffectiveColor();
-		this.color = color;
-		if (isVisible() && !getEffectiveColor().equals(oldColor)) {
-			redraw();
-		}
-	}
+    public void setColor(Color color) {
+        Color oldColor = getEffectiveColor();
+        this.color = color;
+        if (isVisible() && !getEffectiveColor().equals(oldColor)) {
+            redraw();
+        }
+    }
 
-	private Color getEffectiveColor() {
-		if (color != null) {
-			return color;
-		} else if (getParent() != null) {
-			return getParent().getEffectiveColor();
-		} else {
-			return null;
-		}
-	}
+    private Color getEffectiveColor() {
+        if (color != null) {
+            return color;
+        } else if (getParent() != null) {
+            return getParent().getEffectiveColor();
+        } else {
+            return null;
+        }
+    }
 
-	public String getFontName() {
-		return fontName;
-	}
+    public String getFontName() {
+        return fontName;
+    }
 
-	public void setFontName(String name) {
-		String oldFontName = getEffectiveFontName();
-		fontName = name;
-		if (!getEffectiveFontName().equals(oldFontName)) {
-			updateFont();
-		}
-	}
+    public void setFontName(String name) {
+        String oldFontName = getEffectiveFontName();
+        fontName = name;
+        if (!getEffectiveFontName().equals(oldFontName)) {
+            updateFont();
+        }
+    }
 
-	public int getFontStyle() {
-		return fontStyle;
-	}
+    public int getFontStyle() {
+        return fontStyle;
+    }
 
-	public void setFontStyle(int style) {
-		int oldStyle = getEffectiveFontStyle();
-		fontStyle = style;
-		if (getEffectiveFontStyle() != oldStyle) {
-			updateFont();
-		}
-	}
+    public void setFontStyle(int style) {
+        int oldStyle = getEffectiveFontStyle();
+        fontStyle = style;
+        //noinspection ConstantConditions
+        if (getEffectiveFontStyle() != oldStyle) {
+            updateFont();
+        }
+    }
 
-	public float getFontSize() {
-		return fontSize;
-	}
+    public float getFontSize() {
+        return fontSize;
+    }
 
-	public void setFontSize(float size) {
-		float oldSize = getEffectiveFontSize();
-		fontSize = size;
-		if (getEffectiveFontSize() != oldSize) {
-			updateFont();
-		}
-	}
+    public void setFontSize(float size) {
+        float oldSize = getEffectiveFontSize();
+        fontSize = size;
+        if (getEffectiveFontSize() != oldSize) {
+            updateFont();
+        }
+    }
 
-	public float getFontScale() {
-		return fontScale;
-	}
+    public float getFontScale() {
+        return fontScale;
+    }
 
-	public void setFontScale(float scale) {
-		float oldSize = getEffectiveFontSize();
-		fontScale = scale;
-		if (getEffectiveFontSize() != oldSize) {
-			updateFont();
-		}
-	}
+    public void setFontScale(float scale) {
+        float oldSize = getEffectiveFontSize();
+        fontScale = scale;
+        if (getEffectiveFontSize() != oldSize) {
+            updateFont();
+        }
+    }
 
-	public void setFont(Font font) {
-		Font oldFont = getEffectiveFont();
-		if (font == null) {
-			fontName = null;
-			fontStyle = -1;
-			fontSize = Float.NaN;
-		} else {
-			fontName = font.getName();
-			fontStyle = font.getStyle();
-			fontSize = font.getSize2D();
-		}
-		if (!getEffectiveFont().equals(oldFont)) {
-			updateFont();
-		}
-	}
+    public void setFont(Font font) {
+        Font oldFont = getEffectiveFont();
+        if (font == null) {
+            fontName = null;
+            fontStyle = -1;
+            fontSize = Float.NaN;
+        } else {
+            fontName = font.getName();
+            fontStyle = font.getStyle();
+            fontSize = font.getSize2D();
+        }
+        if (!getEffectiveFont().equals(oldFont)) {
+            updateFont();
+        }
+    }
 
-	private void updateFont() {
-		label = null;
-		if (isVisible()) {
-			invalidateThickness();
-			redraw();
-		}
-	}
+    private void updateFont() {
+        label = null;
+        if (isVisible()) {
+            invalidateThickness();
+            redraw();
+        }
+    }
 
-	private String getEffectiveFontName() {
-		if (fontName != null) {
-			return fontName;
-		} else if (getParent() != null) {
-			return getParent().getEffectiveFontName();
-		} else {
-			return null;
-		}
-	}
+    private String getEffectiveFontName() {
+        if (fontName != null) {
+            return fontName;
+        } else if (getParent() != null) {
+            return getParent().getEffectiveFontName();
+        } else {
+            return null;
+        }
+    }
 
-	private int getEffectiveFontStyle() {
-		if ((fontStyle & ~0x03) == 0) {
-			return fontStyle;
-		} else if (getParent() != null) {
-			return getParent().getEffectiveFontStyle();
-		} else {
-			return -1;
-		}
-	}
+    private int getEffectiveFontStyle() {
+        if ((fontStyle & ~0x03) == 0) {
+            return fontStyle;
+        } else if (getParent() != null) {
+            return getParent().getEffectiveFontStyle();
+        } else {
+            return Font.PLAIN;
+        }
+    }
 
-	private float getEffectiveFontSize() {
-		if (!Float.isNaN(fontSize)) {
-			return fontSize;
-		} else if (getParent() != null) {
-			return getParent().getEffectiveFontSize() * fontScale;
-		} else {
-			return Float.NaN;
-		}
-	}
+    private float getEffectiveFontSize() {
+        if (!Float.isNaN(fontSize)) {
+            return fontSize;
+        } else if (getParent() != null) {
+            return getParent().getEffectiveFontSize() * fontScale;
+        } else {
+            return Float.NaN;
+        }
+    }
 
-	public Font getEffectiveFont() {
-		float size = getEffectiveFontSize();
-		return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size).deriveFont(size);
-	}
+    public Font getEffectiveFont() {
+        float size = getEffectiveFontSize();
+        //noinspection MagicConstant
+        return new Font(getEffectiveFontName(), getEffectiveFontStyle(), (int) size).deriveFont(size);
+    }
 
-	public String getText() {
-		return TeXMathUtils.toString(textModel);
-	}
+    public String getText() {
+        return TeXMathUtils.toString(textModel);
+    }
 
-	public void setText(String text) {
-		setTextModel(TeXMathUtils.parseText(text));
-	}
+    public void setText(String text) {
+        setTextModel(TeXMathUtils.parseText(text));
+    }
 
-	public MathElement getTextModel() {
-		return textModel;
-	}
+    public MathElement getTextModel() {
+        return textModel;
+    }
 
-	public void setTextModel(MathElement model) {
-		this.textModel = model;
-		label = null;
-		if (isVisible()) {
-			invalidateThickness();
-			redraw();
-		}
-	}
+    public void setTextModel(MathElement model) {
+        this.textModel = model;
+        label = null;
+        if (isVisible()) {
+            invalidateThickness();
+            redraw();
+        }
+    }
 
-	private void invalidateThickness() {
-		if (getParent() != null) {
-			getParent().invalidateThickness();
-		}
-	}
+    private void invalidateThickness() {
+        if (getParent() != null) {
+            getParent().invalidateThickness();
+        }
+    }
 
-	private void redraw() {
-		if (getParent() != null) {
-			ComponentImpl.redraw(getParent());
-		}
-	}
+    private void redraw() {
+        if (getParent() != null) {
+            ComponentImpl.redraw(getParent());
+        }
+    }
 
-	public void setVAlign(VAlign vAlign) {
-		if (this.vAlign != vAlign) {
-			this.vAlign = vAlign;
-			label = null;
-			if (isVisible()) {
-				redraw();
-			}
-		}
-	}
+    public void setVAlign(VAlign vAlign) {
+        if (this.vAlign != vAlign) {
+            this.vAlign = vAlign;
+            label = null;
+            if (isVisible()) {
+                redraw();
+            }
+        }
+    }
 
-	public Dimension2D getSize() {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
-		}
-		Rectangle2D bounds = label.getBounds();
+    public Dimension2D getSize() {
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
+        }
+        Rectangle2D bounds = label.getBounds();
 
-		return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
-	}
+        return new DoubleDimension2D(bounds.getWidth(), bounds.getHeight());
+    }
 
-	public void draw(Graphics2D g, double x, double y) {
-		if (label == null) {
-			label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
-		}
+    public void draw(Graphics2D g, double x, double y) {
+        if (label == null) {
+            label = new MathLabel(getTextModel(), getEffectiveFont(), vAlign, HAlign.CENTER);
+        }
 
-		AffineTransform oldTransform = g.getTransform();
+        AffineTransform oldTransform = g.getTransform();
 
-		g.transform(getParent().getPaperTransform().getTransform());
-		g.translate(x, y);
-		g.scale(1.0, -1.0);
+        g.transform(getParent().getPaperTransform().getTransform());
+        g.translate(x, y);
+        g.scale(1.0, -1.0);
 
-		g.setColor(getEffectiveColor());
+        g.setColor(getEffectiveColor());
 
-		label.draw(g);
+        label.draw(g);
 
-		g.setTransform(oldTransform);
-	}
+        g.setTransform(oldTransform);
+    }
 
-	@Override
-	public void copyFrom(ElementEx src) {
-		super.copyFrom(src);
+    @Override
+    public void copyFrom(ElementEx src) {
+        super.copyFrom(src);
 
-		AxisTitleImpl tc = (AxisTitleImpl) src;
-		visible = tc.visible;
-		color = tc.color;
-		fontName = tc.fontName;
-		fontStyle = tc.fontStyle;
-		fontSize = tc.fontSize;
-		fontScale = tc.fontScale;
-		vAlign = tc.vAlign;
-		textModel = tc.textModel;
-		label = tc.label;
-	}
+        AxisTitleImpl tc = (AxisTitleImpl) src;
+        visible = tc.visible;
+        color = tc.color;
+        fontName = tc.fontName;
+        fontStyle = tc.fontStyle;
+        fontSize = tc.fontSize;
+        fontScale = tc.fontScale;
+        vAlign = tc.vAlign;
+        textModel = tc.textModel;
+        label = tc.label;
+    }
 
 }
