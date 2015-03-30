@@ -20,24 +20,23 @@ package org.jplot2d.swing.proptable.cellrenderer;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class ObjectCellRenderer extends DigitsLimitableCellRenderer<Object> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		if (value instanceof double[]) {
-			return DoubleArrayCellRenderer.toString((double[]) value, digits);
-		} else if (value instanceof float[]) {
-			return FloatArrayCellRenderer.toString((float[]) value, digits);
-		}
+        if (value instanceof double[]) {
+            return DoubleArrayCellRenderer.toString((double[]) value, digits);
+        } else if (value instanceof float[]) {
+            return FloatArrayCellRenderer.toString((float[]) value, digits);
+        }
 
-		return value.toString();
-	}
+        return value.toString();
+    }
 
 }

@@ -18,82 +18,77 @@
  */
 package org.jplot2d.swing.proptable.property;
 
+import org.jplot2d.env.PropertyInfo;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.jplot2d.env.PropertyInfo;
-
 /**
  * An adapter to use PropertyDescriptor in MainProperty manner.
- * 
  */
 class PropertyDescriptorAdapter<T> extends MainProperty<T> {
 
-	private PropertyInfo descriptor;
+    private final PropertyInfo descriptor;
 
-	public PropertyDescriptorAdapter(PropertyInfo descriptor) {
-		super();
-		this.descriptor = descriptor;
-	}
+    public PropertyDescriptorAdapter(PropertyInfo descriptor) {
+        super();
+        this.descriptor = descriptor;
+    }
 
-	public String getName() {
-		return descriptor.getName();
-	}
+    public String getName() {
+        return descriptor.getName();
+    }
 
-	public String getDisplayName() {
-		return descriptor.getDisplayName();
-	}
+    public String getDisplayName() {
+        return descriptor.getDisplayName();
+    }
 
-	public String getShortDescription() {
-		return descriptor.getShortDescription();
-	}
+    public String getShortDescription() {
+        return descriptor.getShortDescription();
+    }
 
-	public int getDisplayDigits() {
-		return descriptor.getDisplayDigits();
-	}
+    public int getDisplayDigits() {
+        return descriptor.getDisplayDigits();
+    }
 
-	@SuppressWarnings("unchecked")
-	public Class<T> getType() {
-		return (Class<T>) descriptor.getPropertyType();
-	}
+    @SuppressWarnings("unchecked")
+    public Class<T> getType() {
+        return (Class<T>) descriptor.getPropertyType();
+    }
 
-	/**
-	 * Load property from the given object, by the PropertyDescriptor's read method.
-	 */
-	@SuppressWarnings("unchecked")
-	public void readFromObject(Object object) {
-		Method method = descriptor.getReadMethod();
-		if (method != null) {
-			try {
-				setValue((T) method.invoke(object));
-			} catch (InvocationTargetException e) {
-				// should not happen
-			} catch (IllegalArgumentException e) {
-				// should not happen
-			} catch (IllegalAccessException e) {
-				// should not happen
-			}
-		}
-	}
+    /**
+     * Load property from the given object, by the read method of PropertyDescriptor.
+     */
+    @SuppressWarnings("unchecked")
+    public void readFromObject(Object object) {
+        Method method = descriptor.getReadMethod();
+        if (method != null) {
+            try {
+                setValue((T) method.invoke(object));
+            } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException ignored) {
+                // should not happen
+            }
+        }
+    }
 
-	/**
-	 * Write property to the given object, by the PropertyDescriptor's write method.
-	 * 
-	 * @throws Throwable
-	 */
-	public void writeToObject(Object object) throws Throwable {
-		Method method = descriptor.getWriteMethod();
-		if (method != null) {
-			try {
-				method.invoke(object, new Object[] { getValue() });
-			} catch (InvocationTargetException e) {
-				throw e.getCause();
-			}
-		}
-	}
+    /**
+     * Write property to the given object, by the write method of PropertyDescriptor.
+     *
+     * @throws Throwable
+     */
+    public void writeToObject(Object object) throws Throwable {
+        Method method = descriptor.getWriteMethod();
+        if (method != null) {
+            try {
+                method.invoke(object, getValue());
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
+        }
+    }
 
-	public boolean isEditable() {
-		return descriptor.getWriteMethod() != null && !descriptor.isReadOnly();
-	}
+    public boolean isEditable() {
+        return descriptor.getWriteMethod() != null && !descriptor.isReadOnly();
+    }
 
 }

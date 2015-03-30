@@ -18,91 +18,90 @@
  */
 package org.jplot2d.swing.proptable.property;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.env.PropertyInfo;
+
+import java.awt.geom.Point2D;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class Point2DProperty extends PropertyDescriptorAdapter<Point2D> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Double _x, _y;
+    private Double _x, _y;
 
-	public Point2DProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public Point2DProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_x = getValue().getX();
-			_y = getValue().getY();
-		}
-	}
+        if (getValue() != null) {
+            _x = getValue().getX();
+            _y = getValue().getY();
+        }
+    }
 
-	private void updateValue() {
-		if (_x != null && _y != null) {
-			setValue(new Point2D.Double(_x, _y));
-		}
-		if (_x == null && _y == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_x != null && _y != null) {
+            setValue(new Point2D.Double(_x, _y));
+        }
+        if (_x == null && _y == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Double>(this) {
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[2];
+        subProperties[0] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "x";
-			}
+            public String getName() {
+                return "x";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _x;
-			}
+            public Double getValue() {
+                return _x;
+            }
 
-			public void setValue(Double x) {
-				_x = x;
-				updateValue();
-			}
+            public void setValue(Double x) {
+                _x = x;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Double>(this) {
+        subProperties[1] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "y";
-			}
+            public String getName() {
+                return "y";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _y;
-			}
+            public Double getValue() {
+                return _y;
+            }
 
-			public void setValue(Double y) {
-				_y = y;
-				updateValue();
-			}
+            public void setValue(Double y) {
+                _y = y;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

@@ -18,48 +18,47 @@
  */
 package org.jplot2d.swing.proptable.editor;
 
-import javax.swing.JTextField;
-
 import org.jplot2d.util.NumberArrayUtils;
 
+import javax.swing.JTextField;
+
 /**
- * 
  * @author Jingjing Li
  */
 public class FloatArrayEditor extends AbstractPropertyEditor<JTextField> {
 
-	private float[] oldValue;
+    private float[] oldValue;
 
-	public FloatArrayEditor() {
-		editor = new JTextField();
-		editor.setBorder(null);
-	}
+    public FloatArrayEditor() {
+        editor = new JTextField();
+        editor.setBorder(null);
+    }
 
-	public Object getValue() {
-		String text = editor.getText();
-		if (text == null || text.length() == 0) {
-			return null;
-		}
-		String[] values = text.split(",");
-		float[] result = new float[values.length];
-		try {
-			for (int i = 0; i < values.length; i++) {
-				result[i] = Float.parseFloat(values[i]);
-			}
-			return result;
-		} catch (NumberFormatException e) {
-			return oldValue;
-		}
-	}
+    public Object getValue() {
+        String text = editor.getText();
+        if (text == null || text.length() == 0) {
+            return null;
+        }
+        String[] values = text.split(",");
+        float[] result = new float[values.length];
+        try {
+            for (int i = 0; i < values.length; i++) {
+                result[i] = Float.parseFloat(values[i]);
+            }
+            return result;
+        } catch (NumberFormatException e) {
+            return oldValue;
+        }
+    }
 
-	public void setValue(Object value) {
-		oldValue = (float[]) value;
+    public void setValue(Object value) {
+        oldValue = (float[]) value;
 
-		if (value == null) {
-			editor.setText("");
-		} else {
-			editor.setText(NumberArrayUtils.toString((float[]) value));
-		}
-	}
+        if (value == null) {
+            editor.setText("");
+        } else {
+            editor.setText(NumberArrayUtils.toString((float[]) value));
+        }
+    }
 
 }

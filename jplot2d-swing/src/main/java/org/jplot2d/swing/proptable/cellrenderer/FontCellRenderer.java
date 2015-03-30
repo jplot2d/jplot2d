@@ -21,8 +21,8 @@ package org.jplot2d.swing.proptable.cellrenderer;
 import java.awt.Font;
 
 /**
- * 
- * 
+ *
+ *
  */
 public class FontCellRenderer extends StringCellRenderer<Font> {
 

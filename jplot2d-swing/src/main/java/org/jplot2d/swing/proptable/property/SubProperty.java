@@ -20,60 +20,59 @@ package org.jplot2d.swing.proptable.property;
 
 /**
  * The sub-property has no sub-property, and has no method to readFromObject/writeToObject
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class SubProperty<T> implements Property<T> {
 
-	protected MainProperty<?> mainProp;
+    protected final MainProperty<?> mainProp;
 
-	public SubProperty(MainProperty<?> mainProp) {
-		this.mainProp = mainProp;
-	}
+    public SubProperty(MainProperty<?> mainProp) {
+        this.mainProp = mainProp;
+    }
 
-	public MainProperty<?> getMainProperty() {
-	    return mainProp;
-	}
-	
-    @Override
-	public String getName() {
-		return null;
-	}
+    public MainProperty<?> getMainProperty() {
+        return mainProp;
+    }
 
     @Override
-	public String getDisplayName() {
-		return getName();
-	}
+    public String getName() {
+        return null;
+    }
 
     @Override
-	public String getShortDescription() {
-		return getName();
-	}
+    public String getDisplayName() {
+        return getName();
+    }
 
     @Override
-	public int getDisplayDigits() {
-		return mainProp.getDisplayDigits();
-	}
+    public String getShortDescription() {
+        return getName();
+    }
 
     @Override
-	public Property<?>[] getSubProperties() {
-		return null;
-	}
+    public int getDisplayDigits() {
+        return mainProp.getDisplayDigits();
+    }
 
     @Override
-	public Class<T> getType() {
-		return null;
-	}
+    public Property<?>[] getSubProperties() {
+        return null;
+    }
 
     @Override
-	public boolean isEditable() {
-		return mainProp.isEditable();
-	}
+    public Class<T> getType() {
+        return null;
+    }
 
     @Override
-	public T[] getAvailableValues() {
-		return null;
-	}
+    public boolean isEditable() {
+        return mainProp.isEditable();
+    }
+
+    @Override
+    public T[] getAvailableValues() {
+        return null;
+    }
 
 }

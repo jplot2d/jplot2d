@@ -24,31 +24,30 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
 /**
- * ComboBoxPropertyEditor. <br>
- * 
+ * ComboBoxPropertyEditor.
  */
 public class ComboBoxPropertyEditor extends AbstractPropertyEditor<JComboBox> {
 
-	private Object oldValue;
+    private Object oldValue;
 
-	private ActionListener action = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			firePropertyChange(oldValue, editor.getSelectedItem());
-		}
-	};
+    private final ActionListener action = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            firePropertyChange(oldValue, editor.getSelectedItem());
+        }
+    };
 
-	public ComboBoxPropertyEditor(Object[] items) {
-		editor = new JComboBox(items);
-	}
+    @SuppressWarnings("unchecked")
+    public ComboBoxPropertyEditor(Object[] items) {
+        editor = new JComboBox(items);
+    }
 
-	public Object getValue() {
-		Object selected = editor.getSelectedItem();
-		return selected;
-	}
+    public Object getValue() {
+        return editor.getSelectedItem();
+    }
 
-	public void setValue(Object value) {
-		editor.setSelectedItem(value);
-		editor.addActionListener(action);
-	}
+    public void setValue(Object value) {
+        editor.setSelectedItem(value);
+        editor.addActionListener(action);
+    }
 
 }

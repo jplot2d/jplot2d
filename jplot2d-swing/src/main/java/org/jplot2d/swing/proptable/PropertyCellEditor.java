@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.util.EventObject;
+
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -41,7 +42,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * A TableCellEditor that adapt to PropertyEditor
- * 
+ *
  * @author Jingjing Li
  */
 public class PropertyCellEditor extends AbstractCellEditor implements
@@ -49,13 +50,13 @@ public class PropertyCellEditor extends AbstractCellEditor implements
 
     private static final long serialVersionUID = 1L;
 
-    private PropertyEditor editor;
+    private final PropertyEditor editor;
 
-    protected JComponent editorComponent;
+    protected final JComponent editorComponent;
 
     protected int clickCountToStart;
 
-    private FocusListener focusListener = new FocusListener() {
+    private final FocusListener focusListener = new FocusListener() {
         public void focusGained(final FocusEvent e) {
             if (!(e.getSource() instanceof JTextField))
                 return;
@@ -77,19 +78,20 @@ public class PropertyCellEditor extends AbstractCellEditor implements
         }
     };
 
-    private ActionListener commitActionListener = new ActionListener() {
+    private final ActionListener commitActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             stopCellEditing();
         }
     };
 
-    private ActionListener cancelActionListener = new ActionListener() {
+    @SuppressWarnings("FieldCanBeLocal")
+    private final ActionListener cancelActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             cancelCellEditing();
         }
     };
 
-    private PropertyChangeListener pcListener = new PropertyChangeListener() {
+    private final PropertyChangeListener pcListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
             stopCellEditing();
         }
@@ -104,9 +106,7 @@ public class PropertyCellEditor extends AbstractCellEditor implements
             JTextField field = (JTextField) editorComponent;
             field.addFocusListener(focusListener);
             field.addActionListener(commitActionListener);
-            field.registerKeyboardAction(cancelActionListener, KeyStroke
-                    .getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-                    JComponent.WHEN_FOCUSED);
+            field.registerKeyboardAction(cancelActionListener, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_FOCUSED);
         }
 
         editor.addPropertyChangeListener(pcListener);
@@ -125,11 +125,7 @@ public class PropertyCellEditor extends AbstractCellEditor implements
     }
 
     public boolean isCellEditable(EventObject anEvent) {
-        if (anEvent instanceof MouseEvent) {
-            return ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
-        }
-
-        return true;
+        return !(anEvent instanceof MouseEvent) || ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
     }
 
     public boolean shouldSelectCell(EventObject anEvent) {
@@ -152,25 +148,22 @@ public class PropertyCellEditor extends AbstractCellEditor implements
             JTextField field = (JTextField) editorComponent;
             field.removeFocusListener(focusListener);
             field.removeActionListener(commitActionListener);
-            field.unregisterKeyboardAction(KeyStroke.getKeyStroke(
-                    KeyEvent.VK_ESCAPE, 0));
+            field.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         }
 
         editor.removePropertyChangeListener(pcListener);
     }
 
     public Component getTableCellEditorComponent(JTable table, Object value,
-            boolean isSelected, int row, int column) {
+                                                 boolean isSelected, int row, int column) {
         if (editorComponent instanceof JCheckBox) {
-            // in order to avoid a "flashing" effect when clicking a checkbox
-            // in a table, it is important for the editor to have as a border
-            // the same border that the renderer has, and have as the background
-            // the same color as the renderer has. This is primarily only
-            // needed for JCheckBox since this editor doesn't fill all the
-            // visual space of the table cell, unlike a text field.
+            /* in order to avoid a "flashing" effect when clicking a checkbox in a table,
+             * it is important for the editor to have as a border the same border that the renderer has,
+             * and have as the background the same color as the renderer has.
+             * This is primarily only needed for JCheckBox since this editor doesn't fill all the visual space of the table cell, unlike a text field.
+             */
             TableCellRenderer renderer = table.getCellRenderer(row, column);
-            Component c = renderer.getTableCellRendererComponent(table, value,
-                    isSelected, true, row, column);
+            Component c = renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
             if (c != null) {
                 editorComponent.setOpaque(true);
                 editorComponent.setBackground(c.getBackground());

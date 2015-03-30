@@ -19,6 +19,12 @@
 package org.jplot2d.swing.proptable;
 
 
+import org.jplot2d.swing.proptable.cellrenderer.TableCellRendererFactory;
+import org.jplot2d.swing.proptable.cellrenderer.TableCellRendererRegistry;
+import org.jplot2d.swing.proptable.editor.PropertyEditorFactory;
+import org.jplot2d.swing.proptable.editor.PropertyEditorRegistry;
+import org.jplot2d.swing.proptable.property.Property;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,14 +46,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import org.jplot2d.swing.proptable.cellrenderer.TableCellRendererFactory;
-import org.jplot2d.swing.proptable.cellrenderer.TableCellRendererRegistry;
-import org.jplot2d.swing.proptable.editor.PropertyEditorFactory;
-import org.jplot2d.swing.proptable.editor.PropertyEditorRegistry;
-import org.jplot2d.swing.proptable.property.Property;
-
 /**
- * 
  * @author Jingjing Li
  */
 public class PropertyTable extends JTable {
@@ -70,13 +69,11 @@ public class PropertyTable extends JTable {
 
         private Color bgColor;
 
-        private Icon expandedIcon = (Icon) UIManager
-                .get(TREE_EXPANDED_ICON_KEY);
+        private final Icon expandedIcon = (Icon) UIManager.get(TREE_EXPANDED_ICON_KEY);
 
-        private Icon collapsedIcon = (Icon) UIManager
-                .get(TREE_COLLAPSED_ICON_KEY);
+        private final Icon collapsedIcon = (Icon) UIManager.get(TREE_COLLAPSED_ICON_KEY);
 
-        private Insets insets = new Insets(1, 0, 1, 1);
+        private final Insets insets = new Insets(1, 0, 1, 1);
 
         private boolean isProperty;
 
@@ -96,8 +93,7 @@ public class PropertyTable extends JTable {
             return insets;
         }
 
-        public void paintBorder(Component c, Graphics g, int x, int y,
-                int width, int height) {
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             if (!isProperty) {
                 Color oldColor = g.getColor();
                 g.setColor(bgColor);
@@ -107,9 +103,8 @@ public class PropertyTable extends JTable {
 
             if (showToggle) {
                 Icon drawIcon = (toggleState ? expandedIcon : collapsedIcon);
-                drawIcon.paintIcon(c, g, x + indentWidth
-                        + (HOTSPOT_SIZE - 2 - drawIcon.getIconWidth()) / 2, y
-                        + (height - drawIcon.getIconHeight()) / 2);
+                drawIcon.paintIcon(c, g, x + indentWidth + (HOTSPOT_SIZE - 2 - drawIcon.getIconWidth()) / 2,
+                        y + (height - drawIcon.getIconHeight()) / 2);
             }
         }
 
@@ -125,22 +120,19 @@ public class PropertyTable extends JTable {
     private static class NameRenderer extends DefaultTableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
-        private CellBorder border;
+        private final CellBorder border;
 
         public NameRenderer() {
             super();
             border = new CellBorder();
         }
 
-        public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus, int row,
-                int column) {
-            super.getTableCellRendererComponent(table, value, isSelected,
-                    hasFocus, row, column);
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             setBorder(border);
 
             PropertyTableItem item = (PropertyTableItem) value;
@@ -165,10 +157,8 @@ public class PropertyTable extends JTable {
                 }
             }
 
-            setEnabled(isSelected || !item.isProperty() ? true : item
-                    .getProperty().isEditable());
-            setFont(getFont().deriveFont(
-                    item.isProperty() ? Font.PLAIN : Font.BOLD));
+            setEnabled(isSelected || !item.isProperty() || item.getProperty().isEditable());
+            setFont(getFont().deriveFont(item.isProperty() ? Font.PLAIN : Font.BOLD));
             setText(item.getName());
 
             return this;
@@ -180,8 +170,8 @@ public class PropertyTable extends JTable {
         private static final long serialVersionUID = 1L;
 
         public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus, int row,
-                int column) {
+                                                       Object value, boolean isSelected, boolean hasFocus, int row,
+                                                       int column) {
             if (isSelected) {
                 setBackground(table.getSelectionBackground());
                 setForeground(table.getSelectionForeground());
@@ -211,13 +201,13 @@ public class PropertyTable extends JTable {
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
-    private TableCellRenderer categoryValueRenderer;
+    private final TableCellRenderer categoryValueRenderer;
 
-    private TableCellRenderer nameRenderer;
+    private final TableCellRenderer nameRenderer;
 
     private TableCellRendererFactory rendererFactory;
 
@@ -264,34 +254,33 @@ public class PropertyTable extends JTable {
         PropertyTableItem item = model.getPropertyTableItem(row);
 
         switch (column) {
-        case PropertyTableModel.NAME_COLUMN:
-            // name column gets a custom renderer
-            ((JComponent) nameRenderer).setToolTipText(item.getToolTipText());
-            return nameRenderer;
+            case PropertyTableModel.NAME_COLUMN:
+                // name column gets a custom renderer
+                ((JComponent) nameRenderer).setToolTipText(item.getToolTipText());
+                return nameRenderer;
 
-        case PropertyTableModel.VALUE_COLUMN: {
-            if (!item.isProperty())
-                return categoryValueRenderer;
+            case PropertyTableModel.VALUE_COLUMN: {
+                if (!item.isProperty())
+                    return categoryValueRenderer;
 
-            // property value column gets the renderer from the factory, but
-            // wrapped
-            Property<?> property = item.getProperty();
-            TableCellRenderer renderer = getTableCellRendererFactory()
-                    .createTableCellRenderer(property);
+                // property value column gets the renderer from the factory, but
+                // wrapped
+                Property<?> property = item.getProperty();
+                TableCellRenderer renderer = getTableCellRendererFactory().createTableCellRenderer(property);
 
-            Class<?> type = getWrapperClass(property.getType());
-            if (renderer == null) {
-                renderer = getDefaultRenderer(type);
+                Class<?> type = getWrapperClass(property.getType());
+                if (renderer == null) {
+                    renderer = getDefaultRenderer(type);
+                }
+                if (renderer instanceof JCheckBox) {
+                    ((JCheckBox) renderer).setHorizontalAlignment(JCheckBox.LEFT);
+                    ((JCheckBox) renderer).setEnabled(property.isEditable());
+                }
+                return renderer;
             }
-            if (renderer instanceof JCheckBox) {
-                ((JCheckBox) renderer).setHorizontalAlignment(JCheckBox.LEFT);
-                ((JCheckBox) renderer).setEnabled(property.isEditable());
-            }
-            return renderer;
-        }
-        default:
-            // when will this happen, given the above?
-            return super.getCellRenderer(row, column);
+            default:
+                // when will this happen, given the above?
+                return super.getCellRenderer(row, column);
         }
 
     }
@@ -338,12 +327,11 @@ public class PropertyTable extends JTable {
     }
 
     static int getIndent(PropertyTableItem item) {
-        int indent = 0;
+        int indent;
 
         if (item.isProperty()) {
             // it is a property, it has no parent or a category, and no child
-            if ((item.getParent() == null || !item.getParent().isProperty())
-                    && !item.hasToggle()) {
+            if ((item.getParent() == null || !item.getParent().isProperty()) && !item.hasToggle()) {
                 indent = HOTSPOT_SIZE;
             } else {
                 // it is a property with children

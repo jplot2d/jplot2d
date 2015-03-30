@@ -21,26 +21,26 @@ package org.jplot2d.swing.proptable.editor;
 import javax.swing.JTextField;
 
 /**
- * 
+ *
  *
  */
 public class StringPropertyEditor extends AbstractPropertyEditor<JTextField> {
 
-	public StringPropertyEditor() {
-		editor = new JTextField();
-		editor.setBorder(null);
-	}
+    public StringPropertyEditor() {
+        editor = new JTextField();
+        editor.setBorder(null);
+    }
 
-	public Object getValue() {
-		return editor.getText();
-	}
+    public Object getValue() {
+        return editor.getText();
+    }
 
-	public void setValue(Object value) {
-		if (value == null) {
-			editor.setText("");
-		} else {
-			editor.setText(String.valueOf(value));
-		}
-	}
+    public void setValue(Object value) {
+        if (value == null) {
+            editor.setText("");
+        } else {
+            editor.setText(String.valueOf(value));
+        }
+    }
 
 }

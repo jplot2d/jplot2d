@@ -22,21 +22,20 @@ import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.NumberUtils;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class Insets2DCellRenderer extends DigitsLimitableCellRenderer<Insets2D> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return "[" + NumberUtils.toString(value.getTop(), digits) + ", "
-				+ NumberUtils.toString(value.getLeft(), digits) + ", "
-				+ NumberUtils.toString(value.getBottom(), digits) + ", "
-				+ NumberUtils.toString(value.getRight(), digits) + "]";
-	}
+    @Override
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
+        return "[" + NumberUtils.toString(value.getTop(), digits) + ", "
+                + NumberUtils.toString(value.getLeft(), digits) + ", "
+                + NumberUtils.toString(value.getBottom(), digits) + ", "
+                + NumberUtils.toString(value.getRight(), digits) + "]";
+    }
 }

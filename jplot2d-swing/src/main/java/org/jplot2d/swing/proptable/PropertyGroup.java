@@ -17,28 +17,27 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable;
 
+
+import org.jplot2d.swing.proptable.property.Property;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jplot2d.swing.proptable.property.Property;
-
 /**
  * A group of properties. A group has a name and can fold into a line in table.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PropertyGroup implements Iterable<Property<?>> {
 
     private final String name;
 
-    protected List<Property<?>> properties = new ArrayList<Property<?>>();
+    protected final List<Property<?>> properties = new ArrayList<>();
 
     public PropertyGroup(String name) {
         this.name = name;

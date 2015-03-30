@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable.property;
 
@@ -26,17 +26,16 @@ import org.jplot2d.env.PropertyInfo;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class AxisTypeProperty extends PropertyDescriptorAdapter<AxisType> {
 
-	public AxisTypeProperty(PropertyInfo descriptor) {
-		super(descriptor);
-	}
+    public AxisTypeProperty(PropertyInfo descriptor) {
+        super(descriptor);
+    }
 
-	@Override
-	public Object[] getAvailableValues() {
-		return AxisType.values();
-	}
+    @Override
+    public Object[] getAvailableValues() {
+        return AxisType.values();
+    }
 
 }

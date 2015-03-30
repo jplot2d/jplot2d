@@ -23,85 +23,84 @@ import org.jplot2d.util.Range;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class RangeProperty extends PropertyDescriptorAdapter<Range> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Double _start, _end;
+    private Double _start, _end;
 
-	public RangeProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public RangeProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_start = getValue().getStart();
-			_end = getValue().getEnd();
-		}
-	}
+        if (getValue() != null) {
+            _start = getValue().getStart();
+            _end = getValue().getEnd();
+        }
+    }
 
-	private void updateValue() {
-		if (_start != null && _end != null) {
-			setValue(new Range.Double(_start, _end));
-		}
-		if (_start == null && _end == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_start != null && _end != null) {
+            setValue(new Range.Double(_start, _end));
+        }
+        if (_start == null && _end == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Double>(this) {
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[2];
+        subProperties[0] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "start";
-			}
+            public String getName() {
+                return "start";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _start;
-			}
+            public Double getValue() {
+                return _start;
+            }
 
-			public void setValue(Double start) {
-				_start = start;
-				updateValue();
-			}
+            public void setValue(Double start) {
+                _start = start;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Double>(this) {
+        subProperties[1] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "end";
-			}
+            public String getName() {
+                return "end";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _end;
-			}
+            public Double getValue() {
+                return _end;
+            }
 
-			public void setValue(Double end) {
-				_end = end;
-				updateValue();
-			}
+            public void setValue(Double end) {
+                _end = end;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

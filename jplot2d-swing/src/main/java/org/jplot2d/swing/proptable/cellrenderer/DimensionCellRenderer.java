@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.cellrenderer;
 import java.awt.Dimension;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class DimensionCellRenderer extends StringCellRenderer<Dimension> {

@@ -23,130 +23,129 @@ import org.jplot2d.util.Insets2D;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class Insets2DProperty extends PropertyDescriptorAdapter<Insets2D> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Double _top, _left, _bottom, _right;
+    private Double _top, _left, _bottom, _right;
 
-	public Insets2DProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public Insets2DProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_top = getValue().getTop();
-			_left = getValue().getLeft();
-			_bottom = getValue().getBottom();
-			_right = getValue().getRight();
-		}
-	}
+        if (getValue() != null) {
+            _top = getValue().getTop();
+            _left = getValue().getLeft();
+            _bottom = getValue().getBottom();
+            _right = getValue().getRight();
+        }
+    }
 
-	private void updateValue() {
-		if (_top != null && _left != null & _bottom != null && _right != null) {
-			setValue(new Insets2D.Double(_top, _left, _bottom, _right));
-		}
-		if (_top == null && _left == null & _bottom == null && _right == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_top != null && _left != null & _bottom != null && _right != null) {
+            setValue(new Insets2D.Double(_top, _left, _bottom, _right));
+        }
+        if (_top == null && _left == null & _bottom == null && _right == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[4];
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[4];
 
-		subProperties[0] = new SubProperty<Double>(this) {
+        subProperties[0] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "top";
-			}
+            public String getName() {
+                return "top";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _top;
-			}
+            public Double getValue() {
+                return _top;
+            }
 
-			public void setValue(Double top) {
-				_top = top;
-				updateValue();
-			}
+            public void setValue(Double top) {
+                _top = top;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Double>(this) {
+        subProperties[1] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "left";
-			}
+            public String getName() {
+                return "left";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _left;
-			}
+            public Double getValue() {
+                return _left;
+            }
 
-			public void setValue(Double left) {
-				_left = left;
-				updateValue();
-			}
+            public void setValue(Double left) {
+                _left = left;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[2] = new SubProperty<Double>(this) {
+        subProperties[2] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "bottom";
-			}
+            public String getName() {
+                return "bottom";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _bottom;
-			}
+            public Double getValue() {
+                return _bottom;
+            }
 
-			public void setValue(Double bottom) {
-				_bottom = bottom;
-				updateValue();
-			}
+            public void setValue(Double bottom) {
+                _bottom = bottom;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[3] = new SubProperty<Double>(this) {
+        subProperties[3] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "right";
-			}
+            public String getName() {
+                return "right";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _right;
-			}
+            public Double getValue() {
+                return _right;
+            }
 
-			public void setValue(Double right) {
-				_right = right;
-				updateValue();
-			}
+            public void setValue(Double right) {
+                _right = right;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

@@ -23,17 +23,16 @@ import org.jplot2d.sizing.SizeMode;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class SizeModeProperty extends PropertyDescriptorAdapter<SizeMode> {
 
-	public SizeModeProperty(PropertyInfo descriptor) {
-		super(descriptor);
-	}
+    public SizeModeProperty(PropertyInfo descriptor) {
+        super(descriptor);
+    }
 
-	@Override
-	public boolean isEditable() {
-		return false;
-	}
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
 
 }

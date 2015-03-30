@@ -23,18 +23,15 @@ import java.beans.PropertyChangeSupport;
 
 /**
  * Main property who has value and can read from / write to a engine object
- * 
+ *
+ * @param <T> the value type
  * @author Jingjing Li
- * 
- * @param <T>
- *            the value type
  */
 public abstract class MainProperty<T> implements Property<T> {
 
     private T value;
 
-    private transient PropertyChangeSupport listeners = new PropertyChangeSupport(
-            this);
+    private final transient PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
     public T getValue() {
         return value;
@@ -54,8 +51,7 @@ public abstract class MainProperty<T> implements Property<T> {
         if (subProperties != null)
             for (Property<?> property : subProperties) {
                 if (property instanceof MainProperty<?>) {
-                    ((MainProperty<?>) property)
-                            .addPropertyChangeListener(listener);
+                    ((MainProperty<?>) property).addPropertyChangeListener(listener);
                 }
             }
 
@@ -67,8 +63,7 @@ public abstract class MainProperty<T> implements Property<T> {
         if (subProperties != null)
             for (Property<?> property : subProperties) {
                 if (property instanceof MainProperty<?>) {
-                    ((MainProperty<?>) property)
-                            .removePropertyChangeListener(listener);
+                    ((MainProperty<?>) property).removePropertyChangeListener(listener);
                 }
             }
     }
@@ -83,17 +78,15 @@ public abstract class MainProperty<T> implements Property<T> {
 
     /**
      * Load property from the given object.
-     * 
-     * @param object
-     * @throws Throwable
+     *
+     * @param object the object to read from
      */
     public abstract void readFromObject(Object object);
 
     /**
      * Write property to the given object.
-     * 
-     * @param object
-     * @throws Throwable
+     *
+     * @param object the object to write
      */
     public abstract void writeToObject(Object object) throws Throwable;
 

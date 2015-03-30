@@ -22,16 +22,14 @@ import org.jplot2d.element.Element;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface ShowPropertiesAction {
 
-	/**
-	 * Trigger an action to show properties for the given engine;
-	 * 
-	 * @param peng
-	 *            the engine
-	 */
-	public void triggerShowProperties(Element element);
+    /**
+     * Trigger an action to show properties for the given engine;
+     *
+     * @param element the engine
+     */
+    public void triggerShowProperties(Element element);
 
 }

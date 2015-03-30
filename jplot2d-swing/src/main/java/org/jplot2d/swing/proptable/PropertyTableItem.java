@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable;
 
@@ -25,21 +25,20 @@ import org.jplot2d.swing.proptable.property.Property;
 
 /**
  * Represent a line in PropertyTableModel.
- * 
- * @author Jingjing Li
  *
+ * @author Jingjing Li
  */
 public class PropertyTableItem {
     /**
-     * 
+     *
      */
     private final PropertyTableModel propertyTableModel;
 
-    private String name;
+    private final String name;
 
     private Property<?> property;
 
-    private PropertyTableItem parent;
+    private final PropertyTableItem parent;
 
     private boolean hasToggle = true;
 
@@ -73,7 +72,7 @@ public class PropertyTableItem {
     }
 
     @SuppressWarnings("rawtypes")
-	public Property getProperty() {
+    public Property getProperty() {
         return property;
     }
 

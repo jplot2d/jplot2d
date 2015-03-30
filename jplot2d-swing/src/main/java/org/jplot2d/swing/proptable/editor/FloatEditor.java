@@ -24,30 +24,29 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class FloatEditor extends FormattedEditor {
 
-	private static NumberFormat getFloatFormat() {
-		DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
-		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-		symbols.setNaN("NaN");
-		format.setDecimalFormatSymbols(symbols);
-		format.setMaximumFractionDigits(8);
-		return format;
-	}
+    private static NumberFormat getFloatFormat() {
+        DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+        symbols.setNaN("NaN");
+        format.setDecimalFormatSymbols(symbols);
+        format.setMaximumFractionDigits(8);
+        return format;
+    }
 
-	public FloatEditor() {
-		super(getFloatFormat());
-	}
+    public FloatEditor() {
+        super(getFloatFormat());
+    }
 
-	@Override
-	public Object getValue() {
-		Object v = super.getValue();
-		if (v instanceof Number) {
-			return new Float(((Number) v).floatValue());
-		}
-		return v;
-	}
+    @Override
+    public Object getValue() {
+        Object v = super.getValue();
+        if (v instanceof Number) {
+            return ((Number) v).floatValue();
+        }
+        return v;
+    }
 }

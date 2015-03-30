@@ -18,6 +18,14 @@
  */
 package org.jplot2d.swing.components;
 
+import org.jplot2d.element.Element;
+import org.jplot2d.env.InterfaceInfo;
+import org.jplot2d.env.PlotEnvironment;
+import org.jplot2d.swing.outline.PlotOutline;
+import org.jplot2d.swing.proptable.PropertiesModel;
+import org.jplot2d.swing.proptable.PropertyTable;
+import org.jplot2d.swing.proptable.PropertyTableModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,92 +36,78 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.WindowConstants;
 
-import org.jplot2d.element.Element;
-import org.jplot2d.env.InterfaceInfo;
-import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.swing.outline.PlotOutline;
-import org.jplot2d.swing.proptable.ProperiesModel;
-import org.jplot2d.swing.proptable.PropertyTable;
-import org.jplot2d.swing.proptable.PropertyTableModel;
-
 /**
  * A properties frame, contains a plot tree to show all elements, and a properties table to show all
  * properties of selected tree node.
- * 
+ *
  * @author Jingjing Li
  */
 public class PlotPropertiesFrame extends JFrame implements ShowPropertiesAction {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final PlotOutline _manager;
+    private final PlotOutline _manager;
 
-	private JSplitPane splitPane;
+    private JSplitPane splitPane;
 
-	private JScrollPane scrollPaneL;
+    private PropertyTable _propertyTable;
 
-	private JScrollPane scrollPaneR;
+    public PlotPropertiesFrame(PlotEnvironment env) {
+        super("Properties Panel");
+        _manager = new PlotOutline(env);
+        _manager.setShowPropertiesAction(this);
+        initGUI();
+    }
 
-	private PropertyTable _propertyTable;
+    private void initGUI() {
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().add(getTreeTablePanel(), BorderLayout.CENTER);
 
-	public PlotPropertiesFrame(PlotEnvironment env) {
-		super("Properties Panel");
-		_manager = new PlotOutline(env);
-		_manager.setShowPropertiesAction(this);
-		initGUI();
-	}
+        pack();
+        //setSize(getWidth(), 400);
+    }
 
-	private void initGUI() {
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		getContentPane().add(getTreeTablePanel(), BorderLayout.CENTER);
+    private JSplitPane getTreeTablePanel() {
+        if (splitPane == null) {
+            splitPane = new JSplitPane();
+            splitPane.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151)),
+                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+            splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+            JScrollPane scrollPaneL = new JScrollPane();
+            JScrollPane scrollPaneR = new JScrollPane();
+            splitPane.add(scrollPaneL, JSplitPane.LEFT);
+            splitPane.add(scrollPaneR, JSplitPane.RIGHT);
+            scrollPaneL.getViewport().add(getPlotTree());
+            scrollPaneR.getViewport().add(getPropTable());
+        }
+        return splitPane;
+    }
 
-		pack();
-		//setSize(getWidth(), 400);
-	}
+    private Component getPlotTree() {
+        return _manager.getComponent();
+    }
 
-	private JSplitPane getTreeTablePanel() {
-		if (splitPane == null) {
-			splitPane = new JSplitPane();
-			splitPane.setBorder(BorderFactory.createCompoundBorder(
-					BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151)),
-					BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-			splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-			scrollPaneL = new JScrollPane();
-			scrollPaneR = new JScrollPane();
-			splitPane.add(scrollPaneL, JSplitPane.LEFT);
-			splitPane.add(scrollPaneR, JSplitPane.RIGHT);
-			scrollPaneL.getViewport().add(getPlotTree());
-			scrollPaneR.getViewport().add(getPropTable());
-		}
-		return splitPane;
-	}
+    private Component getPropTable() {
+        if (_propertyTable == null) {
+            _propertyTable = new PropertyTable();
+        }
+        return _propertyTable;
+    }
 
-	private Component getPlotTree() {
-		return _manager.getComponent();
-	}
-
-	private Component getPropTable() {
-		if (_propertyTable == null) {
-			_propertyTable = new PropertyTable();
-		}
-		return _propertyTable;
-	}
-
-	public void triggerShowProperties(Element element) {
-		Element engine = element;
-		if (engine == _propertyTable.getModel().getEngine()) {
-			_propertyTable.getModel().refresh();
-		} else if (engine == null) {
-			PropertyTableModel tableModel = new PropertyTableModel(null, null);
-			_propertyTable.setModel(tableModel);
-		} else {
-			Class<?> cls = engine.getClass().getInterfaces()[0];
-			ProperiesModel model = new ProperiesModel(InterfaceInfo.loadInterfaceInfo(cls)
-					.getPropertyInfoGroupMap());
-			PropertyTableModel tableModel = new PropertyTableModel(engine, model);
-			tableModel.setDialogParent(_propertyTable);
-			_propertyTable.setModel(tableModel);
-		}
-	}
+    public void triggerShowProperties(Element element) {
+        if (element == _propertyTable.getModel().getEngine()) {
+            _propertyTable.getModel().refresh();
+        } else if (element == null) {
+            PropertyTableModel tableModel = new PropertyTableModel(null, null);
+            _propertyTable.setModel(tableModel);
+        } else {
+            Class<?> cls = element.getClass().getInterfaces()[0];
+            PropertiesModel model = new PropertiesModel(InterfaceInfo.loadInterfaceInfo(cls).getPropertyInfoGroupMap());
+            PropertyTableModel tableModel = new PropertyTableModel(element, model);
+            tableModel.setDialogParent(_propertyTable);
+            _propertyTable.setModel(tableModel);
+        }
+    }
 
 }

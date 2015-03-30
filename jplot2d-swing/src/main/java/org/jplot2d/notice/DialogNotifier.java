@@ -25,33 +25,32 @@ import javax.swing.SwingUtilities;
 
 /**
  * This notifier will show notice messages in a dialog.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class DialogNotifier extends AbstractNotifier {
 
-	private final Component plotComp;
+    private final Component plotComp;
 
-	public DialogNotifier(Component plotComp) {
-		this.plotComp = plotComp;
-	}
+    public DialogNotifier(Component plotComp) {
+        this.plotComp = plotComp;
+    }
 
-	@Override
-	public void showNotices(NoticeType type) {
-		if (notices.size() > 0) {
-			final StringBuilder sb = new StringBuilder();
-			for (Notice wm : notices) {
-				sb.append(wm.getMessage());
-				sb.append("\n");
-			}
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
-				}
-			});
-		}
-	}
+    @Override
+    public void showNotices(NoticeType type) {
+        if (notices.size() > 0) {
+            final StringBuilder sb = new StringBuilder();
+            for (Notice wm : notices) {
+                sb.append(wm.getMessage());
+                sb.append("\n");
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JOptionPane.showMessageDialog(plotComp, sb, "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+            });
+        }
+    }
 
 }

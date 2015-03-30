@@ -19,13 +19,12 @@
 package org.jplot2d.swing.proptable.editor;
 
 
-import java.beans.PropertyEditor;
-
 import org.jplot2d.swing.proptable.property.Property;
+
+import java.beans.PropertyEditor;
 
 /**
  * @author Jingjing Li
- * 
  */
 public interface PropertyEditorFactory {
 

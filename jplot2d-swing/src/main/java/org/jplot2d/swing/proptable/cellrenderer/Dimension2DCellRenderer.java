@@ -18,24 +18,23 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import java.awt.geom.Dimension2D;
-
 import org.jplot2d.util.NumberUtils;
 
+import java.awt.geom.Dimension2D;
+
 /**
- * 
  * @author Jingjing Li
  */
 public class Dimension2DCellRenderer extends DigitsLimitableCellRenderer<Dimension2D> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return "[" + NumberUtils.toString(value.getWidth(), digits) + ", "
-				+ NumberUtils.toString(value.getHeight(), digits) + "]";
-	}
+    @Override
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
+        return "[" + NumberUtils.toString(value.getWidth(), digits) + ", "
+                + NumberUtils.toString(value.getHeight(), digits) + "]";
+    }
 }

@@ -18,91 +18,90 @@
  */
 package org.jplot2d.swing.proptable.property;
 
-import java.awt.Dimension;
-
 import org.jplot2d.env.PropertyInfo;
+
+import java.awt.Dimension;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class DimensionProperty extends PropertyDescriptorAdapter<Dimension> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Integer _w, _h;
+    private Integer _w, _h;
 
-	public DimensionProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public DimensionProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_w = getValue().width;
-			_h = getValue().height;
-		}
-	}
+        if (getValue() != null) {
+            _w = getValue().width;
+            _h = getValue().height;
+        }
+    }
 
-	private void updateValue() {
-		if (_w != null && _h != null) {
-			setValue(new Dimension(_w, _h));
-		}
-		if (_w == null && _h == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_w != null && _h != null) {
+            setValue(new Dimension(_w, _h));
+        }
+        if (_w == null && _h == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Integer>(this) {
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[2];
+        subProperties[0] = new SubProperty<Integer>(this) {
 
-			public String getName() {
-				return "width";
-			}
+            public String getName() {
+                return "width";
+            }
 
-			public Class<Integer> getType() {
-				return Integer.class;
-			}
+            public Class<Integer> getType() {
+                return Integer.class;
+            }
 
-			public Integer getValue() {
-				return _w;
-			}
+            public Integer getValue() {
+                return _w;
+            }
 
-			public void setValue(Integer width) {
-				_w = width;
-				updateValue();
-			}
+            public void setValue(Integer width) {
+                _w = width;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Integer>(this) {
+        subProperties[1] = new SubProperty<Integer>(this) {
 
-			public String getName() {
-				return "height";
-			}
+            public String getName() {
+                return "height";
+            }
 
-			public Class<Integer> getType() {
-				return Integer.class;
-			}
+            public Class<Integer> getType() {
+                return Integer.class;
+            }
 
-			public Integer getValue() {
-				return _h;
-			}
+            public Integer getValue() {
+                return _h;
+            }
 
-			public void setValue(Integer height) {
-				_h = height;
-				updateValue();
-			}
+            public void setValue(Integer height) {
+                _h = height;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

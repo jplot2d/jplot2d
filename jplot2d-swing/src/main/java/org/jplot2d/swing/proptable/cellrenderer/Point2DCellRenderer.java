@@ -18,25 +18,24 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import java.awt.geom.Point2D;
-
 import org.jplot2d.util.NumberUtils;
 
+import java.awt.geom.Point2D;
+
 /**
- * 
  * @author Jingjing Li
  */
 public class Point2DCellRenderer extends DigitsLimitableCellRenderer<Point2D> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    @Override
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
-				+ "]";
-	}
+        return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
+                + "]";
+    }
 }

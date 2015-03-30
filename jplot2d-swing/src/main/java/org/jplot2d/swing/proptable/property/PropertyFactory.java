@@ -17,15 +17,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable.property;
-
-import java.awt.BasicStroke;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 
 import org.jplot2d.axtype.AxisType;
 import org.jplot2d.env.PropertyInfo;
@@ -33,57 +27,62 @@ import org.jplot2d.util.Insets2D;
 import org.jplot2d.util.Range;
 import org.jplot2d.util.SymbolShape;
 
+import java.awt.BasicStroke;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
+
 /**
  * A factory to create MainProperty from PropertyInfo
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PropertyFactory {
 
-	private PropertyFactory() {
+    private PropertyFactory() {
 
-	}
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static MainProperty<?> createProperty(PropertyInfo descriptor) {
+    @SuppressWarnings("rawtypes")
+    public static MainProperty<?> createProperty(PropertyInfo descriptor) {
 
-		Class<?> type = descriptor.getPropertyType();
+        Class<?> type = descriptor.getPropertyType();
 
-		if (SymbolShape.class.isAssignableFrom(type)) {
-			return new SymbolShapeProperty(descriptor);
-		}
-		if (AxisType.class.isAssignableFrom(type)) {
-			return new AxisTypeProperty(descriptor);
-		}
+        if (SymbolShape.class.isAssignableFrom(type)) {
+            return new SymbolShapeProperty(descriptor);
+        }
+        if (AxisType.class.isAssignableFrom(type)) {
+            return new AxisTypeProperty(descriptor);
+        }
 
-		if (Point.class.isAssignableFrom(type)) {
-			return new PointProperty(descriptor);
-		}
-		if (Point2D.class.isAssignableFrom(type)) {
-			return new Point2DProperty(descriptor);
-		}
+        if (Point.class.isAssignableFrom(type)) {
+            return new PointProperty(descriptor);
+        }
+        if (Point2D.class.isAssignableFrom(type)) {
+            return new Point2DProperty(descriptor);
+        }
 
-		if (Dimension.class.isAssignableFrom(type)) {
-			return new DimensionProperty(descriptor);
-		}
-		if (Dimension2D.class.isAssignableFrom(type)) {
-			return new Dimension2DProperty(descriptor);
-		}
+        if (Dimension.class.isAssignableFrom(type)) {
+            return new DimensionProperty(descriptor);
+        }
+        if (Dimension2D.class.isAssignableFrom(type)) {
+            return new Dimension2DProperty(descriptor);
+        }
 
-		if (Insets2D.class.isAssignableFrom(type)) {
-			return new Insets2DProperty(descriptor);
-		}
+        if (Insets2D.class.isAssignableFrom(type)) {
+            return new Insets2DProperty(descriptor);
+        }
 
-		if (Range.class.isAssignableFrom(type)) {
-			return new RangeProperty(descriptor);
-		}
+        if (Range.class.isAssignableFrom(type)) {
+            return new RangeProperty(descriptor);
+        }
 
-		if (BasicStroke.class.isAssignableFrom(type)) {
-			return new BasicStrokeProperty(descriptor);
-		}
+        if (BasicStroke.class.isAssignableFrom(type)) {
+            return new BasicStrokeProperty(descriptor);
+        }
 
-		return new PropertyDescriptorAdapter(descriptor);
-	}
+        return new PropertyDescriptorAdapter(descriptor);
+    }
 
 }

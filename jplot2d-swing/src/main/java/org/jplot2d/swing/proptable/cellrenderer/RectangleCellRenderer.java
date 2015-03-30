@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.cellrenderer;
 import java.awt.Rectangle;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class RectangleCellRenderer extends StringCellRenderer<Rectangle> {

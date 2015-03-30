@@ -22,18 +22,17 @@ import org.jplot2d.util.NumberUtils;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class FloatCellRenderer extends DigitsLimitableCellRenderer<Float> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		return NumberUtils.toString(value, digits);
-	}
+        return NumberUtils.toString(value, digits);
+    }
 
 }

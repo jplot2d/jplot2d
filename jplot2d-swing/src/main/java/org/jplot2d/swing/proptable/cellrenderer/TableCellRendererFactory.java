@@ -17,20 +17,19 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import javax.swing.table.TableCellRenderer;
-
 import org.jplot2d.swing.proptable.property.Property;
+
+import javax.swing.table.TableCellRenderer;
 
 
 /**
  * Factory for Property TableCellRenderer.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface TableCellRendererFactory {
 

@@ -20,16 +20,15 @@ package org.jplot2d.swing.proptable.cellrenderer;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class DigitsLimitableCellRenderer<V> extends StringCellRenderer<V> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected int digits;
+    protected int digits;
 
-	public void setDigitsLimit(int digits) {
-		this.digits = digits;
-	}
+    public void setDigitsLimit(int digits) {
+        this.digits = digits;
+    }
 
 }

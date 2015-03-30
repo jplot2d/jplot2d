@@ -24,30 +24,29 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class DoubleEditor extends FormattedEditor {
 
-	private static NumberFormat getDoubleFormat() {
-		DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
-		DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
-		symbols.setNaN("NaN");
-		format.setDecimalFormatSymbols(symbols);
-		format.setMaximumFractionDigits(16);
-		return format;
-	}
+    private static NumberFormat getDoubleFormat() {
+        DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
+        symbols.setNaN("NaN");
+        format.setDecimalFormatSymbols(symbols);
+        format.setMaximumFractionDigits(16);
+        return format;
+    }
 
-	public DoubleEditor() {
-		super(getDoubleFormat());
-	}
+    public DoubleEditor() {
+        super(getDoubleFormat());
+    }
 
-	@Override
-	public Object getValue() {
-		Object v = super.getValue();
-		if (v instanceof Number) {
-			return new Double(((Number) v).doubleValue());
-		}
-		return v;
-	}
+    @Override
+    public Object getValue() {
+        Object v = super.getValue();
+        if (v instanceof Number) {
+            return ((Number) v).doubleValue();
+        }
+        return v;
+    }
 }

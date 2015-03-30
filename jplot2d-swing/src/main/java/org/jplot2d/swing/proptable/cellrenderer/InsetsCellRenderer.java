@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.cellrenderer;
 import java.awt.Insets;
 
 /**
- *
  * @author Jingjing Li
  */
 public class InsetsCellRenderer extends StringCellRenderer<Insets> {

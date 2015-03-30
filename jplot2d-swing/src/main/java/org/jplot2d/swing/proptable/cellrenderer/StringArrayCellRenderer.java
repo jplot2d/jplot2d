@@ -20,24 +20,23 @@ package org.jplot2d.swing.proptable.cellrenderer;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class StringArrayCellRenderer extends StringCellRenderer<Object[]> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		StringBuilder b = new StringBuilder();
-		if (value.length > 0) {
-			b.append(value[0]);
-		}
-		for (int i = 1; i < value.length; i++)
-			b.append(',').append(value[i]);
-		return b.toString();
-	}
+        StringBuilder b = new StringBuilder();
+        if (value.length > 0) {
+            b.append(value[0]);
+        }
+        for (int i = 1; i < value.length; i++)
+            b.append(',').append(value[i]);
+        return b.toString();
+    }
 
 }

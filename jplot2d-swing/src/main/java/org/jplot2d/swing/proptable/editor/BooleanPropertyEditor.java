@@ -25,27 +25,26 @@ import javax.swing.JCheckBox;
 
 /**
  * BooleanAsCheckBoxPropertyEditor. <br>
- * 
  */
 public class BooleanPropertyEditor extends AbstractPropertyEditor<JCheckBox> {
 
-	public BooleanPropertyEditor() {
-		editor = new JCheckBox();
-		editor.setOpaque(false);
-		editor.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				firePropertyChange(editor.isSelected() ? Boolean.FALSE : Boolean.TRUE,
-						editor.isSelected() ? Boolean.TRUE : Boolean.FALSE);
-			}
-		});
-	}
+    public BooleanPropertyEditor() {
+        editor = new JCheckBox();
+        editor.setOpaque(false);
+        editor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                firePropertyChange(editor.isSelected() ? Boolean.FALSE : Boolean.TRUE,
+                        editor.isSelected() ? Boolean.TRUE : Boolean.FALSE);
+            }
+        });
+    }
 
-	public Object getValue() {
-		return editor.isSelected() ? Boolean.TRUE : Boolean.FALSE;
-	}
+    public Object getValue() {
+        return editor.isSelected() ? Boolean.TRUE : Boolean.FALSE;
+    }
 
-	public void setValue(Object value) {
-		editor.setSelected(Boolean.TRUE.equals(value));
-	}
+    public void setValue(Object value) {
+        editor.setSelected(Boolean.TRUE.equals(value));
+    }
 
 }

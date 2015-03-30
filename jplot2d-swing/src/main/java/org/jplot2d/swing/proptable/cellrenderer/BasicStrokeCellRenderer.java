@@ -18,33 +18,32 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import java.awt.BasicStroke;
-
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.NumberUtils;
 
+import java.awt.BasicStroke;
+
 /**
  * @author Jingjing Li
- * 
  */
 public class BasicStrokeCellRenderer extends StringCellRenderer<BasicStroke> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		StringBuilder sb = new StringBuilder("BasicStroke(lineWidth=");
-		sb.append(NumberUtils.toString(value.getLineWidth()));
-		if (value.getDashArray() != null) {
-			sb.append(", dashArray=");
-			sb.append(NumberArrayUtils.toString(value.getDashArray()));
-		}
-		sb.append(')');
+        StringBuilder sb = new StringBuilder("BasicStroke(lineWidth=");
+        sb.append(NumberUtils.toString(value.getLineWidth()));
+        if (value.getDashArray() != null) {
+            sb.append(", dashArray=");
+            sb.append(NumberArrayUtils.toString(value.getDashArray()));
+        }
+        sb.append(')');
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
 }

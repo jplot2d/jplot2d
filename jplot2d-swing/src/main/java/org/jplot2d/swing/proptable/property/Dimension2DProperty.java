@@ -18,92 +18,91 @@
  */
 package org.jplot2d.swing.proptable.property;
 
-import java.awt.geom.Dimension2D;
-
 import org.jplot2d.env.PropertyInfo;
 import org.jplot2d.util.DoubleDimension2D;
 
+import java.awt.geom.Dimension2D;
+
 /**
  * @author Jingjing Li
- * 
  */
 public class Dimension2DProperty extends PropertyDescriptorAdapter<Dimension2D> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Double _w, _h;
+    private Double _w, _h;
 
-	public Dimension2DProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public Dimension2DProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_w = getValue().getWidth();
-			_h = getValue().getHeight();
-		}
-	}
+        if (getValue() != null) {
+            _w = getValue().getWidth();
+            _h = getValue().getHeight();
+        }
+    }
 
-	private void updateValue() {
-		if (_w != null && _h != null) {
-			setValue(new DoubleDimension2D(_w, _h));
-		}
-		if (_w == null && _h == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_w != null && _h != null) {
+            setValue(new DoubleDimension2D(_w, _h));
+        }
+        if (_w == null && _h == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Double>(this) {
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[2];
+        subProperties[0] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "width";
-			}
+            public String getName() {
+                return "width";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _w;
-			}
+            public Double getValue() {
+                return _w;
+            }
 
-			public void setValue(Double width) {
-				_w = width;
-				updateValue();
-			}
+            public void setValue(Double width) {
+                _w = width;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Double>(this) {
+        subProperties[1] = new SubProperty<Double>(this) {
 
-			public String getName() {
-				return "height";
-			}
+            public String getName() {
+                return "height";
+            }
 
-			public Class<Double> getType() {
-				return Double.class;
-			}
+            public Class<Double> getType() {
+                return Double.class;
+            }
 
-			public Double getValue() {
-				return _h;
-			}
+            public Double getValue() {
+                return _h;
+            }
 
-			public void setValue(Double height) {
-				_h = height;
-				updateValue();
-			}
+            public void setValue(Double height) {
+                _h = height;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

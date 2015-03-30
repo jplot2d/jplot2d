@@ -18,6 +18,10 @@
  */
 package org.jplot2d.swing.interaction;
 
+import org.jplot2d.env.RenderEnvironment;
+import org.jplot2d.swing.components.PlotPropertiesFrame;
+import org.jplot2d.swing.print.PrintRenderer;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
@@ -25,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -34,258 +37,225 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.swing.components.PlotPropertiesFrame;
-import org.jplot2d.swing.print.PrintRenderer;
-
 /**
  * The popup menu support for a plot.
- * 
+ *
  * @author Jingjing Li
  */
 public class PopupMenu extends JPopupMenu implements ActionListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected RenderEnvironment env;
+    protected final RenderEnvironment env;
 
-	/** Properties action command. */
-	protected final String PROPERTIES_ACTION_COMMAND = "PROPERTIES";
+    /**
+     * Properties action command.
+     */
+    protected final String PROPERTIES_ACTION_COMMAND = "PROPERTIES";
 
-	/** undo/redo */
-	protected final String UNDO_ACTION_COMMAND = "UNDO";
+    /**
+     * undo/redo
+     */
+    protected final String UNDO_ACTION_COMMAND = "UNDO";
 
-	protected final String REDO_ACTION_COMMAND = "REDO";
+    protected final String REDO_ACTION_COMMAND = "REDO";
 
-	/** Save action command. */
-	protected final String EXPORT_ACTION_COMMAND = "EXPORT";
+    /**
+     * Save action command.
+     */
+    protected final String EXPORT_ACTION_COMMAND = "EXPORT";
 
-	/** Print action command. */
-	protected final String PRINT_PAGE_SETUP_COMMAND = "PAGE_SETUP";
+    /**
+     * Print action command.
+     */
+    protected final String PRINT_PAGE_SETUP_COMMAND = "PAGE_SETUP";
 
-	protected final String PRINT_ACTION_COMMAND = "PRINT";
+    protected final String PRINT_ACTION_COMMAND = "PRINT";
 
-	protected JMenuItem undoItem;
+    protected final JMenuItem undoItem;
 
-	protected JMenuItem redoItem;
+    protected final JMenuItem redoItem;
 
-	/** Menu item for resetting the zoom (both axes). */
-	protected JMenuItem autoRangeBothMenuItem;
+    public PopupMenu(RenderEnvironment env) {
+        super("jplot2d");
+        this.env = env;
 
-	/** Menu item for resetting the zoom (horizontal axis only). */
-	protected JMenuItem autoRangeHorizontalMenuItem;
+        JMenuItem propertiesItem = new JMenuItem("Properties...");
+        propertiesItem.setActionCommand(PROPERTIES_ACTION_COMMAND);
+        propertiesItem.addActionListener(this);
+        super.add(propertiesItem);
 
-	/** Menu item for resetting the zoom (vertical axis only). */
-	protected JMenuItem autoRangeVerticalMenuItem;
+        //------------------------------------------------
+        super.addSeparator();
 
-	protected JMenuItem pickCoordinateMenuItem;
+        {
+            undoItem = new JMenuItem("Undo");
+            undoItem.setActionCommand(UNDO_ACTION_COMMAND);
+            undoItem.addActionListener(this);
+            super.add(undoItem);
+            redoItem = new JMenuItem("Redo");
+            redoItem.setActionCommand(REDO_ACTION_COMMAND);
+            redoItem.addActionListener(this);
+            super.add(redoItem);
+        }
 
-	public PopupMenu(RenderEnvironment env) {
-		super("jplot2d");
-		this.env = env;
+        //------------------------------------------------
+        super.addSeparator();
 
-		boolean separator = false;
+        JMenuItem saveItem = new JMenuItem("Export...");
+        saveItem.setActionCommand(EXPORT_ACTION_COMMAND);
+        saveItem.addActionListener(this);
+        super.add(saveItem);
 
-		JMenuItem propertiesItem = new JMenuItem("Properties...");
-		propertiesItem.setActionCommand(PROPERTIES_ACTION_COMMAND);
-		propertiesItem.addActionListener(this);
-		super.add(propertiesItem);
-		separator = true;
+        //------------------------------------------------
+        super.addSeparator();
 
-		if (separator) {
-			super.addSeparator();
-			separator = false;
-		}
+        JMenuItem pageSetupItem = new JMenuItem("Page setup ...");
+        pageSetupItem.setActionCommand(PRINT_PAGE_SETUP_COMMAND);
+        pageSetupItem.addActionListener(this);
+        super.add(pageSetupItem);
+        JMenuItem printItem = new JMenuItem("Print...");
+        printItem.setActionCommand(PRINT_ACTION_COMMAND);
+        printItem.addActionListener(this);
+        super.add(printItem);
 
-		{
-			undoItem = new JMenuItem("Undo");
-			undoItem.setActionCommand(UNDO_ACTION_COMMAND);
-			undoItem.addActionListener(this);
-			super.add(undoItem);
-			redoItem = new JMenuItem("Redo");
-			redoItem.setActionCommand(REDO_ACTION_COMMAND);
-			redoItem.addActionListener(this);
-			super.add(redoItem);
-			separator = true;
-		}
+    }
 
-		if (separator) {
-			super.addSeparator();
-			separator = false;
-		}
+    public void actionPerformed(ActionEvent event) {
 
-		JMenuItem saveItem = new JMenuItem("Export...");
-		saveItem.setActionCommand(EXPORT_ACTION_COMMAND);
-		saveItem.addActionListener(this);
-		super.add(saveItem);
-		separator = true;
+        String command = event.getActionCommand();
 
-		if (separator) {
-			super.addSeparator();
-			separator = false;
-		}
+        switch (command) {
+            case PROPERTIES_ACTION_COMMAND:
+                showProperties();
+                break;
+            case UNDO_ACTION_COMMAND:
+                env.undo();
+                break;
+            case REDO_ACTION_COMMAND:
+                env.redo();
+                break;
+            case EXPORT_ACTION_COMMAND:
+                try {
+                    doSaveAs();
+                } catch (IOException e) {
+                    String msg = "I/O exception: " + e.getMessage();
+                    JOptionPane.showMessageDialog(getInvoker(), msg);
+                }
+                break;
+            case PRINT_PAGE_SETUP_COMMAND:
+                PrintRenderer.pageDialog();
+                break;
+            case PRINT_ACTION_COMMAND:
+                try {
+                    PrintRenderer.printDialog(env);
+                } catch (PrinterException e) {
+                    JOptionPane.showMessageDialog(getInvoker(), e.getMessage());
+                }
+        }
 
-		JMenuItem pageSetupItem = new JMenuItem("Page setup ...");
-		pageSetupItem.setActionCommand(PRINT_PAGE_SETUP_COMMAND);
-		pageSetupItem.addActionListener(this);
-		super.add(pageSetupItem);
-		JMenuItem printItem = new JMenuItem("Print...");
-		printItem.setActionCommand(PRINT_ACTION_COMMAND);
-		printItem.addActionListener(this);
-		super.add(printItem);
-		separator = true;
+    }
 
-	}
+    /**
+     * Create and show the properties frame.
+     */
+    protected void showProperties() {
+        JFrame frame = new PlotPropertiesFrame(env);
+        frame.setVisible(true);
+    }
 
-	public void actionPerformed(ActionEvent event) {
+    /**
+     * Update the internal status according to the point where the menu popup.
+     *
+     * @param x x of the point where the menu popup
+     * @param y x of the point where the menu popup
+     */
+    @SuppressWarnings("UnusedParameters")
+    public void updateStatus(int x, int y) {
+        /* undo/redo */
+        undoItem.setEnabled(env.canUndo());
+        redoItem.setEnabled(env.canRedo());
+    }
 
-		String command = event.getActionCommand();
+    private static JFileChooser _saveFileChooser;
 
-		if (command.equals(PROPERTIES_ACTION_COMMAND)) {
-			showProperties();
-			return;
-		}
-		if (command.equals(UNDO_ACTION_COMMAND)) {
-			env.undo();
-			return;
-		}
-		if (command.equals(REDO_ACTION_COMMAND)) {
-			env.redo();
-			return;
-		}
-		if (command.equals(EXPORT_ACTION_COMMAND)) {
-			try {
-				doSaveAs();
-			} catch (IOException e) {
-				String msg = "I/O exception: " + e.getMessage();
-				JOptionPane.showMessageDialog(getInvoker(), msg);
-			}
-			return;
-		}
-		if (command.equals(PRINT_PAGE_SETUP_COMMAND)) {
-			PrintRenderer.pageDialog();
-			return;
-		}
-		if (command.equals(PRINT_ACTION_COMMAND)) {
-			try {
-				PrintRenderer.printDialog(env);
-			} catch (PrinterException e) {
-				JOptionPane.showMessageDialog(getInvoker(), e.getMessage());
-			}
-			return;
-		}
+    /**
+     * Opens a file chooser and gives the user an opportunity to save the chart in PNG, JPG, EPS format.
+     *
+     * @throws IOException if there is an I/O error.
+     */
+    public void doSaveAs() throws IOException {
 
-	}
+        if (_saveFileChooser == null) {
+            initSaveFileChooser();
+        }
 
-	/**
-	 * Create and show the properties frame.
-	 */
-	protected void showProperties() {
-		JFrame frame = new PlotPropertiesFrame(env);
-		frame.setVisible(true);
-	}
+        int option = _saveFileChooser.showSaveDialog(getInvoker());
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File fFile = _saveFileChooser.getSelectedFile();
+            String filename = fFile.getPath();
+            String fileDesc = _saveFileChooser.getFileFilter().getDescription();
+            if (fileDesc.contains("PNG")) {
+                if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".png")) {
+                    filename = filename + ".png";
+                }
+            } else if (fileDesc.contains("JPEG")) {
+                if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".jpg")
+                        && !filename.substring(filename.length() - 5).equalsIgnoreCase(".jpeg")) {
+                    filename = filename + ".jpg";
+                }
+            } else if (fileDesc.contains("EPS")) {
+                if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".eps")) {
+                    filename = filename + ".eps";
+                }
+            } else if (fileDesc.contains("PDF")) {
+                if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".pdf")) {
+                    filename = filename + ".pdf";
+                }
+            }
 
-	/**
-	 * Update the internal status according to the point where the menu popup.
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	public void updateStatus(int x, int y) {
-		/* undo/redo */
-		undoItem.setEnabled(env.canUndo());
-		redoItem.setEnabled(env.canRedo());
-	}
+            if (confirmOverwrite(filename)) {
+                if (fileDesc.contains("PNG")) {
+                    env.exportToPNG(filename);
+                } else if (fileDesc.contains("PDF")) {
+                    env.exportToPDF(filename);
+                } else if (fileDesc.contains("EPS")) {
+                    env.exportToEPS(filename);
+                }
+            }
 
-	private static JFileChooser _saveFileChooser;
+        }
 
-	/**
-	 * Opens a file chooser and gives the user an opportunity to save the chart in PNG, JPG, EPS format.
-	 * 
-	 * @throws IOException
-	 *             if there is an I/O error.
-	 */
-	public void doSaveAs() throws IOException {
+    }
 
-		final AtomicReference<IOException> ar = new AtomicReference<IOException>();
+    private boolean confirmOverwrite(String filename) {
+        File fFile = new File(filename);
+        if (fFile.exists()) {
+            int response = JOptionPane.showConfirmDialog(getInvoker(), "Overwrite existing file?", "Confirm Overwrite",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (response == JOptionPane.CANCEL_OPTION) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-		if (_saveFileChooser == null) {
-			initSaveFileChooser();
-		}
+    private static void initSaveFileChooser() {
+        _saveFileChooser = new JFileChooser(RenderEnvironment.getDefaultExportDirectory());
+        _saveFileChooser.setAcceptAllFileFilterUsed(false);
 
-		int option = _saveFileChooser.showSaveDialog(getInvoker());
-		if (option == JFileChooser.APPROVE_OPTION) {
-			File fFile = _saveFileChooser.getSelectedFile();
-			String filename = fFile.getPath();
-			String fileDesc = _saveFileChooser.getFileFilter().getDescription();
-			if (fileDesc.contains("PNG")) {
-				if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".png")) {
-					filename = filename + ".png";
-				}
-			} else if (fileDesc.contains("JPEG")) {
-				if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".jpg")
-						&& !filename.substring(filename.length() - 5).equalsIgnoreCase(".jpeg")) {
-					filename = filename + ".jpg";
-				}
-			} else if (fileDesc.contains("EPS")) {
-				if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".eps")) {
-					filename = filename + ".eps";
-				}
-			} else if (fileDesc.contains("PDF")) {
-				if (!filename.substring(filename.length() - 4).equalsIgnoreCase(".pdf")) {
-					filename = filename + ".pdf";
-				}
-			}
+        FileNameExtensionFilter PNG_FILE_FILTER = new FileNameExtensionFilter("PNG file", "png");
+        FileNameExtensionFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF file", "pdf");
+        FileNameExtensionFilter EPS_FILE_FILTER = new FileNameExtensionFilter("EPS file", "eps");
+        List<FileNameExtensionFilter> EXPORT_FILE_FILTERS = new ArrayList<>(2);
+        EXPORT_FILE_FILTERS.add(PNG_FILE_FILTER);
+        EXPORT_FILE_FILTERS.add(PDF_FILE_FILTER);
+        EXPORT_FILE_FILTERS.add(EPS_FILE_FILTER);
 
-			if (confirmOverwrite(filename)) {
-				try {
-					if (fileDesc.contains("PNG")) {
-						env.exportToPNG(filename);
-					} else if (fileDesc.contains("PDF")) {
-						env.exportToPDF(filename);
-					} else if (fileDesc.contains("EPS")) {
-						env.exportToEPS(filename);
-					}
-				} catch (IOException e) {
-					ar.set(e);
-				}
-			}
-
-		}
-
-		if (ar.get() != null) {
-			throw ar.get();
-		}
-	}
-
-	private boolean confirmOverwrite(String filename) {
-		File fFile = new File(filename);
-		if (fFile.exists()) {
-			int response = JOptionPane.showConfirmDialog(getInvoker(), "Overwrite existing file?", "Confirm Overwrite",
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if (response == JOptionPane.CANCEL_OPTION) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private static void initSaveFileChooser() {
-		_saveFileChooser = new JFileChooser(RenderEnvironment.getDefaultExportDirectory());
-		_saveFileChooser.setAcceptAllFileFilterUsed(false);
-
-		FileNameExtensionFilter PNG_FILE_FILTER = new FileNameExtensionFilter("PNG file", "png");
-		FileNameExtensionFilter PDF_FILE_FILTER = new FileNameExtensionFilter("PDF file", "pdf");
-		FileNameExtensionFilter EPS_FILE_FILTER = new FileNameExtensionFilter("EPS file", "eps");
-		List<FileNameExtensionFilter> EXPORT_FILE_FILTERS = new ArrayList<FileNameExtensionFilter>(2);
-		EXPORT_FILE_FILTERS.add(PNG_FILE_FILTER);
-		EXPORT_FILE_FILTERS.add(PDF_FILE_FILTER);
-		EXPORT_FILE_FILTERS.add(EPS_FILE_FILTER);
-
-		for (FileNameExtensionFilter fnef : EXPORT_FILE_FILTERS) {
-			_saveFileChooser.addChoosableFileFilter(fnef);
-		}
-		_saveFileChooser.setFileFilter(PNG_FILE_FILTER);
-	}
+        for (FileNameExtensionFilter fnef : EXPORT_FILE_FILTERS) {
+            _saveFileChooser.addChoosableFileFilter(fnef);
+        }
+        _saveFileChooser.setFileFilter(PNG_FILE_FILTER);
+    }
 
 }

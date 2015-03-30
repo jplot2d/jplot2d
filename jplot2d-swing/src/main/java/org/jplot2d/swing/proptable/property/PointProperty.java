@@ -18,91 +18,90 @@
  */
 package org.jplot2d.swing.proptable.property;
 
-import java.awt.Point;
-
 import org.jplot2d.env.PropertyInfo;
+
+import java.awt.Point;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class PointProperty extends PropertyDescriptorAdapter<Point> {
 
-	private Property<?>[] subProperties;
+    private Property<?>[] subProperties;
 
-	private Integer _x, _y;
+    private Integer _x, _y;
 
-	public PointProperty(PropertyInfo descriptor) {
-		super(descriptor);
-		initSubProperties();
-	}
+    public PointProperty(PropertyInfo descriptor) {
+        super(descriptor);
+        initSubProperties();
+    }
 
-	public Property<?>[] getSubProperties() {
-		return subProperties;
-	}
+    public Property<?>[] getSubProperties() {
+        return subProperties;
+    }
 
-	public void readFromObject(Object object) {
-		super.readFromObject(object);
+    public void readFromObject(Object object) {
+        super.readFromObject(object);
 
-		if (getValue() != null) {
-			_x = getValue().x;
-			_y = getValue().y;
-		}
-	}
+        if (getValue() != null) {
+            _x = getValue().x;
+            _y = getValue().y;
+        }
+    }
 
-	private void updateValue() {
-		if (_x != null && _y != null) {
-			setValue(new Point(_x, _y));
-		}
-		if (_x == null && _y == null) {
-			setValue(null);
-		}
-	}
+    private void updateValue() {
+        if (_x != null && _y != null) {
+            setValue(new Point(_x, _y));
+        }
+        if (_x == null && _y == null) {
+            setValue(null);
+        }
+    }
 
-	private void initSubProperties() {
-		// initial sub-properties
-		subProperties = new Property[2];
-		subProperties[0] = new SubProperty<Integer>(this) {
+    private void initSubProperties() {
+        // initial sub-properties
+        subProperties = new Property[2];
+        subProperties[0] = new SubProperty<Integer>(this) {
 
-			public String getName() {
-				return "x";
-			}
+            public String getName() {
+                return "x";
+            }
 
-			public Class<Integer> getType() {
-				return Integer.class;
-			}
+            public Class<Integer> getType() {
+                return Integer.class;
+            }
 
-			public Integer getValue() {
-				return _x;
-			}
+            public Integer getValue() {
+                return _x;
+            }
 
-			public void setValue(Integer x) {
-				_x = x;
-				updateValue();
-			}
+            public void setValue(Integer x) {
+                _x = x;
+                updateValue();
+            }
 
-		};
+        };
 
-		subProperties[1] = new SubProperty<Integer>(this) {
+        subProperties[1] = new SubProperty<Integer>(this) {
 
-			public String getName() {
-				return "y";
-			}
+            public String getName() {
+                return "y";
+            }
 
-			public Class<Integer> getType() {
-				return Integer.class;
-			}
+            public Class<Integer> getType() {
+                return Integer.class;
+            }
 
-			public Integer getValue() {
-				return _y;
-			}
+            public Integer getValue() {
+                return _y;
+            }
 
-			public void setValue(Integer y) {
-				_y = y;
-				updateValue();
-			}
+            public void setValue(Integer y) {
+                _y = y;
+                updateValue();
+            }
 
-		};
+        };
 
-	}
+    }
 }

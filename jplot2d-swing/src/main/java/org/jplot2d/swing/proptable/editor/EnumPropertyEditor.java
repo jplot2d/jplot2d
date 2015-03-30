@@ -20,7 +20,6 @@ package org.jplot2d.swing.proptable.editor;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class EnumPropertyEditor extends ComboBoxPropertyEditor {
 

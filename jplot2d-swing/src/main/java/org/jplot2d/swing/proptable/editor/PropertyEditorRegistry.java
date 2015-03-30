@@ -18,93 +18,92 @@
  */
 package org.jplot2d.swing.proptable.editor;
 
+import org.jplot2d.swing.proptable.property.Property;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jplot2d.swing.proptable.property.Property;
-
 /**
  * A registry to keep the map between property type and PropertyEditor. Warning: the internal map is
  * not synchronized.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class PropertyEditorRegistry implements PropertyEditorFactory {
 
-	private Map<Class<?>, PropertyEditor> typeEditorMap;
+    private final Map<Class<?>, PropertyEditor> typeEditorMap;
 
-	public PropertyEditorRegistry() {
-		typeEditorMap = new HashMap<Class<?>, PropertyEditor>();
-		registerDefaults();
-	}
+    public PropertyEditorRegistry() {
+        typeEditorMap = new HashMap<>();
+        registerDefaults();
+    }
 
-	public void registerEditor(Class<?> type, PropertyEditor renderer) {
-		typeEditorMap.put(type, renderer);
-	}
+    public void registerEditor(Class<?> type, PropertyEditor renderer) {
+        typeEditorMap.put(type, renderer);
+    }
 
-	public void unregisterEditor(Class<?> type) {
-		typeEditorMap.remove(type);
-	}
+    public void unregisterEditor(Class<?> type) {
+        typeEditorMap.remove(type);
+    }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public PropertyEditor createPropertyEditor(Property<?> property) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public PropertyEditor createPropertyEditor(Property<?> property) {
 
-		Object[] avs = property.getAvailableValues();
-		if (avs != null) {
-			return new ComboBoxPropertyEditor(avs);
-		}
+        Object[] avs = property.getAvailableValues();
+        if (avs != null) {
+            return new ComboBoxPropertyEditor(avs);
+        }
 
-		Class<?> propType = property.getType();
-		if (Enum.class.isAssignableFrom(propType)) {
-			return new EnumPropertyEditor((Class<? extends Enum>) propType);
-		}
-		return typeEditorMap.get(propType);
-	}
+        Class<?> propType = property.getType();
+        if (Enum.class.isAssignableFrom(propType)) {
+            return new EnumPropertyEditor((Class<? extends Enum>) propType);
+        }
+        return typeEditorMap.get(propType);
+    }
 
-	/**
-	 * Adds default renderers. This method is called by the constructor but may be called later to
-	 * reset any customizations made through the <code>registerRenderer</code> methods.
-	 * <p>
-	 * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging
-	 * custom defaults.
-	 */
-	public void registerDefaults() {
-		typeEditorMap.clear();
+    /**
+     * Adds default renderers. This method is called by the constructor but may be called later to
+     * reset any customizations made through the <code>registerRenderer</code> methods.
+     * <p/>
+     * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging
+     * custom defaults.
+     */
+    public void registerDefaults() {
+        typeEditorMap.clear();
 
-		PropertyEditor doubleEditor = new DoubleEditor();
-		registerEditor(double.class, doubleEditor);
-		registerEditor(Double.class, doubleEditor);
+        PropertyEditor doubleEditor = new DoubleEditor();
+        registerEditor(double.class, doubleEditor);
+        registerEditor(Double.class, doubleEditor);
 
-		PropertyEditor floatEditor = new FloatEditor();
-		registerEditor(float.class, floatEditor);
-		registerEditor(Float.class, floatEditor);
+        PropertyEditor floatEditor = new FloatEditor();
+        registerEditor(float.class, floatEditor);
+        registerEditor(Float.class, floatEditor);
 
-		PropertyEditor longEditor = new LongEditor();
-		registerEditor(long.class, longEditor);
-		registerEditor(Long.class, longEditor);
+        PropertyEditor longEditor = new LongEditor();
+        registerEditor(long.class, longEditor);
+        registerEditor(Long.class, longEditor);
 
-		PropertyEditor integerEditor = new IntegerEditor();
-		registerEditor(int.class, integerEditor);
-		registerEditor(Integer.class, integerEditor);
+        PropertyEditor integerEditor = new IntegerEditor();
+        registerEditor(int.class, integerEditor);
+        registerEditor(Integer.class, integerEditor);
 
-		PropertyEditor booleanEditor = new BooleanPropertyEditor();
-		registerEditor(boolean.class, booleanEditor);
-		registerEditor(Boolean.class, booleanEditor);
+        PropertyEditor booleanEditor = new BooleanPropertyEditor();
+        registerEditor(boolean.class, booleanEditor);
+        registerEditor(Boolean.class, booleanEditor);
 
-		registerEditor(float[].class, new FloatArrayEditor());
-		registerEditor(double[].class, new DoubleArrayEditor());
+        registerEditor(float[].class, new FloatArrayEditor());
+        registerEditor(double[].class, new DoubleArrayEditor());
 
-		// string
-		registerEditor(String.class, new StringPropertyEditor());
+        // string
+        registerEditor(String.class, new StringPropertyEditor());
 
-		// color and font
-		registerEditor(Color.class, new ColorPropertyEditor());
-		registerEditor(Font.class, new FontPropertyEditor());
+        // color and font
+        registerEditor(Color.class, new ColorPropertyEditor());
+        registerEditor(Font.class, new FontPropertyEditor());
 
-	}
+    }
 
 }

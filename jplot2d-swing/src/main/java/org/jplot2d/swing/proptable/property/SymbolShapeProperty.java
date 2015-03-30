@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ *
  */
 package org.jplot2d.swing.proptable.property;
 
@@ -26,16 +26,15 @@ import org.jplot2d.util.SymbolShape;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class SymbolShapeProperty extends PropertyDescriptorAdapter<SymbolShape> {
 
-	public SymbolShapeProperty(PropertyInfo descriptor) {
-		super(descriptor);
-	}
+    public SymbolShapeProperty(PropertyInfo descriptor) {
+        super(descriptor);
+    }
 
-	public Object[] getAvailableValues() {
-		return SymbolShape.getSymbolShapes();
-	}
+    public Object[] getAvailableValues() {
+        return SymbolShape.getSymbolShapes();
+    }
 
 }

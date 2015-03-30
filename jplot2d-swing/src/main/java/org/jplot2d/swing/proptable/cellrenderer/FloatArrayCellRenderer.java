@@ -22,29 +22,28 @@ import org.jplot2d.util.NumberUtils;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class FloatArrayCellRenderer extends DigitsLimitableCellRenderer<float[]> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
 
-		return toString(value, digits);
-	}
+        return toString(value, digits);
+    }
 
-	public static String toString(float[] value, int digits) {
-		StringBuilder b = new StringBuilder();
-		if (value.length > 0) {
-			b.append(NumberUtils.toString(value[0], digits));
-		}
-		for (int i = 1; i < value.length; i++) {
-			b.append(',').append(NumberUtils.toString(value[i], digits));
-		}
-		return b.toString();
-	}
+    public static String toString(float[] value, int digits) {
+        StringBuilder b = new StringBuilder();
+        if (value.length > 0) {
+            b.append(NumberUtils.toString(value[0], digits));
+        }
+        for (int i = 1; i < value.length; i++) {
+            b.append(',').append(NumberUtils.toString(value[i], digits));
+        }
+        return b.toString();
+    }
 
 }

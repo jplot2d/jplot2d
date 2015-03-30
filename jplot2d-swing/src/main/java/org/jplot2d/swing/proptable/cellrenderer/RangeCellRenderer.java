@@ -22,19 +22,18 @@ import org.jplot2d.util.NumberUtils;
 import org.jplot2d.util.Range;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class RangeCellRenderer extends DigitsLimitableCellRenderer<Range> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return (value.isStartIncluded() ? "[" : "(") + NumberUtils.toString(value.getStart(), digits) + ", "
-				+ NumberUtils.toString(value.getEnd(), digits) + (value.isEndIncluded() ? "]" : ")");
-	}
+    @Override
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
+        return (value.isStartIncluded() ? "[" : "(") + NumberUtils.toString(value.getStart(), digits) + ", "
+                + NumberUtils.toString(value.getEnd(), digits) + (value.isEndIncluded() ? "]" : ")");
+    }
 }

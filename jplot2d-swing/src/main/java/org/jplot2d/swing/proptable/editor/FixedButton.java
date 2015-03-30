@@ -25,9 +25,8 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 
 /**
- * A button with a fixed size to workaround bugs in OSX. Submitted by Hani
- * Suleiman. Hani uses an icon for the ellipsis, I've decided to hardcode the
- * dimension to 16x30 but only on Mac OS X.
+ * A button with a fixed size to workaround bugs in OSX. Submitted by Hani Suleiman.
+ * Hani uses an icon for the ellipsis, I've decided to hardcode the dimension to 16x30 but only on Mac OS X.
  */
 public final class FixedButton extends JButton {
 

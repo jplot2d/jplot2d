@@ -23,29 +23,29 @@ package org.jplot2d.swing.proptable.property;
  */
 public interface Property<T> {
 
-	public String getName();
+    public String getName();
 
-	public String getDisplayName();
+    public String getDisplayName();
 
-	public String getShortDescription();
+    public String getShortDescription();
 
-	public int getDisplayDigits();
+    public int getDisplayDigits();
 
-	public Class<T> getType();
+    public Class<T> getType();
 
-	public T getValue();
+    public T getValue();
 
-	public void setValue(T value);
+    public void setValue(T value);
 
-	public boolean isEditable();
+    public boolean isEditable();
 
-	public Property<?>[] getSubProperties();
+    public Property<?>[] getSubProperties();
 
-	/**
-	 * If the returned value is not <code>null</code>, The table will use a JComboBox to edit this property.
-	 * 
-	 * @return all available values
-	 */
-	public Object[] getAvailableValues();
+    /**
+     * If the returned value is not <code>null</code>, The table will use a JComboBox to edit this property.
+     *
+     * @return all available values
+     */
+    public Object[] getAvailableValues();
 
 }

@@ -28,13 +28,12 @@ import java.beans.PropertyEditor;
 /**
  * Once the editor component change, {@link #firePropertyChange(Object, Object)}
  * should be called to notify all the listeners.
- * 
  */
 public abstract class AbstractPropertyEditor<T extends Component> implements PropertyEditor {
 
     protected T editor;
 
-    private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
     public boolean isPaintable() {
         return false;
@@ -47,7 +46,7 @@ public abstract class AbstractPropertyEditor<T extends Component> implements Pro
         return false;
     }
 
-	public Component getCustomEditor() {
+    public Component getCustomEditor() {
         return editor;
     }
 

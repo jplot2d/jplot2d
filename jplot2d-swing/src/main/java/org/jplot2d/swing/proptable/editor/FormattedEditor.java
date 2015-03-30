@@ -25,34 +25,33 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicFormattedTextFieldUI;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class FormattedEditor extends AbstractPropertyEditor<JFormattedTextField> {
 
-	public FormattedEditor(Format format) {
-		editor = new JFormattedTextField(format);
-		// workaround for mac jdk bug
-		if (isMacOSX() && UIManager.getLookAndFeel().isNativeLookAndFeel()) {
-			editor.setUI(new BasicFormattedTextFieldUI());
-		}
-		editor.setBorder(null);
-	}
+    public FormattedEditor(Format format) {
+        editor = new JFormattedTextField(format);
+        // workaround for mac jdk bug
+        if (isMacOSX() && UIManager.getLookAndFeel().isNativeLookAndFeel()) {
+            editor.setUI(new BasicFormattedTextFieldUI());
+        }
+        editor.setBorder(null);
+    }
 
-	public void setValue(Object value) {
-		editor.setValue(value);
-	}
+    public void setValue(Object value) {
+        editor.setValue(value);
+    }
 
-	public Object getValue() {
-		if (editor.getText().length() == 0) {
-			return null;
-		}
-		return editor.getValue();
-	}
+    public Object getValue() {
+        if (editor.getText().length() == 0) {
+            return null;
+        }
+        return editor.getValue();
+    }
 
-	private boolean isMacOSX() {
-		String os = System.getProperty("os.name").toLowerCase();
-		return os.startsWith("mac os x");
-	}
+    private boolean isMacOSX() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.startsWith("mac os x");
+    }
 
 }

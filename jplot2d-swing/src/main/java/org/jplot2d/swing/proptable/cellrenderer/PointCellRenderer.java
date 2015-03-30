@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.cellrenderer;
 import java.awt.Point;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class PointCellRenderer extends StringCellRenderer<Point> {

@@ -18,25 +18,24 @@
  */
 package org.jplot2d.swing.proptable.cellrenderer;
 
-import java.awt.geom.Rectangle2D;
-
 import org.jplot2d.util.NumberUtils;
 
+import java.awt.geom.Rectangle2D;
+
 /**
- * 
  * @author Jingjing Li
  */
 public class Rectangle2DCellRenderer extends DigitsLimitableCellRenderer<Rectangle2D> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
-				+ ", " + NumberUtils.toString(value.getWidth(), digits) + ", "
-				+ NumberUtils.toString(value.getHeight(), digits) + "]";
-	}
+    @Override
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
+        return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
+                + ", " + NumberUtils.toString(value.getWidth(), digits) + ", "
+                + NumberUtils.toString(value.getHeight(), digits) + "]";
+    }
 }

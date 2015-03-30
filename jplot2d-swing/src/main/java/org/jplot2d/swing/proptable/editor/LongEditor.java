@@ -21,7 +21,6 @@ package org.jplot2d.swing.proptable.editor;
 import java.text.NumberFormat;
 
 /**
- * 
  * @author Jingjing Li
  */
 public class LongEditor extends FormattedEditor {
@@ -34,7 +33,7 @@ public class LongEditor extends FormattedEditor {
     public Object getValue() {
         Object v = super.getValue();
         if (v instanceof Number) {
-            return new Long(((Number) v).longValue());
+            return ((Number) v).longValue();
         }
         return v;
     }

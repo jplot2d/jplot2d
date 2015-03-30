@@ -22,34 +22,32 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * A cell renderer that display a string to describe the value.
- * 
+ *
+ * @param <V> the value type.
  * @author Jingjing Li
- * 
- * @param <V>
- *            the value type.
  */
 public class StringCellRenderer<V> extends DefaultTableCellRenderer.UIResource {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected V value;
+    protected V value;
 
-	@SuppressWarnings("unchecked")
-	public void setValue(Object value) {
-		this.value = (V) value;
-		setText(getValueText());
-	}
+    @SuppressWarnings("unchecked")
+    public void setValue(Object value) {
+        this.value = (V) value;
+        setText(getValueText());
+    }
 
-	/**
-	 * Returns a string to describe the value
-	 * 
-	 * @return a string to describe the value
-	 */
-	public String getValueText() {
-		if (value == null) {
-			return null;
-		}
-		return value.toString();
-	}
+    /**
+     * Returns a string to describe the value
+     *
+     * @return a string to describe the value
+     */
+    public String getValueText() {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
 
 }
