@@ -50,7 +50,8 @@ public class SwtInteractiveComp implements InteractiveComp {
 
 	private final Color tooltipForeground;
 
-	public SwtInteractiveComp(JPlot2DComposite comp, PlotEnvironment env) {
+	@SuppressWarnings("UnusedParameters")
+    public SwtInteractiveComp(JPlot2DComposite comp, PlotEnvironment env) {
 		this.comp = comp;
 		defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
 		moveCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
