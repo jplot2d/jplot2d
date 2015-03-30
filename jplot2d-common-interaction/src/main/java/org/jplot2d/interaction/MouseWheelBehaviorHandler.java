@@ -33,10 +33,9 @@ public abstract class MouseWheelBehaviorHandler<B extends MouseWheelBehavior> ex
     }
 
     /**
-     * @param x             TODO
-     * @param y             TODO
-     * @param wheelRotation On Windows/Linux, always 1. On MacOSX, may be any number due to its wheel
-     *                      acceleration.
+     * @param x             the x coordinate for the mouse location
+     * @param y             the y coordinate for the mouse location
+     * @param wheelRotation On Windows/Linux, always 1. On MacOSX, may be any number due to its wheel acceleration.
      */
     public abstract boolean behaviorPerformed(int x, int y, int wheelRotation);
 
