@@ -21,9 +21,8 @@ package org.jplot2d.interaction;
 /**
  * A high-level abstraction of mouse action. User application only response to
  * mouse command.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class MouseBehavior {
 

@@ -24,91 +24,90 @@ import java.awt.event.MouseEvent;
 /**
  * Button combinations that can be configured to trigger a behavior. This class contains mouse
  * button and modifiers.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class MouseButtonCombination {
 
-	private static int modifiersAllMask = InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK
-			| InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.BUTTON1_DOWN_MASK
-			| InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK
-			| InputEvent.ALT_GRAPH_DOWN_MASK;
+    private static final int modifiersAllMask = InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK
+            | InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.BUTTON1_DOWN_MASK
+            | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK
+            | InputEvent.ALT_GRAPH_DOWN_MASK;
 
-	public static final int ANY_CLICK_COUNT = 0x07;
+    public static final int ANY_CLICK_COUNT = 0x07;
 
-	public static final int ANY_BUTTON = 0x0f;
+    public static final int ANY_BUTTON = 0x0f;
 
-	private int modifiersOnMask;
+    private final int modifiersOnMask;
 
-	private int modifiersOffMask;
+    private final int modifiersOffMask;
 
-	private int clickCount;
+    private final int clickCount;
 
-	private int button;
+    private final int button;
 
-	/**
-	 * @param modifiers
-	 * @param clickCount
-	 * @param button
-	 *            can be {@link MouseEvent#NOBUTTON} {@link MouseEvent#BUTTON1}
-	 *            {@link MouseEvent#BUTTON2} {@link MouseEvent#BUTTON3} or {@link #ANY_BUTTON}
-	 */
-	public MouseButtonCombination(int modifiers, int clickCount, int button) {
-		this.modifiersOnMask = modifiers;
-		this.modifiersOffMask = ~modifiers & modifiersAllMask;
-		this.clickCount = clickCount;
-		this.button = button;
-	}
+    /**
+     * @param modifiers  The modifier keys down during event
+     * @param clickCount The number of mouse clicks associated with event
+     * @param button     An integer that indicates, which of the mouse buttons has changed its state.
+     *                   can be {@link MouseEvent#NOBUTTON} {@link MouseEvent#BUTTON1}
+     *                   {@link MouseEvent#BUTTON2} {@link MouseEvent#BUTTON3} or {@link #ANY_BUTTON}
+     */
+    public MouseButtonCombination(int modifiers, int clickCount, int button) {
+        this.modifiersOnMask = modifiers;
+        this.modifiersOffMask = ~modifiers & modifiersAllMask;
+        this.clickCount = clickCount;
+        this.button = button;
+    }
 
-	/**
-	 * @param modifiersOnMask
-	 * @param clickCount
-	 * @param button
-	 *            can be {@link MouseEvent#NOBUTTON} {@link MouseEvent#BUTTON1}
-	 *            {@link MouseEvent#BUTTON2} {@link MouseEvent#BUTTON3} or {@link #ANY_BUTTON}
-	 */
-	public MouseButtonCombination(int modifiersOnMask, int modifiersOffMask, int clickCount,
-			int button) {
-		this.modifiersOnMask = modifiersOnMask;
-		this.modifiersOffMask = modifiersOffMask;
-		this.clickCount = clickCount;
-		this.button = button;
-	}
+    /**
+     * @param modifiersOnMask The modifier keys down during event
+     * @param clickCount      The number of mouse clicks associated with event
+     * @param button          An integer that indicates, which of the mouse buttons has changed its state.
+     *                        can be {@link MouseEvent#NOBUTTON} {@link MouseEvent#BUTTON1}
+     *                        {@link MouseEvent#BUTTON2} {@link MouseEvent#BUTTON3} or {@link #ANY_BUTTON}
+     */
+    public MouseButtonCombination(int modifiersOnMask, int modifiersOffMask, int clickCount,
+                                  int button) {
+        this.modifiersOnMask = modifiersOnMask;
+        this.modifiersOffMask = modifiersOffMask;
+        this.clickCount = clickCount;
+        this.button = button;
+    }
 
-	public int getModifiers() {
-		return modifiersOnMask;
-	}
+    public int getModifiers() {
+        return modifiersOnMask;
+    }
 
-	public int getButton() {
-		return button;
-	}
+    public int getButton() {
+        return button;
+    }
 
-	public int getClickCount() {
-		return clickCount;
-	}
+    public int getClickCount() {
+        return clickCount;
+    }
 
-	public boolean equals(Object obj) {
-		if (obj instanceof MouseButtonCombination) {
-			MouseButtonCombination a = (MouseButtonCombination) obj;
-			return modifiersOnMask == a.modifiersOnMask && clickCount == a.clickCount
-					&& button == a.button;
-		}
-		return false;
-	}
+    public boolean equals(Object obj) {
+        if (obj instanceof MouseButtonCombination) {
+            MouseButtonCombination a = (MouseButtonCombination) obj;
+            return modifiersOnMask == a.modifiersOnMask && clickCount == a.clickCount
+                    && button == a.button;
+        }
+        return false;
+    }
 
-	public int hashCode() {
-		return button + modifiersOnMask + (clickCount << 16);
-	}
+    public int hashCode() {
+        return button + modifiersOnMask + (clickCount << 16);
+    }
 
-	public boolean match(GenericMouseEvent e) {
-		return match(e.getModifiers(), e.getCount(), e.getButton());
-	}
+    public boolean match(GenericMouseEvent e) {
+        return match(e.getModifiers(), e.getCount(), e.getButton());
+    }
 
-	public boolean match(int modifiers, int clickCount, int button) {
-		return ((modifiers & (modifiersOnMask | modifiersOffMask)) == modifiersOnMask)
-				&& (this.clickCount == ANY_CLICK_COUNT || this.clickCount == clickCount)
-				&& ((this.button == ANY_BUTTON) || this.button == button);
-	}
+    public boolean match(int modifiers, int clickCount, int button) {
+        return ((modifiers & (modifiersOnMask | modifiersOffMask)) == modifiersOnMask)
+                && (this.clickCount == ANY_CLICK_COUNT || this.clickCount == clickCount)
+                && ((this.button == ANY_BUTTON) || this.button == button);
+    }
 
 }

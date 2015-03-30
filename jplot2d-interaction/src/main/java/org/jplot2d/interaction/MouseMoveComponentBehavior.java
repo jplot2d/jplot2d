@@ -18,11 +18,8 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseDragBehavior;
-
 public class MouseMoveComponentBehavior extends MouseDragBehavior {
-    
+
     public MouseMoveComponentBehavior(String name) {
         super(name);
     }

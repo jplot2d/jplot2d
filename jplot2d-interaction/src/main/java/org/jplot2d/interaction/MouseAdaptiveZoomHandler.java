@@ -18,41 +18,39 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Point;
-
 import org.jplot2d.element.Plot;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseClickBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
+
+import java.awt.Point;
 
 public class MouseAdaptiveZoomHandler extends MouseClickBehaviorHandler<MouseAdaptiveZoomBehavior> {
 
-	public MouseAdaptiveZoomHandler(MouseAdaptiveZoomBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseAdaptiveZoomHandler(MouseAdaptiveZoomBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean behaviorPerformed(int x, int y) {
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		Plot plot = env.getPlotAt(new Point(x, y));
+    @Override
+    public boolean behaviorPerformed(int x, int y) {
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        Plot plot = env.getPlotAt(new Point(x, y));
 
-		if (plot == null) {
-			return false;
-		}
+        if (plot == null) {
+            return false;
+        }
 
-		/**
-		 * Zoom-in the given marquee rectangle.
-		 */
-		BatchToken token = env.beginBatch("Adaptive Zoom");
+        /**
+         * Zoom-in the given marquee rectangle.
+         */
+        BatchToken token = env.beginBatch("Adaptive Zoom");
 
-		plot.adaptiveZoomX();
-		plot.adaptiveZoomY();
+        plot.adaptiveZoomX();
+        plot.adaptiveZoomY();
 
-		env.endBatch(token, UINoticeType.getInstance());
+        env.endBatch(token, UINoticeType.getInstance());
 
-		return true;
-	}
+        return true;
+    }
 
 }

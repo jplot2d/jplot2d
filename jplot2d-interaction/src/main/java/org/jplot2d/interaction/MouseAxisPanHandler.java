@@ -23,79 +23,77 @@ import org.jplot2d.element.AxisOrientation;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseDragBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
 
 public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBehavior> {
 
-	private Axis axis;
+    private Axis axis;
 
-	private int oldv;
+    private int oldv;
 
-	public MouseAxisPanHandler(MouseAxisPanBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseAxisPanHandler(MouseAxisPanBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean canStartDargging(int x, int y) {
-		PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
-		if (pcomp instanceof Axis) {
-			axis = (Axis) pcomp;
-			return true;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean canStartDragging(int x, int y) {
+        PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
+        if (pcomp instanceof Axis) {
+            axis = (Axis) pcomp;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public void draggingStarted(int x, int y) {
-		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-			oldv = x;
-		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			oldv = y;
-		} else {
-			throw new Error();
-		}
-	}
+    @Override
+    public void draggingStarted(int x, int y) {
+        if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
+            oldv = x;
+        } else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
+            oldv = y;
+        } else {
+            throw new Error();
+        }
+    }
 
-	@Override
-	public void draggingTo(int x, int y) {
-		int offset;
-		if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
-			offset = x - oldv;
-			oldv = x;
-		} else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
-			offset = oldv - y;
-			oldv = y;
-		} else {
-			throw new Error();
-		}
+    @Override
+    public void draggingTo(int x, int y) {
+        int offset;
+        if (axis.getOrientation() == AxisOrientation.HORIZONTAL) {
+            offset = x - oldv;
+            oldv = x;
+        } else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
+            offset = oldv - y;
+            oldv = y;
+        } else {
+            throw new Error();
+        }
 
-		/**
-		 * pan the given distance
-		 */
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		BatchToken token = env.beginBatch("MarqueeZoom");
+        /**
+         * pan the given distance
+         */
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        BatchToken token = env.beginBatch("MarqueeZoom");
 
-		double scale = axis.getPaperTransform().getScale();
-		double npxStart = -offset / (axis.getLength() * scale);
-		double npxEnd = 1 + npxStart;
-		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
+        double scale = axis.getPaperTransform().getScale();
+        double npxStart = -offset / (axis.getLength() * scale);
+        double npxEnd = 1 + npxStart;
+        axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(npxStart, npxEnd);
 
-		env.endBatch(token, UINoticeType.getInstance());
-	}
+        env.endBatch(token, UINoticeType.getInstance());
+    }
 
-	@Override
-	public void draggingFinished(int x, int y) {
-		// nothing to do
+    @Override
+    public void draggingFinished(int x, int y) {
+        // nothing to do
 
-	}
+    }
 
-	@Override
-	public void draggingCancelled() {
-		// nothing to do
+    @Override
+    public void draggingCancelled() {
+        // nothing to do
 
-	}
+    }
 
 }

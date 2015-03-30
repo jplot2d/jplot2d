@@ -18,40 +18,36 @@
  */
 package org.jplot2d.interaction;
 
-import java.beans.PropertyChangeEvent;
-
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.interaction.InteractiveComp.CursorStyle;
-import org.jplot2d.interaction.ValueChangeHandler;
+
+import java.beans.PropertyChangeEvent;
 
 /**
  * @author Jingjing Li
- * 
  */
 public class CursorFeedbackHandler extends ValueChangeHandler<CursorFeedbackBehavior> {
 
-	public CursorFeedbackHandler(CursorFeedbackBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public CursorFeedbackHandler(CursorFeedbackBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	public void propertyChange(PropertyChangeEvent evt) {
-		InteractiveComp icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
-		if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY)) {
-			Boolean movable = (Boolean) evt.getNewValue();
-			if (movable != null && movable) {
-				icomp.setCursor(CursorStyle.MOVE_CURSOR);
-			} else {
-				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
-			}
-		} else if (evt.getPropertyName().equals(InteractionModeHandler.MODE_ENTERED_KEY)) {
-			Boolean entered = (Boolean) evt.getNewValue();
-			if (entered != null && entered) {
-				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
-			} else {
-				icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
-			}
-		}
-	}
+    public void propertyChange(PropertyChangeEvent evt) {
+        InteractiveComp icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
+        if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY)) {
+            Boolean movable = (Boolean) evt.getNewValue();
+            if (movable != null && movable) {
+                icomp.setCursor(CursorStyle.MOVE_CURSOR);
+            } else {
+                icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
+            }
+        } else if (evt.getPropertyName().equals(InteractionModeHandler.MODE_ENTERED_KEY)) {
+            Boolean entered = (Boolean) evt.getNewValue();
+            if (entered != null && entered) {
+                icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
+            } else {
+                icomp.setCursor(CursorStyle.DEFAULT_CURSOR);
+            }
+        }
+    }
 
 }

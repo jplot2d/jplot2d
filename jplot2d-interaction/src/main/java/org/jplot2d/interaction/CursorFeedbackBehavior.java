@@ -18,13 +18,8 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.ValueChangeBehavior;
-import org.jplot2d.interaction.ValueChangeHandler;
-
 /**
  * @author Jingjing Li
- * 
  */
 public class CursorFeedbackBehavior extends ValueChangeBehavior {
 

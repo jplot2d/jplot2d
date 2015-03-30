@@ -18,67 +18,64 @@
  */
 package org.jplot2d.interaction;
 
+import org.jplot2d.element.Plot;
+import org.jplot2d.env.BatchToken;
+import org.jplot2d.env.PlotEnvironment;
+import org.jplot2d.notice.UINoticeType;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.element.Plot;
-import org.jplot2d.env.BatchToken;
-import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.notice.UINoticeType;
-
 public class MouseMarqueeZoomHandler extends MouseMarqueeHandler<MouseMarqueeZoomBehavior> {
 
-	public MouseMarqueeZoomHandler(MouseMarqueeZoomBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseMarqueeZoomHandler(MouseMarqueeZoomBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean canStartDargging(int x, int y) {
-		return true;
-	}
+    @Override
+    public boolean canStartDragging(int x, int y) {
+        return true;
+    }
 
-	/**
-	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
-	 * size of zoom rectangle is at least 2x2 pixel.
-	 * 
-	 * @param startPoint
-	 *            the mouse point that the zoom starts
-	 * @param endPoint
-	 *            the mouse point that the zoom ends
-	 */
-	protected void handleMarquee(Point startPoint, Point endPoint) {
+    /**
+     * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
+     * size of zoom rectangle is at least 2x2 pixel.
+     *
+     * @param startPoint the mouse point that the zoom starts
+     * @param endPoint   the mouse point that the zoom ends
+     */
+    protected void handleMarquee(Point startPoint, Point endPoint) {
 
-		Rectangle zrect = new Rectangle();
-		zrect.setFrameFromDiagonal(startPoint, endPoint);
+        Rectangle zrect = new Rectangle();
+        zrect.setFrameFromDiagonal(startPoint, endPoint);
 
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		Plot plot = env.getPlotAt(startPoint);
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        Plot plot = env.getPlotAt(startPoint);
 
-		if (plot == null) {
-			return;
-		}
+        if (plot == null) {
+            return;
+        }
 
-		/**
-		 * Zoom-in the given marquee rectangle.
-		 */
-		BatchToken token = env.beginBatch("MarqueeZoom");
+        /**
+         * Zoom-in the given marquee rectangle.
+         */
+        BatchToken token = env.beginBatch("MarqueeZoom");
 
-		Dimension2D csize = plot.getContentSize();
-		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
+        Dimension2D csize = plot.getContentSize();
+        Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+        Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
-		double npxStart = (zrect.getX() - plotRect.getX()) / plotRect.getWidth();
-		double npxEnd = (zrect.getMaxX() - plotRect.getX()) / plotRect.getWidth();
-		plot.zoomXRange(npxStart, npxEnd);
+        double npxStart = (zrect.getX() - plotRect.getX()) / plotRect.getWidth();
+        double npxEnd = (zrect.getMaxX() - plotRect.getX()) / plotRect.getWidth();
+        plot.zoomXRange(npxStart, npxEnd);
 
-		double npyStart = 1 - (zrect.getMaxY() - plotRect.getY()) / plotRect.getHeight();
-		double npyEnd = 1 - (zrect.getMinY() - plotRect.getY()) / plotRect.getHeight();
-		plot.zoomYRange(npyStart, npyEnd);
+        double npyStart = 1 - (zrect.getMaxY() - plotRect.getY()) / plotRect.getHeight();
+        double npyEnd = 1 - (zrect.getMinY() - plotRect.getY()) / plotRect.getHeight();
+        plot.zoomYRange(npyStart, npyEnd);
 
-		env.endBatch(token, UINoticeType.getInstance());
-	}
+        env.endBatch(token, UINoticeType.getInstance());
+    }
 
 }

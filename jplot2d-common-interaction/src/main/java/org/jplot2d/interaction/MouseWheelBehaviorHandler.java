@@ -19,31 +19,25 @@
 package org.jplot2d.interaction;
 
 /**
- * 
- * 
  * @author Jingjing Li
- * 
  */
 public abstract class MouseWheelBehaviorHandler<B extends MouseWheelBehavior> extends
-		MouseBehaviorHandler<B> {
+        MouseBehaviorHandler<B> {
 
-	public MouseWheelBehaviorHandler(B behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseWheelBehaviorHandler(B behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	public final boolean processMouseEvent(GenericMouseEvent e) {
-		return behaviorPerformed(e.getX(), e.getY(), e.getCount());
-	}
+    public final boolean processMouseEvent(GenericMouseEvent e) {
+        return behaviorPerformed(e.getX(), e.getY(), e.getCount());
+    }
 
-	/**
-	 * @param x
-	 *            TODO
-	 * @param y
-	 *            TODO
-	 * @param wheelRotation
-	 *            On Windows/Linux, always 1. On MacOSX, may be any number due to its wheel
-	 *            acceleration.
-	 */
-	public abstract boolean behaviorPerformed(int x, int y, int wheelRotation);
+    /**
+     * @param x             TODO
+     * @param y             TODO
+     * @param wheelRotation On Windows/Linux, always 1. On MacOSX, may be any number due to its wheel
+     *                      acceleration.
+     */
+    public abstract boolean behaviorPerformed(int x, int y, int wheelRotation);
 
 }

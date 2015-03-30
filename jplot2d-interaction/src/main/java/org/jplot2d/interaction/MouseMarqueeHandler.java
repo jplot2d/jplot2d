@@ -23,68 +23,66 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 public abstract class MouseMarqueeHandler<B extends MouseDragBehavior> extends MouseDragBehaviorHandler<B> implements
-		VisualFeedbackDrawer {
+        VisualFeedbackDrawer {
 
-	private Point marqueeStart;
+    private Point marqueeStart;
 
-	private Point marqueeEnd;
+    private Point marqueeEnd;
 
-	private InteractiveComp icomp;
+    private final InteractiveComp icomp;
 
-	public MouseMarqueeHandler(B behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
-	}
+    public MouseMarqueeHandler(B behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+        icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
+    }
 
-	@Override
-	public void draggingStarted(int x, int y) {
-		marqueeStart = new Point(x, y);
-	}
+    @Override
+    public void draggingStarted(int x, int y) {
+        marqueeStart = new Point(x, y);
+    }
 
-	@Override
-	public void draggingTo(int x, int y) {
-		marqueeEnd = new Point(x, y);
-		icomp.repaint();
-	}
+    @Override
+    public void draggingTo(int x, int y) {
+        marqueeEnd = new Point(x, y);
+        icomp.repaint();
+    }
 
-	@Override
-	public void draggingFinished(int x, int y) {
-		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
-		marqueeRect.setFrameFromDiagonal(marqueeStart.x, marqueeStart.y, x, y);
+    @Override
+    public void draggingFinished(int x, int y) {
+        Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
+        marqueeRect.setFrameFromDiagonal(marqueeStart.x, marqueeStart.y, x, y);
 
-		if (marqueeRect.width > 1 || marqueeRect.height > 1) {
-			handleMarquee(marqueeStart, new Point(x, y));
-		}
+        if (marqueeRect.width > 1 || marqueeRect.height > 1) {
+            handleMarquee(marqueeStart, new Point(x, y));
+        }
 
-		marqueeStart = null;
-		icomp.repaint();
-	}
+        marqueeStart = null;
+        icomp.repaint();
+    }
 
-	@Override
-	public void draggingCancelled() {
-		marqueeStart = null;
-		icomp.repaint();
-	}
+    @Override
+    public void draggingCancelled() {
+        marqueeStart = null;
+        icomp.repaint();
+    }
 
-	public void draw(Object g) {
-		if (marqueeStart == null) {
-			return;
-		}
+    public void draw(Object g) {
+        if (marqueeStart == null) {
+            return;
+        }
 
-		Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
-		marqueeRect.setFrameFromDiagonal(marqueeStart, marqueeEnd);
+        Rectangle marqueeRect = new Rectangle(0, 0, 0, 0);
+        marqueeRect.setFrameFromDiagonal(marqueeStart, marqueeEnd);
 
-		icomp.drawRectangle(g, Color.GRAY.getRGB(), marqueeRect.x, marqueeRect.y, marqueeRect.width, marqueeRect.height);
-	}
+        icomp.drawRectangle(g, Color.GRAY.getRGB(), marqueeRect.x, marqueeRect.y, marqueeRect.width, marqueeRect.height);
+    }
 
-	/**
-	 * Perform an action when mouse up event ends marquee.
-	 * 
-	 * @param startPoint
-	 *            the mouse point that the marquee starts
-	 * @param endPoint
-	 *            the mouse point that the marquee ends
-	 */
-	protected abstract void handleMarquee(Point startPoint, Point endPoint);
+    /**
+     * Perform an action when mouse up event ends marquee.
+     *
+     * @param startPoint the mouse point that the marquee starts
+     * @param endPoint   the mouse point that the marquee ends
+     */
+    protected abstract void handleMarquee(Point startPoint, Point endPoint);
 
 }

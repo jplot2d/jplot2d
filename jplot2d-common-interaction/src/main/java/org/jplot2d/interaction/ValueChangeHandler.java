@@ -22,18 +22,17 @@ import java.beans.PropertyChangeListener;
 
 /**
  * @author Jingjing Li
- * 
  */
 public abstract class ValueChangeHandler<B extends ValueChangeBehavior> implements
-		PropertyChangeListener {
+        PropertyChangeListener {
 
-	protected final B behavior;
+    protected final B behavior;
 
-	protected final InteractionModeHandler handler;
+    protected final InteractionModeHandler handler;
 
-	public ValueChangeHandler(B behavior, InteractionModeHandler handler) {
-		this.behavior = behavior;
-		this.handler = handler;
-	}
+    public ValueChangeHandler(B behavior, InteractionModeHandler handler) {
+        this.behavior = behavior;
+        this.handler = handler;
+    }
 
 }

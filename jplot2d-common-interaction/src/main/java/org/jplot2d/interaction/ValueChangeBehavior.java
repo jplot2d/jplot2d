@@ -20,11 +20,11 @@ package org.jplot2d.interaction;
 
 /**
  * Provide a feedback to user by listening the value change of InteractionModeHandler
- * 
+ *
  * @author Jingjing Li
  */
 public abstract class ValueChangeBehavior {
 
-	public abstract ValueChangeHandler<?> createValueChangeHandler(InteractionModeHandler mhandler);
+    public abstract ValueChangeHandler<?> createValueChangeHandler(InteractionModeHandler mhandler);
 
 }

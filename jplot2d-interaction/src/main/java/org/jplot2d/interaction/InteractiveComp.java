@@ -23,89 +23,75 @@ import java.awt.Shape;
 
 /**
  * A generic interface for awt component and swt composite, to provide visual feedback.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface InteractiveComp {
 
-	public enum CursorStyle {
-		DEFAULT_CURSOR, MOVE_CURSOR, CROSSHAIR_CURSOR
-	}
+    public enum CursorStyle {
+        DEFAULT_CURSOR, MOVE_CURSOR, CROSSHAIR_CURSOR
+    }
 
-	public Point getCursorLocation();
+    public Point getCursorLocation();
 
-	/**
-	 * Repaints this component.
-	 */
-	public void repaint();
+    /**
+     * Repaints this component.
+     */
+    public void repaint();
 
-	/**
-	 * Gets the cursor.
-	 * 
-	 * @param cursorStyle
-	 *            the style of cursor
-	 */
-	public CursorStyle getCursor();
+    /**
+     * Gets the cursor.
+     */
+    public CursorStyle getCursor();
 
-	/**
-	 * Sets the cursor.
-	 * 
-	 * @param cursorStyle
-	 *            the style of cursor
-	 */
-	public void setCursor(CursorStyle cursorStyle);
+    /**
+     * Sets the cursor.
+     *
+     * @param cursorStyle the style of cursor
+     */
+    public void setCursor(CursorStyle cursorStyle);
 
-	/**
-	 * Draws a line with the given graphics object and rgb color.
-	 * 
-	 * @param g
-	 *            the graphics object
-	 * @param rgb
-	 *            the color value
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
-	 */
-	public void drawLine(Object g, int rgb, int x1, int y1, int x2, int y2);
+    /**
+     * Draws a line with the given graphics object and rgb color.
+     *
+     * @param g   the graphics object
+     * @param rgb the color value
+     * @param x1  the first point's x coordinate
+     * @param y1  the first point's y coordinate
+     * @param x2  the second point's x coordinate
+     * @param y2  the second point's y coordinate
+     */
+    public void drawLine(Object g, int rgb, int x1, int y1, int x2, int y2);
 
-	/**
-	 * Draws a rectangle with the given graphics object and rgb color.
-	 * 
-	 * @param g
-	 *            the graphics object
-	 * @param rgb
-	 *            the color value
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 */
-	public void drawRectangle(Object g, int rgb, int x, int y, int width, int height);
+    /**
+     * Draws a rectangle with the given graphics object and rgb color.
+     *
+     * @param g      the graphics object
+     * @param rgb    the color value
+     * @param x      the x coordinate of the rectangle to be drawn
+     * @param y      the y coordinate of the rectangle to be drawn
+     * @param width  the width of the rectangle to be drawn
+     * @param height the height of the rectangle to be drawn
+     */
+    public void drawRectangle(Object g, int rgb, int x, int y, int width, int height);
 
-	/**
-	 * Draws a shape with the given graphics object and rgb color.
-	 * 
-	 * @param g
-	 *            the graphics object
-	 * @param rgb
-	 *            the color value
-	 * @param shape
-	 *            the shape to draw
-	 */
-	public void drawShape(Object g, int rgb, Shape shape);
+    /**
+     * Draws a shape with the given graphics object and rgb color.
+     *
+     * @param g     the graphics object
+     * @param rgb   the color value
+     * @param shape the shape to draw
+     */
+    public void drawShape(Object g, int rgb, Shape shape);
 
-	/**
-	 * Draws a tooltip on the given location.
-	 * 
-	 * @param g
-	 *            the graphics object
-	 * @param s
-	 *            the string
-	 * @param x
-	 * @param y
-	 */
-	public void drawTooltip(Object g, String s, int x, int y);
+    /**
+     * Draws a tooltip on the given location.
+     *
+     * @param g the graphics object
+     * @param s the string
+     * @param x the x coordinate of the tooltip to be drawn
+     * @param y the x coordinate of the tooltip to be drawn
+     */
+    public void drawTooltip(Object g, String s, int x, int y);
 
 }

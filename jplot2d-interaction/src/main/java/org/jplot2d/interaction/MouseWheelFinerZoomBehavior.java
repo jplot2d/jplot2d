@@ -18,9 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseWheelBehavior;
-
 public class MouseWheelFinerZoomBehavior extends MouseWheelBehavior {
 
     public MouseWheelFinerZoomBehavior(String name) {

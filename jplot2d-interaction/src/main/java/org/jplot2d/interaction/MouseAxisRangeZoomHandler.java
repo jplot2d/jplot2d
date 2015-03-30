@@ -18,68 +18,65 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Point;
-import java.awt.geom.Point2D;
-
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
 import org.jplot2d.notice.UINoticeType;
+
+import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class MouseAxisRangeZoomHandler extends MouseMarqueeHandler<MouseAxisRangeZoomBehavior> {
 
-	private Axis axis;
+    private Axis axis;
 
-	public MouseAxisRangeZoomHandler(MouseAxisRangeZoomBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseAxisRangeZoomHandler(MouseAxisRangeZoomBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean canStartDargging(int x, int y) {
-		PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
-		if (pcomp instanceof Axis) {
-			axis = (Axis) pcomp;
-			return true;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean canStartDragging(int x, int y) {
+        PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
+        if (pcomp instanceof Axis) {
+            axis = (Axis) pcomp;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
-	 * size of zoom rectangle is at least 2x2 pixel.
-	 * 
-	 * @param startPoint
-	 *            the mouse point that the zoom starts
-	 * @param endPoint
-	 *            the mouse point that the zoom ends
-	 */
-	protected void handleMarquee(Point startPoint, Point endPoint) {
+    /**
+     * Perform the zoom action when mouse up event ends zoom. This method only called when plot is zoomable, and the
+     * size of zoom rectangle is at least 2x2 pixel.
+     *
+     * @param startPoint the mouse point that the zoom starts
+     * @param endPoint   the mouse point that the zoom ends
+     */
+    protected void handleMarquee(Point startPoint, Point endPoint) {
 
-		Point2D spp = axis.getPaperTransform().getDtoP(startPoint);
-		Point2D epp = axis.getPaperTransform().getDtoP(endPoint);
+        Point2D spp = axis.getPaperTransform().getDtoP(startPoint);
+        Point2D epp = axis.getPaperTransform().getDtoP(endPoint);
 
-		double start = spp.getX();
-		double end = epp.getX();
-		if (start > end) {
-			double temp = end;
-			end = start;
-			start = temp;
-		}
+        double start = spp.getX();
+        double end = epp.getX();
+        if (start > end) {
+            double temp = end;
+            end = start;
+            start = temp;
+        }
 
-		/**
-		 * Zoom-in the given marquee rectangle.
-		 */
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		BatchToken token = env.beginBatch("Axis Range Zoom");
+        /**
+         * Zoom-in the given marquee rectangle.
+         */
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        BatchToken token = env.beginBatch("Axis Range Zoom");
 
-		double length = axis.getLength();
-		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start / length, end / length);
+        double length = axis.getLength();
+        axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start / length, end / length);
 
-		env.endBatch(token, UINoticeType.getInstance());
+        env.endBatch(token, UINoticeType.getInstance());
 
-	}
+    }
 
 }

@@ -19,16 +19,16 @@
 package org.jplot2d.interaction;
 
 public abstract class MouseMoveBehaviorHandler<B extends MouseMoveBehavior> extends
-		MouseBehaviorHandler<B> {
+        MouseBehaviorHandler<B> {
 
-	public MouseMoveBehaviorHandler(B behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseMoveBehaviorHandler(B behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	public boolean processMouseEvent(GenericMouseEvent e) {
-		return behaviorPerformed(e.getX(), e.getY());
-	}
+    public boolean processMouseEvent(GenericMouseEvent e) {
+        return behaviorPerformed(e.getX(), e.getY());
+    }
 
-	public abstract boolean behaviorPerformed(int x, int y);
+    public abstract boolean behaviorPerformed(int x, int y);
 
 }

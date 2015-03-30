@@ -25,14 +25,13 @@ package org.jplot2d.interaction;
  * <li>clickCount: 0</li>
  * <li>button: 0</li>
  * </ul>
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class MouseMoveBehavior extends MouseBehavior {
 
-	public MouseMoveBehavior(String name) {
-		super(name);
-	}
+    public MouseMoveBehavior(String name) {
+        super(name);
+    }
 
 }

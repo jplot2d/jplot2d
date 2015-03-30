@@ -21,17 +21,16 @@ package org.jplot2d.interaction;
 
 /**
  * This interface define a method to draw visual feedback while processing interactive actions.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface VisualFeedbackDrawer {
 
-	/**
-	 * Draws visual feedback on the given graphics.
-	 * 
-	 * @param graphics
-	 */
-	public void draw(Object graphics);
+    /**
+     * Draws visual feedback on the given graphics.
+     *
+     * @param graphics the graphics object
+     */
+    public void draw(Object graphics);
 
 }

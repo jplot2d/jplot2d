@@ -26,14 +26,13 @@ package org.jplot2d.interaction;
  * <li>clickCount: 0</li>
  * <li>button: the pressed button to start the dragging</li>
  * </ul>
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class MouseDragBehavior extends MouseBehavior {
 
-	public MouseDragBehavior(String name) {
-		super(name);
-	}
+    public MouseDragBehavior(String name) {
+        super(name);
+    }
 
 }

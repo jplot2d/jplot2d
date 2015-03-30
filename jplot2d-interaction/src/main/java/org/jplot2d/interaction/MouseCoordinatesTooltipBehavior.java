@@ -18,24 +18,20 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseMoveBehavior;
-
 /**
  * This behavior update the coordinates tooltip when mouse moving.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class MouseCoordinatesTooltipBehavior extends MouseMoveBehavior {
 
-	public MouseCoordinatesTooltipBehavior(String name) {
-		super(name);
-	}
+    public MouseCoordinatesTooltipBehavior(String name) {
+        super(name);
+    }
 
-	@Override
-	public MouseCoordinatesTooltipHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
-		return new MouseCoordinatesTooltipHandler(this, ihandler);
-	}
+    @Override
+    public MouseCoordinatesTooltipHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
+        return new MouseCoordinatesTooltipHandler(this, ihandler);
+    }
 
 }

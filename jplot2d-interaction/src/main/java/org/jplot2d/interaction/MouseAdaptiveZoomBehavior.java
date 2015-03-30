@@ -18,9 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseClickBehavior;
-
 public class MouseAdaptiveZoomBehavior extends MouseClickBehavior {
 
     public MouseAdaptiveZoomBehavior(String name) {

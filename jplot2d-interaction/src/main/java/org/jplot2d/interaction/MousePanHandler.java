@@ -18,76 +18,74 @@
  */
 package org.jplot2d.interaction;
 
+import org.jplot2d.element.Plot;
+import org.jplot2d.env.BatchToken;
+import org.jplot2d.env.PlotEnvironment;
+import org.jplot2d.notice.UINoticeType;
+
 import java.awt.Point;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
-import org.jplot2d.element.Plot;
-import org.jplot2d.env.BatchToken;
-import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseDragBehaviorHandler;
-import org.jplot2d.notice.UINoticeType;
-
 public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> {
 
-	private Plot plot;
+    private Plot plot;
 
-	private int oldX, oldY;
+    private int oldX, oldY;
 
-	public MousePanHandler(MousePanBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MousePanHandler(MousePanBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean canStartDargging(int x, int y) {
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		plot = env.getPlotAt(new Point(x, y));
-		return (plot != null);
-	}
+    @Override
+    public boolean canStartDragging(int x, int y) {
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        plot = env.getPlotAt(new Point(x, y));
+        return (plot != null);
+    }
 
-	@Override
-	public void draggingStarted(int x, int y) {
-		oldX = x;
-		oldY = y;
-	}
+    @Override
+    public void draggingStarted(int x, int y) {
+        oldX = x;
+        oldY = y;
+    }
 
-	@Override
-	public void draggingTo(int x, int y) {
-		int xoff = x - oldX;
-		int yoff = y - oldY;
-		oldX = x;
-		oldY = y;
+    @Override
+    public void draggingTo(int x, int y) {
+        int xoff = x - oldX;
+        int yoff = y - oldY;
+        oldX = x;
+        oldY = y;
 
-		/**
-		 * pan the given distance
-		 */
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		BatchToken token = env.beginBatch("Pan");
+        /**
+         * pan the given distance
+         */
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        BatchToken token = env.beginBatch("Pan");
 
-		Dimension2D csize = plot.getContentSize();
-		Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
-		Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
+        Dimension2D csize = plot.getContentSize();
+        Rectangle2D cbnds = new Rectangle2D.Double(0, 0, csize.getWidth(), csize.getHeight());
+        Rectangle2D plotRect = plot.getPaperTransform().getPtoD(cbnds).getBounds2D();
 
-		double npxStart = -xoff / plotRect.getWidth();
-		double npxEnd = 1 + npxStart;
-		double npyStart = yoff / plotRect.getHeight();
-		double npyEnd = 1 + npyStart;
+        double npxStart = -xoff / plotRect.getWidth();
+        double npxEnd = 1 + npxStart;
+        double npyStart = yoff / plotRect.getHeight();
+        double npyEnd = 1 + npyStart;
 
-		plot.zoomXRange(npxStart, npxEnd);
-		plot.zoomYRange(npyStart, npyEnd);
+        plot.zoomXRange(npxStart, npxEnd);
+        plot.zoomYRange(npyStart, npyEnd);
 
-		env.endBatch(token, UINoticeType.getInstance());
-	}
+        env.endBatch(token, UINoticeType.getInstance());
+    }
 
-	@Override
-	public void draggingFinished(int x, int y) {
-		// nothing to do
-	}
+    @Override
+    public void draggingFinished(int x, int y) {
+        // nothing to do
+    }
 
-	@Override
-	public void draggingCancelled() {
-		// nothing to do
-	}
+    @Override
+    public void draggingCancelled() {
+        // nothing to do
+    }
 
 }

@@ -18,6 +18,10 @@
  */
 package org.jplot2d.interaction;
 
+import org.jplot2d.element.MovableComponent;
+import org.jplot2d.element.PComponent;
+import org.jplot2d.transform.PaperTransform;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Shape;
@@ -26,107 +30,99 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.jplot2d.element.MovableComponent;
-import org.jplot2d.element.PComponent;
-import org.jplot2d.transform.PaperTransform;
-
 public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMoveComponentBehavior> implements
-		PropertyChangeListener, VisualFeedbackDrawer {
+        PropertyChangeListener, VisualFeedbackDrawer {
 
-	private InteractiveComp icomp;
+    private final InteractiveComp icomp;
 
-	private MovableComponent pcomp;
+    private MovableComponent pcomp;
 
-	/**
-	 * The bounds of component at original location
-	 */
-	private Shape boundsShape;
+    /**
+     * The bounds of component at original location
+     */
+    private Shape boundsShape;
 
-	private Point startPoint;
+    private Point startPoint;
 
-	private Point toPoint;
+    private Point toPoint;
 
-	public MouseMoveComponentHandler(MouseMoveComponentBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-		icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
-	}
+    public MouseMoveComponentHandler(MouseMoveComponentBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+        icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
+    }
 
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_KEY)) {
-			PComponent acomp = (PComponent) evt.getNewValue();
-			if (acomp instanceof MovableComponent && ((MovableComponent) acomp).isMovable()) {
-				handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, Boolean.TRUE);
-			} else {
-				handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, null);
-			}
-		}
-	}
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_KEY)) {
+            PComponent acomp = (PComponent) evt.getNewValue();
+            if (acomp instanceof MovableComponent && ((MovableComponent) acomp).isMovable()) {
+                handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, Boolean.TRUE);
+            } else {
+                handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, null);
+            }
+        }
+    }
 
-	@Override
-	public boolean canStartDargging(int x, int y) {
-		Boolean movable = (Boolean) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY);
-		if (movable != null && movable) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean canStartDragging(int x, int y) {
+        Boolean movable = (Boolean) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY);
+        return movable != null && movable;
+    }
 
-	@Override
-	public void draggingStarted(int x, int y) {
-		pcomp = (MovableComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
-		/* object selected start move operation */
-		startPoint = new Point(x, y);
-		boundsShape = getDeviceBounds(pcomp);
-	}
+    @Override
+    public void draggingStarted(int x, int y) {
+        pcomp = (MovableComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
+        /* object selected start move operation */
+        startPoint = new Point(x, y);
+        boundsShape = getDeviceBounds(pcomp);
+    }
 
-	@Override
-	public void draggingTo(int x, int y) {
-		toPoint = new Point(x, y);
-		icomp.repaint();
-	}
+    @Override
+    public void draggingTo(int x, int y) {
+        toPoint = new Point(x, y);
+        icomp.repaint();
+    }
 
-	@Override
-	public void draggingFinished(int x, int y) {
+    @Override
+    public void draggingFinished(int x, int y) {
 		/* finish move */
-		if (startPoint.x == x && startPoint.y == y) {
-			return;
-		}
+        if (startPoint.x == x && startPoint.y == y) {
+            return;
+        }
 
-		double xoff = x - startPoint.x;
-		double yoff = y - startPoint.y;
-		PaperTransform pxf = pcomp.getParent().getPaperTransform();
-		Point2D dloc = pxf.getPtoD(pcomp.getLocation());
-		dloc.setLocation(dloc.getX() + xoff, dloc.getY() + yoff);
-		Point2D newLoc = pxf.getDtoP(dloc);
-		pcomp.setLocation(newLoc);
+        double xoff = x - startPoint.x;
+        double yoff = y - startPoint.y;
+        PaperTransform pxf = pcomp.getParent().getPaperTransform();
+        Point2D dloc = pxf.getPtoD(pcomp.getLocation());
+        dloc.setLocation(dloc.getX() + xoff, dloc.getY() + yoff);
+        Point2D newLoc = pxf.getDtoP(dloc);
+        pcomp.setLocation(newLoc);
 
-		startPoint = null;
-		toPoint = null;
-		icomp.repaint();
-	}
+        startPoint = null;
+        toPoint = null;
+        icomp.repaint();
+    }
 
-	@Override
-	public void draggingCancelled() {
+    @Override
+    public void draggingCancelled() {
 
-	}
+    }
 
-	public void draw(Object g) {
+    public void draw(Object g) {
 
-		if (startPoint == null || toPoint == null) {
-			return;
-		}
+        if (startPoint == null || toPoint == null) {
+            return;
+        }
 
-		double xoff = toPoint.x - startPoint.x;
-		double yoff = toPoint.y - startPoint.y;
+        double xoff = toPoint.x - startPoint.x;
+        double yoff = toPoint.y - startPoint.y;
 
-		Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(boundsShape);
+        Shape shape = AffineTransform.getTranslateInstance(xoff, yoff).createTransformedShape(boundsShape);
 
-		icomp.drawShape(g, Color.RED.getRGB(), shape);
-	}
+        icomp.drawShape(g, Color.RED.getRGB(), shape);
+    }
 
-	private static Shape getDeviceBounds(PComponent comp) {
-		return comp.getPaperTransform().getPtoD(comp.getSelectableBounds());
-	}
+    private static Shape getDeviceBounds(PComponent comp) {
+        return comp.getPaperTransform().getPtoD(comp.getSelectableBounds());
+    }
 
 }

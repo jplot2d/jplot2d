@@ -21,45 +21,45 @@ package org.jplot2d.interaction;
 import java.awt.event.MouseEvent;
 
 public abstract class MouseDragBehaviorHandler<T extends MouseDragBehavior> extends
-		MouseBehaviorHandler<T> {
+        MouseBehaviorHandler<T> {
 
-	private boolean indrag;
+    private boolean indrag;
 
-	public MouseDragBehaviorHandler(T behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseDragBehaviorHandler(T behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public final boolean processMouseEvent(GenericMouseEvent e) {
-		if (e.getType() == MouseEvent.MOUSE_PRESSED && canStartDargging(e.getX(), e.getY())) {
-			indrag = true;
-			draggingStarted(e.getX(), e.getY());
-			return true;
-		}
-		if (e.getType() == MouseEvent.MOUSE_DRAGGED) {
-			if (indrag) {
-				draggingTo(e.getX(), e.getY());
-				return true;
-			}
-		}
-		if (e.getType() == MouseEvent.MOUSE_RELEASED) {
-			if (indrag) {
-				indrag = false;
-				draggingFinished(e.getX(), e.getY());
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public final boolean processMouseEvent(GenericMouseEvent e) {
+        if (e.getType() == MouseEvent.MOUSE_PRESSED && canStartDragging(e.getX(), e.getY())) {
+            indrag = true;
+            draggingStarted(e.getX(), e.getY());
+            return true;
+        }
+        if (e.getType() == MouseEvent.MOUSE_DRAGGED) {
+            if (indrag) {
+                draggingTo(e.getX(), e.getY());
+                return true;
+            }
+        }
+        if (e.getType() == MouseEvent.MOUSE_RELEASED) {
+            if (indrag) {
+                indrag = false;
+                draggingFinished(e.getX(), e.getY());
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public abstract boolean canStartDargging(int x, int y);
+    public abstract boolean canStartDragging(int x, int y);
 
-	public abstract void draggingStarted(int x, int y);
+    public abstract void draggingStarted(int x, int y);
 
-	public abstract void draggingTo(int x, int y);
+    public abstract void draggingTo(int x, int y);
 
-	public abstract void draggingFinished(int x, int y);
+    public abstract void draggingFinished(int x, int y);
 
-	public abstract void draggingCancelled();
+    public abstract void draggingCancelled();
 
 }

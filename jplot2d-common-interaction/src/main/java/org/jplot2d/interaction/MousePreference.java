@@ -20,26 +20,24 @@ package org.jplot2d.interaction;
 
 /**
  * provide the mouse preference. The preference is a MouseOpMode array.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public interface MousePreference {
 
-	public Integer getClickThreshold();
+    public Integer getClickThreshold();
 
-	public InteractionMode[] getModes();
+    public InteractionMode[] getModes();
 
-	public MouseBehavior[] getBehaviorsInMode(InteractionMode mode);
+    public MouseBehavior[] getBehaviorsInMode(InteractionMode mode);
 
-	/**
-	 * Returns the MouseButtonCombinationEnablity for the given behavior in the mode.
-	 * 
-	 * @param mode
-	 * @param behavior
-	 * @return
-	 */
-	public MouseButtonCombinationEnablity getMouseButtonCombinationEnablity(InteractionMode mode,
-			MouseBehavior behavior);
+    /**
+     * Returns the MouseButtonCombinationEnablity for the given behavior in the mode.
+     *
+     * @param mode     the  InteractionMode
+     * @param behavior the MouseBehavior
+     * @return the MouseButtonCombinationEnablity for the given behavior in the mode
+     */
+    public MouseButtonCombinationEnablity getMouseButtonCombinationEnablity(InteractionMode mode, MouseBehavior behavior);
 
 }

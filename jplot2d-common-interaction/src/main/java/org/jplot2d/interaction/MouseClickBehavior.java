@@ -25,14 +25,13 @@ package org.jplot2d.interaction;
  * <li>clickCount: the click count to active this behavior, at least 1.</li>
  * <li>button: the button be clicked</li>
  * </ul>
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public abstract class MouseClickBehavior extends MouseBehavior {
 
-	public MouseClickBehavior(String name) {
-		super(name);
-	}
+    public MouseClickBehavior(String name) {
+        super(name);
+    }
 
 }

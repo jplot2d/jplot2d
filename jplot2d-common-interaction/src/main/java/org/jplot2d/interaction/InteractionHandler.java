@@ -30,211 +30,198 @@ import java.util.Map;
  * right-click. The mouse event will translate to application level behavior, such as select an object, select data
  * points in a layer, zoom in/out, etc. The translation can be configured by register and unregister the binding between
  * application behavior to mouse events.
- * <p>
+ * <p/>
  * Notice: most methods in this class is not thread-safe. They should be called within EDT.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class InteractionHandler implements VisualFeedbackDrawer {
 
-	private final InteractionManager imanager;
+    private final InteractionManager imanager;
 
-	private InteractionModeHandler modeHandler;
+    private InteractionModeHandler modeHandler;
 
-	private final Map<InteractionMode, InteractionModeHandler> modeHandlerMap = new LinkedHashMap<InteractionMode, InteractionModeHandler>();
+    private final Map<InteractionMode, InteractionModeHandler> modeHandlerMap = new LinkedHashMap<>();
 
-	private final Map<String, Object> valueMap = new HashMap<String, Object>();
+    private final Map<String, Object> valueMap = new HashMap<>();
 
-	/**
-	 * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will
-	 * be released.
-	 */
-	private int mouseSigDragState = 0;
+    /**
+     * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will
+     * be released.
+     */
+    private int mouseSigDragState = 0;
 
-	/**
-	 * Keep all buttons which were pressed at the time of the last mouse drag within threshold, until all buttons will
-	 * be released.
-	 */
-	private int mouseTrivialDragState = 0;
+    /**
+     * Keep all buttons which were pressed at the time of the last mouse drag within threshold, until all buttons will
+     * be released.
+     */
+    private int mouseTrivialDragState = 0;
 
-	/**
-	 * The point where the last mouse button pressed.
-	 */
-	private Point lastPoint;
+    /**
+     * The point where the last mouse button pressed.
+     */
+    private Point lastPoint;
 
-	public InteractionHandler(InteractionManager imanager) {
-		this.imanager = imanager;
-	}
+    public InteractionHandler(InteractionManager imanager) {
+        this.imanager = imanager;
+    }
 
-	protected final InteractionManager getInteractionManager() {
-		return imanager;
-	}
+    protected final InteractionManager getInteractionManager() {
+        return imanager;
+    }
 
-	/**
-	 * create mode handler and fill them with behavior handlers
-	 * 
-	 * @param ihandler
-	 */
-	public void init() {
-		for (InteractionMode mode : imanager.getModes()) {
-			InteractionModeHandler mhandler = new InteractionModeHandler(this, mode);
-			mhandler.valueMap.putAll(valueMap);
-			modeHandlerMap.put(mode, mhandler);
+    /**
+     * Create mode handlers and fill them with behavior handlers.
+     */
+    public void init() {
+        for (InteractionMode mode : imanager.getModes()) {
+            InteractionModeHandler mhandler = new InteractionModeHandler(this, mode);
+            mhandler.valueMap.putAll(valueMap);
+            modeHandlerMap.put(mode, mhandler);
 
-			for (MouseBehavior behavior : mode.getAvailableMouseBehaviors()) {
-				MouseBehaviorHandler<?> mbHandler = behavior.createMouseBehaviorHandler(mhandler);
-				mhandler.addMouseBehaviorHandler(mbHandler);
-			}
+            for (MouseBehavior behavior : mode.getAvailableMouseBehaviors()) {
+                MouseBehaviorHandler<?> mbHandler = behavior.createMouseBehaviorHandler(mhandler);
+                mhandler.addMouseBehaviorHandler(mbHandler);
+            }
 
-			for (ValueChangeBehavior feedback : mode.getValueChangeBehaviors()) {
-				ValueChangeHandler<?> fbHandler = feedback.createValueChangeHandler(mhandler);
-				mhandler.addValueChangeHandler(fbHandler);
-			}
-		}
+            for (ValueChangeBehavior feedback : mode.getValueChangeBehaviors()) {
+                ValueChangeHandler<?> fbHandler = feedback.createValueChangeHandler(mhandler);
+                mhandler.addValueChangeHandler(fbHandler);
+            }
+        }
 
-		setMode(imanager.getDefaultMode());
-	}
+        setMode(imanager.getDefaultMode());
+    }
 
-	/**
-	 * @param modifiers
-	 *            the modifiers mask after a modifier key pressed
-	 * @param modifierKey
-	 *            the modifiers mask of the modifier key pressed
-	 */
-	public void keyPressed(int modifiers, int modifierKey) {
-		modeHandler.keyPressed(modifiers, modifierKey);
-	}
+    /**
+     * @param modifiers   the modifiers mask after a modifier key pressed
+     * @param modifierKey the modifiers mask of the modifier key pressed
+     */
+    public void keyPressed(int modifiers, int modifierKey) {
+        modeHandler.keyPressed(modifiers, modifierKey);
+    }
 
-	/**
-	 * @param modifiers
-	 *            the modifiers mask after a modifier key released
-	 * @param modifierKey
-	 *            the modifiers mask of the modifier key released
-	 */
-	public void keyReleased(int modifiers, int modifierKey) {
-		modeHandler.keyReleased(modifiers, modifierKey);
-	}
+    /**
+     * @param modifiers   the modifiers mask after a modifier key released
+     * @param modifierKey the modifiers mask of the modifier key released
+     */
+    public void keyReleased(int modifiers, int modifierKey) {
+        modeHandler.keyReleased(modifiers, modifierKey);
+    }
 
-	public void mouseEntered(GenericMouseEvent e) {
-		modeHandler.mouseEntered(e);
-	}
+    public void mouseEntered(GenericMouseEvent e) {
+        modeHandler.mouseEntered(e);
+    }
 
-	public void mouseExited(GenericMouseEvent e) {
-		modeHandler.mouseExited(e);
-	}
+    public void mouseExited(GenericMouseEvent e) {
+        modeHandler.mouseExited(e);
+    }
 
-	public void mousePressed(GenericMouseEvent e) {
-		modeHandler.mousePressed(e);
+    public void mousePressed(GenericMouseEvent e) {
+        modeHandler.mousePressed(e);
 
-		lastPoint = new Point(e.getX(), e.getY());
-		mouseTrivialDragState |= e.getButton();
-	}
+        lastPoint = new Point(e.getX(), e.getY());
+        mouseTrivialDragState |= e.getButton();
+    }
 
-	public void mouseReleased(GenericMouseEvent e) {
-		modeHandler.mouseReleased(e);
+    public void mouseReleased(GenericMouseEvent e) {
+        modeHandler.mouseReleased(e);
 
-		if ((mouseTrivialDragState & ~mouseSigDragState & e.getButton()) != 0) {
-			e = new GenericMouseEvent(MouseEvent.MOUSE_CLICKED, e.getModifiers(), e.getX(), e.getY(), 1, e.getButton());
-			mouseClicked(e);
-		}
+        if ((mouseTrivialDragState & ~mouseSigDragState & e.getButton()) != 0) {
+            e = new GenericMouseEvent(MouseEvent.MOUSE_CLICKED, e.getModifiers(), e.getX(), e.getY(), 1, e.getButton());
+            mouseClicked(e);
+        }
 
-		mouseSigDragState &= ~e.getButton();
-		mouseTrivialDragState &= ~e.getButton();
-	}
+        mouseSigDragState &= ~e.getButton();
+        mouseTrivialDragState &= ~e.getButton();
+    }
 
-	private void mouseClicked(GenericMouseEvent e) {
-		modeHandler.mouseClicked(e);
-	}
+    private void mouseClicked(GenericMouseEvent e) {
+        modeHandler.mouseClicked(e);
+    }
 
-	public void mouseDragged(GenericMouseEvent e) {
-		int mouseKeyState = e.getModifiers()
-				& (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK);
-		int threshold = imanager.getClickThreshold();
-		if (lastPoint == null || Math.abs(lastPoint.x - e.getX()) > threshold
-				|| Math.abs(lastPoint.y - e.getY()) > threshold) {
-			lastPoint = null;
-			mouseSigDragState = mouseKeyState;
-			modeHandler.mouseDragged(e);
-		} else {
-			// dragging within the Threshold
-			mouseTrivialDragState = mouseKeyState;
-		}
-	}
+    public void mouseDragged(GenericMouseEvent e) {
+        int mouseKeyState = e.getModifiers()
+                & (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK);
+        int threshold = imanager.getClickThreshold();
+        if (lastPoint == null || Math.abs(lastPoint.x - e.getX()) > threshold
+                || Math.abs(lastPoint.y - e.getY()) > threshold) {
+            lastPoint = null;
+            mouseSigDragState = mouseKeyState;
+            modeHandler.mouseDragged(e);
+        } else {
+            // dragging within the Threshold
+            mouseTrivialDragState = mouseKeyState;
+        }
+    }
 
-	public void mouseMoved(GenericMouseEvent e) {
-		modeHandler.mouseMoved(e);
-	}
+    public void mouseMoved(GenericMouseEvent e) {
+        modeHandler.mouseMoved(e);
+    }
 
-	/**
-	 * @param e
-	 *            the negative count values if the mouse wheel was rotated up/away from the user, and positive count
-	 *            values if the mouse wheel was rotated down/ towards the user
-	 */
-	public void mouseWheelMoved(GenericMouseEvent e) {
-		modeHandler.mouseWheelMoved(e);
-	}
+    /**
+     * @param e the negative count values if the mouse wheel was rotated up/away from the user, and positive count
+     *          values if the mouse wheel was rotated down/ towards the user
+     */
+    public void mouseWheelMoved(GenericMouseEvent e) {
+        modeHandler.mouseWheelMoved(e);
+    }
 
-	public void draw(Object graphics) {
-		modeHandler.draw(graphics);
-	}
+    public void draw(Object graphics) {
+        modeHandler.draw(graphics);
+    }
 
-	public InteractionMode getMode() {
-		return modeHandler.getInteractionMode();
-	}
+    public InteractionMode getMode() {
+        return modeHandler.getInteractionMode();
+    }
 
-	public void setMode(InteractionMode mode) {
-		InteractionModeHandler newhandler = modeHandlerMap.get(mode);
-		if (newhandler == null) {
-			throw new IllegalArgumentException();
-		}
+    public void setMode(InteractionMode mode) {
+        InteractionModeHandler newhandler = modeHandlerMap.get(mode);
+        if (newhandler == null) {
+            throw new IllegalArgumentException();
+        }
 
-		if (modeHandler != null) {
-			modeHandler.modeExited();
-		}
-		modeHandler = newhandler;
-		modeHandler.modeEntered();
-	}
+        if (modeHandler != null) {
+            modeHandler.modeExited();
+        }
+        modeHandler = newhandler;
+        modeHandler.modeEntered();
+    }
 
-	public InteractionModeHandler getInteractionModeHandler(String modeName) {
-		InteractionMode mode = imanager.getMode(modeName);
-		if (mode == null) {
-			return null;
-		} else {
-			return modeHandlerMap.get(mode);
-		}
-	}
+    public InteractionModeHandler getInteractionModeHandler(String modeName) {
+        InteractionMode mode = imanager.getMode(modeName);
+        if (mode == null) {
+            return null;
+        } else {
+            return modeHandlerMap.get(mode);
+        }
+    }
 
-	/**
-	 * Gets the <code>Object</code> associated with the specified key.
-	 * 
-	 * @param key
-	 *            a string containing the specified <code>key</code>
-	 * @return the binding <code>Object</code> stored with this key; if there are no keys, it will return
-	 *         <code>null</code>
-	 * @see Action#getValue
-	 */
-	public Object getValue(String key) {
-		return valueMap.get(key);
-	}
+    /**
+     * Gets the <code>Object</code> associated with the specified key.
+     *
+     * @param key a string containing the specified <code>key</code>
+     * @return the binding <code>Object</code> stored with this key; if there are no keys, it will return
+     * <code>null</code>
+     */
+    public Object getValue(String key) {
+        return valueMap.get(key);
+    }
 
-	/**
-	 * Sets the <code>Value</code> associated with the specified key.
-	 * 
-	 * @param key
-	 *            the <code>String</code> that identifies the stored object
-	 * @param newValue
-	 *            the <code>Object</code> to store using this key
-	 * @see Action#putValue
-	 */
-	public void putValue(String key, Object newValue) {
-		if (valueMap.containsKey(key) && (newValue == null)) {
-			// Remove the entry for key if newValue is null
-			// else put in the newValue for key.
-			valueMap.remove(key);
-		} else {
-			valueMap.put(key, newValue);
-		}
-	}
+    /**
+     * Sets the <code>Value</code> associated with the specified key.
+     *
+     * @param key      the <code>String</code> that identifies the stored object
+     * @param newValue the <code>Object</code> to store using this key
+     */
+    public void putValue(String key, Object newValue) {
+        if (valueMap.containsKey(key) && (newValue == null)) {
+            // Remove the entry for key if newValue is null
+            // else put in the newValue for key.
+            valueMap.remove(key);
+        } else {
+            valueMap.put(key, newValue);
+        }
+    }
 
 }

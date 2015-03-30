@@ -18,13 +18,10 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-
 /**
  * This behavior defines the destination modes when mouse moving.
- * 
+ *
  * @author Jingjing Li
- * 
  */
 public class MouseActivateComponentBehavior extends MouseMoveBehavior {
 

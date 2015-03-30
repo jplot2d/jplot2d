@@ -18,54 +18,52 @@
  */
 package org.jplot2d.interaction;
 
-import java.awt.Point;
-import java.awt.geom.Point2D;
-
 import org.jplot2d.element.Axis;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.env.BatchToken;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseWheelBehaviorHandler;
 import org.jplot2d.notice.UINoticeType;
+
+import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class MouseAxisWheelZoomHandler extends MouseWheelBehaviorHandler<MouseAxisWheelZoomBehavior> {
 
-	public MouseAxisWheelZoomHandler(MouseAxisWheelZoomBehavior behavior, InteractionModeHandler handler) {
-		super(behavior, handler);
-	}
+    public MouseAxisWheelZoomHandler(MouseAxisWheelZoomBehavior behavior, InteractionModeHandler handler) {
+        super(behavior, handler);
+    }
 
-	@Override
-	public boolean behaviorPerformed(int x, int y, int wheelRotation) {
+    @Override
+    public boolean behaviorPerformed(int x, int y, int wheelRotation) {
 
-		Axis axis;
-		PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
-		if (pcomp instanceof Axis) {
-			axis = (Axis) pcomp;
-		} else {
-			return false;
-		}
+        Axis axis;
+        PComponent pcomp = (PComponent) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY);
+        if (pcomp instanceof Axis) {
+            axis = (Axis) pcomp;
+        } else {
+            return false;
+        }
 
-		double scale = 1;
-		if (wheelRotation > 0) {
-			scale = 2;
-		} else if (wheelRotation < 0) {
-			scale = 1.0 / 2;
-		}
+        double scale = 1;
+        if (wheelRotation > 0) {
+            scale = 2;
+        } else if (wheelRotation < 0) {
+            scale = 1.0 / 2;
+        }
 
-		Point2D pp = axis.getPaperTransform().getDtoP(new Point(x, y));
+        Point2D pp = axis.getPaperTransform().getDtoP(new Point(x, y));
 
-		PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-		BatchToken token = env.beginBatch("AxisWheelZoom");
+        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+        BatchToken token = env.beginBatch("AxisWheelZoom");
 
-		double npv = pp.getX() / axis.getLength();
-		double start = npv * (1 - scale);
-		double end = start + scale;
+        double npv = pp.getX() / axis.getLength();
+        double start = npv * (1 - scale);
+        double end = start + scale;
 
-		axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start, end);
+        axis.getTickManager().getAxisTransform().getLockGroup().zoomRange(start, end);
 
-		env.endBatch(token, UINoticeType.getInstance());
-		return true;
-	}
+        env.endBatch(token, UINoticeType.getInstance());
+        return true;
+    }
 
 }

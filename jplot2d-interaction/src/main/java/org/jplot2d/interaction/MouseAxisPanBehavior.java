@@ -18,9 +18,6 @@
  */
 package org.jplot2d.interaction;
 
-import org.jplot2d.interaction.InteractionModeHandler;
-import org.jplot2d.interaction.MouseDragBehavior;
-
 public class MouseAxisPanBehavior extends MouseDragBehavior {
 
     public MouseAxisPanBehavior(String name) {
