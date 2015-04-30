@@ -1,18 +1,18 @@
 /**
- * Copyright 2010 Jingjing Li.
- *
+ * Copyright 2010-2015 Jingjing Li.
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,11 +21,10 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 /**
- * A component who represent a text string. The text string can be a math element.
+ * An element of {@link Axis} to group title related properties.
  *
  * @author Jingjing Li
  */
@@ -50,20 +49,18 @@ public interface AxisTitle extends Element {
     public void setVisible(boolean b);
 
     /**
-     * Gets the foreground color of this component.
+     * Gets the color of this title text.
      *
-     * @return this component's foreground color; if this component does not have a foreground color, the foreground
-     * color of its parent is returned
+     * @return the text color of this title
      * @see #setColor
      */
     @Property(order = 1)
     public Color getColor();
 
     /**
-     * Sets the foreground color of this component.
+     * Sets the color of this title text.
      *
-     * @param c the color to become this component's foreground color; if this parameter is <code>null</code> then
-     *          this component will inherit the foreground color of its parent
+     * @param c the text color of this title
      * @see #getColor
      */
     public void setColor(Color c);
@@ -101,30 +98,30 @@ public interface AxisTitle extends Element {
     public void setFontStyle(int style);
 
     /**
-     * Returns the Font size.
+     * Returns the font size of the title text.
      *
-     * @return the font size.
+     * @return the font size
      */
     @Property(order = 4)
     public float getFontSize();
 
     /**
-     * Sets a new size of the string.
+     * Sets a new font size of the title text.
      *
-     * @param size the new size of the font.
+     * @param size the new font size of the title text
      */
     public void setFontSize(float size);
 
     /**
-     * Returns the scale apply to parent's font size when font size is NaN.
+     * Returns the scale apply to the font size of axis when font size of title is NaN.
      *
-     * @return the font scale.
+     * @return the font scale
      */
     @Property(order = 5)
     public float getFontScale();
 
     /**
-     * Sets the scale apply to parent's font size when font size is NaN.
+     * Sets the scale apply to the font size of axis when font size of title is NaN.
      *
      * @param scale the scale
      */
@@ -138,9 +135,9 @@ public interface AxisTitle extends Element {
     public Font getEffectiveFont();
 
     /**
-     * Sets the font name, style and size for this component.
+     * Sets the font name, style and size for axis title.
      *
-     * @param font the desired <code>Font</code> for this component
+     * @param font the desired <code>Font</code> for this axis title
      */
     public void setFont(Font font);
 

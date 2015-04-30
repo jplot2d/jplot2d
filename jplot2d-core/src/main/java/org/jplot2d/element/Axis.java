@@ -1,18 +1,18 @@
 /**
- * Copyright 2010-2012 Jingjing Li.
- *
+ * Copyright 2010-2015 Jingjing Li.
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,9 +23,12 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
+ * A component to represent an axis in a plot. It has visual properties such as line width, tick height, etc.
+ * An axis also has a {@link AxisTitle title} element, which group all title related properties.
+ *
  * @author Jingjing Li
  */
 @PropertyGroup("Axis")
@@ -109,7 +112,7 @@ public interface Axis extends PComponent {
     public boolean isGridLines();
 
     /**
-     * Sets grid lines of grey lines in corresponding of major ticks of the axis.
+     * Show/hide grey lines in corresponding of major ticks of the axis.
      *
      * @param showGridLines if true show the grid lines.
      */
@@ -124,7 +127,7 @@ public interface Axis extends PComponent {
     public boolean isMinorGridLines();
 
     /**
-     * Sets grid lines of grey lines in corresponding of minor ticks of the axis.
+     * Show/hide grey lines in corresponding of minor ticks of the axis.
      *
      * @param showGridLines if <code>true</code> show the grid lines.
      */
@@ -146,18 +149,18 @@ public interface Axis extends PComponent {
     public void setTickVisible(boolean visible);
 
     /**
-     * Return the direction of the ticks
+     * Return the side of the ticks.
      */
     @Property(order = 7)
     public AxisTickSide getTickSide();
 
     /**
-     * Set the side position of the ticks
+     * Set the side of the ticks.
      */
     public void setTickSide(AxisTickSide side);
 
     /**
-     * Returns the height of the major ticks of the axis
+     * Returns the height of the major ticks.
      *
      * @return the height of the ticks
      */
@@ -165,14 +168,14 @@ public interface Axis extends PComponent {
     public double getTickHeight();
 
     /**
-     * Set the height of the major ticks of the axis.
+     * Set the height of the major ticks.
      *
      * @param height the new height of the ticks
      */
     public void setTickHeight(double height);
 
     /**
-     * Return the height of the minor ticks of the axis.
+     * Return the height of the minor ticks.
      *
      * @return the height of the minor ticks.
      */
@@ -180,70 +183,72 @@ public interface Axis extends PComponent {
     public double getMinorTickHeight();
 
     /**
-     * Set the height of the minor ticks of the axis.
+     * Set the height of the minor ticks.
      *
      * @param height the height of the ticks
      */
     public void setMinorTickHeight(double height);
 
     /**
-     * Returns the axis line width is pt(1/72 inch)
+     * Returns the tick line width in pt(1/72 inch)
      *
-     * @return the axis line width
+     * @return the tick line width
      */
     @Property(order = 10)
     public float getTickLineWidth();
 
     /**
-     * Sets the axis line width is pt(1/72 inch). The default line width is 0.5 pt.
+     * Sets the line width for ticks and minor ticks. The width is in pt(1/72 inch). The default line width is 0.5 pt.
+     * Setting tick line width also effect the grid line width and minor grid line width.
+     * The grid line width is 1/2 of tick line width, and the minor grid line width is 1/4 of tick line width.
      *
-     * @param width the axis line width
+     * @param width the tick line width
      */
     public void setTickLineWidth(float width);
 
     /**
-     * Returns if the tick labels is shown or not
+     * Returns if the labels is shown or not
      *
-     * @return if the tick mark is shown or not
+     * @return <code>true</code>if the tick mark is shown
      */
     @Property(order = 11)
     public boolean isLabelVisible();
 
     /**
-     * Sets if the tick labels is shown or not
+     * Sets if the labels is shown or not
      *
      * @param visible if <code>true</code>, shows the labels; otherwise, hide the labels
      */
     public void setLabelVisible(boolean visible);
 
     /**
-     * Return the position of the label of the ticks
+     * Return the side of the labels
      */
     @Property(order = 12)
     public AxisLabelSide getLabelSide();
 
     /**
-     * Set the position of the label of the ticks respect of the axis
+     * Set the side of the labels
      */
     public void setLabelSide(AxisLabelSide side);
 
     /**
-     * Get the Orientation of the labels.
+     * Get the orientation of the labels.
      *
-     * @return label orientation:  0 - HORIZONTAL, 1 - VERTICAL
+     * @return the the orientation of the labels
      */
     @Property(order = 13)
     public AxisOrientation getLabelOrientation();
 
     /**
-     * Set the orientation of the labels of the ticks <br>
+     * Set the orientation of the labels.
      *
      * @param orientation HORIZONTAL/VERTICAL
      */
     public void setLabelOrientation(AxisOrientation orientation);
 
     /**
-     * Return the color of the labels of the ticks
+     * Return the color of the labels.
      *
      * @return the color of the labels
      */
@@ -251,7 +256,7 @@ public interface Axis extends PComponent {
     public Color getLabelColor();
 
     /**
-     * Set the color of the labels of the ticks
+     * Set the color of the labels.
      *
      * @param color the color of the labels
      */
