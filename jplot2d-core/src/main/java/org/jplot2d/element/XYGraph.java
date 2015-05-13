@@ -1,18 +1,18 @@
 /**
  * Copyright 2010, 2011 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,9 +25,7 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.data.XYGraphData;
 import org.jplot2d.util.SymbolShape;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Paint;
+import java.awt.*;
 
 /**
  * A Graph to display X/Y chart.
@@ -117,13 +115,23 @@ public interface XYGraph extends Graph {
      */
     public void setName(String text);
 
+    /**
+     * Returns if symbols are drawn on the location of data points.
+     *
+     * @return <code>true</code> if symbols are drawn on the location of data points
+     */
     @Property(order = 1)
     public boolean isSymbolVisible();
 
+    /**
+     * Sets if symbols are drawn on the location of data points.
+     *
+     * @param symbolVisible <code>true</code> to draw symbols; otherwise, hide the symbols
+     */
     public void setSymbolVisible(boolean symbolVisible);
 
     /**
-     * Returns the symbol shape.
+     * Returns the shape to be used to draw symbols.
      *
      * @return the symbol shape
      */
@@ -138,15 +146,15 @@ public interface XYGraph extends Graph {
     public void setSymbolShape(SymbolShape symbolShape);
 
     /**
-     * Returns the size of the symbol used
+     * Returns the size of symbols in pt (1/72 inch).
      *
-     * @return the size of the symbol used
+     * @return the size of symbols
      */
     @Property(order = 4)
     public float getSymbolSize();
 
     /**
-     * Set the size of symbols
+     * Sets the size of symbols in pt (1/72 inch). The default size is 8.0 pt.
      *
      * @param size the size of symbols
      */
@@ -169,8 +177,7 @@ public interface XYGraph extends Graph {
     public void setSymbolColor(Color color);
 
     /**
-     * Returns the special color for data point idx.
-     * Or <code>null</code> if the data point use the overall symbol color.
+     * Returns the special color for data point idx. Or <code>null</code> if the data point use the overall symbol color.
      *
      * @param idx data point idx
      * @return the color for data point idx.
@@ -178,7 +185,7 @@ public interface XYGraph extends Graph {
     public Color getIndSymbolColor(int idx);
 
     /**
-     * Sets special color to a data point index.
+     * Sets special color to the data point index.
      * This method can be called many times to assign different color to the given index.
      *
      * @param idx   the data point index
@@ -187,7 +194,7 @@ public interface XYGraph extends Graph {
     public void setIndSymbolColor(int idx, Color color);
 
     /**
-     * Sets special color to data point indexes.
+     * Sets special color to the given data point indexes.
      * This method can be called many times to assign different color to the given indexes.
      *
      * @param idxes the data point indexes
@@ -225,7 +232,7 @@ public interface XYGraph extends Graph {
     public BasicStroke getLineStroke();
 
     /**
-     * Sets the stroke of chart line.
+     * Sets the stroke of chart line. The default line width is 0.5 pt.
      *
      * @param stroke the stroke of chart line
      */
@@ -244,14 +251,35 @@ public interface XYGraph extends Graph {
      */
     public void setChartType(ChartType chartType);
 
+    /**
+     * Returns if the filling is enabled. The filling can be applied to a closed line, or the area between the line and an axis.
+     *
+     * @return <code>true</code> if the filling is enabled
+     */
     @Property(order = 20, styleable = false)
     public boolean isFillEnabled();
 
+    /**
+     * Sets if the filling is enabled. The filling can be applied to a closed line, or the area between the line and an axis.
+     * The default value is <code>false</code>.
+     *
+     * @param fillEnabled the flag
+     */
     public void setFillEnabled(boolean fillEnabled);
 
+    /**
+     * Returns the paint object to be used to fill the area.
+     *
+     * @return the paint object
+     */
     @Property(order = 21, styleable = false)
     public Paint getFillPaint();
 
+    /**
+     * Sets the paint object to be used to fill the area. The default paint is Color(192, 192, 192, 128).
+     *
+     * @param paint the paint object
+     */
     public void setFillPaint(Paint paint);
 
     /**
@@ -263,7 +291,7 @@ public interface XYGraph extends Graph {
     public FillClosureType getFillClosureType();
 
     /**
-     * Sets the method type to close the line for filling.
+     * Sets the method type to close the line for filling. The default value is {@link FillClosureType#SELF FillClosureType.SELF}
      *
      * @param type the closure type
      */
