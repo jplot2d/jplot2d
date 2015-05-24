@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,163 +31,127 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.NumberArrayUtils;
 import org.jplot2d.util.Range;
 
-import java.awt.Font;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
- * Manage tick values and labels of multiple axes.
- * <p/>
- * Implementation Notes:
- * This class has some internal cache for properties of its axes to trace the values valid conditions.
- * The {@link #calcTicks()} can detect if ticks need to be recalculated.
+ * Manages tick values and labels for axes.
  *
  * @author Jingjing Li
  */
 public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerEx, Cloneable {
 
-    /**
-     * An internal cache for status of an axis managed by this tick manager
+    /*
+     * Implementation Notes:
+     * This class has some internal cache for properties of its axes, and trace the values valid conditions.
+     * The calcTicks() can detect if ticks need to be recalculated.
      */
-    private static class AxisStatus {
-        private final double axisLength;
-        private final boolean labelSameOrientation;
-        private final Font labelFont;
-
-        public AxisStatus(double length, boolean labelSameOrientation, Font font) {
-            this.axisLength = length;
-            this.labelSameOrientation = labelSameOrientation;
-            this.labelFont = font;
-        }
-
-    }
-
-    public static final int DEFAULT_TICKS_NUMBER = 11;
 
     public static final int AUTO_TICKS_MIN = 4;
-
     private AxisTransformEx axisTransform;
-
     private List<AxisEx> axes = new ArrayList<>();
-
     private boolean autoAdjustNumber = true;
-
     private int tickNumber = DEFAULT_TICKS_NUMBER;
-
     private boolean autoInterval = true;
-
     private double interval;
-
     private double offset;
-
     private boolean autoValues = true;
-
     private Object fixedValues;
-
     private Object fixedMinorValues;
-
     private boolean autoMinorNumber = true;
-
     private int actualMinorNumber;
-
     private int minorNumber;
-
     private boolean autoLabelFormat = true;
-
     private Format labelTextFormat;
-
     private String labelFormat;
-
     /**
      * fixed labels correspondent to fixed ticks
      */
     @Nonnull
-    private MathElement[] fixedLabels;
-
+    private MathElement[] fixedLabels = new MathElement[0];
     private int labelInterval = 1;
-
     /**
      * values in visible range
      */
     private Object values = new double[0];
-
     private Object minorValues = new double[0];
-
     /**
      * labels before fixed label override.
      */
     private MathElement[] autoLabels;
-
     /**
      * labels in visible range
      */
     private MathElement[] labels = new MathElement[0];
-
     private TickAlgorithm tickAlgorithm;
-
     private TickCalculator tickCalculator;
-
-	/* =========== xxx Changed =========== */
-
     private boolean autoAdjustNumberChanged;
 
+    /* =========== xxx Changed =========== */
     private boolean autoIntervalChanged;
-
     private boolean autoValuesChanged;
-
     private boolean autoLabelFormatChanged;
-
     private boolean propNumberChanged;
-
     /**
      * interval or offset changed
      */
     private boolean intervalChanged;
-
-
     /**
      * The minorNumber changed or autoMinorNumber changed
      */
     private boolean minorNumberChanged;
-
     private boolean labelFormatChanged;
-
     /**
      * The label font cache for detect font changes
      */
     private Map<AxisEx, AxisStatus> axisStatusMap = new HashMap<>();
-
     private boolean _labelMaxDensityChanged;
-
     private boolean _tickAlgorithmChanged;
-
     private boolean _axisCircularRangeChanged;
-
     private boolean _trfChanged;
 
     /**
      * The tick range for calculation
      */
     private Range range;
-
     private AxisTickTransform tickTransform;
-
     private NormalTransform axisNormalTransform;
-
     private Range circularRange;
 
     public AxisTickManagerImpl() {
 
+    }
+
+    /**
+     * Combine the user assigned labels with auto labels.
+     *
+     * @param fixedLabels   user labels for every major tick, no label interval considered.
+     * @param autoLabels    labels for every major tick, no label interval considered.
+     * @param labelInterval the label interval
+     * @return the final labels
+     */
+    private static MathElement[] calcLabels(@Nullable MathElement[] fixedLabels, MathElement[] autoLabels, int labelInterval) {
+        int fixedLabelsLength = (fixedLabels == null) ? 0 : fixedLabels.length;
+        int autoLabelsLength = (autoLabels == null) ? 0 : autoLabels.length;
+        int length = (int) Math.floor((double) (autoLabelsLength - 1) / labelInterval) + 1;
+        MathElement[] result = new MathElement[length];
+        int j = 0;
+        for (int i = 0; i < autoLabelsLength; i = i + labelInterval) {
+            if (i < fixedLabelsLength && fixedLabels != null && fixedLabels[i] != null) {
+                result[j] = fixedLabels[i];
+            } else {
+                result[j] = autoLabels[i];
+            }
+            j++;
+        }
+        return result;
     }
 
     public String getId() {
@@ -330,20 +294,20 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
     }
 
-    public boolean isAutoAdjustTicks() {
+    public boolean isAutoReduceTickNumber() {
         return autoAdjustNumber;
     }
 
-    public void setAutoAdjustTicks(boolean flag) {
+    public void setAutoReduceTickNumber(boolean flag) {
         this.autoAdjustNumber = flag;
         autoAdjustNumberChanged = true;
     }
 
-    public int getTicks() {
+    public int getTickNumber() {
         return tickNumber;
     }
 
-    public void setTicks(int tickNumber) {
+    public void setTickNumber(int tickNumber) {
         this.tickNumber = tickNumber;
         propNumberChanged = true;
     }
@@ -363,10 +327,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         return interval;
     }
 
-    public double getTickOffset() {
-        return offset;
-    }
-
     public void setTickInterval(double interval) {
         if (Double.isNaN(interval) || Double.isInfinite(interval)) {
             throw new IllegalArgumentException("tick interval can not be NaN or Infinite.");
@@ -377,6 +337,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             setAutoTickInterval(false);
         }
 
+    }
+
+    public double getTickOffset() {
+        return offset;
     }
 
     public void setTickOffset(double offset) {
@@ -429,11 +393,11 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
     }
 
-    public int getMinorTicks() {
+    public int getMinorTickNumber() {
         return minorNumber;
     }
 
-    public void setMinorTicks(int minors) {
+    public void setMinorTickNumber(int minors) {
         if (this.minorNumber != minors) {
             this.minorNumber = minors;
             minorNumberChanged = true;
@@ -441,7 +405,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
     }
 
-    public int getActualMinorTicks() {
+    public int getActualMinorTickNumber() {
         return actualMinorNumber;
     }
 
@@ -670,7 +634,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
 		/* apply fixed labels */
         MathElement[] fixedLabelsInRange;
-        if (autoValues || fixedLabels == null) {
+        if (autoValues) {
             fixedLabelsInRange = fixedLabels;
         } else {
             List<MathElement> ul = new ArrayList<>();
@@ -782,31 +746,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
     private boolean isLabelSameOrientation(AxisEx axis) {
         return (axis.getOrientation() == axis.getLabelOrientation());
-    }
-
-    /**
-     * Combine the user assigned labels with auto labels.
-     *
-     * @param fixedLabels   user labels for every major tick, no label interval considered.
-     * @param autoLabels    labels for every major tick, no label interval considered.
-     * @param labelInterval the label interval
-     * @return the final labels
-     */
-    private static MathElement[] calcLabels(@Nullable MathElement[] fixedLabels, MathElement[] autoLabels, int labelInterval) {
-        int fixedLabelsLength = (fixedLabels == null) ? 0 : fixedLabels.length;
-        int autoLabelsLength = (autoLabels == null) ? 0 : autoLabels.length;
-        int length = (int) Math.floor((double) (autoLabelsLength - 1) / labelInterval) + 1;
-        MathElement[] result = new MathElement[length];
-        int j = 0;
-        for (int i = 0; i < autoLabelsLength; i = i + labelInterval) {
-            if (i < fixedLabelsLength && fixedLabels != null && fixedLabels[i] != null) {
-                result[j] = fixedLabels[i];
-            } else {
-                result[j] = autoLabels[i];
-            }
-            j++;
-        }
-        return result;
     }
 
     /**
@@ -1110,6 +1049,22 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         axisTransformCopy.addTickManager(result);
 
         return result;
+    }
+
+    /**
+     * An internal cache for status of an axis managed by this tick manager
+     */
+    private static class AxisStatus {
+        private final double axisLength;
+        private final boolean labelSameOrientation;
+        private final Font labelFont;
+
+        public AxisStatus(double length, boolean labelSameOrientation, Font font) {
+            this.axisLength = length;
+            this.labelSameOrientation = labelSameOrientation;
+            this.labelFont = font;
+        }
+
     }
 
 }

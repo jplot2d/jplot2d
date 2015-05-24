@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2012 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -28,8 +28,8 @@ import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
 /**
- * An axis transform define a X or Y transformation of a viewport.
- * It can be shared by a group of axes, which represent the same user range.
+ * An axis transform define the transformation between world space and paper space along the X/Y direction.
+ * It can be shared by a group of {@link AxisTickManager}, which are in the same user range.
  *
  * @author Jingjing Li
  */
@@ -84,7 +84,7 @@ public interface AxisTransform extends Element {
     public void setInverted(boolean flag);
 
     /**
-     * Returns <code>true</code> if the margin is extended to an axis major tick automatically.
+     * Returns <code>true</code> if 2 margins are appended automatically to extend the range to a pair of axis major ticks.
      * The minimal margin is controlled by {@link #getMarginFactor()}
      *
      * @return <code>true</code> if the margin is auto-selected
@@ -93,14 +93,15 @@ public interface AxisTransform extends Element {
     public boolean isAutoMargin();
 
     /**
-     * Controls if the the margin is extended to an axis major tick automatically.
+     * Controls if 2 margins are appended automatically to extend the range to a pair of axis major ticks.
+     * The default value is <cdoe>true</cdoe>.
      *
      * @param autoMargin the switch
      */
     public void setAutoMargin(boolean autoMargin);
 
     /**
-     * Returns the factor that the margin will be appended to range
+     * Returns the factor that the 2 margins will be appended to range on the both ends.
      *
      * @return the margin factor
      */
@@ -108,7 +109,7 @@ public interface AxisTransform extends Element {
     public double getMarginFactor();
 
     /**
-     * Sets the factor that the margin will be appended to range
+     * Sets the factor that the 2 margins will be appended to range on the both ends. The default value is 1/32(of the axis range).
      *
      * @param factor the margin factor
      */
@@ -124,13 +125,11 @@ public interface AxisTransform extends Element {
     public Range getCoreRange();
 
     /**
-     * Set the core range of the AxisTransform. The range will expand
-     * according to the settings of autoMargin and marginFactor, and derive an actual range.
-     * The given range can be positive (start < end) or negative (start > end).
-     * It has not effect on the property "inverted". All locked axes will follow the change of this axis.
+     * Set the core range of the AxisTransform. The range will expand according to the settings of autoMargin and marginFactor, and derive an actual range.
+     * The given range can be positive (start < end) or negative (start > end). It has not effect on the property "inverted".
+     * All locked axes will follow the change of this axis.
      * <p/>
-     * If user want set actual range directly by {@link #setRange(Range)},
-     * The coreRange will be set to <code>null</code> automatically.
+     * If user want set actual range directly by {@link #setRange(Range)}, the coreRange will be set to <code>null</code> automatically.
      *
      * @param range the core range to be set
      */
@@ -165,7 +164,7 @@ public interface AxisTransform extends Element {
 
     /**
      * Returns the lock group that this AxisTransform belongs to.
-     * A AxisTransform must has a lock group, which have this AxisTransform at least.
+     * A AxisTransform must has a lock group, which includes this AxisTransform at least.
      *
      * @return the lock group that this AxisTransform belongs to
      */

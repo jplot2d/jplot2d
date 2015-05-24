@@ -98,7 +98,7 @@ public class AA518L53Fig2 {
 		lspy[0].getTitle().setText("residual [Jy]");
 		lspy[0].getTitle().setFontSize(10);
 		lspy[0].getTickManager().setRange(new Range.Double(-0.7, 0.7));
-		lspy[0].getTickManager().setTicks(3);
+		lspy[0].getTickManager().setTickNumber(3);
 		lspy[1].setLabelVisible(false);
 		lsp.addXAxes(lspx);
 		lsp.addYAxes(lspy);
