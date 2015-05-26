@@ -24,6 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
+import org.jplot2d.image.MinMaxAlgorithm;
 
 /**
  * This class defines how to transform a band of image. The transformation takes these steps:
@@ -43,7 +44,7 @@ public interface ImageBandTransform extends Element {
     public RGBImageMapping getParent();
 
     /**
-     * Returns the LimitsAlgorithm
+     * Returns the LimitsAlgorithm.
      *
      * @return the LimitsAlgorithm
      */
@@ -51,25 +52,57 @@ public interface ImageBandTransform extends Element {
     public LimitsAlgorithm getLimitsAlgorithm();
 
     /**
-     * Sets the LimitsAlgorithm
+     * Sets the LimitsAlgorithm to calculate cutting limits. The default algorithm is {@link MinMaxAlgorithm}.
      *
      * @param algo the LimitsAlgorithm
      */
     public void setLimitsAlgorithm(LimitsAlgorithm algo);
 
+    /**
+     * Returns the IntensityTransform used to enhance images before applying bias/gain.
+     *
+     * @return the IntensityTransform
+     */
     @Property(order = 1)
     public IntensityTransform getIntensityTransform();
 
+    /**
+     * Apply the given IntensityTransform to enhance images before applying bias/gain.
+     *
+     * @param it the IntensityTransform to be applied
+     */
     public void setIntensityTransform(IntensityTransform it);
 
+    /**
+     * Returns the bias value. The default value is 0.5.
+     *
+     * @return the bias value
+     */
     @Property(order = 2)
     public double getBias();
 
+    /**
+     * Sets the bias value. The valid range is [0,1] and the default value is 0.5.
+     *
+     * @param bias the bias value
+     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
+     */
     public void setBias(double bias);
 
+    /**
+     * Returns the gain value. The default value is 0.5.
+     *
+     * @return the gain value
+     */
     @Property(order = 3)
     public double getGain();
 
+    /**
+     * Sets the gain value. The valid range is [0,1] and the default value is 0.5.
+     *
+     * @param gain the gain value
+     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
+     */
     public void setGain(double gain);
 
 }

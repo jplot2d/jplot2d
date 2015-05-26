@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2013 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,28 +24,13 @@ import org.jplot2d.element.ImageMapping;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Transparency;
+import javax.annotation.Nonnull;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BandedSampleModel;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferUShort;
-import java.awt.image.LookupOp;
-import java.awt.image.PixelInterleavedSampleModel;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
+import java.awt.image.*;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, IntermediateCacheEx {
 
@@ -179,10 +164,16 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         Dimension2D paperSize = getParent().getSize();
         double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
         double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
-        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getXcdelt();
-        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getYcdelt();
+        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
+        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getCoordinateReference().getYPixelSize();
         AffineTransform scaleAT = AffineTransform.getScaleInstance(xscale, yscale);
-        AffineTransformOp axop = new AffineTransformOp(scaleAT, AffineTransformOp.TYPE_BILINEAR);
+        int op;
+        if (xscale > 1 || yscale > 1) {
+            op = AffineTransformOp.TYPE_NEAREST_NEIGHBOR;
+        } else {
+            op = AffineTransformOp.TYPE_BILINEAR;
+        }
+        AffineTransformOp axop = new AffineTransformOp(scaleAT, op);
         raster = axop.filter(raster, null);
 
         // apply pseudo-color mapping

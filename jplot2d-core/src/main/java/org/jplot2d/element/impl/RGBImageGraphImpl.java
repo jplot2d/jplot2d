@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2013 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,24 +24,14 @@ import org.jplot2d.element.RGBImageMapping;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Transparency;
+import javax.annotation.Nonnull;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
-import java.awt.image.BandedSampleModel;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
+import java.awt.image.*;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, IntermediateCacheEx {
 
@@ -195,14 +185,21 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         Dimension2D paperSize = getParent().getSize();
         double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
         double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
-        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getXcdelt();
-        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getYcdelt();
+        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
+        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getCoordinateReference().getYPixelSize();
         AffineTransform at = new AffineTransform(xscale, 0.0, 0.0, -yscale, xorig, yorig);
 
         // draw the image
         Graphics2D g = (Graphics2D) graphics.create();
         Shape clip = getPaperTransform().getPtoD(getBounds());
         g.setClip(clip);
+        Map<Object, Object> hints = new HashMap<Object, Object>();
+        if (xscale > 1 || yscale > 1) {
+            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        } else {
+            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        }
+        g.addRenderingHints(hints);
 
         g.drawRenderedImage(image, at);
 

@@ -664,6 +664,10 @@ public class ElementFactory {
         return createImageGraph(new SingleBandImageData(dataBuffer, w, h));
     }
 
+    public ImageGraph createImageGraph(ImageDataBuffer dataBuffer, int w, int h, ImageCoordinateReference cr) {
+        return createImageGraph(new SingleBandImageData(dataBuffer, w, h, cr));
+    }
+
     /**
      * Create an single band image graph.
      *
@@ -769,6 +773,14 @@ public class ElementFactory {
         ImageDataBuffer blueBuffer = new DoubleDataBuffer.Array2D(blue2d);
         return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
                 w, h));
+    }
+
+    public RGBImageGraph createRGBImageGraph(ImageDataBuffer[] dataBuffers, int w, int h) {
+        return createRGBImageGraph(new MultiBandImageData(dataBuffers, w, h));
+    }
+
+    public RGBImageGraph createRGBImageGraph(ImageDataBuffer[] dataBuffers, int w, int h, ImageCoordinateReference cr) {
+        return createRGBImageGraph(new MultiBandImageData(dataBuffers, w, h, cr));
     }
 
     /**
