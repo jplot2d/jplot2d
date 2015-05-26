@@ -25,6 +25,7 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
+import org.jplot2d.image.MinMaxAlgorithm;
 
 /**
  * This class defines how to transform a number array to a pseudo-color or grayscale image. The transformation take
@@ -34,7 +35,7 @@ import org.jplot2d.image.LimitsAlgorithm;
  * <li>Apply intensity transform</li>
  * <li>Apply bias/gain. method of Schlick{@link <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>(C. Schlick,
  * Fast Alternatives to Perlin's Bias and Gain Functions)</a>}</li>
- * <li>zoom to correct size for display</li>
+ * <li>Zoom to the correct size for display</li>
  * <li>Apply color map to produce a pseudo-color image</li>
  * </ol>
  *
@@ -52,7 +53,7 @@ public interface ImageMapping extends Element {
     public ImageGraph[] getGraphs();
 
     /**
-     * Returns the LimitsAlgorithm
+     * Returns the LimitsAlgorithm.
      *
      * @return the LimitsAlgorithm
      */
@@ -60,7 +61,7 @@ public interface ImageMapping extends Element {
     public LimitsAlgorithm getLimitsAlgorithm();
 
     /**
-     * Sets the LimitsAlgorithm
+     * Sets the LimitsAlgorithm to calculate cutting limits. The default algorithm is {@link MinMaxAlgorithm}.
      *
      * @param algo the LimitsAlgorithm
      */
@@ -93,8 +94,7 @@ public interface ImageMapping extends Element {
      * Sets the bias value. The valid range is [0,1] and the default value is 0.5.
      *
      * @param bias the bias value
-     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>C. Schlick, Fast Alternatives to Perlin's Bias and
-     * Gain Functions</a>
+     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
      */
     public void setBias(double bias);
 
@@ -110,22 +110,22 @@ public interface ImageMapping extends Element {
      * Sets the gain value. The valid range is [0,1] and the default value is 0.5.
      *
      * @param gain the gain value
-     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>
-     * C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
+     * @see <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions</a>
      */
     public void setGain(double gain);
 
     /**
-     * Returns the lookup table for displaying the intensity raster.
+     * Returns the ColorMap which convert intensity rasters to displayable images.
      *
-     * @return the lookup table for displaying the intensity raster
+     * @return the ColorMap
      */
     public ColorMap getColorMap();
 
     /**
-     * Sets a ColorMap to lookup the intensity raster for display.
+     * Sets a ColorMap to convert intensity rasters to displayable images.
+     * The default value is <code>null</code>, to generate grayscale images in sRGB color space.
      *
-     * @param colorMap the lookup table for displaying the intensity raster
+     * @param colorMap the ColorMap
      */
     public void setColorMap(ColorMap colorMap);
 

@@ -1,79 +1,35 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
-import org.jplot2d.data.ArrayPair;
-import org.jplot2d.data.ByteDataBuffer;
-import org.jplot2d.data.DoubleDataBuffer;
-import org.jplot2d.data.FloatDataBuffer;
-import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.data.IntDataBuffer;
-import org.jplot2d.data.MultiBandImageData;
-import org.jplot2d.data.ShortDataBuffer;
-import org.jplot2d.data.SingleBandImageData;
-import org.jplot2d.data.XYGraphData;
-import org.jplot2d.element.impl.AxisImpl;
-import org.jplot2d.element.impl.AxisRangeLockGroupImpl;
-import org.jplot2d.element.impl.AxisTickManagerEx;
-import org.jplot2d.element.impl.AxisTickManagerImpl;
-import org.jplot2d.element.impl.AxisTitleEx;
-import org.jplot2d.element.impl.AxisTransformEx;
-import org.jplot2d.element.impl.AxisTransformImpl;
-import org.jplot2d.element.impl.CoordinateAnnotationImpl;
-import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.element.impl.HLineAnnotationImpl;
-import org.jplot2d.element.impl.HStripAnnotationImpl;
-import org.jplot2d.element.impl.ImageGraphImpl;
-import org.jplot2d.element.impl.ImageMappingEx;
-import org.jplot2d.element.impl.ImageMappingImpl;
-import org.jplot2d.element.impl.LayerImpl;
-import org.jplot2d.element.impl.LegendEx;
-import org.jplot2d.element.impl.LegendItemEx;
-import org.jplot2d.element.impl.PlotImpl;
-import org.jplot2d.element.impl.PlotMarginEx;
-import org.jplot2d.element.impl.RGBImageGraphImpl;
-import org.jplot2d.element.impl.RGBImageMappingEx;
-import org.jplot2d.element.impl.RGBImageMappingImpl;
-import org.jplot2d.element.impl.RectangleAnnotationImpl;
-import org.jplot2d.element.impl.SymbolAnnotationImpl;
-import org.jplot2d.element.impl.TitleImpl;
-import org.jplot2d.element.impl.VLineAnnotationImpl;
-import org.jplot2d.element.impl.VStripAnnotationImpl;
-import org.jplot2d.element.impl.XYGraphImpl;
-import org.jplot2d.env.DummyEnvironment;
-import org.jplot2d.env.ElementAddition;
-import org.jplot2d.env.ElementIH;
-import org.jplot2d.env.Environment;
-import org.jplot2d.env.StyleConfiguration;
+import org.jplot2d.data.*;
+import org.jplot2d.element.impl.*;
+import org.jplot2d.env.*;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.util.Range;
 import org.jplot2d.util.SymbolShape;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * A factory to produce all kind of plot components.
@@ -85,6 +41,13 @@ public class ElementFactory {
     private static final ElementFactory instance = new ElementFactory(false, null);
 
     private static final ElementFactory threadSafeInstance = new ElementFactory(true, null);
+    private final boolean threadSafe;
+    private final StyleConfiguration style;
+
+    protected ElementFactory(boolean threadSafe, StyleConfiguration style) {
+        this.threadSafe = threadSafe;
+        this.style = style;
+    }
 
     /**
      * Returns an instance of ComponentFactory. All component created by this factory are not thread-safe.
@@ -124,15 +87,6 @@ public class ElementFactory {
      */
     public static ElementFactory getThreadSafeInstance(StyleConfiguration style) {
         return new ElementFactory(true, style);
-    }
-
-    private final boolean threadSafe;
-
-    private final StyleConfiguration style;
-
-    protected ElementFactory(boolean threadSafe, StyleConfiguration style) {
-        this.threadSafe = threadSafe;
-        this.style = style;
     }
 
     /**
@@ -687,27 +641,27 @@ public class ElementFactory {
     }
 
     public ImageGraph createImageGraph(byte[][] byte2d) {
-        return createImageGraph(new SingleBandImageData(new ByteDataBuffer.Array2D(byte2d), byte2d[0].length,
-                byte2d.length));
+        return createImageGraph(new ByteDataBuffer.Array2D(byte2d), byte2d[0].length, byte2d.length);
     }
 
     public ImageGraph createImageGraph(short[][] short2d) {
-        return createImageGraph(new SingleBandImageData(new ShortDataBuffer.Array2D(short2d), short2d[0].length,
-                short2d.length));
+        return createImageGraph(new ShortDataBuffer.Array2D(short2d), short2d[0].length, short2d.length);
     }
 
     public ImageGraph createImageGraph(int[][] int2d) {
-        return createImageGraph(new SingleBandImageData(new IntDataBuffer.Array2D(int2d), int2d[0].length, int2d.length));
+        return createImageGraph(new IntDataBuffer.Array2D(int2d), int2d[0].length, int2d.length);
     }
 
     public ImageGraph createImageGraph(float[][] float2d) {
-        return createImageGraph(new SingleBandImageData(new FloatDataBuffer.Array2D(float2d), float2d[0].length,
-                float2d.length));
+        return createImageGraph(new FloatDataBuffer.Array2D(float2d), float2d[0].length, float2d.length);
     }
 
     public ImageGraph createImageGraph(double[][] double2d) {
-        return createImageGraph(new SingleBandImageData(new DoubleDataBuffer.Array2D(double2d), double2d[0].length,
-                double2d.length));
+        return createImageGraph(new DoubleDataBuffer.Array2D(double2d), double2d[0].length, double2d.length);
+    }
+
+    public ImageGraph createImageGraph(ImageDataBuffer dataBuffer, int w, int h) {
+        return createImageGraph(new SingleBandImageData(dataBuffer, w, h));
     }
 
     /**
