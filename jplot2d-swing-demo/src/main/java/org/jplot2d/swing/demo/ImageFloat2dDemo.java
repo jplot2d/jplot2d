@@ -18,22 +18,16 @@
  */
 package org.jplot2d.swing.demo;
 
+import org.jplot2d.element.*;
+import org.jplot2d.image.ColorMap;
+import org.jplot2d.sizing.AutoPackSizeMode;
+import org.jplot2d.swing.JPlot2DFrame;
+
+import javax.swing.*;
 import java.awt.image.ByteLookupTable;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
 import java.awt.image.LookupTable;
-
-import javax.swing.JFrame;
-
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.ImageGraph;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.RGBImageGraph;
-import org.jplot2d.image.ColorMap;
-import org.jplot2d.sizing.AutoPackSizeMode;
-import org.jplot2d.swing.JPlot2DFrame;
 
 /**
  * @author Jingjing Li
@@ -92,8 +86,8 @@ public class ImageFloat2dDemo {
 		plot.addYAxis(yaxis);
 
 		// create a float2d array
-		float[][] f2d = new float[1024][1024];
-		for (int i = 0; i < 1024; i++) {
+		float[][] f2d = new float[256][1024];
+		for (int i = 0; i < 256; i++) {
 			for (int j = 0; j < 1024; j++) {
 				f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
 			}
@@ -107,8 +101,7 @@ public class ImageFloat2dDemo {
 
 		graph.getMapping().setGain(gain);
 		graph.getMapping().setColorMap(map);
-		
-		graph.setData(null);
+
 	}
 
 	public static void plotRGB() {
@@ -137,7 +130,6 @@ public class ImageFloat2dDemo {
 		layer0.addGraph(graph);
 		plot.addLayer(layer0, xaxis, yaxis);
 
-		graph.setData(null);
 	}
 
 }
