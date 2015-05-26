@@ -119,7 +119,7 @@ public class ElementFactory {
     }
 
     /**
-     * Create a plot with the initial values
+     * Create a plot with the initial values.
      * <ul>
      * <li>cacheable: true</li>
      * <li>color: BLACK</li>
@@ -132,7 +132,6 @@ public class ElementFactory {
      * @return a plot
      */
     public Plot createPlot() {
-
         PlotImpl plot = new PlotImpl();
 
         plot.setCacheable(true);
@@ -165,9 +164,20 @@ public class ElementFactory {
     }
 
     /**
-     * Create a plot which can be added to other plot later.
+     * Create a plot which can be added as a subplot of another plot.
+     * A subplot is same as a plot, except its size are managed by the layout director of its parent plot.
+     * <p/>
+     * the initial values
+     * <ul>
+     * <li>cacheable: false</li>
+     * <li>color: unassigned, means inherit from its parent plot</li>
+     * <li>font: unassigned, means inherit from its parent plot</li>
+     * <li>margin: no extra margin</li>
+     * <li>sizeMode: unassigned</li>
+     * <li>containerSize: unassigned</li>
+     * <ul>
      *
-     * @return a subplot
+     * @return a plot
      */
     public Plot createSubplot() {
         PlotImpl subplot = new PlotImpl();
@@ -317,6 +327,12 @@ public class ElementFactory {
         return proxy;
     }
 
+    /**
+     * Create a layer and add the given graph.
+     *
+     * @param graph the graph will be added to the created layer
+     * @return the created layer
+     */
     public Layer createLayer(Graph graph) {
         Layer layer = this.createLayer();
         layer.addGraph(graph);
@@ -324,9 +340,9 @@ public class ElementFactory {
     }
 
     /**
-     * Create a layer
+     * Create a layer.
      *
-     * @return a layer
+     * @return the created layer
      */
     public Layer createLayer() {
         LayerImpl impl = new LayerImpl();
@@ -481,6 +497,13 @@ public class ElementFactory {
         return gpProxy;
     }
 
+    /**
+     * Create a symbol annotation at the given value point in layer's world coordinate system. The symbol and text can be set later.
+     *
+     * @param x the x of the value point
+     * @param y the y of the value point
+     * @return a symbol annotation
+     */
     public SymbolAnnotation createSymbolAnnotation(double x, double y) {
         SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
         annotation.setValuePoint(x, y);
@@ -492,6 +515,14 @@ public class ElementFactory {
         return annotationProxy;
     }
 
+    /**
+     * Create a symbol annotation at the given value point in layer's world coordinate system.
+     *
+     * @param x    the x of the value point
+     * @param y    the y of the value point
+     * @param text the text will show on the point
+     * @return a symbol annotation
+     */
     public SymbolAnnotation createSymbolAnnotation(double x, double y, String text) {
         SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
         annotation.setValuePoint(x, y);
@@ -504,6 +535,14 @@ public class ElementFactory {
         return annotationProxy;
     }
 
+    /**
+     * Create a symbol annotation at the given value point in layer's world coordinate system.
+     *
+     * @param x      the x of the value point
+     * @param y      the y of the value point
+     * @param symbol the symbol will show on the point, can be <code>null</code>
+     * @return a symbol annotation
+     */
     public SymbolAnnotation createSymbolAnnotation(double x, double y, SymbolShape symbol) {
         SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
         annotation.setValuePoint(x, y);
@@ -516,6 +555,15 @@ public class ElementFactory {
         return annotationProxy;
     }
 
+    /**
+     * Create a symbol annotation at the given value point in layer's world coordinate system.
+     *
+     * @param x      the x of the value point
+     * @param y      the y of the value point
+     * @param symbol the symbol will show on the point, can be <code>null</code>
+     * @param text   the text will show on the side of the symbol
+     * @return a symbol annotation
+     */
     public SymbolAnnotation createSymbolAnnotation(double x, double y, SymbolShape symbol, String text) {
         SymbolAnnotationImpl annotation = new SymbolAnnotationImpl();
         annotation.setValuePoint(x, y);
@@ -529,6 +577,15 @@ public class ElementFactory {
         return annotationProxy;
     }
 
+    /**
+     * Create a symbol annotation at the given value point in layer's world coordinate system.
+     * The text will automatically update whenever the annotation changes to a new location.
+     *
+     * @param x      the x of the value point
+     * @param y      the y of the value point
+     * @param symbol the symbol will show on the point, can be <code>null</code>
+     * @return a symbol annotation
+     */
     public CoordinateAnnotation createCoordinateAnnotation(double x, double y, SymbolShape symbol) {
         CoordinateAnnotationImpl annotation = new CoordinateAnnotationImpl();
         annotation.setValuePoint(x, y);
@@ -668,13 +725,7 @@ public class ElementFactory {
         return createImageGraph(new SingleBandImageData(dataBuffer, w, h, cr));
     }
 
-    /**
-     * Create an single band image graph.
-     *
-     * @return an image graph
-     */
     public ImageGraph createImageGraph(SingleBandImageData data) {
-
         ImageMapping im = createImageMapping();
         DummyEnvironment env = (DummyEnvironment) im.getEnvironment();
         ImageMappingEx ime = (ImageMappingEx) ((ElementAddition) im).getImpl();
@@ -689,11 +740,6 @@ public class ElementFactory {
         return gpProxy;
     }
 
-    /**
-     * Create an image mapping.
-     *
-     * @return an image mapping
-     */
     public ImageMapping createImageMapping() {
         ImageMappingImpl impl = new ImageMappingImpl();
         applyProfile(impl);
@@ -715,8 +761,7 @@ public class ElementFactory {
         ImageDataBuffer redBuffer = new ByteDataBuffer.Array2D(red2d);
         ImageDataBuffer greenBuffer = new ByteDataBuffer.Array2D(green2d);
         ImageDataBuffer blueBuffer = new ByteDataBuffer.Array2D(blue2d);
-        return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
-                w, h));
+        return createRGBImageGraph(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer}, w, h);
     }
 
     public RGBImageGraph createRGBImageGraph(short[][] red2d, short[][] green2d, short[][] blue2d) {
@@ -729,8 +774,7 @@ public class ElementFactory {
         ImageDataBuffer redBuffer = new ShortDataBuffer.Array2D(red2d);
         ImageDataBuffer greenBuffer = new ShortDataBuffer.Array2D(green2d);
         ImageDataBuffer blueBuffer = new ShortDataBuffer.Array2D(blue2d);
-        return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
-                w, h));
+        return createRGBImageGraph(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer}, w, h);
     }
 
     public RGBImageGraph createRGBImageGraph(int[][] red2d, int[][] green2d, int[][] blue2d) {
@@ -743,8 +787,7 @@ public class ElementFactory {
         ImageDataBuffer redBuffer = new IntDataBuffer.Array2D(red2d);
         ImageDataBuffer greenBuffer = new IntDataBuffer.Array2D(green2d);
         ImageDataBuffer blueBuffer = new IntDataBuffer.Array2D(blue2d);
-        return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
-                w, h));
+        return createRGBImageGraph(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer}, w, h);
     }
 
     public RGBImageGraph createRGBImageGraph(float[][] red2d, float[][] green2d, float[][] blue2d) {
@@ -757,8 +800,7 @@ public class ElementFactory {
         ImageDataBuffer redBuffer = new FloatDataBuffer.Array2D(red2d);
         ImageDataBuffer greenBuffer = new FloatDataBuffer.Array2D(green2d);
         ImageDataBuffer blueBuffer = new FloatDataBuffer.Array2D(blue2d);
-        return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
-                w, h));
+        return createRGBImageGraph(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer}, w, h);
     }
 
     public RGBImageGraph createRGBImageGraph(double[][] red2d, double[][] green2d, double[][] blue2d) {
@@ -771,8 +813,7 @@ public class ElementFactory {
         ImageDataBuffer redBuffer = new DoubleDataBuffer.Array2D(red2d);
         ImageDataBuffer greenBuffer = new DoubleDataBuffer.Array2D(green2d);
         ImageDataBuffer blueBuffer = new DoubleDataBuffer.Array2D(blue2d);
-        return createRGBImageGraph(new MultiBandImageData(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer},
-                w, h));
+        return createRGBImageGraph(new ImageDataBuffer[]{redBuffer, greenBuffer, blueBuffer}, w, h);
     }
 
     public RGBImageGraph createRGBImageGraph(ImageDataBuffer[] dataBuffers, int w, int h) {
@@ -783,13 +824,7 @@ public class ElementFactory {
         return createRGBImageGraph(new MultiBandImageData(dataBuffers, w, h, cr));
     }
 
-    /**
-     * Create an single band image graph.
-     *
-     * @return an image graph
-     */
     public RGBImageGraph createRGBImageGraph(MultiBandImageData data) {
-
         RGBImageMapping im = createRGBImageMapping();
         DummyEnvironment env = (DummyEnvironment) im.getEnvironment();
         RGBImageMappingEx ime = (RGBImageMappingEx) ((ElementAddition) im).getImpl();
@@ -804,11 +839,6 @@ public class ElementFactory {
         return gpProxy;
     }
 
-    /**
-     * Create an image mapping.
-     *
-     * @return an image mapping
-     */
     public RGBImageMapping createRGBImageMapping() {
         RGBImageMappingImpl impl = new RGBImageMappingImpl();
         applyProfile(impl);
