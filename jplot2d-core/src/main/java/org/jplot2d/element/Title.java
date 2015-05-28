@@ -1,18 +1,18 @@
 /**
  * Copyright 2010, 2011 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,7 +32,7 @@ import java.awt.geom.Point2D;
 public interface Title extends TextComponent, MovableComponent {
 
     /**
-     * Gets the current position of this title in a layer.
+     * Gets the current position of this title in a plot.
      *
      * @return the position.
      */
@@ -40,7 +40,7 @@ public interface Title extends TextComponent, MovableComponent {
     public TitlePosition getPosition();
 
     /**
-     * Sets the position of this title.
+     * Sets the position in a plot. The default position is {@link TitlePosition#TOPCENTER}.
      * The values can be FREE, TOPLEFT, TOPCENTER, TOPRIGHT, BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT.
      * Only when position is <code>FREE</code>, the title can be located by
      * {@link #setLocation(Point2D)}, {@link #setHAlign(HAlign)}, {@link #setVAlign(VAlign)} .
@@ -50,7 +50,8 @@ public interface Title extends TextComponent, MovableComponent {
     public void setPosition(TitlePosition position);
 
     /**
-     * Gets the location of this title.
+     * Gets the location in the paper space of a plot.
+     * If the position is not {@link TitlePosition#FREE}, the location is calculated by the layout director of its plot.
      *
      * @return an instance of <code>Point</code> representing the base point of this title
      */

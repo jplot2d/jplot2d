@@ -22,7 +22,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 
 /**
- * A layer can contains graphs and annotations. Every layer has its own viewport to graphs line and annotations.
+ * A layer can contains graphs and annotations. Every layer has a viewport to show graphs and annotations.
+ * It associate with an X AxisTransform and a Y AxisTransform to control the viewport.
  *
  * @author Jingjing Li
  */

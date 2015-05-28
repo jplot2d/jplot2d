@@ -1,18 +1,18 @@
 /**
  * Copyright 2010, 2011 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,7 +26,7 @@ import org.jplot2d.annotation.PropertyGroup;
 import java.awt.geom.Point2D;
 
 /**
- * Legend display legend items. If there is no item in a legend, it will not show.
+ * Every plot has a legend to display legend items. If there is no visible item in a legend, it will not show.
  *
  * @author Jingjing Li
  */
@@ -50,7 +50,7 @@ public interface Legend extends MovableComponent {
     public void setEnabled(boolean enabled);
 
     /**
-     * Gets the current position of this legend.
+     * Gets the current position in its plot.
      *
      * @return the position.
      */
@@ -58,7 +58,7 @@ public interface Legend extends MovableComponent {
     public LegendPosition getPosition();
 
     /**
-     * Sets the position of this legend.
+     * Sets the position in its plot. The default position is {@link LegendPosition#BOTTOMCENTER}.
      * Only when position is {@link LegendPosition#FREE}, the legend can be located by
      * {@link #setLocation(Point2D)}, {@link #setHAlign(HAlign)} , {@link #setVAlign(VAlign)}.
      *
@@ -67,7 +67,8 @@ public interface Legend extends MovableComponent {
     public void setPosition(LegendPosition position);
 
     /**
-     * Gets the location of this legend.
+     * Gets the location in the paper space of its plot.
+     * If the position is not {@link LegendPosition#FREE}, the location is calculated by the layout director of its plot.
      *
      * @return an instance of <code>Point</code> representing the base point of this legend
      */
@@ -75,8 +76,8 @@ public interface Legend extends MovableComponent {
     public Point2D getLocation();
 
     /**
-     * Moves this legend to a new location.
-     * Setting legend to a new location will change legend position to {@link LegendPosition#FREE}
+     * Moves this legend to a new location, in the paper space of its plot.
+     * Setting a new location will change legend position to {@link LegendPosition#FREE}
      *
      * @param loc the base point of this legend
      */
@@ -93,6 +94,7 @@ public interface Legend extends MovableComponent {
 
     /**
      * Get the horizontal alignment.
+     * If the position is not {@link LegendPosition#FREE}, the align is calculated by the layout director of its plot.
      *
      * @return the horizontal alignment.
      */
@@ -103,8 +105,7 @@ public interface Legend extends MovableComponent {
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
      * eg, LEFT means the base point is on the left of this legend.
      * <p/>
-     * Notice: This method should be called when the position is {@link LegendPosition#FREE},
-     * otherwise the behavior is not defined.
+     * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is not defined.
      *
      * @param halign the horizontal alignment.
      */
@@ -112,6 +113,7 @@ public interface Legend extends MovableComponent {
 
     /**
      * Get the vertical alignment.
+     * If the position is not {@link LegendPosition#FREE}, the align is calculated by the layout director of its plot.
      *
      * @return the vertical alignment.
      */
@@ -122,15 +124,15 @@ public interface Legend extends MovableComponent {
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
      * eg, TOP means the base point is on the top of this legend.
      * <p/>
-     * Notice: This method should be called when the position is {@link LegendPosition#FREE},
-     * otherwise the behavior is not defined.
+     * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is not defined.
      *
      * @param valign The vertical alignment.
      */
     public void setVAlign(VAlign valign);
 
     /**
-     * Returns the number of columns in the legend item.
+     * Returns the number of columns to arrange the legend items.
+     * If the position is not {@link LegendPosition#FREE}, the columns is calculated by the layout director of its plot.
      *
      * @return the number of columns
      */

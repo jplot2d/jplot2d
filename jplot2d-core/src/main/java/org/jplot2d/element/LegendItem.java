@@ -1,18 +1,18 @@
 /**
  * Copyright 2010, 2011 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,8 +24,8 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 /**
- * An item in legend to show a short line and a text. It will be hosted by the legend of the plot which host the Graph.
- * If the hosting legend is disabled, it will be hosted by legend of parent plot.
+ * An item in a legend to show a short line and a text. It will be hosted by the legend of the plot which host the Graph.
+ * If the hosting legend is disabled, it will be hosted by the legend of parent plot.
  *
  * @author Jingjing Li
  */
@@ -60,7 +60,7 @@ public interface LegendItem extends Element {
     public void setVisible(boolean show);
 
     /**
-     * Returns the size of the symbol draw in legend.
+     * Returns the size of the symbol draw in legend item.
      * The default symbol size is <code>Float.NaN</code>, means the same size as the symbol size of XYGraph.
      *
      * @return the size of the symbol draw in legend
@@ -69,7 +69,7 @@ public interface LegendItem extends Element {
     public float getSymbolSize();
 
     /**
-     * Set the size of symbol draw in legend.
+     * Set the size of symbol draw in legend item.
      * Setting to <code>Float.NaN</code> means the same size as the symbol size of XYGraph.
      *
      * @param size the size of symbols draw in legend
