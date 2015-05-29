@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,25 +32,25 @@ import java.awt.geom.Point2D;
 public interface PointAnnotation extends Annotation {
 
     /**
-     * returns the x,y values location in layer's world coordinate system.
+     * Returns the point locate in layer's world coordinate system.
      *
-     * @return the x,y values location
+     * @return the location
      */
     @Property(order = 1, styleable = false)
     public Point2D getValuePoint();
 
     /**
-     * Sets the x,y values location in layer's world coordinate system
+     * Sets the point locate in layer's world coordinate system
      *
-     * @param point the x,y values location
+     * @param point the location
      */
     public void setValuePoint(Point2D point);
 
     /**
-     * Sets the x,y values location in layer's world coordinate system
+     * Sets the x,y coordinates locate in layer's world coordinate system
      *
-     * @param x the x-values of the new location
-     * @param y the y-values of the new location
+     * @param x the x coordinate
+     * @param y the y coordinate
      */
     public void setValuePoint(double x, double y);
 

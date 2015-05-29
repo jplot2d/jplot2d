@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -46,7 +46,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
     public void setSymbolShape(SymbolShape symbol);
 
     /**
-     * Returns the symbol size of this annotation
+     * Returns the symbol size of this annotation in pt (1/72 inch).
      *
      * @return the symbol size of this annotation
      */
@@ -54,14 +54,15 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
     public float getSymbolSize();
 
     /**
-     * Sets the symbol shape of this annotation
+     * Sets the symbol size of this annotation in pt (1/72 inch).
+     * The default size is <code>Float.NaN</code>, means to derive size by {@link #getSymbolScale()}.
      *
      * @param size the symbol size of this annotation
      */
     public void setSymbolSize(float size);
 
     /**
-     * Returns the scale apply to effective font size to derive symbol size when symbol size is NaN.
+     * Returns the scale apply to effective font size to derive symbol size when symbol size is <code>Float.NaN</code>.
      *
      * @return the font scale.
      */
@@ -69,7 +70,8 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
     public float getSymbolScale();
 
     /**
-     * Sets the scale apply to effective font size to derive symbol size when symbol size is NaN.
+     * Sets the scale apply to effective font size to derive symbol size when symbol size is <code>Float.NaN</code>.
+     * The default scale is <code>1</code>.
      *
      * @param scale the scale
      */
@@ -102,7 +104,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 
     /**
      * Sets the X offset factor of text. The offset is relative to the base point of this annotation. The factor apply
-     * to the half size of symbol.
+     * to the half size of symbol. The default value is <code>1.25</code>.
      *
      * @param offset the X offset factor of text
      */
@@ -119,7 +121,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
 
     /**
      * Sets the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
-     * half size of symbol.
+     * half size of symbol. The default value is <code>0</code>.
      *
      * @param offset the Y offset factor of text
      */
