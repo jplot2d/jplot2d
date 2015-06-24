@@ -74,7 +74,7 @@ public class CoordinateAnnotationImpl extends SymbolAnnotationImpl implements Co
         double ny = plot.getPaperTransform().getYDtoP(p.y) / plot.getContentSize().getHeight();
         double nyL = plot.getPaperTransform().getYDtoP(p.y - 1) / plot.getContentSize().getHeight();
         double nyH = plot.getPaperTransform().getYDtoP(p.y + 1) / plot.getContentSize().getHeight();
-        double vy = xat.getNormalTransform().convFromNR(ny);
+        double vy = yat.getNormalTransform().convFromNR(ny);
         double deltaYL = Math.abs(yat.getNormalTransform().convFromNR(nyL) - vy);
         double deltaYH = Math.abs(yat.getNormalTransform().convFromNR(nyH) - vy);
         String yformat = NumberUtils.calcDeltaFormatStr(vy, Math.min(deltaYL, deltaYH) / 2);
