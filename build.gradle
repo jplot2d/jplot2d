@@ -1,6 +1,4 @@
 allprojects {
-    apply plugin: 'maven'
-
     group = 'org.jplot2d'
     version = '1.0.0'
 }
@@ -26,8 +24,7 @@ subprojects {
     }
 
     repositories {
-        mavenCentral()
-        maven { url "http://swt-repo.googlecode.com/svn/repo/" }
+        jcenter()
     }
 
     dependencies {
@@ -57,5 +54,5 @@ task docs(type: Javadoc) {
 task distJar(dependsOn: ['jplot2d-core:zipExtLibs', ':jplot2d-swing:distJar', ':jplot2d-swt:distJar'])
 
 task wrap(type: Wrapper) {
-    gradleVersion = '2.2.1'
+    gradleVersion = '2.4'
 }
