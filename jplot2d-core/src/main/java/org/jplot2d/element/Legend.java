@@ -23,6 +23,7 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Point2D;
 
 /**
@@ -30,6 +31,7 @@ import java.awt.geom.Point2D;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Legend")
 public interface Legend extends MovableComponent {
 
@@ -39,7 +41,7 @@ public interface Legend extends MovableComponent {
      * @return the enabled flag.
      */
     @Property(order = 0)
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * Set to <code>true</code> to let this legend to host items.
@@ -47,15 +49,16 @@ public interface Legend extends MovableComponent {
      *
      * @param enabled the flag
      */
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
     /**
      * Gets the current position in its plot.
      *
      * @return the position.
      */
+    @Nonnull
     @Property(order = 1)
-    public LegendPosition getPosition();
+    LegendPosition getPosition();
 
     /**
      * Sets the position in its plot. The default position is {@link LegendPosition#BOTTOMCENTER}.
@@ -64,7 +67,7 @@ public interface Legend extends MovableComponent {
      *
      * @param position the position of this legend.
      */
-    public void setPosition(LegendPosition position);
+    void setPosition(@Nonnull LegendPosition position);
 
     /**
      * Gets the location in the paper space of its plot.
@@ -73,7 +76,7 @@ public interface Legend extends MovableComponent {
      * @return an instance of <code>Point</code> representing the base point of this legend
      */
     @Property(order = 2, styleable = false, displayDigits = 4)
-    public Point2D getLocation();
+    Point2D getLocation();
 
     /**
      * Moves this legend to a new location, in the paper space of its plot.
@@ -81,7 +84,7 @@ public interface Legend extends MovableComponent {
      *
      * @param loc the base point of this legend
      */
-    public void setLocation(Point2D loc);
+    void setLocation(Point2D loc);
 
     /**
      * Moves this legend to a new location.
@@ -90,7 +93,7 @@ public interface Legend extends MovableComponent {
      * @param x the x-coordinate of the new location
      * @param y the y-coordinate of the new location
      */
-    public void setLocation(double x, double y);
+    void setLocation(double x, double y);
 
     /**
      * Get the horizontal alignment.
@@ -99,7 +102,7 @@ public interface Legend extends MovableComponent {
      * @return the horizontal alignment.
      */
     @Property(order = 3, styleable = false)
-    public HAlign getHAlign();
+    HAlign getHAlign();
 
     /**
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
@@ -109,7 +112,7 @@ public interface Legend extends MovableComponent {
      *
      * @param halign the horizontal alignment.
      */
-    public void setHAlign(HAlign halign);
+    void setHAlign(HAlign halign);
 
     /**
      * Get the vertical alignment.
@@ -118,7 +121,7 @@ public interface Legend extends MovableComponent {
      * @return the vertical alignment.
      */
     @Property(order = 4, styleable = false)
-    public VAlign getVAlign();
+    VAlign getVAlign();
 
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
@@ -128,7 +131,7 @@ public interface Legend extends MovableComponent {
      *
      * @param valign The vertical alignment.
      */
-    public void setVAlign(VAlign valign);
+    void setVAlign(VAlign valign);
 
     /**
      * Returns the number of columns to arrange the legend items.
@@ -137,7 +140,7 @@ public interface Legend extends MovableComponent {
      * @return the number of columns
      */
     @Property(order = 5, styleable = false)
-    public int getColumns();
+    int getColumns();
 
     /**
      * Sets the number of columns. This method only take effect when position is {@link LegendPosition#FREE}.
@@ -145,7 +148,7 @@ public interface Legend extends MovableComponent {
      *
      * @param columns number of columns
      */
-    public void setColumns(int columns);
+    void setColumns(int columns);
 
     /**
      * Returns the row spacing factor. The row spacing is factor * row height.
@@ -153,14 +156,14 @@ public interface Legend extends MovableComponent {
      * @return the row spacing factor
      */
     @Property(order = 6)
-    public double getRowSpacingFactor();
+    double getRowSpacingFactor();
 
     /**
      * Sets the row spacing factor. The row spacing is factor * row height. The default factor is 0.125
      *
      * @param factor the row spacing factor
      */
-    public void setRowSpacingFactor(double factor);
+    void setRowSpacingFactor(double factor);
 
     /**
      * Returns <code>true</code> if the legend border is visible
@@ -168,19 +171,19 @@ public interface Legend extends MovableComponent {
      * @return <code>true</code> if the legend border is visible
      */
     @Property(order = 7)
-    public boolean isBorderVisible();
+    boolean isBorderVisible();
 
     /**
      * Sets if the legend border is visible. By default, the legend border is visible.
      *
      * @param visible the flag to indicate if the legend border is visible
      */
-    public void setBorderVisible(boolean visible);
+    void setBorderVisible(boolean visible);
 
     @Property(order = 8)
-    public boolean isMovable();
+    boolean isMovable();
 
-    public void setMovable(boolean movable);
+    void setMovable(boolean movable);
 
     /**
      * Returns all legend items managed by this legend
@@ -188,6 +191,6 @@ public interface Legend extends MovableComponent {
      * @return items managed by this legend
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public LegendItem[] getItems();
+    LegendItem[] getItems();
 
 }

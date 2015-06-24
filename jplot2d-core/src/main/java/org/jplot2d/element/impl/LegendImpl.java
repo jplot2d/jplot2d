@@ -24,6 +24,7 @@ import org.jplot2d.element.Plot;
 import org.jplot2d.element.VAlign;
 import org.jplot2d.util.DoubleDimension2D;
 
+import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -198,14 +199,12 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         }
     }
 
+    @Nonnull
     public LegendPosition getPosition() {
         return position;
     }
 
-    public void setPosition(LegendPosition position) {
-        if (position == null) {
-            position = LegendPosition.FREE;
-        }
+    public void setPosition(@Nonnull LegendPosition position) {
         if (this.position != position) {
             this.position = position;
             if (isVisible() && canContribute()) {

@@ -25,19 +25,19 @@ import org.jplot2d.element.Legend;
  */
 public interface LegendEx extends Legend, ComponentEx {
 
-    public PlotEx getParent();
+    PlotEx getParent();
 
     /**
      * Returns all legend items managed by this legend
      *
      * @return items managed by this legend
      */
-    public LegendItemEx[] getItems();
+    LegendItemEx[] getItems();
 
     /**
      * Put all items in this disabled legend to enabled upper legend
      */
-    public void putItemsToEnabledLegend();
+    void putItemsToEnabledLegend();
 
     /**
      * Sets the location without setting the position to Position.FREE
@@ -45,7 +45,7 @@ public interface LegendEx extends Legend, ComponentEx {
      * @param locX the x value of the location
      * @param locY the y value of the location
      */
-    public void directLocation(double locX, double locY);
+    void directLocation(double locX, double locY);
 
     /**
      * Add the given item to this legend. If this legend is disabled, the item should be added to its upper level
@@ -53,7 +53,7 @@ public interface LegendEx extends Legend, ComponentEx {
      *
      * @param item the legend item to be added
      */
-    public void addLegendItem(LegendItemEx item);
+    void addLegendItem(LegendItemEx item);
 
     /**
      * Remove the given item from this legend. If this legend is disabled, the item should be removed from its upper
@@ -61,24 +61,24 @@ public interface LegendEx extends Legend, ComponentEx {
      *
      * @param item the legend item to be removed
      */
-    public void removeLegendItem(LegendItemEx item);
+    void removeLegendItem(LegendItemEx item);
 
     /**
      * Called by a visible legend item to notify this legend that the item's size is changed.
      */
-    public void itemSizeChanged(LegendItemEx item);
+    void itemSizeChanged(LegendItemEx item);
 
     /**
      * Called by a legend item to notify this legend that the item's visibility is changed. An item is shown when both
      * visibility and contributivity are <code>true</code>.
      */
-    public void itemVisibilityChanged(LegendItemImpl item);
+    void itemVisibilityChanged(LegendItemImpl item);
 
     /**
      * Called by a legend item to notify that the item's contributivity is changed. An item is shown when both
      * visibility and contributivity are <code>true</code>.
      */
-    public void itemContribitivityChanged(LegendItemImpl item);
+    void itemContribitivityChanged(LegendItemImpl item);
 
     /**
      * Returns the thickness of this legend. When position is on top or bottom, thickness is its height. When position
@@ -86,12 +86,12 @@ public interface LegendEx extends Legend, ComponentEx {
      *
      * @return the thickness of this legend
      */
-    public double getThickness();
+    double getThickness();
 
     /**
      * Calculate size of this legend and re-layout legend items. This method is always called by plot when committing
      * changes.
      */
-    public void calcSize();
+    void calcSize();
 
 }
