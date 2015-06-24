@@ -1,18 +1,18 @@
 /**
  * Copyright 2013 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,105 +31,102 @@ import java.awt.image.LookupTable;
 
 /**
  * @author Jingjing Li
- * 
+ *
  */
 public class ImageFloat2dDemo {
 
-	public static class RgbColormap implements ColorMap {
+    public static void main(String[] args) {
+        plot(0.5, null);
+        plot(0.5, new RgbColormap());
+        plotRGB();
+    }
 
-		private LookupTable lut;
+    public static void plot(double gain, ColorMap map) {
+        Plot plot = ElementFactory.getInstance().createPlot();
+        plot.setSizeMode(new AutoPackSizeMode());
 
-		public RgbColormap() {
-			byte[] la = new byte[256];
-			for (int i = 0; i < 256; i++) {
-				la[i] = (byte) i;
-			}
-			lut = new ByteLookupTable(0, new byte[][] { la, la, la });
-		}
+        JFrame frame = new JPlot2DFrame(plot);
+        frame.setSize(640, 480);
+        frame.setVisible(true);
 
-		public int getInputBits() {
-			return 8;
-		}
+        PlotAxis xaxis = ElementFactory.getInstance().createAxis();
+        xaxis.getTitle().setText("x axis");
+        plot.addXAxis(xaxis);
+        PlotAxis yaxis = ElementFactory.getInstance().createAxis();
+        yaxis.getTitle().setText("y axis");
+        plot.addYAxis(yaxis);
 
-		public LookupTable getLookupTable() {
-			return lut;
-		}
+        // create a float2d array
+        float[][] f2d = new float[256][1024];
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 1024; j++) {
+                f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
+            }
+        }
 
-		public ColorModel getColorModel() {
-			return new DirectColorModel(24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0);
-		}
+        ImageGraph graph = ElementFactory.getInstance().createImageGraph(f2d);
+        Layer layer0 = ElementFactory.getInstance().createLayer();
 
-	}
+        layer0.addGraph(graph);
+        plot.addLayer(layer0, xaxis, yaxis);
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		plot(0.5, null);
-		plot(0.5, new RgbColormap());
-		plotRGB();
-	}
+        graph.getMapping().setGain(gain);
+        graph.getMapping().setColorMap(map);
 
-	public static void plot(double gain, ColorMap map) {
-		Plot plot = ElementFactory.getInstance().createPlot();
-		plot.setSizeMode(new AutoPackSizeMode());
+    }
 
-		JFrame frame = new JPlot2DFrame(plot);
-		frame.setSize(640, 480);
-		frame.setVisible(true);
+    public static void plotRGB() {
+        Plot plot = ElementFactory.getInstance().createPlot();
+        plot.setSizeMode(new AutoPackSizeMode());
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		xaxis.getTitle().setText("x axis");
-		plot.addXAxis(xaxis);
-		Axis yaxis = ElementFactory.getInstance().createAxis();
-		yaxis.getTitle().setText("y axis");
-		plot.addYAxis(yaxis);
+        JFrame frame = new JPlot2DFrame(plot);
+        frame.setSize(640, 480);
+        frame.setVisible(true);
 
-		// create a float2d array
-		float[][] f2d = new float[256][1024];
-		for (int i = 0; i < 256; i++) {
-			for (int j = 0; j < 1024; j++) {
-				f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
-			}
-		}
+        PlotAxis xaxis = ElementFactory.getInstance().createAxis();
+        xaxis.getTitle().setText("x axis");
+        plot.addXAxis(xaxis);
+        PlotAxis yaxis = ElementFactory.getInstance().createAxis();
+        yaxis.getTitle().setText("y axis");
+        plot.addYAxis(yaxis);
 
-		ImageGraph graph = ElementFactory.getInstance().createImageGraph(f2d);
-		Layer layer0 = ElementFactory.getInstance().createLayer();
+        // create a float2d array
+        float[][] r2d = new float[][]{{0, 1}, {2, 3}};
+        float[][] g2d = new float[][]{{3, 0}, {1, 2}};
+        float[][] b2d = new float[][]{{2, 3}, {0, 1}};
 
-		layer0.addGraph(graph);
-		plot.addLayer(layer0, xaxis, yaxis);
+        RGBImageGraph graph = ElementFactory.getInstance().createRGBImageGraph(r2d, g2d, b2d);
+        Layer layer0 = ElementFactory.getInstance().createLayer();
 
-		graph.getMapping().setGain(gain);
-		graph.getMapping().setColorMap(map);
+        layer0.addGraph(graph);
+        plot.addLayer(layer0, xaxis, yaxis);
 
-	}
+    }
 
-	public static void plotRGB() {
-		Plot plot = ElementFactory.getInstance().createPlot();
-		plot.setSizeMode(new AutoPackSizeMode());
+    public static class RgbColormap implements ColorMap {
 
-		JFrame frame = new JPlot2DFrame(plot);
-		frame.setSize(640, 480);
-		frame.setVisible(true);
+        private LookupTable lut;
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		xaxis.getTitle().setText("x axis");
-		plot.addXAxis(xaxis);
-		Axis yaxis = ElementFactory.getInstance().createAxis();
-		yaxis.getTitle().setText("y axis");
-		plot.addYAxis(yaxis);
+        public RgbColormap() {
+            byte[] la = new byte[256];
+            for (int i = 0; i < 256; i++) {
+                la[i] = (byte) i;
+            }
+            lut = new ByteLookupTable(0, new byte[][]{la, la, la});
+        }
 
-		// create a float2d array
-		float[][] r2d = new float[][] { { 0, 1 }, { 2, 3 } };
-		float[][] g2d = new float[][] { { 3, 0 }, { 1, 2 } };
-		float[][] b2d = new float[][] { { 2, 3 }, { 0, 1 } };
+        public int getInputBits() {
+            return 8;
+        }
 
-		RGBImageGraph graph = ElementFactory.getInstance().createRGBImageGraph(r2d, g2d, b2d);
-		Layer layer0 = ElementFactory.getInstance().createLayer();
+        public LookupTable getLookupTable() {
+            return lut;
+        }
 
-		layer0.addGraph(graph);
-		plot.addLayer(layer0, xaxis, yaxis);
+        public ColorModel getColorModel() {
+            return new DirectColorModel(24, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x0);
+        }
 
-	}
+    }
 
 }

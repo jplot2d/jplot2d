@@ -41,7 +41,7 @@ public class AxisImplTest {
 
 	@Test
 	public void testTicknessX() {
-		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
+		PlotAxisImpl axis = new PlotAxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.HORIZONTAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.INWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
@@ -79,7 +79,7 @@ public class AxisImplTest {
 
 	@Test
 	public void testThicknessY() {
-		AxisImpl axis = new AxisImpl(new AxisTitleImpl());
+		PlotAxisImpl axis = new PlotAxisImpl(new AxisTitleImpl());
 		axis.setOrientation(AxisOrientation.VERTICAL);
 		assertEquals(axis.getTickSide(), AxisTickSide.INWARD);
 		assertEquals(axis.getLabelSide(), AxisLabelSide.OUTWARD);
@@ -124,7 +124,7 @@ public class AxisImplTest {
 
 	@Test
 	public void testSetLength() {
-		AxisEx axis = new AxisImpl();
+		PlotAxisEx axis = new PlotAxisImpl();
 		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
 		axis.setTickManager(tickManager);
 		AxisTransformEx arm = new AxisTransformImpl();
@@ -140,7 +140,7 @@ public class AxisImplTest {
 
 	@Test
 	public void testCopyStructure() {
-		AxisEx axis = new AxisImpl();
+		PlotAxisEx axis = new PlotAxisImpl();
 		AxisTickManagerEx tickManager = new AxisTickManagerImpl();
 		axis.setTickManager(tickManager);
 		AxisTransformEx arm = new AxisTransformImpl();
@@ -149,7 +149,7 @@ public class AxisImplTest {
 		arm.setLockGroup(alg);
 
 		Map<ElementEx, ElementEx> orig2copyMap = new HashMap<>();
-		AxisEx axisCopy = (AxisEx) axis.copyStructure(orig2copyMap);
+		PlotAxisEx axisCopy = (PlotAxisEx) axis.copyStructure(orig2copyMap);
 
 		AxisTransformEx axt = axis.getTickManager().getAxisTransform();
 		AxisTransformEx axtCopy = axisCopy.getTickManager().getAxisTransform();

@@ -25,6 +25,8 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.sizing.SizeMode;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
@@ -37,11 +39,12 @@ import java.awt.geom.Point2D;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Plot")
 public interface Plot extends PComponent {
 
     @Hierarchy(HierarchyOp.GET)
-    public Plot getParent();
+    Plot getParent();
 
     /**
      * Returns the size mode of this plot.
@@ -49,7 +52,8 @@ public interface Plot extends PComponent {
      * @return the size mode
      */
     @Property(order = 0, styleable = false)
-    public SizeMode getSizeMode();
+    @Nullable
+    SizeMode getSizeMode();
 
     /**
      * Sets a size mode to manage the size and scale of this plot according to its container size.
@@ -57,7 +61,7 @@ public interface Plot extends PComponent {
      *
      * @param mode the size mode
      */
-    public void setSizeMode(SizeMode mode);
+    void setSizeMode(@Nullable SizeMode mode);
 
     /**
      * Returns the container size in device coordinate system.
@@ -65,7 +69,7 @@ public interface Plot extends PComponent {
      * @return the container size
      */
     @Property(order = 1, styleable = false)
-    public Dimension2D getContainerSize();
+    Dimension2D getContainerSize();
 
     /**
      * Sets the container size. The container size is given in device coordinate system and used by size mode to derive
@@ -75,7 +79,7 @@ public interface Plot extends PComponent {
      *
      * @param size the container size
      */
-    public void setContainerSize(Dimension2D size);
+    void setContainerSize(Dimension2D size);
 
     /**
      * Returns the scale of this plot. The scale is ratio device size to paper size.
@@ -83,7 +87,7 @@ public interface Plot extends PComponent {
      * @return the scale of this plot
      */
     @Property(order = 2, styleable = false)
-    public double getScale();
+    double getScale();
 
     /**
      * Sets scale of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the scale is
@@ -91,8 +95,7 @@ public interface Plot extends PComponent {
      *
      * @param scale the scale
      */
-    @Property(order = 3)
-    public void setScale(double scale);
+    void setScale(double scale);
 
     /**
      * Sets the paper size of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the
@@ -100,7 +103,7 @@ public interface Plot extends PComponent {
      *
      * @param size the paper size
      */
-    public void setSize(Dimension2D size);
+    void setSize(Dimension2D size);
 
     /**
      * Sets the paper size of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the
@@ -111,22 +114,23 @@ public interface Plot extends PComponent {
      * @param width  the paper width
      * @param height the paper height
      */
-    public void setSize(double width, double height);
+    void setSize(double width, double height);
 
     /**
      * Gets the layout director for this plot.
      *
      * @return the layout director for this plot.
      */
+    @Nonnull
     @Property(order = 10, styleable = false)
-    public LayoutDirector getLayoutDirector();
+    LayoutDirector getLayoutDirector();
 
     /**
      * Sets the layout director for this plot.
      *
      * @param director the layout director
      */
-    public void setLayoutDirector(LayoutDirector director);
+    void setLayoutDirector(@Nonnull LayoutDirector director);
 
     /**
      * Returns the constraint of the specified subplot in the current LayoutManager.
@@ -135,8 +139,7 @@ public interface Plot extends PComponent {
      * @return the constraint
      * @throws IllegalArgumentException if the subplot is not contained by this plot
      */
-    @Property(order = 11)
-    public Object getConstraint(Plot subplot);
+    Object getConstraint(Plot subplot);
 
     /**
      * Sets the constraint of the specified subplot in the current LayoutManager.
@@ -145,22 +148,23 @@ public interface Plot extends PComponent {
      * @param constraint the constraint
      * @throws IllegalArgumentException if the subplot is not contained by this plot
      */
-    public void setConstraint(Plot subplot, Object constraint);
+    void setConstraint(Plot subplot, Object constraint);
 
     /**
      * Returns the the preferred content area size.
      *
      * @return the the preferred content area size
      */
+    @Nonnull
     @Property(order = 12)
-    public Dimension2D getPreferredContentSize();
+    Dimension2D getPreferredContentSize();
 
     /**
-     * Sets the preferred content area size
+     * Sets the preferred content area size.
      *
      * @param size the size in Dimension2D
      */
-    public void setPreferredContentSize(Dimension2D size);
+    void setPreferredContentSize(@Nonnull Dimension2D size);
 
     /**
      * Sets the preferred content area size
@@ -168,7 +172,7 @@ public interface Plot extends PComponent {
      * @param width  the width
      * @param height the height
      */
-    public void setPreferredContentSize(double width, double height);
+    void setPreferredContentSize(double width, double height);
 
     /**
      * Gets the location of this plot in its parent plot. The origin of a plot is the bottom-left
@@ -178,7 +182,7 @@ public interface Plot extends PComponent {
      * @return an instance of <code>Point</code> representing the base point of this plot
      */
     @Property(order = 13, styleable = false)
-    public Point2D getLocation();
+    Point2D getLocation();
 
     /**
      * Moves this plot to a new location.
@@ -191,9 +195,9 @@ public interface Plot extends PComponent {
      *
      * @param loc the point defining the origin of the new location
      */
-    public void setLocation(Point2D loc);
+    void setLocation(Point2D loc);
 
-    public void setLocation(double locX, double locY);
+    void setLocation(double locX, double locY);
 
     /**
      * Returns the size of content area.
@@ -201,7 +205,7 @@ public interface Plot extends PComponent {
      * @return the size of content area.
      */
     @Property(order = 14, styleable = false)
-    public Dimension2D getContentSize();
+    Dimension2D getContentSize();
 
     /**
      * Returns the margin of this plot.
@@ -209,7 +213,7 @@ public interface Plot extends PComponent {
      * @return the margin of this plot
      */
     @Hierarchy(HierarchyOp.GET)
-    public PlotMargin getMargin();
+    PlotMargin getMargin();
 
     /**
      * Returns the legend of this plot.
@@ -217,7 +221,7 @@ public interface Plot extends PComponent {
      * @return the legend of this plot
      */
     @Hierarchy(HierarchyOp.GET)
-    public Legend getLegend();
+    Legend getLegend();
 
     /**
      * Gets the nth title in this plot.
@@ -226,7 +230,7 @@ public interface Plot extends PComponent {
      * @return the nth title in this plot
      */
     @Hierarchy(HierarchyOp.GET)
-    public Title getTitle(int index);
+    Title getTitle(int index);
 
     /**
      * Returns all titles in the order of added.
@@ -234,31 +238,31 @@ public interface Plot extends PComponent {
      * @return all titles
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Title[] getTitles();
+    Title[] getTitles();
 
     @Hierarchy(HierarchyOp.ADD)
-    public void addTitle(Title title);
+    void addTitle(Title title);
 
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeTitle(Title title);
+    void removeTitle(Title title);
 
     @Hierarchy(HierarchyOp.GET)
-    public Axis getXAxis(int index);
+    PlotAxis getXAxis(int index);
 
     @Hierarchy(HierarchyOp.GET)
-    public Axis getYAxis(int index);
+    PlotAxis getYAxis(int index);
 
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Axis[] getXAxes();
+    PlotAxis[] getXAxes();
 
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Axis[] getYAxes();
+    PlotAxis[] getYAxes();
 
     @Hierarchy(HierarchyOp.ADD)
-    public void addXAxis(Axis axis);
+    void addXAxis(PlotAxis axis);
 
     @Hierarchy(HierarchyOp.ADD)
-    public void addYAxis(Axis axis);
+    void addYAxis(PlotAxis axis);
 
     /**
      * Add the given axes created by {@link ElementFactory#createAxes(int)} as x-axes
@@ -266,7 +270,7 @@ public interface Plot extends PComponent {
      * @param axes the axes to be added
      */
     @Hierarchy(HierarchyOp.ADD)
-    public void addXAxes(Axis[] axes);
+    void addXAxes(PlotAxis[] axes);
 
     /**
      * Add the given axes created by {@link ElementFactory#createAxes(int)} as y-axes
@@ -274,7 +278,7 @@ public interface Plot extends PComponent {
      * @param axes the axes to be added
      */
     @Hierarchy(HierarchyOp.ADD)
-    public void addYAxes(Axis[] axes);
+    void addYAxes(PlotAxis[] axes);
 
     /**
      * Removes the specified X axis from this plot if it is present.
@@ -282,7 +286,7 @@ public interface Plot extends PComponent {
      * @param axis the X axis to be removed
      */
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeXAxis(Axis axis);
+    void removeXAxis(PlotAxis axis);
 
     /**
      * Removes the specified Y axis from this plot if it is present.
@@ -290,7 +294,7 @@ public interface Plot extends PComponent {
      * @param axis the Y axis to be removed
      */
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeYAxis(Axis axis);
+    void removeYAxis(PlotAxis axis);
 
     /**
      * Gets the nth layer in this plot.
@@ -299,7 +303,7 @@ public interface Plot extends PComponent {
      * @return the nth layer in this plot
      */
     @Hierarchy(HierarchyOp.GET)
-    public Layer getLayer(int index);
+    Layer getLayer(int index);
 
     /**
      * Returns all layers in the order of added.
@@ -307,7 +311,7 @@ public interface Plot extends PComponent {
      * @return all layers
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Layer[] getLayers();
+    Layer[] getLayers();
 
     /**
      * Add a layer to this plot. The layer will not associate with any axis range manager.
@@ -317,7 +321,7 @@ public interface Plot extends PComponent {
      * @param layer the layer to be added
      */
     @Hierarchy(HierarchyOp.ADD)
-    public void addLayer(Layer layer);
+    void addLayer(Layer layer);
 
     /**
      * Add a layer to this plot. The layer will associate with the given X/Y axis range manager
@@ -328,7 +332,7 @@ public interface Plot extends PComponent {
      * @param yRangeManager the y axis range manager
      */
     @Hierarchy(HierarchyOp.ADD_REF2)
-    public void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager);
+    void addLayer(Layer layer, AxisTransform xRangeManager, AxisTransform yRangeManager);
 
     /**
      * Add a layer to this plot. The layer will associate with the given X/Y axis' range manager
@@ -341,10 +345,10 @@ public interface Plot extends PComponent {
      * @param yaxis the y axis
      */
     @Hierarchy(HierarchyOp.ADD_REF2)
-    public void addLayer(Layer layer, Axis xaxis, Axis yaxis);
+    void addLayer(Layer layer, PlotAxis xaxis, PlotAxis yaxis);
 
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeLayer(Layer layer);
+    void removeLayer(Layer layer);
 
     /**
      * Gets the nth subplot in this plot.
@@ -353,7 +357,7 @@ public interface Plot extends PComponent {
      * @return the nth subplot in this subplot
      */
     @Hierarchy(HierarchyOp.GET)
-    public Plot getSubplot(int n);
+    Plot getSubplot(int n);
 
     /**
      * Returns all subplots in the order of added.
@@ -361,7 +365,7 @@ public interface Plot extends PComponent {
      * @return all subplots
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Plot[] getSubplots();
+    Plot[] getSubplots();
 
     /**
      * Add a subplot with a constraint to this plot.
@@ -381,21 +385,13 @@ public interface Plot extends PComponent {
     void removeSubplot(Plot subplot);
 
     /**
-     * Set a new layout constraint for the given subplot.
-     *
-     * @param subplot    the subplot
-     * @param constraint an object expressing layout constraints
-     */
-    public void setSubplotConstraint(Plot subplot, Object constraint);
-
-    /**
      * Zoom the given range to entire X axis. The behavior is like, creating a temporary AxisRangeLockGroup
      * to group all AxisRangeLockGroups which zoomable are <code>true</code> in this plot, and zoom the range on it.
      *
      * @param start the normalized start
      * @param end   the normalized end
      */
-    public void zoomXRange(double start, double end);
+    void zoomXRange(double start, double end);
 
     /**
      * Zoom the given range to entire Y axis. The behavior is like, creating a temporary AxisRangeLockGroup
@@ -404,18 +400,18 @@ public interface Plot extends PComponent {
      * @param start the normalized start
      * @param end   the normalized end
      */
-    public void zoomYRange(double start, double end);
+    void zoomYRange(double start, double end);
 
     /**
      * Adaptive zoom the x range for all axes in this plot.
      * Only axes whose AxisRangeLockGroups is zoomable are zoomed.
      */
-    public void adaptiveZoomX();
+    void adaptiveZoomX();
 
     /**
      * Adaptive zoom the y range for all axes in this plot.
      * Only axes whose AxisRangeLockGroups is zoomable are zoomed.
      */
-    public void adaptiveZoomY();
+    void adaptiveZoomY();
 
 }

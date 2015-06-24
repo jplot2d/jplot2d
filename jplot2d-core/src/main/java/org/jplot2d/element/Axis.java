@@ -23,19 +23,18 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 /**
- * A component to represent an axis in a plot. It has visual properties such as line width, tick height, etc.
+ * A component to represent an axis. It has visual properties such as line width, tick height, etc.
  * An axis also has a {@link AxisTitle title} element, which group all title related properties.
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Axis")
 public interface Axis extends PComponent {
-
-    @Hierarchy(HierarchyOp.GET)
-    public Plot getParent();
 
     /**
      * Returns the title of this axis.
@@ -43,7 +42,7 @@ public interface Axis extends PComponent {
      * @return the title of this axis
      */
     @Hierarchy(HierarchyOp.GET)
-    public AxisTitle getTitle();
+    AxisTitle getTitle();
 
     /**
      * Returns the tick manager of this axis.
@@ -51,10 +50,10 @@ public interface Axis extends PComponent {
      * @return the tick manager of this axis
      */
     @Hierarchy(HierarchyOp.GET)
-    public AxisTickManager getTickManager();
+    AxisTickManager getTickManager();
 
     @Hierarchy(HierarchyOp.JOIN)
-    public void setTickManager(AxisTickManager tickManager);
+    void setTickManager(AxisTickManager tickManager);
 
     /**
      * Orientation is a read-only property. It just show the orientation of this axis after it has been add as a X/Y
@@ -63,7 +62,7 @@ public interface Axis extends PComponent {
      * @return orientation of this axis
      */
     @Property(order = 0)
-    public AxisOrientation getOrientation();
+    AxisOrientation getOrientation();
 
     /**
      * Returns the paper length of this axis.
@@ -71,22 +70,7 @@ public interface Axis extends PComponent {
      * @return the paper length
      */
     @Property(order = 1)
-    public double getLength();
-
-    /**
-     * Return the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
-     *
-     * @return the position of the axis in the plot.
-     */
-    @Property(order = 2)
-    public AxisPosition getPosition();
-
-    /**
-     * Set the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
-     *
-     * @param position the position of the axis in the plot.
-     */
-    public void setPosition(AxisPosition position);
+    double getLength();
 
     /**
      * Returns the axis line width is pt(1/72 inch)
@@ -94,44 +78,14 @@ public interface Axis extends PComponent {
      * @return the axis line width
      */
     @Property(order = 3)
-    public float getAxisLineWidth();
+    float getAxisLineWidth();
 
     /**
-     * Sets the axis line width is pt(1/72 inch). The default line width is 1.0 pt.
+     * Sets the axis line width in pt(1/72 inch). The default line width is 1.0 pt.
      *
      * @param width the axis line width
      */
-    public void setAxisLineWidth(float width);
-
-    /**
-     * Return if the grid line is displayed or not.
-     *
-     * @return true if the grid line is displayed
-     */
-    @Property(order = 4, displayName = "Grid Lines")
-    public boolean isGridLines();
-
-    /**
-     * Show/hide grey lines in corresponding of major ticks of the axis.
-     *
-     * @param showGridLines if true show the grid lines.
-     */
-    public void setGridLines(boolean showGridLines);
-
-    /**
-     * Return if the minor grid line is displayed or not.
-     *
-     * @return true if the minor grid line is displayed
-     */
-    @Property(order = 5, displayName = "Minor Grid Lines")
-    public boolean isMinorGridLines();
-
-    /**
-     * Show/hide grey lines in corresponding of minor ticks of the axis.
-     *
-     * @param showGridLines if <code>true</code> show the grid lines.
-     */
-    public void setMinorGridLines(boolean showGridLines);
+    void setAxisLineWidth(float width);
 
     /**
      * Returns if the tick mark is shown or not
@@ -139,25 +93,26 @@ public interface Axis extends PComponent {
      * @return if the tick mark is shown or not
      */
     @Property(order = 6)
-    public boolean isTickVisible();
+    boolean isTickVisible();
 
     /**
      * Sets if the tick mark is shown or not
      *
      * @param visible if <code>true</code>, shows the ticks; otherwise, hide the ticks
      */
-    public void setTickVisible(boolean visible);
+    void setTickVisible(boolean visible);
 
     /**
      * Return the side of the ticks.
      */
+    @Nonnull
     @Property(order = 7)
-    public AxisTickSide getTickSide();
+    AxisTickSide getTickSide();
 
     /**
      * Set the side of the ticks.
      */
-    public void setTickSide(AxisTickSide side);
+    void setTickSide(@Nonnull AxisTickSide side);
 
     /**
      * Returns the height of the major ticks.
@@ -165,14 +120,14 @@ public interface Axis extends PComponent {
      * @return the height of the ticks
      */
     @Property(order = 8)
-    public double getTickHeight();
+    double getTickHeight();
 
     /**
      * Set the height of the major ticks.
      *
      * @param height the new height of the ticks
      */
-    public void setTickHeight(double height);
+    void setTickHeight(double height);
 
     /**
      * Return the height of the minor ticks.
@@ -180,14 +135,14 @@ public interface Axis extends PComponent {
      * @return the height of the minor ticks.
      */
     @Property(order = 9)
-    public double getMinorTickHeight();
+    double getMinorTickHeight();
 
     /**
      * Set the height of the minor ticks.
      *
      * @param height the height of the ticks
      */
-    public void setMinorTickHeight(double height);
+    void setMinorTickHeight(double height);
 
     /**
      * Returns the tick line width in pt(1/72 inch)
@@ -195,7 +150,7 @@ public interface Axis extends PComponent {
      * @return the tick line width
      */
     @Property(order = 10)
-    public float getTickLineWidth();
+    float getTickLineWidth();
 
     /**
      * Sets the line width for ticks and minor ticks. The width is in pt(1/72 inch). The default line width is 0.5 pt.
@@ -204,7 +159,7 @@ public interface Axis extends PComponent {
      *
      * @param width the tick line width
      */
-    public void setTickLineWidth(float width);
+    void setTickLineWidth(float width);
 
     /**
      * Returns if the labels is shown or not
@@ -212,40 +167,42 @@ public interface Axis extends PComponent {
      * @return <code>true</code>if the tick mark is shown
      */
     @Property(order = 11)
-    public boolean isLabelVisible();
+    boolean isLabelVisible();
 
     /**
      * Sets if the labels is shown or not
      *
      * @param visible if <code>true</code>, shows the labels; otherwise, hide the labels
      */
-    public void setLabelVisible(boolean visible);
+    void setLabelVisible(boolean visible);
 
     /**
      * Return the side of the labels
      */
+    @Nonnull
     @Property(order = 12)
-    public AxisLabelSide getLabelSide();
+    AxisLabelSide getLabelSide();
 
     /**
-     * Set the side of the labels
+     * Set the side of the labels. The default value is {@link AxisLabelSide#OUTWARD}.
      */
-    public void setLabelSide(AxisLabelSide side);
+    void setLabelSide(@Nonnull AxisLabelSide side);
 
     /**
      * Get the orientation of the labels.
      *
      * @return the the orientation of the labels
      */
+    @Nonnull
     @Property(order = 13)
-    public AxisOrientation getLabelOrientation();
+    AxisOrientation getLabelOrientation();
 
     /**
-     * Set the orientation of the labels.
+     * Set the orientation of the labels. The default value is {@link AxisOrientation#HORIZONTAL}.
      *
      * @param orientation HORIZONTAL/VERTICAL
      */
-    public void setLabelOrientation(AxisOrientation orientation);
+    void setLabelOrientation(@Nonnull AxisOrientation orientation);
 
     /**
      * Return the color of the labels.
@@ -253,13 +210,13 @@ public interface Axis extends PComponent {
      * @return the color of the labels
      */
     @Property(order = 14)
-    public Color getLabelColor();
+    Color getLabelColor();
 
     /**
      * Set the color of the labels.
      *
      * @param color the color of the labels
      */
-    public void setLabelColor(Color color);
+    void setLabelColor(Color color);
 
 }

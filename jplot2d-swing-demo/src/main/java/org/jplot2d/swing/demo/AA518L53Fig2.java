@@ -22,13 +22,7 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
-import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.HAlign;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.VAlign;
-import org.jplot2d.element.XYGraph;
+import org.jplot2d.element.*;
 import org.jplot2d.layout.GridConstraint;
 import org.jplot2d.layout.GridLayoutDirector;
 import org.jplot2d.sizing.AutoPackSizeMode;
@@ -43,9 +37,6 @@ import org.jplot2d.util.SymbolShape;
  */
 public class AA518L53Fig2 {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// ElementFactory
@@ -69,14 +60,14 @@ public class AA518L53Fig2 {
 		p.addSubplot(lsp, new GridConstraint(0, 0));
 
 		// upper subplot Axes
-		Axis[] uspx = ef.createAxes(2);
+		PlotAxis[] uspx = ef.createAxes(2);
 		uspx[0].getTitle().setText("wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]");
 		uspx[0].getTitle().setFontSize(10);
 		uspx[0].getTickManager().setRange(new Range.Double(10, 2e6));
 		uspx[0].getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		uspx[1].setLabelVisible(false);
 
-		Axis[] uspy = ef.createAxes(2);
+		PlotAxis[] uspy = ef.createAxes(2);
 		uspy[0].getTitle().setText("flux density [Jy]");
 		uspy[0].getTitle().setFontSize(12);
 		uspy[0].getTickManager().setRange(new Range.Double(0.05, 1200));
@@ -87,14 +78,14 @@ public class AA518L53Fig2 {
 		usp.addYAxes(uspy);
 
 		// lower subplot Axes
-		Axis[] lspx = ef.createAxes(2);
+		PlotAxis[] lspx = ef.createAxes(2);
 		lspx[0].getTitle().setText("wavelength $\\mathrm{\\lambda}$ [$\\mathrm{\\micro}$m]");
 		lspx[0].getTitle().setFontSize(10);
 		lspx[0].getTickManager().setRange(new Range.Double(10, 1500));
 		lspx[0].getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		lspx[1].setLabelVisible(false);
 
-		Axis[] lspy = ef.createAxes(2);
+		PlotAxis[] lspy = ef.createAxes(2);
 		lspy[0].getTitle().setText("residual [Jy]");
 		lspy[0].getTitle().setFontSize(10);
 		lspy[0].getTickManager().setRange(new Range.Double(-0.7, 0.7));
@@ -204,7 +195,7 @@ public class AA518L53Fig2 {
 		ulayer.addGraph(tl);
 
 		// legend
-		usp.getLegend().setPosition(null);
+		usp.getLegend().setPosition(LegendPosition.FREE);
 		usp.getLegend().setColumns(1);
 		usp.getLegend().setLocation(-10, 250);
 		usp.getLegend().setHAlign(HAlign.LEFT);

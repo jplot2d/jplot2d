@@ -18,13 +18,9 @@
  */
 package org.jplot2d.swing.demo;
 
-import org.jplot2d.element.ElementFactory;
+import org.jplot2d.element.*;
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.XYGraph;
 import org.jplot2d.renderer.AsyncImageRenderer;
 import org.jplot2d.renderer.AsyncImageRenderer.RendererCancelPolicy;
 import org.jplot2d.sizing.FillContainerSizeMode;
@@ -60,8 +56,8 @@ public class FastUpdate {
 		};
 		comp.setImageRendererFactory(irf);
 
-		Axis xaxis = ElementFactory.getInstance().createAxis();
-		Axis yaxis = ElementFactory.getInstance().createAxis();
+		PlotAxis xaxis = ElementFactory.getInstance().createAxis();
+		PlotAxis yaxis = ElementFactory.getInstance().createAxis();
 		xaxis.getTitle().setText("x axis");
 		xaxis.getTickManager().setRange(new Range.Double(0, n));
 		plot.addXAxis(xaxis);

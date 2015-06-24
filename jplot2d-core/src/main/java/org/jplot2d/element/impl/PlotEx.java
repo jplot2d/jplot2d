@@ -26,16 +26,17 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public interface PlotEx extends Plot, ContainerEx {
+@SuppressWarnings("unused")
+public interface PlotEx extends Plot, AxisContainerEx {
 
-    public PlotEx getParent();
+    PlotEx getParent();
 
-    public PlotEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
+    PlotEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
 
     /**
      * Create a structural copy of this plot, without linking layer and axis transform.
      */
-    public PlotEx copyStructureCascade(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
+    PlotEx copyStructureCascade(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
 
     /**
      * Returns the short id of this plot. The short id is composed of series of ids concatenated with dots. The 1st id
@@ -44,7 +45,7 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @return the short id of this plot.
      */
-    public String getShortId();
+    String getShortId();
 
     /**
      * Determines whether this plot is valid. A plot is valid when it is correctly sized and positioned within its
@@ -54,7 +55,7 @@ public interface PlotEx extends Plot, ContainerEx {
      * @see #validate
      * @see #invalidate
      */
-    public boolean isValid();
+    boolean isValid();
 
     /**
      * Invalidates this component. This component and all parents above it are marked as needing to be laid out. This
@@ -62,14 +63,14 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @see #validate
      */
-    public void invalidate();
+    void invalidate();
 
     /**
      * Mark this component has a valid layout.
      *
      * @see #invalidate
      */
-    public void validate();
+    void validate();
 
     /**
      * Returns the flag that indicate if this plot is needed to be re-rendered. This flag will control if rendering
@@ -77,7 +78,7 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @return the flag that indicate if this plot is needed to be re-rendered
      */
-    public boolean isRerenderNeeded();
+    boolean isRerenderNeeded();
 
     /**
      * Mark or clear the flag that indicate this plot artifact need to be re-rendered. Any component changes which do
@@ -85,49 +86,49 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @param flag the flag that indicate this plot artifact need to be re-rendered
      */
-    public void setRerenderNeeded(boolean flag);
+    void setRerenderNeeded(boolean flag);
 
-    public Notifier getNotifier();
+    Notifier getNotifier();
 
     /**
      * Sets a notifier to receive all notice messages.
      *
      * @param notifier the notifier to receive all notice messages
      */
-    public void setNotifier(Notifier notifier);
+    void setNotifier(Notifier notifier);
 
     /**
      * Apply all pending changes on this plot. After this method is called, all axis range and layout are valid.
      */
-    public void commit();
+    void commit();
 
-    public PlotMarginEx getMargin();
+    PlotMarginEx getMargin();
 
-    public LegendEx getLegend();
+    LegendEx getLegend();
 
-    public int indexOf(TitleEx title);
+    int indexOf(TitleEx title);
 
-    public TitleEx[] getTitles();
+    TitleEx[] getTitles();
 
-    public LayerEx getLayer(int index);
+    LayerEx getLayer(int index);
 
-    public int indexOf(LayerEx layer);
+    int indexOf(LayerEx layer);
 
-    public LayerEx[] getLayers();
+    LayerEx[] getLayers();
 
-    public int indexOfXAxis(AxisEx axis);
+    int indexOfXAxis(PlotAxisEx axis);
 
-    public int indexOfYAxis(AxisEx axis);
+    int indexOfYAxis(PlotAxisEx axis);
 
-    public AxisEx[] getXAxes();
+    PlotAxisEx[] getXAxes();
 
-    public AxisEx[] getYAxes();
+    PlotAxisEx[] getYAxes();
 
-    public int indexOf(PlotEx subplot);
+    int indexOf(PlotEx subplot);
 
-    public PlotEx[] getSubplots();
+    PlotEx[] getSubplots();
 
-    public void parentPaperTransformChanged();
+    void parentPaperTransformChanged();
 
     /**
      * Sets the content size by layout director. All layers in this plot have the same viewport size.
@@ -137,14 +138,14 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @param csize the content size
      */
-    public void setContentSize(Dimension2D csize);
+    void setContentSize(@Nonnull Dimension2D csize);
 
     /**
      * Returns the contents constraint of this plot.
      *
      * @return the contents constraint
      */
-    public Dimension2D getContentConstraint();
+    Dimension2D getContentConstraint();
 
     /**
      * Impose contents constraint on this plot. This method is called by a plot's layout director, when laying out
@@ -152,6 +153,6 @@ public interface PlotEx extends Plot, ContainerEx {
      *
      * @param constraint the contents constraint
      */
-    public void setContentConstraint(Dimension2D constraint);
+    void setContentConstraint(@Nonnull Dimension2D constraint);
 
 }

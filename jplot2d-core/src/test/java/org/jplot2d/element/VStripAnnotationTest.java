@@ -68,8 +68,8 @@ public class VStripAnnotationTest {
 		ElementFactory ef = ElementFactory.getInstance();
 		Plot p = ef.createPlot();
 
-		Axis xaxis = ef.createAxis();
-		Axis yaxis = ef.createAxis();
+		PlotAxis xaxis = ef.createAxis();
+		PlotAxis yaxis = ef.createAxis();
 		Layer layer = ef.createLayer();
 		p.addXAxis(xaxis);
 		p.addYAxis(yaxis);

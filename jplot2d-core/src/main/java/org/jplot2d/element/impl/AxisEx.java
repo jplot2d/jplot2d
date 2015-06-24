@@ -1,31 +1,31 @@
 /**
  * Copyright 2010, 2011 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisOrientation;
+import org.jplot2d.element.*;
 
-import java.awt.Font;
+import javax.annotation.Nonnull;
+import java.awt.*;
 
 public interface AxisEx extends Axis, ComponentEx {
 
-    public PlotEx getParent();
+    ContainerEx getParent();
 
     /**
      * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots.
@@ -34,16 +34,16 @@ public interface AxisEx extends Axis, ComponentEx {
      *
      * @return the short id of this axis.
      */
-    public String getShortId();
+    String getShortId();
 
-    public AxisTickManagerEx getTickManager();
+    AxisTickManagerEx getTickManager();
 
     /**
      * Set shrunk font for displaying by tick manager.
      *
      * @param font the shrunk font
      */
-    public void setActualFont(Font font);
+    void setActualFont(@Nonnull Font font);
 
     /**
      * Moves this plot component to a new location. The origin of the new location is given in the parent's paper coordinate space.
@@ -51,33 +51,33 @@ public interface AxisEx extends Axis, ComponentEx {
      * @param locX the x value of the origin of the new location
      * @param locY the y value of the origin of the new location
      */
-    public void setLocation(double locX, double locY);
+    void setLocation(double locX, double locY);
 
     /**
-     * Called by {@link PlotEx#addXAxis(Axis)} or {@link PlotEx#addYAxis(Axis)} to set the orientation of this axis.
+     * Called by {@link Plot#addXAxis(PlotAxis)} or {@link Plot#addYAxis(PlotAxis)} to set the orientation of this axis.
      *
      * @param orientation the orientation
      */
-    public void setOrientation(AxisOrientation orientation);
+    void setOrientation(AxisOrientation orientation);
 
     /**
      * Set the length of this axis.
      *
      * @param length the length of this axis
      */
-    public void setLength(double length);
+    void setLength(double length);
 
-    public double getThickness();
+    double getThickness();
 
-    public double getAsc();
+    double getAsc();
 
-    public double getDesc();
+    double getDesc();
 
-    public void invalidateThickness();
+    void invalidateThickness();
 
     /**
      * calculate asc and desc of this axis.
      */
-    public void calcThickness();
+    void calcThickness();
 
 }

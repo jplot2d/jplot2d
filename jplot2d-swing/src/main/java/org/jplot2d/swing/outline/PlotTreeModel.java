@@ -1,36 +1,24 @@
 /**
  * Copyright 2010-2013 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.outline;
 
-import org.jplot2d.element.Annotation;
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisTickManager;
-import org.jplot2d.element.AxisTransform;
-import org.jplot2d.element.Element;
-import org.jplot2d.element.Graph;
-import org.jplot2d.element.ImageGraph;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.RGBImageGraph;
-import org.jplot2d.element.RGBImageMapping;
-import org.jplot2d.element.Title;
-import org.jplot2d.element.XYGraph;
+import org.jplot2d.element.*;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -45,12 +33,12 @@ import javax.swing.tree.TreePath;
  */
 public class PlotTreeModel implements TreeModel {
 
-    private final Plot root;
-
     /**
      * Listeners.
      */
     protected final EventListenerList listenerList = new EventListenerList();
+
+    private final Plot root;
 
     public PlotTreeModel(Plot plot) {
         root = plot;
@@ -97,9 +85,9 @@ public class PlotTreeModel implements TreeModel {
             if (start <= index && index < start + subplotNum) {
                 return plot.getSubplot(index - start);
             }
-        } else if (parent instanceof Axis) {
+        } else if (parent instanceof PlotAxis) {
             // title + tick manager
-            Axis axis = (Axis) parent;
+            PlotAxis axis = (PlotAxis) parent;
             if (index == 0) {
                 return axis.getTitle();
             } else if (index == 1) {
@@ -178,7 +166,7 @@ public class PlotTreeModel implements TreeModel {
             int layerNum = plot.getLayers().length;
             int subplotNum = plot.getSubplots().length;
             return 2 + titleNum + xaxisNum + yaxisNum + layerNum + subplotNum;
-        } else if (parent instanceof Axis) {
+        } else if (parent instanceof PlotAxis) {
             // title + tick manager
             return 2;
         } else if (parent instanceof AxisTickManager) {
@@ -224,8 +212,8 @@ public class PlotTreeModel implements TreeModel {
             // margin + titles + legend + x axes + y axes + layers + subplots
             Plot plot = (Plot) parent;
             Title[] titles = plot.getTitles();
-            Axis[] xaxes = plot.getXAxes();
-            Axis[] yaxes = plot.getYAxes();
+            PlotAxis[] xaxes = plot.getXAxes();
+            PlotAxis[] yaxes = plot.getYAxes();
             Layer[] layers = plot.getLayers();
             Plot[] subplots = plot.getSubplots();
             int start = 0;
@@ -266,8 +254,8 @@ public class PlotTreeModel implements TreeModel {
                     return start + i;
                 }
             }
-        } else if (parent instanceof Axis) {
-            Axis axis = (Axis) parent;
+        } else if (parent instanceof PlotAxis) {
+            PlotAxis axis = (PlotAxis) parent;
             // title + tick manager
             if (child == axis.getTitle()) {
                 return 0;
@@ -342,7 +330,7 @@ public class PlotTreeModel implements TreeModel {
     }
 
     public boolean isLeaf(Object node) {
-        return !(node instanceof Plot || node instanceof Axis || node instanceof AxisTickManager
+        return !(node instanceof Plot || node instanceof PlotAxis || node instanceof AxisTickManager
                 || node instanceof AxisTransform || node instanceof Layer || node instanceof Graph
                 || node instanceof RGBImageMapping);
     }

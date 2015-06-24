@@ -24,18 +24,7 @@ import javax.swing.SwingUtilities;
 
 import org.jplot2d.data.ArrayPair;
 import org.jplot2d.data.XYGraphData;
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.ElementFactory;
-import org.jplot2d.element.HLineAnnotation;
-import org.jplot2d.element.HStripAnnotation;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.RectangleAnnotation;
-import org.jplot2d.element.SymbolAnnotation;
-import org.jplot2d.element.Title;
-import org.jplot2d.element.VLineAnnotation;
-import org.jplot2d.element.VStripAnnotation;
-import org.jplot2d.element.XYGraph;
+import org.jplot2d.element.*;
 import org.jplot2d.sizing.AutoPackSizeMode;
 import org.jplot2d.sizing.FillContainerSizeMode;
 import org.jplot2d.swing.JPlot2DFrame;
@@ -47,10 +36,6 @@ import org.jplot2d.util.SymbolShape;
  */
 public class DevDemo {
 
-	/**
-	 * @param args
-	 * @throws InterruptedException
-	 */
 	public static void main(String[] args) throws InterruptedException {
 		final Plot plot = ElementFactory.getInstance().createPlot();
 		plot.setSizeMode(new AutoPackSizeMode());
@@ -60,10 +45,10 @@ public class DevDemo {
 		title.setFontScale(2);
 		plot.addTitle(title);
 
-		Axis[] xaxes = ElementFactory.getInstance().createAxes(2);
+		PlotAxis[] xaxes = ElementFactory.getInstance().createAxes(2);
 		xaxes[0].getTitle().setText("x axis");
 		plot.addXAxes(xaxes);
-		Axis[] yaxes = ElementFactory.getInstance().createAxes(2);
+		PlotAxis[] yaxes = ElementFactory.getInstance().createAxes(2);
 		yaxes[0].getTitle().setText("y axis");
 		// yaxis.getTickManager().getAxisTransform().setTransform(TransformType.LOGARITHMIC);
 		plot.addYAxes(yaxes);

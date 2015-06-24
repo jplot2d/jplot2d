@@ -36,6 +36,7 @@ import java.util.Map;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public class ElementFactory {
 
     private static final ElementFactory instance = new ElementFactory(false, null);
@@ -225,32 +226,32 @@ public class ElementFactory {
      *
      * @return an axis
      */
-    public Axis createAxis() {
+    public PlotAxis createAxis() {
         return createAxes(1)[0];
     }
 
     /**
      * Create n Axes which share the same tick manager. The position of the axis on index 0 is
      * {@link AxisPosition#NEGATIVE_SIDE}, the position of the axis on index 1 is {@link AxisPosition#POSITIVE_SIDE}.
-     * All the created axes must be added to a plot by {@link Plot#addXAxes(Axis[])} or {@link Plot#addYAxes(Axis[])}
+     * All the created axes must be added to a plot by {@link Plot#addXAxes(PlotAxis[])} or {@link Plot#addYAxes(PlotAxis[])}
      *
      * @return axes in an array
      */
-    public Axis[] createAxes(int n) {
+    public PlotAxis[] createAxes(int n) {
 
         AxisTickManager tm = createAxisTickManager();
         DummyEnvironment env = (DummyEnvironment) tm.getEnvironment();
         AxisTickManagerEx tme = (AxisTickManagerEx) ((ElementAddition) tm).getImpl();
 
-        Axis[] result = new Axis[n];
+        PlotAxis[] result = new PlotAxis[n];
 
         // add axis
         for (int i = 0; i < n; i++) {
             // this create tick and title inside
-            AxisImpl axis = new AxisImpl();
+            PlotAxisImpl axis = new PlotAxisImpl();
             axis.setTickManager(tme);
 
-            Axis axisProxy = proxy(axis, Axis.class);
+            PlotAxis axisProxy = proxy(axis, PlotAxis.class);
 
             AxisTitleEx title = axis.getTitle();
             AxisTitle titleProxy = proxy(title, AxisTitle.class);

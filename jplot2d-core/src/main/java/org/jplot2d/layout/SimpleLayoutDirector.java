@@ -1,18 +1,18 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,11 +21,7 @@ package org.jplot2d.layout;
 import org.jplot2d.element.AxisPosition;
 import org.jplot2d.element.HAlign;
 import org.jplot2d.element.VAlign;
-import org.jplot2d.element.impl.AxisEx;
-import org.jplot2d.element.impl.LegendEx;
-import org.jplot2d.element.impl.PlotEx;
-import org.jplot2d.element.impl.PlotMarginEx;
-import org.jplot2d.element.impl.TitleEx;
+import org.jplot2d.element.impl.*;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 
@@ -41,72 +37,11 @@ import java.util.Map;
  */
 public class SimpleLayoutDirector implements LayoutDirector {
 
-    /**
-     * All Axes in a plot grouped by position.
-     */
-    public static class AxesInPlot {
-        final ArrayList<AxisEx> leftAxes = new ArrayList<>();
-        final ArrayList<AxisEx> rightAxes = new ArrayList<>();
-        final ArrayList<AxisEx> topAxes = new ArrayList<>();
-        final ArrayList<AxisEx> bottomAxes = new ArrayList<>();
-    }
-
     static final double LEGEND_GAP = 8.0;
-
     /**
      * The layout constraints
      */
     private final Map<PlotEx, Object> constraints = new HashMap<>();
-
-    public Object getConstraint(PlotEx plot) {
-        return constraints.get(plot);
-    }
-
-    public void remove(PlotEx plot) {
-        constraints.remove(plot);
-    }
-
-    public void setConstraint(PlotEx plot, Object constraint) {
-        constraints.put(plot, constraint);
-    }
-
-    public void invalidateLayout(PlotEx plot) {
-        // nothing to do
-    }
-
-    public void layout(PlotEx plot) {
-
-        AxesInPlot ais = getAllAxes(plot);
-        Insets2D margin = calcMargin(plot, ais);
-
-        double contentWidth, contentHeight;
-        if (plot.getContentConstraint() != null) {
-            contentWidth = plot.getContentConstraint().getWidth();
-            contentHeight = plot.getContentConstraint().getHeight();
-        } else {
-            contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
-            contentHeight = plot.getSize().getHeight() - margin.getTop() - margin.getBottom();
-        }
-        if (contentWidth < 0) {
-            contentWidth = 0;
-        }
-        if (contentHeight < 0) {
-            contentHeight = 0;
-        }
-
-        if (plot.getContentConstraint() != null) {
-            double width = contentWidth + margin.getLeft() + margin.getRight();
-            double height = contentHeight + margin.getTop() + margin.getBottom();
-            plot.setSize(width, height);
-        }
-
-        Dimension2D contentSize = new DoubleDimension2D(contentWidth, contentHeight);
-        plot.setContentSize(contentSize);
-        layoutLeftMargin(plot, contentSize, ais.leftAxes);
-        layoutRightMargin(plot, contentSize, ais.rightAxes);
-        layoutTopMargin(plot, contentSize, ais.topAxes);
-        layoutBottomMargin(plot, contentSize, ais.bottomAxes);
-    }
 
     /**
      * Return all visible axes on left, right, top, bottom margins.
@@ -117,7 +52,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
     protected static AxesInPlot getAllAxes(PlotEx plot) {
         AxesInPlot ais = new AxesInPlot();
 
-        for (AxisEx axis : plot.getXAxes()) {
+        for (PlotAxisEx axis : plot.getXAxes()) {
             if (axis.isVisible() && axis.canContribute()) {
                 if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
                     ais.topAxes.add(axis);
@@ -126,7 +61,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 }
             }
         }
-        for (AxisEx axis : plot.getYAxes()) {
+        for (PlotAxisEx axis : plot.getYAxes()) {
             if (axis.isVisible() && axis.canContribute()) {
                 if (axis.getPosition() == AxisPosition.POSITIVE_SIDE) {
                     ais.rightAxes.add(axis);
@@ -139,7 +74,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         return ais;
     }
 
-    protected static double calcLeftMargin(PlotEx plot, ArrayList<AxisEx> leftAxes) {
+    protected static double calcLeftMargin(PlotEx plot, ArrayList<PlotAxisEx> leftAxes) {
         PlotMarginEx margin = plot.getMargin();
 
         if (!margin.isAutoLeft()) {
@@ -149,7 +84,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         double mLeft = 0;
 
         if (leftAxes.size() > 0) {
-            for (AxisEx am : leftAxes) {
+            for (PlotAxisEx am : leftAxes) {
                 mLeft += am.getAsc() + am.getDesc();
             }
             mLeft -= leftAxes.get(0).getDesc();
@@ -172,7 +107,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         return mLeft + margin.getExtraLeft();
     }
 
-    protected static double calcRightMargin(PlotEx plot, ArrayList<AxisEx> rightAxes) {
+    protected static double calcRightMargin(PlotEx plot, ArrayList<PlotAxisEx> rightAxes) {
         PlotMarginEx margin = plot.getMargin();
 
         if (!margin.isAutoRight()) {
@@ -182,7 +117,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         double mRight = 0;
 
         if (rightAxes.size() > 0) {
-            for (AxisEx am : rightAxes) {
+            for (PlotAxisEx am : rightAxes) {
                 mRight += am.getAsc() + am.getDesc();
             }
             mRight -= rightAxes.get(0).getAsc();
@@ -205,7 +140,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         return mRight + margin.getExtraRight();
     }
 
-    protected static double calcTopMargin(PlotEx plot, ArrayList<AxisEx> topAxes) {
+    protected static double calcTopMargin(PlotEx plot, ArrayList<PlotAxisEx> topAxes) {
         PlotMarginEx margin = plot.getMargin();
 
         if (!margin.isAutoTop()) {
@@ -215,7 +150,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         double mTop = 0;
 
         if (topAxes.size() > 0) {
-            for (AxisEx am : topAxes) {
+            for (PlotAxisEx am : topAxes) {
                 mTop += am.getAsc() + am.getDesc();
             }
             mTop -= topAxes.get(0).getDesc();
@@ -252,7 +187,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         return mTop + margin.getExtraTop();
     }
 
-    protected static double calcBottomMargin(PlotEx plot, ArrayList<AxisEx> bottomAxes) {
+    protected static double calcBottomMargin(PlotEx plot, ArrayList<PlotAxisEx> bottomAxes) {
         PlotMarginEx margin = plot.getMargin();
 
         if (!margin.isAutoBottom()) {
@@ -262,7 +197,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         double mBottom = 0;
 
         if (bottomAxes.size() > 0) {
-            for (AxisEx am : bottomAxes) {
+            for (PlotAxisEx am : bottomAxes) {
                 mBottom += am.getAsc() + am.getDesc();
             }
             mBottom -= bottomAxes.get(0).getAsc();
@@ -318,7 +253,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         return new Insets2D.Double(mTop, mLeft, mBottom, mRight);
     }
 
-    private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> leftAxes) {
+    private static void layoutLeftMargin(PlotEx sp, Dimension2D contentSize, ArrayList<PlotAxisEx> leftAxes) {
 
         // viewport box
         double iabLeft = 0;
@@ -328,7 +263,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		/* locate axes */
         if (leftAxes.size() > 0) {
-            AxisEx am = leftAxes.get(0);
+            PlotAxisEx am = leftAxes.get(0);
             am.setLength(contentSize.getHeight());
             am.setLocation(xloc, iabBottom);
             xloc -= am.getAsc();
@@ -369,7 +304,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
     }
 
-    private static void layoutRightMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> rightAxes) {
+    private static void layoutRightMargin(PlotEx sp, Dimension2D contentSize, ArrayList<PlotAxisEx> rightAxes) {
 
         // viewport box
         double iabRight = contentSize.getWidth();
@@ -379,7 +314,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
 		/* locate axes */
         if (rightAxes.size() > 0) {
-            AxisEx am = rightAxes.get(0);
+            PlotAxisEx am = rightAxes.get(0);
             am.setLength(contentSize.getHeight());
             am.setLocation(xloc, iabBottom);
             xloc += am.getDesc();
@@ -419,7 +354,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
     }
 
-    private static void layoutTopMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> topAxes) {
+    private static void layoutTopMargin(PlotEx sp, Dimension2D contentSize, ArrayList<PlotAxisEx> topAxes) {
 
         // viewport box
         double iabLeft = 0;
@@ -430,7 +365,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
         // locate axes
         if (topAxes.size() > 0) {
-            AxisEx am = topAxes.get(0);
+            PlotAxisEx am = topAxes.get(0);
             am.setLength(contentSize.getWidth());
             am.setLocation(iabLeft, yloc);
             yloc += am.getAsc();
@@ -506,7 +441,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
         }
     }
 
-    private static void layoutBottomMargin(PlotEx sp, Dimension2D contentSize, ArrayList<AxisEx> bottomAxes) {
+    private static void layoutBottomMargin(PlotEx sp, Dimension2D contentSize, ArrayList<PlotAxisEx> bottomAxes) {
 
         // viewport box
         double iabLeft = 0;
@@ -515,7 +450,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
         // locate axes
         if (bottomAxes.size() > 0) {
-            AxisEx am = bottomAxes.get(0);
+            PlotAxisEx am = bottomAxes.get(0);
             am.setLength(contentSize.getWidth());
             am.setLocation(iabLeft, yloc);
             yloc -= am.getDesc();
@@ -589,6 +524,56 @@ public class SimpleLayoutDirector implements LayoutDirector {
         }
     }
 
+    public Object getConstraint(PlotEx plot) {
+        return constraints.get(plot);
+    }
+
+    public void remove(PlotEx plot) {
+        constraints.remove(plot);
+    }
+
+    public void setConstraint(PlotEx plot, Object constraint) {
+        constraints.put(plot, constraint);
+    }
+
+    public void invalidateLayout(PlotEx plot) {
+        // nothing to do
+    }
+
+    public void layout(PlotEx plot) {
+
+        AxesInPlot ais = getAllAxes(plot);
+        Insets2D margin = calcMargin(plot, ais);
+
+        double contentWidth, contentHeight;
+        if (plot.getContentConstraint() != null) {
+            contentWidth = plot.getContentConstraint().getWidth();
+            contentHeight = plot.getContentConstraint().getHeight();
+        } else {
+            contentWidth = plot.getSize().getWidth() - margin.getLeft() - margin.getRight();
+            contentHeight = plot.getSize().getHeight() - margin.getTop() - margin.getBottom();
+        }
+        if (contentWidth < 0) {
+            contentWidth = 0;
+        }
+        if (contentHeight < 0) {
+            contentHeight = 0;
+        }
+
+        if (plot.getContentConstraint() != null) {
+            double width = contentWidth + margin.getLeft() + margin.getRight();
+            double height = contentHeight + margin.getTop() + margin.getBottom();
+            plot.setSize(width, height);
+        }
+
+        Dimension2D contentSize = new DoubleDimension2D(contentWidth, contentHeight);
+        plot.setContentSize(contentSize);
+        layoutLeftMargin(plot, contentSize, ais.leftAxes);
+        layoutRightMargin(plot, contentSize, ais.rightAxes);
+        layoutTopMargin(plot, contentSize, ais.topAxes);
+        layoutBottomMargin(plot, contentSize, ais.bottomAxes);
+    }
+
     /**
      * Calculate the preferred content size of the given plot. The default implementation returns the
      * plot.getPreferredContentSize(), which can be override by subclass to consider nested subplots. The returned size
@@ -616,6 +601,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    /**
+     * All Axes in a plot grouped by position.
+     */
+    public static class AxesInPlot {
+        final ArrayList<PlotAxisEx> leftAxes = new ArrayList<>();
+        final ArrayList<PlotAxisEx> rightAxes = new ArrayList<>();
+        final ArrayList<PlotAxisEx> topAxes = new ArrayList<>();
+        final ArrayList<PlotAxisEx> bottomAxes = new ArrayList<>();
     }
 
 }

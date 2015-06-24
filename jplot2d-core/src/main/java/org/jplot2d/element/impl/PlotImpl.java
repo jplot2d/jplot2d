@@ -1,31 +1,24 @@
 /**
  * Copyright 2010-2014 Jingjing Li.
- *
+ * <p/>
  * This file is part of jplot2d.
- *
+ * <p/>
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- *
+ * <p/>
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.Axis;
-import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.element.AxisTransform;
-import org.jplot2d.element.Element;
-import org.jplot2d.element.Layer;
-import org.jplot2d.element.Plot;
-import org.jplot2d.element.Title;
-import org.jplot2d.element.TitlePosition;
+import org.jplot2d.element.*;
 import org.jplot2d.layout.LayoutDirector;
 import org.jplot2d.layout.SimpleLayoutDirector;
 import org.jplot2d.notice.Notice;
@@ -37,27 +30,28 @@ import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Range;
 
-import java.awt.Graphics2D;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Jingjing Li
  */
 public class PlotImpl extends ContainerImpl implements PlotEx {
 
+    private final PlotMarginEx margin;
+    private final LegendEx legend;
+    private final List<TitleEx> titles = new ArrayList<>();
+    private final List<PlotAxisEx> xAxis = new ArrayList<>();
+    private final List<PlotAxisEx> yAxis = new ArrayList<>();
+    private final List<LayerEx> layers = new ArrayList<>();
+    private final List<PlotEx> subplots = new ArrayList<>();
     /**
      * The container size only take effect when this plot is top plot and has a size mode assigned.
      */
@@ -66,14 +60,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     /**
      * The size mode only take effect when this plot is the root plot.
      */
+    @Nullable
     private SizeMode sizeMode;
 
     private double locX, locY;
-
     private double width = 640, height = 480;
-
     private double scale = 1;
 
+    @Nullable
     private PaperTransform pxf;
 
     /**
@@ -88,53 +82,198 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     private boolean rerenderNeeded;
 
+    @Nullable
     private Notifier notifier;
 
+    @Nonnull
     private LayoutDirector layoutDirector = new SimpleLayoutDirector();
 
     /**
-     * Efficient Immutable
+     * Set by layout director. Efficient Immutable
      */
+    @Nullable
     private Dimension2D contentConstraint;
 
     /**
      * Must be valid size (positive width and height)
      */
     private double preferredContentWidth = 320;
-
     private double preferredContentHeight = 240;
 
     /**
-     * Efficient Immutable
+     * Set by layout director. Efficient Immutable!
      */
+    @Nullable
     private Dimension2D contentSize;
 
-    private PlotMarginEx margin;
-
-    private LegendEx legend;
-
-    private final List<TitleEx> titles = new ArrayList<>();
-
-    private final List<AxisEx> xAxis = new ArrayList<>();
-
-    private final List<AxisEx> yAxis = new ArrayList<>();
-
-    private final List<LayerEx> layers = new ArrayList<>();
-
-    private final List<PlotEx> subplots = new ArrayList<>();
-
     public PlotImpl() {
-        margin = new PlotMarginImpl();
-        margin.setParent(this);
-        legend = new LegendImpl();
-        legend.setParent(this);
+        this(new LegendImpl());
     }
 
     public PlotImpl(LegendEx legend) {
-        margin = new PlotMarginImpl();
-        margin.setParent(this);
+        this.margin = new PlotMarginImpl();
+        this.margin.setParent(this);
         this.legend = legend;
-        legend.setParent(this);
+        this.legend.setParent(this);
+    }
+
+    /**
+     * Deep search layers to find the copy whose range manager not been linked, and set for them.
+     *
+     * @param plot         the plot to be copied
+     * @param orig2copyMap original element to copy map
+     */
+    private static void linkLayerAndAxisTransform(PlotEx plot, @Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
+        for (LayerEx layer : plot.getLayers()) {
+            LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
+            if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
+                AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer.getXAxisTransform());
+                layerCopy.linkXAxisTransform(xcopy);
+                xcopy.linkLayer(layerCopy);
+            }
+            if (layerCopy.getYAxisTransform() == null && layer.getYAxisTransform() != null) {
+                AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer.getYAxisTransform());
+                layerCopy.linkYAxisTransform(ycopy);
+                ycopy.linkLayer(layerCopy);
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            linkLayerAndAxisTransform(sp, orig2copyMap);
+        }
+    }
+
+    /**
+     * find all AxisLockGroups in the given plot and fill them into the given set.
+     */
+    private static void collectLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> xalgs, Set<AxisRangeLockGroupEx> yalgs) {
+        for (PlotAxisEx axis : plot.getXAxes()) {
+            assert axis.getTickManager() != null;
+            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+            xalgs.add(alg);
+        }
+        for (PlotAxisEx axis : plot.getYAxes()) {
+            assert axis.getTickManager() != null;
+            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+            yalgs.add(alg);
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            collectLockGroups(sp, xalgs, yalgs);
+        }
+    }
+
+    /**
+     * Calculate axis thickness according to its tick height, label font and label orientation.
+     */
+    private static void calcAxesThickness(PlotEx plot) {
+        for (PlotAxisEx axis : plot.getXAxes()) {
+            if (axis.isVisible() && axis.canContribute()) {
+                calcAxisThickness(axis);
+            }
+        }
+        for (PlotAxisEx axis : plot.getYAxes()) {
+            if (axis.isVisible() && axis.canContribute()) {
+                calcAxisThickness(axis);
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            calcAxesThickness(sp);
+        }
+    }
+
+    private static void calcAxisThickness(PlotAxisEx axis) {
+        double asc = axis.getAsc();
+        double desc = axis.getDesc();
+
+        axis.calcThickness();
+
+        if (Math.abs(asc - axis.getAsc()) > Math.abs(asc) * 1e-12
+                || Math.abs(desc - axis.getDesc()) > Math.abs(desc) * 1e-12) {
+            axis.getParent().invalidate();
+        }
+    }
+
+    /**
+     * Calculate axis ticks according to its length, range and tick properties.
+     */
+    private static void calcAxesTick(PlotEx plot) {
+        Set<AxisTickManagerEx> algs = new HashSet<>();
+        collectTickManagers(plot, algs);
+
+        for (AxisTickManagerEx alg : algs) {
+            alg.calcTicks();
+        }
+    }
+
+    /**
+     * find all AxisLockGroups in the given plot and fill them into the given set.
+     */
+    private static void collectTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
+        for (PlotAxisEx axis : plot.getXAxes()) {
+            AxisTickManagerEx alg = axis.getTickManager();
+            algs.add(alg);
+        }
+        for (PlotAxisEx axis : plot.getYAxes()) {
+            AxisTickManagerEx alg = axis.getTickManager();
+            algs.add(alg);
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            collectTickManagers(sp, algs);
+        }
+    }
+
+    /**
+     * Calculate title size according to its contents
+     */
+    private static void calcTitleSize(PlotEx plot) {
+        for (TitleEx title : plot.getTitles()) {
+            if (title.isVisible() && title.canContribute()) {
+                Dimension2D size = title.getSize();
+                double oldThickness = (size == null) ? 0 : size.getHeight();
+                title.calcSize();
+                if (Math.abs(oldThickness - title.getSize().getHeight()) > Math.abs(oldThickness) * 1e-12) {
+                    plot.invalidate();
+                }
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            calcTitleSize(sp);
+        }
+    }
+
+    /**
+     * Calculate legend size according to its length constraint, items and item font.
+     */
+    private static void calcLegendSize(PlotEx plot) {
+        LegendEx legend = plot.getLegend();
+        if (legend.isVisible() && legend.canContribute()) {
+            double oldThickness = legend.getThickness();
+            plot.getLegend().calcSize();
+            if (Math.abs(oldThickness - legend.getThickness()) > Math.abs(oldThickness) * 1e-12) {
+                plot.invalidate();
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            calcLegendSize(sp);
+        }
+    }
+
+    /**
+     * find all AxisLockGroups in the given plot and fill them into the given set.
+     */
+    private static void collectImageMappings(PlotEx plot, Set<ImageMappingEx> ims, Set<RGBImageMappingEx> rgbims) {
+        for (LayerEx layer : plot.getLayers()) {
+            for (GraphEx graph : layer.getGraphs()) {
+                if (graph instanceof ImageGraphEx) {
+                    ims.add(((ImageGraphEx) graph).getMapping());
+                }
+                if (graph instanceof RGBImageGraphEx) {
+                    rgbims.add(((RGBImageGraphEx) graph).getMapping());
+                }
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            collectImageMappings(sp, ims, rgbims);
+        }
     }
 
     public String getShortId() {
@@ -176,7 +315,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     public Map<Element, Element> getMooringMap() {
         Map<Element, Element> result = new HashMap<>();
 
-        for (AxisEx axis : xAxis) {
+        for (PlotAxisEx axis : xAxis) {
             AxisTransformEx arm = axis.getTickManager().getAxisTransform();
             for (LayerEx layer : arm.getLayers()) {
                 if (layer.getParent() != this) {
@@ -184,7 +323,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
                 }
             }
         }
-        for (AxisEx axis : yAxis) {
+        for (PlotAxisEx axis : yAxis) {
             AxisTransformEx arm = axis.getTickManager().getAxisTransform();
             for (LayerEx layer : arm.getLayers()) {
                 if (layer.getParent() != this) {
@@ -210,15 +349,16 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         this.containerHeight = size.getHeight();
     }
 
+    @Nullable
     @Override
     public SizeMode getSizeMode() {
         return sizeMode;
     }
 
     @Override
-    public void setSizeMode(SizeMode sizeMode) {
+    public void setSizeMode(@Nullable SizeMode sizeMode) {
         this.sizeMode = sizeMode;
-        if (getParent() == null && sizeMode.isAutoPack()) {
+        if (getParent() == null && sizeMode != null && sizeMode.isAutoPack()) {
             invalidate();
         }
     }
@@ -320,35 +460,48 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         return margin;
     }
 
+    @Nonnull
     @Override
     public LayoutDirector getLayoutDirector() {
         return layoutDirector;
     }
 
     @Override
-    public void setLayoutDirector(LayoutDirector director) {
+    public void setLayoutDirector(@Nullable LayoutDirector director) {
+        if (director == null) {
+            throw new IllegalArgumentException("The given layout director cannot be null.");
+        }
         this.layoutDirector = director;
         invalidate();
     }
 
+    @SuppressWarnings("RedundantCast")
     @Override
     public Object getConstraint(Plot subplot) {
+        if (!subplots.contains((PlotEx) subplot)) {
+            throw new IllegalArgumentException("The given subplot is not contained by this plot.");
+        }
         return layoutDirector.getConstraint((PlotEx) subplot);
     }
 
+    @SuppressWarnings("RedundantCast")
     @Override
     public void setConstraint(Plot subplot, Object constraint) {
+        if (!subplots.contains((PlotEx) subplot)) {
+            throw new IllegalArgumentException("The given subplot is not contained by this plot.");
+        }
         layoutDirector.setConstraint((PlotEx) subplot, constraint);
         invalidate();
     }
 
+    @Nullable
     @Override
     public Dimension2D getContentConstraint() {
         return contentConstraint;
     }
 
     @Override
-    public void setContentConstraint(Dimension2D constraint) {
+    public void setContentConstraint(@Nonnull Dimension2D constraint) {
         if (!constraint.equals(this.contentConstraint)) {
             this.contentConstraint = constraint;
             invalidate();
@@ -367,9 +520,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             if (getParent() != null) {
                 getParent().invalidate();
             }
-            if (layoutDirector != null) {
-                layoutDirector.invalidateLayout(this);
-            }
+            layoutDirector.invalidateLayout(this);
         }
     }
 
@@ -379,9 +530,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             return;
         }
 
-        if (layoutDirector != null) {
-            layoutDirector.layout(this);
-        }
+        layoutDirector.layout(this);
 
         for (PlotEx subplot : subplots) {
             subplot.validate();
@@ -400,13 +549,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         rerenderNeeded = flag;
     }
 
+    @Nullable
     @Override
     public Notifier getNotifier() {
         return notifier;
     }
 
     @Override
-    public void setNotifier(Notifier notifier) {
+    public void setNotifier(@Nullable Notifier notifier) {
         this.notifier = notifier;
     }
 
@@ -419,13 +569,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         }
     }
 
+    @Nonnull
     @Override
     public Dimension2D getPreferredContentSize() {
         return new DoubleDimension2D(preferredContentWidth, preferredContentHeight);
     }
 
     @Override
-    public void setPreferredContentSize(Dimension2D size) {
+    public void setPreferredContentSize(@Nullable Dimension2D size) {
         if (size == null) {
             throw new IllegalArgumentException("Preferred content size cannot be null.");
         }
@@ -449,7 +600,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void setContentSize(Dimension2D csize) {
+    public void setContentSize(@Nonnull Dimension2D csize) {
         if (csize.getWidth() < 0 || csize.getHeight() < 0) {
             throw new IllegalArgumentException("Content size must be positive, " + csize.getWidth() + "x"
                     + csize.getHeight() + " is invalid.");
@@ -468,20 +619,20 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
         int n = 0;
         comps[n++] = legend;
-        for (int i = 0; i < titles.size(); i++) {
-            comps[n++] = titles.get(i);
+        for (TitleEx title : titles) {
+            comps[n++] = title;
         }
-        for (int i = 0; i < xAxis.size(); i++) {
-            comps[n++] = xAxis.get(i);
+        for (PlotAxisEx xAxi : xAxis) {
+            comps[n++] = xAxi;
         }
-        for (int i = 0; i < yAxis.size(); i++) {
-            comps[n++] = yAxis.get(i);
+        for (PlotAxisEx yAxi : yAxis) {
+            comps[n++] = yAxi;
         }
-        for (int i = 0; i < layers.size(); i++) {
-            comps[n++] = layers.get(i);
+        for (LayerEx layer : layers) {
+            comps[n++] = layer;
         }
-        for (int i = 0; i < subplots.size(); i++) {
-            comps[n++] = subplots.get(i);
+        for (PlotEx subplot : subplots) {
+            comps[n++] = subplot;
         }
 
         return comps;
@@ -536,38 +687,38 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public AxisEx getXAxis(int index) {
+    public PlotAxisEx getXAxis(int index) {
         return xAxis.get(index);
     }
 
     @Override
-    public AxisEx getYAxis(int index) {
+    public PlotAxisEx getYAxis(int index) {
         return yAxis.get(index);
     }
 
     @Override
-    public int indexOfXAxis(AxisEx axis) {
+    public int indexOfXAxis(PlotAxisEx axis) {
         return xAxis.indexOf(axis);
     }
 
     @Override
-    public int indexOfYAxis(AxisEx axis) {
+    public int indexOfYAxis(PlotAxisEx axis) {
         return yAxis.indexOf(axis);
     }
 
     @Override
-    public AxisEx[] getXAxes() {
-        return xAxis.toArray(new AxisEx[xAxis.size()]);
+    public PlotAxisEx[] getXAxes() {
+        return xAxis.toArray(new PlotAxisEx[xAxis.size()]);
     }
 
     @Override
-    public AxisEx[] getYAxes() {
-        return yAxis.toArray(new AxisEx[yAxis.size()]);
+    public PlotAxisEx[] getYAxes() {
+        return yAxis.toArray(new PlotAxisEx[yAxis.size()]);
     }
 
     @Override
-    public void addXAxis(Axis axis) {
-        AxisEx ax = (AxisEx) axis;
+    public void addXAxis(PlotAxis axis) {
+        PlotAxisEx ax = (PlotAxisEx) axis;
 
         if (ax.getTickManager() == null) {
             throw new IllegalArgumentException("The axis has no tick manager.");
@@ -591,8 +742,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void addYAxis(Axis axis) {
-        AxisEx ax = (AxisEx) axis;
+    public void addYAxis(PlotAxis axis) {
+        PlotAxisEx ax = (PlotAxisEx) axis;
 
         if (ax.getTickManager() == null) {
             throw new IllegalArgumentException("The axis has no tick manager.");
@@ -616,14 +767,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void addXAxes(Axis[] axes) {
+    public void addXAxes(PlotAxis[] axes) {
         if (axes.length == 0) {
             return;
         }
 
-        AxisTickManagerEx atm = ((AxisEx) axes[0]).getTickManager();
+        AxisTickManagerEx atm = ((PlotAxisEx) axes[0]).getTickManager();
         for (int i = 1; i < axes.length; i++) {
-            if (atm != ((AxisEx) axes[i]).getTickManager()) {
+            if (atm != ((PlotAxisEx) axes[i]).getTickManager()) {
                 throw new IllegalArgumentException("The axes must have the same tick manager.");
             }
         }
@@ -638,8 +789,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             throw new IllegalArgumentException("The axes' range manager has no lock group.");
         }
 
-        for (Axis axe : axes) {
-            AxisEx ax = (AxisEx) axe;
+        for (PlotAxis axe : axes) {
+            PlotAxisEx ax = (PlotAxisEx) axe;
             xAxis.add(ax);
             ax.setParent(this);
             ax.setOrientation(AxisOrientation.HORIZONTAL);
@@ -653,14 +804,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void addYAxes(Axis[] axes) {
+    public void addYAxes(PlotAxis[] axes) {
         if (axes.length == 0) {
             return;
         }
 
-        AxisTickManagerEx atm = ((AxisEx) axes[0]).getTickManager();
+        AxisTickManagerEx atm = ((PlotAxisEx) axes[0]).getTickManager();
         for (int i = 1; i < axes.length; i++) {
-            if (atm != ((AxisEx) axes[i]).getTickManager()) {
+            if (atm != ((PlotAxisEx) axes[i]).getTickManager()) {
                 throw new IllegalArgumentException("The axes must have the same tick manager.");
             }
         }
@@ -675,8 +826,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             throw new IllegalArgumentException("The axes' range manager has no lock group.");
         }
 
-        for (Axis axe : axes) {
-            AxisEx ax = (AxisEx) axe;
+        for (PlotAxis axe : axes) {
+            PlotAxisEx ax = (PlotAxisEx) axe;
             yAxis.add(ax);
             ax.setParent(this);
             ax.setOrientation(AxisOrientation.VERTICAL);
@@ -690,15 +841,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void removeXAxis(Axis axis) {
-        AxisEx ax = (AxisEx) axis;
+    public void removeXAxis(PlotAxis axis) {
+        PlotAxisEx ax = (PlotAxisEx) axis;
 
         redrawCascade(ax);
 
         xAxis.remove(ax);
         ax.setParent(null);
 
-        if (ax.getTickManager().getParent() == null) {
+        //noinspection StatementWithEmptyBody
+        if (ax.getTickManager() == null) {
+            // never happened
+        } else if (ax.getTickManager().getParent() == null) {
             // quit the tick manager if axis is not its only member
             ax.setTickManager(null);
         } else if (ax.getTickManager().getAxisTransform().getParent() == null) {
@@ -715,15 +869,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void removeYAxis(Axis axis) {
-        AxisEx ax = (AxisEx) axis;
+    public void removeYAxis(PlotAxis axis) {
+        PlotAxisEx ax = (PlotAxisEx) axis;
 
         redrawCascade(ax);
 
         yAxis.remove(ax);
         ax.setParent(null);
 
-        if (ax.getTickManager().getParent() == null) {
+        //noinspection StatementWithEmptyBody
+        if (ax.getTickManager() == null) {
+            // never happened
+        } else if (ax.getTickManager().getParent() == null) {
             // quit the tick manager if axis is not its only member
             ax.setTickManager(null);
         } else if (ax.getTickManager().getAxisTransform().getParent() == null) {
@@ -777,7 +934,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     @Override
-    public void addLayer(Layer layer, Axis xaxis, Axis yaxis) {
+    public void addLayer(Layer layer, PlotAxis xaxis, PlotAxis yaxis) {
         this.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
     }
 
@@ -825,10 +982,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         if (sp.isVisible()) {
             invalidate();
         }
-        LayoutDirector ld = getLayoutDirector();
-        if (ld != null) {
-            ld.setConstraint(sp, constraint);
-        }
+
+        layoutDirector.setConstraint(sp, constraint);
 
         // push the legend items if the legend is disabled
         if (!sp.getLegend().isEnabled()) {
@@ -837,17 +992,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     }
 
-    @Override
-    public void setSubplotConstraint(Plot subplot, Object constraint) {
-        PlotEx sp = (PlotEx) subplot;
-        LayoutDirector ld = getLayoutDirector();
-        if (ld != null) {
-            ld.setConstraint(sp, constraint);
-            if (sp.isVisible()) {
-                invalidate();
-            }
-        }
-    }
 
     @Override
     public void removeSubplot(Plot subplot) {
@@ -858,10 +1002,8 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         subplots.remove(sp);
         sp.setParent(null);
 
-        LayoutDirector ld = getLayoutDirector();
-        if (ld != null) {
-            ld.remove((PlotEx) subplot);
-        }
+        layoutDirector.remove((PlotEx) subplot);
+
         if (subplot.isVisible()) {
             invalidate();
         }
@@ -883,15 +1025,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     @Override
     public PlotImpl copyStructureCascade(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
-        PlotImpl result = (PlotImpl) super.copyStructure(orig2copyMap);
-
-        // copy margin
-        result.margin = (PlotMarginEx) margin.copyStructure(orig2copyMap);
-        result.margin.setParent(result);
-
         // copy legend
-        result.legend = (LegendEx) legend.copyStructure(orig2copyMap);
-        result.legend.setParent(result);
+        LegendEx legendCopy = (LegendEx) legend.copyStructure(orig2copyMap);
+
+        PlotImpl result = new PlotImpl(legendCopy);
+
+        orig2copyMap.put(this, result);
+        orig2copyMap.put(margin, result.margin);
 
         // copy titles
         for (TitleEx title : titles) {
@@ -901,13 +1041,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         }
 
         // copy axes
-        for (AxisEx va : xAxis) {
-            AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
+        for (PlotAxisEx va : xAxis) {
+            PlotAxisEx vaCopy = (PlotAxisEx) va.copyStructure(orig2copyMap);
             vaCopy.setParent(result);
             result.xAxis.add(vaCopy);
         }
-        for (AxisEx va : yAxis) {
-            AxisEx vaCopy = (AxisEx) va.copyStructure(orig2copyMap);
+        for (PlotAxisEx va : yAxis) {
+            PlotAxisEx vaCopy = (PlotAxisEx) va.copyStructure(orig2copyMap);
             vaCopy.setParent(result);
             result.yAxis.add(vaCopy);
         }
@@ -956,31 +1096,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         containerHeight = plot.containerHeight;
         sizeMode = plot.sizeMode;
         rerenderNeeded = plot.rerenderNeeded;
-    }
-
-    /**
-     * Deep search layers to find the copy whose range manager not been linked, and set for them.
-     *
-     * @param plot         the plot to be copied
-     * @param orig2copyMap original element to copy map
-     */
-    public static void linkLayerAndAxisTransform(PlotEx plot, @Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
-        for (LayerEx layer : plot.getLayers()) {
-            LayerEx layerCopy = (LayerEx) orig2copyMap.get(layer);
-            if (layerCopy.getXAxisTransform() == null && layer.getXAxisTransform() != null) {
-                AxisTransformEx xcopy = (AxisTransformEx) orig2copyMap.get(layer.getXAxisTransform());
-                layerCopy.linkXAxisTransform(xcopy);
-                xcopy.linkLayer(layerCopy);
-            }
-            if (layerCopy.getYAxisTransform() == null && layer.getYAxisTransform() != null) {
-                AxisTransformEx ycopy = (AxisTransformEx) orig2copyMap.get(layer.getYAxisTransform());
-                layerCopy.linkYAxisTransform(ycopy);
-                ycopy.linkLayer(layerCopy);
-            }
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            linkLayerAndAxisTransform(sp, orig2copyMap);
-        }
     }
 
     @Override
@@ -1032,19 +1147,19 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             this.validate();
 
 			/*
-			 * Auto range axes MUST be executed after they are laid out. <br> Auto range axes may register some axis
+             * Auto range axes MUST be executed after they are laid out. <br> Auto range axes may register some axis
 			 * that ticks need be re-calculated
 			 */
             calcPendingLockGroupAutoRange();
 
 			/*
-			 * Calculating axes tick may invalidate some axis. Their metrics need be re-calculated
+             * Calculating axes tick may invalidate some axis. Their metrics need be re-calculated
 			 */
             calcAxesTick(this);
 
 			/* thickness changes may invalidate the plot */
             calcAxesThickness(this);
-			/* length constraint changes may invalidate the plot */
+            /* length constraint changes may invalidate the plot */
             calcLegendSize(this);
 
             if (this.isValid()) {
@@ -1074,11 +1189,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
      * Sets the plot size according to its contents.
      */
     private void autoPack() {
-        if (getLayoutDirector() != null) {
-            if (!isValid()) {
-                Dimension2D prefSize = getLayoutDirector().getPreferredSize(this);
-                this.setSize(prefSize);
-            }
+        if (!isValid()) {
+            Dimension2D prefSize = layoutDirector.getPreferredSize(this);
+            this.setSize(prefSize);
         }
     }
 
@@ -1088,7 +1201,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     private void calcPendingLockGroupAutoRange() {
         Set<AxisRangeLockGroupEx> xalgs = new HashSet<>();
         Set<AxisRangeLockGroupEx> yalgs = new HashSet<>();
-        fillLockGroups(this, xalgs, yalgs);
+        collectLockGroups(this, xalgs, yalgs);
 
 		/* calculating auto range may require auto range on y axis, and vice versa */
         boolean hasAutoRange = true;
@@ -1104,150 +1217,18 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     /**
-     * find all AxisLockGroups in the given plot and fill them into the given set.
-     */
-    private static void fillLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> xalgs, Set<AxisRangeLockGroupEx> yalgs) {
-        for (AxisEx axis : plot.getXAxes()) {
-            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-            xalgs.add(alg);
-        }
-        for (AxisEx axis : plot.getYAxes()) {
-            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-            yalgs.add(alg);
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            fillLockGroups(sp, xalgs, yalgs);
-        }
-    }
-
-    /**
-     * Calculate axis thickness according to its tick height, label font and label orientation.
-     */
-    private static void calcAxesThickness(PlotEx plot) {
-        for (AxisEx axis : plot.getXAxes()) {
-            if (axis.isVisible() && axis.canContribute()) {
-                calcAxisThickness(axis);
-            }
-        }
-        for (AxisEx axis : plot.getYAxes()) {
-            if (axis.isVisible() && axis.canContribute()) {
-                calcAxisThickness(axis);
-            }
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            calcAxesThickness(sp);
-        }
-    }
-
-    private static void calcAxisThickness(AxisEx axis) {
-        double asc = axis.getAsc();
-        double desc = axis.getDesc();
-
-        axis.calcThickness();
-
-        if (Math.abs(asc - axis.getAsc()) > Math.abs(asc) * 1e-12
-                || Math.abs(desc - axis.getDesc()) > Math.abs(desc) * 1e-12) {
-            axis.getParent().invalidate();
-        }
-    }
-
-    /**
-     * Calculate axis ticks according to its length, range and tick properties.
-     */
-    private static void calcAxesTick(PlotEx plot) {
-        Set<AxisTickManagerEx> algs = new HashSet<>();
-        fillTickManagers(plot, algs);
-
-        for (AxisTickManagerEx alg : algs) {
-            alg.calcTicks();
-        }
-    }
-
-    /**
-     * find all AxisLockGroups in the given plot and fill them into the given set.
-     */
-    private static void fillTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
-        for (AxisEx axis : plot.getXAxes()) {
-            AxisTickManagerEx alg = axis.getTickManager();
-            algs.add(alg);
-        }
-        for (AxisEx axis : plot.getYAxes()) {
-            AxisTickManagerEx alg = axis.getTickManager();
-            algs.add(alg);
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            fillTickManagers(sp, algs);
-        }
-    }
-
-    /**
-     * Calculate title size according to its contents
-     */
-    private static void calcTitleSize(PlotEx plot) {
-        for (TitleEx title : plot.getTitles()) {
-            if (title.isVisible() && title.canContribute()) {
-                Dimension2D size = title.getSize();
-                double oldThickness = (size == null) ? 0 : size.getHeight();
-                title.calcSize();
-                if (Math.abs(oldThickness - title.getSize().getHeight()) > Math.abs(oldThickness) * 1e-12) {
-                    plot.invalidate();
-                }
-            }
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            calcTitleSize(sp);
-        }
-    }
-
-    /**
-     * Calculate legend size according to its length constraint, items and item font.
-     */
-    private static void calcLegendSize(PlotEx plot) {
-        LegendEx legend = plot.getLegend();
-        if (legend.isVisible() && legend.canContribute()) {
-            double oldThickness = legend.getThickness();
-            plot.getLegend().calcSize();
-            if (Math.abs(oldThickness - legend.getThickness()) > Math.abs(oldThickness) * 1e-12) {
-                plot.invalidate();
-            }
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            calcLegendSize(sp);
-        }
-    }
-
-    /**
      * Re-autorange on all AxisLockGroups whose autorange are true.
      */
     private void calcPendingImageMappingLimits() {
         Set<ImageMappingEx> ims = new HashSet<>();
         Set<RGBImageMappingEx> rgbims = new HashSet<>();
-        fillImageMappings(this, ims, rgbims);
+        collectImageMappings(this, ims, rgbims);
 
         for (ImageMappingEx im : ims) {
             im.calcLimits();
         }
         for (RGBImageMappingEx im : rgbims) {
             im.calcLimits();
-        }
-    }
-
-    /**
-     * find all AxisLockGroups in the given plot and fill them into the given set.
-     */
-    private static void fillImageMappings(PlotEx plot, Set<ImageMappingEx> ims, Set<RGBImageMappingEx> rgbims) {
-        for (LayerEx layer : plot.getLayers()) {
-            for (GraphEx graph : layer.getGraphs()) {
-                if (graph instanceof ImageGraphEx) {
-                    ims.add(((ImageGraphEx) graph).getMapping());
-                }
-                if (graph instanceof RGBImageGraphEx) {
-                    rgbims.add(((RGBImageGraphEx) graph).getMapping());
-                }
-            }
-        }
-        for (PlotEx sp : plot.getSubplots()) {
-            fillImageMappings(sp, ims, rgbims);
         }
     }
 
