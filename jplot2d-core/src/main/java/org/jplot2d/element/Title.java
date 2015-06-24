@@ -21,6 +21,7 @@ package org.jplot2d.element;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Point2D;
 
 /**
@@ -28,6 +29,7 @@ import java.awt.geom.Point2D;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Title")
 public interface Title extends TextComponent, MovableComponent {
 
@@ -36,8 +38,9 @@ public interface Title extends TextComponent, MovableComponent {
      *
      * @return the position.
      */
+    @Nonnull
     @Property(order = 1)
-    public TitlePosition getPosition();
+    TitlePosition getPosition();
 
     /**
      * Sets the position in a plot. The default position is {@link TitlePosition#TOPCENTER}.
@@ -47,7 +50,7 @@ public interface Title extends TextComponent, MovableComponent {
      *
      * @param position the position of this title.
      */
-    public void setPosition(TitlePosition position);
+    void setPosition(@Nonnull TitlePosition position);
 
     /**
      * Gets the location in the paper space of a plot.
@@ -56,7 +59,7 @@ public interface Title extends TextComponent, MovableComponent {
      * @return an instance of <code>Point</code> representing the base point of this title
      */
     @Property(order = 2, styleable = false, displayDigits = 4)
-    public Point2D getLocation();
+    Point2D getLocation();
 
     /**
      * Moves this title to a new location.
@@ -66,7 +69,7 @@ public interface Title extends TextComponent, MovableComponent {
      *
      * @param loc the base point of the title
      */
-    public void setLocation(Point2D loc);
+    void setLocation(Point2D loc);
 
     /**
      * Get the horizontal alignment.
@@ -74,7 +77,7 @@ public interface Title extends TextComponent, MovableComponent {
      * @return the horizontal alignment.
      */
     @Property(order = 3, styleable = false)
-    public HAlign getHAlign();
+    HAlign getHAlign();
 
     /**
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
@@ -85,7 +88,7 @@ public interface Title extends TextComponent, MovableComponent {
      *
      * @param halign horizontal alignment.
      */
-    public void setHAlign(HAlign halign);
+    void setHAlign(HAlign halign);
 
     /**
      * Get the vertical alignment.
@@ -93,7 +96,7 @@ public interface Title extends TextComponent, MovableComponent {
      * @return the vertical alignment.
      */
     @Property(order = 4, styleable = false)
-    public VAlign getVAlign();
+    VAlign getVAlign();
 
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
@@ -104,7 +107,7 @@ public interface Title extends TextComponent, MovableComponent {
      *
      * @param valign The vertical alignment.
      */
-    public void setVAlign(VAlign valign);
+    void setVAlign(VAlign valign);
 
     /**
      * Returns the ratio of gap to its height. The default value is 1/4.
@@ -112,18 +115,18 @@ public interface Title extends TextComponent, MovableComponent {
      * @return the gap factor
      */
     @Property(order = 5)
-    public double getGapFactor();
+    double getGapFactor();
 
     /**
      * Sets the ratio of gap to its height.
      * The gap is under the title when its position is TOPLEFT, TOPCENTER, TOPRIGHT.
      * The gap is above the title when its position is BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT.
      */
-    public void setGapFactor(double factor);
+    void setGapFactor(double factor);
 
     @Property(order = 6)
-    public boolean isMovable();
+    boolean isMovable();
 
-    public void setMovable(boolean movable);
+    void setMovable(boolean movable);
 
 }
