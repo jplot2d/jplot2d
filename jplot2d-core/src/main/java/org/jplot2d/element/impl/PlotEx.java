@@ -106,10 +106,6 @@ public interface PlotEx extends Plot, ContainerEx, AxisContainerEx {
 
     LegendEx getLegend();
 
-    int indexOf(ColorbarEx colorbar);
-
-    ColorbarEx[] getColorbars();
-
     int indexOf(TitleEx title);
 
     TitleEx[] getTitles();
