@@ -69,8 +69,8 @@ public abstract class ComponentImpl extends ElementImpl implements ComponentEx {
         _changes.removePropertyChangeListener(l);
     }
 
-    public ContainerEx getParent() {
-        return (ContainerEx) parent;
+    public ComponentEx getParent() {
+        return (ComponentEx) parent;
     }
 
     public Map<Element, Element> getMooringMap() {

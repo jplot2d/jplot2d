@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
  */
 public interface ComponentEx extends PComponent, ElementEx {
 
-    public ContainerEx getParent();
+    public ComponentEx getParent();
 
     /**
      * Returns a map to tell why this component cannot be removed from its container. The key is the moored element,

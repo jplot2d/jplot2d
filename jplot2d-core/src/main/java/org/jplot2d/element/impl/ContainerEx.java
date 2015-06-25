@@ -20,7 +20,7 @@ package org.jplot2d.element.impl;
 
 public interface ContainerEx extends ComponentEx {
 
-    public ContainerEx getParent();
+    public ComponentEx getParent();
 
     /**
      * Returns the components in this container.

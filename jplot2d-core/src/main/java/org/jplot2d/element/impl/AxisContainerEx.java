@@ -1,9 +1,11 @@
 package org.jplot2d.element.impl;
 
 /**
- * A container to hold axes.
+ * A component contains axes.
  */
-public interface AxisContainerEx extends ContainerEx {
+public interface AxisContainerEx extends ComponentEx {
+
+    ComponentEx getParent();
 
     /**
      * Invalidates this component.

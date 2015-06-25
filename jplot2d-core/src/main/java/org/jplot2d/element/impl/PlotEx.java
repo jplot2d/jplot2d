@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("unused")
-public interface PlotEx extends Plot, AxisContainerEx {
+public interface PlotEx extends Plot, ContainerEx, AxisContainerEx {
 
     PlotEx getParent();
 
@@ -105,6 +105,10 @@ public interface PlotEx extends Plot, AxisContainerEx {
     PlotMarginEx getMargin();
 
     LegendEx getLegend();
+
+    int indexOf(ColorbarEx colorbar);
+
+    ColorbarEx[] getColorbars();
 
     int indexOf(TitleEx title);
 
