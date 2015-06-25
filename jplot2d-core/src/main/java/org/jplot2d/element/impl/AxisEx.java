@@ -18,14 +18,15 @@
  */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.*;
+import org.jplot2d.element.Axis;
+import org.jplot2d.element.AxisOrientation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 
 public interface AxisEx extends Axis, ComponentEx {
 
-    ContainerEx getParent();
+    ComponentEx getParent();
 
     /**
      * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots.
@@ -37,6 +38,8 @@ public interface AxisEx extends Axis, ComponentEx {
     String getShortId();
 
     AxisTickManagerEx getTickManager();
+
+    AxisOrientation getOrientation();
 
     /**
      * Set shrunk font for displaying by tick manager.
@@ -52,13 +55,6 @@ public interface AxisEx extends Axis, ComponentEx {
      * @param locY the y value of the origin of the new location
      */
     void setLocation(double locX, double locY);
-
-    /**
-     * Called by {@link Plot#addXAxis(PlotAxis)} or {@link Plot#addYAxis(PlotAxis)} to set the orientation of this axis.
-     *
-     * @param orientation the orientation
-     */
-    void setOrientation(AxisOrientation orientation);
 
     /**
      * Set the length of this axis.

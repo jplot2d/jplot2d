@@ -21,6 +21,11 @@ import java.util.Map;
  */
 public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
 
+    private AxisOrientation orientation;
+
+    @Nonnull
+    private AxisPosition position = AxisPosition.NEGATIVE_SIDE;
+
     private boolean showGridLines, showMinorGridLines;
 
     public PlotAxisImpl() {
@@ -105,6 +110,22 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
     }
 
     @Override
+    public AxisOrientation getOrientation() {
+        return orientation;
+    }
+
+    @Override
+    public void setOrientation(AxisOrientation orientation) {
+        this.orientation = orientation;
+    }
+
+    @Nonnull
+    @Override
+    public AxisPosition getPosition() {
+        return position;
+    }
+
+    @Override
     public void setPosition(@Nonnull AxisPosition position) {
         this.position = position;
         invalidateThickness();
@@ -162,10 +183,10 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
 
         PlotAxisImpl axis = (PlotAxisImpl) src;
 
+        this.orientation = axis.orientation;
         this.position = axis.position;
         this.showGridLines = axis.showGridLines;
         this.showMinorGridLines = axis.showMinorGridLines;
-
     }
 
     /**

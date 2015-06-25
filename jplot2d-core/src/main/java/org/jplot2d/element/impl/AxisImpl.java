@@ -55,12 +55,7 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
 
     private double locX, locY;
 
-    private AxisOrientation orientation;
-
     private double length;
-
-    @Nonnull
-    protected AxisPosition position = AxisPosition.NEGATIVE_SIDE;
 
     private float axisLineWidth = DEFAULT_AXISLINE_WIDTH;
 
@@ -165,16 +160,6 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
     }
 
     @Override
-    public AxisOrientation getOrientation() {
-        return orientation;
-    }
-
-    @Override
-    public void setOrientation(AxisOrientation orientation) {
-        this.orientation = orientation;
-    }
-
-    @Override
     public Dimension2D getSize() {
         if (getOrientation() == null) {
             return null;
@@ -260,9 +245,7 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
     }
 
     @Nonnull
-    public AxisPosition getPosition() {
-        return position;
-    }
+    public abstract AxisPosition getPosition();
 
     @Override
     public float getAxisLineWidth() {
@@ -586,7 +569,6 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
 
         this.locX = axis.locX;
         this.locY = axis.locY;
-        this.orientation = axis.orientation;
         this.length = axis.length;
         this.axisLineWidth = axis.axisLineWidth;
         this.tickVisible = axis.tickVisible;

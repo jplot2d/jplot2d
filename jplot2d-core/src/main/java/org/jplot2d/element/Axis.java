@@ -56,15 +56,6 @@ public interface Axis extends PComponent {
     void setTickManager(AxisTickManager tickManager);
 
     /**
-     * Orientation is a read-only property. It just show the orientation of this axis after it has been add as a X/Y
-     * axis.
-     *
-     * @return orientation of this axis
-     */
-    @Property(order = 0)
-    AxisOrientation getOrientation();
-
-    /**
      * Returns the paper length of this axis.
      *
      * @return the paper length

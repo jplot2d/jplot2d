@@ -36,11 +36,20 @@ public interface PlotAxis extends Axis {
     Plot getParent();
 
     /**
+     * Orientation is a read-only property. It just show the orientation of this axis after it has been add as a X/Y
+     * axis.
+     *
+     * @return orientation of this axis
+     */
+    @Property(order = 0)
+    AxisOrientation getOrientation();
+
+    /**
      * Return the position of the axis: NEGATIVE_SIDE, POSITIVE_SIDE.
      *
      * @return the position of the axis in the plot.
      */
-    @Property(order = 0)
+    @Property(order = 1)
     @Nonnull
     public AxisPosition getPosition();
 
@@ -56,7 +65,7 @@ public interface PlotAxis extends Axis {
      *
      * @return true if the grid line is displayed
      */
-    @Property(order = 1, displayName = "Grid Lines")
+    @Property(order = 2, displayName = "Grid Lines")
     boolean isGridLines();
 
     /**
@@ -71,7 +80,7 @@ public interface PlotAxis extends Axis {
      *
      * @return true if the minor grid line is displayed
      */
-    @Property(order = 2, displayName = "Minor Grid Lines")
+    @Property(order = 3, displayName = "Minor Grid Lines")
     boolean isMinorGridLines();
 
     /**
