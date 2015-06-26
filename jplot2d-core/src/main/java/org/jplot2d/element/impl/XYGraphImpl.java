@@ -35,6 +35,7 @@ import java.awt.geom.Path2D;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Jingjing Li
@@ -52,6 +53,7 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
 
     private final LegendItemEx legendItem;
 
+    @Nullable
     private XYGraphData data;
 
     private boolean symbolVisible = false;
@@ -103,11 +105,12 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
         getLegendItem().setText(text);
     }
 
+    @Nullable
     public XYGraphData getData() {
         return data;
     }
 
-    public void setData(XYGraphData data) {
+    public void setData(@Nullable XYGraphData data) {
         this.data = data;
 
         redraw(this);

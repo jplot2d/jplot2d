@@ -120,11 +120,11 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         ComponentEx[] comps = new ComponentEx[size];
 
         int n = 0;
-        for (int i = 0; i < graphs.size(); i++) {
-            comps[n++] = graphs.get(i);
+        for (GraphEx graph : graphs) {
+            comps[n++] = graph;
         }
-        for (int i = 0; i < annotations.size(); i++) {
-            comps[n++] = annotations.get(i);
+        for (AnnotationEx annotation : annotations) {
+            comps[n++] = annotation;
         }
 
         return comps;
