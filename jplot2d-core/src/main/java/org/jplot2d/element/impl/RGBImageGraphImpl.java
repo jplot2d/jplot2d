@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -25,6 +23,7 @@ import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -35,11 +34,25 @@ import java.util.Map;
 
 public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, IntermediateCacheEx {
 
+    @Nullable
     private RGBImageMappingEx mapping;
+
+    @Nullable
     private MultiBandImageData data;
 
     public RGBImageGraphImpl() {
         super();
+    }
+
+    public void setParent(ElementEx parent) {
+        this.parent = parent;
+
+        // being removed
+        if (parent == null) {
+            if (mapping != null && mapping.getParent() == null) {
+                setMapping(null);
+            }
+        }
     }
 
     public String getId() {
@@ -50,11 +63,12 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         }
     }
 
+    @Nullable
     public RGBImageMappingEx getMapping() {
         return mapping;
     }
 
-    public void setMapping(RGBImageMapping mapping) {
+    public void setMapping(@Nullable RGBImageMapping mapping) {
         if (this.mapping != null) {
             this.mapping.removeImageGraph(this);
         }
@@ -64,24 +78,18 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         }
     }
 
+    @Nullable
     public MultiBandImageData getData() {
         return data;
     }
 
-    public void setData(MultiBandImageData data) {
-        MultiBandImageData olddata = this.data;
+    public void setData(@Nullable MultiBandImageData data) {
         this.data = data;
 
-        if (olddata == null || data == null || data.getDataBuffer()[0] != olddata.getDataBuffer()[0]) {
-            mapping.getRedTransform().recalcLimits();
+        if (mapping != null) {
+            mapping.invalidateLimits();
+            redraw(this);
         }
-        if (olddata == null || data == null || data.getDataBuffer()[1] != olddata.getDataBuffer()[1]) {
-            mapping.getGreenTransform().recalcLimits();
-        }
-        if (olddata == null || data == null || data.getDataBuffer()[2] != olddata.getDataBuffer()[2]) {
-            mapping.getBlueTransform().recalcLimits();
-        }
-        redraw(this);
     }
 
     public void thisEffectiveColorChanged() {
@@ -93,7 +101,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
     }
 
     public Object createCacheHolder() {
-        if (data == null) {
+        if (data == null || mapping == null) {
             return null;
         }
 
@@ -104,8 +112,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         cacheHolder[0] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
                 redTrans.getLimits(), redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
         cacheHolder[1] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
-                greenTrans.getLimits(), greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(),
-                8);
+                greenTrans.getLimits(), greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
         cacheHolder[2] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
                 blueTrans.getLimits(), blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
 
@@ -117,12 +124,14 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         RGBImageGraphImpl result = (RGBImageGraphImpl) super.copyStructure(orig2copyMap);
 
         // copy or link image mapping
-        RGBImageMappingEx mappingCopy = (RGBImageMappingEx) orig2copyMap.get(mapping);
-        if (mappingCopy == null) {
-            mappingCopy = (RGBImageMappingEx) mapping.copyStructure(orig2copyMap);
+        if (mapping != null) {
+            RGBImageMappingEx mappingCopy = (RGBImageMappingEx) orig2copyMap.get(mapping);
+            if (mappingCopy == null) {
+                mappingCopy = (RGBImageMappingEx) mapping.copyStructure(orig2copyMap);
+            }
+            result.mapping = mappingCopy;
+            mappingCopy.addImageGraph(result);
         }
-        result.mapping = mappingCopy;
-        mappingCopy.addImageGraph(result);
 
         return result;
     }
@@ -135,7 +144,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
     }
 
     public void draw(Graphics2D graphics) {
-        if (data == null) {
+        if (data == null || mapping == null) {
             return;
         }
 
@@ -193,7 +202,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         Graphics2D g = (Graphics2D) graphics.create();
         Shape clip = getPaperTransform().getPtoD(getBounds());
         g.setClip(clip);
-        Map<Object, Object> hints = new HashMap<Object, Object>();
+        Map<Object, Object> hints = new HashMap<>();
         if (xscale > 1 || yscale > 1) {
             hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         } else {

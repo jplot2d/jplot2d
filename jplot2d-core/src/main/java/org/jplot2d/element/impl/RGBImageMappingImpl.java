@@ -1,34 +1,32 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.data.MultiBandImageData;
+import org.jplot2d.notice.Notice;
 
-import java.awt.Dimension;
+import javax.annotation.Nonnull;
+import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Jingjing Li
@@ -48,8 +46,7 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
         blueTransform.setParent(this);
     }
 
-    public RGBImageMappingImpl(ImageBandTransformEx redTransform, ImageBandTransformEx greenTransform,
-                               ImageBandTransformEx blueTransform) {
+    public RGBImageMappingImpl(ImageBandTransformEx redTransform, ImageBandTransformEx greenTransform, ImageBandTransformEx blueTransform) {
         this.redTransform = redTransform;
         this.greenTransform = greenTransform;
         this.blueTransform = blueTransform;
@@ -60,6 +57,20 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
 
     public RGBImageGraphEx getParent() {
         return (RGBImageGraphEx) parent;
+    }
+
+    public ElementEx getPrim() {
+        if (graphs.size() == 0) {
+            return null;
+        } else {
+            return graphs.get(0);
+        }
+    }
+
+    public void notify(Notice msg) {
+        if (getPrim() != null) {
+            getPrim().notify(msg);
+        }
     }
 
     public String getId() {
@@ -90,12 +101,9 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
         return new InvokeStep(method);
     }
 
-    public RGBImageGraphEx[] getGraphs() {
-        return graphs.toArray(new RGBImageGraphEx[graphs.size()]);
-    }
-
     public void addImageGraph(RGBImageGraphEx graph) {
         graphs.add(graph);
+        invalidateLimits();
         if (graphs.size() == 1) {
             parent = graphs.get(0);
         } else {
@@ -104,7 +112,9 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
     }
 
     public void removeImageGraph(RGBImageGraphEx graph) {
-        graphs.remove(graph);
+        if (graphs.remove(graph)) {
+            invalidateLimits();
+        }
         if (graphs.size() == 1) {
             parent = graphs.get(0);
         } else {
@@ -112,14 +122,21 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
         }
     }
 
+    public RGBImageGraphEx[] getGraphs() {
+        return graphs.toArray(new RGBImageGraphEx[graphs.size()]);
+    }
+
+    @Nonnull
     public ImageBandTransformEx getRedTransform() {
         return redTransform;
     }
 
+    @Nonnull
     public ImageBandTransformEx getGreenTransform() {
         return greenTransform;
     }
 
+    @Nonnull
     public ImageBandTransformEx getBlueTransform() {
         return blueTransform;
     }
@@ -136,6 +153,12 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
         return result;
     }
 
+    public void invalidateLimits() {
+        redTransform.invalidateLimits();
+        greenTransform.invalidateLimits();
+        blueTransform.invalidateLimits();
+    }
+
     public void calcLimits() {
         ImageDataBuffer[] redBuffers = new ImageDataBuffer[graphs.size()];
         ImageDataBuffer[] greenBuffers = new ImageDataBuffer[graphs.size()];
@@ -143,8 +166,8 @@ public class RGBImageMappingImpl extends ElementImpl implements RGBImageMappingE
         Dimension[] sizeArray = new Dimension[graphs.size()];
 
         int n = 0;
-        for (int i = 0; i < graphs.size(); i++) {
-            MultiBandImageData data = graphs.get(i).getData();
+        for (RGBImageGraphEx graph : graphs) {
+            MultiBandImageData data = graph.getData();
             if (data != null) {
                 ImageDataBuffer[] dbBands = data.getDataBuffer();
                 redBuffers[n] = dbBands[0];

@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -24,15 +22,20 @@ import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.Dimension;
 import java.lang.reflect.Method;
 
 public class ImageBandTransformImpl extends ElementImpl implements ImageBandTransformEx {
 
+    @Nonnull
     private LimitsAlgorithm algo = new MinMaxAlgorithm();
 
+    @Nullable
     private double[] limits;
 
+    @Nullable
     private IntensityTransform intensityTransform;
 
     private double bias = 0.5;
@@ -78,20 +81,25 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
         return new InvokeStep(method);
     }
 
+    @Nonnull
     public LimitsAlgorithm getLimitsAlgorithm() {
         return algo;
     }
 
-    public void setLimitsAlgorithm(LimitsAlgorithm algo) {
+    public void setLimitsAlgorithm(@Nullable LimitsAlgorithm algo) {
+        if (algo == null) {
+            throw new IllegalArgumentException("Limits algorithm can not be null.");
+        }
         this.algo = algo;
         redrawGraphs();
     }
 
+    @Nullable
     public IntensityTransform getIntensityTransform() {
         return intensityTransform;
     }
 
-    public void setIntensityTransform(IntensityTransform it) {
+    public void setIntensityTransform(@Nullable IntensityTransform it) {
         this.intensityTransform = it;
         redrawGraphs();
     }
@@ -133,7 +141,7 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
         this.calcLimitsNeeded = imapping.calcLimitsNeeded;
     }
 
-    public void recalcLimits() {
+    public void invalidateLimits() {
         calcLimitsNeeded = true;
     }
 
@@ -148,6 +156,7 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
         }
     }
 
+    @Nullable
     public double[] getLimits() {
         return limits;
     }

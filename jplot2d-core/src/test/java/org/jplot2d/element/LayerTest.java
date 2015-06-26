@@ -108,6 +108,40 @@ public class LayerTest {
         assertSame(graphB.getEnvironment(), mappingB.getEnvironment());
     }
 
+    @Test
+    public void testAddAndRemoveRGBImageGraph() {
+        Layer layer = factory.createLayer();
+        RGBImageGraph graphA = factory.createRGBImageGraph(null);
+        RGBImageGraph graphB = factory.createRGBImageGraph(null);
+        RGBImageMapping mappingA = graphA.getMapping();
+        RGBImageMapping mappingB = graphB.getMapping();
+        assertNotNull(mappingA);
+        assertNotNull(mappingB);
+
+        layer.addGraph(graphA);
+        assertArrayEquals(layer.getGraphs(), new Graph[]{graphA});
+        layer.addGraph(graphB);
+        assertArrayEquals(layer.getGraphs(), new Graph[]{graphA, graphB});
+
+        assertSame(graphA.getMapping(), mappingA);
+        assertSame(graphB.getMapping(), mappingB);
+        assertSame(mappingA.getEnvironment(), layer.getEnvironment());
+        assertSame(mappingB.getEnvironment(), layer.getEnvironment());
+
+        layer.removeGraph(graphA);
+        assertArrayEquals(layer.getGraphs(), new Graph[]{graphB});
+        layer.removeGraph(graphB);
+        assertArrayEquals(layer.getGraphs(), new Graph[0]);
+
+        // the axis range manager and axis lock group should be removed together
+        assertSame(graphA.getMapping(), mappingA);
+        assertSame(graphB.getMapping(), mappingB);
+        assertNotSame(graphA.getEnvironment(), layer.getEnvironment());
+        assertNotSame(graphB.getEnvironment(), layer.getEnvironment());
+        assertSame(graphA.getEnvironment(), mappingA.getEnvironment());
+        assertSame(graphB.getEnvironment(), mappingB.getEnvironment());
+    }
+
     /**
      * Attaching to null will throw an exception. Attaching to an axis before join an environment will throw an
      * exception.
