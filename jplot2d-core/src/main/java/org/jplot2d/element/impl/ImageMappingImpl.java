@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -24,8 +22,11 @@ import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
+import org.jplot2d.notice.Notice;
 
-import java.awt.Dimension;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,22 +36,40 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
     private final List<ImageGraphEx> graphs = new ArrayList<>();
 
+    @Nonnull
     private LimitsAlgorithm algo = new MinMaxAlgorithm();
 
+    @Nullable
     private double[] limits;
 
+    @Nullable
     private IntensityTransform intensityTransform;
 
     private double bias = 0.5;
 
     private double gain = 0.5;
 
+    @Nullable
     private ColorMap colorMap;
 
     private boolean calcLimitsNeeded;
 
     public ImageGraphEx getParent() {
         return (ImageGraphEx) parent;
+    }
+
+    public ElementEx getPrim() {
+        if (graphs.size() == 0) {
+            return null;
+        } else {
+            return graphs.get(0);
+        }
+    }
+
+    public void notify(Notice msg) {
+        if (getPrim() != null) {
+            getPrim().notify(msg);
+        }
     }
 
     public String getId() {
@@ -103,16 +122,20 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         return graphs.toArray(new ImageGraphEx[graphs.size()]);
     }
 
+    @Nonnull
     public LimitsAlgorithm getLimitsAlgorithm() {
         return algo;
     }
 
-    public void setLimitsAlgorithm(LimitsAlgorithm algo) {
+    public void setLimitsAlgorithm(@Nullable LimitsAlgorithm algo) {
+        if (algo == null) {
+            throw new IllegalArgumentException("Limits algorithm can not be null.");
+        }
         this.algo = algo;
         redrawGraphs();
     }
 
-    public void recalcLimits() {
+    public void invalidateLimits() {
         calcLimitsNeeded = true;
     }
 
@@ -144,15 +167,17 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         }
     }
 
+    @Nullable
     public double[] getLimits() {
         return limits;
     }
 
+    @Nullable
     public IntensityTransform getIntensityTransform() {
         return intensityTransform;
     }
 
-    public void setIntensityTransform(IntensityTransform it) {
+    public void setIntensityTransform(@Nullable IntensityTransform it) {
         this.intensityTransform = it;
         redrawGraphs();
     }
@@ -175,12 +200,13 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         redrawGraphs();
     }
 
+    @Nullable
     public ColorMap getColorMap() {
         return colorMap;
     }
 
-    public void setColorMap(ColorMap colorMap) {
-        if (colorMap.getInputBits() > ColorMap.MAX_INPUT_BITS) {
+    public void setColorMap(@Nullable ColorMap colorMap) {
+        if (colorMap != null && colorMap.getInputBits() > ColorMap.MAX_INPUT_BITS) {
             throw new IllegalArgumentException("The colormap input bits is large than MAX_INPUT_BITS.");
         }
         this.colorMap = colorMap;

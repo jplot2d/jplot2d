@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -25,6 +23,7 @@ import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -34,11 +33,25 @@ import java.util.Map;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, IntermediateCacheEx {
 
+    @Nullable
     private ImageMappingEx mapping;
+
+    @Nullable
     private SingleBandImageData data;
 
     public ImageGraphImpl() {
         super();
+    }
+
+    public void setParent(ElementEx parent) {
+        this.parent = parent;
+
+        // being removed
+        if (parent == null) {
+            if (mapping != null && mapping.getParent() == null) {
+                setMapping(null);
+            }
+        }
     }
 
     public String getId() {
@@ -49,11 +62,12 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         }
     }
 
+    @Nullable
     public ImageMappingEx getMapping() {
         return mapping;
     }
 
-    public void setMapping(ImageMapping mapping) {
+    public void setMapping(@Nullable ImageMapping mapping) {
         if (this.mapping != null) {
             this.mapping.removeImageGraph(this);
         }
@@ -63,15 +77,18 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         }
     }
 
+    @Nullable
     public SingleBandImageData getData() {
         return data;
     }
 
-    public void setData(SingleBandImageData data) {
+    public void setData(@Nullable SingleBandImageData data) {
         this.data = data;
 
-        mapping.recalcLimits();
-        redraw(this);
+        if (mapping != null) {
+            mapping.invalidateLimits();
+            redraw(this);
+        }
     }
 
     public void thisEffectiveColorChanged() {
@@ -84,7 +101,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
     }
 
     public Object createCacheHolder() {
-        if (data == null) {
+        if (data == null || mapping == null) {
             return null;
         }
 
@@ -98,12 +115,14 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         ImageGraphImpl result = (ImageGraphImpl) super.copyStructure(orig2copyMap);
 
         // copy or link image mapping
-        ImageMappingEx mappingCopy = (ImageMappingEx) orig2copyMap.get(mapping);
-        if (mappingCopy == null) {
-            mappingCopy = (ImageMappingEx) mapping.copyStructure(orig2copyMap);
+        if (mapping != null) {
+            ImageMappingEx mappingCopy = (ImageMappingEx) orig2copyMap.get(mapping);
+            if (mappingCopy == null) {
+                mappingCopy = (ImageMappingEx) mapping.copyStructure(orig2copyMap);
+            }
+            result.mapping = mappingCopy;
+            mappingCopy.addImageGraph(result);
         }
-        result.mapping = mappingCopy;
-        mappingCopy.addImageGraph(result);
 
         return result;
     }
@@ -116,7 +135,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
     }
 
     public void draw(Graphics2D graphics) {
-        if (data == null) {
+        if (data == null || mapping == null) {
             return;
         }
 
@@ -199,6 +218,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
      * @return a BufferedImage
      */
     private BufferedImage colorImage(int bits, WritableRaster raster) {
+        assert mapping != null;
 
         int destNumComps;
         if (mapping.getColorMap() == null) {
