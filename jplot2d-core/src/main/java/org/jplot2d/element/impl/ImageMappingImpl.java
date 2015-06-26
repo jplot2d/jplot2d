@@ -102,6 +102,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
     public void addImageGraph(ImageGraphEx graph) {
         graphs.add(graph);
+        invalidateLimits();
         if (graphs.size() == 1) {
             parent = graphs.get(0);
         } else {
@@ -110,7 +111,9 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
     }
 
     public void removeImageGraph(ImageGraphEx graph) {
-        graphs.remove(graph);
+        if (graphs.remove(graph)) {
+            invalidateLimits();
+        }
         if (graphs.size() == 1) {
             parent = graphs.get(0);
         } else {
