@@ -27,6 +27,12 @@ public interface AxisEx extends Axis, ComponentEx {
 
     ComponentEx getParent();
 
+    @Nonnull
+    AxisTitleEx getTitle();
+
+    @Nullable
+    AxisTickManagerEx getTickManager();
+
     /**
      * Returns the short id of this axis. The short id is composed of series of ids concatenated with dots.
      * The 1st id is the id of this element, the 2nd id is the id of the parent of this element, etc,
@@ -35,9 +41,6 @@ public interface AxisEx extends Axis, ComponentEx {
      * @return the short id of this axis.
      */
     String getShortId();
-
-    @Nullable
-    AxisTickManagerEx getTickManager();
 
     AxisOrientation getOrientation();
 
