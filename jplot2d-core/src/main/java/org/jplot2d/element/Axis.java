@@ -1,20 +1,18 @@
-/**
+/*
  * Copyright 2010-2015 Jingjing Li.
- * <p/>
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -24,6 +22,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -42,6 +41,7 @@ public interface Axis extends PComponent {
      * @return the title of this axis
      */
     @Hierarchy(HierarchyOp.GET)
+    @Nonnull
     AxisTitle getTitle();
 
     /**
@@ -50,6 +50,7 @@ public interface Axis extends PComponent {
      * @return the tick manager of this axis
      */
     @Hierarchy(HierarchyOp.GET)
+    @Nullable
     AxisTickManager getTickManager();
 
     @Hierarchy(HierarchyOp.JOIN)
@@ -96,8 +97,8 @@ public interface Axis extends PComponent {
     /**
      * Return the side of the ticks.
      */
-    @Nonnull
     @Property(order = 7)
+    @Nonnull
     AxisTickSide getTickSide();
 
     /**
@@ -170,8 +171,8 @@ public interface Axis extends PComponent {
     /**
      * Return the side of the labels
      */
-    @Nonnull
     @Property(order = 12)
+    @Nonnull
     AxisLabelSide getLabelSide();
 
     /**
@@ -184,8 +185,8 @@ public interface Axis extends PComponent {
      *
      * @return the the orientation of the labels
      */
-    @Nonnull
     @Property(order = 13)
+    @Nonnull
     AxisOrientation getLabelOrientation();
 
     /**

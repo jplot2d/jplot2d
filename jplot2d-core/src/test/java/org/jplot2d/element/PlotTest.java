@@ -77,6 +77,8 @@ public class PlotTest {
         PlotAxis yaxis = factory.createAxis();
         AxisTickManager xtm = xaxis.getTickManager();
         AxisTickManager ytm = yaxis.getTickManager();
+        assertNotNull(xtm);
+        assertNotNull(ytm);
         AxisTransform xarm = xtm.getAxisTransform();
         AxisTransform yarm = ytm.getAxisTransform();
         AxisRangeLockGroup xag = xarm.getLockGroup();
@@ -153,6 +155,8 @@ public class PlotTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         Layer layer = factory.createLayer();
 
         sp.addXAxis(xaxis);
@@ -188,6 +192,8 @@ public class PlotTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         Layer layer = factory.createLayer();
 
         sp.addXAxis(xaxis);
@@ -220,6 +226,8 @@ public class PlotTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         Layer layer = factory.createLayer();
         AxisTransform xva = xaxis.getTickManager().getAxisTransform();
         AxisTransform yva = yaxis.getTickManager().getAxisTransform();
@@ -297,6 +305,8 @@ public class PlotTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         Layer layer = factory.createLayer();
 
         p.addSubplot(sp, null);
@@ -320,6 +330,8 @@ public class PlotTest {
         Plot sp1 = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         Layer layer0 = factory.createLayer();
         Layer layer1 = factory.createLayer();
 

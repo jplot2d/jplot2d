@@ -94,6 +94,25 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
     }
 
     @Override
+    public void setParent(ElementEx parent) {
+        this.parent = parent;
+
+        // being removed from a plot
+        if (parent == null && tickManager != null) {
+            if (tickManager.getParent() == null) {
+                // quit the tick manager if axis is not its only member
+                setTickManager(null);
+            } else if (tickManager.getAxisTransform().getParent() == null) {
+                // quit the range manager if tick manager is not its only member
+                tickManager.setAxisTransform(null);
+            } else if (tickManager.getAxisTransform().getLockGroup().getParent() == null) {
+                // quit the lock group if range manager is not the lock group's only member
+                tickManager.getAxisTransform().setLockGroup(null);
+            }
+        }
+    }
+
+    @Override
     public Map<Element, Element> getMooringMap() {
         Map<Element, Element> result = new HashMap<>();
 

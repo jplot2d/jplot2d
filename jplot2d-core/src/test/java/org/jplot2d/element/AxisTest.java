@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -68,6 +66,7 @@ public class AxisTest {
 
         AxisTitle title = axis.getTitle();
         AxisTickManager tm = axis.getTickManager();
+        assertNotNull(tm);
         AxisTransform arm = tm.getAxisTransform();
         AxisRangeLockGroup group = arm.getLockGroup();
         assertTrue(axis instanceof ElementAddition);
@@ -112,6 +111,7 @@ public class AxisTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
 
         // set before adding into the same environment
         try {
@@ -124,6 +124,7 @@ public class AxisTest {
         // this is allowed if the viewport axis has no parent
         yaxis.setTickManager(factory.createAxisTickManager());
         AxisTickManager ytm = yaxis.getTickManager();
+        assertNotNull(ytm);
 
         sp.addXAxis(xaxis);
         sp.addYAxis(yaxis);
@@ -144,13 +145,8 @@ public class AxisTest {
         assertArrayEquals(yaxis.getTickManager().getAxes(), new PlotAxis[]{yaxis});
         assertSame(yaxis.getTickManager().getEnvironment(), sp.getEnvironment());
 
-        // adding an axis with null range manager throws exception
-        try {
-            sp.addXAxis(xaxis);
-            fail("IllegalArgumentException should be thrown.");
-        } catch (IllegalArgumentException ignored) {
-            // exception is expected
-        }
+        // adding an axis with null range manager
+        sp.addXAxis(xaxis);
 
         // set xaxis a new range manager
         AxisTickManager xntm = factory.createAxisTickManager();
@@ -169,6 +165,8 @@ public class AxisTest {
         PlotAxis yaxis = factory.createAxis();
         AxisTickManager xtm = xaxis.getTickManager();
         AxisTickManager ytm = yaxis.getTickManager();
+        assertNotNull(xtm);
+        assertNotNull(ytm);
 
         // set before adding into the same environment
         try {
@@ -224,6 +222,8 @@ public class AxisTest {
         Plot sp = factory.createSubplot();
         PlotAxis xaxis = factory.createAxis();
         PlotAxis yaxis = factory.createAxis();
+        assertNotNull(xaxis.getTickManager());
+        assertNotNull(yaxis.getTickManager());
         AxisTransform xva = xaxis.getTickManager().getAxisTransform();
         AxisTransform yva = yaxis.getTickManager().getAxisTransform();
         AxisRangeLockGroup xag = xva.getLockGroup();
