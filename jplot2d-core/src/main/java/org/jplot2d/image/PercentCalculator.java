@@ -1,39 +1,26 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.image;
 
-import org.jplot2d.data.ByteDataBuffer;
-import org.jplot2d.data.DoubleDataBuffer;
-import org.jplot2d.data.FloatDataBuffer;
-import org.jplot2d.data.ImageDataBuffer;
-import org.jplot2d.data.IntDataBuffer;
-import org.jplot2d.data.ShortDataBuffer;
-import org.jplot2d.util.DoubleBottomNFinder;
-import org.jplot2d.util.DoubleTopNFinder;
-import org.jplot2d.util.FloatBottomNFinder;
-import org.jplot2d.util.FloatTopNFinder;
-import org.jplot2d.util.IntBottomNFinder;
-import org.jplot2d.util.IntTopNFinder;
-import org.jplot2d.util.ShortBottomNFinder;
-import org.jplot2d.util.ShortTopNFinder;
+import org.jplot2d.data.*;
+import org.jplot2d.util.*;
 
-import java.awt.Dimension;
+import javax.annotation.Nullable;
+import java.awt.*;
 
 /**
  * The limits calculator to produce the upper and lower limits to based on the specified percentage. A histogram of the
@@ -47,60 +34,6 @@ public class PercentCalculator implements LimitsCalculator {
 
     public PercentCalculator(double percentage) {
         this.percentage = percentage;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray) {
-
-        if (percentage == 100) {
-            return MinMaxCalculator.calcMinMax(dbufArray, sizeArray);
-        }
-
-        int numberCount = 0;
-        for (int a = 0; a < dbufArray.length; a++) {
-            numberCount += dbufArray[a].countValid(sizeArray[a].width, sizeArray[a].height);
-        }
-        if (numberCount == 0) {
-            return null;
-        } else if (numberCount == 1) {
-            return MinMaxCalculator.calcMinMax(dbufArray, sizeArray);
-        }
-
-        double cutoff = numberCount * (100 - percentage) / 100.0 / 2.0;
-
-        int maxDataByes = 0;
-        for (ImageDataBuffer dbuf : dbufArray) {
-            int dataBytes = 0;
-            if (dbuf instanceof ByteDataBuffer) {
-                dataBytes = 1;
-            } else if (dbuf instanceof ShortDataBuffer) {
-                dataBytes = 2;
-            } else if (dbuf instanceof IntDataBuffer) {
-                dataBytes = 4;
-            } else if (dbuf instanceof FloatDataBuffer) {
-                dataBytes = 6;
-            } else if (dbuf instanceof DoubleDataBuffer) {
-                dataBytes = 8;
-            }
-            if (maxDataByes < dataBytes) {
-                maxDataByes = dataBytes;
-            }
-        }
-
-        switch (maxDataByes) {
-            case 1:
-                return calcByteLimits(dbufArray, sizeArray, cutoff);
-            case 2:
-                return calcShortLimits(dbufArray, sizeArray, cutoff);
-            case 4:
-                return calcIntLimits(dbufArray, sizeArray, cutoff);
-            case 6:
-                return calcFloatLimits(dbufArray, sizeArray, cutoff);
-            case 8:
-                return calcDoubleLimits(dbufArray, sizeArray, cutoff);
-            default:
-                throw new IllegalArgumentException("Unsupported ImageDataBuffer");
-        }
     }
 
     /**
@@ -586,6 +519,60 @@ public class PercentCalculator implements LimitsCalculator {
         double highCut = tf.getMin() * (1 - offsetrate) + tf.getMin2nd() * offsetrate;
 
         return new double[]{lowCut, highCut};
+    }
+
+    @Nullable
+    public double[] calcLimits(ImageDataBuffer[] dbufArray, Dimension[] sizeArray) {
+
+        if (percentage == 100) {
+            return MinMaxCalculator.calcMinMax(dbufArray, sizeArray);
+        }
+
+        int numberCount = 0;
+        for (int a = 0; a < dbufArray.length; a++) {
+            numberCount += dbufArray[a].countValid(sizeArray[a].width, sizeArray[a].height);
+        }
+        if (numberCount == 0) {
+            return null;
+        } else if (numberCount == 1) {
+            return MinMaxCalculator.calcMinMax(dbufArray, sizeArray);
+        }
+
+        double cutoff = numberCount * (100 - percentage) / 100.0 / 2.0;
+
+        int maxDataByes = 0;
+        for (ImageDataBuffer dbuf : dbufArray) {
+            int dataBytes = 0;
+            if (dbuf instanceof ByteDataBuffer) {
+                dataBytes = 1;
+            } else if (dbuf instanceof ShortDataBuffer) {
+                dataBytes = 2;
+            } else if (dbuf instanceof IntDataBuffer) {
+                dataBytes = 4;
+            } else if (dbuf instanceof FloatDataBuffer) {
+                dataBytes = 6;
+            } else if (dbuf instanceof DoubleDataBuffer) {
+                dataBytes = 8;
+            }
+            if (maxDataByes < dataBytes) {
+                maxDataByes = dataBytes;
+            }
+        }
+
+        switch (maxDataByes) {
+            case 1:
+                return calcByteLimits(dbufArray, sizeArray, cutoff);
+            case 2:
+                return calcShortLimits(dbufArray, sizeArray, cutoff);
+            case 4:
+                return calcIntLimits(dbufArray, sizeArray, cutoff);
+            case 6:
+                return calcFloatLimits(dbufArray, sizeArray, cutoff);
+            case 8:
+                return calcDoubleLimits(dbufArray, sizeArray, cutoff);
+            default:
+                throw new IllegalArgumentException("Unsupported ImageDataBuffer");
+        }
     }
 
 }
