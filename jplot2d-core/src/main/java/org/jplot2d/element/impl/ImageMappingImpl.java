@@ -54,10 +54,12 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
     private boolean calcLimitsNeeded;
 
+    @Override
     public ImageGraphEx getParent() {
         return (ImageGraphEx) parent;
     }
 
+    @Override
     public ElementEx getPrim() {
         if (graphs.size() == 0) {
             return null;
@@ -66,12 +68,14 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         }
     }
 
+    @Override
     public void notify(Notice msg) {
         if (getPrim() != null) {
             getPrim().notify(msg);
         }
     }
 
+    @Override
     public String getId() {
         StringBuilder sb = new StringBuilder();
         sb.append("ImageMapping(");
@@ -82,10 +86,12 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         return sb.toString();
     }
 
+    @Override
     public String getFullId() {
         return "ImageMapping@" + Integer.toHexString(System.identityHashCode(this));
     }
 
+    @Override
     public InvokeStep getInvokeStepFormParent() {
         if (graphs.size() == 0) {
             return null;
@@ -100,6 +106,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         return new InvokeStep(method);
     }
 
+    @Override
     public void addImageGraph(ImageGraphEx graph) {
         graphs.add(graph);
         invalidateLimits();
@@ -110,6 +117,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         }
     }
 
+    @Override
     public void removeImageGraph(ImageGraphEx graph) {
         if (graphs.remove(graph)) {
             invalidateLimits();
@@ -121,15 +129,18 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         }
     }
 
+    @Override
     public ImageGraphEx[] getGraphs() {
         return graphs.toArray(new ImageGraphEx[graphs.size()]);
     }
 
+    @Override
     @Nonnull
     public LimitsAlgorithm getLimitsAlgorithm() {
         return algo;
     }
 
+    @Override
     public void setLimitsAlgorithm(@Nullable LimitsAlgorithm algo) {
         if (algo == null) {
             throw new IllegalArgumentException("Limits algorithm can not be null.");
@@ -138,10 +149,12 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         redrawGraphs();
     }
 
+    @Override
     public void invalidateLimits() {
         calcLimitsNeeded = true;
     }
 
+    @Override
     public void calcLimits() {
         if (calcLimitsNeeded || limits == null) {
             calcLimitsNeeded = false;
@@ -170,44 +183,53 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         }
     }
 
+    @Override
     @Nullable
     public double[] getLimits() {
         return limits;
     }
 
+    @Override
     @Nullable
     public IntensityTransform getIntensityTransform() {
         return intensityTransform;
     }
 
+    @Override
     public void setIntensityTransform(@Nullable IntensityTransform it) {
         this.intensityTransform = it;
         redrawGraphs();
     }
 
+    @Override
     public double getBias() {
         return bias;
     }
 
+    @Override
     public void setBias(double bias) {
         this.bias = bias;
         redrawGraphs();
     }
 
+    @Override
     public double getGain() {
         return gain;
     }
 
+    @Override
     public void setGain(double gain) {
         this.gain = gain;
         redrawGraphs();
     }
 
+    @Override
     @Nullable
     public ColorMap getColorMap() {
         return colorMap;
     }
 
+    @Override
     public void setColorMap(@Nullable ColorMap colorMap) {
         if (colorMap != null && colorMap.getInputBits() > ColorMap.MAX_INPUT_BITS) {
             throw new IllegalArgumentException("The colormap input bits is large than MAX_INPUT_BITS.");
@@ -236,6 +258,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
         this.calcLimitsNeeded = imapping.calcLimitsNeeded;
     }
 
+    @Override
     public int getILUTOutputBits() {
         if (colorMap == null) {
             return 8;
