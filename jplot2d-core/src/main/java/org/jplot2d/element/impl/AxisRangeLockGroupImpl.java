@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -24,6 +22,7 @@ import org.jplot2d.notice.RangeSelectionNotice;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,15 +90,16 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
         this.autoRangeNeeded = alg.autoRangeNeeded;
     }
 
-    public int indexOfRangeManager(AxisTransformEx rangeManager) {
-        return arms.indexOf(rangeManager);
+    public int indexOfAxisTransform(AxisTransformEx axisTransform) {
+        return arms.indexOf(axisTransform);
     }
 
-    public AxisTransformEx[] getRangeManagers() {
+    @Nonnull
+    public AxisTransformEx[] getAxisTransforms() {
         return arms.toArray(new AxisTransformEx[arms.size()]);
     }
 
-    public void addRangeManager(AxisTransformEx axis) {
+    public void addAxisTransform(AxisTransformEx axis) {
         arms.add(axis);
 
         if (arms.size() == 1) {
@@ -111,7 +111,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
         }
     }
 
-    public void removeRangeManager(AxisTransformEx axis) {
+    public void removeAxisTransform(AxisTransformEx axis) {
         arms.remove(axis);
 
         autoRange = false;

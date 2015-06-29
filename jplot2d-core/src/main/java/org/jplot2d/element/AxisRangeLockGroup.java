@@ -1,20 +1,18 @@
-/**
- * Copyright 2010, 2011 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -22,6 +20,8 @@ import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
+
+import javax.annotation.Nonnull;
 
 /**
  * A group of {@link AxisTransform} who are pinned together.
@@ -38,14 +38,14 @@ public interface AxisRangeLockGroup extends Element {
      * @return true if the axis is in autorange status
      */
     @Property(order = 0, styleable = false)
-    public boolean isAutoRange();
+    boolean isAutoRange();
 
     /**
      * If true, the range of the axis group is calculate automatically to display all valid values of all Layers.
      *
      * @param autoRange the flag.
      */
-    public void setAutoRange(boolean autoRange);
+    void setAutoRange(boolean autoRange);
 
     /**
      * Returns <code>true</code> if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
@@ -54,7 +54,7 @@ public interface AxisRangeLockGroup extends Element {
      * @return if this AxisRangeLockGroup can be zoomed
      */
     @Property(order = 1, styleable = false)
-    public boolean isZoomable();
+    boolean isZoomable();
 
     /**
      * Sets if this AxisRangeLockGroup can be zoomed by {@link Plot#zoomXRange(double, double)} or
@@ -62,15 +62,16 @@ public interface AxisRangeLockGroup extends Element {
      *
      * @param zoomable the flag
      */
-    public void setZoomable(boolean zoomable);
+    void setZoomable(boolean zoomable);
 
     /**
-     * Zoom the given range to entire axis
+     * Zoom the given normalized range to entire axis. All axes in this lock group are changed.
+     * If the orthogonal axes are autoRange, they need to be re-autoRange.
      *
      * @param start the normalized start
      * @param end   the normalized end
      */
-    public void zoomRange(double start, double end);
+    void zoomRange(double start, double end);
 
     /**
      * Returns all axes belongs to this group.
@@ -78,6 +79,7 @@ public interface AxisRangeLockGroup extends Element {
      * @return all axes belongs to this group
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public AxisTransform[] getRangeManagers();
+    @Nonnull
+    AxisTransform[] getAxisTransforms();
 
 }
