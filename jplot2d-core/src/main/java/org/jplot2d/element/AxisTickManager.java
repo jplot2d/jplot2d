@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -25,6 +23,8 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.transform.AxisTickTransform;
 import org.jplot2d.util.Range;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.text.Format;
 
 /**
@@ -40,16 +40,28 @@ import java.text.Format;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Axis Tick Manager")
 public interface AxisTickManager extends Element {
 
     int DEFAULT_TICKS_NUMBER = 11;
 
+    /**
+     * Returns the AxisTransform of this AxisTickManager.
+     * <p>
+     * In a plot, a plot axis must has a AxisTransform, which includes this AxisTickManager at least.
+     * After removing an axis with shared AxisTransform, the AxisTransform of the removed axis is <code>null</code>.
+     * Such an axis cannot be added to a plot, unless set a AxisTransform first.
+     * </p>
+     *
+     * @return the lock group of this AxisTickManager
+     */
     @Hierarchy(HierarchyOp.GET)
+    @Nullable
     AxisTransform getAxisTransform();
 
     @Hierarchy(HierarchyOp.JOIN)
-    void setAxisTransform(AxisTransform rangeManager);
+    void setAxisTransform(@Nonnull AxisTransform axisTransform);
 
     /**
      * Returns all axes whose ticks are controlled by this tick manager.
@@ -57,6 +69,7 @@ public interface AxisTickManager extends Element {
      * @return all axes whose ticks are controlled by this tick manager
      */
     @Hierarchy(HierarchyOp.GETARRAY)
+    @Nonnull
     Axis[] getAxes();
 
     /**
@@ -66,6 +79,7 @@ public interface AxisTickManager extends Element {
      * @return the AxisTickTransform.
      */
     @Property(order = 0, styleable = false)
+    @Nullable
     AxisTickTransform getTickTransform();
 
     /**
@@ -75,14 +89,15 @@ public interface AxisTickManager extends Element {
      *
      * @param transform the AxisTickTransform object.
      */
-    void setTickTransform(AxisTickTransform transform);
+    void setTickTransform(@Nullable AxisTickTransform transform);
 
     /**
-     * Returns the tick range of this axis.
+     * Returns the tick range of this axis. Return <code>null</code> if this AxisTickManager has no AxisTransform.
      *
      * @return the tick range of this axis.
      */
     @Property(order = 1, styleable = false)
+    @Nullable
     Range getRange();
 
     /**
@@ -90,11 +105,11 @@ public interface AxisTickManager extends Element {
      *
      * @param range the new tick range of the axis
      */
-    void setRange(Range range);
+    void setRange(@Nonnull Range range);
 
     /**
-     * Returns <code>true</code> if tick values is auto calculated from interval, or <code>false</code> if tick values
-     * is assigned by {@link #setFixedTickValues(Object)}.
+     * Returns <code>true</code> if tick values is auto calculated from interval,
+     * or <code>false</code> if tick values is assigned by {@link #setFixedTickValues(Object)}.
      *
      * @return <code>true</code> if tick values is auto calculated.
      */
@@ -115,16 +130,16 @@ public interface AxisTickManager extends Element {
      * @return the labels of the ticks
      */
     @Property(order = 11, styleable = false)
+    @Nullable
     Object getFixedTickValues();
 
     /**
      * Set an array of values that ticks will show. If the given values is null or a empty array, no tick will be drawn.
-     * <p/>
      * The autoValues will be set to false when this method is called. The minor values will be cleared by this method.
      *
      * @param values the values in user unit where ticks are displayed.
      */
-    void setFixedTickValues(Object values);
+    void setFixedTickValues(@Nullable Object values);
 
     /**
      * Return an array of numbers to represent the fixed minor tick positions set by {@link #setFixedMinorTickValues(Object)}
@@ -132,6 +147,7 @@ public interface AxisTickManager extends Element {
      * @return the labels of the ticks
      */
     @Property(order = 12, styleable = false)
+    @Nullable
     Object getFixedMinorTickValues();
 
     /**
@@ -142,7 +158,7 @@ public interface AxisTickManager extends Element {
      *
      * @param minorValues the values in user unit where minor ticks are displayed.
      */
-    void setFixedMinorTickValues(Object minorValues);
+    void setFixedMinorTickValues(@Nullable Object minorValues);
 
     /**
      * Returns true if the tick interval is auto calculated from tick number and range,
@@ -292,6 +308,7 @@ public interface AxisTickManager extends Element {
      * @return the values of the ticks
      */
     @Property(order = 21, styleable = false)
+    @Nonnull
     Object getTickValues();
 
     /**
@@ -300,6 +317,7 @@ public interface AxisTickManager extends Element {
      * @return the values of the ticks
      */
     @Property(order = 22, styleable = false)
+    @Nonnull
     Object getMinorTickValues();
 
 	/* =========================== Labels ============================= */
@@ -340,6 +358,7 @@ public interface AxisTickManager extends Element {
      * @return the java.text.Format object
      */
     @Property(order = 41, styleable = false)
+    @Nullable
     Format getLabelTextFormat();
 
     /**
@@ -350,7 +369,7 @@ public interface AxisTickManager extends Element {
      *
      * @param format the format object
      */
-    void setLabelTextFormat(Format format);
+    void setLabelTextFormat(@Nullable Format format);
 
     /**
      * Returns the printf-style format of the labels of ticks.
@@ -358,33 +377,35 @@ public interface AxisTickManager extends Element {
      * @return the format of the labels.
      */
     @Property(order = 42, styleable = false)
+    @Nullable
     String getLabelFormat();
 
     /**
-     * Sets the printf-style format that is used to format the tick labels from tick values. The syntax of format string
-     * is described in {@link java.util.Formatter}. Beside the standard Java formatter conversions, a special conversion
-     * 'm' can be used to produce labels in n_10^e format. The usage of conversion 'm' is like the standard conversion
-     * 'e'.
+     * Sets the printf-style format that is used to format the tick labels from tick values.
+     * The syntax of format string is described in {@link java.util.Formatter}.
+     * Beside the standard Java formatter conversions, a special conversion 'm' can be used to produce labels in n_10^e format.
+     * The usage of conversion 'm' is like the standard conversion 'e'.
      * <p/>
      * Setting a new labelFormat will set autoLabelFormat to <code>false</code>
      *
      * @param format the format string, or null to used the auto format.
      */
-    void setLabelFormat(String format);
+    void setLabelFormat(@Nullable String format);
 
     /**
-     * Returns the user assigned substitute labels. <code>null</code> has a special meaning of "undecided".
+     * Returns the user assigned substitute labels. <code>null</code> in the array has a special meaning of "undecided".
      *
      * @return the user assigned substitute labels.
      */
     @Property(order = 43, styleable = false)
+    @Nonnull
     String[] getFixedLabelStrings();
 
     /**
-     * Set an array of String to substitute the labels of the fixed ticks. If the length of the array is shorter then
-     * the number of fixed ticks, only the first ticks are changed, if the length of the array is longer then the number
-     * of ticks only the first labels are used. null in the array means not substitute the label. The given labels can
-     * be null or a empty array.
+     * Set an array of String to substitute the labels of the fixed ticks.
+     * If the length of the array is shorter then the number of fixed ticks, only the first ticks are changed,
+     * if the length of the array is longer then the number of ticks only the first labels are used.
+     * <code>null</code> in the array means not substitute the label. The given labels can be null or a empty array.
      * <p/>
      * If the autoTickValues is enabled(a.k.a. no fixedValues assigned), the given fixedLabels will substitute the auto
      * labels of visible ticks.
@@ -392,7 +413,7 @@ public interface AxisTickManager extends Element {
      * @param labels the new labels to be displayed in the ticks
      * @see #setFixedTickValues(Object)
      */
-    void setFixedLabelStrings(String[] labels);
+    void setFixedLabelStrings(@Nullable String[] labels);
 
     /**
      * Return an array of string representing the labels shown in the axis.
@@ -400,6 +421,7 @@ public interface AxisTickManager extends Element {
      * @return the labels of the ticks
      */
     @Property(order = 44, styleable = false)
+    @Nonnull
     String[] getLabelStrings();
 
 }
