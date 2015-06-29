@@ -1,23 +1,18 @@
 /*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+ * Copyright 2010-2015 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- *
  */
 package org.jplot2d.swing.proptable;
 
@@ -25,7 +20,9 @@ package org.jplot2d.swing.proptable;
 import org.jplot2d.swing.proptable.property.MainProperty;
 import org.jplot2d.swing.proptable.property.Property;
 
-import java.awt.Component;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -34,18 +31,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JOptionPane;
-import javax.swing.table.AbstractTableModel;
-
 public class PropertyTableModel extends AbstractTableModel {
 
-    private static final long serialVersionUID = 1L;
-
-    private static final Logger logger = Logger.getLogger("org.jplot2d");
-
     public static final int NAME_COLUMN = 0;
-
     public static final int VALUE_COLUMN = 1;
+    private static final Logger logger = Logger.getLogger("org.jplot2d");
 
     private final List<PropertyTableItem> model = new ArrayList<>();
 
@@ -68,9 +58,9 @@ public class PropertyTableModel extends AbstractTableModel {
             try {
                 prop.writeToObject(engine);
             } catch (Throwable e) {
-                JOptionPane.showMessageDialog(comp, e.getMessage(), "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                JOptionPane.showMessageDialog(comp, e.getMessage(), e.getClass().getSimpleName(), JOptionPane.WARNING_MESSAGE);
+                logger.log(Level.WARNING, e.getMessage(), e);
+                refresh();
             }
         }
 
