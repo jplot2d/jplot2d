@@ -145,14 +145,20 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
      */
     private static void collectLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> xalgs, Set<AxisRangeLockGroupEx> yalgs) {
         for (PlotAxisEx axis : plot.getXAxes()) {
-            assert axis.getTickManager() != null;
-            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-            xalgs.add(alg);
+            if (axis.getTickManager() != null && axis.getTickManager().getAxisTransform() != null) {
+                AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+                if (alg != null) {
+                    xalgs.add(alg);
+                }
+            }
         }
         for (PlotAxisEx axis : plot.getYAxes()) {
-            assert axis.getTickManager() != null;
-            AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
-            yalgs.add(alg);
+            if (axis.getTickManager() != null && axis.getTickManager().getAxisTransform() != null) {
+                AxisRangeLockGroupEx alg = axis.getTickManager().getAxisTransform().getLockGroup();
+                if (alg != null) {
+                    yalgs.add(alg);
+                }
+            }
         }
         for (PlotEx sp : plot.getSubplots()) {
             collectLockGroups(sp, xalgs, yalgs);
@@ -185,7 +191,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         axis.calcThickness();
 
         if (Math.abs(asc - axis.getAsc()) > Math.abs(asc) * 1e-12 || Math.abs(desc - axis.getDesc()) > Math.abs(desc) * 1e-12) {
-            axis.getParent().invalidate();
+            if (axis.getParent() != null) {
+                axis.getParent().invalidate();
+            }
         }
     }
 
@@ -317,7 +325,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         Map<Element, Element> result = new HashMap<>();
 
         for (PlotAxisEx axis : xAxis) {
-            if (axis.getTickManager() != null) {
+            if (axis.getTickManager() != null && axis.getTickManager().getAxisTransform() != null) {
                 AxisTransformEx arm = axis.getTickManager().getAxisTransform();
                 for (LayerEx layer : arm.getLayers()) {
                     if (layer.getParent() != this) {
@@ -327,7 +335,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             }
         }
         for (PlotAxisEx axis : yAxis) {
-            if (axis.getTickManager() != null) {
+            if (axis.getTickManager() != null && axis.getTickManager().getAxisTransform() != null) {
                 AxisTransformEx arm = axis.getTickManager().getAxisTransform();
                 for (LayerEx layer : arm.getLayers()) {
                     if (layer.getParent() != this) {
@@ -670,7 +678,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         titles.add(tx);
         tx.setParent(this);
 
-        redraw(tx);
+        redrawCascade(tx);
 
         if (tx.isVisible() && tx.canContribute() && tx.getPosition() != TitlePosition.FREE) {
             invalidate();
@@ -681,7 +689,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     public void removeTitle(Title title) {
         TitleEx tx = (TitleEx) title;
 
-        redraw(tx);
+        redrawCascade(tx);
 
         titles.remove(tx);
         tx.setParent(null);
@@ -725,13 +733,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     public void addXAxis(PlotAxis axis) {
         PlotAxisEx ax = (PlotAxisEx) axis;
 
-        if (ax.getTickManager() != null) {
-            if (ax.getTickManager().getAxisTransform() == null) {
-                throw new IllegalArgumentException("The axis' tick manager has no range manager.");
-            }
-            if (ax.getTickManager().getAxisTransform().getLockGroup() == null) {
-                throw new IllegalArgumentException("The axis's range manager has no lock group.");
-            }
+        if (ax.getTickManager() == null) {
+            throw new IllegalArgumentException("The axis has no tick manager.");
+        }
+        if (ax.getTickManager().getAxisTransform() == null) {
+            throw new IllegalArgumentException("The axis' tick manager has no range manager.");
+        }
+        if (ax.getTickManager().getAxisTransform().getLockGroup() == null) {
+            throw new IllegalArgumentException("The axis's range manager has no lock group.");
         }
 
         xAxis.add(ax);
@@ -749,13 +758,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     public void addYAxis(PlotAxis axis) {
         PlotAxisEx ax = (PlotAxisEx) axis;
 
-        if (ax.getTickManager() != null) {
-            if (ax.getTickManager().getAxisTransform() == null) {
-                throw new IllegalArgumentException("The axis' tick manager has no range manager.");
-            }
-            if (ax.getTickManager().getAxisTransform().getLockGroup() == null) {
-                throw new IllegalArgumentException("The axis's range manager has no lock group.");
-            }
+        if (ax.getTickManager() == null) {
+            throw new IllegalArgumentException("The axis has no tick manager.");
+        }
+        if (ax.getTickManager().getAxisTransform() == null) {
+            throw new IllegalArgumentException("The axis' tick manager has no range manager.");
+        }
+        if (ax.getTickManager().getAxisTransform().getLockGroup() == null) {
+            throw new IllegalArgumentException("The axis's range manager has no lock group.");
         }
 
         yAxis.add(ax);
@@ -782,13 +792,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             }
         }
 
-        if (atm != null) {
-            if (atm.getAxisTransform() == null) {
-                throw new IllegalArgumentException("The axes' tick manager has no range manager.");
-            }
-            if (atm.getAxisTransform().getLockGroup() == null) {
-                throw new IllegalArgumentException("The axes' range manager has no lock group.");
-            }
+        if (atm == null) {
+            throw new IllegalArgumentException("The axes have no tick manager.");
+        }
+        if (atm.getAxisTransform() == null) {
+            throw new IllegalArgumentException("The axes' tick manager has no range manager.");
+        }
+        if (atm.getAxisTransform().getLockGroup() == null) {
+            throw new IllegalArgumentException("The axes' range manager has no lock group.");
         }
 
         for (PlotAxis axe : axes) {
@@ -818,13 +829,14 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
             }
         }
 
-        if (atm != null) {
-            if (atm.getAxisTransform() == null) {
-                throw new IllegalArgumentException("The axes' tick manager has no range manager.");
-            }
-            if (atm.getAxisTransform().getLockGroup() == null) {
-                throw new IllegalArgumentException("The axes' range manager has no lock group.");
-            }
+        if (atm == null) {
+            throw new IllegalArgumentException("The axes have no tick manager.");
+        }
+        if (atm.getAxisTransform() == null) {
+            throw new IllegalArgumentException("The axes' tick manager has no range manager.");
+        }
+        if (atm.getAxisTransform().getLockGroup() == null) {
+            throw new IllegalArgumentException("The axes' range manager has no lock group.");
         }
 
         for (PlotAxis axe : axes) {
@@ -1232,7 +1244,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         for (LayerEx layer : layers) {
             if (layer.getXAxisTransform() != null) {
                 AxisRangeLockGroupEx alg = layer.getXAxisTransform().getLockGroup();
-                if (alg.isZoomable()) {
+                if (alg != null && alg.isZoomable()) {
                     algs.add(alg);
                 }
             }
@@ -1246,9 +1258,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     private Set<AxisRangeLockGroupEx> getYAxisRangeLockGroup() {
         Set<AxisRangeLockGroupEx> algs = new HashSet<>();
         for (LayerEx layer : layers) {
-            if (layer.getXAxisTransform() != null) {
+            if (layer.getYAxisTransform() != null) {
                 AxisRangeLockGroupEx alg = layer.getYAxisTransform().getLockGroup();
-                if (alg.isZoomable()) {
+                if (alg != null && alg.isZoomable()) {
                     algs.add(alg);
                 }
             }
@@ -1266,7 +1278,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     private void zoomRange(Set<AxisRangeLockGroupEx> arlgs, double start, double end) {
         Collection<AxisTransformEx> arms = new ArrayList<>();
         for (AxisRangeLockGroupEx arlg : arlgs) {
-            arms.addAll(Arrays.asList(arlg.getRangeManagers()));
+            arms.addAll(Arrays.asList(arlg.getAxisTransforms()));
         }
 
         Range range = new Range.Double(start, end);

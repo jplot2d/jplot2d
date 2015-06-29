@@ -54,7 +54,7 @@ public interface AxisTickManager extends Element {
      * Such an axis cannot be added to a plot, unless set a AxisTransform first.
      * </p>
      *
-     * @return the lock group of this AxisTickManager
+     * @return the AxisTransform of this AxisTickManager
      */
     @Hierarchy(HierarchyOp.GET)
     @Nullable

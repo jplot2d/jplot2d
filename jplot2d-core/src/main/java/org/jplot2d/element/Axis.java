@@ -46,6 +46,11 @@ public interface Axis extends PComponent {
 
     /**
      * Returns the tick manager of this axis.
+     * <p>
+     * In a plot, a plot axis must has a tick manager, which includes this axis at least.
+     * After removing an axis with shared tick manager, the tick manager of the removed axis is <code>null</code>.
+     * Such an axis cannot be added to a plot, unless set a tick manager first.
+     * </p>
      *
      * @return the tick manager of this axis
      */
