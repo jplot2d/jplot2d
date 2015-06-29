@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -24,6 +22,8 @@ import org.jplot2d.element.Graph;
 import org.jplot2d.element.Plot;
 import org.jplot2d.transform.PaperTransform;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
@@ -31,18 +31,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author Jingjing Li
  */
 public class LayerImpl extends ContainerImpl implements LayerEx {
 
     private final List<GraphEx> graphs = new ArrayList<>();
-
-    private AxisTransformEx xarm, yarm;
-
     private final List<AnnotationEx> annotations = new ArrayList<>();
+
+    @Nullable
+    private AxisTransformEx xarm, yarm;
 
     public String getId() {
         if (getParent() != null) {
@@ -66,7 +64,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
     }
 
     public InvokeStep getInvokeStepFormParent() {
-        if (parent == null) {
+        if (getParent() == null) {
             return null;
         }
 
@@ -134,6 +132,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         return graphs.get(index);
     }
 
+    @Nonnull
     public GraphEx[] getGraphs() {
         return graphs.toArray(new GraphEx[graphs.size()]);
     }
@@ -151,10 +150,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         redraw(gx);
 
         if (gx.isVisible()) {
-            if (xarm != null && xarm.getLockGroup().isAutoRange()) {
+            if (xarm != null && xarm.getLockGroup() != null && xarm.getLockGroup().isAutoRange()) {
                 xarm.getLockGroup().reAutoRange();
             }
-            if (yarm != null && yarm.getLockGroup().isAutoRange()) {
+            if (yarm != null && yarm.getLockGroup() != null && yarm.getLockGroup().isAutoRange()) {
                 yarm.getLockGroup().reAutoRange();
             }
         }
@@ -174,10 +173,10 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         }
 
         if (gx.isVisible()) {
-            if (xarm != null && xarm.getLockGroup().isAutoRange()) {
+            if (xarm != null && xarm.getLockGroup() != null && xarm.getLockGroup().isAutoRange()) {
                 xarm.getLockGroup().reAutoRange();
             }
-            if (yarm != null && yarm.getLockGroup().isAutoRange()) {
+            if (yarm != null && yarm.getLockGroup() != null && yarm.getLockGroup().isAutoRange()) {
                 yarm.getLockGroup().reAutoRange();
             }
         }
@@ -187,6 +186,7 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         return graphs.indexOf(graph);
     }
 
+    @Nonnull
     public AnnotationEx[] getAnnotations() {
         return annotations.toArray(new AnnotationEx[annotations.size()]);
     }
@@ -220,23 +220,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         return false;
     }
 
+    @Nullable
     public AxisTransformEx getXAxisTransform() {
         return xarm;
     }
 
-    public AxisTransformEx getYAxisTransform() {
-        return yarm;
-    }
-
-    public void linkXAxisTransform(AxisTransformEx axt) {
-        this.xarm = axt;
-    }
-
-    public void linkYAxisTransform(AxisTransformEx axt) {
-        this.yarm = axt;
-    }
-
-    public void setXAxisTransform(AxisTransform axis) {
+    public void setXAxisTransform(@Nullable AxisTransform axis) {
         if (this.xarm != null) {
             this.xarm.removeLayer(this);
         }
@@ -249,7 +238,12 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         }
     }
 
-    public void setYAxisTransform(AxisTransform axis) {
+    @Nullable
+    public AxisTransformEx getYAxisTransform() {
+        return yarm;
+    }
+
+    public void setYAxisTransform(@Nullable AxisTransform axis) {
         if (this.yarm != null) {
             this.yarm.removeLayer(this);
         }
@@ -262,7 +256,15 @@ public class LayerImpl extends ContainerImpl implements LayerEx {
         }
     }
 
-    public void setAxesTransform(AxisTransform xaxis, AxisTransform yaxis) {
+    public void linkXAxisTransform(AxisTransformEx axt) {
+        this.xarm = axt;
+    }
+
+    public void linkYAxisTransform(AxisTransformEx axt) {
+        this.yarm = axt;
+    }
+
+    public void setAxesTransform(@Nullable AxisTransform xaxis, @Nullable AxisTransform yaxis) {
         setXAxisTransform(xaxis);
         setYAxisTransform(yaxis);
     }

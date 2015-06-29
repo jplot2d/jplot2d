@@ -1,25 +1,26 @@
-/**
- * Copyright 2010 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
 import org.jplot2d.annotation.Hierarchy;
 import org.jplot2d.annotation.HierarchyOp;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A layer can contains graphs and annotations. Every layer has a viewport to show graphs and annotations.
@@ -27,10 +28,12 @@ import org.jplot2d.annotation.HierarchyOp;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public interface Layer extends PComponent {
 
     @Hierarchy(HierarchyOp.GET)
-    public Plot getParent();
+    @Nullable
+    Plot getParent();
 
     /**
      * Returns the graph on the given index.
@@ -38,7 +41,7 @@ public interface Layer extends PComponent {
      * @return the graph on the given index
      */
     @Hierarchy(HierarchyOp.GET)
-    public Graph getGraph(int index);
+    Graph getGraph(int index);
 
     /**
      * Returns all graph of this layer.
@@ -46,7 +49,8 @@ public interface Layer extends PComponent {
      * @return all graph of this layer.
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Graph[] getGraphs();
+    @Nonnull
+    Graph[] getGraphs();
 
     /**
      * Adds a graph to this layer.
@@ -54,7 +58,7 @@ public interface Layer extends PComponent {
      * @param graph the graoh to be add.
      */
     @Hierarchy(HierarchyOp.ADD)
-    public void addGraph(Graph graph);
+    void addGraph(Graph graph);
 
     /**
      * Remove the graph from this layer.
@@ -62,7 +66,7 @@ public interface Layer extends PComponent {
      * @param graph the graph to be removed
      */
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeGraph(Graph graph);
+    void removeGraph(Graph graph);
 
     /**
      * Returns the annotation.
@@ -71,7 +75,7 @@ public interface Layer extends PComponent {
      * @return the annotation.
      */
     @Hierarchy(HierarchyOp.GET)
-    public Annotation getAnnotation(int idx);
+    Annotation getAnnotation(int idx);
 
     /**
      * Returns all the annotations in this layer.
@@ -79,7 +83,8 @@ public interface Layer extends PComponent {
      * @return all annotations in an array
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Annotation[] getAnnotations();
+    @Nonnull
+    Annotation[] getAnnotations();
 
     /**
      * Add a new annotation to this layer.
@@ -87,7 +92,7 @@ public interface Layer extends PComponent {
      * @param annotation the annotation to be added
      */
     @Hierarchy(HierarchyOp.ADD)
-    public void addAnnotation(Annotation annotation);
+    void addAnnotation(Annotation annotation);
 
     /**
      * Remove the annotation from this layer.
@@ -95,7 +100,7 @@ public interface Layer extends PComponent {
      * @param annotation the annotation to be removed
      */
     @Hierarchy(HierarchyOp.REMOVE)
-    public void removeAnnotation(Annotation annotation);
+    void removeAnnotation(Annotation annotation);
 
     /**
      * Returns the X axis that this layer attach to.
@@ -103,7 +108,8 @@ public interface Layer extends PComponent {
      * @return the X axis that this layer attach to
      */
     @Hierarchy(HierarchyOp.GET)
-    public AxisTransform getXAxisTransform();
+    @Nullable
+    AxisTransform getXAxisTransform();
 
     /**
      * Returns the Y axis that this layer attach to.
@@ -111,7 +117,8 @@ public interface Layer extends PComponent {
      * @return the Y axis that this layer attach to
      */
     @Hierarchy(HierarchyOp.GET)
-    public AxisTransform getYAxisTransform();
+    @Nullable
+    AxisTransform getYAxisTransform();
 
     /**
      * Attach this layer to the given X axis. When adding a layer to a plot,
@@ -120,7 +127,7 @@ public interface Layer extends PComponent {
      * @param axt the axis transform
      */
     @Hierarchy(HierarchyOp.REF)
-    public void setXAxisTransform(AxisTransform axt);
+    void setXAxisTransform(@Nonnull AxisTransform axt);
 
     /**
      * Attach this layer to the given Y axis. When adding a layer to a plot,
@@ -129,7 +136,7 @@ public interface Layer extends PComponent {
      * @param axt the axis transform
      */
     @Hierarchy(HierarchyOp.REF)
-    public void setYAxisTransform(AxisTransform axt);
+    void setYAxisTransform(@Nonnull AxisTransform axt);
 
     /**
      * Attach this layer to the given X/Y axis pair. When adding a layer to a plot, the X/Y axes must exist in the
@@ -139,6 +146,6 @@ public interface Layer extends PComponent {
      * @param yaxt the y axis transform
      */
     @Hierarchy(HierarchyOp.REF2)
-    public void setAxesTransform(AxisTransform xaxt, AxisTransform yaxt);
+    void setAxesTransform(@Nonnull AxisTransform xaxt, @Nonnull AxisTransform yaxt);
 
 }
