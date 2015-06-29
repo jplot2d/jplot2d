@@ -17,6 +17,7 @@
 package org.jplot2d.element.impl;
 
 import org.jplot2d.element.AxisTickManager;
+import org.jplot2d.element.AxisTransform;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
@@ -37,6 +38,8 @@ public interface AxisTickManagerEx extends AxisTickManager, ElementEx, Joinable 
 
     @Nullable
     AxisTransformEx getAxisTransform();
+
+    void setAxisTransform(@Nullable AxisTransform axisTransform);
 
     void addAxis(AxisEx axis);
 

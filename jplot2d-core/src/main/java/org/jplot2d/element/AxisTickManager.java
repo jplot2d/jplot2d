@@ -287,7 +287,7 @@ public interface AxisTickManager extends Element {
      * Set the number of minor ticks displayed between two major ticks.
      * The actual number may be adjusted, and not equal the number set by this method. The default value is 0.
      * <p/>
-     * Setting a new minor number will set autoMinornumber to <code>false</code>.
+     * Setting a new minor number will set autoMinorTicks to <code>false</code>.
      *
      * @param minors the number of minor ticks displayed
      */

@@ -16,6 +16,7 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.element.AxisRangeLockGroup;
 import org.jplot2d.element.AxisTransform;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
@@ -37,6 +38,8 @@ public interface AxisTransformEx extends AxisTransform, ElementEx, Joinable {
 
     @Nullable
     AxisRangeLockGroupEx getLockGroup();
+
+    void setLockGroup(@Nullable AxisRangeLockGroup group);
 
     int indexOfTickManager(AxisTickManagerEx tickManager);
 
