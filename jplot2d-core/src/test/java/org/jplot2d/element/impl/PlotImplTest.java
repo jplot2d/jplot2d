@@ -45,7 +45,12 @@ public class PlotImplTest {
         PlotAxisEx axis = mock(PlotAxisEx.class);
         when(axis.canContribute()).thenReturn(true);
 
-        p.addXAxis(axis);
+        try {
+            p.addXAxis(axis);
+            fail("IllegalArgumentException should be thrown.");
+        } catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
+        }
 
         AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
         when(axis.getTickManager()).thenReturn(atm);
@@ -76,7 +81,12 @@ public class PlotImplTest {
         PlotAxisEx axis = mock(PlotAxisEx.class);
         when(axis.canContribute()).thenReturn(true);
 
-        p.addYAxis(axis);
+        try {
+            p.addYAxis(axis);
+            fail("IllegalArgumentException should be thrown.");
+        } catch (IllegalArgumentException ignored) {
+            // exception is expected. catch and ignore
+        }
 
         AxisTickManagerEx atm = mock(AxisTickManagerEx.class);
         when(axis.getTickManager()).thenReturn(atm);
