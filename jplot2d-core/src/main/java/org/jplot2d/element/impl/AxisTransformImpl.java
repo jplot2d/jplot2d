@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -27,13 +25,13 @@ import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
@@ -42,23 +40,20 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
      */
     public static final double DEFAULT_MARGIN_FACTOR = 1.0 / 32; // 0.03125
 
-    private AxisType type;
-
-    private TransformType txfType;
-
-    private boolean autoMargin = true;
-
-    private double marginFactor = DEFAULT_MARGIN_FACTOR;
-
-    private Range coreRange;
-
-    private NormalTransform ntf;
-
-    private AxisRangeLockGroupEx group;
-
     private final List<AxisTickManagerEx> tickManagers = new ArrayList<>();
-
     private final List<LayerEx> layers = new ArrayList<>();
+    @Nonnull
+    private AxisType type;
+    @Nonnull
+    private TransformType txfType;
+    private boolean autoMargin = true;
+    private double marginFactor = DEFAULT_MARGIN_FACTOR;
+    @Nullable
+    private Range coreRange;
+    @Nonnull
+    private NormalTransform ntf;
+    @Nullable
+    private AxisRangeLockGroupEx group;
 
     public AxisTransformImpl() {
         super();
@@ -90,7 +85,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
     public String getFullId() {
         if (group != null) {
-            int xidx = group.indexOfRangeManager(this);
+            int xidx = group.indexOfAxisTransform(this);
             return "AxisTransform" + xidx + "." + group.getFullId();
         } else {
             return "AxisTransform@" + Integer.toHexString(System.identityHashCode(this));
@@ -111,6 +106,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         return new InvokeStep(method);
     }
 
+    @Nullable
     public AxisTickManagerEx getParent() {
         return (AxisTickManagerEx) super.getParent();
     }
@@ -146,7 +142,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
     public void setAutoMargin(boolean autoMargin) {
         this.autoMargin = autoMargin;
 
-        if (group.isAutoRange() && group.getPrimaryAxis() == this) {
+        if (group != null && group.isAutoRange() && group.getPrimaryAxis() == this) {
             group.reAutoRange();
         } else if (coreRange != null) {
             Range irng = coreRange.copy();
@@ -162,7 +158,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
     public void setMarginFactor(double factor) {
         marginFactor = factor;
 
-        if (group.isAutoRange() && group.getPrimaryAxis() == this) {
+        if (group != null && group.isAutoRange() && group.getPrimaryAxis() == this) {
             group.reAutoRange();
         } else if (coreRange != null) {
             Range irng = coreRange.copy();
@@ -171,12 +167,13 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         }
     }
 
+    @Nonnull
     public AxisType getType() {
         return type;
     }
 
-    public void setType(AxisType type) {
-        if (group.getRangeManagers().length > 1) {
+    public void setType(@Nonnull AxisType type) {
+        if (group != null && group.getAxisTransforms().length > 1) {
             throw new IllegalStateException(
                     "The axis type can only be changed when the axis doses not lock with other axes.");
         }
@@ -190,15 +187,18 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
             atm.transformTypeChanged();
         }
 
-        group.validateAxesRange();
+        if (group != null) {
+            group.validateAxesRange();
+        }
     }
 
+    @Nonnull
     public TransformType getTransform() {
         return txfType;
     }
 
-    public void setTransform(TransformType txfType) {
-        if (group.getRangeManagers().length > 1) {
+    public void setTransform(@Nonnull TransformType txfType) {
+        if (group != null && group.getAxisTransforms().length > 1) {
             throw new IllegalStateException(
                     "The axis type can only be changed when the axis doses not lock with other axes.");
         }
@@ -209,36 +209,32 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
             atm.transformTypeChanged();
         }
 
-        group.validateAxesRange();
-    }
-
-    public void changeTransformType(TransformType txfType) {
-        this.txfType = txfType;
-
-        for (AxisTickManagerEx atm : tickManagers) {
-            atm.transformTypeChanged();
+        if (group != null) {
+            group.validateAxesRange();
         }
     }
 
+    @Nullable
     public AxisRangeLockGroupEx getLockGroup() {
         return group;
     }
 
-    public void setLockGroup(AxisRangeLockGroup group) {
+    public void setLockGroup(@Nullable AxisRangeLockGroup group) {
         if (this.group != null) {
-            this.group.removeRangeManager(this);
+            this.group.removeAxisTransform(this);
         }
         this.group = (AxisRangeLockGroupEx) group;
         if (this.group != null) {
-            this.group.addRangeManager(this);
+            this.group.addAxisTransform(this);
         }
     }
 
+    @Nonnull
     public NormalTransform getNormalTransform() {
         return ntf;
     }
 
-    public void setNormalTransform(NormalTransform ntf) {
+    public void setNormalTransform(@Nonnull NormalTransform ntf) {
         if (this.ntf.equals(ntf)) {
             return;
         }
@@ -250,14 +246,18 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         if (!sameRange) {
             for (LayerEx layer : layers) {
                 if (layer.getXAxisTransform() == this) {
-                    AxisRangeLockGroupEx orth = layer.getYAxisTransform().getLockGroup();
-                    if (orth != null && orth.isAutoRange()) {
-                        orth.reAutoRange();
+                    if (layer.getYAxisTransform() != null) {
+                        AxisRangeLockGroupEx orth = layer.getYAxisTransform().getLockGroup();
+                        if (orth != null && orth.isAutoRange()) {
+                            orth.reAutoRange();
+                        }
                     }
                 } else if (layer.getYAxisTransform() == this) {
-                    AxisRangeLockGroupEx orth = layer.getXAxisTransform().getLockGroup();
-                    if (orth != null && orth.isAutoRange()) {
-                        orth.reAutoRange();
+                    if (layer.getXAxisTransform() != null) {
+                        AxisRangeLockGroupEx orth = layer.getXAxisTransform().getLockGroup();
+                        if (orth != null && orth.isAutoRange()) {
+                            orth.reAutoRange();
+                        }
                     }
                 }
             }
@@ -268,6 +268,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         }
     }
 
+    @Nonnull
     public AxisTickManagerEx[] getTickManagers() {
         return tickManagers.toArray(new AxisTickManagerEx[tickManagers.size()]);
     }
@@ -294,13 +295,14 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         return tickManagers.indexOf(tickManager);
     }
 
+    @Nonnull
     public LayerEx[] getLayers() {
         return layers.toArray(new LayerEx[layers.size()]);
     }
 
     public void addLayer(LayerEx layer) {
         layers.add(layer);
-        if (group.isAutoRange()) {
+        if (group != null && group.isAutoRange()) {
             for (GraphEx graph : layer.getGraphs()) {
                 if (graph.isVisible()) {
                     group.reAutoRange();
@@ -312,7 +314,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
 
     public void removeLayer(LayerEx layer) {
         layers.remove(layer);
-        if (group.isAutoRange()) {
+        if (group != null && group.isAutoRange()) {
             for (GraphEx graph : layer.getGraphs()) {
                 if (graph.isVisible()) {
                     group.reAutoRange();
@@ -326,11 +328,12 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         layers.add(layer);
     }
 
+    @Nullable
     public Range getCoreRange() {
         return coreRange;
     }
 
-    public void setCoreRange(Range crange) {
+    public void setCoreRange(@Nullable Range crange) {
         if (crange == null) {
             coreRange = null;
         } else {
@@ -344,11 +347,15 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         }
     }
 
+    @Nonnull
     public Range getRange() {
         return ntf.getValueRange();
     }
 
-    public void setRange(Range urange) {
+    public void setRange(@Nullable Range urange) {
+        if (urange == null) {
+            throw new IllegalArgumentException("Range cannot be null.");
+        }
         if (urange.isInverted() != ntf.isInverted()) {
             urange = urange.invert();
         }
@@ -363,14 +370,19 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
      * @param urange       the range to be set
      * @param appendMargin true to indicate a margin should be appended to the given range, to derive a actual range.
      */
-    private void setRange(Range urange, boolean appendMargin) {
+    private void setRange(@Nonnull Range urange, boolean appendMargin) {
 
         if (Double.isNaN(urange.getStart()) || Double.isNaN(urange.getEnd())) {
             throw new IllegalArgumentException("Range cannot start or end at NaN.");
         }
 
-        Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils.createVirtualTransformMap(Arrays.asList(group
-                .getRangeManagers()));
+        AxisTransformEx[] axfs;
+        if (group != null) {
+            axfs = group.getAxisTransforms();
+        } else {
+            axfs = new AxisTransformEx[]{this};
+        }
+        Map<AxisTransformEx, NormalTransform> vtMap = AxisRangeUtils.createVirtualTransformMap(Arrays.asList(axfs));
 
         NormalTransform vnt = vtMap.get(this);
         Range pr = vnt.convToNR(urange);
@@ -434,12 +446,14 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         orig2copyMap.put(this, result);
 
         // copy or link lock group
-        AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap.get(group);
-        if (algCopy == null) {
-            algCopy = (AxisRangeLockGroupEx) group.copyStructure(orig2copyMap);
+        if (group != null) {
+            AxisRangeLockGroupEx algCopy = (AxisRangeLockGroupEx) orig2copyMap.get(group);
+            if (algCopy == null) {
+                algCopy = (AxisRangeLockGroupEx) group.copyStructure(orig2copyMap);
+            }
+            result.group = algCopy;
+            algCopy.addAxisTransform(result);
         }
-        result.group = algCopy;
-        algCopy.addRangeManager(result);
 
         return result;
     }

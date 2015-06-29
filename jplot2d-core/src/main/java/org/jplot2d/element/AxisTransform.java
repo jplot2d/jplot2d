@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2012 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -27,12 +25,16 @@ import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.TransformType;
 import org.jplot2d.util.Range;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * An axis transform define the transformation between world space and paper space along the X/Y direction.
  * It can be shared by a group of {@link AxisTickManager}, which are in the same user range.
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 @PropertyGroup("Axis Transform")
 public interface AxisTransform extends Element {
 
@@ -42,14 +44,15 @@ public interface AxisTransform extends Element {
      * @return the type of this axis
      */
     @Property(order = 0, styleable = false)
-    public AxisType getType();
+    @Nonnull
+    AxisType getType();
 
     /**
      * Set the type of the axis. An axis type can only be changed when it doesn't lock with other axes.
      *
      * @param type the axis type
      */
-    public void setType(AxisType type);
+    void setType(@Nonnull AxisType type);
 
     /**
      * Returns the transform type
@@ -57,14 +60,15 @@ public interface AxisTransform extends Element {
      * @return the transform type
      */
     @Property(order = 1, styleable = false)
-    public TransformType getTransform();
+    @Nonnull
+    TransformType getTransform();
 
     /**
      * Sets the transform type
      *
      * @param txfType the transform type
      */
-    public void setTransform(TransformType txfType);
+    void setTransform(@Nonnull TransformType txfType);
 
     /**
      * Returns <code>true</code> if this AxisTransform is inverted.
@@ -72,7 +76,7 @@ public interface AxisTransform extends Element {
      * @return <code>true</code> if this AxisTransform is inverted
      */
     @Property(order = 2, styleable = false)
-    public boolean isInverted();
+    boolean isInverted();
 
     /**
      * Sets <code>false</code> to make this AxisTransform have "normal" displaying,
@@ -81,7 +85,7 @@ public interface AxisTransform extends Element {
      * @param flag if flag is <code>true</code> this AxisTransform is inverted,
      *             if flag is <code>false</code> this AxisTransform is normal
      */
-    public void setInverted(boolean flag);
+    void setInverted(boolean flag);
 
     /**
      * Returns <code>true</code> if 2 margins are appended automatically to extend the range to a pair of axis major ticks.
@@ -90,7 +94,7 @@ public interface AxisTransform extends Element {
      * @return <code>true</code> if the margin is auto-selected
      */
     @Property(order = 3, styleable = false)
-    public boolean isAutoMargin();
+    boolean isAutoMargin();
 
     /**
      * Controls if 2 margins are appended automatically to extend the range to a pair of axis major ticks.
@@ -98,7 +102,7 @@ public interface AxisTransform extends Element {
      *
      * @param autoMargin the switch
      */
-    public void setAutoMargin(boolean autoMargin);
+    void setAutoMargin(boolean autoMargin);
 
     /**
      * Returns the factor that the 2 margins will be appended to range on the both ends.
@@ -106,14 +110,14 @@ public interface AxisTransform extends Element {
      * @return the margin factor
      */
     @Property(order = 4, styleable = false)
-    public double getMarginFactor();
+    double getMarginFactor();
 
     /**
      * Sets the factor that the 2 margins will be appended to range on the both ends. The default value is 1/32(of the axis range).
      *
      * @param factor the margin factor
      */
-    public void setMarginFactor(double factor);
+    void setMarginFactor(double factor);
 
     /**
      * Return the core range of the AxisTransform.
@@ -122,7 +126,8 @@ public interface AxisTransform extends Element {
      * @return the core range
      */
     @Property(order = 5, styleable = false)
-    public Range getCoreRange();
+    @Nullable
+    Range getCoreRange();
 
     /**
      * Set the core range of the AxisTransform. The range will expand according to the settings of autoMargin and marginFactor, and derive an actual range.
@@ -133,7 +138,7 @@ public interface AxisTransform extends Element {
      *
      * @param range the core range to be set
      */
-    public void setCoreRange(Range range);
+    void setCoreRange(@Nullable Range range);
 
     /**
      * Return the range of the AxisTransform. The returned range will be negative (start > end)
@@ -142,7 +147,8 @@ public interface AxisTransform extends Element {
      * @return the actual range displayed
      */
     @Property(order = 6, styleable = false)
-    public Range getRange();
+    @Nonnull
+    Range getRange();
 
     /**
      * Set the actual range displayed in the AxisTransform.
@@ -153,23 +159,32 @@ public interface AxisTransform extends Element {
      *
      * @param range the actual range to be set.
      */
-    public void setRange(Range range);
+    void setRange(@Nonnull Range range);
 
     /**
      * Returns the normal transform of this AxisTransform
      *
      * @return the normal transform
      */
-    public NormalTransform getNormalTransform();
+    @Nonnull
+    NormalTransform getNormalTransform();
 
     /**
-     * Returns the lock group that this AxisTransform belongs to.
-     * A AxisTransform must has a lock group, which includes this AxisTransform at least.
+     * Returns the lock group of this AxisTransform.
+     * <p>
+     * In a plot, a plot axis must has a lock group, which includes this AxisTransform at least.
+     * After removing an axis with shared lock group, the lock group of the removed axis is <code>null</code>.
+     * Such an axis cannot be added to a plot, unless set a lock group first.
+     * </p>
+     * <p>
+     * The lock group of color bar axis is always <code>null</code>.
+     * </p>
      *
-     * @return the lock group that this AxisTransform belongs to
+     * @return the lock group of this AxisTransform
      */
     @Hierarchy(HierarchyOp.GET)
-    public AxisRangeLockGroup getLockGroup();
+    @Nullable
+    AxisRangeLockGroup getLockGroup();
 
     /**
      * Join an axis lock group.
@@ -178,7 +193,7 @@ public interface AxisTransform extends Element {
      * @param group the lock group to join to.
      */
     @Hierarchy(HierarchyOp.JOIN)
-    public void setLockGroup(AxisRangeLockGroup group);
+    void setLockGroup(@Nonnull AxisRangeLockGroup group);
 
     /**
      * Returns all axis tick managers belongs to this range manager.
@@ -186,7 +201,8 @@ public interface AxisTransform extends Element {
      * @return all axes tick managers belongs to this range manager.
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public AxisTickManager[] getTickManagers();
+    @Nonnull
+    AxisTickManager[] getTickManagers();
 
     /**
      * Returns all layers attaching to this AxisTransform.
@@ -194,6 +210,7 @@ public interface AxisTransform extends Element {
      * @return all layers attaching to this AxisTransform
      */
     @Hierarchy(HierarchyOp.GETARRAY)
-    public Layer[] getLayers();
+    @Nonnull
+    Layer[] getLayers();
 
 }
