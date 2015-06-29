@@ -54,7 +54,7 @@ public interface Axis extends PComponent {
     AxisTickManager getTickManager();
 
     @Hierarchy(HierarchyOp.JOIN)
-    void setTickManager(AxisTickManager tickManager);
+    void setTickManager(@Nonnull AxisTickManager tickManager);
 
     /**
      * Returns the paper length of this axis.
@@ -202,6 +202,7 @@ public interface Axis extends PComponent {
      * @return the color of the labels
      */
     @Property(order = 14)
+    @Nullable
     Color getLabelColor();
 
     /**
@@ -209,6 +210,6 @@ public interface Axis extends PComponent {
      *
      * @param color the color of the labels
      */
-    void setLabelColor(Color color);
+    void setLabelColor(@Nullable Color color);
 
 }

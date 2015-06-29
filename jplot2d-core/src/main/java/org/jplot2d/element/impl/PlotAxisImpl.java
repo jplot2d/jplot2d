@@ -1,11 +1,25 @@
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
+ * This file is part of jplot2d.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.jplot2d.element.impl;
 
-import org.jplot2d.element.AxisOrientation;
-import org.jplot2d.element.AxisPosition;
-import org.jplot2d.element.Element;
-import org.jplot2d.element.Plot;
+import org.jplot2d.element.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
@@ -21,6 +35,7 @@ import java.util.Map;
  */
 public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
 
+    @Nullable
     private AxisOrientation orientation;
 
     @Nonnull
@@ -39,8 +54,8 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
 
     @Override
     public String getId() {
-        if (getParent() != null) {
-            switch (getOrientation()) {
+        if (getParent() != null && orientation != null) {
+            switch (orientation) {
                 case HORIZONTAL:
                     int xidx = getParent().indexOfXAxis(this);
                     return "X" + xidx;
@@ -68,12 +83,12 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
 
     @Override
     public InvokeStep getInvokeStepFormParent() {
-        if (parent == null) {
+        if (getParent() == null || orientation == null) {
             return null;
         }
 
         try {
-            switch (getOrientation()) {
+            switch (orientation) {
                 case HORIZONTAL:
                     Method xmethod = Plot.class.getMethod("getXAxis", Integer.TYPE);
                     return new InvokeStep(xmethod, getParent().indexOfXAxis(this));
@@ -102,12 +117,14 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
             if (tickManager.getParent() == null) {
                 // quit the tick manager if axis is not its only member
                 setTickManager(null);
-            } else if (tickManager.getAxisTransform().getParent() == null) {
-                // quit the range manager if tick manager is not its only member
-                tickManager.setAxisTransform(null);
-            } else if (tickManager.getAxisTransform().getLockGroup().getParent() == null) {
-                // quit the lock group if range manager is not the lock group's only member
-                tickManager.getAxisTransform().setLockGroup(null);
+            } else if (tickManager.getAxisTransform() != null) {
+                if (tickManager.getAxisTransform().getParent() == null) {
+                    // quit the range manager if tick manager is not its only member
+                    tickManager.setAxisTransform(null);
+                } else if (tickManager.getAxisTransform().getLockGroup() != null && tickManager.getAxisTransform().getLockGroup().getParent() == null) {
+                    // quit the lock group if range manager is not the lock group's only member
+                    tickManager.getAxisTransform().setLockGroup(null);
+                }
             }
         }
     }
@@ -117,10 +134,10 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
         Map<Element, Element> result = new HashMap<>();
 
         if (tickManager != null && tickManager.getParent() == this) {
-            AxisTransformEx rman = tickManager.getAxisTransform();
-            if (rman.getParent() == tickManager) {
-                for (LayerEx layer : rman.getLayers()) {
-                    result.put(rman, layer);
+            AxisTransformEx axf = tickManager.getAxisTransform();
+            if (axf != null && axf.getParent() == tickManager) {
+                for (LayerEx layer : axf.getLayers()) {
+                    result.put(axf, layer);
                 }
             }
         }
@@ -129,17 +146,18 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
     }
 
     @Override
+    @Nullable
     public AxisOrientation getOrientation() {
         return orientation;
     }
 
     @Override
-    public void setOrientation(AxisOrientation orientation) {
+    public void setOrientation(@Nonnull AxisOrientation orientation) {
         this.orientation = orientation;
     }
 
-    @Nonnull
     @Override
+    @Nonnull
     public AxisPosition getPosition() {
         return position;
     }
@@ -192,9 +210,7 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
         }
 
         return result;
-
     }
-
 
     @Override
     public void copyFrom(ElementEx src) {
@@ -208,6 +224,37 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
         this.showMinorGridLines = axis.showMinorGridLines;
     }
 
+    protected boolean isTickAscSide() {
+        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
+        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
+        boolean outwardSide = (getTickSide() == AxisTickSide.OUTWARD);
+        return (axisHorizontal == axisPositiveSide) == outwardSide;
+    }
+
+    protected boolean isLabelAscSide() {
+        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
+        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
+        boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
+        return (axisHorizontal == axisPositiveSide) == outwardSide;
+    }
+
+    @Nonnull
+    protected HAlign getLabelHAlign() {
+        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
+        boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
+        if (axisPositiveSide == outwardSide) {
+            return HAlign.LEFT;
+        } else {
+            return HAlign.RIGHT;
+        }
+    }
+
+    protected boolean isTitleAscSide() {
+        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
+        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
+        return axisHorizontal == axisPositiveSide;
+    }
+
     /**
      * Draw ticks and grid lines.
      *
@@ -215,7 +262,7 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
      */
     @Override
     protected void drawTicks(Graphics2D g) {
-        if (tickManager == null) {
+        if (tickManager == null || getParent() == null) {
             return;
         }
 
@@ -315,7 +362,10 @@ public class PlotAxisImpl extends AxisImpl implements PlotAxisEx {
     }
 
 
+    @Nonnull
     private PlotAxisEx[] getOrthoAxes() {
+        assert getParent() != null;
+
         java.util.List<PlotAxisEx> axes = new ArrayList<>();
         if (getOrientation() == AxisOrientation.HORIZONTAL) {
             Collections.addAll(axes, getParent().getYAxes());

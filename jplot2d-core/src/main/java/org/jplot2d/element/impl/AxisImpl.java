@@ -76,6 +76,7 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
     @Nonnull
     private AxisLabelSide labelSide = AxisLabelSide.OUTWARD;
 
+    @Nullable
     private Color labelColor;
 
 	/* thickness */
@@ -236,14 +237,12 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
     public void setLength(double length) {
         if (this.length != length) {
             this.length = length;
-            if (tickManager != null && tickManager.getAxisTransform().getLockGroup().isAutoRange()) {
+            if (tickManager != null && tickManager.getAxisTransform() != null && tickManager.getAxisTransform().getLockGroup() != null
+                    && tickManager.getAxisTransform().getLockGroup().isAutoRange()) {
                 tickManager.getAxisTransform().getLockGroup().reAutoRange();
             }
         }
     }
-
-    @Nonnull
-    public abstract AxisPosition getPosition();
 
     @Override
     public float getAxisLineWidth() {
@@ -357,12 +356,13 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
     }
 
     @Override
+    @Nullable
     public Color getLabelColor() {
         return labelColor;
     }
 
     @Override
-    public void setLabelColor(Color color) {
+    public void setLabelColor(@Nullable Color color) {
         this.labelColor = color;
         redraw(this);
     }
@@ -474,13 +474,7 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
                     labelRotation = -Math.PI / 2.0;
                 }
                 labelVAlign = VAlign.MIDDLE;
-                boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-                boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
-                if (axisPositiveSide == outwardSide) {
-                    labelHAlign = HAlign.LEFT;
-                } else {
-                    labelHAlign = HAlign.RIGHT;
-                }
+                labelHAlign = getLabelHAlign();
             }
         }
 
@@ -502,29 +496,23 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
 
     }
 
-    private boolean isTitleAscSide() {
-        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
-        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-        return axisHorizontal == axisPositiveSide;
-    }
-
     private boolean isTickBothSide() {
         return getTickSide() == AxisTickSide.BOTH;
     }
 
-    private boolean isTickAscSide() {
-        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
-        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-        boolean outwardSide = (getTickSide() == AxisTickSide.OUTWARD);
-        return (axisHorizontal == axisPositiveSide) == outwardSide;
-    }
+    protected abstract boolean isTickAscSide();
 
-    private boolean isLabelAscSide() {
-        boolean axisHorizontal = (getOrientation() == AxisOrientation.HORIZONTAL);
-        boolean axisPositiveSide = (getPosition() == AxisPosition.POSITIVE_SIDE);
-        boolean outwardSide = (getLabelSide() == AxisLabelSide.OUTWARD);
-        return (axisHorizontal == axisPositiveSide) == outwardSide;
-    }
+    protected abstract boolean isLabelAscSide();
+
+    protected abstract boolean isTitleAscSide();
+
+    /**
+     * Return the label h-align when horizontal labels on vertical axis.
+     *
+     * @return the label h-align
+     */
+    @Nonnull
+    protected abstract HAlign getLabelHAlign();
 
     /**
      * Returns the height label by axis effective font.
@@ -719,8 +707,10 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
      * @return paper value
      */
     protected double transTickToPaper(double tickValue) {
-        double uv;
         assert tickManager != null;
+        assert tickManager.getAxisTransform() != null;
+
+        double uv;
         if (tickManager.getTickTransform() != null) {
             uv = tickManager.getTickTransform().transformTick2User(tickValue);
         } else {
