@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -22,16 +20,10 @@ import org.jplot2d.axtick.DateInterval.Unit;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * A calculator to calculate tick values in TAI micro seconds and date/time format.
@@ -130,6 +122,89 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
             return itvB;
         }
 
+    }
+
+    protected static Unit getLastNonMinField(TAIMicrosCalendar cal) {
+        if (cal.get(TAIMicrosCalendar.MICROSECOND) > cal.getMinimum(TAIMicrosCalendar.MICROSECOND)) {
+            return Unit.MICROSECOND;
+        } else {
+            return DateTickCalculator.getLastNonMinField(cal.calendar);
+        }
+    }
+
+    protected static Unit getFirsNonEqualField(TAIMicrosCalendar a, TAIMicrosCalendar b) {
+        Unit u = DateTickCalculator.getFirsNonEqualField(a.calendar, b.calendar);
+        if (u != null) {
+            return u;
+        } else if (a.get(TAIMicrosCalendar.MICROSECOND) != b.get(TAIMicrosCalendar.MICROSECOND)) {
+            return Unit.MICROSECOND;
+        }
+        return null;
+    }
+
+    /**
+     * Sets all calendar fields below the given unit to its minimal value.
+     *
+     * @param cal  the calendar
+     * @param unit the unit
+     */
+    protected static void setCalendarBelowToMin(TAIMicrosCalendar cal, Unit unit) {
+        switch (unit) {
+            case MICROSECOND:
+                break;
+            default:
+                DateTickCalculator.setCalendarBelowToMin(cal.calendar, unit);
+                cal.set(TAIMicrosCalendar.MICROSECOND, 0);
+                break;
+        }
+    }
+
+    protected static void add(TAIMicrosCalendar cal, Unit unit, int amount) {
+        switch (unit) {
+            case MICROSECOND:
+                cal.add(TAIMicrosCalendar.MICROSECOND, amount);
+                break;
+            case MILLISECOND:
+                cal.add(Calendar.MILLISECOND, amount);
+                break;
+            case SECOND:
+                cal.add(Calendar.SECOND, amount);
+                break;
+            case MINUTE:
+                cal.add(Calendar.MINUTE, amount);
+                break;
+            case HOUR:
+                cal.add(Calendar.HOUR_OF_DAY, amount);
+                break;
+            case DAY:
+                cal.add(Calendar.DAY_OF_MONTH, amount);
+                break;
+            case WEEK:
+                cal.add(Calendar.WEEK_OF_YEAR, amount);
+                break;
+            case MONTH:
+                cal.add(Calendar.MONTH, amount);
+                break;
+            case YEAR:
+                cal.add(Calendar.YEAR, amount);
+                break;
+        }
+    }
+
+    /**
+     * Returns the distance downward to an interval boundary.
+     *
+     * @param cal the calendar
+     * @param itv the interval
+     * @return the distance.
+     */
+    protected static int distanceToIntervalBoundary(TAIMicrosCalendar cal, DateInterval itv) {
+        switch (itv.getUnit()) {
+            case MICROSECOND:
+                return cal.get(TAIMicrosCalendar.MICROSECOND) % itv.getValue();
+            default:
+                return DateTickCalculator.distanceToIntervalBoundary(cal.calendar, itv);
+        }
     }
 
     protected void calcValues() {
@@ -273,6 +348,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         calcValuesByTickInterval(DateInterval.createWithMicros(interval), offset, minorTickNumber);
     }
 
+    @SuppressWarnings("UnusedParameters")
     private void calcValuesByTickInterval(DateInterval interval, long offset, int minorTickNumber) {
         dateInterval = interval;
 
@@ -295,10 +371,12 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         return minorNumber;
     }
 
+    @Nonnull
     public long[] getValues() {
         return tickValues;
     }
 
+    @Nonnull
     public long[] getMinorValues() {
         return minorValues;
     }
@@ -349,7 +427,7 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean isValidFormat(String format) {
+    public boolean isValidFormat(@Nonnull String format) {
         try {
             String.format(format, Calendar.getInstance(zone, locale));
             return true;
@@ -358,90 +436,8 @@ public class TAIMicrosTickCalculator extends LongTickCalculator implements Range
         }
     }
 
-    protected static Unit getLastNonMinField(TAIMicrosCalendar cal) {
-        if (cal.get(TAIMicrosCalendar.MICROSECOND) > cal.getMinimum(TAIMicrosCalendar.MICROSECOND)) {
-            return Unit.MICROSECOND;
-        } else {
-            return DateTickCalculator.getLastNonMinField(cal.calendar);
-        }
-    }
-
-    protected static Unit getFirsNonEqualField(TAIMicrosCalendar a, TAIMicrosCalendar b) {
-        Unit u = DateTickCalculator.getFirsNonEqualField(a.calendar, b.calendar);
-        if (u != null) {
-            return u;
-        } else if (a.get(TAIMicrosCalendar.MICROSECOND) != b.get(TAIMicrosCalendar.MICROSECOND)) {
-            return Unit.MICROSECOND;
-        }
-        return null;
-    }
-
-    /**
-     * Sets all calendar fields below the given unit to its minimal value.
-     *
-     * @param cal  the calendar
-     * @param unit the unit
-     */
-    protected static void setCalendarBelowToMin(TAIMicrosCalendar cal, Unit unit) {
-        switch (unit) {
-            case MICROSECOND:
-                break;
-            default:
-                DateTickCalculator.setCalendarBelowToMin(cal.calendar, unit);
-                cal.set(TAIMicrosCalendar.MICROSECOND, 0);
-                break;
-        }
-    }
-
-    protected static void add(TAIMicrosCalendar cal, Unit unit, int amount) {
-        switch (unit) {
-            case MICROSECOND:
-                cal.add(TAIMicrosCalendar.MICROSECOND, amount);
-                break;
-            case MILLISECOND:
-                cal.add(Calendar.MILLISECOND, amount);
-                break;
-            case SECOND:
-                cal.add(Calendar.SECOND, amount);
-                break;
-            case MINUTE:
-                cal.add(Calendar.MINUTE, amount);
-                break;
-            case HOUR:
-                cal.add(Calendar.HOUR_OF_DAY, amount);
-                break;
-            case DAY:
-                cal.add(Calendar.DAY_OF_MONTH, amount);
-                break;
-            case WEEK:
-                cal.add(Calendar.WEEK_OF_YEAR, amount);
-                break;
-            case MONTH:
-                cal.add(Calendar.MONTH, amount);
-                break;
-            case YEAR:
-                cal.add(Calendar.YEAR, amount);
-                break;
-        }
-    }
-
-    /**
-     * Returns the distance downward to an interval boundary.
-     *
-     * @param cal the calendar
-     * @param itv the interval
-     * @return the distance.
-     */
-    protected static int distanceToIntervalBoundary(TAIMicrosCalendar cal, DateInterval itv) {
-        switch (itv.getUnit()) {
-            case MICROSECOND:
-                return cal.get(TAIMicrosCalendar.MICROSECOND) % itv.getValue();
-            default:
-                return DateTickCalculator.distanceToIntervalBoundary(cal.calendar, itv);
-        }
-    }
-
-    public MathElement[] formatValues(String format, Object values) {
+    @Nonnull
+    public MathElement[] formatValues(@Nonnull String format, @Nonnull Object values) {
         TAIMicrosCalendar cal = new TAIMicrosCalendar(zone, locale);
 
         int n = Array.getLength(values);

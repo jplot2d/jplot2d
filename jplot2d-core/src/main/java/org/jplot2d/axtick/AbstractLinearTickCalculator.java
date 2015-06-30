@@ -1,24 +1,24 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
 import org.jplot2d.util.NumberArrayUtils;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Jingjing Li
@@ -35,6 +35,21 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
     protected double[] tickValues;
 
     protected double[] minorValues;
+
+    /**
+     * Returns the idx of the last non-zero char. -1 means all characters are 0.
+     *
+     * @param s the string
+     * @return the idx of the last non-zero char
+     */
+    protected static int lastNon0Idx(String s) {
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) != '0') {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     protected void setRange(double start, double end) {
         if (Double.isNaN(start) || Double.isInfinite(start) || Double.isNaN(end) || Double.isInfinite(end)) {
@@ -296,28 +311,15 @@ public abstract class AbstractLinearTickCalculator extends DoubleTickCalculator 
     }
 
     @Override
+    @Nonnull
     public double[] getValues() {
         return tickValues;
     }
 
     @Override
+    @Nonnull
     public double[] getMinorValues() {
         return minorValues;
-    }
-
-    /**
-     * Returns the idx of the last non-zero char. -1 means all characters are 0.
-     *
-     * @param s the string
-     * @return the idx of the last non-zero char
-     */
-    protected static int lastNon0Idx(String s) {
-        for (int i = s.length() - 1; i >= 0; i--) {
-            if (s.charAt(i) != '0') {
-                return i;
-            }
-        }
-        return -1;
     }
 
 }

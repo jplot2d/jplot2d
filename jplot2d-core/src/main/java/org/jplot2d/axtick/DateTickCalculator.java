@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -22,16 +20,10 @@ import org.jplot2d.axtick.DateInterval.Unit;
 import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.text.Format;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * A calculator to calculate tick values in milliseconds and date format.
@@ -207,7 +199,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         } else if (rough < Unit.MONTH.time * 6) {
             itvA = new DateInterval(Unit.MONTH, 3);
             itvB = new DateInterval(Unit.MONTH, 6);
-        } else if (rough < Unit.YEAR.time * 1) {
+        } else if (rough < Unit.YEAR.time) {
             itvA = new DateInterval(Unit.MONTH, 6);
             itvB = new DateInterval(Unit.YEAR, 1);
         } else {
@@ -229,232 +221,6 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         }
 
         return new DateInterval[]{itvA, itvB};
-    }
-
-    protected void calcValues() {
-
-        if (dateInterval.getValue() == 0)
-            throw new IllegalArgumentException("delta cannot be zero");
-
-        Calendar loCal = Calendar.getInstance(zone, locale);
-        loCal.setTimeInMillis(lo);
-        Calendar hiCal = Calendar.getInstance(zone, locale);
-        hiCal.setTimeInMillis(hi);
-
-        Calendar t1cal = (Calendar) loCal.clone();
-        /* round up to unit */
-        setCalendarBelowToMin(t1cal, dateInterval.getUnit());
-        if (t1cal.before(loCal)) {
-            add(t1cal, dateInterval.getUnit(), 1);
-        }
-
-        List<Long> ticks = new ArrayList<>();
-        List<Long> mticks = new ArrayList<>();
-        if (minorNumber == 0) {
-            int delta = distanceToIntervalBoundary(t1cal, dateInterval);
-            if (delta != 0) {
-                add(t1cal, dateInterval.getUnit(), dateInterval.getValue() - delta);
-            }
-            while (!t1cal.after(hiCal)) {
-                // System.out.println(t1cal.getTimeInMillis());
-                ticks.add(t1cal.getTimeInMillis());
-                add(t1cal, dateInterval.getUnit(), dateInterval.getValue());
-            }
-        } else {
-            int mitv = dateInterval.getValue() / (minorNumber + 1);
-            DateInterval minorInterval = new DateInterval(dateInterval.getUnit(), mitv);
-            int delta = distanceToIntervalBoundary(t1cal, minorInterval);
-            if (delta != 0) {
-                add(t1cal, dateInterval.getUnit(), mitv - delta);
-            }
-            while (!t1cal.after(hiCal)) {
-                if (distanceToIntervalBoundary(t1cal, dateInterval) == 0) {
-                    ticks.add(t1cal.getTimeInMillis());
-                } else {
-                    mticks.add(t1cal.getTimeInMillis());
-                }
-                add(t1cal, dateInterval.getUnit(), mitv);
-            }
-
-        }
-
-        tickValues = new long[ticks.size()];
-        minorValues = new long[mticks.size()];
-        if (inverted) {
-            for (int i = 0, j = tickValues.length - 1; i < tickValues.length; i++, j--) {
-                tickValues[i] = ticks.get(j);
-            }
-            for (int i = 0, j = minorValues.length - 1; i < minorValues.length; i++, j--) {
-                minorValues[i] = mticks.get(j);
-            }
-        } else {
-            for (int i = 0; i < tickValues.length; i++) {
-                tickValues[i] = ticks.get(i);
-            }
-            for (int i = 0; i < minorValues.length; i++) {
-                minorValues[i] = mticks.get(i);
-            }
-        }
-    }
-
-    public void expandRangeByTickNumber(int tickNumber) {
-        if (tickNumber <= 0) {
-            throw new IllegalArgumentException("tick number must be positive.");
-        } else if (tickNumber == 1) {
-            tickNumber = 2;
-        }
-
-        long span = hi - lo;
-        if (span < tickNumber - 1) {
-			/* expand range to tick number */
-            long halfXpand = (tickNumber - 1 - span) / 2;
-            long odd = (tickNumber - 1 - span) % 2;
-            lo -= halfXpand;
-            hi += halfXpand;
-            hi += odd;
-            if (lo < 0) {
-                lo = 0;
-                hi -= lo;
-            }
-            dateInterval = new DateInterval(Unit.MILLISECOND, 1);
-        } else {
-            dateInterval = calcInterval(lo, hi, tickNumber);
-            expandRangeByTickInterval();
-        }
-    }
-
-    public void expandRangeByTickInterval(double interval) {
-        dateInterval = DateInterval.createWithMillis(Math.round(interval));
-        expandRangeByTickInterval();
-
-		/* if _lo == _hi and on interval boundary, the expanding has no effect */
-        if (lo == hi) {
-            Calendar hiCal = Calendar.getInstance(zone, locale);
-            hiCal.setTimeInMillis(hi);
-            add(hiCal, dateInterval.getUnit(), dateInterval.getValue());
-            hi = hiCal.getTimeInMillis();
-        }
-    }
-
-    protected void expandRangeByTickInterval() {
-
-        Calendar loCal = Calendar.getInstance(zone, locale);
-        loCal.setTimeInMillis(lo);
-        Calendar hiCal = Calendar.getInstance(zone, locale);
-        hiCal.setTimeInMillis(hi);
-
-        setCalendarBelowToMin(loCal, dateInterval.getUnit());
-        int loDelta = distanceToIntervalBoundary(loCal, dateInterval);
-        if (loDelta != 0) {
-            add(loCal, dateInterval.getUnit(), -loDelta);
-        }
-
-        setCalendarBelowToMin(hiCal, dateInterval.getUnit());
-        if (hiCal.getTimeInMillis() < hi) {
-            add(hiCal, dateInterval.getUnit(), 1);
-        }
-        int hiDelta = distanceToIntervalBoundary(hiCal, dateInterval);
-        if (hiDelta != 0) {
-            add(hiCal, dateInterval.getUnit(), dateInterval.getValue() - hiDelta);
-        }
-
-        lo = loCal.getTimeInMillis();
-        hi = hiCal.getTimeInMillis();
-
-    }
-
-    public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
-        DateInterval interval = calcInterval(lo, hi, tickNumber);
-        calcValuesByTickInterval(interval, 0, minorTickNumber);
-    }
-
-    public void calcValuesByTickInterval(long interval, long offset, int minorTickNumber) {
-        calcValuesByTickInterval(DateInterval.createWithMillis(interval), offset, minorTickNumber);
-    }
-
-    private void calcValuesByTickInterval(DateInterval interval, long offset, int minorTickNumber) {
-        dateInterval = interval;
-
-        if (dateInterval.getValue() == 1) {
-            minorNumber = 0;
-        } else {
-            if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
-                minorTickNumber = 3;
-            }
-            minorNumber = calcMinorNumber(dateInterval.getValue(), minorTickNumber);
-        }
-        calcValues();
-    }
-
-    public double getInterval() {
-        return dateInterval.getTimeInMillis();
-    }
-
-    public int getMinorNumber() {
-        return minorNumber;
-    }
-
-    public long[] getValues() {
-        return tickValues;
-    }
-
-    public long[] getMinorValues() {
-        return minorValues;
-    }
-
-    public String getLabelFormat() {
-        Calendar loCal = Calendar.getInstance(zone, locale);
-        loCal.setTimeInMillis(lo);
-        Calendar hiCal = Calendar.getInstance(zone, locale);
-        hiCal.setTimeInMillis(hi);
-
-        Unit umax = getFirsNonEqualField(loCal, hiCal);
-        return calcLabelFormat(dateInterval.getUnit(), umax);
-    }
-
-    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
-        return null;
-    }
-
-    public String calcLabelFormatString(@Nonnull Object values) {
-        if (((long[]) values).length == 0) {
-            return null;
-        }
-
-        Calendar cal = Calendar.getInstance(zone, locale);
-        Unit umin = Unit.YEAR;
-        long lo = Long.MAX_VALUE, hi = 0;
-        for (long v : (long[]) values) {
-            if (lo > v) {
-                lo = v;
-            }
-            if (hi < v) {
-                hi = v;
-            }
-            cal.setTimeInMillis(v);
-            Unit lnmf = getLastNonMinField(cal);
-            if (umin.time > lnmf.time) {
-                umin = lnmf;
-            }
-        }
-
-        Calendar loCal = Calendar.getInstance(zone, locale);
-        loCal.setTimeInMillis(lo);
-        Calendar hiCal = Calendar.getInstance(zone, locale);
-        hiCal.setTimeInMillis(hi);
-        Unit umax = getFirsNonEqualField(loCal, hiCal);
-
-        return calcLabelFormat(umin, umax);
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean isValidFormat(String format) {
-        try {
-            String.format(format, Calendar.getInstance(zone, locale));
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
     }
 
     protected static String calcLabelFormat(Unit uprec, Unit umdiff) {
@@ -491,6 +257,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         }
     }
 
+    @Nonnull
     protected static Unit getLastNonMinField(Calendar cal) {
         if (cal.get(Calendar.MILLISECOND) > cal.getMinimum(Calendar.MILLISECOND)) {
             return Unit.MILLISECOND;
@@ -513,7 +280,7 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         if (cal.get(Calendar.YEAR) > cal.getMinimum(Calendar.YEAR)) {
             return Unit.YEAR;
         }
-        return null;
+        return Unit.YEAR;
     }
 
     protected static Unit getFirsNonEqualField(Calendar a, Calendar b) {
@@ -671,7 +438,237 @@ public class DateTickCalculator extends LongTickCalculator implements RangeAdvis
         return (v - min) % itv.getValue();
     }
 
-    public MathElement[] formatValues(String format, Object values) {
+    protected void calcValues() {
+
+        if (dateInterval.getValue() == 0)
+            throw new IllegalArgumentException("delta cannot be zero");
+
+        Calendar loCal = Calendar.getInstance(zone, locale);
+        loCal.setTimeInMillis(lo);
+        Calendar hiCal = Calendar.getInstance(zone, locale);
+        hiCal.setTimeInMillis(hi);
+
+        Calendar t1cal = (Calendar) loCal.clone();
+        /* round up to unit */
+        setCalendarBelowToMin(t1cal, dateInterval.getUnit());
+        if (t1cal.before(loCal)) {
+            add(t1cal, dateInterval.getUnit(), 1);
+        }
+
+        List<Long> ticks = new ArrayList<>();
+        List<Long> mticks = new ArrayList<>();
+        if (minorNumber == 0) {
+            int delta = distanceToIntervalBoundary(t1cal, dateInterval);
+            if (delta != 0) {
+                add(t1cal, dateInterval.getUnit(), dateInterval.getValue() - delta);
+            }
+            while (!t1cal.after(hiCal)) {
+                // System.out.println(t1cal.getTimeInMillis());
+                ticks.add(t1cal.getTimeInMillis());
+                add(t1cal, dateInterval.getUnit(), dateInterval.getValue());
+            }
+        } else {
+            int mitv = dateInterval.getValue() / (minorNumber + 1);
+            DateInterval minorInterval = new DateInterval(dateInterval.getUnit(), mitv);
+            int delta = distanceToIntervalBoundary(t1cal, minorInterval);
+            if (delta != 0) {
+                add(t1cal, dateInterval.getUnit(), mitv - delta);
+            }
+            while (!t1cal.after(hiCal)) {
+                if (distanceToIntervalBoundary(t1cal, dateInterval) == 0) {
+                    ticks.add(t1cal.getTimeInMillis());
+                } else {
+                    mticks.add(t1cal.getTimeInMillis());
+                }
+                add(t1cal, dateInterval.getUnit(), mitv);
+            }
+
+        }
+
+        tickValues = new long[ticks.size()];
+        minorValues = new long[mticks.size()];
+        if (inverted) {
+            for (int i = 0, j = tickValues.length - 1; i < tickValues.length; i++, j--) {
+                tickValues[i] = ticks.get(j);
+            }
+            for (int i = 0, j = minorValues.length - 1; i < minorValues.length; i++, j--) {
+                minorValues[i] = mticks.get(j);
+            }
+        } else {
+            for (int i = 0; i < tickValues.length; i++) {
+                tickValues[i] = ticks.get(i);
+            }
+            for (int i = 0; i < minorValues.length; i++) {
+                minorValues[i] = mticks.get(i);
+            }
+        }
+    }
+
+    public void expandRangeByTickNumber(int tickNumber) {
+        if (tickNumber <= 0) {
+            throw new IllegalArgumentException("tick number must be positive.");
+        } else if (tickNumber == 1) {
+            tickNumber = 2;
+        }
+
+        long span = hi - lo;
+        if (span < tickNumber - 1) {
+            /* expand range to tick number */
+            long halfXpand = (tickNumber - 1 - span) / 2;
+            long odd = (tickNumber - 1 - span) % 2;
+            lo -= halfXpand;
+            hi += halfXpand;
+            hi += odd;
+            if (lo < 0) {
+                lo = 0;
+                hi -= lo;
+            }
+            dateInterval = new DateInterval(Unit.MILLISECOND, 1);
+        } else {
+            dateInterval = calcInterval(lo, hi, tickNumber);
+            expandRangeByTickInterval();
+        }
+    }
+
+    public void expandRangeByTickInterval(double interval) {
+        dateInterval = DateInterval.createWithMillis(Math.round(interval));
+        expandRangeByTickInterval();
+
+		/* if _lo == _hi and on interval boundary, the expanding has no effect */
+        if (lo == hi) {
+            Calendar hiCal = Calendar.getInstance(zone, locale);
+            hiCal.setTimeInMillis(hi);
+            add(hiCal, dateInterval.getUnit(), dateInterval.getValue());
+            hi = hiCal.getTimeInMillis();
+        }
+    }
+
+    protected void expandRangeByTickInterval() {
+
+        Calendar loCal = Calendar.getInstance(zone, locale);
+        loCal.setTimeInMillis(lo);
+        Calendar hiCal = Calendar.getInstance(zone, locale);
+        hiCal.setTimeInMillis(hi);
+
+        setCalendarBelowToMin(loCal, dateInterval.getUnit());
+        int loDelta = distanceToIntervalBoundary(loCal, dateInterval);
+        if (loDelta != 0) {
+            add(loCal, dateInterval.getUnit(), -loDelta);
+        }
+
+        setCalendarBelowToMin(hiCal, dateInterval.getUnit());
+        if (hiCal.getTimeInMillis() < hi) {
+            add(hiCal, dateInterval.getUnit(), 1);
+        }
+        int hiDelta = distanceToIntervalBoundary(hiCal, dateInterval);
+        if (hiDelta != 0) {
+            add(hiCal, dateInterval.getUnit(), dateInterval.getValue() - hiDelta);
+        }
+
+        lo = loCal.getTimeInMillis();
+        hi = hiCal.getTimeInMillis();
+
+    }
+
+    public void calcValuesByTickNumber(int tickNumber, int minorTickNumber) {
+        DateInterval interval = calcInterval(lo, hi, tickNumber);
+        calcValuesByTickInterval(interval, 0, minorTickNumber);
+    }
+
+    public void calcValuesByTickInterval(long interval, long offset, int minorTickNumber) {
+        calcValuesByTickInterval(DateInterval.createWithMillis(interval), offset, minorTickNumber);
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    private void calcValuesByTickInterval(DateInterval interval, long offset, int minorTickNumber) {
+        dateInterval = interval;
+
+        if (dateInterval.getValue() == 1) {
+            minorNumber = 0;
+        } else {
+            if (minorTickNumber == AUTO_MINOR_TICK_NUMBER) {
+                minorTickNumber = 3;
+            }
+            minorNumber = calcMinorNumber(dateInterval.getValue(), minorTickNumber);
+        }
+        calcValues();
+    }
+
+    public double getInterval() {
+        return dateInterval.getTimeInMillis();
+    }
+
+    public int getMinorNumber() {
+        return minorNumber;
+    }
+
+    @Nonnull
+    public long[] getValues() {
+        return tickValues;
+    }
+
+    @Nonnull
+    public long[] getMinorValues() {
+        return minorValues;
+    }
+
+    public String getLabelFormat() {
+        Calendar loCal = Calendar.getInstance(zone, locale);
+        loCal.setTimeInMillis(lo);
+        Calendar hiCal = Calendar.getInstance(zone, locale);
+        hiCal.setTimeInMillis(hi);
+
+        Unit umax = getFirsNonEqualField(loCal, hiCal);
+        return calcLabelFormat(dateInterval.getUnit(), umax);
+    }
+
+    public Format calcLabelTextFormat(@Nonnull Object canonicalValues) {
+        return null;
+    }
+
+    public String calcLabelFormatString(@Nonnull Object values) {
+        if (((long[]) values).length == 0) {
+            return null;
+        }
+
+        Calendar cal = Calendar.getInstance(zone, locale);
+        Unit umin = Unit.YEAR;
+        long lo = Long.MAX_VALUE, hi = 0;
+        for (long v : (long[]) values) {
+            if (lo > v) {
+                lo = v;
+            }
+            if (hi < v) {
+                hi = v;
+            }
+            cal.setTimeInMillis(v);
+            Unit lnmf = getLastNonMinField(cal);
+            if (umin.time > lnmf.time) {
+                umin = lnmf;
+            }
+        }
+
+        Calendar loCal = Calendar.getInstance(zone, locale);
+        loCal.setTimeInMillis(lo);
+        Calendar hiCal = Calendar.getInstance(zone, locale);
+        hiCal.setTimeInMillis(hi);
+        Unit umax = getFirsNonEqualField(loCal, hiCal);
+
+        return calcLabelFormat(umin, umax);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public boolean isValidFormat(@Nonnull String format) {
+        try {
+            String.format(format, Calendar.getInstance(zone, locale));
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Nonnull
+    public MathElement[] formatValues(@Nonnull String format, @Nonnull Object values) {
         Calendar cal = Calendar.getInstance(zone, locale);
 
         int n = Array.getLength(values);

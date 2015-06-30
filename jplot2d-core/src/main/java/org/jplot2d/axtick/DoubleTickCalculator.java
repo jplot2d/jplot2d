@@ -1,28 +1,25 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
 import org.jplot2d.util.Range;
 
-import java.util.Locale;
-
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 /**
  * A calculator to calculate tick values and minor tick values in double precision.
@@ -33,11 +30,28 @@ public abstract class DoubleTickCalculator extends TickCalculator {
 
     protected double start, end;
 
+    /**
+     * Convert Format Conversion 'm' to 'e'. If the the input format is not 'm' conversion, the string is return untouched.
+     *
+     * @param format the format string.
+     * @return the new format string.
+     */
+    public static String convFCm2e(String format) {
+        int mathConversionIdx = format.indexOf("m", 1);
+        if (mathConversionIdx != -1) {
+            StringBuilder newFormat = new StringBuilder(format);
+            newFormat.setCharAt(mathConversionIdx, 'e');
+            format = newFormat.toString();
+        }
+        return format;
+    }
+
+    @Nonnull
     public final Range getRange() {
         return new Range.Double(start, end);
     }
 
-    public final void setRange(Range range) {
+    public final void setRange(@Nonnull Range range) {
         this.setRange(range.getStart(), range.getEnd());
     }
 
@@ -52,11 +66,14 @@ public abstract class DoubleTickCalculator extends TickCalculator {
         this.end = end;
     }
 
+    @Nonnull
     public abstract double[] getValues();
 
+    @Nonnull
     public abstract double[] getMinorValues();
 
-    public int[] getInRangeValuesIdx(Object values) {
+    @Nonnull
+    public int[] getInRangeValuesIdx(@Nonnull Object values) {
         if (values instanceof double[]) {
             return getInRangeValuesIdx((double[]) values);
         }
@@ -96,7 +113,7 @@ public abstract class DoubleTickCalculator extends TickCalculator {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean isValidFormat(String format) {
+    public boolean isValidFormat(@Nonnull String format) {
         format = convFCm2e(format);
         try {
             String.format(format, 1d);
@@ -171,23 +188,6 @@ public abstract class DoubleTickCalculator extends TickCalculator {
             return "%." + (maxPrec - 1) + "m";
         }
 
-    }
-
-    /**
-     * Convert Format Conversion 'm' to 'e'. If the the input format is not 'm' conversion, the string is return
-     * untouched.
-     *
-     * @param format the format string.
-     * @return the new format string.
-     */
-    public static String convFCm2e(String format) {
-        int mathConversionIdx = format.indexOf("m", 1);
-        if (mathConversionIdx != -1) {
-            StringBuilder newFormat = new StringBuilder(format);
-            newFormat.setCharAt(mathConversionIdx, 'e');
-            format = newFormat.toString();
-        }
-        return format;
     }
 
 }

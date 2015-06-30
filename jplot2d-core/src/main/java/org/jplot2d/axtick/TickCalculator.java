@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.axtick;
 
@@ -22,6 +20,8 @@ import org.jplot2d.tex.MathElement;
 import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.Range;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.text.Format;
 import java.util.Formatter;
@@ -29,11 +29,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 /**
- * A calculator to calculate tick values and minor tick values
+ * A calculator to calculate tick values and minor tick values.
  *
  * @author Jingjing Li
  */
@@ -45,10 +42,16 @@ public abstract class TickCalculator {
      * The Tolerance error for double computing. doublePrecisionLimit is 0x1.0p-52
      */
     public static final double DOUBLE_PRECISION_TOLERANCE = 0x1.0p-40;
+    // %[argument_index$][flags][width][.precision]m_conversion
+    private static final Pattern M_CONVERSION_PATTERN = Pattern
+            .compile("(%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?)(m)");
+    private static final Pattern M_RESULT_PATTERN = Pattern
+            .compile("-->>([+-]?[0-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");
 
+    @Nonnull
     public abstract Range getRange();
 
-    public abstract void setRange(Range range);
+    public abstract void setRange(@Nonnull Range range);
 
     /**
      * Calculate the tick values by the given tick number and minor ticks number.
@@ -136,6 +139,7 @@ public abstract class TickCalculator {
      *
      * @return the tick values
      */
+    @Nonnull
     public abstract Object getValues();
 
     /**
@@ -143,6 +147,7 @@ public abstract class TickCalculator {
      *
      * @return the minor tick values
      */
+    @Nonnull
     public abstract Object getMinorValues();
 
     /**
@@ -151,7 +156,8 @@ public abstract class TickCalculator {
      * @param values the array of values
      * @return a array of index
      */
-    public abstract int[] getInRangeValuesIdx(Object values);
+    @Nonnull
+    public abstract int[] getInRangeValuesIdx(@Nonnull Object values);
 
     /**
      * Calculate a proper text format to format the labels on the given values.
@@ -186,14 +192,7 @@ public abstract class TickCalculator {
      *
      * @param format the format to be validated
      */
-    public abstract boolean isValidFormat(String format);
-
-    // %[argument_index$][flags][width][.precision]m_conversion
-    private static final Pattern M_CONVERSION_PATTERN = Pattern
-            .compile("(%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?)(m)");
-
-    private static final Pattern M_RESULT_PATTERN = Pattern
-            .compile("-->>([+-]?[0-9](?:[.][0-9]+)?)e([+-]?([0-9])+)<<--");
+    public abstract boolean isValidFormat(@Nonnull String format);
 
     /**
      * Returns a formatted string using the specified format string on the given value array.
@@ -202,7 +201,8 @@ public abstract class TickCalculator {
      * @param values the value array to be formatted.
      * @return A formatted string.
      */
-    public MathElement[] formatValues(String format, Object values) {
+    @Nonnull
+    public MathElement[] formatValues(@Nonnull String format, @Nonnull Object values) {
         int n = Array.getLength(values);
         MathElement[] labels = new MathElement[n];
         for (int i = 0; i < n; i++) {
@@ -218,8 +218,8 @@ public abstract class TickCalculator {
      * @param v      the value to be formatted.
      * @return A formatted string.
      */
-    @SuppressWarnings("resource")
-    protected MathElement format(String format, Object v) {
+    @Nonnull
+    protected MathElement format(@Nonnull String format, @Nonnull Object v) {
 
         boolean hasMConversion = false;
         StringBuffer convFormatBuffer = new StringBuffer();
@@ -288,7 +288,8 @@ public abstract class TickCalculator {
      * @param values the value array to be formatted.
      * @return a array of MathElement
      */
-    public MathElement[] formatValues(Format format, Object values) {
+    @Nonnull
+    public MathElement[] formatValues(@Nonnull Format format, @Nonnull Object values) {
         int n = Array.getLength(values);
         MathElement[] labels = new MathElement[n];
         for (int i = 0; i < n; i++) {
@@ -304,7 +305,8 @@ public abstract class TickCalculator {
      * @param v      the value to be formatted.
      * @return aMathElement
      */
-    protected MathElement format(Format format, Object v) {
+    @Nonnull
+    protected MathElement format(@Nonnull Format format, @Nonnull Object v) {
         String s = format.format(v);
         if (s.indexOf('$') == -1) {
             return new MathElement.Mtext(s);
