@@ -40,7 +40,7 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
      */
     public static final double DEFAULT_MARGIN_FACTOR = 1.0 / 32; // 0.03125
 
-    private final List<AxisTickManagerEx> tickManagers = new ArrayList<>();
+    protected final List<AxisTickManagerEx> tickManagers = new ArrayList<>();
     private final List<LayerEx> layers = new ArrayList<>();
     @Nonnull
     private AxisType type;
@@ -428,7 +428,16 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         if (xrs.getStatus() != null) {
             notify(new RangeSelectionNotice(xrs.getStatus().getMessage()));
         }
-        group.zoomVirtualRange(xrs, vtMap);
+
+        if (group != null) {
+            group.zoomVirtualRange(xrs, vtMap);
+        } else {
+            NormalTransform vt = vtMap.get(this).zoom(xrs);
+            Range wrange = vt.getValueRange();
+            if (!getRange().equals(wrange)) {
+                setNormalTransform(getTransform().createNormalTransform(wrange));
+            }
+        }
 
     }
 
