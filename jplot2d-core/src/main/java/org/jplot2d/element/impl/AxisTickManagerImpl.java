@@ -61,12 +61,22 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
     @Nonnull
     private List<AxisEx> axes = new ArrayList<>();
+
     private boolean autoAdjustNumber = true;
+    private boolean autoAdjustNumberChanged;
+
     private int tickNumber = DEFAULT_TICKS_NUMBER;
+    private boolean propNumberChanged;
+
     private boolean autoInterval = true;
+    private boolean autoIntervalChanged;
+
     private double interval;
     private double offset;
+    private boolean intervalChanged; //interval or offset changed
+
     private boolean autoValues = true;
+    private boolean autoValuesChanged;
 
     @Nullable
     private Object fixedValues;
@@ -77,11 +87,18 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
     private boolean autoMinorNumber = true;
     private int actualMinorNumber;
     private int minorNumber;
+    private boolean minorNumberChanged; //The minorNumber changed or autoMinorNumber changed
+
+
     private boolean autoLabelFormat = true;
+    private boolean autoLabelFormatChanged;
+
     @Nullable
     private Format labelTextFormat;
     @Nullable
     private String labelFormat;
+    private boolean labelFormatChanged;
+
     /**
      * fixed labels correspondent to fixed ticks
      */
@@ -93,6 +110,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
      */
     @Nonnull
     private Object values = new double[0];
+    @Nonnull
+    private Object canonicalValues = new double[0];
     @Nonnull
     private Object minorValues = new double[0];
     /**
@@ -114,42 +133,20 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
      */
     private TickCalculator tickCalculator;
 
-    /* =========== xxx Changed =========== */
-
-    private boolean autoAdjustNumberChanged;
-    private boolean autoIntervalChanged;
-    private boolean autoValuesChanged;
-    private boolean autoLabelFormatChanged;
-    private boolean propNumberChanged;
-    /**
-     * interval or offset changed
-     */
-    private boolean intervalChanged;
-    /**
-     * The minorNumber changed or autoMinorNumber changed
-     */
-    private boolean minorNumberChanged;
-    private boolean labelFormatChanged;
-
     /**
      * The label font cache for detect font changes
      */
     @Nonnull
     private Map<AxisEx, AxisStatus> axisStatusMap = new HashMap<>();
 
-    private boolean _labelMaxDensityChanged;
-    private boolean _tickAlgorithmChanged;
+    private boolean labelMaxDensityRecalcNeeded;
+    private boolean tickAlgorithmChanged;
+    private boolean tickTransformChanged;
 
     /**
-     * Both axisTransform.getNormalTransform() or tickTransform change set it to true.
-     */
-    private boolean _trfChanged;
-
-    /**
-     * The tick range for calculation
+     * The tick range for tick calculation
      */
     private Range range;
-
     private NormalTransform axisNormalTransform;
     private Range circularRange;
 
@@ -267,7 +264,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         if (tickAlgorithm != ta) {
             tickAlgorithm = ta;
             tickCalculator = tickAlgorithm.createCalculator();
-            _tickAlgorithmChanged = true;
+            tickAlgorithmChanged = true;
         }
     }
 
@@ -286,7 +283,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         /*
          * Note: The axis cache info will be put when calcTicks() is called
 		 */
-        _labelMaxDensityChanged = true;
+        labelMaxDensityRecalcNeeded = true;
     }
 
     public void removeAxis(AxisEx axis) {
@@ -297,7 +294,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             parent = null;
         }
         axisStatusMap.remove(axis);
-        _labelMaxDensityChanged = true;
+        labelMaxDensityRecalcNeeded = true;
     }
 
     @Nullable
@@ -307,7 +304,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
     public void setTickTransform(@Nullable AxisTickTransform transform) {
         this.tickTransform = transform;
-        _trfChanged = true;
+        tickTransformChanged = true;
         updateTickAlgorithm();
     }
 
@@ -525,6 +522,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             throw new IllegalArgumentException("Label interval cannot be 0 or negative.");
         }
         this.labelInterval = n;
+        labelMaxDensityRecalcNeeded = true;
     }
 
     @Nonnull
@@ -559,26 +557,56 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         assert getRange() != null;
 
         // detect changes of range
-        boolean _rangeChanged = false;
-        boolean _axisCircularRangeChanged = false;
+        boolean rangeChanged = false;
+        boolean axisCircularRangeChanged = false;
+        boolean axisTransformChanged = false;
 
         if (!getRange().equals(this.range)) {
-            _rangeChanged = true;
+            rangeChanged = true;
             this.range = getRange();
         }
-        if (_tickAlgorithmChanged || _rangeChanged) {
+        if (tickAlgorithmChanged || rangeChanged) {
             tickCalculator.setRange(range);
         }
 
         if (!axisTransform.getNormalTransform().equals(this.axisNormalTransform)) {
-            _trfChanged = true;
+            axisTransformChanged = true;
             this.axisNormalTransform = axisTransform.getNormalTransform();
         }
         if (axisTransform.getType().getCircularRange() != this.circularRange) {
-            _axisCircularRangeChanged = true;
+            axisCircularRangeChanged = true;
             this.circularRange = axisTransform.getType().getCircularRange();
         }
 
+        checkAxisStatus();
+
+        if (autoValues && autoInterval && autoAdjustNumber) {
+            if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged || propNumberChanged
+                    || minorNumberChanged || autoLabelFormatChanged || labelFormatChanged || labelMaxDensityRecalcNeeded
+                    || tickAlgorithmChanged || axisTransformChanged || tickTransformChanged || rangeChanged) {
+                calcAutoTicks(axisTransformChanged);
+            }
+        } else {
+            calcCondTicks(rangeChanged, axisCircularRangeChanged, axisTransformChanged);
+        }
+
+        autoValuesChanged = false;
+        tickAlgorithmChanged = false;
+        autoIntervalChanged = false;
+        intervalChanged = false;
+        autoAdjustNumberChanged = false;
+        propNumberChanged = false;
+        minorNumberChanged = false;
+        autoLabelFormatChanged = false;
+        labelFormatChanged = false;
+        labelMaxDensityRecalcNeeded = false;
+        tickTransformChanged = false;
+    }
+
+    /**
+     * Check if axis changes trigger labelMaxDensityRecalcNeeded.
+     */
+    private void checkAxisStatus() {
         for (AxisEx axis : axes) {
             AxisStatus axisStatus = axisStatusMap.get(axis);
             if (axisStatus == null) { // new axis
@@ -587,16 +615,10 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             } else { // re-create axisStatus if changed
                 boolean labelSameOrientation = isLabelSameOrientation(axis);
                 boolean newStatus = false;
-                if (axis.getLength() != axisStatus.axisLength) {
-                    _labelMaxDensityChanged = true;
-                    newStatus = true;
-                }
-                if (labelSameOrientation != axisStatus.labelSameOrientation) {
-                    _labelMaxDensityChanged = true;
-                    newStatus = true;
-                }
-                if (!axis.getEffectiveFont().equals(axisStatus.labelFont)) {
-                    _labelMaxDensityChanged = true;
+                if (axis.getLength() != axisStatus.axisLength
+                        || labelSameOrientation != axisStatus.labelSameOrientation
+                        || !axis.getEffectiveFont().equals(axisStatus.labelFont)) {
+                    labelMaxDensityRecalcNeeded = true;
                     newStatus = true;
                 }
                 if (newStatus) {
@@ -605,49 +627,27 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
                 }
             }
         }
-
-        if (autoValues && autoInterval && autoAdjustNumber) {
-            if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged || propNumberChanged
-                    || minorNumberChanged || autoLabelFormatChanged || labelFormatChanged || _labelMaxDensityChanged
-                    || _tickAlgorithmChanged || _trfChanged || _rangeChanged) {
-                calcAutoTicks();
-            }
-        } else {
-            calcCondTicks(_rangeChanged, _axisCircularRangeChanged);
-        }
-
-        autoValuesChanged = false;
-        _tickAlgorithmChanged = false;
-        autoIntervalChanged = false;
-        intervalChanged = false;
-        autoAdjustNumberChanged = false;
-        propNumberChanged = false;
-        minorNumberChanged = false;
-        autoLabelFormatChanged = false;
-        labelFormatChanged = false;
-        _labelMaxDensityChanged = false;
-        _trfChanged = false;
-
     }
 
-    private void calcCondTicks(boolean _rangeChanged, boolean _axisCircularRangeChanged) {
+    private void calcCondTicks(boolean rangeChanged, boolean axisCircularRangeChanged, boolean axisTransformChanged) {
 
-        int[] valueIdxes = null;
-        Object values; // only available when (fixedValues != null)
-        int[] mvalueIdxes;
-        Object mvalues; // only available when (fixedMinorValues != null)
+        /** Step 1: calculate tick values and minor tick values ************/
+
+        Object values;
+        Object mvalues;
+        int[] valueIdxes = null; // only available when (fixedValues != null)
 
         if (autoValues) {
             if (autoInterval) {
                 if (autoValuesChanged || autoIntervalChanged || autoAdjustNumberChanged || propNumberChanged
-                        || minorNumberChanged || _tickAlgorithmChanged || _rangeChanged) {
+                        || minorNumberChanged || tickAlgorithmChanged || rangeChanged) {
                     tickCalculator.calcValuesByTickNumber(tickNumber, autoMinorNumber ? -1 : minorNumber);
                     interval = tickCalculator.getInterval();
                     actualMinorNumber = tickCalculator.getMinorNumber();
                 }
             } else {
                 if (autoValuesChanged || intervalChanged
-                        || minorNumberChanged || _tickAlgorithmChanged ||  _rangeChanged) {
+                        || minorNumberChanged || tickAlgorithmChanged || rangeChanged) {
                     tickCalculator.calcValuesByTickInterval(interval, offset, autoMinorNumber ? -1 : minorNumber);
                     actualMinorNumber = tickCalculator.getMinorNumber();
                 }
@@ -663,36 +663,56 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
                 values = new double[0];
             }
             if (fixedMinorValues != null) {
-                mvalueIdxes = tickCalculator.getInRangeValuesIdx(fixedMinorValues);
+                int[] mvalueIdxes = tickCalculator.getInRangeValuesIdx(fixedMinorValues);
                 mvalues = NumberArrayUtils.subArray(fixedMinorValues, mvalueIdxes);
             } else {
                 mvalues = new double[0];
             }
         }
 
-        boolean _valuesChanged = false;
-        boolean _minorValuesChanged = false;
+        /** Step 2: set valuesChanged & minorValuesChanged variable ********/
+
+        boolean valuesChanged = false;
+        boolean minorValuesChanged = false;
         if (!NumberArrayUtils.equals(this.values, values)) {
             this.values = values;
-            _valuesChanged = true;
+            valuesChanged = true;
         }
         if (!NumberArrayUtils.equals(this.minorValues, mvalues)) {
             this.minorValues = mvalues;
-            _minorValuesChanged = true;
+            minorValuesChanged = true;
         }
 
-		/* calculate auto format & labels form values */
-        if (autoLabelFormat && (_valuesChanged || autoLabelFormatChanged || _axisCircularRangeChanged)) {
-            Format atf = tickCalculator.calcLabelTextFormat(getCanonicalValues(values));
-            String alf = tickCalculator.calcLabelFormatString(getCanonicalValues(values));
+        /** Step 3: calculate canonicalValues ***************/
+
+        boolean canonicalValuesChanged = false;
+        Object cValues;
+        if (valuesChanged || axisCircularRangeChanged || tickTransformChanged) {
+            cValues = getCanonicalValues(values);
+        } else {
+            cValues = values;
+        }
+        if (!NumberArrayUtils.equals(this.canonicalValues, cValues)) {
+            this.canonicalValues = cValues;
+            canonicalValuesChanged = true;
+        }
+
+        /** Step 4: calculate auto format & set label format ***************/
+
+        if (autoLabelFormat && (tickAlgorithmChanged || canonicalValuesChanged || autoLabelFormatChanged)) {
+            Format atf = tickCalculator.calcLabelTextFormat(canonicalValues);
+            String alf = tickCalculator.calcLabelFormatString(canonicalValues);
             changeLabelFormat(atf, alf);
         }
 
-        if (_valuesChanged || labelFormatChanged || _axisCircularRangeChanged) {
-            autoLabels = calcAutoLabels(getCanonicalValues(values), labelTextFormat, labelFormat);
+        /** Step 5: calculate auto labels **********************************/
+
+        if (canonicalValuesChanged || labelFormatChanged) {
+            autoLabels = calcAutoLabels(canonicalValues, labelTextFormat, labelFormat);
         }
 
-		/* apply fixed labels */
+        /** Step 6: calculate labels and apply fixed labels ****************/
+
         MathElement[] fixedLabelsInRange;
         if (autoValues) {
             fixedLabelsInRange = fixedLabels;
@@ -709,6 +729,8 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
         MathElement[] labels = calcLabels(fixedLabelsInRange, autoLabels, labelInterval);
 
+        /** Step 6: set labelsChanged variables ****************************/
+
         boolean labelsChanged = false;
         if (!Arrays.equals(this.labels, labels)) {
             this.labels = labels;
@@ -716,7 +738,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
 
 		/* shrink labels */
-        if (_valuesChanged || labelsChanged || _labelMaxDensityChanged || _trfChanged) {
+        if (valuesChanged || labelsChanged || labelMaxDensityRecalcNeeded || axisTransformChanged || tickTransformChanged) {
             shrinkLabelFonts();
         }
 
@@ -729,7 +751,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
 
         // notify axis redraw since they get tick values and label text from this tick manager
-        if (_valuesChanged || _minorValuesChanged || labelsChanged || _trfChanged) {
+        if (valuesChanged || minorValuesChanged || labelsChanged || axisTransformChanged || tickTransformChanged) {
             for (AxisEx axis : axes) {
                 ComponentImpl.redraw(axis);
             }
@@ -740,7 +762,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
      * calculate interval from given range, tick number, label height and label format.
      * This will set the interval, the values and the label density.
      */
-    private void calcAutoTicks() {
+    private void calcAutoTicks(boolean axisTransformChanged) {
 
         int tickNumber = this.tickNumber;
         Object values;
@@ -769,16 +791,16 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             }
         }
 
-        boolean _valuesChanged = false;
-        boolean _minorValuesChanged = false;
+        boolean valuesChanged = false;
+        boolean minorValuesChanged = false;
         if (!NumberArrayUtils.equals(this.values, values)) {
             this.values = values;
-            _valuesChanged = true;
+            valuesChanged = true;
         }
         if (!NumberArrayUtils.equals(minorValues, tickCalculator.getMinorValues())) {
             this.minorValues = tickCalculator.getMinorValues();
             this.actualMinorNumber = tickCalculator.getMinorNumber();
-            _minorValuesChanged = true;
+            minorValuesChanged = true;
         }
         boolean labelsChanged = false;
         if (!Arrays.equals(this.labels, labels)) {
@@ -807,7 +829,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         }
 
         // notify axis redraw since they get tick values and label text from this tick manager
-        if (_valuesChanged || _minorValuesChanged || labelsChanged || _trfChanged) {
+        if (valuesChanged || minorValuesChanged || labelsChanged || axisTransformChanged || tickTransformChanged) {
             for (AxisEx axis : axes) {
                 ComponentImpl.redraw(axis);
             }
@@ -977,6 +999,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
     /**
      * Calculate the canonical values of the given values. The canonical values will be used to produce labels.
+     * Require circularRange and tickTransform
      *
      * @param values the tick values
      * @return the canonical values
@@ -1088,7 +1111,7 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
 
             NormalTransform trf = txfType.createNormalTransform(r);
 
-            // calculate max desity
+            // calculate max density
             double maxDensity = getMaxLabelsDensity(trf, values, labels);
             if (maxDensity > 1) {
                 /* fast approximating, the next tick we should try */
