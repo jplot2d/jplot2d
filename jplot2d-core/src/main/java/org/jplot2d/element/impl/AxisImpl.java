@@ -408,10 +408,6 @@ public abstract class AxisImpl extends ComponentImpl implements AxisEx {
         return desc;
     }
 
-    /**
-     * Mark the thickness is invalid. Changing tick height, label strings label font or orientation will call this
-     * method
-     */
     @Override
     public void invalidateThickness() {
         thicknessCalculationNeeded = true;

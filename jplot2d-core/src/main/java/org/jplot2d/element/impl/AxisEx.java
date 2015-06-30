@@ -72,6 +72,9 @@ public interface AxisEx extends Axis, ComponentEx {
 
     double getDesc();
 
+    /**
+     * Mark the thickness is invalid. Changing tick height, label strings label font or orientation will call this method.
+     */
     void invalidateThickness();
 
     /**
