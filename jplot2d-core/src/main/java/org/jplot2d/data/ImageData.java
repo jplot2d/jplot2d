@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2012 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.data;
 
@@ -25,6 +23,7 @@ import org.jplot2d.util.Range;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public abstract class ImageData implements GraphData {
 
     protected final Range xboundary;
@@ -32,8 +31,8 @@ public abstract class ImageData implements GraphData {
     protected final ImageCoordinateReference coordref;
     private final int imgWidth, imgHeight;
     private double xmin, xmax;
-
     private double ymin, ymax;
+    private boolean hasPointOutsideXBounds, hasPointOutsideYBounds;
 
     protected ImageData(int w, int h, ImageCoordinateReference cr, Range xboundary, Range yboundary) {
         this.imgWidth = w;
@@ -60,16 +59,24 @@ public abstract class ImageData implements GraphData {
         ymax = ymin + imgHeight * coordref.yPixelSize;
 
         if (!inXBoundary(xmin)) {
-            xmin = xboundary.getMin();
+            hasPointOutsideXBounds = true;
+            int step = (int) Math.ceil((xboundary.getMin() - xmin) / coordref.xPixelSize);
+            xmin = xmin + step * coordref.xPixelSize;
         }
         if (!inXBoundary(xmax)) {
-            xmax = xboundary.getMax();
+            hasPointOutsideXBounds = true;
+            int step = (int) Math.floor((xboundary.getMax() - xmin) / coordref.xPixelSize);
+            xmax = xmin + step * coordref.xPixelSize;
         }
         if (!inYBoundary(ymin)) {
-            ymin = yboundary.getMin();
+            hasPointOutsideYBounds = true;
+            int step = (int) Math.ceil((yboundary.getMin() - ymin) / coordref.yPixelSize);
+            ymin = ymin + step * coordref.yPixelSize;
         }
-        if (!inXBoundary(ymax)) {
-            ymax = yboundary.getMax();
+        if (!inYBoundary(ymax)) {
+            hasPointOutsideYBounds = true;
+            int step = (int) Math.floor((yboundary.getMax() - ymin) / coordref.yPixelSize);
+            ymax = ymin + step * coordref.yPixelSize;
         }
     }
 
@@ -84,6 +91,7 @@ public abstract class ImageData implements GraphData {
     /**
      * Returns <code>true</code> if the given y is in the y boundary
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean inYBoundary(double y) {
         return (yboundary == null) || yboundary.contains(y);
     }
@@ -97,11 +105,11 @@ public abstract class ImageData implements GraphData {
     }
 
     public boolean hasPointOutsideXBounds() {
-        return false;
+        return hasPointOutsideXBounds;
     }
 
     public boolean hasPointOutsideYBounds() {
-        return false;
+        return hasPointOutsideYBounds;
     }
 
     public ImageCoordinateReference getCoordinateReference() {
