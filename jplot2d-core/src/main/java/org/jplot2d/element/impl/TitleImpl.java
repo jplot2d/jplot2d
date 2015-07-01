@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2012 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -28,6 +26,7 @@ import org.jplot2d.tex.TeXMathUtils;
 import org.jplot2d.util.DoubleDimension2D;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
@@ -177,9 +176,14 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
         return position;
     }
 
-    public void setPosition(@Nonnull TitlePosition position) {
-        this.position = position;
-        invalidatePlot();
+    public void setPosition(@Nullable TitlePosition position) {
+        if (position == null) {
+            position = TitlePosition.FREE;
+        }
+        if (this.position != position) {
+            this.position = position;
+            invalidatePlot();
+        }
     }
 
     public double getGapFactor() {
