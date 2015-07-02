@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2012 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
@@ -24,18 +22,13 @@ import org.jplot2d.util.GraphicsUtil;
 import org.jplot2d.util.SparseArray;
 import org.jplot2d.util.SymbolShape;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Shape;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author Jingjing Li
@@ -52,24 +45,15 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
     private static final float ARROW_HEAD_LENGTH = ARROW_LENGTH / 4;
 
     private final LegendItemEx legendItem;
-
+    private final SparseArray<Color> symbolColors = new SparseArray<>();
     @Nullable
     private XYGraphData data;
-
     private boolean symbolVisible = false;
-
     private boolean lineVisible = true;
-
     private ChartType chartType = ChartType.LINECHART;
-
     private SymbolShape symbolShape = SymbolShape.CIRCLE;
-
     private float symbolSize = 8.0f;
-
     private Color symbolColor;
-
-    private final SparseArray<Color> symbolColors = new SparseArray<>();
-
     private BasicStroke lineStroke = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
     private boolean fillEnabled;
@@ -83,6 +67,110 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
     public XYGraphImpl() {
         legendItem = new XYLegendItemImpl();
         legendItem.setParent(this);
+    }
+
+    static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize, XYGraphEx graph, double scale) {
+        // set line stroke
+        g.setStroke(GraphicsUtil.scaleStroke(graph.getLineStroke(), scale));
+        // draw lines
+        Path2D.Float gp = new Path2D.Float();
+        gp.moveTo(xout[0], yout[0]);
+        for (int i = 1; i < lsize; i++) {
+            gp.lineTo(xout[i], yout[i]);
+        }
+        g.draw(gp);
+    }
+
+    /**
+     * Draw Histogram lines that data points is on the level center.
+     */
+    private static void drawHistogram(Graphics2D g, ChunkData data, XYGraphEx graph, double scale) {
+
+        float[] x = data.xBuf;
+        float[] y = data.yBuf;
+        int lsize = data.size;
+
+        int nsize = lsize * 2;
+        float[] xout = new float[nsize];
+        float[] yout = new float[nsize];
+
+        xout[0] = x[0];
+        yout[0] = y[0];
+        int j = 1; // the next idx of xout/yout
+        /* the 2 idx of (x,y) array */
+        for (int a = 0, b = 1; b < lsize; a++, b++) {
+            float xm = (x[a] + x[b]) / 2;
+            xout[j] = xm;
+            yout[j] = y[a];
+            j++;
+            xout[j] = xm;
+            yout[j] = y[b];
+            j++;
+        }
+        xout[j] = x[lsize - 1];
+        yout[j] = y[lsize - 1];
+
+        drawLine(g, xout, yout, nsize, graph, scale);
+    }
+
+    /**
+     * Draw Histogram lines that data points is on the level edge.
+     *
+     * @param g     the Graphics2D
+     * @param x     the x coordinates
+     * @param y     the y coordinates
+     * @param lsize the number of points
+     * @param graph line attributes
+     */
+    private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y, int lsize, XYGraphEx graph, double scale) {
+        int nsize = lsize * 2 - 1;
+        float[] xout = new float[nsize];
+        float[] yout = new float[nsize];
+
+        int hi = 0;
+        for (int i = 0; i < lsize - 1; i++) {
+            xout[hi] = x[i];
+            yout[hi] = y[i];
+            hi++;
+            xout[hi] = x[i + 1];
+            yout[hi] = y[i];
+            hi++;
+        }
+        xout[hi] = x[lsize - 1];
+        yout[hi] = y[lsize - 1];
+
+        drawLine(g, xout, yout, nsize, graph, scale);
+    }
+
+    /**
+     * Draw a mark at the requested location. This routine is used by LineCartesianGraph and LineKey.
+     *
+     * @param g     Graphics object
+     * @param xp    horizontal coordinate
+     * @param yp    vertical coordinate
+     * @param graph line attribute
+     */
+    static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph, Color[] colors, double scale) {
+
+        // use half of line stroke to draw marks
+        double lw = graph.getLineStroke().getLineWidth() * scale / 2;
+        g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+
+        SymbolShape ss = graph.getSymbolShape();
+        for (int i = 0; i < npoints; i++) {
+            /* not draw mark if the point is brought to clip border */
+            if (colors[i] == null) {
+                continue;
+            }
+
+            g.setColor(colors[i]);
+
+            double safScale = scale * graph.getSymbolSize();
+            AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
+            maf.scale(safScale, -safScale);
+
+            ss.draw(g, maf);
+        }
     }
 
     public String getId() {
@@ -119,10 +207,10 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
             AxisTransformEx xarm = getParent().getXAxisTransform();
             AxisTransformEx yarm = getParent().getYAxisTransform();
 
-            if (xarm != null && xarm.getLockGroup().isAutoRange()) {
+            if (xarm != null && xarm.getLockGroup() != null && xarm.getLockGroup().isAutoRange()) {
                 xarm.getLockGroup().reAutoRange();
             }
-            if (yarm != null && yarm.getLockGroup().isAutoRange()) {
+            if (yarm != null && yarm.getLockGroup() != null && yarm.getLockGroup().isAutoRange()) {
                 yarm.getLockGroup().reAutoRange();
             }
         }
@@ -547,110 +635,6 @@ public class XYGraphImpl extends GraphImpl implements XYGraphEx {
             if (high != y && !Float.isInfinite(high)) {
                 g.draw(new Line2D.Float(x - halfcap, high, x + halfcap, high));
             }
-        }
-    }
-
-    static void drawLine(Graphics2D g, float[] xout, float[] yout, int lsize, XYGraphEx graph, double scale) {
-        // set line stroke
-        g.setStroke(GraphicsUtil.scaleStroke(graph.getLineStroke(), scale));
-        // draw lines
-        Path2D.Float gp = new Path2D.Float();
-        gp.moveTo(xout[0], yout[0]);
-        for (int i = 1; i < lsize; i++) {
-            gp.lineTo(xout[i], yout[i]);
-        }
-        g.draw(gp);
-    }
-
-    /**
-     * Draw Histogram lines that data points is on the level center.
-     */
-    private static void drawHistogram(Graphics2D g, ChunkData data, XYGraphEx graph, double scale) {
-
-        float[] x = data.xBuf;
-        float[] y = data.yBuf;
-        int lsize = data.size;
-
-        int nsize = lsize * 2;
-        float[] xout = new float[nsize];
-        float[] yout = new float[nsize];
-
-        xout[0] = x[0];
-        yout[0] = y[0];
-        int j = 1; // the next idx of xout/yout
-        /* the 2 idx of (x,y) array */
-        for (int a = 0, b = 1; b < lsize; a++, b++) {
-            float xm = (x[a] + x[b]) / 2;
-            xout[j] = xm;
-            yout[j] = y[a];
-            j++;
-            xout[j] = xm;
-            yout[j] = y[b];
-            j++;
-        }
-        xout[j] = x[lsize - 1];
-        yout[j] = y[lsize - 1];
-
-        drawLine(g, xout, yout, nsize, graph, scale);
-    }
-
-    /**
-     * Draw Histogram lines that data points is on the level edge.
-     *
-     * @param g     the Graphics2D
-     * @param x     the x coordinates
-     * @param y     the y coordinates
-     * @param lsize the number of points
-     * @param graph line attributes
-     */
-    private static void drawEdgeHistogram(Graphics2D g, float[] x, float[] y, int lsize, XYGraphEx graph, double scale) {
-        int nsize = lsize * 2 - 1;
-        float[] xout = new float[nsize];
-        float[] yout = new float[nsize];
-
-        int hi = 0;
-        for (int i = 0; i < lsize - 1; i++) {
-            xout[hi] = x[i];
-            yout[hi] = y[i];
-            hi++;
-            xout[hi] = x[i + 1];
-            yout[hi] = y[i];
-            hi++;
-        }
-        xout[hi] = x[lsize - 1];
-        yout[hi] = y[lsize - 1];
-
-        drawLine(g, xout, yout, nsize, graph, scale);
-    }
-
-    /**
-     * Draw a mark at the requested location. This routine is used by LineCartesianGraph and LineKey.
-     *
-     * @param g     Graphics object
-     * @param xp    horizontal coordinate
-     * @param yp    vertical coordinate
-     * @param graph line attribute
-     */
-    static void drawMarks(Graphics2D g, float[] xp, float[] yp, int npoints, XYGraphEx graph, Color[] colors, double scale) {
-
-        // use half of line stroke to draw marks
-        double lw = graph.getLineStroke().getLineWidth() * scale / 2;
-        g.setStroke(new BasicStroke((float) lw, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-
-        SymbolShape ss = graph.getSymbolShape();
-        for (int i = 0; i < npoints; i++) {
-            /* not draw mark if the point is brought to clip border */
-            if (colors[i] == null) {
-                continue;
-            }
-
-            g.setColor(colors[i]);
-
-            double safScale = scale * graph.getSymbolSize();
-            AffineTransform maf = AffineTransform.getTranslateInstance(xp[i], yp[i]);
-            maf.scale(safScale, -safScale);
-
-            ss.draw(g, maf);
         }
     }
 

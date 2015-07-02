@@ -147,6 +147,9 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         if (data == null || mapping == null) {
             return;
         }
+        if (getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+            return;
+        }
 
         ImageBandTransformEx redTrans = mapping.getRedTransform();
         ImageBandTransformEx greenTrans = mapping.getGreenTransform();

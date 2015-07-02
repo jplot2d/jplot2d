@@ -43,12 +43,11 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
      */
     private static final float DEFAULT_AXISLINE_WIDTH = 1.0f;
 
-    @Nonnull
-    private AxisTransformEx axisTransform;
-    @Nonnull
-    private ColorbarAxisEx innerAxis;
-    @Nonnull
-    private ColorbarAxisEx outerAxis;
+    private final AxisTransformEx axisTransform;
+
+    private final ColorbarAxisEx innerAxis;
+
+    private final ColorbarAxisEx outerAxis;
 
     private double gap = 8;
     private double locX, locY;

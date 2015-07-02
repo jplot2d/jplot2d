@@ -19,7 +19,6 @@ package org.jplot2d.element.impl;
 import org.jplot2d.element.ColorbarAxis;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  *

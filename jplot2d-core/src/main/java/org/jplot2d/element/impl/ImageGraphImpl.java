@@ -138,6 +138,9 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         if (data == null || mapping == null) {
             return;
         }
+        if (getParent().getXAxisTransform() == null || getParent().getYAxisTransform() == null) {
+            return;
+        }
 
         double[] limits = mapping.getLimits();
 
