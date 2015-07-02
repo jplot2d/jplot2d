@@ -16,18 +16,19 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.data.DoubleDataBuffer;
+import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.element.ColorbarPosition;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.element.Plot;
+import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.awt.geom.Dimension2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     private ColorbarPosition position = ColorbarPosition.RIGHT;
     private float axisLineWidth = DEFAULT_AXISLINE_WIDTH;
     @Nullable
-    private ImageMappingEx imageMapping;
+    private ImageMappingEx mapping;
 
     public ColorbarImpl() {
         this(new ColorbarAxisTransformImpl(), new ColorbarAxisImpl(0), new ColorbarAxisImpl(1));
@@ -163,15 +164,20 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     @Override
     @Nullable
     public ImageMappingEx getImageMapping() {
-        return imageMapping;
+        return mapping;
     }
 
     @Override
     public void setImageMapping(@Nullable ImageMapping mapping) {
-        this.imageMapping = (ImageMappingEx) mapping;
+        this.mapping = (ImageMappingEx) mapping;
         if (isVisible()) {
             invalidatePlot();
         }
+    }
+
+    @Override
+    public void linkImageMapping(@Nullable ImageMappingEx mapping) {
+        this.mapping = mapping;
     }
 
     @Nonnull
@@ -203,7 +209,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     }
 
     public Dimension2D getSize() {
-        switch (getPosition()) {
+        switch (position) {
             case LEFT:
             case RIGHT:
                 return new DoubleDimension2D(getThickness(), length);
@@ -219,7 +225,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         if (getParent() == null) {
             return null;
         }
-        switch (getPosition()) {
+        switch (position) {
             case LEFT:
             case RIGHT:
                 return new Rectangle2D.Double(-getAsc(), 0, getThickness(), length);
@@ -259,7 +265,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     }
 
     public double getAsc() {
-        switch (getPosition()) {
+        switch (position) {
             case LEFT:
             case TOP:
                 return outerAxis.getAsc();
@@ -272,7 +278,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     }
 
     public double getDesc() {
-        switch (getPosition()) {
+        switch (position) {
             case LEFT:
             case TOP:
                 return innerAxis.getDesc();
@@ -373,6 +379,8 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
     @SuppressWarnings("SuspiciousNameCombination")
     public void draw(Graphics2D graphics) {
 
+        drawImage(graphics);
+
         Graphics2D g = (Graphics2D) graphics.create();
 
         g.transform(getPaperTransform().getTransform());
@@ -381,7 +389,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setStroke(new BasicStroke(axisLineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
-        switch (getPosition()) {
+        switch (position) {
             case LEFT:
             case RIGHT:
                 g.draw(new Line2D.Double(0, 0, barWidth, 0));
@@ -391,6 +399,90 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
                 g.draw(new Line2D.Double(0, 0, 0, barWidth));
                 g.draw(new Line2D.Double(length, 0, length, barWidth));
         }
+
+        g.dispose();
+    }
+
+    private void drawImage(Graphics2D graphics) {
+        if (mapping == null) {
+            return;
+        }
+
+        double[] limits = mapping.getLimits();
+
+        // limits is null means there is no valid data
+        if (limits == null) {
+            return;
+        }
+
+        // find a proper region to process
+        PaperTransform pxf = getPaperTransform();
+        int width = (int) (pxf.getScale() * length);
+        int height = (int) (pxf.getScale() * barWidth);
+
+        // create ImageDataBuffer
+        // TODO: cache
+        double[] line = new double[width];
+        double step = (limits[1] - limits[0]) / width;
+        if (axisTransform.isInverted()) {
+            int sc = width - 1;
+            for (int i = 0; i < width; i++, sc--) {
+                line[i] = step * sc;
+            }
+        } else {
+            for (int i = 0; i < width; i++) {
+                line[i] = step * i;
+            }
+        }
+        double[][] double2d = new double[height][width];
+        for (int r = 0; r < height; r++) {
+            double2d[r] = line;
+        }
+        ImageDataBuffer idb = new DoubleDataBuffer.Array2D(double2d);
+
+        // create raster
+        int lutOutputBits = mapping.getILUTOutputBits();
+        WritableRaster raster;
+        Object result = ImageZscaleCache.getValue(idb, width, height, limits,
+                mapping.getIntensityTransform(), mapping.getBias(), mapping.getGain(), lutOutputBits);
+        if (lutOutputBits <= 8) {
+            // create a SampleModel for byte data
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
+            // and a DataBuffer with the image data
+            DataBufferByte dbuffer = new DataBufferByte((byte[]) result, width * height);
+            // create a raster
+            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+        } else {
+            // create a SampleModel for short data
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
+            // and a DataBuffer with the image data
+            DataBufferUShort dbuffer = new DataBufferUShort((short[]) result, width * height);
+            // create a raster
+            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+        }
+
+        // apply pseudo-color mapping
+        BufferedImage image = mapping.colorImage(raster);
+
+        // draw the image
+        Graphics2D g = (Graphics2D) graphics.create();
+        //Shape clip = getPaperTransform().getPtoD(getBounds());
+        //g.setClip(clip);
+
+        double xorig = pxf.getXPtoD(0);
+        double yorig = pxf.getYPtoD(0);
+        AffineTransform at = AffineTransform.getTranslateInstance(xorig, yorig);
+        switch (position) {
+            case LEFT:
+            case RIGHT:
+                at.rotate(-Math.PI / 2);
+                break;
+            case TOP:
+            case BOTTOM:
+                at.scale(1, -1);
+                break;
+        }
+        g.drawRenderedImage(image, at);
 
         g.dispose();
     }

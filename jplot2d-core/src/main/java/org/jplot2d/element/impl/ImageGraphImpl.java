@@ -25,7 +25,6 @@ import org.jplot2d.transform.PaperTransform;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.image.*;
@@ -199,7 +198,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         raster = axop.filter(raster, null);
 
         // apply pseudo-color mapping
-        BufferedImage image = colorImage(mapping.getILUTOutputBits(), raster);
+        BufferedImage image = mapping.colorImage(raster);
 
         // draw the image
         Graphics2D g = (Graphics2D) graphics.create();
@@ -210,74 +209,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         g.drawRenderedImage(image, at);
 
         g.dispose();
-    }
-
-    /**
-     * Apply the color LUT to the given raster. If the given raster only has a band, it will be duplicated to meet the
-     * output band number.
-     *
-     * @param bits   the number of bits for the single band raster
-     * @param raster the raster
-     * @return a BufferedImage
-     */
-    private BufferedImage colorImage(int bits, WritableRaster raster) {
-        assert mapping != null;
-
-        int destNumComps;
-        if (mapping.getColorMap() == null) {
-            destNumComps = 3;
-        } else {
-            destNumComps = mapping.getColorMap().getColorModel().getNumComponents();
-        }
-
-        // duplicate the source band to as many bands as the number of dest CM
-        if (destNumComps > 1) {
-            SampleModel scm = raster.getSampleModel();
-            SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(), scm.getHeight(), destNumComps);
-            int singleBandSize = raster.getDataBuffer().getSize();
-
-            if (raster.getDataBuffer().getDataType() == DataBuffer.TYPE_BYTE) {
-                // create a new raster which has duplicate bands
-                byte[] singleBandData = ((DataBufferByte) raster.getDataBuffer()).getData();
-
-                byte[][] dupDataArray = new byte[destNumComps][];
-                for (int i = 0; i < destNumComps; i++) {
-                    dupDataArray[i] = singleBandData;
-                }
-
-                DataBufferByte dbuffer = new DataBufferByte(dupDataArray, singleBandSize);
-                raster = Raster.createWritableRaster(dupSM, dbuffer, null);
-            } else {
-                // create a new raster which has duplicate bands
-                short[] singleBandData = ((DataBufferUShort) raster.getDataBuffer()).getData();
-
-                short[][] dupDataArray = new short[destNumComps][];
-                for (int i = 0; i < destNumComps; i++) {
-                    dupDataArray[i] = singleBandData;
-                }
-
-                DataBufferUShort dbuffer = new DataBufferUShort(dupDataArray, singleBandSize);
-                raster = Raster.createWritableRaster(dupSM, dbuffer, null);
-            }
-        }
-
-        if (mapping.getColorMap() == null) {
-            // assembly a BufferedImage with sRGB color space
-            int[] bitsArray = new int[]{bits, bits, bits};
-            ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), bitsArray, false,
-                    true, Transparency.OPAQUE, raster.getSampleModel().getDataType());
-
-            return new BufferedImage(destCM, raster, false, null);
-        } else {
-            // lookup and create a BufferedImage
-            ColorModel destCM = mapping.getColorMap().getColorModel();
-            WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
-            LookupOp op = new LookupOp(mapping.getColorMap().getLookupTable(), null);
-            op.filter(raster, destRaster);
-
-            return new BufferedImage(destCM, destRaster, false, null);
-        }
-
     }
 
 }

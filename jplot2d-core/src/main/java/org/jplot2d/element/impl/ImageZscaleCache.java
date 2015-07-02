@@ -1,29 +1,26 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element.impl;
 
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.image.IntensityTransform;
 
-import java.util.WeakHashMap;
-
 import javax.annotation.Nullable;
+import java.util.WeakHashMap;
 
 /**
  * The class calculate and cache z-scaled image band data.
@@ -32,52 +29,10 @@ import javax.annotation.Nullable;
  */
 public class ImageZscaleCache {
 
-    public static class Key {
-        private final ImageDataBuffer dbuf;
-        private final int w, h;
-        private final double[] limits;
-        private final IntensityTransform intensityTransform;
-        private final double bias, gain;
-        private final int outputBits;
-
-        private Key(ImageDataBuffer dbuf, int w, int h, double[] limits, IntensityTransform intensityTransform,
-                    double bias, double gain, int outputBits) {
-            this.dbuf = dbuf;
-            this.w = w;
-            this.h = h;
-            this.limits = limits;
-            this.intensityTransform = intensityTransform;
-            this.bias = bias;
-            this.gain = gain;
-            this.outputBits = outputBits;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof ImageZscaleCache) {
-                return false;
-            }
-            Key key = (Key) obj;
-            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits[0] == limits[0] && key.limits[1] == limits[1]);
-            return key.dbuf.equals(dbuf) && key.w == w && key.h == h && limitsMatch
-                    && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
-                    && key.outputBits == outputBits;
-        }
-
-        public int hashCode() {
-            /* we only use dbuf to produce hash code, since there is rare conflict in the cache map */
-            return dbuf.hashCode();
-        }
-    }
-
-    private static class ValueRef {
-        private Object v;
-    }
-
     /**
      * The max number of significant bits after applying limits. The max number is 16, for unsigned short data buffer.
      */
     private static final int MAX_BITS = 16;
-
     private static final WeakHashMap<Key, ValueRef> map = new WeakHashMap<>();
 
     /**
@@ -117,7 +72,7 @@ public class ImageZscaleCache {
      * @param bias               the bias value
      * @param gain               the gain value
      * @param outputBits         the bits of output values
-     * @return the calculation result
+     * @return the calculation result, in byte[] or short[]
      */
     public static Object getValue(ImageDataBuffer dbuf, int w, int h, double[] limits,
                                   IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
@@ -141,6 +96,12 @@ public class ImageZscaleCache {
         }
     }
 
+    /**
+     * z-scale the image according settings in the given key.
+     *
+     * @param key the image and settings
+     * @return the scaled data, in byte[] or short[]
+     */
     private static Object zscaleLimits(Key key) {
 
         ImageDataBuffer idb = key.dbuf;
@@ -376,8 +337,8 @@ public class ImageZscaleCache {
             for (int r = yoff; r < yoff + h; r++) {
                 for (int c = xoff; c < xoff + w; c++) {
                     double scaled = (idb.getDouble(c, r) - lowCut) * scale;
-					/*
-					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
+                    /*
+                     * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
 					 * range is [0, outputRange)
 					 */
                     int ilutIndex = (int) scaled;
@@ -391,7 +352,7 @@ public class ImageZscaleCache {
             for (int r = yoff; r < yoff + h; r++) {
                 for (int c = xoff; c < xoff + w; c++) {
                     double scaled = (idb.getDouble(c, r) - lowCut) * scale;
-					/*
+                    /*
 					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
 					 * range is [0, outputRange]
 					 */
@@ -407,6 +368,47 @@ public class ImageZscaleCache {
         }
 
         return result;
+    }
+
+    public static class Key {
+        private final ImageDataBuffer dbuf;
+        private final int w, h;
+        private final double[] limits;
+        private final IntensityTransform intensityTransform;
+        private final double bias, gain;
+        private final int outputBits;
+
+        private Key(ImageDataBuffer dbuf, int w, int h, double[] limits, IntensityTransform intensityTransform,
+                    double bias, double gain, int outputBits) {
+            this.dbuf = dbuf;
+            this.w = w;
+            this.h = h;
+            this.limits = limits;
+            this.intensityTransform = intensityTransform;
+            this.bias = bias;
+            this.gain = gain;
+            this.outputBits = outputBits;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof ImageZscaleCache) {
+                return false;
+            }
+            Key key = (Key) obj;
+            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits[0] == limits[0] && key.limits[1] == limits[1]);
+            return key.dbuf.equals(dbuf) && key.w == w && key.h == h && limitsMatch
+                    && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
+                    && key.outputBits == outputBits;
+        }
+
+        public int hashCode() {
+            /* we only use dbuf to produce hash code, since there is rare conflict in the cache map */
+            return dbuf.hashCode();
+        }
+    }
+
+    private static class ValueRef {
+        private Object v;
     }
 
 }

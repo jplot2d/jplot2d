@@ -27,6 +27,8 @@ import org.jplot2d.notice.Notice;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -266,5 +268,67 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
             return colorMap.getInputBits();
         }
     }
+
+    @Nonnull
+    public BufferedImage colorImage(@Nonnull WritableRaster raster) {
+
+        int bits = getILUTOutputBits();
+        int destNumComps;
+        if (getColorMap() == null) {
+            destNumComps = 3;
+        } else {
+            destNumComps = getColorMap().getColorModel().getNumComponents();
+        }
+
+        // duplicate the source band to as many bands as the number of dest CM
+        if (destNumComps > 1) {
+            SampleModel scm = raster.getSampleModel();
+            SampleModel dupSM = new BandedSampleModel(scm.getDataType(), scm.getWidth(), scm.getHeight(), destNumComps);
+            int singleBandSize = raster.getDataBuffer().getSize();
+
+            if (raster.getDataBuffer().getDataType() == DataBuffer.TYPE_BYTE) {
+                // create a new raster which has duplicate bands
+                byte[] singleBandData = ((DataBufferByte) raster.getDataBuffer()).getData();
+
+                byte[][] dupDataArray = new byte[destNumComps][];
+                for (int i = 0; i < destNumComps; i++) {
+                    dupDataArray[i] = singleBandData;
+                }
+
+                DataBufferByte dbuffer = new DataBufferByte(dupDataArray, singleBandSize);
+                raster = Raster.createWritableRaster(dupSM, dbuffer, null);
+            } else {
+                // create a new raster which has duplicate bands
+                short[] singleBandData = ((DataBufferUShort) raster.getDataBuffer()).getData();
+
+                short[][] dupDataArray = new short[destNumComps][];
+                for (int i = 0; i < destNumComps; i++) {
+                    dupDataArray[i] = singleBandData;
+                }
+
+                DataBufferUShort dbuffer = new DataBufferUShort(dupDataArray, singleBandSize);
+                raster = Raster.createWritableRaster(dupSM, dbuffer, null);
+            }
+        }
+
+        if (getColorMap() == null) {
+            // assembly a BufferedImage with sRGB color space
+            int[] bitsArray = new int[]{bits, bits, bits};
+            ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), bitsArray, false,
+                    true, Transparency.OPAQUE, raster.getSampleModel().getDataType());
+
+            return new BufferedImage(destCM, raster, false, null);
+        } else {
+            // lookup and create a BufferedImage
+            ColorModel destCM = getColorMap().getColorModel();
+            WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
+            LookupOp op = new LookupOp(getColorMap().getLookupTable(), null);
+            op.filter(raster, destRaster);
+
+            return new BufferedImage(destCM, destRaster, false, null);
+        }
+
+    }
+
 
 }
