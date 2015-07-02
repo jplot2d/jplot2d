@@ -1,5 +1,14 @@
-description = ''
+description = 'Plot demos'
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/python'
+        }
+    }
+}
+
 dependencies {
     compile project(':jplot2d-swing')
-    runtime 'org.slf4j:slf4j-simple:1.7.7'
+    runtime 'org.slf4j:slf4j-simple:1.7.12'
 }

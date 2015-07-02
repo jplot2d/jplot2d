@@ -4,10 +4,18 @@ plugins {
 
 description = 'The core engine'
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/python'
+        }
+    }
+}
+
 dependencies {
     compile group: 'com.lowagie', name: 'itext', version: '2.1.7', transitive: false
     compile group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '1.5', transitive: false
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.5'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
 }
 
 task zipExtLibs(type: Zip, dependsOn: compileJava) {
