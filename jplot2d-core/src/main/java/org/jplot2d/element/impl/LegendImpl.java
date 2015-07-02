@@ -69,8 +69,14 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
     private double lengthConstraint = Double.NaN;
 
+    /**
+     * Set to trigger size calculation. After size calculation, layout items.
+     */
     private boolean sizeCalculationNeeded;
 
+    /**
+     * Set to trigger layout items after size calculation.
+     */
     private boolean layoutItemsNeeded;
 
     /**
@@ -607,7 +613,10 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
     }
 
     /**
-     * Locate all items of this legend.
+     * Locate all items of this legend. This method should be called when
+     * visibleItemNum/columns changes
+     * rowSpacingFactor changes
+     * bounds changed (width/height h/v align)
      */
     private void layoutItems() {
         if ((visibleItemNum == 0) || !isVisible()) {
@@ -638,6 +647,8 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
                 }
             }
         }
+
+        redraw(this);
     }
 
     /**
