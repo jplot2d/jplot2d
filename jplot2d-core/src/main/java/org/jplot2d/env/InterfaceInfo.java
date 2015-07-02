@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.env;
 
@@ -26,13 +24,7 @@ import org.jplot2d.annotation.PropertyGroup;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class extract properties from method declaration, rather than using java introspector.
@@ -45,6 +37,7 @@ import java.util.Map;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public class InterfaceInfo {
 
     private static final String IS_PREFIX = "is";
@@ -69,21 +62,6 @@ public class InterfaceInfo {
 
     private final Map<String, PropertyInfo[]> pisGroupMap = new LinkedHashMap<>();
 
-    /**
-     * Load interface info for the given interface and its parents. The subclass may hide the info of its superclass.
-     * For example, if a sub-interface only redeclare a getter, the info will report the property is read-only.
-     *
-     * @param interfaceClass the class to be analyzed
-     */
-    public static synchronized InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
-        InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
-        if (iinfo == null) {
-            iinfo = new InterfaceInfo(interfaceClass);
-            interfaceInfoCache.put(interfaceClass, iinfo);
-        }
-        return iinfo;
-    }
-
     private InterfaceInfo(Class<?> interfaceClass) {
         // get an array of all the public methods at all level
         Method methods[] = interfaceClass.getMethods();
@@ -106,194 +84,19 @@ public class InterfaceInfo {
 
     }
 
-    private void loadGroup(Class<?> interfaceClass) {
-        // load parents
-        for (Class<?> superClass : interfaceClass.getInterfaces()) {
-            loadGroup(superClass);
-        }
-        // load this interface
-        PropertyGroup pg = interfaceClass.getAnnotation(PropertyGroup.class);
-        if (pg != null) {
-            pisGroupMap.put(pg.value(), null);
-        }
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    private void load(Class<?> beanClass) {
-
-        Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<>();
-
-        for (PropertyInfo p : piMap.values()) {
-            Method readMethod = p.getReadMethod();
-            Method writeMethod = p.getWriteMethod();
-            if (readMethod != null) {
-                Property pann = readMethod.getAnnotation(Property.class);
-                if (pann != null) {
-                    p.setDisplayName(pann.displayName());
-                    p.setDisplayDigits(pann.displayDigits());
-                    p.setShortDescription(pann.description());
-                    p.setReadOnly(pann.readOnly());
-                    p.setOrder(pann.order());
-                    // only writable property can be in profile
-                    p.setStyleable(pann.styleable() && writeMethod != null);
-                    PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
-                    if (pg != null) {
-                        List<PropertyInfo> pis = pilGroupMap.get(pg.value());
-                        if (pis == null) {
-                            pis = new ArrayList<>();
-                            pilGroupMap.put(pg.value(), pis);
-                        }
-                        pis.add(p);
-                    }
-                }
-
-                propReadMap.put(readMethod, p);
-                if (writeMethod != null) {
-                    propWriteMap.put(writeMethod, p);
-                }
-            }
-        }
-
-        // sort value array of pisGroupMap
-        Iterator<Map.Entry<String, PropertyInfo[]>> itr = pisGroupMap.entrySet().iterator();
-        while (itr.hasNext()) {
-            Map.Entry<String, PropertyInfo[]> me = itr.next();
-            List<PropertyInfo> gpdList = pilGroupMap.get(me.getKey());
-            if (gpdList != null) {
-                PropertyInfo[] gpds = gpdList.toArray(new PropertyInfo[gpdList.size()]);
-                Arrays.sort(gpds);
-                me.setValue(gpds);
-            } else {
-                itr.remove();
-            }
-        }
-
-    }
-
-    public PropertyInfo getPropertyInfo(String pname) {
-        return piMap.get(pname);
-    }
-
-    public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
-        return pisGroupMap;
-    }
-
-    public Map<String, PropertyInfo[]> getProfilePropertyInfoGroupMap() {
-        Map<String, PropertyInfo[]> result = new LinkedHashMap<>();
-
-        for (Map.Entry<String, PropertyInfo[]> me : pisGroupMap.entrySet()) {
-            String group = me.getKey();
-            List<PropertyInfo> ppl = new ArrayList<>();
-            for (PropertyInfo pi : me.getValue()) {
-                if (pi.isStyleable()) {
-                    ppl.add(pi);
-                }
-            }
-            if (ppl.size() > 0) {
-                PropertyInfo[] pps = ppl.toArray(new PropertyInfo[ppl.size()]);
-                result.put(group, pps);
-            }
-        }
-
-        return result;
-    }
-
     /**
-     * Returns <code>true</true> if the given property is writable.
+     * Load interface info for the given interface and its parents. The subclass may hide the info of its superclass.
+     * For example, if a sub-interface only redeclare a getter, the info will report the property is read-only.
      *
-     * @param pname The property name
-     * @return <code>true</true> if the given property is writable
+     * @param interfaceClass the class to be analyzed
      */
-    public boolean isWritableProp(String pname) {
-        return piMap.containsKey(pname) && piMap.get(pname).getWriteMethod() != null;
-    }
-
-    /**
-     * Returns <code>true</true> if the given method is a property getter.
-     *
-     * @param method the method to be check
-     * @return <code>true</true> if the given method is a property getter
-     */
-    protected boolean isPropReadMethod(Method method) {
-        return propReadMap.containsKey(method);
-    }
-
-    /**
-     * Returns <code>true</true> if the given method is a property setter.
-     *
-     * @param method the method to be check
-     * @return <code>true</true> if the given method is a property setter
-     */
-    protected boolean isPropWriteMethod(Method method) {
-        return propWriteMap.containsKey(method);
-    }
-
-    /**
-     * Returns <code>true</true> if the given setter is disabled by property annotation.
-     *
-     * @param method the writer method
-     * @return <code>true</true> if the given setter is disabled
-     */
-    protected boolean isPropWriteDisabled(Method method) {
-        PropertyInfo pinfo = propWriteMap.get(method);
-        if (pinfo == null) {
-            throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
+    public static synchronized InterfaceInfo loadInterfaceInfo(Class<?> interfaceClass) {
+        InterfaceInfo iinfo = interfaceInfoCache.get(interfaceClass);
+        if (iinfo == null) {
+            iinfo = new InterfaceInfo(interfaceClass);
+            interfaceInfoCache.put(interfaceClass, iinfo);
         }
-        return pinfo.isReadOnly();
-    }
-
-    /**
-     * Returns the getter of the given setter.
-     *
-     * @param method the writer method
-     * @return the reader method
-     */
-    protected Method getPropReadMethodByWriteMethod(Method method) {
-        PropertyInfo pinfo = propWriteMap.get(method);
-        if (pinfo == null) {
-            throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
-        }
-        return pinfo.getReadMethod();
-    }
-
-    protected boolean isGetCompMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.GET;
-    }
-
-    protected boolean isGetCompArrayMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.GETARRAY;
-    }
-
-    protected boolean isAddCompMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.ADD;
-    }
-
-    protected boolean isRemoveCompMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.REMOVE;
-    }
-
-    protected boolean isJoinElementMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.JOIN;
-    }
-
-    protected boolean isRefElementMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.REF;
-    }
-
-    protected boolean isRef2ElementMethod(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.REF2;
-    }
-
-    protected boolean isAddRef2Method(Method method) {
-        HierarchyOp hop = hierarchyMethodMap.get(method);
-        return hop != null && hop == HierarchyOp.ADD_REF2;
+        return iinfo;
     }
 
     /**
@@ -393,6 +196,212 @@ public class InterfaceInfo {
         char chars[] = name.toCharArray();
         chars[0] = Character.toLowerCase(chars[0]);
         return new String(chars);
+    }
+
+    private void loadGroup(Class<?> interfaceClass) {
+        // load parents
+        for (Class<?> superClass : interfaceClass.getInterfaces()) {
+            loadGroup(superClass);
+        }
+        // load this interface
+        PropertyGroup pg = interfaceClass.getAnnotation(PropertyGroup.class);
+        if (pg != null) {
+            pisGroupMap.put(pg.value(), null);
+        }
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    private void load(Class<?> beanClass) {
+
+        Map<String, List<PropertyInfo>> pilGroupMap = new HashMap<>();
+
+        for (PropertyInfo p : piMap.values()) {
+            Method readMethod = p.getReadMethod();
+            Method writeMethod = p.getWriteMethod();
+            if (readMethod != null) {
+                Property pann = readMethod.getAnnotation(Property.class);
+                if (pann != null) {
+                    p.setDisplayName(pann.displayName());
+                    p.setDisplayDigits(pann.displayDigits());
+                    p.setShortDescription(pann.description());
+                    p.setReadOnly(pann.readOnly());
+                    p.setOrder(pann.order());
+                    // only writable property can be in profile
+                    p.setStyleable(pann.styleable() && writeMethod != null);
+                    PropertyGroup pg = readMethod.getDeclaringClass().getAnnotation(PropertyGroup.class);
+                    if (pg != null) {
+                        List<PropertyInfo> pis = pilGroupMap.get(pg.value());
+                        if (pis == null) {
+                            pis = new ArrayList<>();
+                            pilGroupMap.put(pg.value(), pis);
+                        }
+                        pis.add(p);
+                    }
+                }
+
+                propReadMap.put(readMethod, p);
+                if (writeMethod != null) {
+                    propWriteMap.put(writeMethod, p);
+                }
+            }
+        }
+
+        // sort value array of pisGroupMap
+        Iterator<Map.Entry<String, PropertyInfo[]>> itr = pisGroupMap.entrySet().iterator();
+        while (itr.hasNext()) {
+            Map.Entry<String, PropertyInfo[]> me = itr.next();
+            List<PropertyInfo> gpdList = pilGroupMap.get(me.getKey());
+            if (gpdList != null) {
+                PropertyInfo[] gpds = gpdList.toArray(new PropertyInfo[gpdList.size()]);
+                Arrays.sort(gpds);
+                me.setValue(gpds);
+            } else {
+                itr.remove();
+            }
+        }
+
+    }
+
+    public PropertyInfo getPropertyInfo(String pname) {
+        return piMap.get(pname);
+    }
+
+    public Map<String, PropertyInfo[]> getPropertyInfoGroupMap() {
+        return pisGroupMap;
+    }
+
+    public Map<String, PropertyInfo[]> getProfilePropertyInfoGroupMap() {
+        Map<String, PropertyInfo[]> result = new LinkedHashMap<>();
+
+        for (Map.Entry<String, PropertyInfo[]> me : pisGroupMap.entrySet()) {
+            String group = me.getKey();
+            List<PropertyInfo> ppl = new ArrayList<>();
+            for (PropertyInfo pi : me.getValue()) {
+                if (pi.isStyleable()) {
+                    ppl.add(pi);
+                }
+            }
+            if (ppl.size() > 0) {
+                PropertyInfo[] pps = ppl.toArray(new PropertyInfo[ppl.size()]);
+                result.put(group, pps);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the argument type of the writer of given property.
+     *
+     * @param propName the property name
+     * @return the property type
+     */
+    public Class<?> getPropWriteMethodType(String propName) {
+        if (piMap.containsKey(propName)) {
+            Method m = piMap.get(propName).getWriteMethod();
+            if (m != null) {
+                return m.getParameterTypes()[0];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns <code>true</true> if the given property is writable.
+     *
+     * @param pname the property name
+     * @return <code>true</true> if the given property is writable
+     */
+    public boolean isWritableProp(String pname) {
+        return piMap.containsKey(pname) && piMap.get(pname).getWriteMethod() != null;
+    }
+
+    /**
+     * Returns <code>true</true> if the given method is a property getter.
+     *
+     * @param method the method to be check
+     * @return <code>true</true> if the given method is a property getter
+     */
+    protected boolean isPropReadMethod(Method method) {
+        return propReadMap.containsKey(method);
+    }
+
+    /**
+     * Returns <code>true</true> if the given method is a property setter.
+     *
+     * @param method the method to be check
+     * @return <code>true</true> if the given method is a property setter
+     */
+    protected boolean isPropWriteMethod(Method method) {
+        return propWriteMap.containsKey(method);
+    }
+
+    /**
+     * Returns <code>true</true> if the given setter is disabled by property annotation.
+     *
+     * @param method the writer method
+     * @return <code>true</true> if the given setter is disabled
+     */
+    protected boolean isPropWriteDisabled(Method method) {
+        PropertyInfo pinfo = propWriteMap.get(method);
+        if (pinfo == null) {
+            throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
+        }
+        return pinfo.isReadOnly();
+    }
+
+    /**
+     * Returns the getter of the given setter.
+     *
+     * @param method the writer method
+     * @return the reader method
+     */
+    protected Method getPropReadMethodByWriteMethod(Method method) {
+        PropertyInfo pinfo = propWriteMap.get(method);
+        if (pinfo == null) {
+            throw new IllegalArgumentException("The method " + method.getName() + " is not a property writter.");
+        }
+        return pinfo.getReadMethod();
+    }
+
+    protected boolean isGetCompMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.GET;
+    }
+
+    protected boolean isGetCompArrayMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.GETARRAY;
+    }
+
+    protected boolean isAddCompMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.ADD;
+    }
+
+    protected boolean isRemoveCompMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.REMOVE;
+    }
+
+    protected boolean isJoinElementMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.JOIN;
+    }
+
+    protected boolean isRefElementMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.REF;
+    }
+
+    protected boolean isRef2ElementMethod(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.REF2;
+    }
+
+    protected boolean isAddRef2Method(Method method) {
+        HierarchyOp hop = hierarchyMethodMap.get(method);
+        return hop != null && hop == HierarchyOp.ADD_REF2;
     }
 
 }

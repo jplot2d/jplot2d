@@ -1,24 +1,23 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.env;
 
 import org.jplot2d.element.Element;
+import org.jplot2d.element.ElementFactory;
 
 import java.awt.Color;
 import java.awt.Paint;
@@ -54,7 +53,7 @@ public class StylePreferences implements StyleConfiguration {
     }
 
     public void applyTo(Element element) {
-        Class<?> eif = getElementInterface(element.getClass());
+        Class<?> eif = ElementFactory.getElementInterface(element.getClass());
 
         if (eif == null) {
             return;
@@ -134,26 +133,6 @@ public class StylePreferences implements StyleConfiguration {
         }
 
         return IGNORE;
-    }
-
-    /**
-     * Returns the parent interface of the given element, which is in org.jplot2d.element package
-     *
-     * @param element the element
-     * @return an interface in org.jplot2d.element package
-     */
-    protected static Class<?> getElementInterface(Class<?> element) {
-        if (element.getPackage().getName().equals("org.jplot2d.element")) {
-            return element;
-        }
-        Class<?>[] interfaces = element.getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            Class<?> eif = getElementInterface(anInterface);
-            if (eif != null) {
-                return eif;
-            }
-        }
-        return null;
     }
 
     public <T extends Element> T getProxyBean(Class<T> elementInterface) {

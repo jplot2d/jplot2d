@@ -1,4 +1,20 @@
 #
+# Copyright 2010-2015 Jingjing Li.
+#
+# This file is part of jplot2d.
+#
+# jplot2d is free software:
+# you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation, either version 3 of the License, or any later version.
+#
+# jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Lesser Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+# If not, see <http://www.gnu.org/licenses/>.
+#
+
 from org.jplot2d.env import InterfaceInfo
 from org.jplot2d.axtype import *
 from org.jplot2d.data import *
@@ -37,38 +53,38 @@ def jplot2d_set_prop(iinfo, obj, name, v):
 
 def plot(*args, **kwargs):
     p = jplot2d_default_element_factory.createPlot()
-    
+
     plotinfo = InterfaceInfo.loadInterfaceInfo(Plot)
     for key in kwargs:
         if plotinfo.isWritableProp(key):
             jplot2d_set_prop(plotinfo, p, key, kwargs[key])
         else:
             raise AttributeError, "Plot has no attribute " + key
-    
+
     return p
 
 def subplot(*args, **kwargs):
     p = jplot2d_default_element_factory.createSubplot()
-    
+
     plotinfo = InterfaceInfo.loadInterfaceInfo(Plot)
     for key in kwargs:
         if plotinfo.isWritableProp(key):
             jplot2d_set_prop(plotinfo, p, key, kwargs[key])
         else:
             raise AttributeError, "Plot has no attribute " + key
-    
+
     return p
 
 def title(text, *args, **kwargs):
     title = jplot2d_default_element_factory.createTitle(text)
-    
+
     iinfo = InterfaceInfo.loadInterfaceInfo(Title)
     for key in kwargs:
         if iinfo.isWritableProp(key):
             jplot2d_set_prop(iinfo, title, key, kwargs[key])
         else:
             raise AttributeError, "Title has no attribute " + key
-        
+
     return title
 
 
@@ -96,7 +112,7 @@ def axes(n, *args, **kwargs):
 
 def layer(*args, **kwargs):
     layer = jplot2d_default_element_factory.createLayer()
-    
+
     iinfo = InterfaceInfo.loadInterfaceInfo(Layer)
     for key in kwargs:
         if iinfo.isWritableProp(key):
@@ -122,7 +138,7 @@ def xygraph(*args, **kwargs):
             arglist.append(arg)
 
     graph = jplot2d_default_element_factory.createXYGraph(*arglist);
-        
+
     ginfo = InterfaceInfo.loadInterfaceInfo(XYGraph)
     for key in kwargs:
         if ginfo.isWritableProp(key):
@@ -148,7 +164,7 @@ def imagegraph(*args, **kwargs):
 
 def rgbimagegraph(*args, **kwargs):
     graph = jplot2d_default_element_factory.createRGBImageGraph(*args);
-    
+
     ginfo = InterfaceInfo.loadInterfaceInfo(RGBImageGraph)
     for key in kwargs:
         if ginfo.isWritableProp(key):
@@ -161,7 +177,7 @@ def rgbimagegraph(*args, **kwargs):
 
 def hlineannotation(y, *args, **kwargs):
     ann = jplot2d_default_element_factory.createHLineAnnotation(y)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(HLineAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -170,10 +186,10 @@ def hlineannotation(y, *args, **kwargs):
             raise AttributeError, "HLineAnnotation has no attribute " + key
 
     return ann
- 
+
 def vlineannotation(x, *args, **kwargs):
     ann = jplot2d_default_element_factory.createVLineAnnotation(x)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(VLineAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -182,10 +198,10 @@ def vlineannotation(x, *args, **kwargs):
             raise AttributeError, "VLineAnnotation has no attribute " + key
 
     return ann
- 
+
 def hstripannotation(start, end, *args, **kwargs):
     ann = jplot2d_default_element_factory.createHStripAnnotation(start, end)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(HStripAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -194,10 +210,10 @@ def hstripannotation(start, end, *args, **kwargs):
             raise AttributeError, "HStripAnnotation has no attribute " + key
 
     return ann
- 
+
 def vstripannotation(start, end, *args, **kwargs):
     ann = jplot2d_default_element_factory.createVStripAnnotation(start, end)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(VStripAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -206,10 +222,10 @@ def vstripannotation(start, end, *args, **kwargs):
             raise AttributeError, "VStripAnnotation has no attribute " + key
 
     return ann
- 
+
 def rectangleannotation(x1, x2, y1, y2, *args, **kwargs):
     ann = jplot2d_default_element_factory.createRectangleAnnotation(x1, x2, y1, y2)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(RectangleAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -218,10 +234,10 @@ def rectangleannotation(x1, x2, y1, y2, *args, **kwargs):
             raise AttributeError, "RectangleAnnotation has no attribute " + key
 
     return ann
- 
+
 def symbolannotation(*args, **kwargs):
     ann = jplot2d_default_element_factory.createSymbolAnnotation(*args)
-        
+
     anninfo = InterfaceInfo.loadInterfaceInfo(SymbolAnnotation)
     for key in kwargs:
         if anninfo.isWritableProp(key):
@@ -235,15 +251,16 @@ def stroke(width, dash=None):
     return jplot2d_default_element_factory.createStroke(width, dash)
 
 
-
 # set property for the given obj
 def setp(obj, *args, **kwargs):
-    if isinstance(obj, Legend):
-        iinfo = InterfaceInfo.loadInterfaceInfo(Legend)
+    if isinstance(obj, Element):
+        elementclass = ElementFactory.getElementInterface(obj.getClass())
+        iinfo = InterfaceInfo.loadInterfaceInfo(elementclass)
         for key in kwargs:
             if iinfo.isWritableProp(key):
                 jplot2d_set_prop(iinfo, obj, key, kwargs[key])
             else:
                 raise AttributeError, obj + " has no attribute " + key
-        
-
+    else:
+        for key in kwargs:
+            setattr(obj, key, kwargs[key])
