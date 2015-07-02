@@ -137,6 +137,25 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     }
 
     /**
+     * Deep search colorbars to find the copy whose image mapping not been linked, and set for them.
+     *
+     * @param plot         the plot to be copied
+     * @param orig2copyMap original element to copy map
+     */
+    private static void linkColorbarAndImageMapping(PlotEx plot, @Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            ColorbarEx colorbarCopy = (ColorbarEx) orig2copyMap.get(colorbar);
+            if (colorbarCopy.getImageMapping() == null) {
+                ImageMappingEx mappingCopy = (ImageMappingEx) orig2copyMap.get(colorbar.getImageMapping());
+                colorbarCopy.linkImageMapping(mappingCopy);
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            linkColorbarAndImageMapping(sp, orig2copyMap);
+        }
+    }
+
+    /**
      * find all AxisLockGroups in the given plot and fill them into the given set.
      */
     private static void collectLockGroups(PlotEx plot, Set<AxisRangeLockGroupEx> xalgs, Set<AxisRangeLockGroupEx> yalgs) {
@@ -1112,6 +1131,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     public PlotImpl copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
         PlotImpl result = copyStructureCascade(orig2copyMap);
         linkLayerAndAxisTransform(this, orig2copyMap);
+        linkColorbarAndImageMapping(this, orig2copyMap);
         return result;
     }
 

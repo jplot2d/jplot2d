@@ -43,6 +43,8 @@ public interface ColorbarEx extends Colorbar, AxisContainerEx {
 
     void setImageMapping(@Nullable ImageMapping mapping);
 
+    void linkImageMapping(ImageMappingEx imageMapping);
+
     /**
      * Returns the short id of this element. The short id is composed of series of ids concatenated with dots.
      * The 1st id is the id of this element, the 2nd id is the id of the parent of this element, etc, until but not include the root plot.
