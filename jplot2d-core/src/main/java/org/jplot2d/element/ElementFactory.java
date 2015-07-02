@@ -766,12 +766,13 @@ public class ElementFactory {
     }
 
     public ImageMapping createImageMapping() {
-        ImageMappingImpl impl = new ImageMappingImpl();
-        applyProfile(impl);
-        ImageMapping proxy = proxy(impl, ImageMapping.class);
+        ImageMappingImpl mapping = new ImageMappingImpl();
+        applyProfile(mapping);
+
+        ImageMapping proxy = proxy(mapping, ImageMapping.class);
 
         DummyEnvironment env = createDummyEnvironment();
-        env.registerElement(impl, proxy);
+        env.registerElement(mapping, proxy);
 
         return proxy;
     }
@@ -877,6 +878,43 @@ public class ElementFactory {
 
         return proxy;
     }
+
+    /**
+     * Create a colorbar.
+     *
+     * @return a colorbar
+     */
+    public Colorbar createColorbar() {
+        ColorbarImpl impl = new ColorbarImpl();
+        applyProfile(impl);
+
+        Colorbar proxy = proxy(impl, Colorbar.class);
+
+        AxisEx lowerAxis = impl.getInnerAxis();
+        Axis lowerAxisProxy = proxy(lowerAxis, ColorbarAxis.class);
+        AxisTitleEx lowerTitle = lowerAxis.getTitle();
+        AxisTitle lowerTitleProxy = proxy(lowerTitle, AxisTitle.class);
+        AxisEx upperAxis = impl.getOuterAxis();
+        Axis upperAxisProxy = proxy(upperAxis, ColorbarAxis.class);
+        AxisTitleEx upperTitle = upperAxis.getTitle();
+        AxisTitle upperTitleProxy = proxy(upperTitle, AxisTitle.class);
+        AxisTickManagerEx atm = lowerAxis.getTickManager();
+        AxisTickManager atmProxy = proxy(atm, AxisTickManager.class);
+        AxisTransformEx axf = impl.getAxisTransform();
+        AxisTransform axfProxy = proxy(axf, AxisTransform.class);
+
+        DummyEnvironment env = createDummyEnvironment();
+        env.registerElement(impl, proxy);
+        env.registerElement(lowerAxis, lowerAxisProxy);
+        env.registerElement(upperAxis, upperAxisProxy);
+        env.registerElement(lowerTitle, lowerTitleProxy);
+        env.registerElement(upperTitle, upperTitleProxy);
+        env.registerElement(atm, atmProxy);
+        env.registerElement(axf, axfProxy);
+
+        return proxy;
+    }
+
 
     /**
      * Create a copy of the given element. All sub-element are copied together.

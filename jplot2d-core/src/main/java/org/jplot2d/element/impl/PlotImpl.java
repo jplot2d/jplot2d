@@ -45,6 +45,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     private final PlotMarginEx margin;
     private final LegendEx legend;
+    private final List<ColorbarEx> colorbars = new ArrayList<>();
     private final List<TitleEx> titles = new ArrayList<>();
     private final List<PlotAxisEx> xAxis = new ArrayList<>();
     private final List<PlotAxisEx> yAxis = new ArrayList<>();
@@ -67,7 +68,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     @Nullable
     private PaperTransform pxf;
-
     /**
      * True when the object is valid. An invalid object needs to be laid out. This flag is set to false when the object
      * size is changed. The initial value is true, because the {@link #contentSize} and size are same.
@@ -77,7 +77,6 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
      * @see #invalidate
      */
     private boolean valid = true;
-
     private boolean rerenderNeeded;
 
     @Nullable
@@ -85,19 +84,16 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
     @Nonnull
     private LayoutDirector layoutDirector = new SimpleLayoutDirector();
-
     /**
      * Set by layout director. Efficient Immutable
      */
     @Nullable
     private Dimension2D contentConstraint;
-
     /**
      * Must be valid size (positive width and height)
      */
     private double preferredContentWidth = 320;
     private double preferredContentHeight = 240;
-
     /**
      * Set by layout director. Efficient Immutable!
      */
@@ -246,6 +242,64 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         }
         for (PlotEx sp : plot.getSubplots()) {
             calcTitleSize(sp);
+        }
+    }
+
+    /**
+     * Calculate colorbar thickness according to its properties.
+     */
+    private static void calcColorbarThickness(PlotEx plot) {
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                double asc = colorbar.getAsc();
+                double desc = colorbar.getDesc();
+
+                colorbar.calcThickness();
+
+                if (Math.abs(asc - colorbar.getAsc()) > Math.abs(asc) * 1e-12 || Math.abs(desc - colorbar.getDesc()) > Math.abs(desc) * 1e-12) {
+                    colorbar.getParent().invalidate();
+                }
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            calcAxesThickness(sp);
+        }
+    }
+
+    /**
+     * Sets range for all ColorbarAxisTransform, and calculate axis ticks according to its length, range and tick properties.
+     */
+    private static void calcColorbarTicks(PlotEx plot) {
+        Set<AxisTickManagerEx> tickManagers = new HashSet<>();
+        collectColorbarTickManagers(plot, tickManagers);
+
+        for (AxisTickManagerEx atm : tickManagers) {
+            atm.calcTicks();
+        }
+    }
+
+    /**
+     * Sets range for all ColorbarAxisTransform, and
+     * find all AxisLockGroups of visible axes in the given plot and fill them into the given set.
+     */
+    private static void collectColorbarTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.getImageMapping() != null) {
+                double[] limits = colorbar.getImageMapping().getLimits();
+                if (limits != null) {
+                    Range range = new Range.Double(limits[0], limits[1]);
+                    colorbar.getAxisTransform().setRange(range);
+                }
+            }
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                AxisTickManagerEx lowerTM = colorbar.getInnerAxis().getTickManager();
+                AxisTickManagerEx upperTM = colorbar.getOuterAxis().getTickManager();
+                algs.add(lowerTM);
+                algs.add(upperTM);
+            }
+        }
+        for (PlotEx sp : plot.getSubplots()) {
+            collectTickManagers(sp, algs);
         }
     }
 
@@ -626,12 +680,15 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     @Override
     public ComponentEx[] getComponents() {
 
-        int size = 1 + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
+        int size = 1 + colorbars.size() + titles.size() + xAxis.size() + yAxis.size() + layers.size() + subplots.size();
 
         ComponentEx[] comps = new ComponentEx[size];
 
         int n = 0;
         comps[n++] = legend;
+        for (ColorbarEx colorbar : colorbars) {
+            comps[n++] = colorbar;
+        }
         for (TitleEx title : titles) {
             comps[n++] = title;
         }
@@ -654,6 +711,51 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     @Override
     public LegendEx getLegend() {
         return legend;
+    }
+
+    @Override
+    public ColorbarEx getColorbar(int index) {
+        return colorbars.get(index);
+    }
+
+    @Override
+    public int indexOf(ColorbarEx title) {
+        return colorbars.indexOf(title);
+    }
+
+    @Override
+    public ColorbarEx[] getColorbars() {
+        return colorbars.toArray(new ColorbarEx[colorbars.size()]);
+    }
+
+    @Override
+    public void addColorbar(Colorbar colorbar) {
+        ColorbarEx tx = (ColorbarEx) colorbar;
+
+        colorbars.add(tx);
+        tx.setParent(this);
+
+        redrawCascade(tx);
+
+        if (tx.isVisible() && tx.canContribute()) {
+            invalidate();
+        }
+    }
+
+    @Override
+    public void removeColorbar(Colorbar colorbar) {
+        ColorbarEx tx = (ColorbarEx) colorbar;
+
+        redrawCascade(tx);
+
+        colorbars.remove(tx);
+        tx.setParent(null);
+
+        tx.setImageMapping(null);
+
+        if (tx.isVisible() && tx.canContribute()) {
+            invalidate();
+        }
     }
 
     @Override
@@ -1009,9 +1111,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     @Override
     public PlotImpl copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap) {
         PlotImpl result = copyStructureCascade(orig2copyMap);
-
         linkLayerAndAxisTransform(this, orig2copyMap);
-
         return result;
     }
 
@@ -1024,6 +1124,13 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
         orig2copyMap.put(this, result);
         orig2copyMap.put(margin, result.margin);
+
+        // copy colorbars
+        for (ColorbarEx colorbar : colorbars) {
+            ColorbarEx colorbarCopy = (ColorbarEx) colorbar.copyStructure(orig2copyMap);
+            colorbarCopy.setParent(result);
+            result.colorbars.add(colorbarCopy);
+        }
 
         // copy titles
         for (TitleEx title : titles) {
@@ -1123,6 +1230,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
 
 		/* calculate size may invalidate plot */
         calcAxesThickness(this);
+        calcColorbarThickness(this);
         calcLegendSize(this);
         calcTitleSize(this);
 
@@ -1148,9 +1256,12 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
              * Calculating axes tick may invalidate some axis. Their metrics need be re-calculated
 			 */
             calcAxesTick(this);
-
-			/* thickness changes may invalidate the plot */
+            /* thickness changes may invalidate the plot */
             calcAxesThickness(this);
+
+            calcColorbarTicks(this);
+            calcColorbarThickness(this);
+
             /* length constraint changes may invalidate the plot */
             calcLegendSize(this);
 

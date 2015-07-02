@@ -18,3 +18,7 @@ xaxis=axis()
 p.addYAxis(yaxis)
 p.addXAxis(xaxis)
 p.addLayer(layer,xaxis.tickManager.axisTransform, yaxis.tickManager.axisTransform)
+
+colorbar = colorbar(barWidth=10, tickHeight=3)
+p.addColorbar(colorbar)
+colorbar.imageMapping = graph.mapping

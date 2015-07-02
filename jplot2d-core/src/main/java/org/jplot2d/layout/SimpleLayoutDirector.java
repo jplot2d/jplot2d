@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.layout;
 
@@ -90,6 +88,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
             mLeft -= leftAxes.get(0).getDesc();
         }
 
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case LEFT:
+                        mLeft += colorbar.getGap() + colorbar.getSize().getWidth();
+                        break;
+                }
+            }
+        }
+
         LegendEx legend = plot.getLegend();
         if (legend.isVisible() && legend.canContribute()) {
             switch (legend.getPosition()) {
@@ -121,6 +129,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 mRight += am.getAsc() + am.getDesc();
             }
             mRight -= rightAxes.get(0).getAsc();
+        }
+
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case RIGHT:
+                        mRight += colorbar.getGap() + colorbar.getSize().getWidth();
+                        break;
+                }
+            }
         }
 
         LegendEx legend = plot.getLegend();
@@ -156,6 +174,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
             mTop -= topAxes.get(0).getDesc();
         }
 
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case TOP:
+                        mTop += colorbar.getGap() + colorbar.getSize().getHeight();
+                        break;
+                }
+            }
+        }
+
         LegendEx legend = plot.getLegend();
         if (legend.isVisible() && legend.canContribute()) {
             switch (legend.getPosition()) {
@@ -174,10 +202,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 switch (title.getPosition()) {
                     case TOPLEFT:
                     case TOPCENTER:
-                    case TOPRIGHT: {
+                    case TOPRIGHT:
                         mTop += (1 + title.getGapFactor()) * titleHeight;
                         break;
-                    }
                 }
             }
         }
@@ -203,6 +230,16 @@ public class SimpleLayoutDirector implements LayoutDirector {
             mBottom -= bottomAxes.get(0).getAsc();
         }
 
+        for (ColorbarEx colorbar : plot.getColorbars()) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case BOTTOM:
+                        mBottom += colorbar.getGap() + colorbar.getSize().getHeight();
+                        break;
+                }
+            }
+        }
+
         LegendEx legend = plot.getLegend();
         if (legend.isVisible() && legend.canContribute()) {
             switch (legend.getPosition()) {
@@ -221,10 +258,9 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 switch (title.getPosition()) {
                     case BOTTOMLEFT:
                     case BOTTOMCENTER:
-                    case BOTTOMRIGHT: {
+                    case BOTTOMRIGHT:
                         mBottom += (1 + title.getGapFactor()) * titleHeight;
                         break;
-                    }
                 }
             }
         }
@@ -276,9 +312,23 @@ public class SimpleLayoutDirector implements LayoutDirector {
             }
         }
 
-        LegendEx legend = sp.getLegend();
+        // locate colorbars
+        ColorbarEx[] colorbars = sp.getColorbars();
+        for (ColorbarEx colorbar : colorbars) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case LEFT:
+                        colorbar.setLength(contentSize.getHeight());
+                        xloc -= colorbar.getGap() + colorbar.getDesc() + colorbar.getBarWidth();
+                        colorbar.directLocation(xloc, 0);
+                        xloc -= colorbar.getAsc();
+                        break;
+                }
+            }
+        }
 
-		/* locate legend */
+        // locate legend
+        LegendEx legend = sp.getLegend();
         if (legend.isVisible() && legend.canContribute()) {
             switch (legend.getPosition()) {
                 case LEFTTOP:
@@ -327,7 +377,22 @@ public class SimpleLayoutDirector implements LayoutDirector {
             }
         }
 
-		/* locate legend */
+        // locate colorbars
+        ColorbarEx[] colorbars = sp.getColorbars();
+        for (ColorbarEx colorbar : colorbars) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case RIGHT:
+                        colorbar.setLength(contentSize.getHeight());
+                        xloc += colorbar.getGap() + colorbar.getAsc();
+                        colorbar.directLocation(xloc, 0);
+                        xloc += colorbar.getBarWidth() + colorbar.getDesc();
+                        break;
+                }
+            }
+        }
+
+        // locate legend
         LegendEx legend = sp.getLegend();
         if (legend.isVisible() && legend.canContribute()) {
             switch (legend.getPosition()) {
@@ -375,6 +440,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 yloc += am.getDesc();
                 am.setLocation(iabLeft, yloc);
                 yloc += am.getAsc();
+            }
+        }
+
+        // locate colorbar
+        ColorbarEx[] colorbars = sp.getColorbars();
+        for (ColorbarEx colorbar : colorbars) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case TOP:
+                        colorbar.setLength(contentSize.getWidth());
+                        yloc += colorbar.getGap() + colorbar.getDesc();
+                        colorbar.directLocation(0, yloc);
+                        yloc += colorbar.getBarWidth() + colorbar.getAsc();
+                        break;
+                }
             }
         }
 
@@ -427,14 +507,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
                         title.setVAlign(VAlign.BOTTOM);
                         yloc += titleHeight;
                         break;
-                    case TOPRIGHT: {
+                    case TOPRIGHT:
                         yloc += title.getGapFactor() * titleHeight;
                         title.setLocation(contentSize.getWidth(), yloc);
                         title.setHAlign(HAlign.RIGHT);
                         title.setVAlign(VAlign.BOTTOM);
                         yloc += titleHeight;
                         break;
-                    }
                 }
             }
 
@@ -460,6 +539,21 @@ public class SimpleLayoutDirector implements LayoutDirector {
                 yloc -= am.getAsc();
                 am.setLocation(iabLeft, yloc);
                 yloc -= am.getDesc();
+            }
+        }
+
+        // locate colorbar
+        ColorbarEx[] colorbars = sp.getColorbars();
+        for (ColorbarEx colorbar : colorbars) {
+            if (colorbar.isVisible() && colorbar.canContribute()) {
+                switch (colorbar.getPosition()) {
+                    case BOTTOM:
+                        colorbar.setLength(contentSize.getWidth());
+                        yloc -= colorbar.getGap() + colorbar.getAsc() + colorbar.getBarWidth();
+                        colorbar.directLocation(0, yloc);
+                        yloc -= colorbar.getDesc();
+                        break;
+                }
             }
         }
 
@@ -510,14 +604,13 @@ public class SimpleLayoutDirector implements LayoutDirector {
                         title.setVAlign(VAlign.TOP);
                         yloc -= titleHeight;
                         break;
-                    case BOTTOMRIGHT: {
+                    case BOTTOMRIGHT:
                         yloc -= title.getGapFactor() * titleHeight;
                         title.setLocation(contentSize.getWidth(), yloc);
                         title.setHAlign(HAlign.RIGHT);
                         title.setVAlign(VAlign.TOP);
                         yloc -= titleHeight;
                         break;
-                    }
                 }
             }
 

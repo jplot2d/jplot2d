@@ -174,6 +174,28 @@ def rgbimagegraph(*args, **kwargs):
 
     return graph
 
+def colorbar(*args, **kwargs):
+    colorbar = jplot2d_default_element_factory.createColorbar(*args);
+
+    colorbarinfo = InterfaceInfo.loadInterfaceInfo(Colorbar)
+    cbainfo = InterfaceInfo.loadInterfaceInfo(ColorbarAxis)
+    tminfo = InterfaceInfo.loadInterfaceInfo(AxisTickManager)
+    txfinfo = InterfaceInfo.loadInterfaceInfo(AxisTransform)
+    for key in kwargs:
+        if colorbarinfo.isWritableProp(key):
+            jplot2d_set_prop(colorbarinfo, colorbar, key, kwargs[key])
+        elif cbainfo.isWritableProp(key):
+            jplot2d_set_prop(cbainfo, colorbar.innerAxis, key, kwargs[key])
+            jplot2d_set_prop(cbainfo, colorbar.outerAxis, key, kwargs[key])
+        elif tminfo.isWritableProp(key):
+            jplot2d_set_prop(tminfo, colorbar.innerAxis.tickManager, key, kwargs[key])
+        elif txfinfo.isWritableProp(key):
+            jplot2d_set_prop(tminfo, colorbar.axisTransform, key, kwargs[key])
+        else:
+            raise AttributeError, "Colorbar has no attribute " + key
+
+    return colorbar
+
 
 def hlineannotation(y, *args, **kwargs):
     ann = jplot2d_default_element_factory.createHLineAnnotation(y)
