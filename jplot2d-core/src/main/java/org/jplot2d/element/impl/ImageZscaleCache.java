@@ -33,7 +33,7 @@ public class ImageZscaleCache {
      * The max number of significant bits after applying limits. The max number is 16, for unsigned short data buffer.
      */
     private static final int MAX_BITS = 16;
-    private static final WeakHashMap<Key, ValueRef> map = new WeakHashMap<>();
+    private static final WeakHashMap<Key, Object> map = new WeakHashMap<>();
 
     /**
      * Create a cache entry for the given calculation arguments.
@@ -52,11 +52,8 @@ public class ImageZscaleCache {
                                      IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
         Key key = new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
         synchronized (map) {
-            ValueRef vref = map.remove(key);
-            if (vref == null) {
-                vref = new ValueRef();
-            }
-            map.put(key, vref);
+            Object v = map.remove(key);
+            map.put(key, v);
         }
         return key;
     }
@@ -77,44 +74,30 @@ public class ImageZscaleCache {
     public static Object getValue(ImageDataBuffer dbuf, int w, int h, double[] limits,
                                   IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
         Key key = new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
-        ValueRef vref;
         synchronized (map) {
-            vref = map.get(key);
-        }
-        if (vref == null) {
-            return zscaleLimits(key);
-        }
-        //noinspection SynchronizationOnLocalVariableOrMethodParameter
-        synchronized (vref) {
-            if (vref.v != null) {
-                return vref.v;
-            } else {
-                // calculate v and store it
-                vref.v = zscaleLimits(key);
-                return vref.v;
+            Object vref = map.get(key);
+            if (vref == null) {
+                vref = zscaleLimits(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
+                map.put(key, vref);
             }
+            return vref;
         }
     }
 
     /**
      * z-scale the image according settings in the given key.
      *
-     * @param key the image and settings
      * @return the scaled data, in byte[] or short[]
      */
-    private static Object zscaleLimits(Key key) {
+    public static Object zscaleLimits(ImageDataBuffer idb, int w, int h, double[] limits,
+                                      IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
 
-        ImageDataBuffer idb = key.dbuf;
-        int w = key.w;
-        int h = key.h;
-        double[] limits = key.limits;
-
-        int lutInputBits = getILUTInputBits(key.intensityTransform, key.bias, key.gain, key.outputBits);
-        if (key.outputBits <= Byte.SIZE) {
-            byte[] lut = createByteILUT(key.intensityTransform, key.bias, key.gain, lutInputBits, key.outputBits);
+        int lutInputBits = getILUTInputBits(intensityTransform, bias, gain, outputBits);
+        if (outputBits <= Byte.SIZE) {
+            byte[] lut = createByteILUT(intensityTransform, bias, gain, lutInputBits, outputBits);
             return zscaleBytes(idb, 0, 0, w, h, limits, lut, lutInputBits);
         } else {
-            short[] lut = createShortILUT(key.intensityTransform, key.bias, key.gain, lutInputBits, key.outputBits);
+            short[] lut = createShortILUT(intensityTransform, bias, gain, lutInputBits, outputBits);
             return zscaleShorts(idb, 0, 0, w, h, limits, lut, lutInputBits);
         }
 
@@ -353,7 +336,7 @@ public class ImageZscaleCache {
                 for (int c = xoff; c < xoff + w; c++) {
                     double scaled = (idb.getDouble(c, r) - lowCut) * scale;
                     /*
-					 * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
+                     * the scaled value may slightly larger than outputRange or slightly small than 0. the ilutIndex
 					 * range is [0, outputRange]
 					 */
                     int ilutIndex = (int) scaled;
@@ -391,7 +374,7 @@ public class ImageZscaleCache {
         }
 
         public boolean equals(Object obj) {
-            if (obj instanceof ImageZscaleCache) {
+            if (obj == null || obj.getClass() != getClass()) {
                 return false;
             }
             Key key = (Key) obj;
@@ -402,13 +385,13 @@ public class ImageZscaleCache {
         }
 
         public int hashCode() {
-            /* we only use dbuf to produce hash code, since there is rare conflict in the cache map */
-            return dbuf.hashCode();
-        }
-    }
+            long bits = java.lang.Double.doubleToLongBits(limits[0]);
+            bits += java.lang.Double.doubleToLongBits(limits[1]) * 31;
+            bits += java.lang.Double.doubleToLongBits(bias) * 41;
+            bits += java.lang.Double.doubleToLongBits(gain) * 47;
 
-    private static class ValueRef {
-        private Object v;
+            return dbuf.hashCode() ^ (((int) bits) ^ ((int) (bits >> 32)));
+        }
     }
 
 }

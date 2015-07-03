@@ -120,9 +120,9 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         // create raster
         int lutOutputBits = rasterKey.outputBits;
         WritableRaster raster;
-        Object result = ImageZscaleCache.getValue(idb, width, height, limits,
+        Object result = ImageZscaleCache.zscaleLimits(idb, width, height, limits,
                 rasterKey.intensityTransform, rasterKey.bias, rasterKey.gain, lutOutputBits);
-        if (lutOutputBits <= 8) {
+        if (lutOutputBits <= Byte.SIZE) {
             // create a SampleModel for byte data
             SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
             // and a DataBuffer with the image data
@@ -599,6 +599,9 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
 
         public int hashCode() {
             long bits = java.lang.Double.doubleToLongBits(w);
+            if (inverted) {
+                bits = ~bits;
+            }
             bits += java.lang.Double.doubleToLongBits(h) * 31;
             bits += java.lang.Double.doubleToLongBits(limits[0]) * 37;
             bits += java.lang.Double.doubleToLongBits(limits[1]) * 41;

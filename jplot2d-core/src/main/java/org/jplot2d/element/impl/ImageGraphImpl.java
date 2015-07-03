@@ -151,8 +151,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         // find a proper region to process
         int width = data.getWidth();
         int height = data.getHeight();
-        double xval = data.getXRange().getMin();
-        double yval = data.getYRange().getMin();
 
         ImageDataBuffer idb = data.getDataBuffer();
 
@@ -160,18 +158,16 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         WritableRaster raster;
         Object result = ImageZscaleCache.getValue(idb, width, height, limits, mapping.getIntensityTransform(),
                 mapping.getBias(), mapping.getGain(), lutOutputBits);
-        if (lutOutputBits <= 8) {
+        if (lutOutputBits <= Byte.SIZE) {
             // create a SampleModel for byte data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width,
-                    new int[]{0});
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
             // and a DataBuffer with the image data
             DataBufferByte dbuffer = new DataBufferByte((byte[]) result, width * height);
             // create a raster
             raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
         } else {
             // create a SampleModel for short data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width,
-                    new int[]{0});
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
             // and a DataBuffer with the image data
             DataBufferUShort dbuffer = new DataBufferUShort((short[]) result, width * height);
             // create a raster
@@ -183,6 +179,8 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
         NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
         Dimension2D paperSize = getParent().getSize();
+        double xval = data.getXRange().getMin();
+        double yval = data.getYRange().getMin();
         double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
         double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
         double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
