@@ -21,6 +21,8 @@ import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.element.ColorbarPosition;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.element.Plot;
+import org.jplot2d.image.ColorMap;
+import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
 
@@ -31,13 +33,16 @@ import java.awt.geom.*;
 import java.awt.image.*;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * The colorbar contains 2 axis. The origin point is bottom-left corner of the bar (not include axis ticks and title).
  *
  * @author Jingjing Li
  */
-public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
+public class ColorbarImpl extends ContainerImpl implements ColorbarEx, IntermediateCacheEx {
+
+    private static final WeakHashMap<Object, Object> cache = new WeakHashMap<>();
 
     /**
      * the default width, 1.0 pt.
@@ -86,6 +91,54 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         this.innerAxis.setParent(this);
         this.outerAxis.setParent(this);
         setSelectable(true);
+    }
+
+    private static WritableRaster createRaster(RasterKey rasterKey) {
+        int width = rasterKey.w;
+        int height = rasterKey.h;
+        double[] limits = rasterKey.limits;
+
+        // create ImageDataBuffer
+        double[] line = new double[width];
+        double step = (limits[1] - limits[0]) / width;
+        if (rasterKey.inverted) {
+            int sc = width - 1;
+            for (int i = 0; i < width; i++, sc--) {
+                line[i] = step * sc;
+            }
+        } else {
+            for (int i = 0; i < width; i++) {
+                line[i] = step * i;
+            }
+        }
+        double[][] double2d = new double[height][width];
+        for (int r = 0; r < height; r++) {
+            double2d[r] = line;
+        }
+        ImageDataBuffer idb = new DoubleDataBuffer.Array2D(double2d);
+
+        // create raster
+        int lutOutputBits = rasterKey.outputBits;
+        WritableRaster raster;
+        Object result = ImageZscaleCache.getValue(idb, width, height, limits,
+                rasterKey.intensityTransform, rasterKey.bias, rasterKey.gain, lutOutputBits);
+        if (lutOutputBits <= 8) {
+            // create a SampleModel for byte data
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
+            // and a DataBuffer with the image data
+            DataBufferByte dbuffer = new DataBufferByte((byte[]) result, width * height);
+            // create a raster
+            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+        } else {
+            // create a SampleModel for short data
+            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
+            // and a DataBuffer with the image data
+            DataBufferUShort dbuffer = new DataBufferUShort((short[]) result, width * height);
+            // create a raster
+            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+        }
+
+        return raster;
     }
 
     @Nonnull
@@ -237,7 +290,6 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         }
     }
 
-
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         invalidatePlot();
@@ -376,6 +428,28 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         outerAxis.invalidateThickness();
     }
 
+    @Nullable
+    public Object createCacheHolder() {
+        if (mapping == null) {
+            return null;
+        }
+
+        PaperTransform pxf = getPaperTransform();
+        int width = (int) (pxf.getScale() * length);
+        int height = (int) (pxf.getScale() * barWidth);
+
+        RasterKey rasterKey = new RasterKey(axisTransform.isInverted(), width, height, mapping);
+        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        synchronized (cache) {
+            Object raster = cache.remove(rasterKey);
+            Object image = cache.remove(imageKey);
+            cache.put(rasterKey, raster);
+            cache.put(imageKey, image);
+        }
+
+        return new Object[]{rasterKey, imageKey};
+    }
+
     @SuppressWarnings("SuspiciousNameCombination")
     public void draw(Graphics2D graphics) {
 
@@ -420,54 +494,32 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         int width = (int) (pxf.getScale() * length);
         int height = (int) (pxf.getScale() * barWidth);
 
-        // create ImageDataBuffer
-        // TODO: cache
-        double[] line = new double[width];
-        double step = (limits[1] - limits[0]) / width;
-        if (axisTransform.isInverted()) {
-            int sc = width - 1;
-            for (int i = 0; i < width; i++, sc--) {
-                line[i] = step * sc;
-            }
-        } else {
-            for (int i = 0; i < width; i++) {
-                line[i] = step * i;
-            }
-        }
-        double[][] double2d = new double[height][width];
-        for (int r = 0; r < height; r++) {
-            double2d[r] = line;
-        }
-        ImageDataBuffer idb = new DoubleDataBuffer.Array2D(double2d);
-
         // create raster
-        int lutOutputBits = mapping.getILUTOutputBits();
+        RasterKey rasterKey = new RasterKey(axisTransform.isInverted(), width, height, mapping);
         WritableRaster raster;
-        Object result = ImageZscaleCache.getValue(idb, width, height, limits,
-                mapping.getIntensityTransform(), mapping.getBias(), mapping.getGain(), lutOutputBits);
-        if (lutOutputBits <= 8) {
-            // create a SampleModel for byte data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferByte dbuffer = new DataBufferByte((byte[]) result, width * height);
-            // create a raster
-            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
-        } else {
-            // create a SampleModel for short data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferUShort dbuffer = new DataBufferUShort((short[]) result, width * height);
-            // create a raster
-            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+        synchronized (cache) {
+            raster = (WritableRaster) cache.get(rasterKey);
+            if (cache.get(rasterKey) == null) {
+                raster = createRaster(rasterKey);
+                cache.put(rasterKey, raster);
+            }
         }
 
         // apply pseudo-color mapping
-        BufferedImage image = mapping.colorImage(raster);
+        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        BufferedImage image;
+        synchronized (cache) {
+            image = (BufferedImage) cache.get(imageKey);
+            if (cache.get(imageKey) == null) {
+                image = mapping.colorImage(raster);
+                cache.put(imageKey, image);
+            }
+        }
 
         // draw the image
         Graphics2D g = (Graphics2D) graphics.create();
-        //Shape clip = getPaperTransform().getPtoD(getBounds());
-        //g.setClip(clip);
+        // Shape clip = getPaperTransform().getPtoD(getBounds());
+        // g.setClip(clip);
 
         double xorig = pxf.getXPtoD(0);
         double yorig = pxf.getYPtoD(0);
@@ -515,5 +567,72 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx {
         this.axisLineWidth = colorbar.axisLineWidth;
     }
 
+    public class RasterKey {
+        private final boolean inverted;
+        private final int w, h;
+        private final double[] limits;
+        private final IntensityTransform intensityTransform;
+        private final double bias, gain;
+        private final int outputBits;
+
+        private RasterKey(boolean inverted, int w, int h, @Nonnull ImageMappingEx mapping) {
+            this.inverted = inverted;
+            this.w = w;
+            this.h = h;
+            this.limits = mapping.getLimits();
+            this.intensityTransform = mapping.getIntensityTransform();
+            this.bias = mapping.getBias();
+            this.gain = mapping.getGain();
+            this.outputBits = mapping.getILUTOutputBits();
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            RasterKey key = (RasterKey) obj;
+            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits[0] == limits[0] && key.limits[1] == limits[1]);
+            return key.inverted == inverted && key.w == w && key.h == h && limitsMatch
+                    && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
+                    && key.outputBits == outputBits;
+        }
+
+        public int hashCode() {
+            long bits = java.lang.Double.doubleToLongBits(w);
+            bits += java.lang.Double.doubleToLongBits(h) * 31;
+            bits += java.lang.Double.doubleToLongBits(limits[0]) * 37;
+            bits += java.lang.Double.doubleToLongBits(limits[1]) * 41;
+            bits += java.lang.Double.doubleToLongBits(bias) * 43;
+            bits += java.lang.Double.doubleToLongBits(gain) * 47;
+            return (((int) bits) ^ ((int) (bits >> 32)));
+        }
+    }
+
+
+    public class ColoredImageKey {
+        private final RasterKey rasterKey;
+        private final ColorMap colorMap;
+
+        private ColoredImageKey(@Nonnull RasterKey rasterKey, @Nullable ColorMap colorMap) {
+            this.rasterKey = rasterKey;
+            this.colorMap = colorMap;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            ColoredImageKey key = (ColoredImageKey) obj;
+            return key.colorMap == colorMap && key.rasterKey.equals(rasterKey);
+        }
+
+        public int hashCode() {
+            if (colorMap == null) {
+                return ~rasterKey.hashCode();
+            } else {
+                return colorMap.hashCode() ^ rasterKey.hashCode();
+            }
+        }
+    }
 
 }
