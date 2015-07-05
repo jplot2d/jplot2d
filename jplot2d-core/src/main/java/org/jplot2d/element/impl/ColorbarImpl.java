@@ -447,7 +447,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
             cache.put(imageKey, image);
         }
 
-        return new Object[]{rasterKey, imageKey};
+        return imageKey;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -567,7 +567,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         this.axisLineWidth = colorbar.axisLineWidth;
     }
 
-    public class RasterKey {
+    protected class RasterKey {
         private final boolean inverted;
         private final int w, h;
         private final double[] limits;
@@ -612,7 +612,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
     }
 
 
-    public class ColoredImageKey {
+    protected class ColoredImageKey {
         private final RasterKey rasterKey;
         private final ColorMap colorMap;
 

@@ -31,8 +31,11 @@ import java.awt.geom.Dimension2D;
 import java.awt.image.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, IntermediateCacheEx {
+
+    private static final WeakHashMap<Object, Object> cache = new WeakHashMap<>();
 
     @Nullable
     private RGBImageMappingEx mapping;
@@ -42,6 +45,25 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 
     public RGBImageGraphImpl() {
         super();
+    }
+
+    private static BufferedImage createImage(ImageKey key) {
+        int width = key.redKey.w;
+        int height = key.redKey.h;
+        byte[][] result = new byte[3][];
+        result[0] = (byte[]) ImageZscaleCache.getValue(key.redKey);
+        result[1] = (byte[]) ImageZscaleCache.getValue(key.greenKey);
+        result[2] = (byte[]) ImageZscaleCache.getValue(key.blueKey);
+
+        SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_BYTE, width, height, 3);
+        DataBufferByte dbuffer = new DataBufferByte(result, width * height);
+        WritableRaster raster = Raster.createWritableRaster(sm, dbuffer, null);
+
+        // assembly a BufferedImage
+        int[] bitsArray = new int[]{8, 8, 8};
+        ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), bitsArray, false, true,
+                Transparency.OPAQUE, raster.getSampleModel().getDataType());
+        return new BufferedImage(destCM, raster, false, null);
     }
 
     public void setParent(ElementEx parent) {
@@ -101,22 +123,20 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
     }
 
     public Object createCacheHolder() {
-        if (data == null || mapping == null) {
+        ImageKey imageKey = createImageKey();
+        if (imageKey == null) {
             return null;
         }
 
-        ImageZscaleCache.Key[] cacheHolder = new ImageZscaleCache.Key[3];
-        ImageBandTransformEx redTrans = mapping.getRedTransform();
-        ImageBandTransformEx greenTrans = mapping.getGreenTransform();
-        ImageBandTransformEx blueTrans = mapping.getBlueTransform();
-        cacheHolder[0] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
-                redTrans.getLimits(), redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
-        cacheHolder[1] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
-                greenTrans.getLimits(), greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
-        cacheHolder[2] = ImageZscaleCache.createCacheFor(data.getDataBuffer()[0], data.getWidth(), data.getHeight(),
-                blueTrans.getLimits(), blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
+        ImageZscaleCache.cacheFor(imageKey.redKey);
+        ImageZscaleCache.cacheFor(imageKey.greenKey);
+        ImageZscaleCache.cacheFor(imageKey.blueKey);
 
-        return cacheHolder;
+        synchronized (cache) {
+            Object image = cache.remove(imageKey);
+            cache.put(imageKey, image);
+        }
+        return imageKey;
     }
 
     @Override
@@ -151,46 +171,22 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
             return;
         }
 
-        ImageBandTransformEx redTrans = mapping.getRedTransform();
-        ImageBandTransformEx greenTrans = mapping.getGreenTransform();
-        ImageBandTransformEx blueTrans = mapping.getBlueTransform();
-        double[] redLimits = mapping.getRedTransform().getLimits();
-        double[] greenLimits = mapping.getGreenTransform().getLimits();
-        double[] blueLimits = mapping.getBlueTransform().getLimits();
-
-        // limits is null means there is no valid data
-        if (redLimits == null && greenLimits == null && blueLimits == null) {
-            return;
+        // apply limits to generate a raster
+        ImageKey imageKey = createImageKey();
+        BufferedImage image;
+        synchronized (cache) {
+            image = (BufferedImage) cache.get(imageKey);
+            if (cache.get(imageKey) == null) {
+                image = createImage(imageKey);
+                cache.put(imageKey, image);
+            } else {
+                System.out.print(".");
+            }
         }
 
-        // find a proper region to process
-        int width = data.getWidth();
-        int height = data.getHeight();
+        // AffineTransform to zoom and vertical flip image
         double xval = data.getXRange().getMin();
         double yval = data.getYRange().getMin();
-
-        // apply limits to generate a raster
-        ImageDataBuffer[] idbs = data.getDataBuffer();
-        int bands = idbs.length;
-        byte[][] result = new byte[bands][];
-        result[0] = (byte[]) ImageZscaleCache.getValue(idbs[0], width, height, redLimits,
-                redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
-        result[1] = (byte[]) ImageZscaleCache.getValue(idbs[1], width, height, greenLimits,
-                greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
-        result[2] = (byte[]) ImageZscaleCache.getValue(idbs[2], width, height, blueLimits,
-                blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
-
-        SampleModel sm = new BandedSampleModel(DataBuffer.TYPE_BYTE, width, height, bands);
-        DataBufferByte dbuffer = new DataBufferByte(result, width * height);
-        WritableRaster raster = Raster.createWritableRaster(sm, dbuffer, null);
-
-        // assembly a BufferedImage
-        int[] bitsArray = new int[]{8, 8, 8};
-        ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), bitsArray, false, true,
-                Transparency.OPAQUE, raster.getSampleModel().getDataType());
-        BufferedImage image = new BufferedImage(destCM, raster, false, null);
-
-        // AffineTransform to zoom and vertical flip image
         PaperTransform pxf = getPaperTransform();
         NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
         NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
@@ -216,6 +212,60 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         g.drawRenderedImage(image, at);
 
         g.dispose();
+    }
+
+    @Nullable
+    private ImageKey createImageKey() {
+        if (data == null || mapping == null) {
+            return null;
+        }
+
+        ImageBandTransformEx redTrans = mapping.getRedTransform();
+        ImageBandTransformEx greenTrans = mapping.getGreenTransform();
+        ImageBandTransformEx blueTrans = mapping.getBlueTransform();
+        double[] redLimits = mapping.getRedTransform().getLimits();
+        double[] greenLimits = mapping.getGreenTransform().getLimits();
+        double[] blueLimits = mapping.getBlueTransform().getLimits();
+
+        // limits is null means there is no valid data
+        if (redLimits == null && greenLimits == null && blueLimits == null) {
+            return null;
+        }
+
+        int width = data.getWidth();
+        int height = data.getHeight();
+
+        ImageDataBuffer[] idbs = data.getDataBuffer();
+        ImageZscaleCache.Key redKey = ImageZscaleCache.createKey(idbs[0], width, height, redLimits,
+                redTrans.getIntensityTransform(), redTrans.getBias(), redTrans.getGain(), 8);
+        ImageZscaleCache.Key greenKey = ImageZscaleCache.createKey(idbs[1], width, height, greenLimits,
+                greenTrans.getIntensityTransform(), greenTrans.getBias(), greenTrans.getGain(), 8);
+        ImageZscaleCache.Key blueKey = ImageZscaleCache.createKey(idbs[2], width, height, blueLimits,
+                blueTrans.getIntensityTransform(), blueTrans.getBias(), blueTrans.getGain(), 8);
+
+        return new ImageKey(redKey, greenKey, blueKey);
+    }
+
+    protected class ImageKey {
+        private final ImageZscaleCache.Key redKey, greenKey, blueKey;
+
+        private ImageKey(ImageZscaleCache.Key redKey, ImageZscaleCache.Key greenKey, ImageZscaleCache.Key blueKey) {
+            this.redKey = redKey;
+            this.greenKey = greenKey;
+            this.blueKey = blueKey;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            ImageKey key = (ImageKey) obj;
+            return key.redKey.equals(redKey) && key.greenKey.equals(greenKey) && key.blueKey.equals(blueKey);
+        }
+
+        public int hashCode() {
+            return redKey.hashCode() ^ greenKey.hashCode() ^ blueKey.hashCode();
+        }
     }
 
 }

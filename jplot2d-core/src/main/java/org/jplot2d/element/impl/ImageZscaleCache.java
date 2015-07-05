@@ -36,7 +36,7 @@ public class ImageZscaleCache {
     private static final WeakHashMap<Key, Object> map = new WeakHashMap<>();
 
     /**
-     * Create a cache entry for the given calculation arguments.
+     * Create a key for the given calculation arguments.
      *
      * @param dbuf               an ImageDataBuffer
      * @param w                  width
@@ -48,36 +48,29 @@ public class ImageZscaleCache {
      * @param outputBits         the bits of output values
      * @return the key for the given calculation arguments
      */
-    public static Key createCacheFor(ImageDataBuffer dbuf, int w, int h, double[] limits,
-                                     IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
-        Key key = new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
+    public static Key createKey(ImageDataBuffer dbuf, int w, int h, double[] limits,
+                                IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
+        return new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
+    }
+
+    /**
+     * Create a cache entry for the given calculation key.
+     */
+    public static void cacheFor(Key key) {
         synchronized (map) {
             Object v = map.remove(key);
             map.put(key, v);
         }
-        return key;
     }
 
     /**
-     * Returns the result for the given calculation arguments.
-     *
-     * @param dbuf               an ImageDataBuffer
-     * @param w                  width
-     * @param h                  height
-     * @param limits             the low/high cut values
-     * @param intensityTransform IntensityTransform
-     * @param bias               the bias value
-     * @param gain               the gain value
-     * @param outputBits         the bits of output values
-     * @return the calculation result, in byte[] or short[]
+     * Returns the result for the given key.
      */
-    public static Object getValue(ImageDataBuffer dbuf, int w, int h, double[] limits,
-                                  IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
-        Key key = new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
+    public static Object getValue(Key key) {
         synchronized (map) {
             Object vref = map.get(key);
             if (vref == null) {
-                vref = zscaleLimits(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
+                vref = zscaleLimits(key.dbuf, key.w, key.h, key.limits, key.intensityTransform, key.bias, key.gain, key.outputBits);
                 map.put(key, vref);
             }
             return vref;
@@ -354,12 +347,12 @@ public class ImageZscaleCache {
     }
 
     public static class Key {
-        private final ImageDataBuffer dbuf;
-        private final int w, h;
+        protected final ImageDataBuffer dbuf;
+        protected final int w, h;
+        protected final int outputBits;
         private final double[] limits;
         private final IntensityTransform intensityTransform;
         private final double bias, gain;
-        private final int outputBits;
 
         private Key(ImageDataBuffer dbuf, int w, int h, double[] limits, IntensityTransform intensityTransform,
                     double bias, double gain, int outputBits) {

@@ -29,9 +29,11 @@ import java.awt.image.LookupTable;
 
 /**
  * @author Jingjing Li
- *
  */
 public class ImageFloat2dDemo {
+
+    private static int row = 4000;
+    private static int col = 8000;
 
     public static void main(String[] args) {
         plot(0.5, null);
@@ -55,10 +57,10 @@ public class ImageFloat2dDemo {
         plot.addYAxis(yaxis);
 
         // create a float2d array
-        float[][] f2d = new float[256][1024];
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 1024; j++) {
-                f2d[i][j] = j%(i+1) * 256.0f / (i+1);
+        float[][] f2d = new float[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                f2d[i][j] = (float) (j % (i + 1)) * row / (i + 1);
             }
         }
 
