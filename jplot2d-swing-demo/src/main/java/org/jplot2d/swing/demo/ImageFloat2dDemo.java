@@ -58,7 +58,7 @@ public class ImageFloat2dDemo {
         float[][] f2d = new float[256][1024];
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 1024; j++) {
-                f2d[i][j] = ((i + j) & 0xff) / 1024.0f;
+                f2d[i][j] = j%(i+1) * 256.0f / (i+1);
             }
         }
 

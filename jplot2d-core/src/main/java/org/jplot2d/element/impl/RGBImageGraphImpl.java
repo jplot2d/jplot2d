@@ -206,7 +206,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         Shape clip = getPaperTransform().getPtoD(getBounds());
         g.setClip(clip);
         Map<Object, Object> hints = new HashMap<>();
-        if (xscale > 1 || yscale > 1) {
+        if (xscale > 1 || yscale > 1 || xscale < -1 || yscale < -1) {
             hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         } else {
             hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);

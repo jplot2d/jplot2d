@@ -157,4 +157,20 @@ public class ImageCoordinateReference {
         this.yPixelSize = yPixelSize;
     }
 
+    public double xPixelToValue(double pixel) {
+        return xRefVal + (pixel - xRefPixel) * xPixelSize;
+    }
+
+    public double xValueToPixel(double val) {
+        return (val - xRefVal) / xPixelSize + xRefPixel;
+    }
+
+    public double yPixelToValue(double pixel) {
+        return yRefVal + (pixel - yRefPixel) * yPixelSize;
+    }
+
+    public double yValueToPixel(double val) {
+        return (val - yRefVal) / yPixelSize + yRefPixel;
+    }
+
 }

@@ -16,11 +16,13 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.data.ImageCoordinateReference;
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.data.SingleBandImageData;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -148,16 +150,17 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             return;
         }
 
-        // find a proper region to process
+        // create a z-scaled raster
         int width = data.getWidth();
         int height = data.getHeight();
 
         ImageDataBuffer idb = data.getDataBuffer();
 
         int lutOutputBits = mapping.getILUTOutputBits();
-        WritableRaster raster;
         Object result = ImageZscaleCache.getValue(idb, width, height, limits, mapping.getIntensityTransform(),
                 mapping.getBias(), mapping.getGain(), lutOutputBits);
+
+        WritableRaster raster;
         if (lutOutputBits <= Byte.SIZE) {
             // create a SampleModel for byte data
             SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
@@ -174,17 +177,44 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
         }
 
-        // zoom raster to device size
-        PaperTransform pxf = getPaperTransform();
+        // create a child raster in viewport and zoom to device size
         NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
         NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
+
+        Range xRange = xntrans.getValueRange();
+        Range yRange = yntrans.getValueRange();
+        ImageCoordinateReference cr = data.getCoordinateReference();
+        int portX0 = (int) Math.round(cr.xValueToPixel(xRange.getMin()));
+        if (portX0 < 0) {
+            portX0 = 0;
+        }
+        int portX1 = (int) Math.round(cr.xValueToPixel(xRange.getMax()));
+        if (portX1 >= width) {
+            portX1 = width - 1;
+        }
+        int portY0 = (int) Math.round(cr.yValueToPixel(yRange.getMin()));
+        if (portY0 < 0) {
+            portY0 = 0;
+        }
+        int portY1 = (int) Math.round(cr.yValueToPixel(yRange.getMax()));
+        if (portY1 >= height) {
+            portY1 = height - 1;
+        }
+        // JDK bug: AffineTransformOp can't handle child raster contains x-offset and bottom-right pixel
+        if (portX0 > 0 && portX1 == width - 1 && portY1 == height - 1) {
+            portX0 = 0;
+        }
+        int portWidth = portX1 - portX0 + 1;
+        int portHeight = portY1 - portY0 + 1;
+
+        // AffineTransformOp can't handle child with parentX > 0
+        raster = raster.createWritableChild(portX0, portY0, portWidth, portHeight, 0, 0, null);
+
+        // zoom raster to device size
+        PaperTransform pxf = getPaperTransform();
         Dimension2D paperSize = getParent().getSize();
-        double xval = data.getXRange().getMin();
-        double yval = data.getYRange().getMin();
-        double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
-        double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
-        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
-        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getCoordinateReference().getYPixelSize();
+        double xscale = pxf.getScale() / Math.abs(xntrans.getScale()) * paperSize.getWidth() * cr.getXPixelSize();
+        double yscale = pxf.getScale() / Math.abs(yntrans.getScale()) * paperSize.getHeight() * cr.getYPixelSize();
         AffineTransform scaleAT = AffineTransform.getScaleInstance(xscale, yscale);
         int op;
         if (xscale > 1 || yscale > 1) {
@@ -199,11 +229,20 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         BufferedImage image = mapping.colorImage(raster);
 
         // draw the image
+        double xedge = cr.xPixelToValue(portX0 - 0.5);
+        double yedge = cr.yPixelToValue(portY0 - 0.5);
+        double xOrgVal = xedge + cr.getXPixelSize() / xscale / 2;
+        double yOrgVal = yedge + cr.getYPixelSize() / yscale / 2;
+        double xorig = pxf.getXPtoD(xntrans.convToNR(xOrgVal) * paperSize.getWidth());
+        double yorig = pxf.getYPtoD(yntrans.convToNR(yOrgVal) * paperSize.getHeight());
+
         Graphics2D g = (Graphics2D) graphics.create();
         Shape clip = getPaperTransform().getPtoD(getBounds());
         g.setClip(clip);
 
-        AffineTransform at = new AffineTransform(1, 0.0, 0.0, -1, xorig, yorig);
+        double xs = Math.signum(xntrans.getScale());
+        double ys = Math.signum(yntrans.getScale());
+        AffineTransform at = new AffineTransform(xs, 0.0, 0.0, -ys, xorig, yorig);
         g.drawRenderedImage(image, at);
 
         g.dispose();
