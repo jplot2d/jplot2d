@@ -284,18 +284,21 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         Range xRange = xntrans.getValueRange();
         Range yRange = yntrans.getValueRange();
         int portX0 = (int) Math.round(cr.xValueToPixel(xRange.getMin()));
+        int portX1 = (int) Math.round(cr.xValueToPixel(xRange.getMax()));
+        int portY0 = (int) Math.round(cr.yValueToPixel(yRange.getMin()));
+        int portY1 = (int) Math.round(cr.yValueToPixel(yRange.getMax()));
+        if (portX0 >= width || portX1 < 0 || portY0 >= height || portY1 < 0) {
+            return null;
+        }
         if (portX0 < 0) {
             portX0 = 0;
         }
-        int portX1 = (int) Math.round(cr.xValueToPixel(xRange.getMax()));
         if (portX1 >= width) {
             portX1 = width - 1;
         }
-        int portY0 = (int) Math.round(cr.yValueToPixel(yRange.getMin()));
         if (portY0 < 0) {
             portY0 = 0;
         }
-        int portY1 = (int) Math.round(cr.yValueToPixel(yRange.getMax()));
         if (portY1 >= height) {
             portY1 = height - 1;
         }
