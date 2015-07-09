@@ -101,6 +101,8 @@ public class PlotTreeModel implements TreeModel {
                 return colorbar.getInnerAxis();
             } else if (index == 1) {
                 return colorbar.getOuterAxis();
+            } else if (index == 2) {
+                return colorbar.getImageMapping();
             }
         } else if (parent instanceof Axis) {
             // title + tick manager
@@ -200,8 +202,8 @@ public class PlotTreeModel implements TreeModel {
             int subplotNum = plot.getSubplots().length;
             return 2 + titleNum + colorbarNum + xaxisNum + yaxisNum + layerNum + subplotNum;
         } else if (parent instanceof Colorbar) {
-            // lowerAxis + upperAxis
-            return 2;
+            // lowerAxis + upperAxis + imageMapping
+            return 3;
         } else if (parent instanceof Axis) {
             // title + tick manager
             if (((Axis) parent).getTickManager() == null) {
@@ -327,6 +329,8 @@ public class PlotTreeModel implements TreeModel {
                 return 0;
             } else if (child == colorbar.getOuterAxis()) {
                 return 1;
+            } else if (child == colorbar.getImageMapping()) {
+                return 2;
             }
         } else if (parent instanceof Axis) {
             Axis axis = (Axis) parent;
