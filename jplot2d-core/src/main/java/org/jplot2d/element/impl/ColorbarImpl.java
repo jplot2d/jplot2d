@@ -25,6 +25,7 @@ import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.transform.PaperTransform;
 import org.jplot2d.util.DoubleDimension2D;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,11 +97,11 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
     private static WritableRaster createRaster(RasterKey rasterKey) {
         int width = rasterKey.w;
         int height = rasterKey.h;
-        double[] limits = rasterKey.limits;
+        Range limits = rasterKey.limits;
 
         // create ImageDataBuffer
         double[] line = new double[width];
-        double step = (limits[1] - limits[0]) / width;
+        double step = limits.getSpan() / width;
         if (rasterKey.inverted) {
             int sc = width - 1;
             for (int i = 0; i < width; i++, sc--) {
@@ -482,7 +483,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
             return;
         }
 
-        double[] limits = mapping.getLimits();
+        Range limits = mapping.getLimits();
 
         // limits is null means there is no valid data
         if (limits == null) {
@@ -570,7 +571,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
     protected class RasterKey {
         private final boolean inverted;
         private final int w, h;
-        private final double[] limits;
+        private final Range limits;
         private final IntensityTransform intensityTransform;
         private final double bias, gain;
         private final int outputBits;
@@ -591,7 +592,7 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
                 return false;
             }
             RasterKey key = (RasterKey) obj;
-            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits[0] == limits[0] && key.limits[1] == limits[1]);
+            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits.equals(limits));
             return key.inverted == inverted && key.w == w && key.h == h && limitsMatch
                     && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
                     && key.outputBits == outputBits;
@@ -603,8 +604,10 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
                 bits = ~bits;
             }
             bits += java.lang.Double.doubleToLongBits(h) * 31;
-            bits += java.lang.Double.doubleToLongBits(limits[0]) * 37;
-            bits += java.lang.Double.doubleToLongBits(limits[1]) * 41;
+            if (limits != null) {
+                bits += java.lang.Double.doubleToLongBits(limits.getStart()) * 37;
+                bits += java.lang.Double.doubleToLongBits(limits.getEnd()) * 41;
+            }
             bits += java.lang.Double.doubleToLongBits(bias) * 43;
             bits += java.lang.Double.doubleToLongBits(gain) * 47;
             return (((int) bits) ^ ((int) (bits >> 32)));

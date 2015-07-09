@@ -21,6 +21,7 @@ import org.jplot2d.data.MultiBandImageData;
 import org.jplot2d.element.RGBImageMapping;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -223,9 +224,9 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         ImageBandTransformEx redTrans = mapping.getRedTransform();
         ImageBandTransformEx greenTrans = mapping.getGreenTransform();
         ImageBandTransformEx blueTrans = mapping.getBlueTransform();
-        double[] redLimits = mapping.getRedTransform().getLimits();
-        double[] greenLimits = mapping.getGreenTransform().getLimits();
-        double[] blueLimits = mapping.getBlueTransform().getLimits();
+        Range redLimits = mapping.getRedTransform().getLimits();
+        Range greenLimits = mapping.getGreenTransform().getLimits();
+        Range blueLimits = mapping.getBlueTransform().getLimits();
 
         // limits is null means there is no valid data
         if (redLimits == null && greenLimits == null && blueLimits == null) {

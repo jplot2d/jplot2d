@@ -23,6 +23,7 @@ import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
 import org.jplot2d.notice.Notice;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -187,8 +188,12 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
 
     @Override
     @Nullable
-    public double[] getLimits() {
-        return limits;
+    public Range getLimits() {
+        if (limits == null) {
+            return null;
+        } else {
+            return new Range.Double(limits[0], limits[1]);
+        }
     }
 
     @Override

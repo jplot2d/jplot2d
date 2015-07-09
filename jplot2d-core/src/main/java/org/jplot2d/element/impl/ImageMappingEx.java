@@ -17,6 +17,7 @@
 package org.jplot2d.element.impl;
 
 import org.jplot2d.element.ImageMapping;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public interface ImageMappingEx extends ImageMapping, ElementEx, Joinable {
     void calcLimits();
 
     @Nullable
-    double[] getLimits();
+    Range getLimits();
 
     /**
      * Returns the number of significant bits that the ILUT output range.

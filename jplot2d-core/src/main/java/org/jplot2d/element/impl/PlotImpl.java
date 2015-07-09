@@ -304,10 +304,9 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     private static void collectColorbarTickManagers(PlotEx plot, Set<AxisTickManagerEx> algs) {
         for (ColorbarEx colorbar : plot.getColorbars()) {
             if (colorbar.getImageMapping() != null) {
-                double[] limits = colorbar.getImageMapping().getLimits();
+                Range limits = colorbar.getImageMapping().getLimits();
                 if (limits != null) {
-                    Range range = new Range.Double(limits[0], limits[1]);
-                    colorbar.getAxisTransform().setRange(range);
+                    colorbar.getAxisTransform().setRange(limits);
                 }
             }
             if (colorbar.isVisible() && colorbar.canContribute()) {

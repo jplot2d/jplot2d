@@ -21,10 +21,11 @@ import org.jplot2d.element.RGBImageMapping;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Dimension;
+import java.awt.*;
 import java.lang.reflect.Method;
 
 public class ImageBandTransformImpl extends ElementImpl implements ImageBandTransformEx {
@@ -157,8 +158,12 @@ public class ImageBandTransformImpl extends ElementImpl implements ImageBandTran
     }
 
     @Nullable
-    public double[] getLimits() {
-        return limits;
+    public Range getLimits() {
+        if (limits == null) {
+            return null;
+        } else {
+            return new Range.Double(limits[0], limits[1]);
+        }
     }
 
 }

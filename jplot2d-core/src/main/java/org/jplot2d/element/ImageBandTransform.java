@@ -23,6 +23,7 @@ import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,11 +47,21 @@ public interface ImageBandTransform extends Element {
     RGBImageMapping getParent();
 
     /**
+     * Return the cut limits calculated by LimitsAlgorithm.
+     * Can be <code>null</code> if all images doesn't contain valid data.
+     *
+     * @return the cut limits
+     */
+    @Property(order = 0)
+    @Nullable
+    Range getLimits();
+
+    /**
      * Returns the LimitsAlgorithm.
      *
      * @return the LimitsAlgorithm
      */
-    @Property(order = 0)
+    @Property(order = 1)
     @Nonnull
     LimitsAlgorithm getLimitsAlgorithm();
 
@@ -66,7 +77,7 @@ public interface ImageBandTransform extends Element {
      *
      * @return the IntensityTransform
      */
-    @Property(order = 1)
+    @Property(order = 2)
     @Nullable
     IntensityTransform getIntensityTransform();
 
@@ -82,7 +93,7 @@ public interface ImageBandTransform extends Element {
      *
      * @return the bias value
      */
-    @Property(order = 2)
+    @Property(order = 3)
     double getBias();
 
     /**
@@ -98,7 +109,7 @@ public interface ImageBandTransform extends Element {
      *
      * @return the gain value
      */
-    @Property(order = 3)
+    @Property(order = 4)
     double getGain();
 
     /**

@@ -18,6 +18,7 @@ package org.jplot2d.element.impl;
 
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.element.ImageBandTransform;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nullable;
 import java.awt.Dimension;
@@ -40,6 +41,6 @@ public interface ImageBandTransformEx extends ImageBandTransform, ElementEx {
     void calcLimits(ImageDataBuffer[] dataBuffers, Dimension[] sizeArray);
 
     @Nullable
-    double[] getLimits();
+    Range getLimits();
 
 }

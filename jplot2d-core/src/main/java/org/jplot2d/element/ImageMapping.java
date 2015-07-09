@@ -24,6 +24,7 @@ import org.jplot2d.image.ColorMap;
 import org.jplot2d.image.IntensityTransform;
 import org.jplot2d.image.LimitsAlgorithm;
 import org.jplot2d.image.MinMaxAlgorithm;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,12 +56,22 @@ public interface ImageMapping extends Element {
     ImageGraph[] getGraphs();
 
     /**
+     * Return the cut limits calculated by LimitsAlgorithm.
+     * Maybe <code>null</code> if all images doesn't contain valid data.
+     *
+     * @return the cut limits
+     */
+    @Property(order = 0)
+    @Nullable
+    Range getLimits();
+
+    /**
      * Returns the LimitsAlgorithm.
      *
      * @return the LimitsAlgorithm
      */
     @Nonnull
-    @Property(order = 0)
+    @Property(order = 1)
     LimitsAlgorithm getLimitsAlgorithm();
 
     /**
@@ -76,7 +87,7 @@ public interface ImageMapping extends Element {
      * @return the IntensityTransform
      */
     @Nullable
-    @Property(order = 1)
+    @Property(order = 2)
     IntensityTransform getIntensityTransform();
 
     /**
@@ -91,7 +102,7 @@ public interface ImageMapping extends Element {
      *
      * @return the bias value
      */
-    @Property(order = 2)
+    @Property(order = 3)
     double getBias();
 
     /**
@@ -107,7 +118,7 @@ public interface ImageMapping extends Element {
      *
      * @return the gain value
      */
-    @Property(order = 3)
+    @Property(order = 4)
     double getGain();
 
     /**
@@ -123,6 +134,7 @@ public interface ImageMapping extends Element {
      *
      * @return the ColorMap
      */
+    @Property(order = 5)
     @Nullable
     ColorMap getColorMap();
 

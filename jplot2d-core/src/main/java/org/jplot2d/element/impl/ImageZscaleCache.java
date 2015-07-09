@@ -18,6 +18,7 @@ package org.jplot2d.element.impl;
 
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.image.IntensityTransform;
+import org.jplot2d.util.Range;
 
 import javax.annotation.Nullable;
 import java.util.WeakHashMap;
@@ -48,7 +49,7 @@ public class ImageZscaleCache {
      * @param outputBits         the bits of output values
      * @return the key for the given calculation arguments
      */
-    public static Key createKey(ImageDataBuffer dbuf, int w, int h, double[] limits,
+    public static Key createKey(ImageDataBuffer dbuf, int w, int h, Range limits,
                                 IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
         return new Key(dbuf, w, h, limits, intensityTransform, bias, gain, outputBits);
     }
@@ -82,7 +83,7 @@ public class ImageZscaleCache {
      *
      * @return the scaled data, in byte[] or short[]
      */
-    public static Object zscaleLimits(ImageDataBuffer idb, int w, int h, double[] limits,
+    public static Object zscaleLimits(ImageDataBuffer idb, int w, int h, Range limits,
                                       IntensityTransform intensityTransform, double bias, double gain, int outputBits) {
 
         int lutInputBits = getILUTInputBits(intensityTransform, bias, gain, outputBits);
@@ -175,7 +176,7 @@ public class ImageZscaleCache {
      * @param lutInputBits the bits of input value. If the lut is null, it's the bits of return values.
      * @return an unsigned byte array
      */
-    private static byte[] zscaleBytes(ImageDataBuffer idb, int xoff, int yoff, int w, int h, double[] limits,
+    private static byte[] zscaleBytes(ImageDataBuffer idb, int xoff, int yoff, int w, int h, Range limits,
                                       byte[] lut, int lutInputBits) {
 
         byte[] result = new byte[w * h];
@@ -185,8 +186,8 @@ public class ImageZscaleCache {
             return result;
         }
 
-        double lowCut = limits[0];
-        double highCut = limits[1];
+        double lowCut = limits.getMin();
+        double highCut = limits.getMax();
         int outputRange = 1 << lutInputBits;
         double scale = outputRange / (highCut - lowCut);
 
@@ -293,7 +294,7 @@ public class ImageZscaleCache {
      * @param lutInputBits the bits of input value. If the lut is null, it's the bits of return values.
      * @return an unsigned short array
      */
-    private static short[] zscaleShorts(ImageDataBuffer idb, int xoff, int yoff, int w, int h, double[] limits,
+    private static short[] zscaleShorts(ImageDataBuffer idb, int xoff, int yoff, int w, int h, Range limits,
                                         short[] lut, int lutInputBits) {
 
         short[] result = new short[w * h];
@@ -303,8 +304,8 @@ public class ImageZscaleCache {
             return result;
         }
 
-        double lowCut = limits[0];
-        double highCut = limits[1];
+        double lowCut = limits.getMin();
+        double highCut = limits.getMax();
         int outputRange = 1 << lutInputBits;
         double scale = outputRange / (highCut - lowCut);
 
@@ -350,11 +351,11 @@ public class ImageZscaleCache {
         protected final ImageDataBuffer dbuf;
         protected final int w, h;
         protected final int outputBits;
-        private final double[] limits;
+        private final Range limits;
         private final IntensityTransform intensityTransform;
         private final double bias, gain;
 
-        private Key(ImageDataBuffer dbuf, int w, int h, double[] limits, IntensityTransform intensityTransform,
+        private Key(ImageDataBuffer dbuf, int w, int h, Range limits, IntensityTransform intensityTransform,
                     double bias, double gain, int outputBits) {
             this.dbuf = dbuf;
             this.w = w;
@@ -371,15 +372,18 @@ public class ImageZscaleCache {
                 return false;
             }
             Key key = (Key) obj;
-            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits[0] == limits[0] && key.limits[1] == limits[1]);
+            boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits.equals(limits));
             return key.dbuf.equals(dbuf) && key.w == w && key.h == h && limitsMatch
                     && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
                     && key.outputBits == outputBits;
         }
 
         public int hashCode() {
-            long bits = java.lang.Double.doubleToLongBits(limits[0]);
-            bits += java.lang.Double.doubleToLongBits(limits[1]) * 31;
+            long bits = 0;
+            if (limits != null) {
+                bits += java.lang.Double.doubleToLongBits(limits.getStart());
+                bits += java.lang.Double.doubleToLongBits(limits.getEnd()) * 31;
+            }
             bits += java.lang.Double.doubleToLongBits(bias) * 41;
             bits += java.lang.Double.doubleToLongBits(gain) * 47;
 
