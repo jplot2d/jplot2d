@@ -1,4 +1,5 @@
 from jplot2d.python import *
+from array import *
 
 # the sizeMode must be set
 p=plot(sizeMode=AutoPackSizeMode())
@@ -7,7 +8,13 @@ pf = JPlot2DFrame(p)
 pf.size = (480, 480)
 pf.visible = 1
 
-z = [[0,1],[2,3.1]]
+z = []
+for i in range(4000):
+    row = array('f')
+    for j in range(8000):
+        v = 1000.0 * (j % (i + 1)) / (i + 1)
+        row.append(v)
+    z.append(row);
 
 graph = imagegraph(z)
 layer = layer()

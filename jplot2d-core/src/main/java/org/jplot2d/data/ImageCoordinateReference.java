@@ -21,6 +21,8 @@ package org.jplot2d.data;
 /**
  * Define the relationship between the image pixels and axis values, by reference pixel, reference value and pixel size.
  * By default, the reference pixel and reference value are 0, means the middle point of pixel 0 is on axis value 0.
+ * <p/>
+ * Efficient immutable! Once the image graph has been added to a plot, the properties cannot be changed any more.
  */
 public class ImageCoordinateReference {
 

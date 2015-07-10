@@ -207,20 +207,14 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         }
 
         // find a child raster in viewport
-        long start = System.nanoTime();
-
         WritableRaster raster;
         synchronized (cache) {
             raster = (WritableRaster) cache.get(rasterKey);
             if (cache.get(rasterKey) == null) {
                 raster = createRaster(rasterKey);
                 cache.put(rasterKey, raster);
-            } else {
-                System.out.print("R");
             }
         }
-        long end = System.nanoTime();
-
 
         // apply pseudo-color mapping
         ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
@@ -232,9 +226,6 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
                 cache.put(imageKey, image);
             }
         }
-        long end2 = System.nanoTime();
-        System.out.println("Raster " + (end - start) + " image " + (end2 - end));
-
 
         // draw the image
         ImageCoordinateReference cr = data.getCoordinateReference();
@@ -322,6 +313,9 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         return new RasterKey(bandKey, portX0, portY0, portWidth, portHeight, xscale, yscale);
     }
 
+    /**
+     * Defines the portion of raster
+     */
     protected class RasterKey {
         private final ImageZscaleCache.Key bandKey;
         private final int portX, portY, portW, portH;
@@ -358,6 +352,14 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             return ((int) bits) ^ ((int) (bits >> 32)) ^ bandKey.hashCode();
 
         }
+    }
+
+    /**
+     * The zoomed raster and the original value.
+     */
+    private class ZoomedRaster {
+        private WritableRaster raster;
+        double xOrigVal, yOrigVal;
     }
 
     protected class ColoredImageKey {

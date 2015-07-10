@@ -34,6 +34,7 @@ public class ImageFloat2dDemo {
 
     private static int row = 4000;
     private static int col = 8000;
+    private static float zmax = 1000;
 
     public static void main(String[] args) {
         plot(0.5, null);
@@ -60,7 +61,7 @@ public class ImageFloat2dDemo {
         float[][] f2d = new float[row][col];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                f2d[i][j] = (float) (j % (i + 1)) * row / (i + 1);
+                f2d[i][j] = zmax * (j % (i + 1)) / (i + 1);
             }
         }
 
