@@ -16,6 +16,7 @@
  */
 package org.jplot2d.element.impl;
 
+import org.jplot2d.data.ImageCoordinateReference;
 import org.jplot2d.data.ImageDataBuffer;
 import org.jplot2d.data.MultiBandImageData;
 import org.jplot2d.element.RGBImageMapping;
@@ -36,7 +37,7 @@ import java.util.WeakHashMap;
 
 public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, IntermediateCacheEx {
 
-    private static final WeakHashMap<Object, Object> cache = new WeakHashMap<>();
+    private static final WeakHashMap<ImageKey, BufferedImage> cache = new WeakHashMap<>();
 
     @Nullable
     private RGBImageMappingEx mapping;
@@ -134,7 +135,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         ImageZscaleCache.cacheFor(imageKey.blueKey);
 
         synchronized (cache) {
-            Object image = cache.remove(imageKey);
+            BufferedImage image = cache.remove(imageKey);
             cache.put(imageKey, image);
         }
         return imageKey;
@@ -176,24 +177,21 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         ImageKey imageKey = createImageKey();
         BufferedImage image;
         synchronized (cache) {
-            image = (BufferedImage) cache.get(imageKey);
+            image = cache.get(imageKey);
             if (cache.get(imageKey) == null) {
                 image = createImage(imageKey);
                 cache.put(imageKey, image);
-            } else {
-                System.out.print(".");
             }
         }
 
         // AffineTransform to zoom and vertical flip image
-        double xval = data.getXRange().getMin();
-        double yval = data.getYRange().getMin();
+        ImageCoordinateReference cr = data.getCoordinateReference();
         PaperTransform pxf = getPaperTransform();
         NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
         NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
         Dimension2D paperSize = getParent().getSize();
-        double xorig = pxf.getXPtoD(xntrans.convToNR(xval) * paperSize.getWidth());
-        double yorig = pxf.getYPtoD(yntrans.convToNR(yval) * paperSize.getHeight());
+        double xorig = pxf.getXPtoD(xntrans.convToNR(cr.xPixelToValue(-0.5)) * paperSize.getWidth());
+        double yorig = pxf.getYPtoD(yntrans.convToNR(cr.yPixelToValue(-0.5)) * paperSize.getHeight());
         double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
         double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getCoordinateReference().getYPixelSize();
         AffineTransform at = new AffineTransform(xscale, 0.0, 0.0, -yscale, xorig, yorig);
@@ -209,9 +207,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
             hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         }
         g.addRenderingHints(hints);
-
-        g.drawRenderedImage(image, at);
-
+        g.drawImage(image, at, null);
         g.dispose();
     }
 
@@ -247,7 +243,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
         return new ImageKey(redKey, greenKey, blueKey);
     }
 
-    protected class ImageKey {
+    private class ImageKey {
         private final ImageZscaleCache.Key redKey, greenKey, blueKey;
 
         private ImageKey(ImageZscaleCache.Key redKey, ImageZscaleCache.Key greenKey, ImageZscaleCache.Key blueKey) {

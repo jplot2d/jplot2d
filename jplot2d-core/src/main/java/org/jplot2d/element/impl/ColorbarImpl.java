@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -43,7 +43,7 @@ import java.util.WeakHashMap;
  */
 public class ColorbarImpl extends ContainerImpl implements ColorbarEx, IntermediateCacheEx {
 
-    private static final WeakHashMap<Object, Object> cache = new WeakHashMap<>();
+    private static final WeakHashMap<ImageKey, BufferedImage> cache = new WeakHashMap<>();
 
     /**
      * the default width, 1.0 pt.
@@ -94,15 +94,15 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         setSelectable(true);
     }
 
-    private static WritableRaster createRaster(RasterKey rasterKey) {
-        int width = rasterKey.w;
-        int height = rasterKey.h;
-        Range limits = rasterKey.limits;
+    private static BufferedImage createImage(ImageKey key) {
+        int width = key.w;
+        int height = key.h;
+        Range limits = key.limits;
 
         // create ImageDataBuffer
         double[] line = new double[width];
         double step = limits.getSpan() / width;
-        if (rasterKey.inverted) {
+        if (key.inverted) {
             int sc = width - 1;
             for (int i = 0; i < width; i++, sc--) {
                 line[i] = step * sc;
@@ -118,28 +118,11 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         }
         ImageDataBuffer idb = new DoubleDataBuffer.Array2D(double2d);
 
-        // create raster
-        int lutOutputBits = rasterKey.outputBits;
-        WritableRaster raster;
-        Object result = ImageZscaleCache.zscaleLimits(idb, width, height, limits,
-                rasterKey.intensityTransform, rasterKey.bias, rasterKey.gain, lutOutputBits);
-        if (lutOutputBits <= Byte.SIZE) {
-            // create a SampleModel for byte data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferByte dbuffer = new DataBufferByte((byte[]) result, width * height);
-            // create a raster
-            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
-        } else {
-            // create a SampleModel for short data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferUShort dbuffer = new DataBufferUShort((short[]) result, width * height);
-            // create a raster
-            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
-        }
-
-        return raster;
+        // create image
+        int bandBits = key.outputBits;
+        Object bandData = ImageZscaleCache.zscaleLimits(idb, width, height, limits,
+                key.intensityTransform, key.bias, key.gain, bandBits);
+        return ImageGraphImpl.createImage(bandData, bandBits, width, height, key.colorMap);
     }
 
     @Nonnull
@@ -439,16 +422,12 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         int width = (int) (pxf.getScale() * length);
         int height = (int) (pxf.getScale() * barWidth);
 
-        RasterKey rasterKey = new RasterKey(axisTransform.isInverted(), width, height, mapping);
-        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        ImageKey key = new ImageKey(axisTransform.isInverted(), width, height, mapping);
         synchronized (cache) {
-            Object raster = cache.remove(rasterKey);
-            Object image = cache.remove(imageKey);
-            cache.put(rasterKey, raster);
-            cache.put(imageKey, image);
+            BufferedImage image = cache.remove(key);
+            cache.put(key, image);
         }
-
-        return imageKey;
+        return key;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -495,25 +474,14 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         int width = (int) (pxf.getScale() * length);
         int height = (int) (pxf.getScale() * barWidth);
 
-        // create raster
-        RasterKey rasterKey = new RasterKey(axisTransform.isInverted(), width, height, mapping);
-        WritableRaster raster;
-        synchronized (cache) {
-            raster = (WritableRaster) cache.get(rasterKey);
-            if (cache.get(rasterKey) == null) {
-                raster = createRaster(rasterKey);
-                cache.put(rasterKey, raster);
-            }
-        }
-
-        // apply pseudo-color mapping
-        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        // create image
+        ImageKey key = new ImageKey(axisTransform.isInverted(), width, height, mapping);
         BufferedImage image;
         synchronized (cache) {
-            image = (BufferedImage) cache.get(imageKey);
-            if (cache.get(imageKey) == null) {
-                image = mapping.colorImage(raster);
-                cache.put(imageKey, image);
+            image = cache.get(key);
+            if (cache.get(key) == null) {
+                image = createImage(key);
+                cache.put(key, image);
             }
         }
 
@@ -568,15 +536,16 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
         this.axisLineWidth = colorbar.axisLineWidth;
     }
 
-    protected class RasterKey {
+    private class ImageKey {
         private final boolean inverted;
         private final int w, h;
         private final Range limits;
         private final IntensityTransform intensityTransform;
         private final double bias, gain;
         private final int outputBits;
+        private final ColorMap colorMap;
 
-        private RasterKey(boolean inverted, int w, int h, @Nonnull ImageMappingEx mapping) {
+        private ImageKey(boolean inverted, int w, int h, @Nonnull ImageMappingEx mapping) {
             this.inverted = inverted;
             this.w = w;
             this.h = h;
@@ -585,17 +554,18 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
             this.bias = mapping.getBias();
             this.gain = mapping.getGain();
             this.outputBits = mapping.getILUTOutputBits();
+            this.colorMap = mapping.getColorMap();
         }
 
         public boolean equals(Object obj) {
             if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            RasterKey key = (RasterKey) obj;
+            ImageKey key = (ImageKey) obj;
             boolean limitsMatch = key.limits == limits || (key.limits != null && key.limits.equals(limits));
             return key.inverted == inverted && key.w == w && key.h == h && limitsMatch
                     && key.intensityTransform == intensityTransform && key.bias == bias && key.gain == gain
-                    && key.outputBits == outputBits;
+                    && key.outputBits == outputBits && key.colorMap == colorMap;
         }
 
         public int hashCode() {
@@ -610,35 +580,14 @@ public class ColorbarImpl extends ContainerImpl implements ColorbarEx, Intermedi
             }
             bits += java.lang.Double.doubleToLongBits(bias) * 43;
             bits += java.lang.Double.doubleToLongBits(gain) * 47;
-            return (((int) bits) ^ ((int) (bits >> 32)));
-        }
-    }
-
-
-    protected class ColoredImageKey {
-        private final RasterKey rasterKey;
-        private final ColorMap colorMap;
-
-        private ColoredImageKey(@Nonnull RasterKey rasterKey, @Nullable ColorMap colorMap) {
-            this.rasterKey = rasterKey;
-            this.colorMap = colorMap;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            ColoredImageKey key = (ColoredImageKey) obj;
-            return key.colorMap == colorMap && key.rasterKey.equals(rasterKey);
-        }
-
-        public int hashCode() {
+            int hash = (((int) bits) ^ ((int) (bits >> 32)));
             if (colorMap == null) {
-                return ~rasterKey.hashCode();
+                return hash;
             } else {
-                return colorMap.hashCode() ^ rasterKey.hashCode();
+                return colorMap.hashCode() ^ hash;
             }
         }
     }
+
 
 }

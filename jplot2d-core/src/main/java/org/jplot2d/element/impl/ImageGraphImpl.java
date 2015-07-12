@@ -22,20 +22,21 @@ import org.jplot2d.element.ImageMapping;
 import org.jplot2d.image.ColorMap;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.transform.PaperTransform;
-import org.jplot2d.util.Range;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.image.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, IntermediateCacheEx {
 
-    private static final WeakHashMap<Object, Object> cache = new WeakHashMap<>();
+    private static final WeakHashMap<ImageKey, BufferedImage> cache = new WeakHashMap<>();
 
     @Nullable
     private ImageMappingEx mapping;
@@ -47,49 +48,65 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
         super();
     }
 
-    private static WritableRaster createRaster(RasterKey rasterKey) {
+    @Nonnull
+    public static BufferedImage createImage(Object bandData, int bandBits, int width, int height, ColorMap colorMap) {
 
-        // create a z-scaled bandData
-        int width = rasterKey.bandKey.w;
-        int height = rasterKey.bandKey.h;
-        int lutOutputBits = rasterKey.bandKey.outputBits;
-        Object bandData = ImageZscaleCache.getValue(rasterKey.bandKey);
+        int dataType;
+        if (bandBits <= Byte.SIZE) {
+            dataType = DataBuffer.TYPE_BYTE;
+        } else {
+            dataType = DataBuffer.TYPE_USHORT;
+        }
 
         // create raster
         WritableRaster raster;
-        if (lutOutputBits <= Byte.SIZE) {
-            // create a SampleModel for byte data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferByte dbuffer = new DataBufferByte((byte[]) bandData, width * height);
-            // create a raster
+        if (colorMap == null || colorMap.getColorModel().getNumComponents() == 1) {
+            DataBuffer dbuffer;
+            if (dataType == DataBuffer.TYPE_BYTE) {
+                dbuffer = new DataBufferByte((byte[]) bandData, width * height);
+            } else {
+                dbuffer = new DataBufferUShort((short[]) bandData, width * height);
+            }
+
+            SampleModel sampleModel = new PixelInterleavedSampleModel(dataType, width, height, 1, width, new int[]{0});
             raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
         } else {
-            // create a SampleModel for short data
-            SampleModel sampleModel = new PixelInterleavedSampleModel(DataBuffer.TYPE_USHORT, width, height, 1, width, new int[]{0});
-            // and a DataBuffer with the image data
-            DataBufferUShort dbuffer = new DataBufferUShort((short[]) bandData, width * height);
-            // create a raster
-            raster = Raster.createWritableRaster(sampleModel, dbuffer, null);
+            // create a new raster which has duplicate bands
+            int destNumComps = colorMap.getColorModel().getNumComponents();
+            DataBuffer dbuffer;
+            if (dataType == DataBuffer.TYPE_BYTE) {
+                byte[] singleBandData = (byte[]) bandData;
+                byte[][] dupDataArray = new byte[destNumComps][];
+                for (int i = 0; i < destNumComps; i++) {
+                    dupDataArray[i] = singleBandData;
+                }
+                dbuffer = new DataBufferByte(dupDataArray, width * height);
+            } else {
+                short[] singleBandData = (short[]) bandData;
+                short[][] dupDataArray = new short[destNumComps][];
+                for (int i = 0; i < destNumComps; i++) {
+                    dupDataArray[i] = singleBandData;
+                }
+                dbuffer = new DataBufferUShort(dupDataArray, width * height);
+            }
+            SampleModel dupSM = new BandedSampleModel(dataType, width, height, destNumComps);
+            raster = Raster.createWritableRaster(dupSM, dbuffer, null);
         }
 
-        // create a child raster in viewport
-        raster = raster.createWritableChild(rasterKey.portX, rasterKey.portY, rasterKey.portW, rasterKey.portH, 0, 0, null);
-
-        // zoom raster to device size
-        double xscale = rasterKey.xscale;
-        double yscale = rasterKey.yscale;
-        AffineTransform scaleAT = AffineTransform.getScaleInstance(xscale, yscale);
-        int op;
-        if (xscale > 1 || yscale > 1) {
-            op = AffineTransformOp.TYPE_NEAREST_NEIGHBOR;
+        // create image
+        if (colorMap == null) {
+            // assembly a BufferedImage with linear gray color space
+            ColorModel destCM = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY),
+                    new int[]{bandBits}, false, true, Transparency.OPAQUE, dataType);
+            return new BufferedImage(destCM, raster, false, null);
         } else {
-            op = AffineTransformOp.TYPE_BILINEAR;
+            // lookup and create a BufferedImage
+            ColorModel destCM = colorMap.getColorModel();
+            WritableRaster destRaster = destCM.createCompatibleWritableRaster(raster.getWidth(), raster.getHeight());
+            LookupOp op = new LookupOp(colorMap.getLookupTable(), null);
+            op.filter(raster, destRaster);
+            return new BufferedImage(destCM, destRaster, false, null);
         }
-        AffineTransformOp axop = new AffineTransformOp(scaleAT, op);
-        raster = axop.filter(raster, null);
-
-        return raster;
     }
 
     public void setParent(ElementEx parent) {
@@ -150,19 +167,16 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
     }
 
     public Object createCacheHolder() {
-        RasterKey rasterKey = createRasterKey();
-        if (rasterKey == null || mapping == null) {
+        ImageKey key = createImageKey();
+        if (key == null) {
             return null;
         }
-        ImageZscaleCache.cacheFor(rasterKey.bandKey);
-        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        ImageZscaleCache.cacheFor(key.bandKey);
         synchronized (cache) {
-            Object raster = cache.remove(rasterKey);
-            Object image = cache.remove(imageKey);
-            cache.put(rasterKey, raster);
-            cache.put(imageKey, image);
+            BufferedImage image = cache.remove(key);
+            cache.put(key, image);
         }
-        return imageKey;
+        return key;
     }
 
     @Override
@@ -201,60 +215,51 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             return;
         }
 
-        RasterKey rasterKey = createRasterKey();
-        if (rasterKey == null) {
+        ImageKey key = createImageKey();
+        if (key == null) {
             return;
         }
 
-        // find a child raster in viewport
-        WritableRaster raster;
-        synchronized (cache) {
-            raster = (WritableRaster) cache.get(rasterKey);
-            if (cache.get(rasterKey) == null) {
-                raster = createRaster(rasterKey);
-                cache.put(rasterKey, raster);
-            }
-        }
-
-        // apply pseudo-color mapping
-        ColoredImageKey imageKey = new ColoredImageKey(rasterKey, mapping.getColorMap());
+        // create image
         BufferedImage image;
         synchronized (cache) {
-            image = (BufferedImage) cache.get(imageKey);
-            if (cache.get(imageKey) == null) {
-                image = mapping.colorImage(raster);
-                cache.put(imageKey, image);
+            image = cache.get(key);
+            if (image == null) {
+                image = createImage(ImageZscaleCache.getValue(key.bandKey), key.bandKey.outputBits,
+                        key.bandKey.w, key.bandKey.h, mapping.getColorMap());
+                cache.put(key, image);
             }
         }
 
-        // draw the image
+        // AffineTransform to zoom and vertical flip image
         ImageCoordinateReference cr = data.getCoordinateReference();
         PaperTransform pxf = getPaperTransform();
-        Dimension2D paperSize = getParent().getSize();
         NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
         NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
+        Dimension2D paperSize = getParent().getSize();
+        double xorig = pxf.getXPtoD(xntrans.convToNR(cr.xPixelToValue(-0.5)) * paperSize.getWidth());
+        double yorig = pxf.getYPtoD(yntrans.convToNR(cr.yPixelToValue(-0.5)) * paperSize.getHeight());
+        double xscale = pxf.getScale() / xntrans.getScale() * paperSize.getWidth() * data.getCoordinateReference().getXPixelSize();
+        double yscale = pxf.getScale() / yntrans.getScale() * paperSize.getHeight() * data.getCoordinateReference().getYPixelSize();
+        AffineTransform at = new AffineTransform(xscale, 0.0, 0.0, -yscale, xorig, yorig);
 
-        double xedge = cr.xPixelToValue(rasterKey.portX - 0.5);
-        double yedge = cr.yPixelToValue(rasterKey.portY - 0.5);
-        double xOrgVal = xedge + cr.getXPixelSize() / rasterKey.xscale / 2;
-        double yOrgVal = yedge + cr.getYPixelSize() / rasterKey.yscale / 2;
-        double xorig = pxf.getXPtoD(xntrans.convToNR(xOrgVal) * paperSize.getWidth());
-        double yorig = pxf.getYPtoD(yntrans.convToNR(yOrgVal) * paperSize.getHeight());
-
+        // draw the image
         Graphics2D g = (Graphics2D) graphics.create();
         Shape clip = getPaperTransform().getPtoD(getBounds());
         g.setClip(clip);
-
-        double xs = Math.signum(xntrans.getScale());
-        double ys = Math.signum(yntrans.getScale());
-        AffineTransform at = new AffineTransform(xs, 0.0, 0.0, -ys, xorig, yorig);
-        g.drawRenderedImage(image, at);
-
+        Map<Object, Object> hints = new HashMap<>();
+        if (xscale > 1 || yscale > 1 || xscale < -1 || yscale < -1) {
+            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        } else {
+            hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        }
+        g.addRenderingHints(hints);
+        g.drawImage(image, at, null);
         g.dispose();
     }
 
     @Nullable
-    private RasterKey createRasterKey() {
+    private ImageKey createImageKey() {
         if (data == null || mapping == null) {
             return null;
         }
@@ -266,108 +271,18 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             return null;
         }
 
-        int width = data.getWidth();
-        int height = data.getHeight();
-        ImageCoordinateReference cr = data.getCoordinateReference();
-        NormalTransform xntrans = getParent().getXAxisTransform().getNormalTransform();
-        NormalTransform yntrans = getParent().getYAxisTransform().getNormalTransform();
-
-        Range xRange = xntrans.getValueRange();
-        Range yRange = yntrans.getValueRange();
-        int portX0 = (int) Math.round(cr.xValueToPixel(xRange.getMin()));
-        int portX1 = (int) Math.round(cr.xValueToPixel(xRange.getMax()));
-        int portY0 = (int) Math.round(cr.yValueToPixel(yRange.getMin()));
-        int portY1 = (int) Math.round(cr.yValueToPixel(yRange.getMax()));
-        if (portX0 >= width || portX1 < 0 || portY0 >= height || portY1 < 0) {
-            return null;
-        }
-        if (portX0 < 0) {
-            portX0 = 0;
-        }
-        if (portX1 >= width) {
-            portX1 = width - 1;
-        }
-        if (portY0 < 0) {
-            portY0 = 0;
-        }
-        if (portY1 >= height) {
-            portY1 = height - 1;
-        }
-        // JDK bug: AffineTransformOp can't handle child raster contains x-offset and bottom-right pixel
-        if (portX0 > 0 && portX1 == width - 1 && portY1 == height - 1) {
-            portX0 = 0;
-        }
-        int portWidth = portX1 - portX0 + 1;
-        int portHeight = portY1 - portY0 + 1;
-
-        // find zoom scale
-        PaperTransform pxf = getPaperTransform();
-        Dimension2D paperSize = getParent().getSize();
-        double xscale = pxf.getScale() / Math.abs(xntrans.getScale()) * paperSize.getWidth() * cr.getXPixelSize();
-        double yscale = pxf.getScale() / Math.abs(yntrans.getScale()) * paperSize.getHeight() * cr.getYPixelSize();
-
-        // create raster key
         ImageZscaleCache.Key bandKey = ImageZscaleCache.createKey(data.getDataBuffer(), data.getWidth(), data.getHeight(),
                 mapping.getLimits(), mapping.getIntensityTransform(), mapping.getBias(), mapping.getGain(),
                 mapping.getILUTOutputBits());
-        return new RasterKey(bandKey, portX0, portY0, portWidth, portHeight, xscale, yscale);
+        return new ImageKey(bandKey, mapping.getColorMap());
     }
 
-    /**
-     * Defines the portion of raster
-     */
-    protected class RasterKey {
+    private class ImageKey {
         private final ImageZscaleCache.Key bandKey;
-        private final int portX, portY, portW, portH;
-        private final double xscale, yscale;
-
-        public RasterKey(ImageZscaleCache.Key bandKey,
-                         int portX, int portY, int portW, int portH,
-                         double xscale, double yscale) {
-            this.bandKey = bandKey;
-            this.portX = portX;
-            this.portY = portY;
-            this.portW = portW;
-            this.portH = portH;
-            this.xscale = xscale;
-            this.yscale = yscale;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            RasterKey key = (RasterKey) obj;
-            return key.portX == portX && key.portY == portY && key.portW == portW && key.portH == portH
-                    && key.xscale == xscale && key.yscale == yscale && key.bandKey.equals(bandKey);
-        }
-
-        public int hashCode() {
-            long bits = java.lang.Double.doubleToLongBits(portX);
-            bits += java.lang.Double.doubleToLongBits(portY) * 31;
-            bits += java.lang.Double.doubleToLongBits(portW) * 37;
-            bits += java.lang.Double.doubleToLongBits(portH) * 41;
-            bits += java.lang.Double.doubleToLongBits(xscale) * 43;
-            bits += java.lang.Double.doubleToLongBits(yscale) * 47;
-            return ((int) bits) ^ ((int) (bits >> 32)) ^ bandKey.hashCode();
-
-        }
-    }
-
-    /**
-     * The zoomed raster and the original value.
-     */
-    private class ZoomedRaster {
-        private WritableRaster raster;
-        double xOrigVal, yOrigVal;
-    }
-
-    protected class ColoredImageKey {
-        private final RasterKey rasterKey;
         private final ColorMap colorMap;
 
-        private ColoredImageKey(@Nonnull RasterKey rasterKey, @Nullable ColorMap colorMap) {
-            this.rasterKey = rasterKey;
+        public ImageKey(ImageZscaleCache.Key bandKey, ColorMap colorMap) {
+            this.bandKey = bandKey;
             this.colorMap = colorMap;
         }
 
@@ -375,15 +290,15 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
             if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            ColoredImageKey key = (ColoredImageKey) obj;
-            return key.colorMap == colorMap && key.rasterKey.equals(rasterKey);
+            ImageKey key = (ImageKey) obj;
+            return key.colorMap == colorMap && key.bandKey.equals(bandKey);
         }
 
         public int hashCode() {
             if (colorMap == null) {
-                return ~rasterKey.hashCode();
+                return bandKey.hashCode();
             } else {
-                return colorMap.hashCode() ^ rasterKey.hashCode();
+                return bandKey.hashCode() ^ colorMap.hashCode();
             }
         }
     }

@@ -19,10 +19,7 @@ package org.jplot2d.element.impl;
 import org.jplot2d.element.ImageMapping;
 import org.jplot2d.util.Range;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 
 /**
  * @author Jingjing Li
@@ -57,15 +54,5 @@ public interface ImageMappingEx extends ImageMapping, ElementEx, Joinable {
      * @return the number of significant bits
      */
     int getILUTOutputBits();
-
-    /**
-     * Apply the color LUT to the given raster.
-     * If the given raster only has a band, it will be duplicated to meet the output band number.
-     *
-     * @param raster the raster
-     * @return a BufferedImage
-     */
-    @Nonnull
-    BufferedImage colorImage(@Nonnull WritableRaster raster);
 
 }
