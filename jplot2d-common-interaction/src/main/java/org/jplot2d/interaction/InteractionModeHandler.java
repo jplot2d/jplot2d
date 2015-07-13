@@ -1,26 +1,25 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.interaction;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,26 +74,28 @@ public class InteractionModeHandler {
     }
 
     private void enterModifiersKey(int modifiers) {
-        for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
+        for (Map.Entry<MouseBehavior, List<Integer>> me : imode.modifiersKeyMap.entrySet()) {
             MouseBehavior behavior = me.getKey();
-            int modi = me.getValue();
-            if (modi == modifiers) {
-                MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-                if (handler.enterModifiersKey()) {
-                    break;
+            for (int modi : me.getValue()) {
+                if (modi == modifiers) {
+                    MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
+                    if (handler.enterModifiersKey()) {
+                        return;
+                    }
                 }
             }
         }
     }
 
     private void exitModifiersKey(int modifiers) {
-        for (Map.Entry<MouseBehavior, Integer> me : imode.modifiersKeyMap.entrySet()) {
+        for (Map.Entry<MouseBehavior, List<Integer>> me : imode.modifiersKeyMap.entrySet()) {
             MouseBehavior behavior = me.getKey();
-            int modi = me.getValue();
-            if (modi == modifiers) {
-                MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-                if (handler.exitModifiersKey()) {
-                    break;
+            for (int modi : me.getValue()) {
+                if (modi == modifiers) {
+                    MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
+                    if (handler.exitModifiersKey()) {
+                        return;
+                    }
                 }
             }
         }
@@ -131,26 +132,18 @@ public class InteractionModeHandler {
     }
 
     public void mouseWheelMoved(GenericMouseEvent e) {
-        for (Map.Entry<MouseWheelBehavior, MouseButtonCombination> me : imode.wheelMap.entrySet()) {
-            MouseWheelBehavior behavior = me.getKey();
-            MouseButtonCombination mbc = me.getValue();
-            if (mbc.match(e)) {
-                MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-                if (handler.processMouseEvent(e)) {
-                    break;
-                }
-            }
-        }
+        handleMouseEvent(e, imode.wheelMap);
     }
 
-    private void handleMouseEvent(GenericMouseEvent e, Map<MouseBehavior, MouseButtonCombination> behaviorMap) {
-        for (Map.Entry<MouseBehavior, MouseButtonCombination> me : behaviorMap.entrySet()) {
+    private void handleMouseEvent(GenericMouseEvent e, Map<MouseBehavior, List<MouseButtonCombination>> behaviorMap) {
+        for (Map.Entry<MouseBehavior, List<MouseButtonCombination>> me : behaviorMap.entrySet()) {
             MouseBehavior behavior = me.getKey();
-            MouseButtonCombination mbc = me.getValue();
-            if (mbc.match(e)) {
-                MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
-                if (handler.processMouseEvent(e)) {
-                    break;
+            for (MouseButtonCombination mbc : me.getValue()) {
+                if (mbc.match(e)) {
+                    MouseBehaviorHandler<?> handler = handlerMap.get(behavior);
+                    if (handler.processMouseEvent(e)) {
+                        return;
+                    }
                 }
             }
         }
