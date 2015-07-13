@@ -1,37 +1,25 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swt.interaction;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.events.*;
 import org.jplot2d.env.PlotEnvironment;
-import org.jplot2d.interaction.GenericMouseEvent;
-import org.jplot2d.interaction.InteractionHandler;
-import org.jplot2d.interaction.InteractionManager;
-import org.jplot2d.interaction.PlotInteractionManager;
-import org.jplot2d.interaction.VisualFeedbackDrawer;
+import org.jplot2d.interaction.*;
 import org.jplot2d.swt.JPlot2DComposite;
 
 /**
@@ -50,7 +38,7 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMov
         this.comp = comp;
         ihandler = new InteractionHandler(imanager);
         ihandler.putValue(PlotInteractionManager.PLOT_ENV_KEY, env);
-        ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwtInteractiveComp(comp, env));
+        ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwtInteractiveComp(comp));
         ihandler.init();
     }
 

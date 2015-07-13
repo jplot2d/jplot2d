@@ -1,5 +1,6 @@
+description = 'Plot demos'
 
-description = ''
 dependencies {
-  compile project(':jplot2d-swt')
+    compile project(':jplot2d-swt')
+    runtime 'org.slf4j:slf4j-simple:1.7.12'
 }

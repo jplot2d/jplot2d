@@ -1,38 +1,26 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.interaction;
 
 import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.interaction.GenericMouseEvent;
-import org.jplot2d.interaction.InteractionHandler;
-import org.jplot2d.interaction.InteractionManager;
-import org.jplot2d.interaction.PlotInteractionManager;
-import org.jplot2d.interaction.VisualFeedbackDrawer;
+import org.jplot2d.interaction.*;
 import org.jplot2d.swing.JPlot2DComponent;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 
 /**
  * The interaction listener will be set as MouseListener, MouseMotionListener and MouseWheelListener
@@ -53,7 +41,7 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
         popup = new PopupMenu(env);
         ihandler = new InteractionHandler(imanager);
         ihandler.putValue(PlotInteractionManager.PLOT_ENV_KEY, env);
-        ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwingInteractiveComp(comp, env));
+        ihandler.putValue(PlotInteractionManager.INTERACTIVE_COMP_KEY, new SwingInteractiveComp(comp));
         ihandler.init();
     }
 

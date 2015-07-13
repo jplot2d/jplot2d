@@ -1,36 +1,26 @@
-/**
- * Copyright 2010-2012 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.interaction;
 
-import org.jplot2d.env.RenderEnvironment;
 import org.jplot2d.interaction.InteractiveComp;
 import org.jplot2d.swing.JPlot2DComponent;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.SystemColor;
-
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Jingjing Li
@@ -41,7 +31,7 @@ public class SwingInteractiveComp implements InteractiveComp {
 
     private CursorStyle cursorStyle;
 
-    public SwingInteractiveComp(JPlot2DComponent comp, RenderEnvironment env) {
+    public SwingInteractiveComp(JPlot2DComponent comp) {
         this.comp = comp;
     }
 
@@ -109,23 +99,35 @@ public class SwingInteractiveComp implements InteractiveComp {
 
     public void drawTooltip(Object g, String s, int x, int y) {
         x += comp.getImageOffsetX() + 4;
-        y += comp.getImageOffsetY() + 2;
+        y += comp.getImageOffsetY() + 4;
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(SystemColor.infoText);
-        g2.setBackground(SystemColor.info);
+        FontMetrics fm = g2.getFontMetrics();
 
-        y += g2.getFontMetrics().getAscent();
 
         int cridx = s.indexOf('\n');
         if (cridx == -1) {
+            int width = fm.stringWidth(s);
+            int height = fm.getHeight();
+            g2.setColor(new Color((SystemColor.info.getRGB() & 0x00ffffff) | 0x80000000, true));
+            g2.fillRect(x, y, width, height);
+
+            y += fm.getAscent();
+            g2.setColor(SystemColor.infoText);
             g2.drawString(s, x, y);
         } else {
             String sa = s.substring(0, cridx);
-            g2.drawString(sa, x, y);
-
-            y += g2.getFontMetrics().getHeight();
             String sb = s.substring(cridx + 1);
+
+            int width = Math.max(fm.stringWidth(sa), fm.stringWidth(sb));
+            int height = fm.getHeight() * 2 - fm.getLeading();
+            g2.setColor(new Color((SystemColor.info.getRGB() & 0x00ffffff) | 0x80000000, true));
+            g2.fillRect(x, y, width, height);
+
+            y += fm.getAscent();
+            g2.setColor(SystemColor.infoText);
+            g2.drawString(sa, x, y);
+            y += fm.getHeight();
             g2.drawString(sb, x, y);
         }
     }
