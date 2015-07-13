@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 /**
  * A graph to display a pseudo-color image. Its data is a single band intensity values.
+ * The default z-order of this component is -1, so that the graph will not cover axes ticks.
  *
  * @author Jingjing Li
  */

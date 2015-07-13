@@ -46,6 +46,7 @@ public class ImageGraphImpl extends GraphImpl implements ImageGraphEx, Intermedi
 
     public ImageGraphImpl() {
         super();
+        setZOrder(-1);
     }
 
     @Nonnull

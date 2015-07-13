@@ -47,6 +47,7 @@ public class RGBImageGraphImpl extends GraphImpl implements RGBImageGraphEx, Int
 
     public RGBImageGraphImpl() {
         super();
+        setZOrder(-1);
     }
 
     private static BufferedImage createImage(ImageKey key) {

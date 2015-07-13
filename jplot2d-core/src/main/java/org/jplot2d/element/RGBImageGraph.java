@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 /**
  * A image graph which can display a 3-bands data and map them to RGB color.
+ * The default z-order of this component is -1, so that the graph will not cover axes ticks.
  *
  * @author Jingjing Li
  */
