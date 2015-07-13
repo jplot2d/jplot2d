@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.interaction;
 
@@ -27,12 +25,13 @@ import org.jplot2d.notice.UINoticeType;
 
 public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBehavior> {
 
+    private final InteractiveComp icomp;
     private PlotAxis axis;
-
     private int oldv;
 
     public MouseAxisPanHandler(MouseAxisPanBehavior behavior, InteractionModeHandler handler) {
         super(behavior, handler);
+        icomp = (InteractiveComp) handler.getValue(PlotInteractionManager.INTERACTIVE_COMP_KEY);
     }
 
     @Override
@@ -52,9 +51,8 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
             oldv = x;
         } else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
             oldv = y;
-        } else {
-            throw new Error();
         }
+        icomp.setCursor(InteractiveComp.CursorStyle.MOVE_CURSOR);
     }
 
     @Override
@@ -86,14 +84,12 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
 
     @Override
     public void draggingFinished(int x, int y) {
-        // nothing to do
-
+        icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
     }
 
     @Override
     public void draggingCancelled() {
         // nothing to do
-
     }
 
 }
