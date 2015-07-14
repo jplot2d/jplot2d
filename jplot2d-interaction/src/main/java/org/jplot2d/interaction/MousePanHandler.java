@@ -47,7 +47,7 @@ public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> 
     public void draggingStarted(int x, int y) {
         oldX = x;
         oldY = y;
-        icomp.setCursor(InteractiveComp.CursorStyle.MOVE_CURSOR);
+        icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
     }
 
     @Override

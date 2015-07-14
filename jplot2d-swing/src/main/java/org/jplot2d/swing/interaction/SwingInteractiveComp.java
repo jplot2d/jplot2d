@@ -28,11 +28,19 @@ import java.awt.*;
 public class SwingInteractiveComp implements InteractiveComp {
 
     private final JPlot2DComponent comp;
-
+    private final Cursor defaultCursor, crossCursor, openHandCursor, closeHandCursor;
     private CursorStyle cursorStyle;
 
     public SwingInteractiveComp(JPlot2DComponent comp) {
         this.comp = comp;
+        defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+        crossCursor = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+        if (System.getProperty("os.name").toLowerCase().startsWith("mac os x")) {
+            openHandCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        } else {
+            openHandCursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+        }
+        closeHandCursor = crossCursor;
     }
 
     public Point getCursorLocation() {
@@ -56,13 +64,16 @@ public class SwingInteractiveComp implements InteractiveComp {
 
         switch (cursorStyle) {
             case DEFAULT_CURSOR:
-                comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                break;
-            case MOVE_CURSOR:
-                comp.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                comp.setCursor(defaultCursor);
                 break;
             case CROSSHAIR_CURSOR:
-                comp.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                comp.setCursor(crossCursor);
+                break;
+            case OPEN_HAND_CURSOR:
+                comp.setCursor(openHandCursor);
+                break;
+            case CLOSE_HAND_CURSOR:
+                comp.setCursor(closeHandCursor);
                 break;
         }
     }

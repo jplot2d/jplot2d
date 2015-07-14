@@ -52,7 +52,7 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
         } else if (axis.getOrientation() == AxisOrientation.VERTICAL) {
             oldv = y;
         }
-        icomp.setCursor(InteractiveComp.CursorStyle.MOVE_CURSOR);
+        icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
     }
 
     @Override

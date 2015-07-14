@@ -34,7 +34,7 @@ import java.awt.geom.PathIterator;
 public class SwtInteractiveComp implements InteractiveComp {
 
     private final JPlot2DComposite comp;
-    private final Cursor defaultCursor, moveCursor, crossCursor;
+    private final Cursor defaultCursor, crossCursor, openHandCursor, closeHandCursor;
     private final Color plotBackground;
     private final Color tooltipBackground;
     private final Color tooltipForeground;
@@ -43,15 +43,22 @@ public class SwtInteractiveComp implements InteractiveComp {
     @SuppressWarnings("UnusedParameters")
     public SwtInteractiveComp(JPlot2DComposite comp) {
         this.comp = comp;
-        defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
-        moveCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
-        crossCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_CROSS);
+
         int r = comp.getPlotBackground().getRed();
         int g = comp.getPlotBackground().getGreen();
         int b = comp.getPlotBackground().getBlue();
         plotBackground = new Color(comp.getDisplay(), r, g, b);
         tooltipBackground = comp.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
         tooltipForeground = comp.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND);
+
+        defaultCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_ARROW);
+        crossCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_CROSS);
+        if (System.getProperty("os.name").toLowerCase().startsWith("mac os x")) {
+            openHandCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_HAND);
+        } else {
+            openHandCursor = new Cursor(comp.getDisplay(), SWT.CURSOR_SIZEALL);
+        }
+        closeHandCursor = crossCursor;
     }
 
     public java.awt.Point getCursorLocation() {
@@ -74,11 +81,14 @@ public class SwtInteractiveComp implements InteractiveComp {
             case DEFAULT_CURSOR:
                 comp.setCursor(defaultCursor);
                 break;
-            case MOVE_CURSOR:
-                comp.setCursor(moveCursor);
-                break;
             case CROSSHAIR_CURSOR:
                 comp.setCursor(crossCursor);
+                break;
+            case OPEN_HAND_CURSOR:
+                comp.setCursor(openHandCursor);
+                break;
+            case CLOSE_HAND_CURSOR:
+                comp.setCursor(closeHandCursor);
                 break;
         }
     }

@@ -35,6 +35,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
 
     private final InteractiveComp icomp;
 
+    private boolean movable;
     private MovableComponent pcomp;
 
     /**
@@ -55,17 +56,18 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
         if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_KEY)) {
             PComponent acomp = (PComponent) evt.getNewValue();
             if (acomp instanceof MovableComponent && ((MovableComponent) acomp).isMovable()) {
-                handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, Boolean.TRUE);
+                movable = true;
+                icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
             } else {
-                handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY, null);
+                movable = false;
+                icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
             }
         }
     }
 
     @Override
     public boolean canStartDragging(int x, int y) {
-        Boolean movable = (Boolean) handler.getValue(PlotInteractionManager.ACTIVE_COMPONENT_MOVABLE_KEY);
-        return movable != null && movable;
+        return movable;
     }
 
     @Override
@@ -74,6 +76,7 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
         /* object selected start move operation */
         startPoint = new Point(x, y);
         boundsShape = getDeviceBounds(pcomp);
+        icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
     }
 
     @Override
@@ -100,6 +103,8 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
         startPoint = null;
         toPoint = null;
         icomp.repaint();
+
+        icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
     }
 
     @Override
