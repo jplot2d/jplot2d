@@ -74,6 +74,7 @@ public class PlotDefaultMousePreference implements MousePreference {
         addBinding(manager.defaultMode, manager.axisWheelZoomBehavior, wheel);
         addBinding(manager.defaultMode, manager.axisWheelFinerZoomBehavior, ctlWheel);
         addBinding(manager.defaultMode, manager.axisPanBehavior, middleDrag, altDrag);
+        addBinding(manager.defaultMode, manager.colorbarBehavior, drag);
         if (isMacOSX()) {
             addBinding(manager.defaultMode, manager.adaptiveZoomBehavior, metaClickBA);
             addBinding(manager.defaultMode, manager.axisAdaptiveZoomBehavior, metaClickBA);

@@ -58,6 +58,8 @@ public final class PlotInteractionManager extends InteractionManager {
 
     protected final MouseBehavior panBehavior;
 
+    protected final MouseBehavior colorbarBehavior;
+
     final InteractionMode defaultMode;
 
     public static PlotInteractionManager getInstance() {
@@ -75,6 +77,8 @@ public final class PlotInteractionManager extends InteractionManager {
         showCoordinatesTooltipBehavior = new MouseCoordinatesTooltipBehavior("UpdateCoordinatesTooltip");
         moveComponentBehavior = new MouseMoveComponentBehavior("MoveComponent");
 
+        colorbarBehavior = new MouseColorbarBehavior("Adjust Gain/Bias on colorbar");
+
         axisPanBehavior = new MouseAxisPanBehavior("Pan on axis");
         panBehavior = new MousePanBehavior("Pan");
 
@@ -90,10 +94,9 @@ public final class PlotInteractionManager extends InteractionManager {
         wheelFinerZoomBehavior = new MouseWheelFinerZoomBehavior("WheelFinerZoom");
 
         // set available behaviors for mode
-        defaultMode.setAvailableMouseBehaviors(activeComponentBehavior, showCoordinatesTooltipBehavior,
-                moveComponentBehavior, axisPanBehavior, panBehavior, axisAdaptiveZoomBehavior, adaptiveZoomBehavior,
-                axisRangeZoomBehavior, marqueeZoomBehavior, axisWheelZoomBehavior, wheelZoomBehavior,
-                axisWheelFinerZoomBehavior, wheelFinerZoomBehavior);
+        defaultMode.setAvailableMouseBehaviors(activeComponentBehavior, showCoordinatesTooltipBehavior, moveComponentBehavior,
+                colorbarBehavior, axisPanBehavior, panBehavior, axisAdaptiveZoomBehavior, adaptiveZoomBehavior,
+                axisRangeZoomBehavior, marqueeZoomBehavior, axisWheelZoomBehavior, wheelZoomBehavior, axisWheelFinerZoomBehavior, wheelFinerZoomBehavior);
 
         defaultMode.setValueChangeBehaviors(new CursorFeedbackBehavior());
 
