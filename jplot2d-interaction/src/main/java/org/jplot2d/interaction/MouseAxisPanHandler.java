@@ -68,11 +68,15 @@ public class MouseAxisPanHandler extends MouseDragBehaviorHandler<MouseAxisPanBe
             throw new Error();
         }
 
+        if (offset == 0) {
+            return;
+        }
+
         /**
          * pan the given distance
          */
         PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-        BatchToken token = env.beginBatch("MarqueeZoom");
+        BatchToken token = env.beginBatch("Axis Pan");
 
         double scale = axis.getPaperTransform().getScale();
         double npxStart = -offset / (axis.getLength() * scale);

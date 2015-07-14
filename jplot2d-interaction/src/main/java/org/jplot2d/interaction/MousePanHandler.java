@@ -57,6 +57,10 @@ public class MousePanHandler extends MouseDragBehaviorHandler<MousePanBehavior> 
         oldX = x;
         oldY = y;
 
+        if (xoff == 0 && yoff == 0) {
+            return;
+        }
+
         /**
          * pan the given distance
          */
