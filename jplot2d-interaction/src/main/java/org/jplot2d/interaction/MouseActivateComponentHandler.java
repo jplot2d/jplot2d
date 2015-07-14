@@ -74,6 +74,7 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
             handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, activeComponent);
         } else {
             activeComponent = null;
+            icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
             handler.putValue(PlotInteractionManager.ACTIVE_COMPONENT_KEY, null);
         }
 

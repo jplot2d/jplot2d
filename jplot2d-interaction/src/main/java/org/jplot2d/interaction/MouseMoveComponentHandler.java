@@ -47,7 +47,6 @@ public class MouseMoveComponentHandler extends MouseDragBehaviorHandler<MouseMov
                 icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
             } else {
                 movable = false;
-                icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
             }
         }
     }

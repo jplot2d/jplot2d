@@ -23,7 +23,6 @@ import org.jplot2d.env.PlotEnvironment;
 import org.jplot2d.notice.UINoticeType;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -34,8 +33,9 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
 
     private final InteractiveComp icomp;
     private Colorbar colorbar;
-    private boolean adjustable;
-    private float gainDispLoc, biasDispLoc;
+    private boolean adjustGain, adjustBias;
+    private int gainX, gainY, biasX, biasY;
+    private double gain, bias;
 
     public MouseColorbarHandler(MouseColorbarBehavior behavior, InteractionModeHandler handler) {
         super(behavior, handler);
@@ -46,119 +46,208 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
         if (evt.getPropertyName().equals(PlotInteractionManager.ACTIVE_COMPONENT_KEY)) {
             PComponent acomp = (PComponent) evt.getNewValue();
             if (acomp instanceof Colorbar && ((Colorbar) acomp).getImageMapping() != null) {
-                adjustable = true;
                 colorbar = (Colorbar) acomp;
-                double gain = colorbar.getImageMapping().getGain();
-                double bias = colorbar.getImageMapping().getBias();
-                gainDispLoc = (float) colorbar.getPaperTransform().getYPtoD(gain * colorbar.getLength());
-                biasDispLoc = (float) colorbar.getPaperTransform().getYPtoD(bias * colorbar.getLength());
+                init();
                 icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
             } else {
-                adjustable = false;
                 colorbar = null;
-                icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
             }
+        }
+    }
+
+    private void init() {
+        gain = colorbar.getImageMapping().getGain();
+        bias = colorbar.getImageMapping().getBias();
+        switch (colorbar.getPosition()) {
+            case LEFT:
+            case RIGHT:
+                gainX = (int) colorbar.getPaperTransform().getXPtoD(0);
+                gainY = (int) colorbar.getPaperTransform().getYPtoD(gain * colorbar.getLength());
+                biasX = (int) colorbar.getPaperTransform().getXPtoD(colorbar.getBarWidth());
+                biasY = (int) colorbar.getPaperTransform().getYPtoD(bias * colorbar.getLength());
+                break;
+            case TOP:
+            case BOTTOM:
+                gainX = (int) colorbar.getPaperTransform().getXPtoD(gain * colorbar.getLength());
+                gainY = (int) colorbar.getPaperTransform().getYPtoD(colorbar.getBarWidth());
+                biasX = (int) colorbar.getPaperTransform().getXPtoD(bias * colorbar.getLength());
+                biasY = (int) colorbar.getPaperTransform().getYPtoD(0);
+                break;
         }
     }
 
     @Override
     public boolean canStartDragging(int x, int y) {
-        return adjustable;
+        return colorbar != null;
     }
 
     @Override
     public void draggingStarted(int x, int y) {
-        switch (colorbar.getPosition()) {
-            case LEFT:
-            case RIGHT:
-                gainDispLoc = y;
-                break;
-            case TOP:
-            case BOTTOM:
-                gainDispLoc = x;
-                break;
+        if ((x - gainX) * (x - gainX) + (y - gainY) * (y - gainY) <= 50) {
+            adjustGain = true;
         }
-        icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
+        if ((x - biasX) * (x - biasX) + (y - biasY) * (y - biasY) <= 50) {
+            adjustBias = true;
+        }
+        if (adjustGain || adjustBias) {
+            icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
+            icomp.repaint();
+        }
     }
 
     @Override
     public void draggingTo(int x, int y) {
+        if (adjustGain) {
+            adjustGain(x, y);
+            icomp.repaint();
+        }
+        if (adjustBias) {
+            adjustBias(x, y);
+            icomp.repaint();
+        }
+    }
+
+    private void adjustGain(int x, int y) {
         switch (colorbar.getPosition()) {
             case LEFT:
             case RIGHT:
-                gainDispLoc = y;
+                gainY = y;
+                gain = colorbar.getPaperTransform().getYDtoP(gainY) / (colorbar.getLength());
                 break;
             case TOP:
             case BOTTOM:
-                gainDispLoc = x;
+                gainX = x;
+                gain = colorbar.getPaperTransform().getXDtoP(gainX) / (colorbar.getLength());
                 break;
             default:
-                return;
+                gain = 0.5;
         }
-        icomp.repaint();
+        boolean adj = false;
+        if (gain < 0.01) {
+            gain = 0.01;
+            adj = true;
+        } else if (gain > 0.99) {
+            gain = 0.99;
+            adj = true;
+        }
+        if (adj) {
+            switch (colorbar.getPosition()) {
+                case LEFT:
+                case RIGHT:
+                    gainY = (int) colorbar.getPaperTransform().getYPtoD(gain * colorbar.getLength());
+                    break;
+                case TOP:
+                case BOTTOM:
+                    gainX = (int) colorbar.getPaperTransform().getXPtoD(gain * colorbar.getLength());
+                    break;
+            }
+        }
+
+    }
+
+    private void adjustBias(int x, int y) {
+        switch (colorbar.getPosition()) {
+            case LEFT:
+            case RIGHT:
+                biasY = y;
+                bias = colorbar.getPaperTransform().getYDtoP(biasY) / (colorbar.getLength());
+                break;
+            case TOP:
+            case BOTTOM:
+                biasX = x;
+                bias = colorbar.getPaperTransform().getXDtoP(biasX) / (colorbar.getLength());
+                break;
+            default:
+                bias = 0.5;
+        }
+        boolean adj = false;
+        if (bias < 0.01) {
+            bias = 0.01;
+            adj = true;
+        } else if (bias > 0.99) {
+            bias = 0.99;
+            adj = true;
+        }
+        if (adj) {
+            switch (colorbar.getPosition()) {
+                case LEFT:
+                case RIGHT:
+                    biasY = (int) colorbar.getPaperTransform().getYPtoD(bias * colorbar.getLength());
+                    break;
+                case TOP:
+                case BOTTOM:
+                    biasX = (int) colorbar.getPaperTransform().getXPtoD(bias * colorbar.getLength());
+                    break;
+            }
+        }
     }
 
     @Override
     public void draggingFinished(int x, int y) {
-        switch (colorbar.getPosition()) {
-            case LEFT:
-            case RIGHT:
-                gainDispLoc = y;
-                break;
-            case TOP:
-            case BOTTOM:
-                gainDispLoc = x;
-                break;
-            default:
-                return;
+        if (adjustGain) {
+            adjustGain = false;
+            PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+            BatchToken token = env.beginBatch("Adjust Gain");
+            colorbar.getImageMapping().setGain(gain);
+            env.endBatch(token, UINoticeType.getInstance());
+
         }
-        icomp.repaint();
-
-        /**
-         * pan the given distance
-         */
-        PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
-        BatchToken token = env.beginBatch("Colorbar Adjust");
-
-        double gain = colorbar.getPaperTransform().getYDtoP(gainDispLoc) / (colorbar.getLength());
-        if (gain < 0.01) {
-            gain = 0.01;
-        } else if (gain > 0.99) {
-            gain = 0.99;
+        if (adjustBias) {
+            adjustBias = false;
+            PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
+            BatchToken token = env.beginBatch("Adjust Bias");
+            colorbar.getImageMapping().setBias(bias);
+            env.endBatch(token, UINoticeType.getInstance());
         }
-        colorbar.getImageMapping().setGain(gain);
-        gainDispLoc = (float) colorbar.getPaperTransform().getYPtoD(gain * colorbar.getLength());
-
-        env.endBatch(token, UINoticeType.getInstance());
-
         icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
     }
 
     @Override
     public void draggingCancelled() {
-        icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+        if (adjustGain || adjustBias) {
+            init();
+            icomp.repaint();
+            icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+        }
     }
 
     public void draw(Object g) {
-
-        if (!adjustable) {
+        if (colorbar == null) {
             return;
         }
 
         switch (colorbar.getPosition()) {
             case LEFT:
             case RIGHT:
-                double x0 = colorbar.getPaperTransform().getXPtoD(0);
-                icomp.drawShape(g, Color.GRAY.getRGB(), new Ellipse2D.Float((float) x0 - 4, gainDispLoc - 4, 8, 8));
+                drawSliderV(g, gainX, gainY);
+                drawSliderV(g, biasX, biasY);
                 break;
             case TOP:
             case BOTTOM:
-                double y0 = colorbar.getPaperTransform().getYPtoD(0);
-                icomp.drawShape(g, Color.GRAY.getRGB(), new Ellipse2D.Float(gainDispLoc - 4, (float) y0 - 4, 8, 8));
+                drawSliderH(g, gainX, gainY);
+                drawSliderH(g, biasX, biasY);
                 break;
-            default:
-                return;
         }
 
+        if (adjustGain) {
+            icomp.drawTooltip(g, "gain\n" + String.format("%.2f", gain), gainX, gainY);
+        }
+        if (adjustBias) {
+            icomp.drawTooltip(g, "bias\n" + String.format("%.2f", bias), biasX, biasY);
+        }
+    }
+
+    private void drawSliderV(Object g, int x, int y) {
+        icomp.drawLine(g, Color.BLACK.getRGB(), x - 4, y - 2, x + 4, y - 2);
+        icomp.drawLine(g, Color.BLACK.getRGB(), x - 4, y, x + 4, y);
+        icomp.drawLine(g, Color.BLACK.getRGB(), x - 4, y + 2, x + 4, y + 2);
+        icomp.drawRectangle(g, Color.GRAY.getRGB(), x - 6, y - 4, 12, 8);
+    }
+
+    private void drawSliderH(Object g, int x, int y) {
+        icomp.drawLine(g, Color.BLACK.getRGB(), x - 2, y - 4, x - 2, y + 4);
+        icomp.drawLine(g, Color.BLACK.getRGB(), x, y - 4, x, y + 4);
+        icomp.drawLine(g, Color.BLACK.getRGB(), x + 2, y - 4, x + 2, y + 4);
+        icomp.drawRectangle(g, Color.GRAY.getRGB(), x - 4, y - 6, 8, 12);
     }
 }
