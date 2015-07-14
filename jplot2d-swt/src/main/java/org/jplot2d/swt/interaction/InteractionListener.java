@@ -45,14 +45,16 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMov
     public void keyPressed(KeyEvent e) {
         int keyMask = getKeyMask(e);
         if (keyMask != 0) {
-            ihandler.keyPressed(getModifiersKeyMask(e) | keyMask, keyMask);
+            ihandler.modifierKeyPressed(getModifiersKeyMask(e) | keyMask, keyMask);
+        } else if (e.character == SWT.ESC) {
+            ihandler.escape();
         }
     }
 
     public void keyReleased(KeyEvent e) {
         int keyMask = getKeyMask(e);
         if (keyMask != 0) {
-            ihandler.keyReleased(getModifiersKeyMask(e) & ~keyMask, keyMask);
+            ihandler.modifierKeyReleased(getModifiersKeyMask(e) & ~keyMask, keyMask);
         }
     }
 

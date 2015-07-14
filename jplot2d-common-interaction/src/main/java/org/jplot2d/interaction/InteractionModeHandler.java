@@ -30,13 +30,9 @@ import java.util.Map;
 public class InteractionModeHandler {
 
     public static final String MODE_ENTERED_KEY = "MODE_ENTERED";
-
-    private final InteractionHandler ihandler;
-
-    private final InteractionMode imode;
-
     final Map<String, Object> valueMap = new HashMap<>();
-
+    private final InteractionHandler ihandler;
+    private final InteractionMode imode;
     private final Map<MouseBehavior, MouseBehaviorHandler<?>> handlerMap = new HashMap<>();
 
     private final Map<ValueChangeBehavior, ValueChangeHandler<?>> vcHandlerMap = new HashMap<>();
@@ -63,12 +59,20 @@ public class InteractionModeHandler {
         vcHandlerMap.put(handler.behavior, handler);
     }
 
-    public void keyPressed(int modifiers, int modifierKey) {
+    public void escape() {
+        for (MouseBehaviorHandler<?> handler : handlerMap.values()) {
+            if (handler.escape()) {
+                return;
+            }
+        }
+    }
+
+    public void modifierKeyPressed(int modifiers, int modifierKey) {
         exitModifiersKey(modifiers & ~modifierKey);
         enterModifiersKey(modifiers);
     }
 
-    public void keyReleased(int modifiers, int modifierKey) {
+    public void modifierKeyReleased(int modifiers, int modifierKey) {
         exitModifiersKey(modifiers | modifierKey);
         enterModifiersKey(modifiers);
     }

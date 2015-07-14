@@ -1,24 +1,22 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.interaction;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -38,13 +36,9 @@ import java.util.Map;
 public class InteractionHandler implements VisualFeedbackDrawer {
 
     private final InteractionManager imanager;
-
-    private InteractionModeHandler modeHandler;
-
     private final Map<InteractionMode, InteractionModeHandler> modeHandlerMap = new LinkedHashMap<>();
-
     private final Map<String, Object> valueMap = new HashMap<>();
-
+    private InteractionModeHandler modeHandler;
     /**
      * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will
      * be released.
@@ -94,19 +88,30 @@ public class InteractionHandler implements VisualFeedbackDrawer {
     }
 
     /**
-     * @param modifiers   the modifiers mask after a modifier key pressed
-     * @param modifierKey the modifiers mask of the modifier key pressed
+     * Called when esc key is pressed.
      */
-    public void keyPressed(int modifiers, int modifierKey) {
-        modeHandler.keyPressed(modifiers, modifierKey);
+    public void escape() {
+        modeHandler.escape();
     }
 
     /**
+     * Called when a modifier key is pressed.
+     *
+     * @param modifiers   the modifiers mask after a modifier key pressed
+     * @param modifierKey the modifiers mask of the modifier key pressed
+     */
+    public void modifierKeyPressed(int modifiers, int modifierKey) {
+        modeHandler.modifierKeyPressed(modifiers, modifierKey);
+    }
+
+    /**
+     * Called when a modifier key is released.
+     *
      * @param modifiers   the modifiers mask after a modifier key released
      * @param modifierKey the modifiers mask of the modifier key released
      */
-    public void keyReleased(int modifiers, int modifierKey) {
-        modeHandler.keyReleased(modifiers, modifierKey);
+    public void modifierKeyReleased(int modifiers, int modifierKey) {
+        modeHandler.modifierKeyReleased(modifiers, modifierKey);
     }
 
     public void mouseEntered(GenericMouseEvent e) {

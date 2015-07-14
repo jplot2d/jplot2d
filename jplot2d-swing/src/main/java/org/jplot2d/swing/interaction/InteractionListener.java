@@ -52,14 +52,17 @@ public class InteractionListener implements KeyListener, MouseListener, MouseMot
     public void keyPressed(KeyEvent e) {
         int keyMask = getKeyMask(e.getKeyCode());
         if (keyMask != 0) {
-            ihandler.keyPressed(e.getModifiersEx(), keyMask);
+            ihandler.modifierKeyPressed(e.getModifiersEx(), keyMask);
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            ihandler.escape();
+
         }
     }
 
     public void keyReleased(KeyEvent e) {
         int keyMask = getKeyMask(e.getKeyCode());
         if (keyMask != 0) {
-            ihandler.keyReleased(e.getModifiersEx(), keyMask);
+            ihandler.modifierKeyReleased(e.getModifiersEx(), keyMask);
         }
     }
 
