@@ -101,7 +101,7 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
     public void draggingStarted(int x, int y) {
         if (adjustGain || adjustBias) {
             icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
-            icomp.repaint();
+            icomp.repaint(); // to show tooltip
         }
     }
 
@@ -216,9 +216,11 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
     public void draggingCancelled() {
         if (adjustGain || adjustBias) {
             init();
-            icomp.repaint();
-            icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+            icomp.repaint(); // to erase the tooltip
         }
+        // re-evaluate the operation mode
+        Point p = icomp.getCursorLocation();
+        moveTo(p.x, p.y);
     }
 
     public void draw(Object g) {
