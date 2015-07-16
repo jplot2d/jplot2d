@@ -80,7 +80,7 @@ public class MouseActivateComponentHandler extends MouseMoveBehaviorHandler<Mous
 
         icomp.repaint();
 
-        return true;
+        return false;
     }
 
     public void draw(Object g) {

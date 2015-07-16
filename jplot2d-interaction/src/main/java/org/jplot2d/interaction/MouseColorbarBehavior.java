@@ -27,4 +27,8 @@ public class MouseColorbarBehavior extends MouseDragBehavior {
         return new MouseColorbarHandler(this, ihandler);
     }
 
+    @Override
+    protected boolean isMoveAware() {
+        return true;
+    }
 }

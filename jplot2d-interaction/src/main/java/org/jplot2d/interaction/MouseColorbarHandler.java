@@ -48,7 +48,6 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
             if (acomp instanceof Colorbar && ((Colorbar) acomp).getImageMapping() != null) {
                 colorbar = (Colorbar) acomp;
                 init();
-                icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
             } else {
                 colorbar = null;
             }
@@ -77,18 +76,29 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
     }
 
     @Override
+    public boolean moveTo(int x, int y) {
+        if (colorbar == null) {
+            return false;
+        }
+
+        adjustGain = (x - gainX) * (x - gainX) + (y - gainY) * (y - gainY) <= 50;
+        adjustBias = (x - biasX) * (x - biasX) + (y - biasY) * (y - biasY) <= 50;
+        if (adjustGain || adjustBias) {
+            icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+        } else {
+            icomp.setCursor(InteractiveComp.CursorStyle.DEFAULT_CURSOR);
+        }
+        // consume the move event
+        return true;
+    }
+
+    @Override
     public boolean canStartDragging(int x, int y) {
         return colorbar != null;
     }
 
     @Override
     public void draggingStarted(int x, int y) {
-        if ((x - gainX) * (x - gainX) + (y - gainY) * (y - gainY) <= 50) {
-            adjustGain = true;
-        }
-        if ((x - biasX) * (x - biasX) + (y - biasY) * (y - biasY) <= 50) {
-            adjustBias = true;
-        }
         if (adjustGain || adjustBias) {
             icomp.setCursor(InteractiveComp.CursorStyle.CLOSE_HAND_CURSOR);
             icomp.repaint();
@@ -185,7 +195,6 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
     @Override
     public void draggingFinished(int x, int y) {
         if (adjustGain) {
-            adjustGain = false;
             PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
             BatchToken token = env.beginBatch("Adjust Gain");
             colorbar.getImageMapping().setGain(gain);
@@ -193,13 +202,14 @@ public class MouseColorbarHandler extends MouseDragBehaviorHandler<MouseColorbar
 
         }
         if (adjustBias) {
-            adjustBias = false;
             PlotEnvironment env = (PlotEnvironment) handler.getValue(PlotInteractionManager.PLOT_ENV_KEY);
             BatchToken token = env.beginBatch("Adjust Bias");
             colorbar.getImageMapping().setBias(bias);
             env.endBatch(token, UINoticeType.getInstance());
         }
-        icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+        if (adjustGain || adjustBias) {
+            icomp.setCursor(InteractiveComp.CursorStyle.OPEN_HAND_CURSOR);
+        }
     }
 
     @Override
