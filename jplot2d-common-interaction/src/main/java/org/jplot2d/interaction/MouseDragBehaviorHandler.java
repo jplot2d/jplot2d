@@ -18,8 +18,7 @@ package org.jplot2d.interaction;
 
 import java.awt.event.MouseEvent;
 
-public abstract class MouseDragBehaviorHandler<T extends MouseDragBehavior> extends
-        MouseBehaviorHandler<T> {
+public abstract class MouseDragBehaviorHandler<T extends MouseDragBehavior> extends MouseBehaviorHandler<T> {
 
     private boolean indrag;
 
@@ -29,6 +28,9 @@ public abstract class MouseDragBehaviorHandler<T extends MouseDragBehavior> exte
 
     @Override
     public final boolean processMouseEvent(GenericMouseEvent e) {
+        if (e.getType() == MouseEvent.MOUSE_MOVED) {
+            return moveTo(e.getX(), e.getY());
+        }
         if (e.getType() == MouseEvent.MOUSE_PRESSED && canStartDragging(e.getX(), e.getY())) {
             indrag = true;
             draggingStarted(e.getX(), e.getY());
@@ -57,6 +59,13 @@ public abstract class MouseDragBehaviorHandler<T extends MouseDragBehavior> exte
             draggingCancelled();
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> to consume the move event, otherwise returns <code>false</code>.
+     */
+    public boolean moveTo(int x, int y) {
         return false;
     }
 

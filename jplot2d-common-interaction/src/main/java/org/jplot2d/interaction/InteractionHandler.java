@@ -40,14 +40,12 @@ public class InteractionHandler implements VisualFeedbackDrawer {
     private final Map<String, Object> valueMap = new HashMap<>();
     private InteractionModeHandler modeHandler;
     /**
-     * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will
-     * be released.
+     * Keeps all buttons which were pressed at the time of the last mouse drag beyond threshold, until all buttons will be released.
      */
     private int mouseSigDragState = 0;
 
     /**
-     * Keep all buttons which were pressed at the time of the last mouse drag within threshold, until all buttons will
-     * be released.
+     * Keep all buttons which were pressed at the time of the last mouse drag within threshold, until all buttons will be released.
      */
     private int mouseTrivialDragState = 0;
 
@@ -70,7 +68,6 @@ public class InteractionHandler implements VisualFeedbackDrawer {
     public void init() {
         for (InteractionMode mode : imanager.getModes()) {
             InteractionModeHandler mhandler = new InteractionModeHandler(this, mode);
-            mhandler.valueMap.putAll(valueMap);
             modeHandlerMap.put(mode, mhandler);
 
             for (MouseBehavior behavior : mode.getAvailableMouseBehaviors()) {
@@ -146,11 +143,9 @@ public class InteractionHandler implements VisualFeedbackDrawer {
     }
 
     public void mouseDragged(GenericMouseEvent e) {
-        int mouseKeyState = e.getModifiers()
-                & (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK);
+        int mouseKeyState = e.getModifiers() & (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK);
         int threshold = imanager.getClickThreshold();
-        if (lastPoint == null || Math.abs(lastPoint.x - e.getX()) > threshold
-                || Math.abs(lastPoint.y - e.getY()) > threshold) {
+        if (lastPoint == null || Math.abs(lastPoint.x - e.getX()) > threshold || Math.abs(lastPoint.y - e.getY()) > threshold) {
             lastPoint = null;
             mouseSigDragState = mouseKeyState;
             modeHandler.mouseDragged(e);

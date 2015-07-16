@@ -20,7 +20,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.util.*;
 
 /**
- * An operation mode contains a list of available commands and configuration of how to trigger them.
+ * An operation mode contains a list of available behavior and configuration of how to trigger them.
  *
  * @author Jingjing Li
  */
@@ -28,11 +28,11 @@ import java.util.*;
 public class InteractionMode {
 
     final Map<MouseBehavior, List<Integer>> modifiersKeyMap = new LinkedHashMap<>();
+    final Map<MouseBehavior, List<MouseButtonCombination>> moveMap = new LinkedHashMap<>();
     final Map<MouseBehavior, List<MouseButtonCombination>> clickMap = new LinkedHashMap<>();
     final Map<MouseBehavior, List<MouseButtonCombination>> pressMap = new LinkedHashMap<>();
     final Map<MouseBehavior, List<MouseButtonCombination>> releaseMap = new LinkedHashMap<>();
     final Map<MouseBehavior, List<MouseButtonCombination>> dragMap = new LinkedHashMap<>();
-    final Map<MouseBehavior, List<MouseButtonCombination>> moveMap = new LinkedHashMap<>();
     final Map<MouseBehavior, List<MouseButtonCombination>> wheelMap = new LinkedHashMap<>();
     private final String name;
     private final Set<MouseBehavior> availableBehaviors = new LinkedHashSet<>();
@@ -65,6 +65,16 @@ public class InteractionMode {
 
     public void setValueChangeBehaviors(ValueChangeBehavior... feedbacks) {
         Collections.addAll(vcBehaviors, feedbacks);
+    }
+
+    public void clearBinding() {
+        modifiersKeyMap.clear();
+        moveMap.clear();
+        clickMap.clear();
+        pressMap.clear();
+        releaseMap.clear();
+        dragMap.clear();
+        wheelMap.clear();
     }
 
     private <M> void put(Map<MouseBehavior, List<M>> map, MouseBehavior b, M mbc) {
@@ -103,14 +113,23 @@ public class InteractionMode {
     }
 
     /**
-     * Binds the given behavior with the MouseButtonCombination.
+     * Binds the drag behavior with the MouseButtonCombination. A drag behavior also receive mouse move event.
      */
     public void bindDragBehavior(MouseDragBehavior behavior, MouseButtonCombination mbc) {
         if (mbc == null) {
+            moveMap.remove(behavior);
+            modifiersKeyMap.remove(behavior);
             pressMap.remove(behavior);
             dragMap.remove(behavior);
             releaseMap.remove(behavior);
         } else {
+            if (behavior.isMoveAware()) {
+                int modifierWithoutButton = mbc.getModifiers() & ~mbc.getButtonMask();
+                put(moveMap, behavior, new MouseButtonCombination(modifierWithoutButton, 0, GenericMouseEvent.NOBUTTON));
+                if (mbc.getModifiers() != 0) {
+                    put(modifiersKeyMap, behavior, mbc.getModifiers());
+                }
+            }
             MouseButtonCombination pressmbc = new MouseButtonCombination(mbc.getModifiers(),
                     mbc.getClickCount(), mbc.getButton());
             put(pressMap, behavior, pressmbc);
@@ -124,7 +143,7 @@ public class InteractionMode {
     }
 
     /**
-     * Binds the given behavior with the MouseButtonCombination.
+     * Binds the wheel behavior with the MouseButtonCombination.
      */
     public void bindWheelBehavior(MouseWheelBehavior behavior, MouseButtonCombination mbc) {
         if (mbc == null) {

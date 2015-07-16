@@ -16,10 +16,9 @@
  */
 package org.jplot2d.interaction;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * This class handle the mouse actions that can respond to user's mouse events like left-click, double-click, right-click.
@@ -31,10 +30,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public abstract class InteractionManager {
 
-    private int clickThreshold;
-
     private final Map<String, InteractionMode> modeMap = new LinkedHashMap<>();
-
+    private int clickThreshold;
     private InteractionMode defaultMode;
 
     public int getClickThreshold() {
@@ -67,7 +64,7 @@ public abstract class InteractionManager {
     }
 
     /**
-     * Set the mouse preference. The pereference store the binding from mouse events to application behaviors.
+     * Set the mouse preference. The preference store the binding from mouse events to application behaviors.
      *
      * @param prefs the mouse preference
      */
@@ -76,6 +73,7 @@ public abstract class InteractionManager {
         clickThreshold = prefs.getClickThreshold();
 
         for (InteractionMode mode : modeMap.values()) {
+            mode.clearBinding();
             MouseBehavior[] behaviors = mode.getAvailableMouseBehaviors();
             for (MouseBehavior behavior : behaviors) {
                 MouseButtonCombinationEnablity[] mbces = prefs.getMouseButtonCombinationEnablity(mode, behavior);
