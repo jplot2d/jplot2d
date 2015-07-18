@@ -1,7 +1,7 @@
 jplot2d
 =======
 
-**A high-performace multi-threaded 2d plot library which produces publication quality plots.**
+**A high-performace multi-threaded 2d plot library in Java.**
 
 ###Key features
  * scatter plot, line chart, staircase chart
@@ -14,10 +14,14 @@ jplot2d
  * swing and swt gui components
  * python friendly
 
-###[Examples](https://github.com/jplot2d/jplot2d/wiki/Examples)
-Please check out the examples to see what jplot2d can produce.
+###Examples
+Deep Herschel view of obscured star formation in the Bullet cluster
+![AA518L14Fig4](https://github.com/jplot2d/jplot2d/wiki/example/AA518L14Fig4.png)
 
-:link: https://github.com/jplot2d/jplot2d/wiki/Examples
+The Herschel Virgo Cluster Survey - VI. The far-infrared view of M 87
+![AA518L53Fig2](https://github.com/jplot2d/jplot2d/wiki/example/AA518L53Fig2.png)
+
+[More examples and their source code](https://github.com/jplot2d/jplot2d/wiki/Examples)
 
 ###[Latest Javadoc](http://jplot2d.github.io/jplot2d/javadoc/)
 :link: http://jplot2d.github.io/jplot2d/javadoc/
