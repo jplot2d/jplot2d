@@ -20,28 +20,26 @@ import org.jplot2d.element.Element;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
+import org.jplot2d.element.impl.InvokeStep;
+import org.jplot2d.element.impl.Joinable;
 import org.jplot2d.notice.NoticeType;
 import org.jplot2d.notice.Notifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * An environment that a plot can be realized.
- * Once a plot is put in an environment, changes on the plot can trigger re-layout or redraw, according to the changed property.
- * <p/>
- * Renderers can be added to an environment to get the rendered result synchronously or asynchronously.
+ * An environment manage a group of plot elements. Any structure change or property change is tracked.
+ * It will log all changes to a {@link CommandLogger}
+ * and send {@link ElementChangeEvent} to all registered {@link ElementChangeListener}.
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public abstract class Environment {
 
     private static final Logger logger = LoggerFactory.getLogger("org.jplot2d.env");
@@ -52,34 +50,35 @@ public abstract class Environment {
     private static final Object LOCK = new Object();
 
     private static final int MAX_BATCH_DEPTH = 64;
-
-    private final ReentrantLock lock;
-
-    /**
-     * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch depth
-     */
-    private final int[] batchSND = new int[MAX_BATCH_DEPTH];
-
-    private int batchDepth;
-
-    /**
-     * To log a command
-     */
-    protected CommandLogger cmdLogger;
-
-    /**
-     * To notify something when ending a command.
-     */
-    protected Notifier notifier;
-
     /**
      * A impl to proxy map that contains all element in this environment. It's a LinkedHashMap to keep the order of
      * elements added. In case of the same z-order, the adding order take into account.
      */
     protected final Map<ElementEx, Element> proxyMap = new LinkedHashMap<>();
-
+    private final ReentrantLock lock;
+    /**
+     * batch SN in every depth. batchSND[n], n is batch depth -1. the value is the SN for the batch depth
+     */
+    private final int[] batchSND = new int[MAX_BATCH_DEPTH];
     private final List<ElementChangeListener> plotStructureListenerList = Collections
             .synchronizedList(new ArrayList<ElementChangeListener>());
+    /**
+     * To notify something when ending a command.
+     */
+    protected Notifier notifier;
+    private int batchDepth;
+    /**
+     * To log a command
+     */
+    private CommandLogger cmdLogger;
+
+    protected Environment(boolean threadSafe) {
+        if (threadSafe) {
+            lock = new ReentrantLock();
+        } else {
+            lock = null;
+        }
+    }
 
     protected static Object getGlobalLock() {
         return LOCK;
@@ -115,11 +114,70 @@ public abstract class Environment {
         }
     }
 
-    protected Environment(boolean threadSafe) {
-        if (threadSafe) {
-            lock = new ReentrantLock();
+    /**
+     * Fills the argument object into the given stringBuilder
+     *
+     * @param sb  the string builder to fill in
+     * @param arg the argument object
+     */
+    private static void fillArgString(StringBuilder sb, Object arg) {
+        if (arg instanceof Element) {
+            fillElementExpString(sb, ((Element) arg).getEnvironment(), ((ElementAddition) arg).getImpl());
+        } else if (arg instanceof Element[]) {
+            sb.append("[");
+            if (((Element[]) arg).length > 0) {
+                fillArgString(sb, ((Element[]) arg)[0]);
+                for (int i = 1; i < ((Element[]) arg).length; i++) {
+                    sb.append(", ");
+                    fillArgString(sb, ((Element[]) arg)[i]);
+                }
+            }
+            sb.append("]");
+        } else if (arg instanceof String) {
+            sb.append("\"");
+            sb.append(arg);
+            sb.append("\"");
         } else {
-            lock = null;
+            sb.append(arg);
+        }
+    }
+
+    /**
+     * Fills into a string builder to represent how to get the object from it's ancestor proxy.
+     *
+     * @param sb  the string builder to fill in
+     * @param env the environment that contains the giving obj
+     * @param obj the object unpacked from proxy
+     */
+    private static void fillElementExpString(StringBuilder sb, Environment env, Object obj) {
+
+        if (obj instanceof ElementEx) {
+            ElementEx parent;
+            if (obj instanceof Joinable) {
+                parent = ((Joinable) obj).getPrim();
+            } else {
+                parent = ((ElementEx) obj).getParent();
+            }
+
+            InvokeStep ivs = null;
+            if (parent != null) {
+                ivs = ((ElementEx) obj).getInvokeStepFormParent();
+            }
+
+            if (ivs != null) {
+                fillElementExpString(sb, env, parent);
+                sb.append(".");
+                sb.append(ivs.getMethod().getName());
+                sb.append("(");
+                if (ivs.getIndex() >= 0) {
+                    sb.append(ivs.getIndex());
+                }
+                sb.append(")");
+            } else {
+                sb.append(String.valueOf(env.getProxy((ElementEx) obj)));
+            }
+        } else {
+            sb.append(obj.toString());
         }
     }
 
@@ -196,8 +254,6 @@ public abstract class Environment {
         fireElementPropertyChanged(getProxy(comp));
     }
 
-	/* --- JPlot2DChangeListener --- */
-
     private void fireComponentAdded(PComponent element) {
         ElementChangeListener[] ls = getElementChangeListeners();
         if (ls.length > 0) {
@@ -255,7 +311,7 @@ public abstract class Environment {
     }
 
     /**
-     * Add an ElementChangeListener
+     * Add an ElementChangeListener.
      *
      * @param listener the ElementChangeListener to be added
      */
@@ -264,7 +320,7 @@ public abstract class Environment {
     }
 
     /**
-     * Remove an ElementChangeListener
+     * Remove the given ElementChangeListener.
      *
      * @param listener the ElementChangeListener to be removed
      */
@@ -273,8 +329,8 @@ public abstract class Environment {
     }
 
     /**
-     * Return the command logger who receive commands executed in this environment. If there is no command logger,
-     * returns <code>null</code>.
+     * Return the command logger who receive commands executed in this environment.
+     * If there is no command logger, returns <code>null</code>.
      *
      * @return the command logger
      */
@@ -289,6 +345,34 @@ public abstract class Environment {
      */
     public void setCommandLogger(CommandLogger cmdLogger) {
         this.cmdLogger = cmdLogger;
+    }
+
+    /**
+     * Log a command invocation. The logging is protected by environment.
+     *
+     * @param method the command method
+     * @param impl   the element implementation
+     * @param args   plain java object or Element proxy object
+     */
+    void logCommand(Method method, Object impl, Object[] args) {
+        if (cmdLogger == null) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        fillElementExpString(sb, this, impl);
+        sb.append(".");
+        sb.append(method.getName());
+        sb.append("(");
+        if (args != null && args.length > 0) {
+            fillArgString(sb, args[0]);
+            for (int i = 1; i < args.length; i++) {
+                sb.append(", ");
+                fillArgString(sb, args[i]);
+            }
+        }
+        sb.append(")");
+        cmdLogger.log(sb.toString());
     }
 
     /**
@@ -320,8 +404,10 @@ public abstract class Environment {
     }
 
     /**
-     * Begin a batch block. In this mode, all update on plot will not be processed, until endBatch is called. If this
-     * environment is thread-safe, this method also lock the ReentrantLock, will block other thread call this method.
+     * Begin a batch block.
+     * In this mode, all update on plot will not be processed, until endBatch is called.
+     * If this environment is thread-safe, this method also lock the internal ReentrantLock,
+     * and block other thread from calling any method of elements in this environment.
      *
      * @param msg the short description about the batch
      * @return a batch token
@@ -385,8 +471,8 @@ public abstract class Environment {
     }
 
     /**
-     * A light weight version of endBatch, without verifying a batch token. It will never throw an exception in any
-     * case.
+     * A light weight version of endBatch, without verifying a batch token.
+     * It will never throw an exception in any case.
      * <p/>
      * This method is called from element proxy invocation handler after a setter method of the proxy is called.
      */
@@ -395,8 +481,8 @@ public abstract class Environment {
     }
 
     /**
-     * A light weight version of endBatch, without verifying a batch token. It will never throw an exception in any
-     * case.
+     * A light weight version of endBatch, without verifying a batch token.
+     * It will never throw an exception in any case.
      *
      * @param type the type for notice processor
      */
@@ -441,8 +527,9 @@ public abstract class Environment {
     }
 
     /**
-     * Commit all pending processes in a batch. The isBatch() should remain <code>true</code> while this method is
-     * called. This method can be called many times.
+     * Commit all pending processes in a batch.
+     * The isBatch() should remain <code>true</code> while this method is called.
+     * This method can be called many times.
      */
     protected abstract void commit();
 

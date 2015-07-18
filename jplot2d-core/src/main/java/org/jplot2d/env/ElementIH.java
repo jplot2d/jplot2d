@@ -1,27 +1,24 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.env;
 
 import org.jplot2d.element.Element;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.element.impl.InvokeStep;
 import org.jplot2d.element.impl.Joinable;
 
 import java.lang.reflect.Array;
@@ -38,16 +35,14 @@ import java.util.Map;
 public class ElementIH implements InvocationHandler {
 
     private final InterfaceInfo iinfo;
-
-    /**
-     * Guarded by EnvLock
-     */
-    private ElementEx impl;
-
     /**
      * This field must be read within Environment Global LOCK
      */
     protected volatile Environment environment;
+    /**
+     * Guarded by EnvLock
+     */
+    private ElementEx impl;
 
     /**
      * Construct a ElementIH
@@ -173,7 +168,7 @@ public class ElementIH implements InvocationHandler {
                 }
                 return null;
             } else {
-				/* other method */
+                /* other method */
                 Object result = invokeOther(method, args);
                 // fire PropertyChanged
                 environment.elementPropertyChanged(impl);
@@ -260,7 +255,7 @@ public class ElementIH implements InvocationHandler {
 
             penv.beginCommand(method.getName());
 
-            logCommand(method, args);
+            environment.logCommand(method, impl, args);
 
             Object[] cargs = args.clone();
             cargs[0] = cimpls;
@@ -310,7 +305,7 @@ public class ElementIH implements InvocationHandler {
             }
             penv.beginCommand(method.getName());
 
-            logCommand(method, args);
+            environment.logCommand(method, impl, args);
 
             Object[] cargs = args.clone();
             cargs[0] = cimpl;
@@ -367,7 +362,7 @@ public class ElementIH implements InvocationHandler {
 
                 } else {
 
-                    logCommand(method, args);
+                    environment.logCommand(method, impl, args);
 
                     // notify environment a component is going to be removed
                     penv.componentRemoving(cimpl);
@@ -450,7 +445,7 @@ public class ElementIH implements InvocationHandler {
                 return;
             }
 
-            logCommand(method, args);
+            environment.logCommand(method, impl, args);
 
             // join the new child
             Object[] cargs = args.clone();
@@ -515,7 +510,7 @@ public class ElementIH implements InvocationHandler {
             cimpl = ((ElementAddition) args[0]).getImpl();
         }
 
-        logCommand(method, args);
+        environment.logCommand(method, impl, args);
 
         Object[] cargs = args.clone();
         cargs[0] = cimpl;
@@ -560,7 +555,7 @@ public class ElementIH implements InvocationHandler {
             cimpl1 = ((ElementAddition) args[1]).getImpl();
         }
 
-        logCommand(method, args);
+        environment.logCommand(method, impl, args);
 
         Object[] cargs = args.clone();
         cargs[0] = cimpl0;
@@ -602,7 +597,7 @@ public class ElementIH implements InvocationHandler {
             }
             penv.beginCommand(method.getName());
 
-            logCommand(method, args);
+            environment.logCommand(method, impl, args);
 
             // update environment for all adding components
             for (Element proxy : cenv.proxyMap.values()) {
@@ -661,7 +656,7 @@ public class ElementIH implements InvocationHandler {
             return false;
         }
 
-        logCommand(method, args);
+        environment.logCommand(method, impl, args);
 
         try {
             method.invoke(impl, args[0]);
@@ -673,7 +668,7 @@ public class ElementIH implements InvocationHandler {
 
     protected Object invokeOther(Method method, Object[] args) throws Throwable {
 
-        logCommand(method, args);
+        environment.logCommand(method, impl, args);
 
         try {
             return method.invoke(impl, args);
@@ -682,97 +677,4 @@ public class ElementIH implements InvocationHandler {
         }
     }
 
-    /**
-     * Log a command invocation. The logging is protected by environment.
-     *
-     * @param method the command method
-     * @param args   plain java object or Element proxy object
-     */
-    private void logCommand(Method method, Object[] args) {
-        StringBuilder sb = new StringBuilder();
-
-        fillElementExpString(sb, environment, impl);
-        sb.append(".");
-        sb.append(method.getName());
-        sb.append("(");
-        if (args != null && args.length > 0) {
-            fillArgString(sb, args[0]);
-            for (int i = 1; i < args.length; i++) {
-                sb.append(", ");
-                fillArgString(sb, args[i]);
-            }
-        }
-        sb.append(")");
-
-        if (environment.cmdLogger != null) {
-            environment.cmdLogger.log(sb.toString());
-        }
-    }
-
-    /**
-     * Fills the argument object into the given stringBuilder
-     *
-     * @param sb  the string builder to fill in
-     * @param arg the argument object
-     */
-    private static void fillArgString(StringBuilder sb, Object arg) {
-        if (arg instanceof Element) {
-            fillElementExpString(sb, ((Element) arg).getEnvironment(), ((ElementAddition) arg).getImpl());
-        } else if (arg instanceof Element[]) {
-            sb.append("[");
-            if (((Element[]) arg).length > 0) {
-                fillArgString(sb, ((Element[]) arg)[0]);
-                for (int i = 1; i < ((Element[]) arg).length; i++) {
-                    sb.append(", ");
-                    fillArgString(sb, ((Element[]) arg)[i]);
-                }
-            }
-            sb.append("]");
-        } else if (arg instanceof String) {
-            sb.append("\"");
-            sb.append(arg);
-            sb.append("\"");
-        } else {
-            sb.append(arg);
-        }
-    }
-
-    /**
-     * Fills into a string builder to represent how to get the object from it's ancestor proxy.
-     *
-     * @param sb  the string builder to fill in
-     * @param env the environment that contains the giving obj
-     * @param obj the object unpacked from proxy
-     */
-    private static void fillElementExpString(StringBuilder sb, Environment env, Object obj) {
-
-        if (obj instanceof ElementEx) {
-            ElementEx parent;
-            if (obj instanceof Joinable) {
-                parent = ((Joinable) obj).getPrim();
-            } else {
-                parent = ((ElementEx) obj).getParent();
-            }
-
-            InvokeStep ivs = null;
-            if (parent != null) {
-                ivs = ((ElementEx) obj).getInvokeStepFormParent();
-            }
-
-            if (ivs != null) {
-                fillElementExpString(sb, env, parent);
-                sb.append(".");
-                sb.append(ivs.getMethod().getName());
-                sb.append("(");
-                if (ivs.getIndex() >= 0) {
-                    sb.append(ivs.getIndex());
-                }
-                sb.append(")");
-            } else {
-                sb.append(String.valueOf(env.getProxy((ElementEx) obj)));
-            }
-        } else {
-            sb.append(obj.toString());
-        }
-    }
 }
