@@ -1,30 +1,27 @@
-/**
- * Copyright 2010-2014 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.swing.print;
 
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.env.CacheableBlock;
 import org.jplot2d.env.RenderEnvironment;
-import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.renderer.Renderer;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -37,60 +34,37 @@ import java.util.List;
  */
 public class PrintRenderer extends Renderer implements Printable {
 
-    public enum PageFitMode {
-        /**
-         * Fit onto printer page. Magnify or shrink to fit onto printer page.
-         */
-        TO_FIT,
-        /**
-         * Default scale for printing. A value of 1.0 paper units = 72 pts.
-         */
-        DEFAULT_SCALE,
-        /**
-         * Shrink to fit onto printer page. Will not magnify if graphic will already fit.
-         */
-        SHRINK_TO_FIT
-    }
-
     /**
      * Align to top of printer page.
      */
     public static final int TOP = 0;
-
     /**
      * Align to middle of printer page.
      */
     public static final int MIDDLE = 1;
-
     /**
      * Align to bottom of printer page.
      */
     public static final int BOTTOM = 2;
-
     /**
      * Align to left of printer page.
      */
     public static final int LEFT = 0;
-
     /**
      * Align to center of printer page.
      */
     public static final int CENTER = 1;
-
     /**
      * Align to right of printer page.
      */
     public static final int RIGHT = 2;
-
     private static final PrinterJob printerJob = PrinterJob.getPrinterJob();
-
     /**
      * The global pageFormat used in {@link #pageDialog()} and {@link #printDialog(RenderEnvironment)}
      */
     private static PageFormat pageFormat;
-
     private final RenderEnvironment env;
-
+    private final PageFitMode fitMode;
     private Graphics2D g2;
 
     /**
@@ -98,11 +72,27 @@ public class PrintRenderer extends Renderer implements Printable {
      */
     private PageFormat pf;
 
-    private final PageFitMode fitMode;
-
     public PrintRenderer(RenderEnvironment env) {
         this.env = env;
         fitMode = PageFitMode.TO_FIT;
+    }
+
+    public static void pageDialog() {
+        if (pageFormat == null) {
+            pageFormat = printerJob.defaultPage();
+        }
+        pageFormat = printerJob.pageDialog(pageFormat);
+    }
+
+    public static void printDialog(RenderEnvironment env) throws PrinterException {
+        if (pageFormat == null) {
+            pageFormat = printerJob.defaultPage();
+            pageFormat = printerJob.pageDialog(pageFormat);
+        }
+        printerJob.setPrintable(new PrintRenderer(env), pageFormat);
+        if (printerJob.printDialog()) {
+            printerJob.print();
+        }
     }
 
     @Override
@@ -188,21 +178,18 @@ public class PrintRenderer extends Renderer implements Printable {
         return MIDDLE;
     }
 
-    public static void pageDialog() {
-        if (pageFormat == null) {
-            pageFormat = printerJob.defaultPage();
-        }
-        pageFormat = printerJob.pageDialog(pageFormat);
-    }
-
-    public static void printDialog(RenderEnvironment env) throws PrinterException {
-        if (pageFormat == null) {
-            pageFormat = printerJob.defaultPage();
-            pageFormat = printerJob.pageDialog(pageFormat);
-        }
-        printerJob.setPrintable(new PrintRenderer(env), pageFormat);
-        if (printerJob.printDialog()) {
-            printerJob.print();
-        }
+    public enum PageFitMode {
+        /**
+         * Fit onto printer page. Magnify or shrink to fit onto printer page.
+         */
+        TO_FIT,
+        /**
+         * Default scale for printing. A value of 1.0 paper units = 72 pts.
+         */
+        DEFAULT_SCALE,
+        /**
+         * Shrink to fit onto printer page. Will not magnify if graphic will already fit.
+         */
+        SHRINK_TO_FIT
     }
 }

@@ -1,26 +1,25 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.renderer;
 
 import org.jplot2d.element.impl.ComponentEx;
+import org.jplot2d.env.CacheableBlock;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +33,77 @@ import java.util.concurrent.FutureTask;
  *
  * @author Jingjing Li
  */
+@SuppressWarnings("unused")
 public class AsyncImageRenderer extends ImageRenderer {
+
+    /**
+     * synchronized area for renderer task queue
+     */
+    private final Object renderLock = new Object();
+    /**
+     * synchronized by renderLock
+     */
+    private final Queue<AsyncImageRendererTask> renderTaskQueue = new LinkedList<>();
+    private volatile RendererCancelPolicy cancelPolicy = RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER;
+
+    public AsyncImageRenderer(ImageFactory imageFactory) {
+        super(imageFactory);
+    }
+
+    @Override
+    public final void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
+
+        Rectangle bounds = getDeviceBounds(comp);
+
+        CancelableRendererCallable callable;
+        if (cacheBlockList.size() == 1) {
+            // If the plot has no cacheable component, run renderer directly
+            callable = new SingleRendererCallable(fsn++, bounds, cacheBlockList.get(0));
+        } else {
+            // run cacheable component renderer
+            ImageAssemblyInfo ainfo = runCompRender(executor, cacheBlockList);
+            callable = new RenderAssemblyCallable(fsn++, bounds, ainfo);
+        }
+
+        synchronized (renderLock) {
+            AsyncImageRendererTask task = new AsyncImageRendererTask(callable);
+
+			/* remove all renderers from queue and cancel them */
+            if (cancelPolicy == RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER) {
+                for (; ; ) {
+                    AsyncImageRendererTask rtask = renderTaskQueue.poll();
+                    if (rtask == null) {
+                        break;
+                    }
+                    if (rtask.cancel(true)) {
+                        logger.trace("Render task {} to be exec. The render task {} is cancelled.", task.getSN(),
+                                rtask.getSN());
+                    }
+                }
+            }
+
+            // add new task
+            renderTaskQueue.offer(task);
+            executor.execute(task);
+        }
+
+    }
+
+    public RendererCancelPolicy getRendererCancelPolicy() {
+        return cancelPolicy;
+    }
+
+    /**
+     * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS mode, there is only 1 renderer in the
+     * queue is scheduled
+     */
+    public void setRendererCancelPolicy(RendererCancelPolicy policy) {
+        cancelPolicy = policy;
+    }
+
+    public enum RendererCancelPolicy {
+        CANCEL_BEFORE_EXEC_NEWER, CANCEL_AFTER_NEWER_DONE, NO_CANCEL
+    }
 
     /**
      * Add ability to cancel component rendering futures.
@@ -158,7 +227,7 @@ public class AsyncImageRenderer extends ImageRenderer {
                             if (renderer.getSN() == getSN()) {
                                 break;
                             }
-							/* cancel old renderer */
+                            /* cancel old renderer */
                             if (renderer.getSN() < getSN() && renderer.cancel(true)) {
                                 logger.trace("Renderer {} finished. Cancel the old renderer {}", getSN(),
                                         renderer.getSN());
@@ -169,77 +238,6 @@ public class AsyncImageRenderer extends ImageRenderer {
             }
         }
 
-    }
-
-    public static enum RendererCancelPolicy {
-        CANCEL_BEFORE_EXEC_NEWER, CANCEL_AFTER_NEWER_DONE, NO_CANCEL
-    }
-
-    private volatile RendererCancelPolicy cancelPolicy = RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER;
-
-    /**
-     * synchronized area for renderer task queue
-     */
-    private final Object renderLock = new Object();
-
-    /**
-     * synchronized by renderLock
-     */
-    private final Queue<AsyncImageRendererTask> renderTaskQueue = new LinkedList<>();
-
-    public AsyncImageRenderer(ImageFactory imageFactory) {
-        super(imageFactory);
-    }
-
-    @Override
-    public final void render(ComponentEx comp, List<CacheableBlock> cacheBlockList) {
-
-        Rectangle bounds = getDeviceBounds(comp);
-
-        CancelableRendererCallable callable;
-        if (cacheBlockList.size() == 1) {
-            // If the plot has no cacheable component, run renderer directly
-            callable = new SingleRendererCallable(fsn++, bounds, cacheBlockList.get(0));
-        } else {
-            // run cacheable component renderer
-            ImageAssemblyInfo ainfo = runCompRender(executor, cacheBlockList);
-            callable = new RenderAssemblyCallable(fsn++, bounds, ainfo);
-        }
-
-        synchronized (renderLock) {
-            AsyncImageRendererTask task = new AsyncImageRendererTask(callable);
-
-			/* remove all renderers from queue and cancel them */
-            if (cancelPolicy == RendererCancelPolicy.CANCEL_BEFORE_EXEC_NEWER) {
-                for (; ; ) {
-                    AsyncImageRendererTask rtask = renderTaskQueue.poll();
-                    if (rtask == null) {
-                        break;
-                    }
-                    if (rtask.cancel(true)) {
-                        logger.trace("Render task {} to be exec. The render task {} is cancelled.", task.getSN(),
-                                rtask.getSN());
-                    }
-                }
-            }
-
-            // add new task
-            renderTaskQueue.offer(task);
-            executor.execute(task);
-        }
-
-    }
-
-    public RendererCancelPolicy getRendererCancelPolicy() {
-        return cancelPolicy;
-    }
-
-    /**
-     * In PARALLEL mode, all scheduled renderer exist in the queue. In SURPASS mode, there is only 1 renderer in the
-     * queue is scheduled
-     */
-    public void setRendererCancelPolicy(RendererCancelPolicy policy) {
-        cancelPolicy = policy;
     }
 
 }

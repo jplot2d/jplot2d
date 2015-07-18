@@ -25,7 +25,6 @@ import org.jplot2d.element.impl.IntermediateCacheEx;
 import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.notice.LoggingNotifier;
 import org.jplot2d.notice.Notifier;
-import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.transform.PaperTransform;
 
 import java.awt.geom.Point2D;

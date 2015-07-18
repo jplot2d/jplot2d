@@ -19,7 +19,6 @@ package org.jplot2d.env;
 import org.jplot2d.element.PComponent;
 import org.jplot2d.element.impl.ComponentEx;
 import org.jplot2d.element.impl.ElementEx;
-import org.jplot2d.renderer.CacheableBlock;
 import org.jplot2d.renderer.EpsExporter;
 import org.jplot2d.renderer.PdfExporter;
 import org.jplot2d.renderer.PngFileExporter;
