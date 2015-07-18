@@ -1,20 +1,18 @@
-/**
- * Copyright 2010 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -23,6 +21,10 @@ import org.jplot2d.annotation.HierarchyOp;
 import org.jplot2d.env.Environment;
 
 /**
+ * Common interface of all plot elements.
+ * A Element must be created by {@link ElementFactory}, which attach the element to an {@link Environment}.
+ * The Environment will handle thread
+ *
  * @author Jingjing Li
  */
 public interface Element {
@@ -32,7 +34,7 @@ public interface Element {
      *
      * @return the id string
      */
-    public String getId();
+    String getId();
 
     /**
      * Gets the parent of this component.
@@ -40,8 +42,8 @@ public interface Element {
      * @return the parent of this component
      */
     @Hierarchy(HierarchyOp.GET)
-    public Element getParent();
+    Element getParent();
 
-    public Environment getEnvironment();
+    Environment getEnvironment();
 
 }
