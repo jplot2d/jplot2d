@@ -939,8 +939,10 @@ public class ElementFactory {
             copyMap = new HashMap<>();
         }
 
-        Environment senv = element.getEnvironment();
         DummyEnvironment denv = createDummyEnvironment();
+
+        Environment senv = element.getEnvironment();
+        BatchToken token = senv.beginBatch("copy " + element);
 
         HashMap<ElementEx, ElementEx> implCopyMap = new HashMap<>();
         ElementEx ecopy = ((ElementAddition) element).getImpl().copyStructure(implCopyMap);
@@ -958,6 +960,8 @@ public class ElementFactory {
 
             copyMap.put(sproxy, dproxy);
         }
+
+        senv.endBatch(token);
 
         return (T) denv.getProxy(ecopy);
     }

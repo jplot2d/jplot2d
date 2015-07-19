@@ -40,7 +40,7 @@ public class ElementIH implements InvocationHandler {
      */
     protected volatile Environment environment;
     /**
-     * Guarded by EnvLock
+     * Guarded by environment
      */
     private ElementEx impl;
 
@@ -68,32 +68,43 @@ public class ElementIH implements InvocationHandler {
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-		/* quick equals */
-        if (method.getName().equals("equals")) {
-            if (proxy == args[0]) {
-                return Boolean.TRUE;
-            }
-            if (args[0] == null) {
-                return Boolean.FALSE;
-            }
+        switch (method.getName()) {
+            case "equals":
+                return proxy == args[0];
+            case "hashCode":
+                Environment env;
+                synchronized (Environment.getGlobalLock()) {
+                    env = environment;
+                    env.begin();
+                }
+                try {
+                    return impl.hashCode();
+                } finally {
+                    env.end();
+                }
+            case "toString":
+                synchronized (Environment.getGlobalLock()) {
+                    env = environment;
+                    env.begin();
+                }
+                try {
+                    return "Proxy@" + System.identityHashCode(proxy) + "(" + impl.toString() + ")";
+                } finally {
+                    env.end();
+                }
+            case "getEnvironment":
+                synchronized (Environment.getGlobalLock()) {
+                    return environment;
+                }
+            case "setEnvironment":
+                assert Thread.holdsLock(Environment.getGlobalLock());
+                environment = (Environment) args[0];
+                return null;
+            case "getImpl":
+                return impl;
         }
 
-		/* ElementEx */
-        if (method.getName().equals("getEnvironment")) {
-            synchronized (Environment.getGlobalLock()) {
-                return environment;
-            }
-        }
-        if (method.getName().equals("setEnvironment")) {
-            assert Thread.holdsLock(Environment.getGlobalLock());
-            environment = (Environment) args[0];
-            return null;
-        }
-        if (method.getName().equals("getImpl")) {
-            return impl;
-        }
-
-		/* getComponent(int n) */
+        /* getComponent(int n) */
         if (iinfo.isGetCompMethod(method)) {
             return invokeGetCompMethod(method, args);
         }
@@ -136,47 +147,44 @@ public class ElementIH implements InvocationHandler {
             return null;
         }
 
-        environment.begin();
-        try {
-
-            if (method.getName().equals("equals")) {
-                return proxy == args[0];
+        /* property getter */
+        if (iinfo.isPropReadMethod(method)) {
+            Environment env;
+            synchronized (Environment.getGlobalLock()) {
+                env = environment;
+                env.begin();
             }
-            if (method.getName().equals("hashCode")) {
-                return impl.hashCode();
-            }
-            if (method.getName().equals("toString")) {
-                return "Proxy@" + System.identityHashCode(proxy) + "(" + impl.toString() + ")";
-            }
-
-			/* property getter */
-            if (iinfo.isPropReadMethod(method)) {
+            try {
                 return invokeGetter(method);
+            } finally {
+                env.end();
             }
-        } finally {
-            environment.end();
         }
 
-        environment.beginCommand(method.getName());
+        Environment env;
+        synchronized (Environment.getGlobalLock()) {
+            env = environment;
+            env.beginCommand(method.getName());
+        }
         try {
+
             if (iinfo.isPropWriteMethod(method)) {
-                /* property setter method */
+                /* property setter */
+                env.logCommand(method, impl, args);
                 boolean propChanged = invokeSetter(method, args);
                 if (propChanged) {
-                    // fire PropertyChanged
-                    environment.elementPropertyChanged(impl);
+                    env.elementPropertyChanged(impl);
                 }
                 return null;
             } else {
                 /* other method */
+                env.logCommand(method, impl, args);
                 Object result = invokeOther(method, args);
-                // fire PropertyChanged
-                environment.elementPropertyChanged(impl);
+                env.elementPropertyChanged(impl);
                 return result;
             }
-
         } finally {
-            environment.endCommand();
+            env.endCommand();
         }
 
     }
@@ -254,8 +262,7 @@ public class ElementIH implements InvocationHandler {
             }
 
             penv.beginCommand(method.getName());
-
-            environment.logCommand(method, impl, args);
+            penv.logCommand(method, impl, args);
 
             Object[] cargs = args.clone();
             cargs[0] = cimpls;
@@ -304,8 +311,7 @@ public class ElementIH implements InvocationHandler {
                 throw new IllegalArgumentException("The component to be added already has a parent.");
             }
             penv.beginCommand(method.getName());
-
-            environment.logCommand(method, impl, args);
+            penv.logCommand(method, impl, args);
 
             Object[] cargs = args.clone();
             cargs[0] = cimpl;
@@ -359,10 +365,8 @@ public class ElementIH implements InvocationHandler {
                         msg += "\t" + me.getKey() + " is required by " + me.getValue() + "\n";
                     }
                     throwable = new IllegalStateException(msg);
-
                 } else {
-
-                    environment.logCommand(method, impl, args);
+                    penv.logCommand(method, impl, args);
 
                     // notify environment a component is going to be removed
                     penv.componentRemoving(cimpl);
@@ -445,7 +449,7 @@ public class ElementIH implements InvocationHandler {
                 return;
             }
 
-            environment.logCommand(method, impl, args);
+            env.logCommand(method, impl, args);
 
             // join the new child
             Object[] cargs = args.clone();
@@ -510,7 +514,7 @@ public class ElementIH implements InvocationHandler {
             cimpl = ((ElementAddition) args[0]).getImpl();
         }
 
-        environment.logCommand(method, impl, args);
+        env.logCommand(method, impl, args);
 
         Object[] cargs = args.clone();
         cargs[0] = cimpl;
@@ -555,7 +559,7 @@ public class ElementIH implements InvocationHandler {
             cimpl1 = ((ElementAddition) args[1]).getImpl();
         }
 
-        environment.logCommand(method, impl, args);
+        env.logCommand(method, impl, args);
 
         Object[] cargs = args.clone();
         cargs[0] = cimpl0;
@@ -596,8 +600,7 @@ public class ElementIH implements InvocationHandler {
                 throw new IllegalArgumentException("The component to be added already has a parent.");
             }
             penv.beginCommand(method.getName());
-
-            environment.logCommand(method, impl, args);
+            penv.logCommand(method, impl, args);
 
             // update environment for all adding components
             for (Element proxy : cenv.proxyMap.values()) {
@@ -656,8 +659,6 @@ public class ElementIH implements InvocationHandler {
             return false;
         }
 
-        environment.logCommand(method, impl, args);
-
         try {
             method.invoke(impl, args[0]);
             return true;
@@ -667,9 +668,6 @@ public class ElementIH implements InvocationHandler {
     }
 
     protected Object invokeOther(Method method, Object[] args) throws Throwable {
-
-        environment.logCommand(method, impl, args);
-
         try {
             return method.invoke(impl, args);
         } catch (InvocationTargetException e) {
