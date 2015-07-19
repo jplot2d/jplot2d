@@ -18,14 +18,14 @@ deploy:
   api_key:
     secure: Y4hsQ9lTvzjuAyukZwJMJmcl9Y+PlR5GNOI0HsNIA8jrMpsuLXZu5JU+onHLaiMWBtTyUn155bVD0gy59ashEqI2j5mo9Q+0scQtd7H7PFsecXz0L+ZB/0b+Pc3tPxq4CvHekdXbdeyekpzDV7r9NiddtjNOGQBWVbA5HFBaNXs=
   file:
-    - jplot2d-core/build/libs/jplot2d-core-1.1.1.jar
-    - jplot2d-common-interaction/build/libs/jplot2d-common-interaction-1.1.1.jar
-    - jplot2d-interaction/build/libs/jplot2d-interaction-1.1.1.jar
-    - jplot2d-swing/build/libs/jplot2d-swing-1.1.1.jar
-    - jplot2d-swt/build/libs/jplot2d-swt-1.1.1.jar
-    - jplot2d-core/build/distributions/jplot2d-core-ext-libs-1.1.1.zip
-    - jplot2d-swing/build/distributions/jplot2d-swing-all-1.1.1.jar
-    - jplot2d-swt/build/distributions/jplot2d-swt-all-1.1.1.jar
+    - jplot2d-core/build/libs/jplot2d-core-1.1.2.jar
+    - jplot2d-common-interaction/build/libs/jplot2d-common-interaction-1.1.2.jar
+    - jplot2d-interaction/build/libs/jplot2d-interaction-1.1.2.jar
+    - jplot2d-swing/build/libs/jplot2d-swing-1.1.2.jar
+    - jplot2d-swt/build/libs/jplot2d-swt-1.1.2.jar
+    - jplot2d-core/build/distributions/jplot2d-core-ext-libs-1.1.2.zip
+    - jplot2d-swing/build/distributions/jplot2d-swing-all-1.1.2.jar
+    - jplot2d-swt/build/distributions/jplot2d-swt-all-1.1.2.jar
   skip_cleanup: true
   on:
     repo: jplot2d/jplot2d
