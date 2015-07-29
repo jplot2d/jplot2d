@@ -39,9 +39,7 @@ public class DummyEnvironment extends Environment {
      * @param proxy   the proxy object of the element
      */
     public void registerElement(ElementEx element, Element proxy) {
-        synchronized (getGlobalLock()) {
-            ((ElementAddition) proxy).setEnvironment(this);
-        }
+        ((ElementAddition) proxy).setEnvironment(this);
         proxyMap.put(element, proxy);
     }
 

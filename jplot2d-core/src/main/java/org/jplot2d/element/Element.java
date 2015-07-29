@@ -23,7 +23,8 @@ import org.jplot2d.env.Environment;
 /**
  * Common interface of all plot elements.
  * A Element must be created by {@link ElementFactory}, which attach the element to an {@link Environment}.
- * The Environment will handle thread
+ * The environment will synchronize calls, and trigger events.
+ * When an element is added as a child of another element, it will share the environment of its parent.
  *
  * @author Jingjing Li
  */
@@ -44,6 +45,11 @@ public interface Element {
     @Hierarchy(HierarchyOp.GET)
     Element getParent();
 
+    /**
+     * Return the attached environment.
+     *
+     * @return the attached environment
+     */
     Environment getEnvironment();
 
 }

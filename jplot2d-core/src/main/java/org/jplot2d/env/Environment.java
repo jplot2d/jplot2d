@@ -44,11 +44,6 @@ public abstract class Environment {
 
     private static final Logger logger = LoggerFactory.getLogger("org.jplot2d.env");
 
-    /**
-     * The global locking object for get/set environment.
-     */
-    private static final Object LOCK = new Object();
-
     private static final int MAX_BATCH_DEPTH = 64;
     /**
      * A impl to proxy map that contains all element in this environment. It's a LinkedHashMap to keep the order of
@@ -78,10 +73,6 @@ public abstract class Environment {
         } else {
             lock = null;
         }
-    }
-
-    protected static Object getGlobalLock() {
-        return LOCK;
     }
 
     /**

@@ -120,28 +120,25 @@ public class PlotEnvironment extends Environment {
      * @param notifier the notifier to receive and process notices
      */
     public void setPlot(Plot plot, Notifier notifier) {
-        Environment oldEnv;
-        synchronized (getGlobalLock()) {
-            // remove the env of the given plot
-            oldEnv = plot.getEnvironment();
-            if (!(oldEnv instanceof DummyEnvironment)) {
-                throw new IllegalArgumentException("The plot to be added has been added a PlotEnvironment");
-            }
 
-            // check this environment is ready to host plot
-            beginCommand("setPlot");
+        Environment oldEnv = plot.getEnvironment();
+        if (!(oldEnv instanceof DummyEnvironment)) {
+            throw new IllegalArgumentException("The plot to be added has been added a PlotEnvironment");
+        }
 
-            if (this.plot != null) {
-                endCommand();
-                throw new IllegalArgumentException("This Environment has hosted a plot");
-            }
+        // check this environment is ready to host plot
+        beginCommand("setPlot");
 
-            oldEnv.beginCommand("setPlot");
+        if (this.plot != null) {
+            endCommand();
+            throw new IllegalArgumentException("This Environment has hosted a plot");
+        }
 
-            // update environment for all adding components
-            for (Element proxy : oldEnv.proxyMap.values()) {
-                ((ElementAddition) proxy).setEnvironment(this);
-            }
+        oldEnv.beginCommand("setPlot");
+
+        // update environment for all adding components
+        for (Element proxy : oldEnv.proxyMap.values()) {
+            ((ElementAddition) proxy).setEnvironment(this);
         }
 
         this.plot = plot;
