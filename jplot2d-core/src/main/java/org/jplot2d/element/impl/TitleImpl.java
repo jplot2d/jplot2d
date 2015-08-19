@@ -90,8 +90,8 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if (textModel != null && getPosition() != TitlePosition.FREE && getParent() != null) {
-            getParent().invalidate();
+        if (canContribute() && getPosition() != TitlePosition.FREE) {
+            invalidatePlot();
         }
     }
 
@@ -134,7 +134,10 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
     public void setTextModel(MathElement model) {
         redraw(this);
         this.textModel = model;
-        label = null;
+        this.label = null;
+        if (isVisible() && position != TitlePosition.FREE) {
+            invalidatePlot();
+        }
         redraw(this);
     }
 
@@ -182,7 +185,9 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
         }
         if (this.position != position) {
             this.position = position;
-            invalidatePlot();
+            if (isVisible() && canContribute()) {
+                invalidatePlot();
+            }
         }
     }
 
@@ -192,14 +197,16 @@ public class TitleImpl extends ComponentImpl implements TitleEx {
 
     public void setGapFactor(double factor) {
         this.gapFactor = factor;
-        invalidatePlot();
+        if (isVisible() && canContribute() && position != TitlePosition.FREE) {
+            invalidatePlot();
+        }
     }
 
     /**
-     * Invalidate the parent plot when its position is not null.
+     * Invalidate the parent plot.
      */
     private void invalidatePlot() {
-        if (isVisible() && canContribute() && getParent() != null) {
+        if (getParent() != null) {
             getParent().invalidate();
         }
     }
