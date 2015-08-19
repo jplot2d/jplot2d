@@ -33,9 +33,16 @@ public interface LegendEx extends Legend, ComponentEx {
     LegendItemEx[] getItems();
 
     /**
-     * Put all items of this disabled legend to an enabled upper legend.
+     * Push all items of this legend to an enabled upper legend.
+     * Called when a plot with disabled legend is added as a subplot
      */
-    void putItemsToEnabledLegend();
+    void pushItemsToEnabledLegend();
+
+    /**
+     * Pull all items that should hosted by this legend from an enabled upper legend.
+     * Called when a subplot with disabled legend is removed.
+     */
+    void pullItemsFromEnabledLegend();
 
     /**
      * Sets the location without setting the position to Position.FREE

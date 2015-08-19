@@ -24,9 +24,7 @@ import org.jplot2d.util.DoubleDimension2D;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -47,26 +45,24 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
 
     private static final Color BORDER_COLOR = Color.BLACK;
 
+    /**
+     * If this legend is enabled, or top level legend, the collection contains all items managed by this legend,
+     * include items pushed by disabled legend of subplots.
+     * If this legend is disabled, the collection is empty.
+     */
+    private final Collection<LegendItemEx> items = new ArrayList<>();
+
     private boolean enabled = true;
-
     private double locX, locY;
-
     private double width, height;
-
     private LegendPosition position = LegendPosition.BOTTOMCENTER;
-
     private HAlign halign = HAlign.CENTER;
-
     private VAlign valign = VAlign.TOP;
-
     private double rowSpacingFactor = 0.125;
-
     private boolean borderVisible = true;
 
     private Dimension2D maxItemSize;
-
     private int columns = 1, rows = 1;
-
     private double lengthConstraint = Double.NaN;
 
     /**
@@ -80,12 +76,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
     private boolean layoutItemsNeeded;
 
     /**
-     * If this legend is enabled, or top level legend, the collection contains all items managed by this legend, include
-     * items pushed by disabled legend of subplots. If this legend is disabled, the collection is empty.
-     */
-    private final Collection<LegendItemEx> items = new ArrayList<>();
-
-    /**
      * The visible item count. only be maintained when this legend is enabled or is top level legend.
      */
     private int visibleItemNum;
@@ -93,6 +83,34 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
     public LegendImpl() {
         setSelectable(true);
         setMovable(true);
+    }
+
+    /**
+     * Return an enable legend who can host legend items for the given plot.
+     * This method always return a legend. If all legend is disabled, the top level legend is returned.
+     *
+     * @param plot the plot
+     * @return an enable legend
+     */
+    private static LegendEx getEnabledLegend(PlotEx plot) {
+        if (plot.getLegend().isEnabled()) {
+            return plot.getLegend();
+        } else if (plot.getParent() == null) {
+            return plot.getLegend();
+        } else {
+            return getEnabledLegend(plot.getParent());
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if the given plot a is ancestor of plot c, or they are the same plot.
+     *
+     * @param a the ancestor
+     * @param c the child
+     * @return <code>true</code> if the given plot a is ancestor of plot c
+     */
+    private static boolean isAncestor(PlotEx a, PlotEx c) {
+        return c != null && (c == a || isAncestor(a, c.getParent()));
     }
 
     public String getId() {
@@ -246,26 +264,12 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
     public void setEnabled(boolean enabled) {
         boolean oldContribution = this.canContribute();
 
-        this.enabled = enabled;
         if (enabled) {
-            LegendEx oldLegend = getEnabledLegend(getParent());
-            LegendItemEx[] allItems = oldLegend.getItems();
-            for (LegendItemEx item : allItems) {
-                if (getEnabledLegend(item.getParent().getParent().getParent()) == this) {
-                    oldLegend.removeLegendItem(item);
-                    this.addLegendItem(item);
-                }
-            }
+            pullItemsFromEnabledLegend();
+            this.enabled = true;
         } else {
-            LegendEx newLegend = getEnabledLegend(getParent());
-            if (newLegend != this) {
-                for (LegendItemEx item : items) {
-                    newLegend.addLegendItem(item);
-                }
-                items.clear();
-                visibleItemNum = 0;
-                maxItemSize = null;
-            }
+            this.enabled = false;
+            pushItemsToEnabledLegend();
         }
 
         if (isVisible() && oldContribution != this.canContribute() && getPosition() != LegendPosition.FREE) {
@@ -273,9 +277,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         }
     }
 
-    public void putItemsToEnabledLegend() {
-        if (!isEnabled() && items.size() > 0) {
-            LegendEx newLegend = getEnabledLegend(getParent());
+    public void pushItemsToEnabledLegend() {
+        LegendEx newLegend = getEnabledLegend(getParent());
+        if (newLegend != this) {
             for (LegendItemEx item : items) {
                 newLegend.addLegendItem(item);
             }
@@ -285,20 +289,16 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         }
     }
 
-    /**
-     * Return an enable legend who can host legend items for the given plot. This method always return a legend. If all
-     * legend is disabled, the top level legend is returned.
-     *
-     * @param plot the plot
-     * @return an enable legend
-     */
-    private static LegendEx getEnabledLegend(PlotEx plot) {
-        if (plot.getLegend().isEnabled()) {
-            return plot.getLegend();
-        } else if (plot.getParent() == null) {
-            return plot.getLegend();
-        } else {
-            return getEnabledLegend(plot.getParent());
+    public void pullItemsFromEnabledLegend() {
+        LegendEx oldLegend = getEnabledLegend(getParent());
+        if (oldLegend != this) {
+            LegendItemEx[] allItems = oldLegend.getItems();
+            for (LegendItemEx item : allItems) {
+                if (isAncestor(this.getParent(), item.getParent().getParent().getParent())) {
+                    oldLegend.removeLegendItem(item);
+                    this.addLegendItem(item);
+                }
+            }
         }
     }
 

@@ -1098,9 +1098,7 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         layoutDirector.setConstraint(sp, constraint);
 
         // push the legend items if the legend is disabled
-        if (!sp.getLegend().isEnabled()) {
-            sp.getLegend().putItemsToEnabledLegend();
-        }
+        sp.getLegend().pushItemsToEnabledLegend();
 
     }
 
@@ -1119,6 +1117,10 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
         if (subplot.isVisible()) {
             invalidate();
         }
+
+        // pull the legend items if the legend is disabled
+        sp.getLegend().pullItemsFromEnabledLegend();
+
     }
 
     @Override
