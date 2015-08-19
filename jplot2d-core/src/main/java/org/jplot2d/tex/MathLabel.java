@@ -1,20 +1,18 @@
-/**
- * Copyright 2010 Jingjing Li.
+/*
+ * Copyright 2010-2015 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.tex;
 
@@ -26,8 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * This class override all methods of its ancestor. It accept a TeX-like string as its text to
- * render a math. The underlayer component is {@link MathLabelComp}.
+ * This class override all methods of its ancestor. It accept a TeX-like string as its text to render a math.
+ * The underlayer component is {@link MathLabelComp}.
  * <p/>
  * Only support left to right writing direction, and subscript superscript.
  *
@@ -35,18 +33,18 @@ import java.awt.geom.Rectangle2D;
  */
 public class MathLabel {
 
-    private MathElement _me;
+    private final MathElement me;
 
     /**
-     * created even when _me==null
+     * created even when me == null
      */
-    private MathLabelXLines _mlc;
+    private final MathLabelXLines mlc;
 
-    private Font _font;
+    private final Font font;
 
-    private HAlign _halign;
+    private final HAlign halign;
 
-    private VAlign _valign;
+    private final VAlign valign;
 
     /**
      * The paper bounds relative to location
@@ -70,36 +68,33 @@ public class MathLabel {
         if (halign == null) {
             throw new IllegalArgumentException("halign cannot be null");
         }
-        _font = font;
-        _valign = valign;
-        _halign = halign;
-        _me = me;
-        _mlc = new MathLabelXLines(_me, _font, _halign, _valign);
-
-        _mlc.relayout(_font.getSize2D());
-        Rectangle2D dbnds = _mlc.getBounds();
-        bounds = new Rectangle2D.Double(dbnds.getX(), -(dbnds.getY() + dbnds.getHeight()),
-                dbnds.getWidth(), dbnds.getHeight());
+        this.font = font;
+        this.valign = valign;
+        this.halign = halign;
+        this.me = me;
+        mlc = new MathLabelXLines(this.me, this.font, this.halign, this.valign);
+        Rectangle2D dbnds = mlc.getBounds();
+        bounds = new Rectangle2D.Double(dbnds.getX(), -(dbnds.getY() + dbnds.getHeight()), dbnds.getWidth(), dbnds.getHeight());
     }
 
     public void draw(Graphics2D g) {
-        _mlc.draw(g);
+        mlc.draw(g);
     }
 
     public Font getFont() {
-        return _font;
+        return font;
     }
 
     public HAlign getHAlign() {
-        return _halign;
+        return halign;
     }
 
     public VAlign getVAlign() {
-        return _valign;
+        return valign;
     }
 
     public MathElement getModel() {
-        return _me;
+        return me;
     }
 
     /**

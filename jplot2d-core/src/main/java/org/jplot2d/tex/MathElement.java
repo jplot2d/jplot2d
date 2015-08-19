@@ -1,23 +1,18 @@
 /*
- * This file is part of Herschel Common Science System (HCSS).
- * Copyright 2001-2010 Herschel Science Ground Segment Consortium
+ * Copyright 2010-2015 Jingjing Li.
  *
- * HCSS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
+ * This file is part of jplot2d.
  *
- * HCSS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * You should have received a copy of the GNU Lesser General
- * Public License along with HCSS.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
  * If not, see <http://www.gnu.org/licenses/>.
- */
-/*
- * 
  */
 package org.jplot2d.tex;
 
@@ -26,9 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This Class contains the simplified model of MathML. The complete model is
- * described in: <a href="http://www.w3.org/TR/MathML2/appendixd.html">Document
- * Object Model for MathML</a>
+ * This Class contains the simplified model of MathML. The complete model is described in:
+ * <a href="http://www.w3.org/TR/MathML2/appendixd.html">Document Object Model for MathML</a>
  * <p/>
  * The corresponding MathML DOM Interface is MathMLMathElement
  *
@@ -36,13 +30,55 @@ import java.util.List;
  */
 public abstract class MathElement {
 
-    public enum MathVariant {
-        NORMAL, BOLD, ITALIC; // bold_italic,
+    /**
+     * A special MathElement which represent a empty element.
+     */
+    public static final MathElement EMPTY = new Empty();
 
-        // double_struck, bold_fraktur, script, bold_script, fraktur,
-        // SANS_SERIF,
-        // bold_sans_serif, sans_serif_italic, sans_serif_bold_italic,
-        // MONOSPACE
+    private String str;
+
+    /**
+     * escape the special characters in the given string
+     */
+    public static String escape(String s) {
+        return s.replace("\u005c\u005c", "\u005c\u005c\u005c\u005c")
+                .replace("$", "\u005c\u005c$").replace("{", "\u005c\u005c{")
+                .replace("}", "\u005c\u005c}");
+    }
+
+    public abstract String toMathML();
+
+    public abstract void fillTeXString(TeXStringBuilder sb);
+
+    protected String toTeXString() {
+        TeXStringBuilder sb = new TeXStringBuilder();
+        this.fillTeXString(sb);
+        if (sb.isMathMode()) {
+            sb.append('$');
+        }
+        return sb.toString();
+    }
+
+    public String toString() {
+        if (str == null) {
+            str = toTeXString();
+        }
+        return str;
+    }
+
+    public boolean equals(Object anObject) {
+        return this == anObject || (anObject instanceof MathElement && this.toString().equals(anObject.toString()));
+    }
+
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    public enum MathVariant {
+        NORMAL, BOLD, ITALIC;
+
+        // bold_italic, double_struck, bold_fraktur, script, bold_script, fraktur,
+        // SANS_SERIF, bold_sans_serif, sans_serif_italic, sans_serif_bold_italic, MONOSPACE
         public String mathCommand() {
             switch (this) {
                 case NORMAL:
@@ -69,10 +105,13 @@ public abstract class MathElement {
     }
 
     /**
-     * The Null MathElement is a special MathElement which represent a empty
-     * element.
+     * The Null MathElement is a special MathElement which represent a empty element.
      */
-    public static final MathElement EMPTY = new MathElement() {
+    public static class Empty extends MathElement {
+
+        private Empty() {
+
+        }
 
         public String toMathML() {
             return "<mrow></mrow>";
@@ -82,36 +121,6 @@ public abstract class MathElement {
             sb.append("{}");
         }
 
-    };
-
-    public abstract String toMathML();
-
-    public abstract void fillTeXString(TeXStringBuilder sb);
-
-    protected String toTeXString() {
-        TeXStringBuilder sb = new TeXStringBuilder();
-        this.fillTeXString(sb);
-        if (sb.isMathMode()) {
-            sb.append('$');
-        }
-        return sb.toString();
-    }
-
-    private String str;
-
-    public String toString() {
-        if (str == null) {
-            str = toTeXString();
-        }
-        return str;
-    }
-
-    public boolean equals(Object anObject) {
-        return this == anObject || (anObject instanceof MathElement && this.toString().equals(anObject.toString()));
-    }
-
-    public int hashCode() {
-        return toString().hashCode();
     }
 
     /**
@@ -538,15 +547,6 @@ public abstract class MathElement {
         public String toString() {
             return sb.toString();
         }
-    }
-
-    /**
-     * escape the special characters in the given string
-     */
-    public static String escape(String s) {
-        return s.replace("\u005c\u005c", "\u005c\u005c\u005c\u005c")
-                .replace("$", "\u005c\u005c$").replace("{", "\u005c\u005c{")
-                .replace("}", "\u005c\u005c}");
     }
 
 }
