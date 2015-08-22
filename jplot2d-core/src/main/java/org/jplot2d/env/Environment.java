@@ -76,17 +76,6 @@ public abstract class Environment {
     }
 
     /**
-     * Returns <code>true</code> if the given element a is ancestor of element c, or they are the same element.
-     *
-     * @param a the ancestor
-     * @param c the element
-     * @return <code>true</code> if the given element a is ancestor of element c
-     */
-    protected static boolean isAncestor(Element a, Element c) {
-        return c != null && (c == a || isAncestor(a, c.getParent()));
-    }
-
-    /**
      * Returns the first cacheable parent. If all its ancestor are not cacheable, the top ancestor will be returned.
      *
      * @param comp the component
@@ -230,7 +219,7 @@ public abstract class Environment {
         Iterator<Entry<ElementEx, Element>> ite = proxyMap.entrySet().iterator();
         while (ite.hasNext()) {
             Entry<ElementEx, Element> e = ite.next();
-            if (isAncestor(comp, e.getKey())) {
+            if (e.getKey() == comp || e.getKey().isDescendantOf(comp)) {
                 result.proxyMap.put(e.getKey(), e.getValue());
                 ite.remove();
             }

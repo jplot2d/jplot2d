@@ -34,15 +34,32 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
 
     private static final Range INFINITY_PHYSICAL_RANGE = new Range.Double(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
+    private final List<AxisTransformEx> arms = new ArrayList<>();
+
     private AxisTransformEx prim;
 
     private boolean autoRange = true;
 
     private boolean zoomable = true;
 
-    private final List<AxisTransformEx> arms = new ArrayList<>();
-
     private boolean autoRangeNeeded = true;
+
+    public AxisTransformEx getParent() {
+        return (AxisTransformEx) super.getParent();
+    }
+
+    public boolean isDescendantOf(@Nonnull ElementEx ancestor) {
+        if (arms.size() == 0) {
+            return false;
+        } else {
+            for (AxisTransformEx atf : arms) {
+                if (atf != ancestor && !atf.isDescendantOf(ancestor)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 
     public String getId() {
         return "LockGroup@" + Integer.toHexString(System.identityHashCode(this));
@@ -64,10 +81,6 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
             throw new Error(e);
         }
         return new InvokeStep(method);
-    }
-
-    public AxisTransformEx getParent() {
-        return (AxisTransformEx) super.getParent();
     }
 
     public ElementEx getPrim() {
@@ -199,7 +212,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
         RangeStatus<PrecisionState> rs = AxisRangeUtils.ensurePrecision(pRange, vtMap);
 
         if (rs.getStatus() != null) {
-			/* the PrecisionException should not be thrown from autoRange(). */
+            /* the PrecisionException should not be thrown from autoRange(). */
             notify(new RangeSelectionNotice(rs.getStatus().getMessage()));
         }
 
@@ -221,7 +234,7 @@ public class AxisRangeLockGroupImpl extends ElementImpl implements AxisRangeLock
         zoomVirtualRange(xrs, vtMap);
 
 		/*
-		 * After zoomPhysicalRange(), autoRange is set to false, re-set to true.
+         * After zoomPhysicalRange(), autoRange is set to false, re-set to true.
 		 */
         autoRange = true;
 

@@ -303,24 +303,138 @@ public class PlotTest {
     public void testRemoveSubplot() {
         Plot p = factory.createPlot();
         Plot sp = factory.createSubplot();
-        PlotAxis xaxis = factory.createAxis();
-        PlotAxis yaxis = factory.createAxis();
-        assertNotNull(xaxis.getTickManager());
-        assertNotNull(yaxis.getTickManager());
+        PlotAxis[] xaxes = factory.createAxes(2);
+        PlotAxis[] yaxes = factory.createAxes(2);
+        assertNotNull(xaxes[0].getTickManager());
+        assertNotNull(xaxes[1].getTickManager());
+        assertNotNull(yaxes[0].getTickManager());
+        assertNotNull(yaxes[1].getTickManager());
+        AxisTransform xatf = xaxes[0].getTickManager().getAxisTransform();
+        AxisTransform yatf = yaxes[0].getTickManager().getAxisTransform();
+        assertNotNull(xatf);
+        assertNotNull(yatf);
+        AxisRangeLockGroup xrlg = xatf.getLockGroup();
+        AxisRangeLockGroup yrlg = yatf.getLockGroup();
         Layer layer = factory.createLayer();
 
         p.addSubplot(sp, null);
-        sp.addXAxis(xaxis);
-        sp.addYAxis(yaxis);
-        sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
+        sp.addXAxes(xaxes);
+        sp.addYAxes(yaxes);
+        sp.addLayer(layer, xatf, yatf);
 
         p.removeSubplot(sp);
 
-        assertSame(layer.getXAxisTransform(), xaxis.getTickManager().getAxisTransform());
-        assertSame(layer.getYAxisTransform(), yaxis.getTickManager().getAxisTransform());
-        assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[]{layer});
-        assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[]{layer});
+        assertSame(xatf, xaxes[0].getTickManager().getAxisTransform());
+        assertSame(xatf, xaxes[1].getTickManager().getAxisTransform());
+        assertSame(yatf, yaxes[0].getTickManager().getAxisTransform());
+        assertSame(yatf, yaxes[1].getTickManager().getAxisTransform());
+        assertSame(xatf, layer.getXAxisTransform());
+        assertSame(yatf, layer.getYAxisTransform());
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf.getLayers(), new Object[]{layer});
 
+        assertSame(xrlg, xatf.getLockGroup());
+        assertSame(yrlg, yatf.getLockGroup());
+    }
+
+    /**
+     * Remove subplot will remove axes and shared AxisTransform.
+     */
+    @Test
+    public void testRemoveSubplot2() {
+        Plot p = factory.createPlot();
+        Plot sp = factory.createSubplot();
+        PlotAxis[] xaxes = factory.createAxes(2);
+        PlotAxis yaxis0 = factory.createAxis();
+        PlotAxis yaxis1 = factory.createAxis();
+        assertNotNull(xaxes[0].getTickManager());
+        assertNotNull(xaxes[1].getTickManager());
+        assertNotNull(yaxis0.getTickManager());
+        assertNotNull(yaxis1.getTickManager());
+        AxisTransform xatf = xaxes[0].getTickManager().getAxisTransform();
+        AxisTransform yatf = yaxis0.getTickManager().getAxisTransform();
+        assertNotNull(xatf);
+        assertNotNull(yatf);
+        AxisRangeLockGroup xrlg = xatf.getLockGroup();
+        AxisRangeLockGroup yrlg = yatf.getLockGroup();
+
+        p.addSubplot(sp, null);
+        sp.addXAxes(xaxes);
+        sp.addYAxis(yaxis0);
+        sp.addYAxis(yaxis1);
+        yaxis1.getTickManager().setAxisTransform(yatf);
+
+        Layer layer = factory.createLayer();
+        sp.addLayer(layer, xatf, yatf);
+
+        p.removeSubplot(sp);
+
+        assertSame(xatf, xaxes[0].getTickManager().getAxisTransform());
+        assertSame(xatf, xaxes[1].getTickManager().getAxisTransform());
+        assertSame(yatf, yaxis0.getTickManager().getAxisTransform());
+        assertSame(yatf, yaxis1.getTickManager().getAxisTransform());
+        assertSame(xatf, layer.getXAxisTransform());
+        assertSame(yatf, layer.getYAxisTransform());
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf.getLayers(), new Object[]{layer});
+
+        assertSame(xrlg, xatf.getLockGroup());
+        assertSame(yrlg, yatf.getLockGroup());
+    }
+
+    /**
+     * Remove subplot will remove axes and shared AxisRangeLockGroup.
+     */
+    @Test
+    public void testRemoveSubplot3() {
+        Plot p = factory.createPlot();
+        Plot sp = factory.createSubplot();
+        PlotAxis[] xaxes = factory.createAxes(2);
+        PlotAxis yaxis0 = factory.createAxis();
+        PlotAxis yaxis1 = factory.createAxis();
+        assertNotNull(xaxes[0].getTickManager());
+        assertNotNull(xaxes[1].getTickManager());
+        assertNotNull(yaxis0.getTickManager());
+        assertNotNull(yaxis1.getTickManager());
+        AxisTransform xatf = xaxes[0].getTickManager().getAxisTransform();
+        AxisTransform yatf0 = yaxis0.getTickManager().getAxisTransform();
+        AxisTransform yatf1 = yaxis1.getTickManager().getAxisTransform();
+        assertNotNull(xatf);
+        assertNotNull(yatf0);
+        assertNotNull(yatf1);
+        AxisRangeLockGroup xrlg = xatf.getLockGroup();
+        AxisRangeLockGroup yrlg = yatf0.getLockGroup();
+        assertNotNull(yrlg);
+
+        p.addSubplot(sp, null);
+        sp.addXAxes(xaxes);
+        sp.addYAxis(yaxis0);
+        sp.addYAxis(yaxis1);
+        yaxis1.getTickManager().getAxisTransform().setLockGroup(yrlg);
+
+        Layer layer = factory.createLayer();
+        sp.addLayer(layer, xatf, yatf0);
+
+        p.removeSubplot(sp);
+
+        assertSame(xatf, xaxes[0].getTickManager().getAxisTransform());
+        assertSame(xatf, xaxes[1].getTickManager().getAxisTransform());
+        assertSame(yatf0, yaxis0.getTickManager().getAxisTransform());
+        assertSame(yatf1, yaxis1.getTickManager().getAxisTransform());
+        assertSame(xatf, layer.getXAxisTransform());
+        assertSame(yatf0, layer.getYAxisTransform());
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(xatf.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf0.getLayers(), new Object[]{layer});
+        assertArrayEquals(yatf0.getLayers(), new Object[]{layer});
+
+        assertSame(xrlg, xatf.getLockGroup());
+        assertSame(yrlg, yatf0.getLockGroup());
+        assertSame(yrlg, yatf1.getLockGroup());
     }
 
     @Test

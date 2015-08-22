@@ -180,6 +180,23 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
         return result;
     }
 
+    public AxisEx getParent() {
+        return (AxisImpl) parent;
+    }
+
+    public boolean isDescendantOf(@Nonnull ElementEx ancestor) {
+        if (axes.size() == 0) {
+            return false;
+        } else {
+            for (AxisEx axis : axes) {
+                if (axis != ancestor && !axis.isDescendantOf(ancestor)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     public String getId() {
         StringBuilder sb = new StringBuilder();
         sb.append("Tick(");
@@ -211,10 +228,6 @@ public class AxisTickManagerImpl extends ElementImpl implements AxisTickManagerE
             throw new Error(e);
         }
         return new InvokeStep(method);
-    }
-
-    public AxisEx getParent() {
-        return (AxisImpl) parent;
     }
 
     public ElementEx getPrim() {

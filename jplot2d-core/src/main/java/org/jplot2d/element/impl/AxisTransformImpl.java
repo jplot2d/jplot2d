@@ -41,17 +41,24 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
     public static final double DEFAULT_MARGIN_FACTOR = 1.0 / 32; // 0.03125
 
     protected final List<AxisTickManagerEx> tickManagers = new ArrayList<>();
+
     private final List<LayerEx> layers = new ArrayList<>();
+
     @Nonnull
     private AxisType type;
+
     @Nonnull
     private TransformType txfType;
+
     private boolean autoMargin = true;
     private double marginFactor = DEFAULT_MARGIN_FACTOR;
+
     @Nullable
     private Range coreRange;
+
     @Nonnull
     private NormalTransform ntf;
+
     @Nullable
     private AxisRangeLockGroupEx group;
 
@@ -61,6 +68,24 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
         type = AxisType.NUMBER;
         txfType = type.getDefaultTransformType();
         ntf = txfType.createNormalTransform(type.getDefaultWorldRange(txfType));
+    }
+
+    @Nullable
+    public AxisTickManagerEx getParent() {
+        return (AxisTickManagerEx) super.getParent();
+    }
+
+    public boolean isDescendantOf(@Nonnull ElementEx ancestor) {
+        if (tickManagers.size() == 0) {
+            return false;
+        } else {
+            for (AxisTickManagerEx tm : tickManagers) {
+                if (tm != ancestor && !tm.isDescendantOf(ancestor)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     public String getId() {
@@ -104,11 +129,6 @@ public class AxisTransformImpl extends ElementImpl implements AxisTransformEx {
             throw new Error(e);
         }
         return new InvokeStep(method);
-    }
-
-    @Nullable
-    public AxisTickManagerEx getParent() {
-        return (AxisTickManagerEx) super.getParent();
     }
 
     public ElementEx getPrim() {

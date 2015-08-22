@@ -39,15 +39,14 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class RenderEnvironment extends PlotEnvironment {
 
-    private final List<Renderer> rendererList = Collections.synchronizedList(new ArrayList<Renderer>());
-
     protected static volatile File defaultExportDirectory;
-
-    private volatile File exportDirectory;
 
     static {
         setDefaultExportDirectory(null);
     }
+
+    private final List<Renderer> rendererList = Collections.synchronizedList(new ArrayList<Renderer>());
+    private volatile File exportDirectory;
 
     /**
      * Construct a environment to render the given plot.
@@ -57,6 +56,39 @@ public class RenderEnvironment extends PlotEnvironment {
      */
     public RenderEnvironment(boolean threadSafe) {
         super(threadSafe);
+    }
+
+    /**
+     * Returns the default export directory.
+     *
+     * @return the default export directory
+     */
+    public static String getDefaultExportDirectory() {
+        return defaultExportDirectory.getAbsolutePath();
+    }
+
+    /**
+     * Sets the default export directory. If the given directory is relative path, it's relative to user's home
+     * directory. The default export directory is persisted within a session.
+     *
+     * @param dir the default directory for exporting files
+     */
+    public static void setDefaultExportDirectory(String dir) {
+        File dirFile;
+        if (dir == null) {
+            String home = System.getProperty("user.home");
+            dirFile = new File(home);
+        } else {
+            dirFile = new File(dir);
+            if (!dirFile.isDirectory()) {
+                throw new IllegalArgumentException("The given dir " + dir + " is not a directory.");
+            }
+            if (!dirFile.isAbsolute()) {
+                String home = System.getProperty("user.home");
+                dirFile = new File(home, dir);
+            }
+        }
+        defaultExportDirectory = dirFile;
     }
 
     public Renderer[] getRenderers() {
@@ -124,12 +156,12 @@ public class RenderEnvironment extends PlotEnvironment {
         List<CacheableBlock> cbs = new ArrayList<>();
 
         for (CacheableBlock cb : cacheBlockList) {
-            if (isAncestor(compImpl, cb.getUid())) {
+            if (cb.getUid() == compImpl || cb.getUid().isDescendantOf(compImpl)) {
                 cbs.add(cb);
             } else if (cb.getSubcomps().contains(compCopy)) {
                 List<ComponentEx> subcomps = new ArrayList<>();
                 for (ComponentEx scomp : cb.getSubcomps()) {
-                    if (isAncestor(compCopy, scomp)) {
+                    if (scomp == compCopy || scomp.isDescendantOf(compCopy)) {
                         subcomps.add(scomp);
                     }
                 }
@@ -142,39 +174,6 @@ public class RenderEnvironment extends PlotEnvironment {
         } finally {
             end();
         }
-    }
-
-    /**
-     * Returns the default export directory.
-     *
-     * @return the default export directory
-     */
-    public static String getDefaultExportDirectory() {
-        return defaultExportDirectory.getAbsolutePath();
-    }
-
-    /**
-     * Sets the default export directory. If the given directory is relative path, it's relative to user's home
-     * directory. The default export directory is persisted within a session.
-     *
-     * @param dir the default directory for exporting files
-     */
-    public static void setDefaultExportDirectory(String dir) {
-        File dirFile;
-        if (dir == null) {
-            String home = System.getProperty("user.home");
-            dirFile = new File(home);
-        } else {
-            dirFile = new File(dir);
-            if (!dirFile.isDirectory()) {
-                throw new IllegalArgumentException("The given dir " + dir + " is not a directory.");
-            }
-            if (!dirFile.isAbsolute()) {
-                String home = System.getProperty("user.home");
-                dirFile = new File(home, dir);
-            }
-        }
-        defaultExportDirectory = dirFile;
     }
 
     /**
