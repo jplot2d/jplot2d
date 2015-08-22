@@ -1,20 +1,18 @@
-/**
- * Copyright 2010-2013 Jingjing Li.
- * <p/>
+/*
+ * Copyright 2010-2015 Jingjing Li.
+ *
  * This file is part of jplot2d.
- * <p/>
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
- * <p/>
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
+ *
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.element;
 
@@ -29,7 +27,6 @@ import static org.junit.Assert.*;
  * Those test cases test methods on Title.
  *
  * @author Jingjing Li
- *
  */
 public class PlotTest {
 
@@ -81,8 +78,12 @@ public class PlotTest {
         assertNotNull(ytm);
         AxisTransform xarm = xtm.getAxisTransform();
         AxisTransform yarm = ytm.getAxisTransform();
+        assertNotNull(xarm);
+        assertNotNull(yarm);
         AxisRangeLockGroup xag = xarm.getLockGroup();
         AxisRangeLockGroup yag = yarm.getLockGroup();
+        assertNotNull(xag);
+        assertNotNull(yag);
 
         sp.addXAxis(xaxis);
         sp.addYAxis(yaxis);
@@ -157,6 +158,8 @@ public class PlotTest {
         PlotAxis yaxis = factory.createAxis();
         assertNotNull(xaxis.getTickManager());
         assertNotNull(yaxis.getTickManager());
+        assertNotNull(xaxis.getTickManager().getAxisTransform());
+        assertNotNull(yaxis.getTickManager().getAxisTransform());
         Layer layer = factory.createLayer();
 
         sp.addXAxis(xaxis);
@@ -169,7 +172,7 @@ public class PlotTest {
         assertSame(layer.getXAxisTransform(), xaxis.getTickManager().getAxisTransform());
         assertSame(layer.getYAxisTransform(), yaxis.getTickManager().getAxisTransform());
         assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[]{layer});
-        assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[]{layer});
+        assertArrayEquals(yaxis.getTickManager().getAxisTransform().getLayers(), new Object[]{layer});
 
         // set axis again
         layer.setAxesTransform(xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
@@ -194,6 +197,8 @@ public class PlotTest {
         PlotAxis yaxis = factory.createAxis();
         assertNotNull(xaxis.getTickManager());
         assertNotNull(yaxis.getTickManager());
+        assertNotNull(xaxis.getTickManager().getAxisTransform());
+        assertNotNull(yaxis.getTickManager().getAxisTransform());
         Layer layer = factory.createLayer();
 
         sp.addXAxis(xaxis);
@@ -206,8 +211,8 @@ public class PlotTest {
         assertNull(layer.getParent());
         assertNull(layer.getXAxisTransform());
         assertNull(layer.getYAxisTransform());
-        assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[0]);
-        assertArrayEquals(xaxis.getTickManager().getAxisTransform().getLayers(), new Object[0]);
+        assertSame(xaxis.getTickManager().getAxisTransform().getLayers().length, 0);
+        assertSame(yaxis.getTickManager().getAxisTransform().getLayers().length, 0);
 
         sp.addLayer(layer, xaxis.getTickManager().getAxisTransform(), yaxis.getTickManager().getAxisTransform());
 
@@ -228,9 +233,11 @@ public class PlotTest {
         PlotAxis yaxis = factory.createAxis();
         assertNotNull(xaxis.getTickManager());
         assertNotNull(yaxis.getTickManager());
-        Layer layer = factory.createLayer();
         AxisTransform xva = xaxis.getTickManager().getAxisTransform();
         AxisTransform yva = yaxis.getTickManager().getAxisTransform();
+        assertNotNull(xva);
+        assertNotNull(yva);
+        Layer layer = factory.createLayer();
 
         sp.addXAxis(xaxis);
         sp.addYAxis(yaxis);
@@ -275,12 +282,14 @@ public class PlotTest {
 
         // try to detach viewport axis
         try {
+            //noinspection ConstantConditions
             layer.setXAxisTransform(null);
             fail("IllegalArgumentException should be thrown");
         } catch (IllegalArgumentException ignored) {
             // exception is expected
         }
         try {
+            //noinspection ConstantConditions
             layer.setYAxisTransform(null);
             fail("IllegalArgumentException should be thrown");
         } catch (IllegalArgumentException ignored) {
@@ -462,7 +471,6 @@ public class PlotTest {
         } catch (IllegalStateException ignored) {
             // exception is expected
         }
-
     }
 
 }
