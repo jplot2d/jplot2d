@@ -358,24 +358,36 @@ public class PlotImplTest {
             me.getValue().copyFrom(me.getKey());
         }
 
+        PlotAxisEx x2 = p2.getXAxis(0);
+        PlotAxisEx y2 = p2.getYAxis(0);
+
+        assertNotNull(x.getTickManager());
+        assertNotNull(x.getTickManager().getAxisTransform());
+        assertNotNull(x.getTickManager().getAxisTransform().getLockGroup());
+        assertNotNull(y.getTickManager());
+        assertNotNull(y.getTickManager().getAxisTransform());
+        assertNotNull(y.getTickManager().getAxisTransform().getLockGroup());
+        assertNotNull(x2.getTickManager());
+        assertNotNull(x2.getTickManager().getAxisTransform());
+        assertNotNull(x2.getTickManager().getAxisTransform().getLockGroup());
+        assertNotNull(y2.getTickManager());
+        assertNotNull(y2.getTickManager().getAxisTransform());
+        assertNotNull(y2.getTickManager().getAxisTransform().getLockGroup());
+
         // check copy map
         assertEquals(orig2copyMap.size(), 19);
         assertSame(p2, orig2copyMap.get(p));
         assertSame(p2.getMargin(), orig2copyMap.get(p.getMargin()));
         assertSame(p2.getLegend(), orig2copyMap.get(p.getLegend()));
         assertSame(p2.getSubplot(0), orig2copyMap.get(p.getSubplot(0)));
-        assertSame(p2.getXAxis(0), orig2copyMap.get(p.getXAxis(0)));
-        assertSame(p2.getXAxis(0).getTickManager(), orig2copyMap.get(p.getXAxis(0).getTickManager()));
-        assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(),
-                orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform()));
-        assertSame(p2.getXAxis(0).getTickManager().getAxisTransform().getLockGroup(),
-                orig2copyMap.get(p.getXAxis(0).getTickManager().getAxisTransform().getLockGroup()));
-        assertSame(p2.getYAxis(0), orig2copyMap.get(p.getYAxis(0)));
-        assertSame(p2.getYAxis(0).getTickManager(), orig2copyMap.get(p.getYAxis(0).getTickManager()));
-        assertSame(p2.getYAxis(0).getTickManager().getAxisTransform(),
-                orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform()));
-        assertSame(p2.getYAxis(0).getTickManager().getAxisTransform().getLockGroup(),
-                orig2copyMap.get(p.getYAxis(0).getTickManager().getAxisTransform().getLockGroup()));
+        assertSame(x2, orig2copyMap.get(x));
+        assertSame(x2.getTickManager(), orig2copyMap.get(p.getXAxis(0).getTickManager()));
+        assertSame(x2.getTickManager().getAxisTransform(), orig2copyMap.get(x.getTickManager().getAxisTransform()));
+        assertSame(x2.getTickManager().getAxisTransform().getLockGroup(), orig2copyMap.get(x.getTickManager().getAxisTransform().getLockGroup()));
+        assertSame(y2, orig2copyMap.get(y));
+        assertSame(y2.getTickManager(), orig2copyMap.get(p.getYAxis(0).getTickManager()));
+        assertSame(y2.getTickManager().getAxisTransform(), orig2copyMap.get(y.getTickManager().getAxisTransform()));
+        assertSame(y2.getTickManager().getAxisTransform().getLockGroup(), orig2copyMap.get(y.getTickManager().getAxisTransform().getLockGroup()));
 
         assertSame(p2.getLayer(0), orig2copyMap.get(p.getLayer(0)));
         assertSame(p2.getLayer(0).getGraph(0), orig2copyMap.get(p.getLayer(0).getGraph(0)));
@@ -384,16 +396,23 @@ public class PlotImplTest {
         assertSame(p2, p2.getMargin().getParent());
         assertSame(p2, p2.getLegend().getParent());
         assertSame(p2, p2.getSubplot(0).getParent());
-        assertSame(p2, p2.getXAxis(0).getParent());
-        assertSame(p2.getXAxis(0), p2.getXAxis(0).getTickManager().getParent());
-        assertSame(p2.getXAxis(0).getTickManager(), p2.getXAxis(0).getTickManager().getAxisTransform().getParent());
-        assertSame(p2.getXAxis(0).getTickManager().getAxisTransform(), p2.getXAxis(0).getTickManager().getAxisTransform().getLockGroup().getParent());
-        assertSame(p2, p2.getYAxis(0).getParent());
+        assertSame(p2, x2.getParent());
+        assertSame(x2, x2.getTickManager().getParent());
+        assertSame(x2.getTickManager(), x2.getTickManager().getAxisTransform().getParent());
+        assertSame(x2.getTickManager().getAxisTransform(), x2.getTickManager().getAxisTransform().getLockGroup().getParent());
+        assertSame(p2, y2.getParent());
+
         assertSame(p2, p2.getLayer(0).getParent());
         assertSame(p2.getLayer(0), p2.getLayer(0).getGraph(0).getParent());
+        assertSame(p2.getLayer(0).getGraph(0), ((XYGraphEx) p2.getLayer(0).getGraph(0)).getLegendItem().getParent());
+
+        // check legend item
+        assertSame(p2.getLegend().getItems()[0], ((XYGraphEx) p2.getLayer(0).getGraph(0)).getLegendItem());
+        assertSame(p2.getLegend(), ((XYGraphEx) p2.getLayer(0).getGraph(0)).getLegendItem().getLegend());
+
         // check link
-        assertSame(p2.getLayer(0).getXAxisTransform(), p2.getXAxis(0).getTickManager().getAxisTransform());
-        assertSame(p2.getLayer(0).getYAxisTransform(), p2.getYAxis(0).getTickManager().getAxisTransform());
+        assertSame(p2.getLayer(0).getXAxisTransform(), x2.getTickManager().getAxisTransform());
+        assertSame(p2.getLayer(0).getYAxisTransform(), y2.getTickManager().getAxisTransform());
 
     }
 
