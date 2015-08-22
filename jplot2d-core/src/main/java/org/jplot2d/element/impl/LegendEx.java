@@ -41,8 +41,10 @@ public interface LegendEx extends Legend, ComponentEx {
     /**
      * Pull all items that should hosted by this legend from an enabled upper legend.
      * Called when a subplot with disabled legend is removed.
+     *
+     * @param legend the legend pull items from
      */
-    void pullItemsFromEnabledLegend();
+    void pullItemsFromEnabledLegend(LegendEx legend);
 
     /**
      * Sets the location without setting the position to Position.FREE

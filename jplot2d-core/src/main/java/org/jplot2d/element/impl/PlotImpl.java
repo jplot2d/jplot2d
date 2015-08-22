@@ -1086,41 +1086,39 @@ public class PlotImpl extends ContainerImpl implements PlotEx {
     @Override
     public void addSubplot(Plot subplot, Object constraint) {
         PlotEx sp = (PlotEx) subplot;
+
         subplots.add(sp);
         sp.setParent(this);
-
-        redrawCascade(sp);
-
-        if (sp.isVisible()) {
-            invalidate();
-        }
 
         layoutDirector.setConstraint(sp, constraint);
 
         // push the legend items if the legend is disabled
         sp.getLegend().pushItemsToEnabledLegend();
 
+        if (sp.isVisible()) {
+            invalidate();
+        }
+        redrawCascade(sp);
     }
-
 
     @Override
     public void removeSubplot(Plot subplot) {
         PlotEx sp = (PlotEx) subplot;
 
-        redrawCascade(sp);
+        LegendEx oldLegend = LegendImpl.getEnabledLegend((PlotEx) subplot);
 
         subplots.remove(sp);
         sp.setParent(null);
+
+        // pull the legend items if the legend is disabled
+        sp.getLegend().pullItemsFromEnabledLegend(oldLegend);
 
         layoutDirector.remove((PlotEx) subplot);
 
         if (subplot.isVisible()) {
             invalidate();
         }
-
-        // pull the legend items if the legend is disabled
-        sp.getLegend().pullItemsFromEnabledLegend();
-
+        redrawCascade(sp);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
      * @param plot the plot
      * @return an enable legend
      */
-    private static LegendEx getEnabledLegend(PlotEx plot) {
+    public static LegendEx getEnabledLegend(PlotEx plot) {
         if (plot.getLegend().isEnabled()) {
             return plot.getLegend();
         } else if (plot.getParent() == null) {
@@ -100,17 +100,6 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         } else {
             return getEnabledLegend(plot.getParent());
         }
-    }
-
-    /**
-     * Returns <code>true</code> if the given plot a is ancestor of plot c, or they are the same plot.
-     *
-     * @param a the ancestor
-     * @param c the child
-     * @return <code>true</code> if the given plot a is ancestor of plot c
-     */
-    private static boolean isAncestor(PlotEx a, PlotEx c) {
-        return c != null && (c == a || isAncestor(a, c.getParent()));
     }
 
     public String getId() {
@@ -265,8 +254,9 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         boolean oldContribution = this.canContribute();
 
         if (enabled) {
-            pullItemsFromEnabledLegend();
+            LegendEx oldLegend = getEnabledLegend(getParent());
             this.enabled = true;
+            pullItemsFromEnabledLegend(oldLegend);
         } else {
             this.enabled = false;
             pushItemsToEnabledLegend();
@@ -289,13 +279,12 @@ public class LegendImpl extends ComponentImpl implements LegendEx {
         }
     }
 
-    public void pullItemsFromEnabledLegend() {
-        LegendEx oldLegend = getEnabledLegend(getParent());
-        if (oldLegend != this) {
-            LegendItemEx[] allItems = oldLegend.getItems();
+    public void pullItemsFromEnabledLegend(LegendEx legend) {
+        if (legend != this) {
+            LegendItemEx[] allItems = legend.getItems();
             for (LegendItemEx item : allItems) {
-                if (isAncestor(this.getParent(), item.getParent().getParent().getParent())) {
-                    oldLegend.removeLegendItem(item);
+                if (item.getParent().getParent().isDescendantOf(this.getParent())) {
+                    legend.removeLegendItem(item);
                     this.addLegendItem(item);
                 }
             }
