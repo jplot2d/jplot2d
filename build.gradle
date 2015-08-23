@@ -1,6 +1,6 @@
 allprojects {
     group = 'org.jplot2d'
-    version = '1.2.0'
+    version = '1.2.1'
 }
 
 subprojects {
