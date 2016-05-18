@@ -53,30 +53,30 @@ public abstract class ImageData implements GraphData {
     }
 
     protected void updateRanges() {
-        xmin = coordref.xRefVal - (coordref.xRefPixel + 0.5) * coordref.xPixelSize;
-        xmax = xmin + imgWidth * coordref.xPixelSize;
-        ymin = coordref.yRefVal - (coordref.yRefPixel + 0.5) * coordref.yPixelSize;
-        ymax = ymin + imgHeight * coordref.yPixelSize;
+        xmin = coordref.getXRefVal() - (coordref.getXRefPixel() + 0.5) * coordref.getXPixelSize();
+        xmax = xmin + imgWidth * coordref.getXPixelSize();
+        ymin = coordref.getYRefVal() - (coordref.getYRefPixel() + 0.5) * coordref.getYPixelSize();
+        ymax = ymin + imgHeight * coordref.getYPixelSize();
 
         if (!inXBoundary(xmin)) {
             hasPointOutsideXBounds = true;
-            int step = (int) Math.ceil((xboundary.getMin() - xmin) / coordref.xPixelSize);
-            xmin = xmin + step * coordref.xPixelSize;
+            int step = (int) Math.ceil((xboundary.getMin() - xmin) / coordref.getXPixelSize());
+            xmin = xmin + step * coordref.getXPixelSize();
         }
         if (!inXBoundary(xmax)) {
             hasPointOutsideXBounds = true;
-            int step = (int) Math.floor((xboundary.getMax() - xmin) / coordref.xPixelSize);
-            xmax = xmin + step * coordref.xPixelSize;
+            int step = (int) Math.floor((xboundary.getMax() - xmin) / coordref.getXPixelSize());
+            xmax = xmin + step * coordref.getXPixelSize();
         }
         if (!inYBoundary(ymin)) {
             hasPointOutsideYBounds = true;
-            int step = (int) Math.ceil((yboundary.getMin() - ymin) / coordref.yPixelSize);
-            ymin = ymin + step * coordref.yPixelSize;
+            int step = (int) Math.ceil((yboundary.getMin() - ymin) / coordref.getYPixelSize());
+            ymin = ymin + step * coordref.getYPixelSize();
         }
         if (!inYBoundary(ymax)) {
             hasPointOutsideYBounds = true;
-            int step = (int) Math.floor((yboundary.getMax() - ymin) / coordref.yPixelSize);
-            ymax = ymin + step * coordref.yPixelSize;
+            int step = (int) Math.floor((yboundary.getMax() - ymin) / coordref.getYPixelSize());
+            ymax = ymin + step * coordref.getYPixelSize();
         }
     }
 

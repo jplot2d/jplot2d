@@ -26,17 +26,17 @@ package org.jplot2d.data;
  */
 public class ImageCoordinateReference {
 
-    protected double xRefVal = 0.0;
+    private double xRefVal = 0.0;
 
-    protected double xRefPixel = 0.0;
+    private double xRefPixel = 0.0;
 
-    protected double xPixelSize = 1;
+    private double xPixelSize = 1;
 
-    protected double yRefVal = 0.0;
+    private double yRefVal = 0.0;
 
-    protected double yRefPixel = 0.0;
+    private double yRefPixel = 0.0;
 
-    protected double yPixelSize = 1;
+    private double yPixelSize = 1;
 
     public ImageCoordinateReference() {
 
@@ -66,7 +66,7 @@ public class ImageCoordinateReference {
      * @param xRefVal the coordinate reference value of the X axis
      */
     public void setXRefVal(double xRefVal) {
-        xRefVal = xRefVal;
+        this.xRefVal = xRefVal;
     }
 
     /**
@@ -81,10 +81,10 @@ public class ImageCoordinateReference {
     /**
      * Set the coordinate reference value of the Y axis
      *
-     * @param yRefVval the coordinate reference value of the Y axis
+     * @param yRefVal the coordinate reference value of the Y axis
      */
-    public void setYRefVal(double yRefVval) {
-        yRefVal = yRefVval;
+    public void setYRefVal(double yRefVal) {
+        this.yRefVal = yRefVal;
     }
 
     /**
@@ -102,7 +102,7 @@ public class ImageCoordinateReference {
      * @param xRefPixel the coordinate reference pixel in the X axis
      */
     public void setXRefPixel(double xRefPixel) {
-        xRefPixel = xRefPixel;
+        this.xRefPixel = xRefPixel;
     }
 
     /**
@@ -120,7 +120,7 @@ public class ImageCoordinateReference {
      * @param yRefPixel the coordinate reference pixel in the Y axis
      */
     public void setYRefPixel(double yRefPixel) {
-        yRefPixel = yRefPixel;
+        this.yRefPixel = yRefPixel;
     }
 
     /**
