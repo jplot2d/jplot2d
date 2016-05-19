@@ -6,6 +6,9 @@ description = 'The core engine'
 
 sourceSets {
     main {
+        java {
+            srcDir compileJavacc.outputDirectory
+        }
         resources {
             srcDir 'src/main/python'
         }
