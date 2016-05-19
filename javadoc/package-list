@@ -7,6 +7,7 @@ org.jplot2d.element.impl
 org.jplot2d.env
 org.jplot2d.image
 org.jplot2d.interaction
+org.jplot2d.javacc
 org.jplot2d.layout
 org.jplot2d.notice
 org.jplot2d.renderer
