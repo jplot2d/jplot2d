@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -326,29 +326,29 @@ public class DateTickCalculatorTest {
         dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis());
         dateTC.expandRangeByTickNumber(11);
         checkRange(dateTC.getRange(), startms - 5, startms + 5);
-        assertEquals((long) dateTC.getInterval(), 1l);
+        assertEquals((long) dateTC.getInterval(), 1L);
 
 		/* span 1ms */
         dateTC.setRange(start.getTimeInMillis(), start.getTimeInMillis() + 1);
         dateTC.expandRangeByTickNumber(11);
         checkRange(dateTC.getRange(), startms - 4, startms + 6);
-        assertEquals((long) dateTC.getInterval(), 1l);
+        assertEquals((long) dateTC.getInterval(), 1L);
 
 		/* span 1000ms */
         dateTC.setRange(start.getTimeInMillis(), end.getTimeInMillis());
         dateTC.expandRangeByTickNumber(11);
         checkRange(dateTC.getRange(), startms, startms + 1000);
-        assertEquals((long) dateTC.getInterval(), 100l);
+        assertEquals((long) dateTC.getInterval(), 100L);
 
         dateTC.setRange(start.getTimeInMillis() + 1, end.getTimeInMillis() - 1);
         dateTC.expandRangeByTickNumber(11);
         checkRange(dateTC.getRange(), startms, startms + 1000);
-        assertEquals((long) dateTC.getInterval(), 100l);
+        assertEquals((long) dateTC.getInterval(), 100L);
 
         dateTC.setRange(start.getTimeInMillis() - 1, end.getTimeInMillis() + 1);
         dateTC.expandRangeByTickNumber(11);
         checkRange(dateTC.getRange(), startms - 100, startms + 1100);
-        assertEquals((long) dateTC.getInterval(), 100l);
+        assertEquals((long) dateTC.getInterval(), 100L);
     }
 
     /**
