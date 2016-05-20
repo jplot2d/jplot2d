@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -35,14 +35,14 @@ public interface AxisTitleEx extends AxisTitle, ElementEx {
      *
      * @return the math model
      */
-    public MathElement getTextModel();
+    MathElement getTextModel();
 
     /**
      * Sets the math model of this component.
      *
      * @param model the math model
      */
-    public void setTextModel(MathElement model);
+    void setTextModel(MathElement model);
 
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM. eg, TOP means the title is on the top of
@@ -50,14 +50,14 @@ public interface AxisTitleEx extends AxisTitle, ElementEx {
      *
      * @param vAlign the vertical alignment.
      */
-    public void setVAlign(VAlign vAlign);
+    void setVAlign(VAlign vAlign);
 
     /**
      * Returns the title size. The units of bounds is pt (1/72 inch)
      *
      * @return the paper bounds of this title.
      */
-    public Dimension2D getSize();
+    Dimension2D getSize();
 
     /**
      * Draw this component only. All its children is not drawn.
@@ -66,6 +66,6 @@ public interface AxisTitleEx extends AxisTitle, ElementEx {
      * @param x the x position
      * @param y the y position
      */
-    public void draw(Graphics2D g, double x, double y);
+    void draw(Graphics2D g, double x, double y);
 
 }

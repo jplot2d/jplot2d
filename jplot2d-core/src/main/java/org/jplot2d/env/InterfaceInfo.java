@@ -307,40 +307,40 @@ public class InterfaceInfo {
     }
 
     /**
-     * Returns <code>true</true> if the given property is writable.
+     * Returns <code>true</code> if the given property is writable.
      *
      * @param pname the property name
-     * @return <code>true</true> if the given property is writable
+     * @return <code>true</code> if the given property is writable
      */
     public boolean isWritableProp(String pname) {
         return piMap.containsKey(pname) && piMap.get(pname).getWriteMethod() != null;
     }
 
     /**
-     * Returns <code>true</true> if the given method is a property getter.
+     * Returns <code>true</code> if the given method is a property getter.
      *
      * @param method the method to be check
-     * @return <code>true</true> if the given method is a property getter
+     * @return <code>true</code> if the given method is a property getter
      */
     protected boolean isPropReadMethod(Method method) {
         return propReadMap.containsKey(method);
     }
 
     /**
-     * Returns <code>true</true> if the given method is a property setter.
+     * Returns <code>true</code> if the given method is a property setter.
      *
      * @param method the method to be check
-     * @return <code>true</true> if the given method is a property setter
+     * @return <code>true</code> if the given method is a property setter
      */
     protected boolean isPropWriteMethod(Method method) {
         return propWriteMap.containsKey(method);
     }
 
     /**
-     * Returns <code>true</true> if the given setter is disabled by property annotation.
+     * Returns <code>true</code> if the given setter is disabled by property annotation.
      *
      * @param method the writer method
-     * @return <code>true</true> if the given setter is disabled
+     * @return <code>true</code> if the given setter is disabled
      */
     protected boolean isPropWriteDisabled(Method method) {
         PropertyInfo pinfo = propWriteMap.get(method);

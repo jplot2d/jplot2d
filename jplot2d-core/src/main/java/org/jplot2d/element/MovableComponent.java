@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -34,7 +34,7 @@ public interface MovableComponent extends PComponent {
      * @return <code>true</code> if movable
      */
     @SuppressWarnings("EmptyMethod")
-    public boolean isMovable();
+    boolean isMovable();
 
     /**
      * Set if the component is movable by mouse dragging.
@@ -42,7 +42,7 @@ public interface MovableComponent extends PComponent {
      * @param movable <code>true</code> if movable
      */
     @SuppressWarnings("EmptyMethod")
-    public void setMovable(boolean movable);
+    void setMovable(boolean movable);
 
     /**
      * Moves this component to a new location.
@@ -50,7 +50,7 @@ public interface MovableComponent extends PComponent {
      *
      * @param loc the base point given in the paper coordinate space
      */
-    public void setLocation(Point2D loc);
+    void setLocation(Point2D loc);
 
     /**
      * Moves this component to a new location.
@@ -58,6 +58,6 @@ public interface MovableComponent extends PComponent {
      * @param x the x-coordinate of the new location
      * @param y the y-coordinate of the new location
      */
-    public void setLocation(double x, double y);
+    void setLocation(double x, double y);
 
 }

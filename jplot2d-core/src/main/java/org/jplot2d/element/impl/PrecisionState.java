@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * $Id: PrecisionState.java,v 1.2 2010/02/02 10:17:04 hsclib Exp $
- */
 package org.jplot2d.element.impl;
 
 /**

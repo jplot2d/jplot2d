@@ -103,7 +103,6 @@ public class LinearNormalTransform extends NormalTransform {
     /**
      * t: the precision limit; u: the abs larger user point of range to zoom in<br>
      * The formula: p = _a * u + _b *
-     * <p/>
      * <pre>
      *         (u-dU)/u &lt; 1 - t
      *         dU/u &gt; t

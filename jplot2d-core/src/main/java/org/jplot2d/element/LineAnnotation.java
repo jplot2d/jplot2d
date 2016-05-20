@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -40,14 +40,14 @@ public interface LineAnnotation extends Annotation {
      * @return the value of this annotation
      */
     @Property(order = 0, styleable = false)
-    public double getValue();
+    double getValue();
 
     /**
      * Sets the value of this annotation
      *
      * @param value the value of this annotation
      */
-    public void setValue(double value);
+    void setValue(double value);
 
     /**
      * Returns the <code>BasicStroke</code> to be used to draw the annotation line.
@@ -56,7 +56,7 @@ public interface LineAnnotation extends Annotation {
      */
     @Property(order = 1)
     @Nonnull
-    public BasicStroke getStroke();
+    BasicStroke getStroke();
 
     /**
      * Sets the <code>BasicStroke</code> to be used to draw the annotation line.
@@ -64,6 +64,6 @@ public interface LineAnnotation extends Annotation {
      *
      * @param stroke the <code>BasicStroke</code> to be used to draw the annotation line
      */
-    public void setStroke(@Nullable BasicStroke stroke);
+    void setStroke(@Nullable BasicStroke stroke);
 
 }

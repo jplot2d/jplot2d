@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -31,7 +31,7 @@ public interface AxisTickTransform {
      * @param v the user value
      * @return the tick value
      */
-    public double transformUser2Tick(double v);
+    double transformUser2Tick(double v);
 
     /**
      * Transform a tick value to user value.
@@ -39,6 +39,6 @@ public interface AxisTickTransform {
      * @param v the tick value
      * @return the user value
      */
-    public double transformTick2User(double v);
+    double transformTick2User(double v);
 
 }

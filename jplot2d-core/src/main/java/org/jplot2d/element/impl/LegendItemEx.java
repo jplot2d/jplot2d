@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -28,44 +28,44 @@ import java.awt.geom.Dimension2D;
  */
 public interface LegendItemEx extends LegendItem, ElementEx {
 
-    public GraphEx getParent();
+    GraphEx getParent();
 
-    public LegendEx getLegend();
+    LegendEx getLegend();
 
-    public void setLegend(LegendEx legend);
+    void setLegend(LegendEx legend);
 
     /**
      * Returns the text displayed in the legend item
      *
      * @return the text
      */
-    public String getText();
+    String getText();
 
     /**
      * Sets the text displayed in the legend item
      *
      * @param text the text displayed in the legend item
      */
-    public void setText(String text);
+    void setText(String text);
 
     /**
      * Returns <code>true</code> if the item has a text can be displayed in legend.
      *
      * @return the indicator
      */
-    public boolean canContribute();
+    boolean canContribute();
 
     /**
      * Called by legend when its effective font changed
      */
-    public void legendEffectiveFontChanged();
+    void legendEffectiveFontChanged();
 
-    public Dimension2D getSize();
+    Dimension2D getSize();
 
     /**
      * Set location in legend
      */
-    public void setLocation(double locx, double locy);
+    void setLocation(double locx, double locy);
 
     /**
      * This method is called by LegendImpl. The given g has been transformed to legend's paper
@@ -73,6 +73,6 @@ public interface LegendItemEx extends LegendItem, ElementEx {
      *
      * @param g the graphic to draw.
      */
-    public void draw(Graphics2D g);
+    void draw(Graphics2D g);
 
 }

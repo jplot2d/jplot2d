@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -31,11 +31,11 @@ import org.jplot2d.annotation.PropertyGroup;
 public interface CoordinateAnnotation extends SymbolAnnotation {
 
     @Property(order = 0, readOnly = true, styleable = false)
-    public String getText();
+    String getText();
 
     /**
      * The text cannot be set. Setting a text will throw an UnsupportedOperationException.
      */
-    public void setText(String text);
+    void setText(String text);
 
 }

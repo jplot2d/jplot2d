@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -22,11 +22,7 @@ import org.jplot2d.data.GraphData;
 import org.jplot2d.transform.NormalTransform;
 import org.jplot2d.util.Range;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jingjing Li
@@ -221,7 +217,7 @@ public class AxisRangeUtils {
      * </li>
      * </ul>
      *
-     * @param range The caller should guarantee pLo < pHi
+     * @param range The caller should guarantee {@code pLo < pHi}
      * @return a RangeStatus contain the adjusted normalized range. The RangeAdjustTag status indicate if the given range is adjusted.
      */
     public static Range validateNormalRange(Range range, Collection<AxisTransformEx> axes, boolean findNearsetData) {
@@ -242,12 +238,11 @@ public class AxisRangeUtils {
      * </li>
      * </ul>
      *
-     * @param range   The caller should guarantee pLo < pHi
+     * @param range   The caller should guarantee {@code pLo < pHi}
      * @param axisMap a map from axes to their normalized 0-offset transform
      * @return a RangeStatus contain the nice normalized range. The RangeAdjustTag status indicate if the given range is adjusted.
      */
-    public static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap,
-                                            boolean findNearsetData) {
+    public static Range validateNormalRange(Range range, Map<AxisTransformEx, NormalTransform> axisMap, boolean findNearsetData) {
 
         if (range.isInverted()) {
             throw new IllegalArgumentException();
@@ -440,7 +435,7 @@ public class AxisRangeUtils {
             NormalTransform vt = me.getValue();
 
 			/*
-			 * the required normalized range to satisfy the precision limit for the axis
+             * the required normalized range to satisfy the precision limit for the axis
 			 */
             double r = vt.getMinPSpan4PrecisionLimit(pLo, pHi, precisionLimit);
             if (minRange < r) {

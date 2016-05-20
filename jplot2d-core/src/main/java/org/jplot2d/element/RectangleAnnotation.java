@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright 2010-2012 Jingjing Li.
- * <p/>
+ *
  * This file is part of jplot2d.
- * <p/>
+ *
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- * <p/>
+ *
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,14 +38,14 @@ public interface RectangleAnnotation extends Annotation {
      * @return the x value range of this annotation
      */
     @Property(order = 0, styleable = false)
-    public Range getXValueRange();
+    Range getXValueRange();
 
     /**
      * Sets the x value range of this annotation
      *
      * @param range the x value range of this annotation
      */
-    public void setXValueRange(Range range);
+    void setXValueRange(Range range);
 
     /**
      * Returns the y value range of this annotation
@@ -53,14 +53,14 @@ public interface RectangleAnnotation extends Annotation {
      * @return the y value range of this annotation
      */
     @Property(order = 1, styleable = false)
-    public Range getYValueRange();
+    Range getYValueRange();
 
     /**
      * Sets the y value range of this annotation
      *
      * @param range the y value range of this annotation
      */
-    public void setYValueRange(Range range);
+    void setYValueRange(Range range);
 
     /**
      * Returns the <code>Paint</code> to be used to fill the annotation rectangle.
@@ -68,7 +68,7 @@ public interface RectangleAnnotation extends Annotation {
      * @return the <code>Paint</code>
      */
     @Property(order = 2)
-    public Paint getFillPaint();
+    Paint getFillPaint();
 
     /**
      * Sets the <code>Paint</code> to be used to fill the annotation rectangle.
@@ -76,6 +76,6 @@ public interface RectangleAnnotation extends Annotation {
      *
      * @param stroke the <code>Paint</code> to be used to fill the annotation rectangle
      */
-    public void setFillPaint(Paint stroke);
+    void setFillPaint(Paint stroke);
 
 }

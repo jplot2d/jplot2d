@@ -98,7 +98,7 @@ public interface AxisTransform extends Element {
 
     /**
      * Controls if 2 margins are appended automatically to extend the range to a pair of axis major ticks.
-     * The default value is <cdoe>true</cdoe>.
+     * The default value is <code>true</code>.
      *
      * @param autoMargin the switch
      */
@@ -121,7 +121,7 @@ public interface AxisTransform extends Element {
 
     /**
      * Return the core range of the AxisTransform.
-     * The returned range will be negative (start > end) if this AxisTransform is inverted.
+     * The returned range will be negative ({@code start > end}) if this AxisTransform is inverted.
      *
      * @return the core range
      */
@@ -131,9 +131,9 @@ public interface AxisTransform extends Element {
 
     /**
      * Set the core range of the AxisTransform. The range will expand according to the settings of autoMargin and marginFactor, and derive an actual range.
-     * The given range can be positive (start < end) or negative (start > end). It has not effect on the property "inverted".
+     * The given range can be positive ({@code start < end}) or negative ({@code start > end}). It has not effect on the property "inverted".
      * All locked axes will follow the change of this axis.
-     * <p/>
+     * <p>
      * If user want set actual range directly by {@link #setRange(Range)}, the coreRange will be set to <code>null</code> automatically.
      *
      * @param range the core range to be set
@@ -141,7 +141,7 @@ public interface AxisTransform extends Element {
     void setCoreRange(@Nullable Range range);
 
     /**
-     * Return the range of the AxisTransform. The returned range will be negative (start > end)
+     * Return the range of the AxisTransform. The returned range will be negative ({@code start > end})
      * if this AxisTransform is inverted.
      *
      * @return the actual range displayed
@@ -152,9 +152,9 @@ public interface AxisTransform extends Element {
 
     /**
      * Set the actual range displayed in the AxisTransform.
-     * The given range can be positive (start < end) or negative (start > end).
+     * The given range can be positive ({@code start < end}) or negative ({@code start > end}).
      * It has not effect on the property "inverted". All locked axes will follow the change of this axis.
-     * <p/>
+     * <p>
      * The coreRange is set to <code>null</code> after calling this method.
      *
      * @param range the actual range to be set.

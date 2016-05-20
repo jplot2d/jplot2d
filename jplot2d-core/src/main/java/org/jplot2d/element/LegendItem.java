@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
- * <p/>
+ *
  * This file is part of jplot2d.
- * <p/>
+ *
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- * <p/>
+ *
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@ import org.jplot2d.annotation.PropertyGroup;
 public interface LegendItem extends Element {
 
     @Hierarchy(HierarchyOp.GET)
-    public Graph getParent();
+    Graph getParent();
 
     /**
      * Returns the legend who show this item
@@ -41,7 +41,7 @@ public interface LegendItem extends Element {
      * @return the legend who show this item
      */
     @Hierarchy(HierarchyOp.GET)
-    public Legend getLegend();
+    Legend getLegend();
 
     /**
      * returns <code>true</code> if this item is displayed in legend; otherwise, returns <code>false</code>.
@@ -49,7 +49,7 @@ public interface LegendItem extends Element {
      * @return the flag
      */
     @Property(order = 0, styleable = false)
-    public boolean isVisible();
+    boolean isVisible();
 
     /**
      * Sets a flag indicating whether this item should be displayed in the legend.
@@ -57,7 +57,7 @@ public interface LegendItem extends Element {
      *
      * @param show the flag
      */
-    public void setVisible(boolean show);
+    void setVisible(boolean show);
 
     /**
      * Returns the size of the symbol draw in legend item.
@@ -66,7 +66,7 @@ public interface LegendItem extends Element {
      * @return the size of the symbol draw in legend
      */
     @Property(order = 1)
-    public float getSymbolSize();
+    float getSymbolSize();
 
     /**
      * Set the size of symbol draw in legend item.
@@ -74,6 +74,6 @@ public interface LegendItem extends Element {
      *
      * @param size the size of symbols draw in legend
      */
-    public void setSymbolSize(float size);
+    void setSymbolSize(float size);
 
 }

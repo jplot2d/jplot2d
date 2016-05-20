@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,6 +25,6 @@ import org.jplot2d.element.VStripAnnotation;
  */
 public interface VStripAnnotationEx extends AnnotationEx, VStripAnnotation {
 
-    public LayerEx getParent();
+    LayerEx getParent();
 
 }

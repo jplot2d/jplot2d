@@ -29,13 +29,12 @@ import java.text.Format;
 
 /**
  * Manages tick values and labels for axes. Axes may have the same tick manager. Their ticks are exactly same.
- * <p/>
+ * <p>
  * The tick decision rules
  * <ol>
  * <li>if autoTickValues is false, the values can be set by {@link #setFixedTickValues(Object)}</li>
  * <li>if autoInterval is false, the interval can be set by {@link #setTickInterval(double)}</li>
- * <li>the interval is calculated according to tick number. If autoAdjustNumber is true, the number can be adjusted to
- * derive better values.</li>
+ * <li>the interval is calculated according to tick number. If autoAdjustNumber is true, the number can be adjusted to derive better values.</li>
  * </ol>
  *
  * @author Jingjing Li
@@ -152,7 +151,7 @@ public interface AxisTickManager extends Element {
 
     /**
      * Set an array of <code>double</code>. If the given values is null or a empty array, no tick will be drawn.
-     * <p/>
+     * <p>
      * This method <b>must</b> be called after {@link #setFixedTickValues(Object)} is called.
      * {@link #setFixedTickValues(Object)} calling will clear the minor values.
      *
@@ -188,7 +187,7 @@ public interface AxisTickManager extends Element {
     /**
      * Set the interval between two ticks. It changes the number of ticks displayed in the axis.
      * For LOG axis, interval is the multiplying factor between two ticks.
-     * <p/>
+     * <p>
      * Setting a new interval will set autoInterval to <code>false</code>.
      *
      * @param interval the interval between two major ticks
@@ -286,7 +285,7 @@ public interface AxisTickManager extends Element {
     /**
      * Set the number of minor ticks displayed between two major ticks.
      * The actual number may be adjusted, and not equal the number set by this method. The default value is 0.
-     * <p/>
+     * <p>
      * Setting a new minor number will set autoMinorTicks to <code>false</code>.
      *
      * @param minors the number of minor ticks displayed
@@ -364,7 +363,7 @@ public interface AxisTickManager extends Element {
     /**
      * Sets the java.text.Format object that is used to format the tick labels from tick values.
      * If this text format is null, the printf-style format will be used to format the labels.
-     * <p/>
+     * <p>
      * Setting a new labelTextFormat will set autoLabelFormat to <code>false</code>
      *
      * @param format the format object
@@ -385,7 +384,7 @@ public interface AxisTickManager extends Element {
      * The syntax of format string is described in {@link java.util.Formatter}.
      * Beside the standard Java formatter conversions, a special conversion 'm' can be used to produce labels in n_10^e format.
      * The usage of conversion 'm' is like the standard conversion 'e'.
-     * <p/>
+     * <p>
      * Setting a new labelFormat will set autoLabelFormat to <code>false</code>
      *
      * @param format the format string, or null to used the auto format.
@@ -406,7 +405,7 @@ public interface AxisTickManager extends Element {
      * If the length of the array is shorter then the number of fixed ticks, only the first ticks are changed,
      * if the length of the array is longer then the number of ticks only the first labels are used.
      * <code>null</code> in the array means not substitute the label. The given labels can be null or a empty array.
-     * <p/>
+     * <p>
      * If the autoTickValues is enabled(a.k.a. no fixedValues assigned), the given fixedLabels will substitute the auto
      * labels of visible ticks.
      *

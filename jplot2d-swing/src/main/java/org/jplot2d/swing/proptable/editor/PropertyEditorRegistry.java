@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -27,8 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A registry to keep the map between property type and PropertyEditor. Warning: the internal map is
- * not synchronized.
+ * A registry to keep the map between property type and PropertyEditor.
+ * <p>
+ * Warning: the internal map is not synchronized.
  *
  * @author Jingjing Li
  */
@@ -67,9 +68,8 @@ public class PropertyEditorRegistry implements PropertyEditorFactory {
     /**
      * Adds default renderers. This method is called by the constructor but may be called later to
      * reset any customizations made through the <code>registerRenderer</code> methods.
-     * <p/>
-     * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging
-     * custom defaults.
+     * <p>
+     * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging custom defaults.
      */
     public void registerDefaults() {
         typeEditorMap.clear();

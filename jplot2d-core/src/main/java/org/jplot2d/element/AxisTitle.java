@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright 2010-2015 Jingjing Li.
- * <p/>
+ *
  * This file is part of jplot2d.
- * <p/>
+ *
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- * <p/>
+ *
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -38,7 +38,7 @@ public interface AxisTitle extends Element {
      * @see #setVisible
      */
     @Property(order = 0)
-    public boolean isVisible();
+    boolean isVisible();
 
     /**
      * Shows or hides this title depending on the value of parameter <code>b</code>.
@@ -46,7 +46,7 @@ public interface AxisTitle extends Element {
      * @param b if <code>true</code>, shows this title; otherwise, hides this title
      * @see #isVisible
      */
-    public void setVisible(boolean b);
+    void setVisible(boolean b);
 
     /**
      * Gets the color of this title text.
@@ -55,7 +55,7 @@ public interface AxisTitle extends Element {
      * @see #setColor
      */
     @Property(order = 1)
-    public Color getColor();
+    Color getColor();
 
     /**
      * Sets the color of this title text.
@@ -63,7 +63,7 @@ public interface AxisTitle extends Element {
      * @param c the text color of this title
      * @see #getColor
      */
-    public void setColor(Color c);
+    void setColor(Color c);
 
     /**
      * Returns the name of the font.
@@ -71,14 +71,14 @@ public interface AxisTitle extends Element {
      * @return the name of the font.
      */
     @Property(order = 2)
-    public String getFontName();
+    String getFontName();
 
     /**
      * Apply the new font with the given name
      *
      * @param name the font name.
      */
-    public void setFontName(String name);
+    void setFontName(String name);
 
     /**
      * Returns the style of the font. The style can be PLAIN, BOLD, ITALIC, or BOLD+ITALIC.
@@ -87,7 +87,7 @@ public interface AxisTitle extends Element {
      * @see java.awt.Font
      */
     @Property(order = 3)
-    public int getFontStyle();
+    int getFontStyle();
 
     /**
      * Apply a new style to the font. The style can be PLAIN, BOLD, ITALIC, or BOLD+ITALIC.
@@ -95,7 +95,7 @@ public interface AxisTitle extends Element {
      * @param style the style to apply
      * @see java.awt.Font
      */
-    public void setFontStyle(int style);
+    void setFontStyle(int style);
 
     /**
      * Returns the font size of the title text.
@@ -103,14 +103,14 @@ public interface AxisTitle extends Element {
      * @return the font size
      */
     @Property(order = 4)
-    public float getFontSize();
+    float getFontSize();
 
     /**
      * Sets a new font size of the title text.
      *
      * @param size the new font size of the title text
      */
-    public void setFontSize(float size);
+    void setFontSize(float size);
 
     /**
      * Returns the scale apply to the font size of axis when font size of title is NaN.
@@ -118,7 +118,7 @@ public interface AxisTitle extends Element {
      * @return the font scale
      */
     @Property(order = 5)
-    public float getFontScale();
+    float getFontScale();
 
     /**
      * Sets the scale apply to the font size of axis when font size of title is NaN.
@@ -132,14 +132,14 @@ public interface AxisTitle extends Element {
      *
      * @return the effective font of this axis title
      */
-    public Font getEffectiveFont();
+    Font getEffectiveFont();
 
     /**
      * Sets the font name, style and size for axis title.
      *
      * @param font the desired <code>Font</code> for this axis title
      */
-    public void setFont(Font font);
+    void setFont(Font font);
 
     /**
      * Returns the text string.
@@ -147,7 +147,7 @@ public interface AxisTitle extends Element {
      * @return a String
      */
     @Property(order = 6, description = "Can be TeX math string", styleable = false)
-    public String getText();
+    String getText();
 
     /**
      * Defines the text to be displayed. The text can be multi-line, split by \n.
@@ -160,6 +160,6 @@ public interface AxisTitle extends Element {
      *
      * @param text the text to be displayed
      */
-    public void setText(String text);
+    void setText(String text);
 
 }

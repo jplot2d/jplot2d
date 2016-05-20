@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * $Id: RangeStatus.java,v 1.5 2010/04/19 04:18:31 jli Exp $
- */
 package org.jplot2d.element.impl;
 
 import org.jplot2d.util.Range;

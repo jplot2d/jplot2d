@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -26,8 +26,7 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyEditor;
 
 /**
- * Once the editor component change, {@link #firePropertyChange(Object, Object)}
- * should be called to notify all the listeners.
+ * Once the editor component change, {@link #firePropertyChange(Object, Object)} should be called to notify all the listeners.
  */
 public abstract class AbstractPropertyEditor<T extends Component> implements PropertyEditor {
 

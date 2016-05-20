@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,6 +25,6 @@ import org.jplot2d.element.RectangleAnnotation;
  */
 public interface RectangleAnnotationEx extends AnnotationEx, RectangleAnnotation {
 
-    public LayerEx getParent();
+    LayerEx getParent();
 
 }

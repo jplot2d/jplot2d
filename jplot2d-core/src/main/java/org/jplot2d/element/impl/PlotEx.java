@@ -134,7 +134,7 @@ public interface PlotEx extends Plot, ContainerEx, AxisContainerEx {
 
     /**
      * Sets the content size by layout director. All layers in this plot have the same viewport size.
-     * <p/>
+     * <p>
      * The layout manager guarantee this method is called after setting plot margin, and no matter if the content size
      * is changed.
      *

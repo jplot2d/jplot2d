@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -27,13 +27,13 @@ import java.awt.geom.Dimension2D;
  * engine. User should never call them directly. Every plot should have its own LayoutDirector.
  * Re-using a LayoutDirector among multiple plot is not recommended. Re-using a LayoutDirector by
  * plots in different environment will fail due to thread problem.
- * <p/>
+ * <p>
  * A plot's subplots are laid out in the content area. All layers in a plot are stacked over and
  * have the same size of the content area.
- * <p/>
+ * <p>
  * The axis is a special component. Its length can be set when laid out, but its height is fixed and
  * derived from its internal status, such as tick height and labels.
- * <p/>
+ * <p>
  * The layout director has 2 working mode.
  * <ul>
  * <li>For root plot, the size is known, and the content size will be decided by layout director</li>
@@ -51,7 +51,7 @@ public interface LayoutDirector {
      * @param plot The plot
      * @return The constraint
      */
-    public Object getConstraint(PlotEx plot);
+    Object getConstraint(PlotEx plot);
 
     /**
      * Sets the constraint for the given plot.
@@ -59,14 +59,14 @@ public interface LayoutDirector {
      * @param plot       the plot
      * @param constraint the constraint to be applied
      */
-    public void setConstraint(PlotEx plot, Object constraint);
+    void setConstraint(PlotEx plot, Object constraint);
 
     /**
      * Removes the given child from this layout.
      *
      * @param plot the plot
      */
-    public void remove(PlotEx plot);
+    void remove(PlotEx plot);
 
     /**
      * Invalidates the layout, indicating that if the layout manager has cached information it
@@ -74,14 +74,14 @@ public interface LayoutDirector {
      *
      * @param plot the plot has been invalidate.
      */
-    public void invalidateLayout(PlotEx plot);
+    void invalidateLayout(PlotEx plot);
 
     /**
      * Layout the plot. Normally the plot contents size is calculated by subtracting margin from
      * plot size. If the plot has contents size constraint, the plot size is calculated by adding
      * margin to plot content size.
      */
-    public void layout(PlotEx plot);
+    void layout(PlotEx plot);
 
     /**
      * Returns the preferred size of the given plot.
@@ -89,8 +89,8 @@ public interface LayoutDirector {
      * @param plot The plot
      * @return The preferred size
      */
-    public Dimension2D getPreferredSize(PlotEx plot);
+    Dimension2D getPreferredSize(PlotEx plot);
 
-    public Dimension2D getPreferredContentSize(PlotEx plot);
+    Dimension2D getPreferredContentSize(PlotEx plot);
 
 }

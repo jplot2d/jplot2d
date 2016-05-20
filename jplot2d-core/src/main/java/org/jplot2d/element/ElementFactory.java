@@ -152,7 +152,7 @@ public class ElementFactory {
      * <li>margin: extra 12 on left, top, right, bottom</li>
      * <li>sizeMode: FillContainerSizeMode(1)</li>
      * <li>containerSize: 640x480</li>
-     * <ul>
+     * </ul>
      *
      * @return a plot
      */
@@ -191,7 +191,7 @@ public class ElementFactory {
     /**
      * Create a plot which can be added as a subplot of another plot.
      * A subplot is same as a plot, except its size are managed by the layout director of its parent plot.
-     * <p/>
+     * <p>
      * the initial values
      * <ul>
      * <li>cacheable: false</li>
@@ -200,7 +200,7 @@ public class ElementFactory {
      * <li>margin: no extra margin</li>
      * <li>sizeMode: unassigned</li>
      * <li>containerSize: unassigned</li>
-     * <ul>
+     * </ul>
      *
      * @return a plot
      */

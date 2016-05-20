@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.

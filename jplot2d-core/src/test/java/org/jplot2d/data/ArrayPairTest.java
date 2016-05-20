@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -30,9 +30,7 @@ import org.junit.Test;
 public class ArrayPairTest {
 
 	/**
-	 * Test method for
-	 * {@link org.jplot2d.data.ArrayPair#append(java.lang.Object, java.lang.Object, int)}
-	 * .
+	 * Test method for {@link org.jplot2d.data.ArrayPair#append(java.lang.Object, java.lang.Object, int)}.
 	 */
 	@Test
 	public void testAppendObjectObjectInt() {

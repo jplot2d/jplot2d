@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -20,13 +20,13 @@ package org.jplot2d.element.impl;
 
 public interface ContainerEx extends ComponentEx {
 
-    public ComponentEx getParent();
+    ComponentEx getParent();
 
     /**
      * Returns the components in this container.
      *
      * @return an array of sub-components
      */
-    public ComponentEx[] getComponents();
+    ComponentEx[] getComponents();
 
 }

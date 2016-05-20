@@ -106,7 +106,7 @@ public interface Legend extends MovableComponent {
     /**
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
      * eg, LEFT means the base point is on the left of this legend.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is not defined.
      *
      * @param halign the horizontal alignment.
@@ -125,7 +125,7 @@ public interface Legend extends MovableComponent {
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
      * eg, TOP means the base point is on the top of this legend.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the position is {@link LegendPosition#FREE}, otherwise the behavior is not defined.
      *
      * @param valign The vertical alignment.

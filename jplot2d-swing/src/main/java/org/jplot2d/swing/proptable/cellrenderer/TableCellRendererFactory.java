@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- */
 package org.jplot2d.swing.proptable.cellrenderer;
 
 import org.jplot2d.swing.proptable.property.Property;
@@ -33,6 +30,6 @@ import javax.swing.table.TableCellRenderer;
  */
 public interface TableCellRendererFactory {
 
-    public TableCellRenderer createTableCellRenderer(Property<?> property);
+    TableCellRenderer createTableCellRenderer(Property<?> property);
 
 }

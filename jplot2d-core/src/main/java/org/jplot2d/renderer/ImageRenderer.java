@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Since Graphics can draw image, It's possible to render all cacheable component individually, then assemble them together.
- * <p/>
+ * <p>
  * The rendering steps:
  * <ol>
  * <li>Rendering all modified cacheable components</li>

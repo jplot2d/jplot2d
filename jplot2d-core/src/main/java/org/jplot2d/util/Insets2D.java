@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * $Id: Insets2D.java,v 1.3 2010/02/02 10:16:43 hsclib Exp $
- */
 package org.jplot2d.util;
 
 /**

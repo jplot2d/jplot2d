@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,8 +25,7 @@ public class MousePanBehavior extends MouseDragBehavior {
     }
 
     @Override
-    public MousePanHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
+    public MousePanHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
         return new MousePanHandler(this, ihandler);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,8 +25,7 @@ public class MouseAxisWheelZoomBehavior extends MouseWheelBehavior {
     }
 
     @Override
-    public MouseAxisWheelZoomHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
+    public MouseAxisWheelZoomHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
         return new MouseAxisWheelZoomHandler(this, ihandler);
     }
 

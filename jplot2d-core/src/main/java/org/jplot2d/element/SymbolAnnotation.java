@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
- * <p/>
+ *
  * This file is part of jplot2d.
- * <p/>
+ *
  * jplot2d is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or any later version.
- * <p/>
+ *
  * jplot2d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
- * <p/>
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,14 +36,14 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the symbol shape of this annotation
      */
     @Property(order = 0, styleable = false)
-    public SymbolShape getSymbolShape();
+    SymbolShape getSymbolShape();
 
     /**
      * Sets the symbol shape of this annotation
      *
      * @param symbol the symbol shape of this annotation
      */
-    public void setSymbolShape(SymbolShape symbol);
+    void setSymbolShape(SymbolShape symbol);
 
     /**
      * Returns the symbol size of this annotation in pt (1/72 inch).
@@ -51,7 +51,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the symbol size of this annotation
      */
     @Property(order = 1)
-    public float getSymbolSize();
+    float getSymbolSize();
 
     /**
      * Sets the symbol size of this annotation in pt (1/72 inch).
@@ -59,7 +59,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      *
      * @param size the symbol size of this annotation
      */
-    public void setSymbolSize(float size);
+    void setSymbolSize(float size);
 
     /**
      * Returns the scale apply to effective font size to derive symbol size when symbol size is <code>Float.NaN</code>.
@@ -67,7 +67,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the font scale.
      */
     @Property(order = 2)
-    public float getSymbolScale();
+    float getSymbolScale();
 
     /**
      * Sets the scale apply to effective font size to derive symbol size when symbol size is <code>Float.NaN</code>.
@@ -75,7 +75,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      *
      * @param scale the scale
      */
-    public void setSymbolScale(float scale);
+    void setSymbolScale(float scale);
 
     /**
      * Returns the rotation angle of the text.
@@ -83,7 +83,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the rotation angle value
      */
     @Property(order = 3, styleable = false)
-    public double getAngle();
+    double getAngle();
 
     /**
      * Set the rotation angle of the text. The angle start to count from horizontal direction and grow in counter-clock
@@ -91,7 +91,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      *
      * @param angle the rotation angle
      */
-    public void setAngle(double angle);
+    void setAngle(double angle);
 
     /**
      * Returns the X offset factor of text. The offset is relative to the base point of this annotation. The factor
@@ -100,7 +100,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the X offset factor of text
      */
     @Property(order = 4)
-    public float getTextOffsetFactorX();
+    float getTextOffsetFactorX();
 
     /**
      * Sets the X offset factor of text. The offset is relative to the base point of this annotation. The factor apply
@@ -108,7 +108,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      *
      * @param offset the X offset factor of text
      */
-    public void setTextOffsetFactorX(float offset);
+    void setTextOffsetFactorX(float offset);
 
     /**
      * Returns the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
@@ -117,7 +117,7 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      * @return the Y offset factor of text
      */
     @Property(order = 5)
-    public float getTextOffsetFactorY();
+    float getTextOffsetFactorY();
 
     /**
      * Sets the Y offset of text.The offset is relative to the base point of this annotation. The factor apply to the
@@ -125,6 +125,6 @@ public interface SymbolAnnotation extends PointAnnotation, TextComponent {
      *
      * @param offset the Y offset factor of text
      */
-    public void setTextOffsetFactorY(float offset);
+    void setTextOffsetFactorY(float offset);
 
 }

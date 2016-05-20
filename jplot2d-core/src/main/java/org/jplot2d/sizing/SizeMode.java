@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -80,7 +80,7 @@ public abstract class SizeMode {
 
     /**
      * Update the internal status of this size mode.
-     * <p/>
+     * <p>
      * For Internal use only. User should never call this method.
      */
     public abstract Result update(PlotEx plot);

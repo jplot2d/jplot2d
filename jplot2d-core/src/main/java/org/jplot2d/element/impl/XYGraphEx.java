@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -27,12 +27,12 @@ import java.awt.Color;
  */
 public interface XYGraphEx extends XYGraph, GraphEx {
 
-    public LayerEx getParent();
+    LayerEx getParent();
 
-    public LegendItemEx getLegendItem();
+    LegendItemEx getLegendItem();
 
-    public Color getEffectiveSymbolColor();
+    Color getEffectiveSymbolColor();
 
-    public Color getEffectiveSymbolColor(int i);
+    Color getEffectiveSymbolColor(int i);
 
 }

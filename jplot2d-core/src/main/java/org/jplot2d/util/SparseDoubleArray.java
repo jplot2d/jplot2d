@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -22,20 +22,16 @@ package org.jplot2d.util;
  * SparseIntArrays map integers to doubles. Unlike a normal array of doubles, there can be gaps in the indices. It is
  * intended to be more memory efficient than using a HashMap to map Integers to Doubles, both because it avoids
  * auto-boxing keys and values and its data structure doesn't rely on an extra entry object for each mapping.
- * <p/>
  * <p>
  * Note that this container keeps its mappings in an array data structure, using a binary search to find keys. The
  * implementation is not intended to be appropriate for data structures that may contain large numbers of items. It is
  * generally slower than a traditional HashMap, since lookups require a binary search and adds and removes require
  * inserting and deleting entries in the array. For containers holding up to hundreds of items, the performance
  * difference is not significant, less than 50%.
- * </p>
- * <p/>
  * <p>
  * It is possible to iterate over the items in this container using {@link #keyAt(int)} and {@link #valueAt(int)}.
  * Iterating over the keys using <code>keyAt(int)</code> with ascending values of the index will return the keys in
- * ascending order, or the values corresponding to the keys in ascending order in the case of <code>valueAt(int)<code>.
- * </p>
+ * ascending order, or the values corresponding to the keys in ascending order in the case of <code>valueAt(int)</code>.
  */
 public class SparseDoubleArray implements Cloneable {
     private static final int[] EMPTY_INTS = new int[0];
@@ -67,6 +63,35 @@ public class SparseDoubleArray implements Cloneable {
             mValues = new double[initialCapacity];
         }
         mSize = 0;
+    }
+
+    // This is Arrays.binarySearch(), but doesn't do any argument validation.
+    private static int binarySearch(int[] array, int size, int value) {
+        int lo = 0;
+        int hi = size - 1;
+
+        while (lo <= hi) {
+            final int mid = (lo + hi) >>> 1;
+            final int midVal = array[mid];
+
+            if (midVal < value) {
+                lo = mid + 1;
+            } else if (midVal > value) {
+                hi = mid - 1;
+            } else {
+                return mid; // value found
+            }
+        }
+        return ~lo; // value not present
+    }
+
+    private static int idealIntArraySize(int need) {
+        for (int i = 4; i < 32; i++) {
+            if (need <= (1 << i) - 3) {
+                return (1 << i) - 3;
+            }
+        }
+        return need;
     }
 
     @SuppressWarnings("CloneDoesntDeclareCloneNotSupportedException")
@@ -171,11 +196,9 @@ public class SparseDoubleArray implements Cloneable {
     /**
      * Given an index in the range <code>0...size()-1</code>, returns the key from the <code>index</code>th key-value
      * mapping that this SparseIntArray stores.
-     * <p/>
      * <p>
      * The keys corresponding to indices in ascending order are guaranteed to be in ascending order, e.g.,
      * <code>keyAt(0)</code> will return the smallest key and <code>keyAt(size()-1)</code> will return the largest key.
-     * </p>
      */
     public int keyAt(int index) {
         return mKeys[index];
@@ -184,12 +207,10 @@ public class SparseDoubleArray implements Cloneable {
     /**
      * Given an index in the range <code>0...size()-1</code>, returns the value from the <code>index</code>th key-value
      * mapping that this SparseIntArray stores.
-     * <p/>
      * <p>
      * The values corresponding to indices in ascending order are guaranteed to be associated with keys in ascending
      * order, e.g., <code>valueAt(0)</code> will return the value associated with the smallest key and
      * <code>valueAt(size()-1)</code> will return the value associated with the largest key.
-     * </p>
      */
     public double valueAt(int index) {
         return mValues[index];
@@ -255,8 +276,6 @@ public class SparseDoubleArray implements Cloneable {
 
     /**
      * {@inheritDoc}
-     * <p/>
-     * <p/>
      * This implementation composes a string by iterating over its mappings.
      */
     @Override
@@ -279,35 +298,6 @@ public class SparseDoubleArray implements Cloneable {
         }
         buffer.append('}');
         return buffer.toString();
-    }
-
-    // This is Arrays.binarySearch(), but doesn't do any argument validation.
-    private static int binarySearch(int[] array, int size, int value) {
-        int lo = 0;
-        int hi = size - 1;
-
-        while (lo <= hi) {
-            final int mid = (lo + hi) >>> 1;
-            final int midVal = array[mid];
-
-            if (midVal < value) {
-                lo = mid + 1;
-            } else if (midVal > value) {
-                hi = mid - 1;
-            } else {
-                return mid; // value found
-            }
-        }
-        return ~lo; // value not present
-    }
-
-    private static int idealIntArraySize(int need) {
-        for (int i = 4; i < 32; i++) {
-            if (need <= (1 << i) - 3) {
-                return (1 << i) - 3;
-            }
-        }
-        return need;
     }
 
 }

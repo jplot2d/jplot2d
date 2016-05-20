@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -32,11 +32,11 @@ import org.jplot2d.annotation.PropertyGroup;
 public interface Annotation extends MovableComponent {
 
     @Hierarchy(HierarchyOp.GET)
-    public Layer getParent();
+    Layer getParent();
 
     @Property(order = 0)
-    public boolean isMovable();
+    boolean isMovable();
 
-    public void setMovable(boolean movable);
+    void setMovable(boolean movable);
 
 }

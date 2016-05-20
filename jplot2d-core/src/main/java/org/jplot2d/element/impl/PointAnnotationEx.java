@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,7 +25,6 @@ import org.jplot2d.element.PointAnnotation;
  */
 public interface PointAnnotationEx extends PointAnnotation, AnnotationEx {
 
-    @SuppressWarnings("EmptyMethod")
-    public LayerEx getParent();
+    LayerEx getParent();
 
 }

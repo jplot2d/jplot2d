@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -82,7 +82,7 @@ public class TableCellRendererRegistry implements TableCellRendererFactory {
     /**
      * Adds default renderers. This method is called by the constructor but may be called later to reset any
      * customizations made through the <code>registerRenderer</code> methods.
-     * <p/>
+     * <p>
      * Note: if overridden, <code>super.registerDefaults()</code> must be called before plugging custom defaults.
      */
     public void registerDefaults() {

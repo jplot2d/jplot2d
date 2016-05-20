@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -35,7 +35,6 @@ public class Point2DCellRenderer extends DigitsLimitableCellRenderer<Point2D> {
             return null;
         }
 
-        return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits)
-                + "]";
+        return "[" + NumberUtils.toString(value.getX(), digits) + ", " + NumberUtils.toString(value.getY(), digits) + "]";
     }
 }

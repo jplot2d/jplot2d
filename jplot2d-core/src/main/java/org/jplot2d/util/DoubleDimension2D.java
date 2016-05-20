@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- */
 package org.jplot2d.util;
 
 import java.awt.geom.Dimension2D;

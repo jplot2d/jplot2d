@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- *
- */
 package org.jplot2d.swing.proptable;
 
 

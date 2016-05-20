@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -24,11 +24,11 @@ package org.jplot2d.element.impl;
 public interface XYLegendItemEx extends LegendItemEx {
 
     @SuppressWarnings("EmptyMethod")
-    public XYGraphEx getParent();
+    XYGraphEx getParent();
 
     /**
      * Called by XYGraphEx to notify XYLegendItemEx that the symbol size has been changed.
      */
-    public void graphSymbolSizeChanged();
+    void graphSymbolSizeChanged();
 
 }

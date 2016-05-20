@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * This Class contains the simplified model of MathML. The complete model is described in:
  * <a href="http://www.w3.org/TR/MathML2/appendixd.html">Document Object Model for MathML</a>
- * <p/>
+ * <p>
  * The corresponding MathML DOM Interface is MathMLMathElement
  *
  * @author Jingjing Li
@@ -164,9 +164,9 @@ public abstract class MathElement {
         }
 
         /**
-         * Returns <cdoe>true</cdoe> if this math element contains a Mtext child.
+         * Returns <code>true</code> if this math element contains a Mtext child.
          *
-         * @return <cdoe>true</cdoe> if this math element contains a Mtext child
+         * @return <code>true</code> if this math element contains a Mtext child
          */
         protected boolean isMtextChildExist() {
             for (PElement p : pl) {

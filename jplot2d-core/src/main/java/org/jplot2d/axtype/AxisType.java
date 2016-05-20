@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -34,19 +34,13 @@ import java.util.Map;
  */
 public abstract class AxisType {
 
-    private static final Map<String, AxisType> axisTypeMap = Collections
-            .synchronizedMap(new LinkedHashMap<String, AxisType>());
+    private static final Map<String, AxisType> axisTypeMap = Collections.synchronizedMap(new LinkedHashMap<String, AxisType>());
 
     public static final AxisType NUMBER = NumberAxisType.getInstance();
-
     public static final AxisType DATE = DateAxisType.getDefault();
-
     public static final AxisType DATE_UTC_US = DateAxisType.getUTC();
-
     public static final AxisType TAI_MICROS_UTC_US = TAIMicrosAxisType.getUTC();
-
     public static final AxisType RIGHT_ASCENSION = RightAscensionAxisType.getInstance();
-
     public static final AxisType DECLINATION = DeclinationAxisType.getInstance();
 
     private final String name;
@@ -54,6 +48,21 @@ public abstract class AxisType {
     public AxisType(String name) {
         this.name = name;
         axisTypeMap.put(name, this);
+    }
+
+    public static AxisType valueOf(String name) {
+        return axisTypeMap.get(name);
+    }
+
+    /**
+     * Returns all axis types in a array.
+     *
+     * @return all axis types
+     */
+    public static AxisType[] values() {
+        synchronized (axisTypeMap) {
+            return axisTypeMap.values().toArray(new AxisType[axisTypeMap.size()]);
+        }
     }
 
     public String getName() {
@@ -80,7 +89,7 @@ public abstract class AxisType {
 
     /**
      * Returns a TickAlgorithm by the given transform type and tick transform, or
-     * <code>null<code> if the given tick transform is not allowed.
+     * <code>null</code> if the given tick transform is not allowed.
      *
      * @param txfType       the transform type
      * @param tickTransform the tick transform, can be <code>null</code>
@@ -92,7 +101,7 @@ public abstract class AxisType {
      * Some axis has a circular nature, such as angle. This range is a canonical range that all values should displayed
      * in the range.
      *
-     * @return a range to represent this axis' circular nature, or <code>null<code> if this axis is not circular
+     * @return a range to represent this axis' circular nature, or <code>null</code> if this axis is not circular
      */
     public Range getCircularRange() {
         return null;
@@ -100,21 +109,6 @@ public abstract class AxisType {
 
     public String toString() {
         return getName();
-    }
-
-    public static AxisType valueOf(String name) {
-        return axisTypeMap.get(name);
-    }
-
-    /**
-     * Returns all axis types in a array.
-     *
-     * @return all axis types
-     */
-    public static AxisType[] values() {
-        synchronized (axisTypeMap) {
-            return axisTypeMap.values().toArray(new AxisType[axisTypeMap.size()]);
-        }
     }
 
 }

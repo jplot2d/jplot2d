@@ -28,7 +28,7 @@ import java.util.Map;
  * right-click. The mouse event will translate to application level behavior, such as select an object, select data
  * points in a layer, zoom in/out, etc. The translation can be configured by register and unregister the binding between
  * application behavior to mouse events.
- * <p/>
+ * <p>
  * Notice: most methods in this class is not thread-safe. They should be called within EDT.
  *
  * @author Jingjing Li

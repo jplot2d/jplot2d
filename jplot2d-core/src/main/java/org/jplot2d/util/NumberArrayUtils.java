@@ -16,9 +16,6 @@
  * Public License along with HCSS.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * $Id: NumberArrayUtils.java,v 1.5 2010/08/27 07:35:22 jli Exp $
- */
 package org.jplot2d.util;
 
 import org.jplot2d.data.ArrayPair;

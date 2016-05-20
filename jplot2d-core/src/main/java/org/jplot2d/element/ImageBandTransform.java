@@ -33,8 +33,7 @@ import javax.annotation.Nullable;
  * <ol>
  * <li>Apply limit algorithm</li>
  * <li>Apply intensity transform</li>
- * <li>Apply bias/gain. method of Schlick{@link <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>
- * (C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions)</a>}</li>
+ * <li>Apply bias/gain. method of Schlick <a href=http://dept-info.labri.fr/~schlick/DOC/gem2.ps.gz>(C. Schlick, Fast Alternatives to Perlin's Bias and Gain Functions)</a></li>
  * </ol>
  *
  * @author Jingjing Li

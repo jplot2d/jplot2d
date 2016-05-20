@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,8 +25,7 @@ public class MouseMarqueeZoomBehavior extends MouseDragBehavior {
     }
 
     @Override
-    public MouseMarqueeZoomHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
+    public MouseMarqueeZoomHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
         return new MouseMarqueeZoomHandler(this, ihandler);
     }
 

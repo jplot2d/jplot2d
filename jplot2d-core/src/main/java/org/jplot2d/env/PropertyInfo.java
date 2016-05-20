@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2014 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -63,7 +63,7 @@ public class PropertyInfo implements Comparable<PropertyInfo> {
      * @return The Java type info for the property. Note that the "Class" object may describe a built-in Java type such
      * as "int". The result may be "null" if this is an indexed property that does not support non-indexed
      * access.
-     * <p/>
+     * <p>
      * This is the type that will be returned by the ReadMethod.
      */
     public Class<?> getPropertyType() {

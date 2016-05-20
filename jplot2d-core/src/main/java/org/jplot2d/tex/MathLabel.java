@@ -26,7 +26,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * This class override all methods of its ancestor. It accept a TeX-like string as its text to render a math.
  * The underlayer component is {@link MathLabelComp}.
- * <p/>
+ * <p>
  * Only support left to right writing direction, and subscript superscript.
  *
  * @author Jingjing Li

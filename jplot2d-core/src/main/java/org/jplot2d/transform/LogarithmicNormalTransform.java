@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Performs a log transformation on Cartesian axes. The equation is
- * <code>worldvalue = 10^(scale * normalized v + offset)<code>
+ * <code>worldvalue = 10^(scale * normalized v + offset)</code>
  */
 public class LogarithmicNormalTransform extends NormalTransform {
 
@@ -111,7 +111,6 @@ public class LogarithmicNormalTransform extends NormalTransform {
     /**
      * t: the precision limit; u: the abs larger user point of range to zoom in<br>
      * The formula: p = _a * u + _b *
-     * <p/>
      * <pre>
      *         u'/u &gt; 1 - t
      *         10&circ;(_ap'-_b)/10&circ;(_ap-_b) &gt; 1-t

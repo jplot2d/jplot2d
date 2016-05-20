@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -25,8 +25,7 @@ public class MouseWheelFinerZoomBehavior extends MouseWheelBehavior {
     }
 
     @Override
-    public MouseWheelFinerZoomHandler createMouseBehaviorHandler(
-            InteractionModeHandler ihandler) {
+    public MouseWheelFinerZoomHandler createMouseBehaviorHandler(InteractionModeHandler ihandler) {
         return new MouseWheelFinerZoomHandler(this, ihandler);
     }
 

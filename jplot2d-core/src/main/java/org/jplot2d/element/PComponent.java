@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -24,8 +24,7 @@ import org.jplot2d.annotation.Property;
 import org.jplot2d.annotation.PropertyGroup;
 import org.jplot2d.transform.PaperTransform;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -45,7 +44,7 @@ public interface PComponent extends Element {
      * @return the parent of this component
      */
     @Hierarchy(HierarchyOp.GET)
-    public PComponent getParent();
+    PComponent getParent();
 
     /**
      * Determines whether this component should be visible when its parent is visible. Components are initially visible.
@@ -54,7 +53,7 @@ public interface PComponent extends Element {
      * @see #setVisible
      */
     @Property(order = 0)
-    public boolean isVisible();
+    boolean isVisible();
 
     /**
      * Shows or hides this component depending on the value of parameter <code>b</code>.
@@ -62,7 +61,7 @@ public interface PComponent extends Element {
      * @param b if <code>true</code>, shows this component; otherwise, hides this component
      * @see #isVisible
      */
-    public void setVisible(boolean b);
+    void setVisible(boolean b);
 
     /**
      * Returns <code>true</code> if this component has its own rendering cache.
@@ -70,14 +69,14 @@ public interface PComponent extends Element {
      * @return the cache mode of this component
      */
     @Property(order = 1)
-    public boolean isCacheable();
+    boolean isCacheable();
 
     /**
      * Sets if this component has its own rendering cache.
      *
      * @param mode the cache mode
      */
-    public void setCacheable(boolean mode);
+    void setCacheable(boolean mode);
 
     /**
      * Returns <code>true</code> if the component is selectable by mouse. Only selectable component can be movable.
@@ -85,14 +84,14 @@ public interface PComponent extends Element {
      * @return <code>true</code> if selectable
      */
     @Property(order = 2)
-    public boolean isSelectable();
+    boolean isSelectable();
 
     /**
      * Set the selectable property.
      *
      * @param selectable if <code>true</code> object is selectable
      */
-    public void setSelectable(boolean selectable);
+    void setSelectable(boolean selectable);
 
     /**
      * Returns the z-order of this component.
@@ -100,14 +99,14 @@ public interface PComponent extends Element {
      * @return the z-order of this component
      */
     @Property(order = 3)
-    public int getZOrder();
+    int getZOrder();
 
     /**
      * Sets the z-order of this component. The component with higher z-order is on top.
      *
      * @param z the z-order value
      */
-    public void setZOrder(int z);
+    void setZOrder(int z);
 
     /**
      * Gets the foreground color of this component.
@@ -117,7 +116,7 @@ public interface PComponent extends Element {
      * @see #setColor
      */
     @Property(order = 4)
-    public Color getColor();
+    Color getColor();
 
     /**
      * Sets the foreground color of this component. If this parameter is <code>null</code> then
@@ -126,7 +125,7 @@ public interface PComponent extends Element {
      * @param c this component's foreground color;
      * @see #getColor
      */
-    public void setColor(Color c);
+    void setColor(Color c);
 
     /**
      * Returns the name of the font.
@@ -134,14 +133,14 @@ public interface PComponent extends Element {
      * @return the name of the font.
      */
     @Property(order = 5)
-    public String getFontName();
+    String getFontName();
 
     /**
      * Apply the new font with the given name
      *
      * @param name the font name.
      */
-    public void setFontName(String name);
+    void setFontName(String name);
 
     /**
      * Returns the style of the font. The style can be PLAIN, BOLD, ITALIC, or BOLD+ITALIC.
@@ -150,7 +149,7 @@ public interface PComponent extends Element {
      * @see java.awt.Font
      */
     @Property(order = 6)
-    public int getFontStyle();
+    int getFontStyle();
 
     /**
      * Apply a new style to the font. The style can be PLAIN, BOLD, ITALIC, or BOLD+ITALIC.
@@ -158,7 +157,7 @@ public interface PComponent extends Element {
      * @param style the style to apply
      * @see java.awt.Font
      */
-    public void setFontStyle(int style);
+    void setFontStyle(int style);
 
     /**
      * Returns the Font size.
@@ -166,14 +165,14 @@ public interface PComponent extends Element {
      * @return the font size.
      */
     @Property(order = 7)
-    public float getFontSize();
+    float getFontSize();
 
     /**
      * Sets a new size of the string.
      *
      * @param size the new size of the font.
      */
-    public void setFontSize(float size);
+    void setFontSize(float size);
 
     /**
      * Returns the scale apply to parent's font size when font size is NaN.
@@ -181,28 +180,28 @@ public interface PComponent extends Element {
      * @return the font scale.
      */
     @Property(order = 8)
-    public float getFontScale();
+    float getFontScale();
 
     /**
      * Sets the scale apply to parent's font size when font size is NaN.
      *
      * @param scale the scale
      */
-    public void setFontScale(float scale);
+    void setFontScale(float scale);
 
     /**
      * Returns the effective font of this component.
      *
      * @return the effective font of this component
      */
-    public Font getEffectiveFont();
+    Font getEffectiveFont();
 
     /**
      * Sets the font name, style and size for this component.
      *
      * @param font the desired <code>Font</code> for this component
      */
-    public void setFont(Font font);
+    void setFont(Font font);
 
     /**
      * Returns the location of this component.
@@ -210,7 +209,7 @@ public interface PComponent extends Element {
      * @return the base point in its parent's paper coordinate space
      */
     @Property(order = 9, styleable = false, displayDigits = 4)
-    public Point2D getLocation();
+    Point2D getLocation();
 
     /**
      * Returns the paper size of this component.
@@ -218,7 +217,7 @@ public interface PComponent extends Element {
      * @return the paper size of this component
      */
     @Property(order = 10, styleable = false, displayDigits = 4)
-    public Dimension2D getSize();
+    Dimension2D getSize();
 
     /**
      * Returns the paper bounds relative to its location. The units of bounds is pt (1/72 inch)
@@ -226,7 +225,7 @@ public interface PComponent extends Element {
      * @return the paper bounds of this component.
      */
     @Property(order = 11, styleable = false, displayDigits = 4)
-    public Rectangle2D getBounds();
+    Rectangle2D getBounds();
 
     /**
      * Returns the selectable bounds relative to its location.
@@ -235,16 +234,16 @@ public interface PComponent extends Element {
      *
      * @return the paper bounds of this component.
      */
-    public Rectangle2D getSelectableBounds();
+    Rectangle2D getSelectableBounds();
 
     /**
      * Returns the paper transform of this component, which can be used to convert between device coordinate and paper
      * coordinate of this component. The original point of paper coordinate is the location point of this component.
-     * <p/>
+     * <p>
      * Returns <code>null</code> if the component is not added to a plot or not laid out
      *
      * @return the paper transform of this component
      */
-    public PaperTransform getPaperTransform();
+    PaperTransform getPaperTransform();
 
 }

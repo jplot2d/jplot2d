@@ -30,9 +30,9 @@ import java.awt.geom.Point2D;
 
 /**
  * Plot has a content area in the center, surrounded by margin area. The margin area holds axes, titles and legend.
- * <p/>
+ * <p>
  * Plot can contains a group of layers that stack over each other, their viewports have the same bounds as the content area.
- * <p/>
+ * <p>
  * Plot can also contains a group of subplots, which are laid out by LayoutDirector.
  *
  * @author Jingjing Li
@@ -72,7 +72,7 @@ public interface Plot extends PComponent {
     /**
      * Sets the container size. The container size is given in device coordinate system and used by size mode to derive
      * paper size and scale. The default value is 640x480 pixels.
-     * <p/>
+     * <p>
      * If the size mode is <code>null</code> when calling this method, an IllegalStateException will be thrown.
      *
      * @param size the container size
@@ -106,7 +106,7 @@ public interface Plot extends PComponent {
     /**
      * Sets the paper size of this plot. This method only take effect when size mode is <code>null</code>. Otherwise the
      * size is decided by size mode.
-     * <p/>
+     * <p>
      * For subplot, the size is set by layout manager.
      *
      * @param width  the paper width
@@ -185,10 +185,10 @@ public interface Plot extends PComponent {
     /**
      * Moves this plot to a new location.
      * The new location is specified by point and is given in the parent's paper coordinate space.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the parent plot's layout director does not manage subplots,
      * such as <code>SimpleLayoutDirector</code>, otherwise the location will be overwrite by the layout director.
-     * <p/>
+     * <p>
      * For root plot, this method has no effect.
      *
      * @param loc the point defining the origin of the new location

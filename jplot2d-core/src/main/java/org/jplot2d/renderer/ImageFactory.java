@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2012 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -23,27 +23,27 @@ import java.awt.image.BufferedImage;
 
 public interface ImageFactory {
 
-    public static Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
+    static Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
 
     /**
      * Create a transparent buffered image. The image is used by component renderer.
      *
      * @return a BufferedImage
      */
-    public BufferedImage createTransparentImage(int width, int height);
+    BufferedImage createTransparentImage(int width, int height);
 
     /**
      * Create a buffered image. The image is the final image to draw everything.
      *
      * @return a BufferedImage
      */
-    public BufferedImage createImage(int width, int height);
+    BufferedImage createImage(int width, int height);
 
     /**
      * Put the given buffered image into local cache for next usage.
      *
      * @param image the image to be reused
      */
-    public void cacheImage(BufferedImage image);
+    void cacheImage(BufferedImage image);
 
 }

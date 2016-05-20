@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
  */
 public interface ComponentEx extends PComponent, ElementEx {
 
-    public ComponentEx getParent();
+    ComponentEx getParent();
 
     /**
      * Returns a map to tell why this component cannot be removed from its container. The key is the moored element,
@@ -42,7 +42,7 @@ public interface ComponentEx extends PComponent, ElementEx {
      *
      * @return a map. The key is the element required by its value.
      */
-    public Map<Element, Element> getMooringMap();
+    Map<Element, Element> getMooringMap();
 
     /**
      * Returns <code>true</code> if this component can contribute visible parts to plot rendering artifact when this
@@ -50,55 +50,55 @@ public interface ComponentEx extends PComponent, ElementEx {
      *
      * @return the indicator
      */
-    public boolean canContribute();
+    boolean canContribute();
 
     /**
      * Returns the effective color of this component.
      *
      * @return the effective color of this component
      */
-    public Color getEffectiveColor();
+    Color getEffectiveColor();
 
-    public String getEffectiveFontName();
+    String getEffectiveFontName();
 
-    public int getEffectiveFontStyle();
+    int getEffectiveFontStyle();
 
-    public float getEffectiveFontSize();
+    float getEffectiveFontSize();
 
-    public void parentEffectiveColorChanged();
+    void parentEffectiveColorChanged();
 
-    public void parentEffectiveFontChanged();
+    void parentEffectiveFontChanged();
 
     /**
      * Called when setColor() or parentEffectiveColorChanged() change the effective color of this component.
      */
-    public void thisEffectiveColorChanged();
+    void thisEffectiveColorChanged();
 
     /**
      * Called when setFontXxx() or parentEffectiveFontChanged() change the effective font of this component.
      */
-    public void thisEffectiveFontChanged();
+    void thisEffectiveFontChanged();
 
     /**
      * Returns <code>true</code> when this component need to be redrawn. The result only apply to cacheable component.
      *
      * @return the redraw status
      */
-    public boolean isRedrawNeeded();
+    boolean isRedrawNeeded();
 
     /**
      * Mark or clear the flag that indicate this component need to be redrawn, eg. when color changed.
      *
      * @param flag the flag that indicate this component need to be redrawn
      */
-    public void setRedrawNeeded(boolean flag);
+    void setRedrawNeeded(boolean flag);
 
     /**
      * Draw this component only. All its children is not drawn.
      *
      * @param g to the Graphics2D drawing. The transformation of this component is not applied.
      */
-    public void draw(Graphics2D g);
+    void draw(Graphics2D g);
 
     /**
      * Create a deep copy of this component. The parent of the copy are not set.
@@ -106,6 +106,6 @@ public interface ComponentEx extends PComponent, ElementEx {
      * @param orig2copyMap original element to copy map
      * @return a deep copy of this component
      */
-    public ComponentEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
+    ComponentEx copyStructure(@Nonnull Map<ElementEx, ElementEx> orig2copyMap);
 
 }

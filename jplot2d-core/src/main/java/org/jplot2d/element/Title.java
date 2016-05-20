@@ -62,7 +62,7 @@ public interface Title extends TextComponent, MovableComponent {
 
     /**
      * Moves this title to a new location.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the position is <code>FREE</code>, otherwise the behavior is not defined.
      *
      * @param loc the base point of the title
@@ -80,7 +80,7 @@ public interface Title extends TextComponent, MovableComponent {
     /**
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
      * eg, LEFT means the base point is on the left of this title.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the position is <code>FREE</code>, otherwise the behavior is not defined.
      *
      * @param halign horizontal alignment.
@@ -98,7 +98,7 @@ public interface Title extends TextComponent, MovableComponent {
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
      * eg, TOP means the base point is on the top of this title.
-     * <p/>
+     * <p>
      * Notice: This method should be called when the position is <code>FREE</code>, otherwise the behavior is not defined.
      *
      * @param valign The vertical alignment.

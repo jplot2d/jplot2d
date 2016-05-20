@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010-2013 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -38,7 +38,6 @@ import java.util.Map;
  * can call the static method {@link #getSymbolShapes()} to get them.
  * <p>
  * A symbol is painted in an 1-unit circle boundary. The data syntax (in EBNF):
- * <p/>
  * <pre>
  *         syntax = &quot;{&quot; SHAPE+ &quot;}&quot;
  *         SHAPE = FILLEDSHAPE | OUTLINESHAPE
@@ -64,8 +63,7 @@ import java.util.Map;
  *         POINT = &quot;(&quot; NUM &quot;,&quot; NUM &quot;)&quot;
  *         NUM = (&quot;+&quot;|&quot;-&quot;)? ([&quot;0&quot;-&quot;9&quot;])+ (&quot;.&quot; ([&quot;0&quot;-&quot;9&quot;])*)? | &quot;.&quot; ([&quot;0&quot;-&quot;9&quot;])*
  * </pre>
- * <p/>
- * <p>
+ * <dl>
  * <dt>RECTANGLE</dt>
  * <dd>is represented by a pair of end points of a diagonal or by x,y of bottom left corner point and width and height.</dd>
  * <dt>ELLIPSE</dt>
@@ -76,7 +74,6 @@ import java.util.Map;
  * <dd>is represented by a ELLIPSE bounding rectangle and a ANGLERANGE, which is defined by starting angle and angular
  * extent in degrees.</dd>
  * </dl>
- * </p>
  *
  * @author Jingjing Li
  */

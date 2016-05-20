@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010, 2011 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -30,6 +30,6 @@ public interface ShowPropertiesAction {
      *
      * @param element the engine
      */
-    public void triggerShowProperties(Element element);
+    void triggerShowProperties(Element element);
 
 }

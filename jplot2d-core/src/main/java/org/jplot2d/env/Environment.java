@@ -435,7 +435,7 @@ public abstract class Environment {
 
     /**
      * A light weight version of beginBatch, without creating a batch token.
-     * <p/>
+     * <p>
      * This method is called from element proxy invocation handler before a setter method of the proxy is called.
      *
      * @param msg the message for logging
@@ -453,7 +453,7 @@ public abstract class Environment {
     /**
      * A light weight version of endBatch, without verifying a batch token.
      * It will never throw an exception in any case.
-     * <p/>
+     * <p>
      * This method is called from element proxy invocation handler after a setter method of the proxy is called.
      */
     protected final void endCommand() {

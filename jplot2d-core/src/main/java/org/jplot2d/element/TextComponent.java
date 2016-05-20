@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -35,7 +35,7 @@ public interface TextComponent extends PComponent {
      * @return a String
      */
     @Property(order = 0, description = "Can be TeX math string", styleable = false)
-    public String getText();
+    String getText();
 
     /**
      * Defines the text to be displayed. The text can be multi-line, splited by \n.
@@ -48,13 +48,13 @@ public interface TextComponent extends PComponent {
      *
      * @param text the text to be displayed
      */
-    public void setText(String text);
+    void setText(String text);
 
     /**
      * @return the horizontal alignment.
      */
     @Property(order = 1)
-    public HAlign getHAlign();
+    HAlign getHAlign();
 
     /**
      * Set the horizontal alignment. The alignment can be LEFT, CENTER, or RIGHT.
@@ -62,13 +62,13 @@ public interface TextComponent extends PComponent {
      *
      * @param hAlign the horizontal alignment.
      */
-    public void setHAlign(HAlign hAlign);
+    void setHAlign(HAlign hAlign);
 
     /**
      * @return the vertical alignment or null if not set.
      */
     @Property(order = 2)
-    public VAlign getVAlign();
+    VAlign getVAlign();
 
     /**
      * Set the vertical alignment. The alignment can be TOP, MIDDLE, or BOTTOM.
@@ -76,6 +76,6 @@ public interface TextComponent extends PComponent {
      *
      * @param vAlign the vertical alignment.
      */
-    public void setVAlign(VAlign vAlign);
+    void setVAlign(VAlign vAlign);
 
 }

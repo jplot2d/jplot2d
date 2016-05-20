@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 Jingjing Li.
  *
  * This file is part of jplot2d.
@@ -27,6 +27,6 @@ import org.jplot2d.element.Annotation;
  */
 public interface AnnotationEx extends Annotation, ComponentEx {
 
-    public LayerEx getParent();
+    LayerEx getParent();
 
 }
