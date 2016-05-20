@@ -26,6 +26,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for image graphics
@@ -58,8 +59,8 @@ public class ImageTest {
         env.exportComponent(graph, exporter);
         BufferedImage img0 = exporter.getImage();
 
-        assertEquals(img0.getWidth(), 572);
-        assertEquals(img0.getHeight(), 419);
+        assertTrue(String.valueOf(img0.getWidth()), 560 <= img0.getWidth() && img0.getWidth() <= 580);
+        assertTrue(String.valueOf(img0.getHeight()), 400 <= img0.getHeight() && img0.getHeight() <= 420);
         int c0 = img0.getRGB(140, 310);
         int c1 = img0.getRGB(430, 310);
         int c2 = img0.getRGB(140, 100);
@@ -96,8 +97,6 @@ public class ImageTest {
         env.exportComponent(graph, exporter);
         BufferedImage img0 = exporter.getImage();
 
-        assertEquals(img0.getWidth(), 572);
-        assertEquals(img0.getHeight(), 419);
         int c0 = img0.getRGB(140, 310);
         int c1 = img0.getRGB(430, 310);
         int c2 = img0.getRGB(140, 100);
@@ -134,8 +133,6 @@ public class ImageTest {
         env.exportComponent(graph, exporter);
         BufferedImage img0 = exporter.getImage();
 
-        assertEquals(img0.getWidth(), 572);
-        assertEquals(img0.getHeight(), 419);
         int c0 = img0.getRGB(140, 310);
         int c1 = img0.getRGB(430, 310);
         int c2 = img0.getRGB(140, 100);
@@ -172,8 +169,6 @@ public class ImageTest {
         env.exportComponent(graph, exporter);
         BufferedImage img0 = exporter.getImage();
 
-        assertEquals(img0.getWidth(), 572);
-        assertEquals(img0.getHeight(), 419);
         int c0 = img0.getRGB(140, 310);
         int c1 = img0.getRGB(430, 310);
         int c2 = img0.getRGB(140, 100);
