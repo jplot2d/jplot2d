@@ -8,6 +8,12 @@ subprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
+    test {
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from sourceSets.main.allSource
