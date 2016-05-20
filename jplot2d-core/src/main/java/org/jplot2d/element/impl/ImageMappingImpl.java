@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -147,6 +147,7 @@ public class ImageMappingImpl extends ElementImpl implements ImageMappingEx {
             throw new IllegalArgumentException("Limits algorithm can not be null.");
         }
         this.algo = algo;
+        invalidateLimits();
         redrawGraphs();
     }
 

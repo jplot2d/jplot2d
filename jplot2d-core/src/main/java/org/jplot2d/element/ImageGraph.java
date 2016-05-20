@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -34,7 +34,9 @@ import javax.annotation.Nullable;
 public interface ImageGraph extends Graph {
 
     /**
-     * Returns the mapping of this image.
+     * Returns the mapping of this image graph.
+     * A image graph created by {@link ElementFactory#createImageGraph(SingleBandImageData)} always have a mapping.
+     * However, if an image graph is removed and the mapping is referenced by other image graph, the removed image graph will have no mapping.
      *
      * @return the mapping of this image
      */
