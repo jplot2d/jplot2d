@@ -1,20 +1,18 @@
 /*
- * Copyright 2010-2014 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.layout;
 
@@ -27,8 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio of their
- * preferedContentSize.
+ * Subplots are placed side-bye-side. The plot space are distributed to subplots according to ratio of their preferedContentSize.
  *
  * @author Jingjing Li
  */
@@ -81,6 +78,14 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
     public double getVGap() {
         return vgap;
+    }
+
+    public void setConstraint(PlotEx plot, Object constraint) {
+        if (constraint == null || constraint instanceof GridConstraint) {
+            super.setConstraint(plot, constraint);
+        } else {
+            throw new IllegalArgumentException("cannot add to layout: constraint must be a GridConstraint (or null)");
+        }
     }
 
     public void invalidateLayout(PlotEx plot) {
@@ -202,10 +207,10 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
         double width = geom.getSumWidth() + hgap * (colWidthMap.size() - 1);
         double height = geom.getSumHeight() + vgap * (rowHeightMap.size() - 1);
         Dimension2D spcs = plot.getPreferredContentSize();
-        if (spcs != null && width < spcs.getWidth()) {
+        if (width < spcs.getWidth()) {
             width = spcs.getWidth();
         }
-        if (spcs != null && height < spcs.getHeight()) {
+        if (height < spcs.getHeight()) {
             height = spcs.getHeight();
         }
         return new DoubleDimension2D(width, height);

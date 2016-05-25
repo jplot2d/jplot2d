@@ -1,20 +1,18 @@
 /*
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.layout;
 
@@ -23,21 +21,26 @@ import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 
 /**
- * This LayoutDirector overlay all plots over the top of each other. All subplots are put inside the
- * base subplot's content area. The content bounds of subplots are defined by
- * {@link BoundsConstraint} .
+ * This LayoutDirector overlay all plots over the top of each other. All subplots are put inside the base subplot's content area.
+ * The content bounds of subplots are defined by {@link BoundsConstraint} .
  *
  * @author Jingjing Li
  */
 public class OverlayLayoutDirector extends SimpleLayoutDirector {
 
-    public void layout(PlotEx plot) {
+    public void setConstraint(PlotEx plot, Object constraint) {
+        if (constraint == null || constraint instanceof BoundsConstraint) {
+            super.setConstraint(plot, constraint);
+        } else {
+            throw new IllegalArgumentException("cannot add to layout: constraint must be a BoundsConstraint (or null)");
+        }
+    }
 
+    public void layout(PlotEx plot) {
         super.layout(plot);
 
         // layout overlay subplots
         layoutSubplots(plot);
-
     }
 
     /**
@@ -81,7 +84,6 @@ public class OverlayLayoutDirector extends SimpleLayoutDirector {
             sp.setLocation(spbX, spbY);
             sp.setContentConstraint(new DoubleDimension2D(spbW, spbH));
         }
-
     }
 
 }
