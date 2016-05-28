@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
@@ -23,6 +23,7 @@ import org.jplot2d.element.impl.*;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.Insets2D;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Dimension2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import java.util.Map;
 public class SimpleLayoutDirector implements LayoutDirector {
 
     static final double LEGEND_GAP = 8.0;
+
     /**
      * The layout constraints
      */
@@ -669,27 +671,25 @@ public class SimpleLayoutDirector implements LayoutDirector {
 
     /**
      * Calculate the preferred content size of the given plot. The default implementation returns the
-     * plot.getPreferredContentSize(), which can be override by subclass to consider nested subplots. The returned size
-     * may be <code>null</code> if there is no enough information to derive a value.
+     * plot.getPreferredContentSize(), which can be override by subclass to consider nested subplots.
      *
      * @param plot the plot
      * @return the preferred content size
      */
+    @Nonnull
     public Dimension2D getPreferredContentSize(PlotEx plot) {
         return plot.getPreferredContentSize();
     }
 
+    @Nonnull
     public Dimension2D getPreferredSize(PlotEx plot) {
         Dimension2D prefContSize = getPreferredContentSize(plot);
-        if (prefContSize == null) {
-            return null;
-        } else {
-            AxesInPlot ais = getAllAxes(plot);
-            Insets2D margin = calcMargin(plot, ais);
-            double w = prefContSize.getWidth() + margin.getLeft() + margin.getRight();
-            double h = prefContSize.getHeight() + margin.getTop() + margin.getBottom();
-            return new DoubleDimension2D(w, h);
-        }
+
+        AxesInPlot ais = getAllAxes(plot);
+        Insets2D margin = calcMargin(plot, ais);
+        double w = prefContSize.getWidth() + margin.getLeft() + margin.getRight();
+        double h = prefContSize.getHeight() + margin.getTop() + margin.getBottom();
+        return new DoubleDimension2D(w, h);
     }
 
     public String toString() {
@@ -699,7 +699,7 @@ public class SimpleLayoutDirector implements LayoutDirector {
     /**
      * All Axes in a plot grouped by position.
      */
-    public static class AxesInPlot {
+    protected static class AxesInPlot {
         final ArrayList<PlotAxisEx> leftAxes = new ArrayList<>();
         final ArrayList<PlotAxisEx> rightAxes = new ArrayList<>();
         final ArrayList<PlotAxisEx> topAxes = new ArrayList<>();

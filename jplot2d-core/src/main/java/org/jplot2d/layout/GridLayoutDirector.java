@@ -20,6 +20,7 @@ import org.jplot2d.element.impl.PlotEx;
 import org.jplot2d.util.DoubleDimension2D;
 import org.jplot2d.util.SparseDoubleArray;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Dimension2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,21 +40,6 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
 
     private final Map<PlotEx, GridCellInsets> plotsMarginGeomMap = new HashMap<>();
 
-    protected static Map<PlotEx, AxesInPlot> getSubplotAxisMap(PlotEx[] subplots) {
-
-        Map<PlotEx, AxesInPlot> glaMap = new HashMap<>();
-
-		/*
-         * Gather metrics for every axis. Iterate over grid to ensure the axes' z-order.
-		 */
-        for (PlotEx subplot : subplots) {
-            AxesInPlot ais = getAllAxes(subplot);
-            glaMap.put(subplot, ais);
-        }
-
-        return glaMap;
-    }
-
     /**
      * Create a GridLayoutDirector with 0 horizontal gap and 0 vertical gap.
      */
@@ -70,6 +56,21 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
     public GridLayoutDirector(double hgap, double vgap) {
         this.hgap = hgap;
         this.vgap = vgap;
+    }
+
+    private static Map<PlotEx, AxesInPlot> getSubplotAxisMap(PlotEx[] subplots) {
+
+        Map<PlotEx, AxesInPlot> glaMap = new HashMap<>();
+
+		/*
+         * Gather metrics for every axis. Iterate over grid to ensure the axes' z-order.
+		 */
+        for (PlotEx subplot : subplots) {
+            AxesInPlot ais = getAllAxes(subplot);
+            glaMap.put(subplot, ais);
+        }
+
+        return glaMap;
     }
 
     public double getHGap() {
@@ -183,6 +184,7 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
         return new DoubleDimension2D(xfactor, yfactor);
     }
 
+    @Nonnull
     public Dimension2D getPreferredContentSize(PlotEx plot) {
         GridCellGeom contentGeom = getSubplotsPreferredContentsGeom(plot);
         GridCellInsets marginGeom = getSubplotsMarginGeom(plot);
@@ -233,13 +235,11 @@ public class GridLayoutDirector extends SimpleLayoutDirector {
             GridConstraint grid = (GridConstraint) getConstraint(sp);
             int col = (grid == null) ? 0 : grid.getGridX();
             int row = (grid == null) ? 0 : grid.getGridY();
-            double width = 0;
-            double Height = 0;
+
             Dimension2D contentSize = sp.getLayoutDirector().getPreferredContentSize(sp);
-            if (contentSize != null) {
-                width = contentSize.getWidth();
-                Height = contentSize.getHeight();
-            }
+            double width = contentSize.getWidth();
+            double Height = contentSize.getHeight();
+
             if (colWidthMap.get(col, -1) < width) {
                 colWidthMap.put(col, width);
             }

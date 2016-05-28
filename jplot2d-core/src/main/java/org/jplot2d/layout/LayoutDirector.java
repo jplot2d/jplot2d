@@ -1,25 +1,24 @@
 /*
- * Copyright 2010, 2011 Jingjing Li.
+ * Copyright 2010-2016 Jingjing Li.
  *
  * This file is part of jplot2d.
  *
- * jplot2d is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * jplot2d is free software:
+ * you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3 of the License, or any later version.
  *
- * jplot2d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * jplot2d is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Lesser Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with jplot2d. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with jplot2d.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.jplot2d.layout;
 
 import org.jplot2d.element.impl.PlotEx;
 
+import javax.annotation.Nonnull;
 import java.awt.geom.Dimension2D;
 
 /**
@@ -84,13 +83,21 @@ public interface LayoutDirector {
     void layout(PlotEx plot);
 
     /**
+     * Returns the preferred content size of the given plot.
+     *
+     * @param plot The plot
+     * @return The preferred size
+     */
+    @Nonnull
+    Dimension2D getPreferredContentSize(PlotEx plot);
+
+    /**
      * Returns the preferred size of the given plot.
      *
      * @param plot The plot
      * @return The preferred size
      */
+    @Nonnull
     Dimension2D getPreferredSize(PlotEx plot);
-
-    Dimension2D getPreferredContentSize(PlotEx plot);
 
 }
