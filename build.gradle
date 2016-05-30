@@ -1,6 +1,6 @@
 allprojects {
     group = 'org.jplot2d'
-    version = '1.2.1'
+    version = '1.2.2'
 }
 
 subprojects {
@@ -36,10 +36,10 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.slf4j:slf4j-api:1.7.12'
+        compile 'org.slf4j:slf4j-api:1.7.21'
         compile 'com.google.code.findbugs:jsr305:3.0.0'
         testCompile 'junit:junit:4.12'
-        testRuntime 'org.slf4j:slf4j-simple:1.7.12'
+        testRuntime 'org.slf4j:slf4j-simple:1.7.21'
     }
 
 }
@@ -61,5 +61,5 @@ task docs(type: Javadoc) {
 task distJar(dependsOn: ['jplot2d-core:zipExtLibs', ':jplot2d-swing:distJar', ':jplot2d-swt:distJar'])
 
 task wrap(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '2.13'
 }
