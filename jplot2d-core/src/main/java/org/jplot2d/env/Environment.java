@@ -489,18 +489,18 @@ public abstract class Environment {
     }
 
     /**
-     * The begin of a block wrapper, to synchronize calling.
+     * The begin of a locking block, to synchronize calling.
      */
-    protected final void begin() {
+    public final void begin() {
         if (lock != null) {
             lock.lock();
         }
     }
 
     /**
-     * The end of a block wrapper, to synchronize calling.
+     * The end of a locking block, to synchronize calling.
      */
-    protected final void end() {
+    public final void end() {
         if (lock != null) {
             lock.unlock();
         }
